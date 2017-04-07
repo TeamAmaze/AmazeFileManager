@@ -422,27 +422,55 @@ Anders wordt er naar een voorval gezocht.</string>
   <string name="searchingdevices">Zoeken naar apparaten</string>
   <string name="use_custom_ip">Gebruik aangepast IP</string>
   <string name="bookmark_lost">Bladwijzer niet gevonden, opnieuw aan het maken&#8230;</string>
+  <string name="share_limit">Kan niet meer dan 100 bestanden delen</string>
+  <string name="no_profile_pic">Geen G+ profiel foto</string>
+  <string name="opening">Openen..</string>
   <string name="information">Informatie</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Geopend</string>
   <!-- reference to file modified date -->
+  <string name="modified">Gewijzigd</string>
+  <string name="title">Titel</string>
+  <string name="artist">Artiest</string>
+  <string name="album">Album</string>
+  <string name="year">Jaar</string>
   <string name="duration">Duur</string>
+  <string name="comment">Reageer</string>
   <!-- reference to audio/video file -->
+  <string name="container">Container</string>
+  <string name="codec">Codec</string>
+  <string name="channels">Kanalen</string>
+  <string name="sample_rate">Sample Rate</string>
+  <string name="bitrate">Bitrate</string>
+  <string name="dimensions">Afmetingen</string>
+  <string name="frame_rate">Frame Rate</string>
+  <string name="image_type">Afbeeldingstype</string>
   <string name="width">Breedte</string>
   <string name="height">Hoogte</string>
   <string name="date_modified">Datum bijgewerkt</string>
   <string name="software">Software</string>
+  <string name="creator">Auteur of maker</string>
+  <string name="camera_brand">Camera merk</string>
+  <string name="camera_model">Camera model</string>
   <string name="exposure_time">Belichtingstijd</string>
   <string name="focal_length">Brandpuntafstand</string>
   <string name="document">Document</string>
   <string name="subject">Onderwerp</string>
   <string name="author">Auteur</string>
   <string name="keywords">Zoekwoorden</string>
+  <string name="producer">Producent</string>
   <string name="created">Gemaakt op</string>
   <string name="pages">Aantal pagina\'s</string>
   <!-- reference to a document file -->
   <string name="optimized">Geoptimaliseerd</string>
   <string name="security">Beveiliging</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copied">gekopieerd</string>
+  <string name="moved">verplaatst</string>
+  <string name="process_chart_description">Voortgang</string>
+  <string name="copy_complete">Kopiëren voltooid</string>
+  <string name="move_complete">Verplaatsen voltooid</string>
+  <string name="waiting_title">Wachten</string>
   <string name="compressing">Comprimeren</string>
   <string name="cancelled">Geannuleerd</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
@@ -468,6 +496,17 @@ Anders wordt er naar een voorval gezocht.</string>
   <string name="error_busybox">Busybox niet gevonden. Interactieve shell wordt gesloten.</string>
   <string name="service_timer">Verstreken tijd</string>
   <string name="please_wait">Een ogenblik geduld</string>
+  <string name="ftp_status_no_connection">Geen verbinding</string>
+  <string name="ftp_status_secure_connection">Beveiligde verbinding</string>
+  <string name="ftp_status_title">Status</string>
+  <string name="ftp_port">Poort</string>
+  <string name="ftp_login">Inloggen</string>
+  <string name="field_empty">Veld mag niet leeg zijn</string>
+  <string name="ftp_seconds">Seconden</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">gekopieerd naar klembord</string>
+  <string name="contributors_1_summary">Vertaling</string>
   <string name="contributors_6_summary">FTP–Server</string>
+  <string name="contributors_7_summary">Interactieve shell starten</string>
 </resources>

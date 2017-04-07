@@ -542,12 +542,19 @@
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
   <string name="unknown_error">Oups, une erreur c\'est produite!</string>
+  <string name="ftp_path_change_error_invalid">Chemin invalide</string>
   <string name="ftp_status_no_connection">Aucune connexion</string>
   <string name="ftp_status_secure_connection">Connexion sécurisée</string>
+  <string name="ftp_status_title">État</string>
+  <string name="ftp_port">Port</string>
   <string name="ftp_login">S\'identifier</string>
   <string name="field_empty">Le champ ne peut pas être vide</string>
   <string name="ftp_timeout">Délai d\'inactivité</string>
   <string name="ftp_seconds">Secondes</string>
+  <string name="intellihide_toolbar_title">Masquer la barre d\'outils</string>
+  <string name="intellihide_toolbar_summary">Masque automatiquement la barre d\'outils lors du défilement</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">copié dans le presse-papier</string>
   <string name="contributors_6_summary">Serveur FTP</string>
 </resources>

@@ -530,5 +530,11 @@
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">複製到剪貼簿</string>
+  <string name="contributors_1_summary">翻譯</string>
+  <string name="contributors_2_summary">圖示和橫幅</string>
+  <string name="contributors_3_summary">主題引擎</string>
+  <string name="contributors_4_summary">FAB 後面陰影</string>
+  <string name="contributors_5_summary">當滑動分頁時的過渡顏色</string>
   <string name="contributors_6_summary">FTP 伺服器</string>
+  <string name="contributors_7_summary">啟動交互式 shell</string>
 </resources>

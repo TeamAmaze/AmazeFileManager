@@ -551,8 +551,13 @@
   <string name="ftp_path_hint">Путь к корневому каталогу для общего доступа</string>
   <string name="error_ftp_path_file">Путь не является каталогом</string>
   <string name="change">Изменить</string>
+  <string name="unknown_error">Упс! Что-то пошло не так!
+</string>
   <string name="ftp_path_change_success">FTP путь успешно изменен</string>
   <string name="ftp_path_change_error_invalid">Неверный путь</string>
+  <string name="ftp_port">Порт</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">скопировано в буфер обмена</string>
   <string name="contributors_6_summary">FTP сервер</string>
 </resources>
