@@ -235,20 +235,26 @@ public class HFile {
 
     public SmbFile getSmbFile(int timeout) {
         try {
-            SmbFile smbFile=new SmbFile(path);
+            SmbFile smbFile=new SmbFile(getSmbPath());
             smbFile.setConnectTimeout(timeout);
             return smbFile;
         } catch (MalformedURLException e) {
             return null;
         }
     }
+
     public SmbFile getSmbFile(){
         try {
-            return new SmbFile(path);
+            return new SmbFile(getSmbPath());
         } catch (MalformedURLException e) {
             return null;
         }
     }
+
+    private String getSmbPath() {
+        return path;
+    }
+
     public boolean isCustomPath(){
         if(path.equals("0") ||
                 path.equals("1") ||

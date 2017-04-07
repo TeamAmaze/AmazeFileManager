@@ -2761,14 +2761,15 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void addConnection(boolean edit, String name, String path, String oldname, String oldPath) {
+    public void addConnection(boolean edit, String name, String path, String encryptedPath,
+                              String oldname, String oldPath) {
         try {
             String[] s = new String[]{name, path};
             if (!edit) {
                 if ((DataUtils.containsServer(path)) == -1) {
-                    DataUtils.addServer(new String[]{name, path});
+                    DataUtils.addServer(s);
                     refreshDrawer();
-                    grid.addPath(name, path, DataUtils.SMB, 1);
+                    grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                     TabFragment fragment = getFragment();
                     if (fragment != null) {
                         Fragment fragment1 = fragment.getTab();
@@ -2778,7 +2779,7 @@ public class MainActivity extends BaseActivity implements
                         }
                     }
                 } else
-                    Snackbar.make(frameLayout, "Connection already exists", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             } else {
                 int i = -1;
                 if ((i = DataUtils.containsServer(new String[]{oldname, oldPath})) != -1) {
@@ -2788,7 +2789,7 @@ public class MainActivity extends BaseActivity implements
                 DataUtils.addServer(s);
                 Collections.sort(DataUtils.servers, new BookSorter());
                 mainActivity.refreshDrawer();
-                mainActivity.grid.addPath(s[0], s[1], DataUtils.SMB, 1);
+                mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
             }
         } catch (Exception e) {
             Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
