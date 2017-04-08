@@ -135,7 +135,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (getAppTheme().equals(AppTheme.DARK)) {
             getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
@@ -179,7 +179,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boolean colourednavigation = Sp.getBoolean("colorednavigation", true);
+            boolean colourednavigation = sharedPref.getBoolean("colorednavigation", true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

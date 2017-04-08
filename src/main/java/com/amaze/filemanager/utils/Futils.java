@@ -909,7 +909,7 @@ public class Futils {
     }
 
     public void openFile(final DocumentFile f, final MainActivity m) {
-        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
+        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
         try {
             openunknown(f, m, false);
         } catch (Exception e) {
@@ -932,7 +932,7 @@ public class Futils {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             m.startActivity(intent);
         }  else if (Icons.isAudio(f.getName())) {
-            final int studio_count = sharedPreferences.getInt("studio", 0);
+            final int studio_count = sharedPref.getInt("studio", 0);
             final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

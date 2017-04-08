@@ -1062,7 +1062,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     //floatingActionButton.show();
-                    MAIN_ACTIVITY.updatepaths(no);
+                    MAIN_ACTIVITY.updatePaths(no);
                     listView.stopScroll();
                     fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
                     mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {

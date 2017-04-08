@@ -530,7 +530,7 @@ public class ZipViewer extends Fragment {
         new RarHelperTask(this, path).execute(f);
     }
 
-    public boolean cangoBack() {
+    public boolean canGoBack() {
         if (openmode == 1) return cangoBackRar();
         if (current == null || current.trim().length() == 0)
             return false;

@@ -559,8 +559,8 @@ public class MainActivityHelper {
         }
 
         addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, BaseActivity.rootMode,
-                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
-                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
+                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
     }
 
     /**

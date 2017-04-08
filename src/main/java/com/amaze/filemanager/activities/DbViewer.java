@@ -102,7 +102,7 @@ public class DbViewer extends BaseActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         }else if(Build.VERSION.SDK_INT>=21){
-            boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
+            boolean colourednavigation= sharedPref.getBoolean("colorednavigation",true);
             Window window =getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
