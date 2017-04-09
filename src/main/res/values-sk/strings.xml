@@ -256,6 +256,10 @@
   <string name="xda_title">XDA vlákno</string>
   <string name="xda_summary">Q&amp;A, pomoc a riešenie problémov</string>
   <string name="invalid_dir">Neplatný adresár</string>
+  <string name="circularimages">Používať kruhové ikony pre obrázky a videá</string>
+  <string name="circularicons">Používať kruhové ikony</string>
+  <string name="back_title">Tlačidlo Späť</string>
+  <string name="back_summary">Tlačidlo Späť na začiatku zoznamu</string>
   <string name="details">Podrobnosti</string>
   <string name="translators">Prekladatelia</string>
   <string name="german_translation_title">Nemčina</string>
@@ -283,10 +287,10 @@
   <string name="warning">Upozornenie</string>
   <string name="donate">Podporte nás</string>
   <string name="archive_preferences">Nastavenia zálohovania</string>
-  <string name="archive_extract_folder">Adresár pre rozbaľovanie archívov</string>
-  <string name="zip_create_folder">Adresár pre vytváranie archívov</string>
-  <string name="archive_summary">Archívne súbory budú extrahované do tohoto adresára. Predvolená hodnota je adresár, v ktorom archív uložený</string>
-  <string name="zip_summary">Nové archívne súbory budú vytvorené v tomto adresári. Predvolená hodnota je adresár, v ktorom sú súbory uložené</string>
+  <string name="archive_extract_folder">Priečinok pre rozbaľovanie archívov</string>
+  <string name="zip_create_folder">Priečinok pre vytváranie archívov</string>
+  <string name="archive_summary">Archívne súbory budú extrahované do tohoto priečinku. Predvolená hodnota je priečinok, v ktorom archív uložený</string>
+  <string name="zip_summary">Nové archívne súbory budú vytvorené v tomto priečinku. Predvolená hodnota je priečinok, v ktorom sú súbory uložené</string>
   <string name="openas">Otvoriť ako</string>
   <string name="text">Text</string>
   <string name="audio">Zvuk</string>
@@ -295,7 +299,7 @@
   <string name="image">Obraz</string>
   <string name="contributors">Prispievatelia</string>
   <string name="savepaths">Zapamätať si cesty</string>
-  <string name="savepathsummary">Pri spúšťaní sa zobrazí naposledy zobrazený adresár pre každú kartu</string>
+  <string name="savepathsummary">Pri spúšťaní sa zobrazí naposledy zobrazený priečinok pre každú kartu</string>
   <string name="select_intent">Vybrať</string>
   <string name="md5copied">MD5 bol skopírovaný do schránky</string>
   <string name="generating">Generovanie...</string>
@@ -360,35 +364,211 @@
   <string name="defualt">Predvolený</string>
   <string name="doit">Vykonať</string>
   <string name="wanthelp"><u>Potrebujete pomoc?</u></string>
+  <string name="quick">Rýchly prístup</string>
   <string name="recent">Nedávne súbory</string>
   <string name="edit">Upraviť</string>
+  <string name="find">Nájsť na stránke</string>
+  <string name="grant">Povoliť</string>
+  <string name="grantper">Udeliť oprávnenie</string>
+  <string name="grantfailed">Oprávnenie nebolo udelené</string>
+  <string name="granttext">Aplikácia pre pokračovanie potrebuje udeliť povolenie k úložisku. Zrušením tohto dialógového okna sa aplikácia ukončí.</string>
+  <string name="grantgplus">Aplikácia potrebuje povolenie pre túto funkciu. Zrušením tohto dialógového okna nepovolíte túto funkciu.</string>
+  <string name="operationunsuccesful">Operácia neúspešná</string>
+  <string name="creatingfile">Vytvorenie súboru</string>
+  <string name="creatingfolder">Vytvorenie priečinka</string>
+  <string name="renaming">Premenovanie</string>
+  <string name="cantbeempty">%s nemôže byť prázdne</string>
+  <string name="ip">Adresa</string>
+  <string name="connectionname">Názov pripojenia</string>
+  <string name="nodevicefound">Nenašli sa žiadne zariadenia</string>
   <string name="path">Cesta</string>
+  <string name="renamebookmark">Upraviť záložku</string>
+  <string name="cut">Vystrihnúť</string>
   <string name="search">Hľadať</string>
+  <string name="invalid_name">Nesprávny názov</string>
+  <string name="search_hint">Zadajte text pre vyhľadávanie&#8230;</string>
+  <string name="advanced_search">Rozšírené vyhľadávanie</string>
+  <string name="regular_expression">Regulárny výraz</string>
+  <string name="regular_expression_summary">Vyhľadávanie pomocou regulárneho výrazu BASH</string>
+  <string name="match_content">Porovnať obsah</string>
+  <string name="match_content_summary">Ak nastavíte, regulárny výraz bude porovnaný s celým názvom súboru, inak sa zameria na počet výskytov.</string>
   <string name="start_ftp">Štart</string>
+  <string name="stop_ftp">Ukončiť</string>
+  <string name="ftp_status_running">Spustené</string>
+  <string name="ftp_status_not_running">Nebeží</string>
+  <string name="ftp_no_wifi">Skontrolujte, či ste pripojení k Wi-Fi</string>
+  <string name="domain">Doména</string>
+  <string name="invalid">Neplatné %s</string>
+  <string name="ftp_notif_starting">FTP Server sa spúšťa</string>
+  <string name="ftp_notif_title">Amaze FTP Server beží</string>
+  <string name="ftp_notif_text">na %s</string>
+  <string name="ftp_notif_stop_server">STOP</string>
+  <string name="ftp_port_edit_menu_title">FTP port</string>
+  <string name="ftp_port_change_success">FTP port bol úspešne zmenený</string>
+  <string name="ftp_port_change_error_invalid">Vybrané nesprávne číslo portu</string>
+  <string name="primary_two_title">Hlavná farba (pravá karta)</string>
+  <string name="primary_two_summary">Nastavte farbu pre veľké UI elementy pre pravú kartu</string>
+  <string name="g_plus">Google Plus</string>
+  <string name="support_development">Podporte vývoj</string>
+  <string name="report_bugs_title">Nahlásiť chyby</string>
+  <string name="report_bugs_summary">Nahlásiť chyby alebo požiadať o novú funkciu</string>
+  <string name="translate_title">Preložiť</string>
   <string name="translate_summary">Preložiť Amaze do vašho jazyka</string>
   <string name="g_plus_community_summary">Zúčastniť sa beta testovania a diskusií súvisiacich s rozvojom</string>
   <string name="easter_egg_title">Štúdiový režim</string>
   <string name="paypal_copy_message">Paypal id bol skopírovaný do schránky</string>
   <string name="searchingdevices">Vyhľadávajú sa zariadenia...</string>
   <string name="use_custom_ip">Použiť inú IP</string>
+  <string name="bookmark_lost">Záložka sa nenašla, obnovovanie&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Ako môžem získať prístup k zdieľanému priečinku Windows na platforme Android</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Povoliť zdieľanie súborov</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Otvorte Ovládací panel, kliknite na tlačidlo \"Vybrať domácu skupinu a možnosti zdieľania\", kliknite na tlačidlo \"Zmeniť rozšírené nastavenie zdieľania\" a prejdite na zdieľanie zložiek a tlačiarní.\n\n
+                    </p>
+
+                    <li>
+                        <b>Rozšírené nastavenia zdieľania</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Môžete tam nastaviť aj ďalšie pokročilé možnosti zdieľania.\nNapríklad, môžete povoliť prístup k súborom bez hesla, ak dôverujete všetkým zariadeniam v sieti. Akonáhle je zdieľanie súborov a tlačiarní zapnuté, otvorte Prieskumníka Windows alebo iného správcu súborov, kliknite pravým tlačidlom myši na priečinok, ktorý chcete zdieľať  a vyberte možnosť \"Vlastnosti\".\nKliknutím na tlačidlo Zdieľať  bude priečinok dostupný na sieti.\n\n
+                        </p>
+
+                    <li>
+                        <b>Uistite sa, že zariadenia sú v rovnakej WiFi sieti</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                       Vaše zariadenie Windows a Android musia byť na rovnakej sieti. Napríklad, že nemôžete mať prístup k priečinku systému Windows na systém Android, ak je vaše zariadenie Android pripojené na mobilný internet!\n\n
+                    </p>
+
+                    <li>
+                        <b>Vyhľadanie IP adresy</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Otvorte príkazový riadok. Zadajte \'ipconfig\' a stlačte Enter. Nájdite \"IPv4 adresu\" adaptéra, ktorým sú Windows a Android zariadenia pripojené k rovnakej sieti.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>    </string>
+  <string name="share_limit">Nemôžete zdieľať viac ako 100 súborov</string>
+  <string name="otg_access">Vyberte koreň OTG zariadenia</string>
+  <string name="no_profile_pic">Žiadny obrázok G+ profilu</string>
+  <string name="opening">Otváranie...</string>
   <string name="information">Informácie</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Posledný prístup</string>
   <!-- reference to file modified date -->
+  <string name="modified">Upravené</string>
   <string name="title">Názov</string>
+  <string name="artist">Interpret</string>
+  <string name="album">Album</string>
+  <string name="year">Rok</string>
   <string name="duration">Trvanie</string>
+  <string name="comment">Komentár</string>
   <!-- reference to audio/video file -->
+  <string name="container">Kontajner</string>
+  <string name="codec">Kodek</string>
+  <string name="channels">Kanály</string>
+  <string name="sample_rate">Vzorkovacia frekvencia</string>
+  <string name="bitrate">Dátový tok</string>
+  <string name="dimensions">Rozmery</string>
+  <string name="frame_rate">Snímkovacia frekvencia</string>
+  <string name="image_type">Typ obázku</string>
   <string name="width">Šírka</string>
   <string name="height">Výška</string>
+  <string name="date_modified">Dátum zmeny</string>
+  <string name="software">Softvér</string>
+  <string name="creator">Tvorca</string>
+  <string name="camera_brand">Fotoaparát značky</string>
+  <string name="camera_model">Model fotoaparátu</string>
+  <string name="date_taken">Dátum vytvorenia</string>
   <string name="exposure_time">Expozičný čas</string>
+  <string name="aperture_value">Hodnoty clony</string>
+  <string name="image_iso">Hodnoty ISO</string>
+  <string name="flash_fired">S bleskom</string>
   <string name="focal_length">Ohnisková vzdialenosť</string>
   <string name="document">Dokument</string>
+  <string name="subject">Predmet</string>
+  <string name="author">Autor</string>
+  <string name="keywords">Kľúčové slová</string>
+  <string name="producer">Producent</string>
+  <string name="created">Vytvorené</string>
+  <string name="format">Formát</string>
+  <string name="pages">Počet strán</string>
   <!-- reference to a document file -->
+  <string name="optimized">Optimalizované</string>
+  <string name="security">Zabezpečenie</string>
+  <string name="paper_size">Veľkosť papiera</string>
+  <string name="root_error">Chyba pri spúšťaní interaktívneho root shellu</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Niektoré súbory neboli úspešné %s</string>
+  <string name="copied">skopírované</string>
+  <string name="moved">presunuté</string>
+  <string name="process_chart_description">Priebeh</string>
+  <string name="copy_complete">Kopírovanie dokončené</string>
+  <string name="move_complete">Presúvanie dokončené</string>
+  <string name="waiting_title">Čakám</string>
+  <string name="waiting_content">Čaká sa na dokončenie operácie</string>
+  <string name="extract_complete">Extrakcia je dokončená</string>
+  <string name="compression_complete">Kompresia je dokončená</string>
+  <string name="compressing">Komprimácia</string>
+  <string name="cancelled">Zrušené</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Zapísané</string>
+  <string name="out_of">z</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">z</string>
+  <string name="processing_file">Spracúva sa súbor</string>
+  <string name="current_speed">Aktuálna rýchlosť</string>
+  <string name="smb_launch_error">Budete musieť skopírovať tento súbor na úložisko a otvoriť ho</string>
+  <string name="error_file_not_found">Chyba! Súbor sa nenašiel</string>
+  <string name="error_io">Vstupno-výstupná chyba</string>
+  <string name="error_root_not_permitted">Chyba: Root povolenie nebolo udelené</string>
+  <string name="medium_text">Stredný Text</string>
   <string name="tap_and_hold_tips">Dlho podržte na súbore alebo priečinku pre viac možností</string>
   <string name="permission_read">Prečítať</string>
+  <string name="permission_write">Zapísať</string>
+  <string name="permission_execute">Vykonať</string>
+  <string name="permission_owner">Vlastník</string>
+  <string name="permission_group">Skupina</string>
+  <string name="permission_other">Ostatné</string>
   <string name="clipboard_path_copy">Cesta bola skopírovaná do schránky</string>
+  <string name="error_busybox">Busybox nebol nájdený. Zatváranie interaktívneho shellu.</string>
+  <string name="service_timer">Uplynutý čas</string>
+  <string name="please_wait">Prosím čakajte</string>
+  <string name="no_applications">Žiadne aplikácie</string>
+  <string name="ftp_path">Zdieľaná cesta</string>
+  <string name="ftp_path_hint">Cesta do koreňového adresára na zdieľanie</string>
+  <string name="error_ftp_path_file">Cesta nie je adresár</string>
+  <string name="change">Zmeniť</string>
+  <string name="unknown_error">Ups, niečo sa pokazilo!</string>
+  <string name="ftp_path_change_success">FTP cesta bola úspešne zmenená</string>
+  <string name="ftp_path_change_error_invalid">Neplatná cesta</string>
+  <string name="ftp_status_no_connection">Žiadne pripojenie</string>
+  <string name="ftp_status_secure_connection">Zabezpečené pripojenie</string>
+  <string name="ftp_status_title">Stav</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Prihlásenie</string>
+  <string name="field_empty">Pole nemôže byť prázdne</string>
+  <string name="ftp_timeout">Časový limit nečinnosti</string>
+  <string name="ftp_seconds">Sekúnd</string>
+  <string name="intellihide_toolbar_title">Automatické skrývanie panela s nástrojmi</string>
+  <string name="intellihide_toolbar_summary">Automaticky skryť panel s nástrojmi počas posúvania</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">skopírované do schránky</string>
+  <string name="contributors_1_summary">Preklad</string>
+  <string name="contributors_2_summary">Ikony a bannery</string>
+  <string name="contributors_3_summary">Motor témy</string>
+  <string name="contributors_4_summary">Tieň za plávajúcimi tlačidlami FAB</string>
+  <string name="contributors_5_summary">Farebný prechod Keď potiahnete kartu</string>
   <string name="contributors_6_summary">FTP Server</string>
+  <string name="contributors_7_summary">Spustiť interaktívny shell</string>
 </resources>
