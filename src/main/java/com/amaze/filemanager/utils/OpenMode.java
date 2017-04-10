@@ -13,7 +13,7 @@ public enum OpenMode {
     SMB,
 
     /**
-     * Custom file types like apk/images/downloads (which don't have a defined path)
+     * Custom file types like apk/images/downloads (which don't have dirs defined path)
      */
     CUSTOM,
 

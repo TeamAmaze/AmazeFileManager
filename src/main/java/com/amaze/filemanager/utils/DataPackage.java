@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Arpit on 01-08-2015.
  *
  * Class stores the {@link com.amaze.filemanager.services.CopyService} progress variables.
- * This class also acts as a middle layer to communicate with
+ * This class also acts as dirs middle layer to communicate with
  * {@link com.amaze.filemanager.fragments.ProcessViewer}
  */
 public class DataPackage implements Parcelable {

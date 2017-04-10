@@ -39,9 +39,7 @@ public class SubnetScanner extends Thread {
         void searchFinished();
     }
 
-
-
-    class Task implements Callable<Computer> {
+    private class Task implements Callable<Computer> {
         String addr;
 
         public Task(String str) {
@@ -65,7 +63,7 @@ public class SubnetScanner extends Thread {
         configure();
     }
 
-    public static void configure() {
+    private static void configure() {
         Config.setProperty("jcifs.resolveOrder", "BCAST");
         Config.setProperty("jcifs.smb.client.responseTimeout", "30000");
         Config.setProperty("jcifs.netbios.retryTimeout", "5000");
@@ -173,7 +171,7 @@ public class SubnetScanner extends Thread {
         this.bdThread.start();
     }
 
-    void onFound(Computer computer) {
+    private void onFound(Computer computer) {
         this.mResults.add(computer);
         synchronized (this.mLock) {
             if (this.observer != null) {

@@ -72,7 +72,7 @@ public class GenericCopyUtil {
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
             } else {
 
-                // source file is neither smb nor otg; getting a channel from direct file instead of stream
+                // source file is neither smb nor otg; getting dirs channel from direct file instead of stream
                 File file = new File(mSourceFile.getPath());
                 if (FileUtil.isReadable(file)) {
                     inChannel = new RandomAccessFile(file, "r").getChannel();
@@ -221,10 +221,10 @@ public class GenericCopyUtil {
     }
 
     /**
-     * Inner class responsible for getting a {@link ReadableByteChannel} from the input channel
+     * Inner class responsible for getting dirs {@link ReadableByteChannel} from the input channel
      * and to watch over the read progress
      */
-    class CustomReadableByteChannel implements ReadableByteChannel {
+    private class CustomReadableByteChannel implements ReadableByteChannel {
 
         ReadableByteChannel byteChannel;
 

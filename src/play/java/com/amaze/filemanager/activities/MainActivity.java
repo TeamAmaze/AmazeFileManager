@@ -100,7 +100,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.FTPServerFragment;
-import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -159,11 +159,11 @@ public class MainActivity extends BaseActivity implements
         SearchAsyncHelper.HelperCallbacks {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
+    public static final String TAG_ASYNC_HELPER = "async_helper";
+
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
 
-    //TODO a lot of hardcoded integers, what do they mean?
-    public Integer select;
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
@@ -182,19 +182,10 @@ public class MainActivity extends BaseActivity implements
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
-    HistoryManager history, grid;
-    Futils utils;
 
-    MainActivity mainActivity = this;
     public DrawerAdapter adapter;
-    IconUtils util;
-    Context con = this;
     public MainActivityHelper mainActivityHelper;
-    String zippath;
-    FragmentTransaction pending_fragmentTransaction;
-    String pendingPath;
-    boolean openprocesses = false;
-    int hidemode;
+
     public int operation = -1;
     public ArrayList<BaseFile> oparrayList;
     public ArrayList<ArrayList<BaseFile>> oparrayListList;
@@ -204,6 +195,32 @@ public class MainActivity extends BaseActivity implements
     // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
     public ArrayList<String> oppatheList;
+    public RelativeLayout drawerHeaderParent;
+
+    // the current visible tab, either 0 or 1
+    public static int currentTab;
+
+    public static boolean isSearchViewEnabled = false;
+    public static Shell.Interactive shellInteractive;
+    public static Handler handler;
+
+    public MainFragment mainFragment;
+
+    public static final String KEY_PREF_OTG = "uri_usb_otg";
+    public static final String KEY_INTENT_PROCESS_VIEWER = "openProcesses";
+
+    static final int image_selector_request_code = 31;
+
+    HistoryManager history, grid;
+    Futils utils;
+    MainActivity mainActivity = this;
+    IconUtils util;
+    Context con = this;
+    String zippath;
+    FragmentTransaction pending_fragmentTransaction;
+    String pendingPath;
+    boolean openProcesses = false;
+    int hidemode;
     MaterialDialog materialDialog;
     String newPath = null;
     boolean backPressedToExitOnce = false;
@@ -222,8 +239,6 @@ public class MainActivity extends BaseActivity implements
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
-    public RelativeLayout drawerHeaderParent;
-    static final int image_selector_request_code = 31;
     // Check for user interaction for Google+ api only once
     boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
@@ -237,8 +252,9 @@ public class MainActivity extends BaseActivity implements
 
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
-    public static final String TAG_ASYNC_HELPER = "async_helper";
-    public Main mainFragment;
+
+    private static final int SELECT_MINUS_2 = -2, NO_VALUE = -1, SELECT_0 = 0, SELECT_102 = 102;
+    private int selectedStorage;
 
     private int TOOLBAR_START_INSET;
     private RelativeLayout searchViewLayout;
@@ -248,16 +264,7 @@ public class MainActivity extends BaseActivity implements
     private View fabBgView;
 
     private static final int REQUEST_CODE_SAF = 223;
-    public static final String KEY_PREF_OTG = "uri_usb_otg";
     private static final String VALUE_PREF_OTG_NULL = "n/a";
-    public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
-
-    // the current visible tab, either 0 or 1
-    public static int currentTab;
-
-    public static boolean isSearchViewEnabled = false;
-    public static Shell.Interactive shellInteractive;
-    public static Handler handler;
     private static HandlerThread handlerThread;
 
     /**
@@ -318,7 +325,7 @@ public class MainActivity extends BaseActivity implements
             }
         };
         path = getIntent().getStringExtra("path");
-        openprocesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
+        openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
             if (intent.getStringArrayListExtra("failedOps") != null) {
@@ -364,12 +371,12 @@ public class MainActivity extends BaseActivity implements
         }
 
         if (savedInstanceState == null) {
-            if (openprocesses) {
+            if (openProcesses) {
                 android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
-                //   transaction.addToBackStack(null);
-                select = 102;
-                openprocesses = false;
+                //transaction.addToBackStack(null);
+                selectedStorage = SELECT_102;
+                openProcesses = false;
                 //title.setText(utils.getString(con, R.string.process_viewer));
                 //Commit the transaction
                 transaction.commit();
@@ -382,7 +389,7 @@ public class MainActivity extends BaseActivity implements
                 transaction2.replace(R.id.content_frame, new FTPServerFragment());
                 findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
-                select = -2;
+                selectedStorage = SELECT_MINUS_2;
                 adapter.toggleChecked(false);
                 transaction2.commit();
             } else {
@@ -407,8 +414,8 @@ public class MainActivity extends BaseActivity implements
             oppathe1 = savedInstanceState.getString("oppathe1");
             oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
             operation = savedInstanceState.getInt("operation");
-            select = savedInstanceState.getInt("selectitem", 0);
-            adapter.toggleChecked(select);
+            selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
+            adapter.toggleChecked(selectedStorage);
             //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
         }
 
@@ -611,8 +618,8 @@ public class MainActivity extends BaseActivity implements
                 } else {
                     TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
                     Fragment fragment1 = tabFragment.getTab();
-                    Main main = (Main) fragment1;
-                    main.goBack();
+                    MainFragment mainFrag = (MainFragment) fragment1;
+                    mainFrag.goBack();
                 }
             } else if (name.contains("ZipViewer")) {
                 ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -811,7 +818,7 @@ public class MainActivity extends BaseActivity implements
         }
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
-        select = 0;
+        selectedStorage = SELECT_0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         setActionBarTitle(null);
@@ -829,7 +836,7 @@ public class MainActivity extends BaseActivity implements
     public void selectItem(final int i) {
         ArrayList<Item> directoryItems = DataUtils.getList();
         if (!directoryItems.get(i).isSection()) {
-            if ((select == null || select >= directoryItems.size())) {
+            if ((selectedStorage == NO_VALUE || selectedStorage >= directoryItems.size())) {
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
                 a.putString("path", ((EntryItem) directoryItems.get(i)).getPath());
@@ -841,8 +848,8 @@ public class MainActivity extends BaseActivity implements
 
                 transaction.addToBackStack("tabt1" + 1);
                 pending_fragmentTransaction = transaction;
-                select = i;
-                adapter.toggleChecked(select);
+                selectedStorage = i;
+                adapter.toggleChecked(selectedStorage);
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
                 floatingActionButton.setVisibility(View.VISIBLE);
@@ -850,8 +857,8 @@ public class MainActivity extends BaseActivity implements
             } else {
                 pendingPath = ((EntryItem) directoryItems.get(i)).getPath();
 
-                select = i;
-                adapter.toggleChecked(select);
+                selectedStorage = i;
+                adapter.toggleChecked(selectedStorage);
 
                 if (((EntryItem) directoryItems.get(i)).getPath().equals("otg:/") &&
                         sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
@@ -926,7 +933,7 @@ public class MainActivity extends BaseActivity implements
             }
             try {
                 TabFragment tabFragment = (TabFragment) fragment;
-                Main ma = ((Main) tabFragment.getTab());
+                MainFragment ma = ((MainFragment) tabFragment.getTab());
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
                 updatePath(ma.CURRENT_PATH, ma.results, ma.openMode, ma.folder_count, ma.file_count);
@@ -1021,11 +1028,11 @@ public class MainActivity extends BaseActivity implements
             return true;
         }
         // Handle action buttons
-        Main ma = null;
+        MainFragment ma = null;
         try {
             TabFragment tabFragment = getFragment();
             if (tabFragment != null)
-                ma = (Main) tabFragment.getTab();
+                ma = (MainFragment) tabFragment.getTab();
         } catch (Exception e) {}
 
         switch (item.getItemId()) {
@@ -1039,7 +1046,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
-                final Main main = ma;
+                final MainFragment main = ma;
                 if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.ROOT) {
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
@@ -1077,7 +1084,7 @@ public class MainActivity extends BaseActivity implements
                 builder.title(R.string.directorysort);
                 int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
 
-                final Main mainFrag = ma;
+                final MainFragment mainFrag = ma;
 
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
@@ -1228,7 +1235,7 @@ public class MainActivity extends BaseActivity implements
         oparrayList = savedInstanceState.getStringArrayList("oparrayList");
         opnameList=savedInstanceState.getStringArrayList("opnameList");
         operation = savedInstanceState.getInt("operation");
-        select = savedInstanceState.getInt("selectitem", 0);
+        selectedStorage = savedInstanceState.getInt("selectitem", 0);
     }*/
 
     @Override
@@ -1248,8 +1255,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (select != null)
-            outState.putInt("selectitem", select);
+        if (selectedStorage != NO_VALUE)
+            outState.putInt("selectitem", selectedStorage);
         if (COPY_PATH != null)
             outState.putParcelableArrayList("COPY_PATH", COPY_PATH);
         if (MOVE_PATH != null)
@@ -1693,21 +1700,21 @@ public class MainActivity extends BaseActivity implements
                         oppathe = "";
                     }
 
-                    new MoveFiles(oparrayListList, ((Main) getFragment().getTab()),
-                            ((Main) getFragment().getTab()).getActivity(), OpenMode.FILE)
+                    new MoveFiles(oparrayListList, ((MainFragment) getFragment().getTab()),
+                            ((MainFragment) getFragment().getTab()).getActivity(), OpenMode.FILE)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
-                    Main ma1 = ((Main) getFragment().getTab());
+                    MainFragment ma1 = ((MainFragment) getFragment().getTab());
                     mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), ma1);
                     break;
                 case DataUtils.RENAME:
-                    Main ma2 = ((Main) getFragment().getTab());
+                    MainFragment ma2 = ((MainFragment) getFragment().getTab());
                     mainActivityHelper.rename(ma2.openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
                     ma2.updateList();
                     break;
                 case DataUtils.NEW_FILE:
-                    Main ma3 = ((Main) getFragment().getTab());
+                    MainFragment ma3 = ((MainFragment) getFragment().getTab());
                     mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), ma3);
 
                     break;
@@ -1730,8 +1737,8 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void bbar(final Main main) {
-        final String path = main.CURRENT_PATH;
+    public void bbar(final MainFragment mainFrag) {
+        final String path = mainFrag.CURRENT_PATH;
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
@@ -1766,7 +1773,7 @@ public class MainActivity extends BaseActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist(("/"), false, main.openMode);
+                            mainFrag.loadlist(("/"), false, mainFrag.openMode);
                             timer.cancel();
                             timer.start();
                         }
@@ -1782,7 +1789,7 @@ public class MainActivity extends BaseActivity implements
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false, main.openMode);
+                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
                             timer.cancel();
                             timer.start();
                         }
@@ -1801,8 +1808,8 @@ public class MainActivity extends BaseActivity implements
                     b.setOnClickListener(new Button.OnClickListener() {
 
                         public void onClick(View p1) {
-                            main.loadlist((rpaths.get(k)), false, main.openMode);
-                            main.loadlist((rpaths.get(k)), false, main.openMode);
+                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
+                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
                             timer.cancel();
                             timer.start();
                         }
@@ -1988,7 +1995,7 @@ public class MainActivity extends BaseActivity implements
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                select = -2;
+                selectedStorage = SELECT_MINUS_2;
                 adapter.toggleChecked(false);
             }
         });
@@ -2009,7 +2016,7 @@ public class MainActivity extends BaseActivity implements
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
-                select = -2;
+                selectedStorage = SELECT_MINUS_2;
                 adapter.toggleChecked(false);
             }
         });
@@ -2408,7 +2415,7 @@ public class MainActivity extends BaseActivity implements
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Main m = ((Main) getFragment().getTab());
+                MainFragment m = ((MainFragment) getFragment().getTab());
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons, pathbar);
@@ -2420,7 +2427,7 @@ public class MainActivity extends BaseActivity implements
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Main m = ((Main) getFragment().getTab());
+                MainFragment m = ((MainFragment) getFragment().getTab());
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons, pathbar);
@@ -2484,10 +2491,10 @@ public class MainActivity extends BaseActivity implements
                     goToMain(pendingPath);
                     return;
                 }
-                Main main = ((Main) m.getTab());
-                if (main != null) main.loadlist(pendingPath, false, OpenMode.UNKNOWN);
+                MainFragment mainFrag = ((MainFragment) m.getTab());
+                if (mainFrag != null) mainFrag.loadlist(pendingPath, false, OpenMode.UNKNOWN);
             } catch (ClassCastException e) {
-                select = null;
+                selectedStorage = NO_VALUE;
                 goToMain("");
             }
             pendingPath = null;
@@ -2505,7 +2512,7 @@ public class MainActivity extends BaseActivity implements
             if (new File(path).isDirectory()) {
                 Fragment f = getDFragment();
                 if ((f.getClass().getName().contains("TabFragment"))) {
-                    Main m = ((Main) getFragment().getTab());
+                    MainFragment m = ((MainFragment) getFragment().getTab());
                     m.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
@@ -2514,12 +2521,12 @@ public class MainActivity extends BaseActivity implements
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
-        } else if ((openprocesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
+        } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
-            select = 102;
-            openprocesses = false;
+            selectedStorage = SELECT_102;
+            openProcesses = false;
             //title.setText(utils.getString(con, R.string.process_viewer));
             //Commit the transaction
             transaction.commitAllowingStateLoss();
@@ -2616,10 +2623,10 @@ public class MainActivity extends BaseActivity implements
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getTab(0);
                         if (main != null)
-                            ((Main) main).updateTabWithDb(tabHandler.findTab(1));
+                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                         Fragment main1 = tabFragment.getTab(1);
                         if (main1 != null)
-                            ((Main) main1).updateTabWithDb(tabHandler.findTab(2));
+                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
                     sharedPref.edit().putBoolean("needtosethome", false).commit();
                 } else {
@@ -2627,10 +2634,10 @@ public class MainActivity extends BaseActivity implements
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getTab(0);
                         if (main != null)
-                            ((Main) main).updateList();
+                            ((MainFragment) main).updateList();
                         Fragment main1 = tabFragment.getTab(1);
                         if (main1 != null)
-                            ((Main) main1).updateList();
+                            ((MainFragment) main1).updateList();
                     }
                 }
             } else {
@@ -2668,7 +2675,7 @@ public class MainActivity extends BaseActivity implements
                     if (fragment != null) {
                         Fragment fragment1 = fragment.getTab();
                         if (fragment1 != null) {
-                            final Main ma = (Main) fragment1;
+                            final MainFragment ma = (MainFragment) fragment1;
                             ma.loadlist(path, false, OpenMode.UNKNOWN);
                         }
                     }
@@ -2693,8 +2700,8 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void deleteConnection(String name, String path) {
-        int i = -1;
-        if ((i = DataUtils.containsServer(new String[]{name, path})) != -1) {
+        int i = DataUtils.containsServer(new String[]{name, path});
+        if (i != -1) {
             DataUtils.removeServer(i);
             grid.removePath(name, path, DataUtils.SMB);
             refreshDrawer();
@@ -2749,20 +2756,17 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onPostExecute() {
-
         mainFragment.onSearchCompleted();
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onProgressUpdate(BaseFile val) {
-
         mainFragment.addSearchResult(val);
     }
 
     @Override
     public void onCancelled() {
-
         mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);

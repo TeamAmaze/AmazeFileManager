@@ -107,7 +107,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +
@@ -135,7 +135,7 @@ public class PreferenceUtils {
             "&nbsp;*<br>" +
             "&nbsp;* Copyright (c) 2014 Pkmmte Xeleon<br>" +
             "&nbsp;*<br>" +
-            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining dirs copy<br>" +
             "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
             "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
             "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
@@ -161,7 +161,7 @@ public class PreferenceUtils {
             "&nbsp;*<br>" +
             "&nbsp;* Copyright (c) 2014 Oleksandr Melnykov<br>" +
             "&nbsp;*<br>" +
-            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining dirs copy<br>" +
             "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
             "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
             "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
@@ -187,7 +187,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +
@@ -206,7 +206,7 @@ public class PreferenceUtils {
             "&nbsp;*<br>" +
             "&nbsp;* Copyright (c) 2014 Aidan Michael Follestad<br>" +
             "&nbsp;*<br>" +
-            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining a copy<br>" +
+            "&nbsp;* Permission is hereby granted, free of charge, to any person obtaining dirs copy<br>" +
             "&nbsp;* of this software and associated documentation files (the \"Software\"), to deal<br>" +
             "&nbsp;* in the Software without restriction, including without limitation the rights<br>" +
             "&nbsp;* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>" +
@@ -243,7 +243,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +
@@ -262,7 +262,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +
@@ -289,7 +289,7 @@ public class PreferenceUtils {
             "&nbsp;* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU<br>" +
             "&nbsp;* Lesser General Public License for more details.<br>" +
             "&nbsp;* <br>" +
-            "&nbsp;* You should have received a copy of the GNU Lesser General Public<br>" +
+            "&nbsp;* You should have received dirs copy of the GNU Lesser General Public<br>" +
             "&nbsp;* License along with this library; if not, write to the Free Software<br>" +
             "&nbsp;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA<br>" +
             "&nbsp;*/ " +
@@ -302,7 +302,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +
@@ -321,7 +321,7 @@ public class PreferenceUtils {
             "&nbsp;* <br>" +
             "&nbsp;* Licensed under the Apache License, Version 2.0 (the \"License\");<br>" +
             "&nbsp;* you may not use this file except in compliance with the License.<br>" +
-            "&nbsp;* You may obtain a copy of the License at<br>" +
+            "&nbsp;* You may obtain dirs copy of the License at<br>" +
             "&nbsp;* <br>" +
             "&nbsp;* &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>" +
             "&nbsp;* <br>" +

@@ -1,12 +1,12 @@
 package com.amaze.filemanager.utils;
 
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Created by arpitkh996 on 16-01-2016.
- */public class Computer implements Parcelable {
+ */
+public class Computer implements Parcelable {
 
     public String addr;
     public String name;
@@ -29,7 +29,7 @@ import android.os.Parcelable;
     };
 
     public String toString() {
-        return String.format("%s [%s]", new Object[]{this.name, this.addr});
+        return String.format("%s [%s]", this.name, this.addr);
     }
 
     public int describeContents() {
@@ -42,13 +42,9 @@ import android.os.Parcelable;
     }
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof Computer)) {
-            return false;
-        }
-        if (this == obj || (this.name.equals(((Computer) obj).name) && this.addr.equals(((Computer) obj).addr))) {
-            return true;
-        }
-        return false;
+        return obj instanceof Computer
+                && (this == obj || (this.name.equals(((Computer) obj).name)
+                && this.addr.equals(((Computer) obj).addr)));
     }
 
     public int hashCode() {

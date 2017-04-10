@@ -39,11 +39,10 @@ import com.amaze.filemanager.utils.Futils;
 import java.util.ArrayList;
 
 public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
-    ArrayList<BaseFile> files;
-    ContentResolver contentResolver;
-    Context cd;
-    boolean rootMode;
-    ZipViewer zipViewer;
+    private ArrayList<BaseFile> files;
+    private Context cd;
+    private boolean rootMode;
+    private ZipViewer zipViewer;
 
     public DeleteTask(ContentResolver c, Context cd) {
         this.cd = cd;
@@ -111,7 +110,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         }
     }
 
-    void delete(final Context context, final String file) {
+    private void delete(final Context context, final String file) {
         final String where = MediaStore.MediaColumns.DATA + "=?";
         final String[] selectionArgs = new String[] {
                 file

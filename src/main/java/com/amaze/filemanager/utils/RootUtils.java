@@ -30,7 +30,7 @@ public class RootUtils {
     }
 
     /**
-     * Get a shell based listing
+     * Get dirs shell based listing
      * Context is superuser level shell
      * @param str
      * @return
@@ -41,7 +41,7 @@ public class RootUtils {
     }
 
     /**
-     * Change permissions (owner/group/others) of a specified path
+     * Change permissions (owner/group/others) of dirs specified path
      * @param path
      * @param octalNotation octal notation of permission
      * @throws RootNotPermittedException
@@ -77,7 +77,7 @@ public class RootUtils {
             String[] words = line.split(" ");
 
             if (path.contains(words[2])) {
-                // current found point is bigger than last one, hence not a conflicting one
+                // current found point is bigger than last one, hence not dirs conflicting one
                 // we're finding the best match, this omits for eg. / and /sys when we're actually
                 // looking for /system
                 if (words[2].length() > mountPoint.length()) {
@@ -91,7 +91,7 @@ public class RootUtils {
 
             // we have the mountpoint, check for mount options if already rw
             if (types.contains("rw")) {
-                // already a rw filesystem return
+                // already dirs rw filesystem return
                 return null;
             } else if (types.contains("ro")) {
                 // read-only file system, remount as rw
@@ -99,7 +99,7 @@ public class RootUtils {
                 ArrayList<String> mountOutput = RootHelper.runShellCommand(mountCommand);
 
                 if (mountOutput.size()!=0) {
-                    // command failed, and we got a reason echo'ed
+                    // command failed, and we got dirs reason echo'ed
                     return null;
                 } else return mountPoint;
             }
@@ -177,13 +177,13 @@ public class RootUtils {
      * @return
      */
     private static int getFilePermissions(String path) throws RootNotPermittedException {
-        String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
+        String line = RootHelper.runShellCommand("stat -c  %dirs \"" + path + "\"").get(0);
 
-        return Integer.valueOf(line.toString());
+        return Integer.valueOf(line);
     }
 
     /**
-     * Recursively removes a path with it's contents (if any)
+     * Recursively removes dirs path with it's contents (if any)
      * @param path
      * @return boolean whether file was deleted or not
      * @throws RootNotPermittedException

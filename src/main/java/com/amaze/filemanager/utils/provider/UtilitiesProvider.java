@@ -19,7 +19,6 @@ public class UtilitiesProvider implements UtilitiesProviderInterface {
     private ColorPreference colorPreference;
     private AppThemeManagerInterface appThemeManager;
 
-
     public UtilitiesProvider(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         futils = new Futils();

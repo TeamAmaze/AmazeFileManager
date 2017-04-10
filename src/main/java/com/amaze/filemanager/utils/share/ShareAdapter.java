@@ -16,25 +16,21 @@ import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 
 import java.util.ArrayList;
 
-import static java.security.AccessController.getContext;
-
 /**
  * Created by Arpit on 01-07-2015.
  */
 
-public class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder> {
+class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder> {
     private MaterialDialog dialog;
     private ArrayList<String> labels;
     private ArrayList<Drawable> drawables;
     private Context context;
 
-    public void updateMatDialog(MaterialDialog b) {
+    void updateMatDialog(MaterialDialog b) {
         this.dialog = b;
     }
 
-    public ShareAdapter(Context context,
-                        ArrayList<Intent> intents,
-                        ArrayList<String> labels,
+    ShareAdapter(Context context, ArrayList<Intent> intents, ArrayList<String> labels,
                         ArrayList<Drawable> arrayList1) {
         addAll(intents);
         this.context = context;
@@ -57,23 +53,23 @@ public class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
         private View rootView;
 
-        private TextView a;
-        private ImageView v;
+        private TextView textView;
+        private ImageView imageView;
 
         ViewHolder(View view) {
             super(view);
 
             rootView = view;
 
-            a = ((TextView) view.findViewById(R.id.firstline));
-            v = (ImageView) view.findViewById(R.id.icon);
+            textView = ((TextView) view.findViewById(R.id.firstline));
+            imageView = (ImageView) view.findViewById(R.id.icon);
         }
 
         void render(final int position) {
             if (drawables.get(position) != null)
-                v.setImageDrawable(drawables.get(position));
-            a.setVisibility(View.VISIBLE);
-            a.setText(labels.get(position));
+                imageView.setImageDrawable(drawables.get(position));
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(labels.get(position));
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

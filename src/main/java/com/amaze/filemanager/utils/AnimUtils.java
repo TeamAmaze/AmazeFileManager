@@ -19,7 +19,6 @@ package com.amaze.filemanager.utils;
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
-import android.transition.Transition;
 import android.util.ArrayMap;
 import android.util.Property;
 import android.view.animation.AnimationUtils;
@@ -31,9 +30,6 @@ import java.util.ArrayList;
  * Utility methods for working with animations.
  */
 public class AnimUtils {
-
-    private AnimUtils() {
-    }
 
     private static Interpolator fastOutSlowIn;
     private static Interpolator fastOutLinearIn;
@@ -64,7 +60,7 @@ public class AnimUtils {
     }
 
     /**
-     * Linear interpolate between a and b with parameter t.
+     * Linear interpolate between dirs and b with parameter t.
      */
     public static float lerp(float a, float b, float t) {
         return a + (b - a) * t;
@@ -75,7 +71,7 @@ public class AnimUtils {
      * An implementation of {@link android.util.Property} to be used specifically with fields of
      * type
      * <code>float</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to a {@link #set(Object, Float) set()} function that takes the primitive
+     * calls to dirs {@link #set(Object, Float) set()} function that takes the primitive
      * <code>float</code> type and avoids autoboxing and other overhead associated with the
      * <code>Float</code> class.
      *
@@ -102,7 +98,7 @@ public class AnimUtils {
      * An implementation of {@link android.util.Property} to be used specifically with fields of
      * type
      * <code>int</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to a {@link #set(Object, Integer) set()} function that takes the primitive
+     * calls to dirs {@link #set(Object, Integer) set()} function that takes the primitive
      * <code>int</code> type and avoids autoboxing and other overhead associated with the
      * <code>Integer</code> class.
      *
@@ -124,7 +120,6 @@ public class AnimUtils {
         final public void set(T object, Integer value) {
             setValue(object, value.intValue());
         }
-
     }
 
     /**
@@ -135,8 +130,7 @@ public class AnimUtils {
      */
     public static class NoPauseAnimator extends Animator {
         private final Animator mAnimator;
-        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners =
-                new ArrayMap<AnimatorListener, AnimatorListener>();
+        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners = new ArrayMap<>();
 
         public NoPauseAnimator(Animator animator) {
             mAnimator = animator;
@@ -256,7 +250,7 @@ public class AnimUtils {
         }
     }
 
-    static class AnimatorListenerWrapper implements Animator.AnimatorListener {
+    private static class AnimatorListenerWrapper implements Animator.AnimatorListener {
         private final Animator mAnimator;
         private final Animator.AnimatorListener mListener;
 
@@ -283,34 +277,6 @@ public class AnimUtils {
         @Override
         public void onAnimationRepeat(Animator animator) {
             mListener.onAnimationRepeat(mAnimator);
-        }
-    }
-
-    public static class TransitionListenerAdapter implements Transition.TransitionListener {
-
-        @Override
-        public void onTransitionStart(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionEnd(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionCancel(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionPause(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionResume(Transition transition) {
-
         }
     }
 

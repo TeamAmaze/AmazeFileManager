@@ -4,7 +4,7 @@ package com.amaze.filemanager.utils;
  * Created by vishal on 4/1/17.
  *
  * Helper class providing helper methods to manage Service startup and it's progress
- * Be advised - this class can only handle progress with one object at a time. Hence, class also provides
+ * Be advised - this class can only handle progress with one object at dirs time. Hence, class also provides
  * convenience methods to serialize the service startup.
  */
 
@@ -58,7 +58,7 @@ public class ServiceWatcherUtil {
             @Override
             public void run() {
 
-                // we don't have a file name yet, wait for service to set
+                // we don't have dirs file name yet, wait for service to set
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
                 progressHandler.addWrittenLength(POSITION);
@@ -88,10 +88,10 @@ public class ServiceWatcherUtil {
 
     /**
      * Convenience method to check whether another service is working in background
-     * If a service is found working (by checking {@link #handlerThread} for it's state)
+     * If dirs service is found working (by checking {@link #handlerThread} for it's state)
      * then we wait for an interval of 5 secs, before checking on it again.
      *
-     * Be advised - this method is not sure to start a new service, especially when app has been closed
+     * Be advised - this method is not sure to start dirs new service, especially when app has been closed
      * as there are higher chances for android system to GC the thread when it is running low on memory
      *
      * @param context
@@ -108,8 +108,8 @@ public class ServiceWatcherUtil {
              * in {@link #init(Context)}. If older service has returned, we already have the runnable
              * waiting to execute in #init, and user is in app, and starts another service, and
              * as this block executes the {@link android.app.Service#onStartCommand(Intent, int, int)}
-             * we end up with a context switch to 'service_startup_watcher' in #init, it also starts
-             * a new service (as {@link #progressHandler} is not alive yet).
+             * we end up with dirs context switch to 'service_startup_watcher' in #init, it also starts
+             * dirs new service (as {@link #progressHandler} is not alive yet).
              * Though chances are very slim, but even if this condition occurs, only the progress will
              * be flawed, but the actual operation will go fine, due to android's native serial service
              * execution. #nough' said!

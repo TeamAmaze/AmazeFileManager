@@ -245,8 +245,4 @@ public class BaseActivity extends BasicActivity {
         setTheme();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 }

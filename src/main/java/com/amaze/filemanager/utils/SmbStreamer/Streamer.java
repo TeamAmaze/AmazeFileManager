@@ -17,7 +17,7 @@ public class Streamer extends StreamServer {
     public static final int PORT = 7871;
     public static final String URL = "http://127.0.0.1:" + PORT;
     private SmbFile file;
-    long length=0;
+    long length = 0;
     //protected List<SmbFile> extras; //those can be subtitles
     // private InputStream stream;
     // private long length;
@@ -48,7 +48,7 @@ public class Streamer extends StreamServer {
     public void setStreamSrc(SmbFile file, long len) {
         this.file = file;
         //this.extras = extraFiles;
-        this.length=len;
+        this.length = len;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Streamer extends StreamServer {
         try {
             SmbFile sourceFile = null;
             String name = getNameFromPath(uri);
-            if(file!=null && file.getName().equals(name))
+            if (file != null && file.getName().equals(name))
                 sourceFile = file;
             /*else if(extras!=null){
                 for(SmbFile i : extras){
@@ -67,8 +67,8 @@ public class Streamer extends StreamServer {
                     }
                 }
             }*/
-            if (sourceFile==null)
-                res= new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, null);
+            if (sourceFile == null)
+                res = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, null);
             else {
 
                 long startFrom = 0;
@@ -92,7 +92,7 @@ public class Streamer extends StreamServer {
                 // Change return code and add Content-Range header when skipping
                 // is requested
                 //source.open();
-                final StreamSource source = new StreamSource(sourceFile,length);
+                final StreamSource source = new StreamSource(sourceFile, length);
                 long fileLen = source.length();
                 if (range != null && startFrom > 0) {
                     if (startFrom >= fileLen) {
@@ -129,14 +129,14 @@ public class Streamer extends StreamServer {
         return res;
     }
 
-    public static String getNameFromPath(String path){
-        if(path == null || path.length() <2)
+    private static String getNameFromPath(String path) {
+        if (path == null || path.length() < 2)
             return null;
         int slash = path.lastIndexOf('/');
-        if(slash == -1)
+        if (slash == -1)
             return path;
         else
-            return path.substring(slash+1);
+            return path.substring(slash + 1);
     }
 
 }

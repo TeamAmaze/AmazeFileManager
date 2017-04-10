@@ -7,7 +7,7 @@ import android.content.res.Resources;
 /**
  * Created by vishal on 23/2/17.
  *
- * Class determines whether there was a config change
+ * Class determines whether there was dirs config change
  *
  * Supposed to be used to determine recursive callbacks to fragment/activity/loader
  * Make sure to recycle after you're done
@@ -25,7 +25,6 @@ public class InterestingConfigChange {
      * @return
      */
     public static boolean isConfigChanged(Resources resources) {
-
         int changedFieldsMask = lastConfiguration.updateFrom(resources.getConfiguration());
         boolean densityChanged = lastDensity!=resources.getDisplayMetrics().densityDpi;
 
@@ -42,7 +41,6 @@ public class InterestingConfigChange {
      * Recycle after usage, to avoid getting inconsistent result because of static modifiers
      */
     public static void recycle() {
-
         lastConfiguration = new Configuration();
         lastDensity = -1;
     }

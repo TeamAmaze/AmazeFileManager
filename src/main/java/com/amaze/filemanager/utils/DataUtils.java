@@ -12,6 +12,7 @@ import java.util.List;
 
 //Central data being used across activity,fragments and classes
 public class DataUtils {
+
     public static ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
             listfiles = new ArrayList<>(), history = new ArrayList<>();
     public static List<String> storages = new ArrayList<>();

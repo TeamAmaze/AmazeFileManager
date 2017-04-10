@@ -3,6 +3,9 @@ package com.amaze.filemanager.utils.SmbStreamer;
 /**
  * Created by Arpit on 06-07-2015.
  */
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,9 +26,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
-
-import android.net.Uri;
-import android.util.Log;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
@@ -70,8 +70,7 @@ import android.util.Log;
  * See the end of the source file for distribution license
  * (Modified BSD licence)
  */
-public abstract class StreamServer
-{
+public abstract class StreamServer {
     // ==================================================
     // API parts
     // ==================================================
