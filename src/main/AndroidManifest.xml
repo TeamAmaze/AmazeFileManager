@@ -31,17 +31,17 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-sdk 
-        android:minSdkVersion="14" 
+    <uses-sdk
+        android:minSdkVersion="14"
         android:targetSdkVersion="25" />
-        
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
     <application
         android:name=".utils.AppConfig"
         android:icon="@mipmap/ic_launcher"
-	android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
         android:label="Amaze">
 
@@ -76,21 +76,21 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
         </activity>
-		<activity
-			android:uiOptions="splitActionBarWhenNarrow"
+        <activity
+            android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"
-            android:name=".activities.Preferences" 
-			android:theme="@style/appCompatLight">
-	    <intent-filter>
+            android:name=".activities.Preferences"
+            android:theme="@style/appCompatLight">
+            <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-           
+
         </activity>
-		<activity
+        <activity
             android:label="@string/textreader"
             android:name=".activities.TextReader"
-			android:theme="@style/appCompatLight">
+            android:theme="@style/appCompatLight">
             <intent-filter
                 android:label="Amaze Text Editor">
                 <action android:name="android.intent.action.VIEW"/>
@@ -119,20 +119,23 @@
             />
 
         <service
-			android:name = ".services.ExtractService"
-			android:label = "Extracting"
-			>	
-		</service>
+            android:name = ".services.ExtractService"
+            android:label = "Extracting"
+            >
+        </service>
         <service
-			android:name = ".services.ZipTask"
-			android:label = "Compressing"
+            android:name = ".services.ZipTask"
+            android:label = "Compressing"
             >
-		</service>
-			<service
-			android:name = ".services.CopyService"
-			android:label = "Copying"
+        </service>
+        <service
+            android:name = ".services.CopyService"
+            android:label = "Copying"
             >
-		</service>
+        </service>
+        <service android:name=".services.EncryptService"
+            android:label="@string/crypt_encrypting"
+            />
 
         <service
             android:name="com.amaze.filemanager.services.ftpservice.FTPService"

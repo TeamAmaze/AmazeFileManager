@@ -84,6 +84,7 @@ public class CopyService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         c = getApplicationContext();
 
         registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
@@ -124,25 +125,6 @@ public class CopyService extends Service {
         return START_STICKY;
     }
 
-    long getTotalBytes(final ArrayList<BaseFile> files) {
-        long totalBytes = 0l;
-        try {
-            for (int i = 0; i < files.size(); i++) {
-                HFile f1 = (files.get(i));
-                if (f1.isDirectory()) {
-                    totalBytes = totalBytes + f1.folderSize();
-                } else {
-                    totalBytes = totalBytes + f1.length();
-                }
-            }
-        } catch (Exception e) {
-            // skip for now
-            e.printStackTrace();
-        }
-
-        return totalBytes;
-    }
-
     /**
      * Helper method to calculate source files size in an otg device
      * @param files
@@ -152,7 +134,7 @@ public class CopyService extends Service {
     long getTotalBytes(ArrayList<BaseFile> files, Context context) {
         long totalBytes = 0;
         for (BaseFile file : files) {
-            if (file.isDirectory()) totalBytes += file.folderSize(context);
+            if (file.isDirectory(context)) totalBytes += file.folderSize(context);
             else totalBytes += file.length(context);
         }
         return totalBytes;
@@ -176,8 +158,8 @@ public class CopyService extends Service {
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalSize = sourceFiles.get(0).getMode()==OpenMode.OTG ?
-                    getTotalBytes(sourceFiles, getApplicationContext()) : getTotalBytes(sourceFiles);
+            totalSize = getTotalBytes(sourceFiles, c);
+
             totalSourceFiles = sourceFiles.size();
             progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
@@ -215,6 +197,7 @@ public class CopyService extends Service {
         @Override
         public void onPostExecute(Integer b) {
 
+            super.onPostExecute(b);
             //  publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
             // stopping watcher if not yet finished
             watcherUtil.stopWatch();
@@ -234,37 +217,6 @@ public class CopyService extends Service {
             }
 
             /**
-             * Checks whether the target path exists or is writable
-             * @param f the target path
-             * @param context
-             * @return 1 if exists or writable, 0 if not writable
-             */
-            public int checkFolder(final String f,Context context) {
-                if(f==null)return 0;
-                if(f.startsWith("smb://") || f.startsWith("otg:")) return 1;
-                File folder=new File(f);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
-                    if (!folder.exists() || !folder.isDirectory()) {
-                        return 0;
-                    }
-
-                    // On Android 5, trigger storage access framework.
-                    if (FileUtil.isWritableNormalOrSaf(folder, context)) {
-                        return 1;
-
-                    }
-                } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
-                    // Assume that Kitkat workaround works
-                    return 1;
-                } else if (folder.canWrite()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-                return 0;
-            }
-
-            /**
              * Method iterate through files to be copied
              * @param id
              * @param sourceFiles
@@ -278,7 +230,7 @@ public class CopyService extends Service {
                 // initial start of copy, initiate the watcher
                 watcherUtil.watch();
 
-                if (checkFolder((targetPath), c) == 1) {
+                if (FileUtil.checkFolder((targetPath), c) == 1) {
 
                     for (int i = 0; i < sourceFiles.size(); i++) {
 
@@ -425,7 +377,7 @@ public class CopyService extends Service {
         progressHandler.setCancelled(true);
 
         Intent intent= new Intent(this, MainActivity.class);
-        intent.putExtra("failedOps",failedOps);
+        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS,failedOps);
         intent.putExtra("move",move);
 
         PendingIntent pIntent = PendingIntent.getActivity(this, 101, intent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -435,8 +387,8 @@ public class CopyService extends Service {
 
         mNotifyManager.notify(741,mBuilder.build());
 
-        intent=new Intent("general_communications");
-        intent.putExtra("failedOps", failedOps);
+        intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
+        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
         intent.putExtra(TAG_COPY_MOVE, move);
 
         sendBroadcast(intent);

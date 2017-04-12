@@ -1,5 +1,6 @@
 package com.amaze.filemanager.filesystem;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -71,6 +72,10 @@ public class BaseFile extends HFile implements Parcelable {
         this.size = size;
     }
 
+    /**
+     * @deprecated use {@link #isDirectory(Context)}
+     * @return
+     */
     public boolean isDirectory() {
         return isDirectory;
     }

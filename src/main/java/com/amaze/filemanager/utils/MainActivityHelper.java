@@ -56,11 +56,11 @@ public class MainActivityHelper {
     }
     public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc){
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
-        mat.title("Operation Unsuccessful");
+        mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
-        String content="Following files were not "+(move?"moved":"copied")+" successfully";
+        String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
         for(BaseFile s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();

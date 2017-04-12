@@ -25,6 +25,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.amaze.filemanager.utils.CryptUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +49,11 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String COLUMN_ENCRYPTED_PATH = "path";
     private static final String COLUMN_ENCRYPTED_PASSWORD = "password";
 
+    private Context context;
+
     public TabHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -155,7 +160,9 @@ public class TabHandler extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
             contentValues.put(COLUMN_ENCRYPTED_PATH, encryptedEntry.getPath());
-            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, encryptedEntry.getPassword());
+            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
+                    encryptedEntry.getPassword()));
+
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             sqLiteDatabase.insert(TABLE_ENCRYPTED, null, contentValues);
             sqLiteDatabase.close();
@@ -176,7 +183,9 @@ public class TabHandler extends SQLiteOpenHelper {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_ENCRYPTED_ID, newEncryptedEntry.getId());
             contentValues.put(COLUMN_ENCRYPTED_PATH, newEncryptedEntry.getPath());
-            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, newEncryptedEntry.getPassword());
+            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
+                    newEncryptedEntry.getPassword()));
+
             sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_PATH + " = ?s",
                     new String[]{oldEncryptedEntry.getPath()});
             sqLiteDatabase.close();
@@ -185,14 +194,15 @@ public class TabHandler extends SQLiteOpenHelper {
         public EncryptedEntry findEntry(String path) {
             String query = "Select * FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_ENCRYPTED_PATH
                     + "= \"" + path + "\"";
-            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery(query, null);
             EncryptedEntry encryptedEntry = new EncryptedEntry();
             if (cursor.moveToFirst()) {
                 cursor.moveToFirst();
                 encryptedEntry.setId((cursor.getInt(0)));
                 encryptedEntry.setPath(cursor.getString(1));
-                encryptedEntry.setPassword(cursor.getString(2));
+                encryptedEntry.setPassword(CryptUtil.decryptPassword(context, cursor.getString(2)));
+
                 cursor.close();
             } else {
                 encryptedEntry = null;
@@ -206,7 +216,7 @@ public class TabHandler extends SQLiteOpenHelper {
             // Select all query
             String query = "Select * FROM " + TABLE_ENCRYPTED;
 
-            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             Cursor cursor = null;
             try {
                 cursor = sqLiteDatabase.rawQuery(query, null);
@@ -216,8 +226,9 @@ public class TabHandler extends SQLiteOpenHelper {
                         EncryptedEntry encryptedEntry = new EncryptedEntry();
                         encryptedEntry.setId((cursor.getInt(0)));
                         encryptedEntry.setPath(cursor.getString(1));
-                        encryptedEntry.setPassword(cursor.getString(2));
-                        //Adding them to list
+                        encryptedEntry.setPassword(CryptUtil.decryptPassword(context,
+                                cursor.getString(2)));
+
                         entryList.add(encryptedEntry);
                     } while (cursor.moveToNext());
                 }
@@ -229,14 +240,6 @@ public class TabHandler extends SQLiteOpenHelper {
             sqLiteDatabase.close();
 
             return entryList;
-        }
-
-        public void close() {
-            try {
-                getWritableDatabase().close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 }

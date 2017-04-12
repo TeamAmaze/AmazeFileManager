@@ -83,7 +83,10 @@ public class CryptUtil {
      * @param context
      * @param sourceFile the file to encrypt
      */
-    public CryptUtil(Context context, BaseFile sourceFile) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    public CryptUtil(Context context, BaseFile sourceFile) throws IOException, CertificateException,
+            NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException,
+            InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
+            BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
                 GenericCopyUtil.DEFAULT_BUFFER_SIZE);
@@ -96,23 +99,11 @@ public class CryptUtil {
         BufferedOutputStream outputStream = new BufferedOutputStream(hFile.getOutputStream(context),
                 GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                encrypt(inputStream, outputStream);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                rsaEncrypt(context, inputStream, outputStream);
-            }
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            encrypt(inputStream, outputStream);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            rsaEncrypt(context, inputStream, outputStream);
         }
     }
 
@@ -128,37 +119,36 @@ public class CryptUtil {
      * @param baseFile the encrypted file
      * @param targetPath the directory in which file is to be decrypted
      */
-    public CryptUtil(Context context, BaseFile baseFile, BaseFile targetPath) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    public CryptUtil(Context context, BaseFile baseFile, String targetPath) throws IOException,
+            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         BufferedInputStream inputStream =  new BufferedInputStream(baseFile.getInputStream(context),
                 GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
         // target decrypted file
-        HFile targetFile = new HFile(targetPath.getMode(), targetPath.getPath(),
-                baseFile.getName(), baseFile.isDirectory());
+        HFile targetFile;
+        if (targetPath.equals(context.getExternalCacheDir())) {
+
+            // not the same file system as of base file
+            targetFile = new HFile(OpenMode.FILE, targetPath,
+                    baseFile.getName().replace(".sec", ""), baseFile.isDirectory(context));
+        } else {
+
+            // same file system as of base file
+            targetFile = new HFile(baseFile.getMode(), targetPath,
+                    baseFile.getName().replace(".sec", ""), baseFile.isDirectory(context));
+        }
 
         BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                 GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-        try {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                decrypt(inputStream, outputStream);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                rsaDecrypt(context, inputStream, outputStream);
-            }
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            decrypt(inputStream, outputStream);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            rsaDecrypt(context, inputStream, outputStream);
         }
     }
 
@@ -179,7 +169,7 @@ public class CryptUtil {
      * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static String encryptPassword(String plainTextPassword)
+    private static String aesEncryptPassword(String plainTextPassword)
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
             NoSuchProviderException, InvalidAlgorithmParameterException, IOException,
             NoSuchPaddingException, UnrecoverableKeyException, InvalidKeyException,
@@ -210,7 +200,7 @@ public class CryptUtil {
      * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static String decryptPassword(String cipherPassword) throws NoSuchPaddingException,
+    private static String aesDecryptPassword(String cipherPassword) throws NoSuchPaddingException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
             KeyStoreException, NoSuchProviderException, InvalidAlgorithmParameterException,
             IOException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
@@ -246,20 +236,29 @@ public class CryptUtil {
             BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
+
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
+
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int count;
 
-        while ((count = inputStream.read(buffer)) != -1) {
-            if (count != -1) {
-                byte[] encodedBytes = cipher.doFinal(buffer, 0, count);
-                outputStream.write(encodedBytes, 0, count);
+        CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+
+        try {
+
+            while ((count = inputStream.read(buffer)) != -1) {
+
+                cipherOutputStream.write(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
+        } finally {
+
+            cipherOutputStream.flush();
+            cipherOutputStream.close();
+            inputStream.close();
         }
-        outputStream.flush();
     }
 
     /**
@@ -287,19 +286,26 @@ public class CryptUtil {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
+
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), gcmParameterSpec);
+        CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int count;
 
-        while ((count = inputStream.read(buffer)) != -1) {
-            if (count != -1) {
-                byte[] decodedBytes = cipher.doFinal(buffer, 0, count);
-                outputStream.write(decodedBytes, 0, count);
+        try {
+
+            while ((count = cipherInputStream.read(buffer)) != -1) {
+
+                outputStream.write(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
+        } finally {
+
+            outputStream.flush();
+            cipherInputStream.close();
+            outputStream.close();
         }
-        outputStream.flush();
     }
 
     /**
@@ -348,20 +354,26 @@ public class CryptUtil {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
+
         cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int count;
 
-        while ((count = inputStream.read(buffer)) != -1) {
-            if (count != -1) {
-                byte[] encodedBytes = cipher.doFinal(buffer, 0, count);
-                outputStream.write(encodedBytes, 0, count);
+        CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+        try {
+
+            while ((count = inputStream.read(buffer)) != -1) {
+
+                cipherOutputStream.write(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
-        }
-        outputStream.flush();
+        } finally {
 
+            cipherOutputStream.flush();
+            cipherOutputStream.close();
+            inputStream.close();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -373,23 +385,30 @@ public class CryptUtil {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
+
         cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey());
+        CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int count;
 
-        while ((count = inputStream.read(buffer)) != -1) {
-            if (count != -1) {
-                byte[] decodedBytes = cipher.doFinal(buffer, 0, count);
-                outputStream.write(decodedBytes, 0, count);
+        try {
+
+            while ((count = cipherInputStream.read(buffer)) != -1) {
+
+                outputStream.write(buffer, 0, count);
                 ServiceWatcherUtil.POSITION+=count;
             }
+        } finally {
+
+            outputStream.flush();
+            outputStream.close();
+            cipherInputStream.close();
         }
-        outputStream.flush();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String rsaEncryptPassword(Context context, String password) throws
+    private static String rsaEncryptPassword(Context context, String password) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
             KeyStoreException, UnrecoverableEntryException, IllegalBlockSizeException,
@@ -404,7 +423,7 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String rsaDecryptPassword(Context context, String cipherText) throws
+    private static String rsaDecryptPassword(Context context, String cipherText) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
             KeyStoreException, UnrecoverableEntryException, IllegalBlockSizeException,
@@ -416,6 +435,51 @@ public class CryptUtil {
         byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT));
 
         return decryptedBytes.toString();
+    }
+
+    /**
+     * Method handles encryption of plain text on various APIs
+     * @param context
+     * @param plainText
+     * @return
+     */
+    public static String encryptPassword(Context context, String plainText) {
+
+        try {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                return CryptUtil.aesEncryptPassword(plainText);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+                return CryptUtil.rsaEncryptPassword(context, plainText);
+            } else return plainText;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return plainText;
+        }
+    }
+
+    /**
+     * Method handles decryption of cipher text on various APIs
+     * @param context
+     * @param cipherText
+     * @return
+     */
+    public static String decryptPassword(Context context, String cipherText) {
+        try {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                return CryptUtil.aesDecryptPassword(cipherText);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+                return CryptUtil.rsaDecryptPassword(context, cipherText);
+            } else return cipherText;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return cipherText;
+        }
     }
 
     /**

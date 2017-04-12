@@ -247,6 +247,8 @@ public class MainActivity extends BaseActivity implements
     public static final String KEY_PREF_OTG = "uri_usb_otg";
     private static final String VALUE_PREF_OTG_NULL = "n/a";
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
+    public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
+    public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -320,8 +322,8 @@ public class MainActivity extends BaseActivity implements
         openprocesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
-            if (intent.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra("failedOps");
+            if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
@@ -1335,7 +1337,7 @@ public class MainActivity extends BaseActivity implements
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
-        registerReceiver(receiver2, new IntentFilter("general_communications"));
+        registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
         if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
                 .getClass().getName().contains("TabFragment")) {
 
@@ -2602,8 +2604,8 @@ public class MainActivity extends BaseActivity implements
                     m.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
-        } else if (i.getStringArrayListExtra("failedOps") != null) {
-            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
+        } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
@@ -2685,8 +2687,8 @@ public class MainActivity extends BaseActivity implements
 
         @Override
         public void onReceive(Context context, Intent i) {
-            if (i.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
+            if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }

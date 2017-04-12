@@ -333,27 +333,11 @@ public class SmbConnectDialog extends DialogFragment {
             String yourPeerIP = auth[0], domain = auth[3];
             String path;
 
-            // encrypting password based on available APIs
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
-                        "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
-                        (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                                ":" + CryptUtil.encryptPassword(auth[2]) + "@"))
-                        + yourPeerIP + "/";
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
-                        "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
-                        (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                                ":" + CryptUtil.rsaEncryptPassword(context, auth[2]) + "@"))
-                        + yourPeerIP + "/";
-            } else {
-
-                path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
-                        "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
-                        (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                                ":" + URLEncoder.encode(auth[2], "UTF-8") + "@"))
-                        + yourPeerIP + "/";
-            }
+            path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
+                    "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
+                    (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
+                            ":" + CryptUtil.encryptPassword(context, auth[2]) + "@"))
+                    + yourPeerIP + "/";
 
             HFile hFile = new HFile(OpenMode.SMB, path);
             SmbFile smbFile = hFile.getSmbFile(5000);
@@ -397,65 +381,25 @@ public class SmbConnectDialog extends DialogFragment {
         StringBuffer buffer = new StringBuffer();
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String encryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
-        Log.d("AMAZE", "Encrypted: " + encryptedPassword);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                String decryptedPassword =  CryptUtil.decryptPassword(encryptedPassword);
+        String decryptedPassword =  CryptUtil.decryptPassword(context, encryptedPassword);
 
-                Log.d("AMAZE", "Decrypted: " + decryptedPassword);
-                buffer.append(decryptedPassword);
-                buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+        buffer.append(decryptedPassword);
+        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
 
-                Log.d("AMAZE", "SMB: " + buffer.toString());
-                return buffer.toString();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-                String decryptedPassword =  CryptUtil.rsaDecryptPassword(context, encryptedPassword);
-
-                Log.d("AMAZE", "Decrypted: " + decryptedPassword);
-                buffer.append(decryptedPassword);
-                buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
-
-                Log.d("AMAZE", "SMB: " + buffer.toString());
-                return null;
-            } else return path;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return path;
-        }
+        return buffer.toString();
     }
 
     public static String getSmbEncryptedPath(Context context, String path) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String decryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
-        Log.d("AMAZE", "Decrypted: " + decryptedPassword);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                String encryptPassword =  CryptUtil.encryptPassword(decryptedPassword);
+        String encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
 
-                Log.d("AMAZE", "Encrypted: " + encryptPassword);
-                buffer.append(encryptPassword);
-                buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+        buffer.append(encryptPassword);
+        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
 
-                Log.d("AMAZE", "SMB: " + buffer.toString());
-                return buffer.toString();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-                String encryptPassword =  CryptUtil.rsaDecryptPassword(context, decryptedPassword);
-
-                Log.d("AMAZE", "Encrypted: " + encryptPassword);
-                buffer.append(encryptPassword);
-                buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
-
-                Log.d("AMAZE", "SMB: " + buffer.toString());
-                return null;
-            } else return path;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return path;
-        }
+        return buffer.toString();
     }
 }

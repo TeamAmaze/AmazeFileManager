@@ -803,6 +803,37 @@ public abstract class FileUtil {
     }
 
     /**
+     * Checks whether the target path exists or is writable
+     * @param f the target path
+     * @param context
+     * @return 1 if exists or writable, 0 if not writable
+     */
+    public static int checkFolder(final String f,Context context) {
+        if(f==null)return 0;
+        if(f.startsWith("smb://") || f.startsWith("otg:")) return 1;
+        File folder=new File(f);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+                return 1;
+
+            }
+        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        } else if (folder.canWrite()) {
+            return 1;
+        } else {
+            return 0;
+        }
+        return 0;
+    }
+
+    /**
      * Copy the dummy image and dummy mp3 into the private folder, if not yet there. Required for the Kitkat workaround.
      *
      * @return the dummy mp3.

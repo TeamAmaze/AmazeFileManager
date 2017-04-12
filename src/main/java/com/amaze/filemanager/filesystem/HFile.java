@@ -420,7 +420,10 @@ public class HFile {
         return isDirectory;
     }
 
-
+    /**
+     * @deprecated use {@link #folderSize(Context)}
+     * @return
+     */
     public long folderSize() {
         long size = 0l;
 
@@ -452,7 +455,32 @@ public class HFile {
      * @return
      */
     public long folderSize(Context context) {
-        return Futils.folderSize(path, context);
+
+        long size = 0l;
+
+        switch (mode){
+            case SMB:
+                try {
+                    size = Futils.folderSize(new SmbFile(path));
+                } catch (MalformedURLException e) {
+                    size = 0l;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                size = Futils.folderSize(new File(path));
+                break;
+            case ROOT:
+                BaseFile baseFile=generateBaseFileFromParent();
+                if(baseFile!=null) size = baseFile.getSize();
+                break;
+            case OTG:
+                size = Futils.folderSize(path, context);
+                break;
+            default:
+                return 0l;
+        }
+        return size;
     }
 
 

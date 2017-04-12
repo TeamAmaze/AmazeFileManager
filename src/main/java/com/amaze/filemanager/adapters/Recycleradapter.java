@@ -2,6 +2,7 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -24,12 +25,14 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -738,6 +741,24 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.open_with:
                                 utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), main.getActivity());
                                 return true;
+                            case R.id.encrypt:
+                                Intent encryptIntent = new Intent(context, EncryptService.class);
+                                encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
+                                encryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
+                                        EncryptService.CryptEnum.ENCRYPT.ordinal());
+                                encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
+                                ServiceWatcherUtil.runService(context, encryptIntent);
+                                return true;
+                            case R.id.decrypt:
+                                Intent decryptIntent = new Intent(context, EncryptService.class);
+                                decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
+                                decryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
+                                        EncryptService.CryptEnum.DECRYPT.ordinal());
+                                decryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
+                                decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH,
+                                        rowItem.generateBaseFile().getParent(context));
+                                ServiceWatcherUtil.runService(context, decryptIntent);
+                                return true;
                         }
                         return false;
                     }
@@ -752,6 +773,10 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
                 if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+                if (x.endsWith(".sec") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                    popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                    popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
                 popupMenu.show();
             }
         });
