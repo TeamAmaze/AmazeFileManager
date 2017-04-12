@@ -233,18 +233,21 @@ public class RootUtils {
      * @param oldPath path to file before rename
      * @param newPath path to file after rename
      * @throws RootNotPermittedException
+     * @return if rename was successful or not
      */
-    public static void rename(String oldPath, String newPath)
+    public static boolean rename(String oldPath, String newPath)
             throws RootNotPermittedException {
 
         String mountPoint = mountFileSystemRW(oldPath);
 
-        RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        ArrayList<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
 
         if (mountPoint!=null) {
             // we mounted the filesystem as rw, let's mount it back to ro
             mountFileSystemRO(mountPoint);
         }
+
+        return output.size()==0;
     }
 
     public static void cat(String sourcePath, String destinationPath)
