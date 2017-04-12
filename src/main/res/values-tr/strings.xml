@@ -558,10 +558,31 @@ tartışmalarının parçası olun</string>
   <string name="please_wait">Lütfen bekleyin</string>
   <string name="no_applications">Uygulama yok</string>
   <string name="ftp_path">Paylaşılan Yol</string>
+  <string name="ftp_path_hint">Paylaşılacak dizinin kök yolu</string>
   <string name="error_ftp_path_file">Bir dizin değil</string>
   <string name="change">Değiştir</string>
+  <string name="unknown_error">Hoop! Birşeyler yanlış gitti!</string>
   <string name="ftp_path_change_success">FTP bağlantı noktası başarıyla değiştirildi</string>
   <string name="ftp_path_change_error_invalid">Yol geçersiz</string>
+  <string name="ftp_status_no_connection">Bağlantı Yok</string>
+  <string name="ftp_status_secure_connection">Güvenli Bağlantı</string>
+  <string name="ftp_status_title">Durum</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Giriş</string>
+  <string name="field_empty">Alan boş olamaz</string>
+  <string name="ftp_timeout">Boşta kalma zaman aşımı</string>
+  <string name="ftp_seconds">Saniyeler</string>
+  <string name="intellihide_toolbar_title">Intellihide Araç Çubuğu</string>
+  <string name="intellihide_toolbar_summary">
+Kaydırma sırasında araç çubuğunu otomatik olarak gizle</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">Panoya kopyalandı</string>
+  <string name="contributors_1_summary">Çeviri</string>
+  <string name="contributors_2_summary">Simge ve afişler</string>
+  <string name="contributors_3_summary">Tema Motoru</string>
+  <string name="contributors_4_summary">FAB arkasında gölge</string>
+  <string name="contributors_5_summary">Sekmeleri kaydırırken renk geçişi</string>
   <string name="contributors_6_summary">FTP Sunucu</string>
+  <string name="contributors_7_summary">Etkileşimli bir kabuk hazırlama</string>
 </resources>
