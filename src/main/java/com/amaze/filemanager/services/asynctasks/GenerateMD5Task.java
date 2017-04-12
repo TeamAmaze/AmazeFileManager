@@ -189,7 +189,8 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
             int x = f.listFiles(false).size();
             items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
         } else {
-            items = Formatter.formatFileSize(c, f.length());
+            items = Formatter.formatFileSize(c, f.length()) + (" (" + f.length() + " "
+                    + c.getResources().getString(R.string.bytes).toLowerCase() + ")");
         }
         publishProgress("");
         String md5 = "";

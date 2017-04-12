@@ -601,5 +601,6 @@
     <string name="contributors_5_summary">Color transition when swiping tabs</string>
     <string name="contributors_6_summary">FTP Server</string>
     <string name="contributors_7_summary">Firing up an interactive shell</string>
+    <string name="bytes">Bytes</string>
 </resources>
 
