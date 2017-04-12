@@ -313,6 +313,7 @@
   <string name="gplus_pic_title">Identificarse con G+</string>
   <string name="gplus_pic_summary">Mostrar la foto de portada de G+ en el panel lateral</string>
   <string name="icon_credits">Gráficos por &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
+  <string name="color_title">Color</string>
   <string name="color_summary">Establecer el color de varios componentes gráficos</string>
   <string name="primary_color_title">Color principal</string>
   <string name="primary_color_summary">Establecer color para grande elementos gráficos</string>
@@ -348,6 +349,7 @@
   <string name="bluetooth">Bluetooth</string>
   <string name="extstorage">Almacenamiento externo</string>
   <string name="folders">Directorios</string>
+  <string name="videos">Vídeos</string>
   <string name="apks">APKs</string>
   <string name="documents">Documentos</string>
   <string name="images">Imágenes</string>

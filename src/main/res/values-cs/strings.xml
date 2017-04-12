@@ -83,6 +83,12 @@
   <string name="extracting">Probíhá extrahování</string>
   <string name="stopping">Zastavování</string>
   <string name="guide1">Vítejte ve správci souborů Amaze</string>
+  <string name="guide2">Klepněte na modrou lištu pro zobrazení nebo skrytí panelu</string>
+  <string name="guide3">Stiskněte a podržte jakýkoliv soubor pro zobrazení více možností</string>
+  <string name="guide4">Jako kopírování, přesouvání, vlastnosti atd.</string>
+  <string name="guide5">Použijte tlačítko Zpět pro ukončení aplikace kdykoliv&#8230;</string>
+  <string name="guide6">..A použijte šipku doleva pro navigaci ve Správci souborů</string>
+  <string name="maintab">Hlavní kartu nelze odebrat</string>
   <string name="openparent">Otevřít nadřazený adresář</string>
   <string name="openwith">Otevřít pomocí</string>
   <string name="share">Sdílet</string>
@@ -94,11 +100,17 @@
   <string name="confirm">Potvrdit</string>
   <string name="deleting">Odstraňování</string>
   <string name="questiondelete">Opravdu chcete odstranit následující soubory?</string>
+  <string name="questionset">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
   <string name="viewmode">Režim zobrazení</string>
   <string name="uimode">Režim uživatelského rozhraní</string>
+  <string name="directorysort">Režim řazení adresářů</string>
   <string name="sortby">Seřadit podle</string>
   <string name="theme">Motiv vzhledu</string>
   <string name="skin">Skin</string>
+  <string name="random">Náhodný skin</string>
+  <string name="random_summary">Nastavit náhodnou základní barvu při spuštění</string>
+  <string name="colorize">Zbarvit ikony</string>
+  <string name="colorize_summary">Nastaví barvu statických ikon. Nepřepíše preferovanou barvu ikony složek.</string>
   <string name="back">Zpět</string>
   <string name="home">Doma</string>
   <string name="paste">Vložit</string>
@@ -107,40 +119,67 @@
   <string name="refresh">Obnovit</string>
   <string name="copy">Kopírovat</string>
   <string name="rootmode">Root Explorer</string>
+  <string name="rootmodesummary">Pouze pro zařízení s rootem. Použijte pouze v případě, že jste si o tom jistí.</string>
+  <string name="mountsystemsummary">Povolte, pokud chcete upravovat systémové soubory</string>
+  <string name="mountsystem">Připojit systémové složky jako zapisovatelné</string>
   <string name="rootfailure">Root přístup nebyl udělen</string>
   <string name="selectall">Vybrat Vše</string>
   <string name="delete">Smazat</string>
   <string name="setashome">Nastavit jako domácí</string>
+  <string name="sethome">Nastavit domovský adresář</string>
+  <string name="foldercolor">Barva složky</string>
   <string name="imagegallery">Galerie obrázků</string>
   <string name="fileexplorer">Průzkumník souborů</string>
+  <string name="changegallerypath">Změnit cestu ke Galerii</string>
+  <string name="usedefaultgallerypath">Použít výchozí cestu ke Galerii</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
+  <string name="simple">Jednoduché uživatelské rozhraní</string>
+  <string name="card">Kartové uživatelské hozhraní</string>
   <!-- Theme -->
   <string name="light">Material Light</string>
   <string name="dark">Material Dark</string>
+  <string name="daytime">Daytime</string>
   <!--Skin-->
   <string name="red">Červená</string>
   <string name="pink">Růžová</string>
   <string name="purple">Fialová</string>
+  <string name="deep_purple">Tmavě fialová</string>
   <string name="indigo">Indigo</string>
   <string name="blue">Modrá</string>
+  <string name="light_blue">Světle modrá</string>
   <string name="cyan">Tyrkysová</string>
+  <string name="teal">Šedozelená</string>
   <string name="green">Zelená</string>
+  <string name="light_green">Světle zelená</string>
+  <string name="amber">Amber</string>
+  <string name="orange">Oranžová</string>
+  <string name="deep_orange">Tmavě oranžová</string>
+  <string name="brown">Hnědá</string>
+  <string name="black">Černá</string>
+  <string name="blue_grey">Modro šedá</string>
   <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
+  <string name="foldersOnTop">Složky na vrcholu</string>
+  <string name="filesOnTop">Soubory na vrcholu</string>
+  <string name="noneOnTop">Nic na vrcholu</string>
   <!--SortBy-->
   <string name="sortName">Jméno</string>
   <string name="lastModified">Naposledy upraveno</string>
   <string name="sortSize">Rozměry</string>
   <string name="sortNameDesc">Název (sest.)</string>
+  <string name="lastModifiedDesc">Poslední změněné (popis)</string>
+  <string name="sortSizeDesc">Velikost (popis)</string>
   <!--ListMode-->
   <string name="detailedView">Zobrazení podrobností</string>
   <string name="simpleView">Jednoduché zobrazení</string>
   <!--Folder-->
   <string name="Yellow">Žlutá</string>
   <string name="pick_a_file">Vybrat soubor</string>
+  <string name="process_viewer">Prohlížeč procesů</string>
   <string name="in_safe">Nedostatek místa</string>
+  <string name="no_file_overwrite">Žádný soubor nebyl přepsaný</string>
   <string name="skip">Přeskočit</string>
   <string name="overwrite">Přepsat</string>
   <string name="cant_read_file">Soubor nelze načíst</string>
@@ -153,29 +192,44 @@
   <string name="items">Položky</string>
   <string name="item">Položka</string>
   <string name="set">Nastavit</string>
+  <string name="enablerootmde">Povolit režim s rootem</string>
   <string name="goback">Zpět</string>
   <string name="foldercreated">Složka vytvořena</string>
   <string name="newfile">Nový soubor</string>
   <string name="nofiles">Žádné soubory</string>
+  <string name="tapnhold">Klepněte a podržte soubor nebo složku pro zobrazení více možností</string>
+  <string name="pathcopied">Cesta byla zkopírována do schránky</string>
+  <string name="used">Jiní používají:  </string>
   <string name="free">Volné Místo:  </string>
+  <string name="atroot">Nacházíte se v kořenovém adresáři</string>
   <string name="listview">Zobrazení seznamu</string>
   <string name="gridview">Zobrazení mřížky</string>
+  <string name="setlistview">Nastavení zobrazení seznamu</string>
+  <string name="setgridview">Nastavení zobrazení mřížky</string>
   <string name="permission">Oprávnění</string>
   <string name="hide">Skrýt</string>
   <string name="exit">Konec</string>
   <string name="enternewname">Zadejte nový název</string>
+  <string name="doforall">U všech položek</string>
+  <string name="gridcolumnno">Počet sloupců v zobrazení mřížky</string>
   <string name="randomDialog">Náhodně</string>
+  <string name="setRandom">Změny se provedou po restartování aplikace</string>
   <string name="authors">Autoři</string>
   <string name="changelog">Changelog</string>
+  <string name="fullChangelog">Úplný seznam změn</string>
   <string name="ok">OK</string>
+  <string name="chooseUI">Zvolte položku uživatelského rozhraní</string>
   <string name="ui">Prostředí</string>
   <string name="general">Obecné</string>
+  <string name="thumbSummary">Zobrazovat miniatury aplikací a obrázků</string>
   <string name="thumb">Zobrazit náhledy</string>
   <string name="hidden">Zobrazovat skryté soubory a složky</string>
+  <string name="lastModifiedSummary">Zobrazit datum a čas poslední změny</string>
   <string name="sizePref">Zobrazit velikost</string>
   <string name="miscellaneous">Různé</string>
   <string name="rootPrefSummary">Zobrazit oprávnění souborů a složek</string>
   <string name="rootPref">Zobrazit oprávnění</string>
+  <string name="aboutFileManager">O správci souborů Amaze</string>
   <string name="version">Verze</string>
   <string name="rate">Ohodnotit aplikaci</string>
   <string name="license">Open Source licence</string>
@@ -194,6 +248,9 @@
   <string name="install">Instalovat</string>
   <string name="archive">Archivovat</string>
   <string name="xda_title">Vlákno XDA</string>
+  <string name="invalid_dir">Neplatný adresář</string>
+  <string name="circularimages">Používat kruhové ikony pro obrázky a videa</string>
+  <string name="circularicons">Používat kruhové ikony</string>
   <string name="details">Podrobnosti</string>
   <string name="translators">Překladatelé</string>
   <string name="german_translation_title">Němčina</string>
@@ -217,8 +274,10 @@
   <string name="brazilian_portuguese_translation_title">Brazilská portugalština</string>
   <string name="tamil_translation_title">Tamilština</string>
   <string name="zip_viewer">Zip prohlížeč</string>
+  <string name="unin_system_apk">Toto je systémová aplikace, její odstranění může narušit stabilitu systému. \nChcete pokračovat?</string>
   <string name="warning">Varování</string>
   <string name="donate">Přispět</string>
+  <string name="archive_preferences">Předvolby archivu</string>
   <string name="openas">Otevřít jako</string>
   <string name="text">Text</string>
   <string name="audio">Zvuk</string>
@@ -243,6 +302,7 @@
   <string name="choose_color">Vybrat barvu</string>
   <string name="files">Soubory</string>
   <string name="directories">Složky</string>
+  <string name="smb_server">IP adresa serveru</string>
   <string name="username">Uživatelské jméno</string>
   <string name="password">Heslo</string>
   <string name="anonymous">Anonymní</string>
@@ -250,6 +310,7 @@
   <string name="extstorage">Externí úložiště</string>
   <string name="folders">Složky</string>
   <string name="videos">Videa</string>
+  <string name="apks">Aplikace</string>
   <string name="documents">Dokumenty</string>
   <string name="images">Obrázky</string>
   <string name="clear">Smazat vše</string>
@@ -261,6 +322,8 @@
   <string name="ascending">Vzestupně</string>
   <string name="descending">Sestupně</string>
   <string name="defualt">Výchozí</string>
+  <string name="doit">Vykonat</string>
+  <string name="wanthelp"><u>Potřebujete pomoc?</u></string>
   <string name="quick">Rychlý přístup</string>
   <string name="recent">Nedávné soubory</string>
   <string name="edit">Editace</string>
@@ -268,32 +331,96 @@
   <string name="grant">Povolit</string>
   <string name="grantper">Udělit oprávnění</string>
   <string name="grantfailed">Oprávnění není uděleno</string>
+  <string name="granttext">Aplikace potřebuje pro pokračování udělit přístup k úložišti. Zavřením dialogového okna bude aplikace ukončena.</string>
+  <string name="grantgplus">Aplikace vyžaduje oprávnění pro tuto funkci. Zavřením dialogového okna nebude funkce povolena.</string>
+  <string name="operationunsuccesful">Operace se nezdařila</string>
   <string name="creatingfile">Vytvoření souboru</string>
   <string name="creatingfolder">Vytváření složky</string>
   <string name="renaming">Přejmenování</string>
+  <string name="cantbeempty">%s nemůže být prázdné</string>
   <string name="ip">Adresa</string>
   <string name="connectionname">Název připojení</string>
   <string name="nodevicefound">Žádná zařízení nenalezena</string>
   <string name="path">Cesta</string>
+  <string name="renamebookmark">Upravit záložku</string>
   <string name="cut">Vyjmout</string>
   <string name="search">Hledat</string>
   <string name="invalid_name">Neplatný název</string>
   <string name="search_hint">Zadejte hledaný výraz&#8230;</string>
   <string name="advanced_search">Rozšířené vyhledávání</string>
   <string name="regular_expression">Regulární výraz</string>
+  <string name="regular_expression_summary">Vyhledávání pomocí regulárních výrazů ve stylu BASH</string>
+  <string name="match_content">Porovnat obsah</string>
+  <string name="match_content_summary">Jakmile nastavíte, regulární výraz bude porovnán s celým názvem souboru, jinak se zaměří na počet výskytů.</string>
   <string name="start_ftp">Start</string>
   <string name="stop_ftp">Konec</string>
   <string name="ftp_status_running">Spuštěno</string>
   <string name="ftp_status_not_running">Není spuštěno</string>
+  <string name="ftp_no_wifi">Ujistěte se, zda jste připojeni k WiFi</string>
   <string name="domain">Doména</string>
+  <string name="invalid">Neplatné %s</string>
+  <string name="ftp_notif_starting">Spouštění serveru FTP</string>
+  <string name="ftp_notif_title">FTP Server Amaze je spuštěn</string>
   <string name="ftp_notif_text">na %s</string>
   <string name="ftp_notif_stop_server">STOP</string>
+  <string name="ftp_port_edit_menu_title">FTP Port</string>
+  <string name="ftp_port_change_success">FTP port byl úspěšně změněn</string>
+  <string name="ftp_port_change_error_invalid">Vybráno neplatné číslo portu</string>
+  <string name="primary_two_title">Primární barva (pravá karta)</string>
+  <string name="primary_two_summary">Nastavte barvu pro velké prvky uživatelského rozhraní pravé katy</string>
   <string name="g_plus">Google Plus</string>
   <string name="support_development">Podpořte vývoj</string>
   <string name="report_bugs_title">Ohlásit chybu</string>
   <string name="report_bugs_summary">Nahlásit chybu nebo požádat o nové funkce</string>
   <string name="translate_title">Přeložit</string>
+  <string name="translate_summary">Přeložte Amaze do vašeho jazyka</string>
+  <string name="g_plus_community_summary">Zúčastnit se beta testování a diskuse související s vývojem</string>
   <string name="easter_egg_title">Studiový mód</string>
+  <string name="paypal_copy_message">Paypal ID bylo zkopírováno do schránky</string>
+  <string name="searchingdevices">Vyhledávání zařízení</string>
+  <string name="use_custom_ip">Použít vlastní IP</string>
+  <string name="bookmark_lost">Záložka nebyla nalezena, obnovování&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Jak můžu získat přístup ke sdílené složce Windows na platforme Android</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Povolit sdílení souborů</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Otevřete Ovládací panel, klikněte na tlačítko \"Vybrat domácí skupinu a možnosti sdílení\", klikněte na tlačítko \"Změnit rozšířené nastavení sdílení\" a prejděte na sdílení složek a tiskáren.\n\n
+                    </p>
+
+                    <li>
+                        <b>Rozšířené nastavení sdílení</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Můžete nastavit i další pokročilé možnosti sdílení.\nNapříklad, můžete povolit přístup k souborům bez hesla pokud důvěřujete všem zařízením v síti. Jakmile je sdílení souborů a tiskáren zapnuto, otevřete Průzkumník Windows nebo jiného správce souborů, klikněte pravým tlačítkem myši na složku, ktorou chcete sdílet  a vyberte možnost \"Vlastnosti\".\nKliknutím na tlačítko Sdílet  bude složka dostupná v síti.\n\n
+                        </p>
+
+                    <li>
+                        <b>Uistěte se, že zařízení jsou ve stejné WiFi síti</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                       Vaše zařízení Windows a Android musí být na stejné síti. Například, že nemůžete mít přístup ke složce systému Windows na systém Android, když je vaše zařízení Android připojené na mobilní internet!\n\n
+                    </p>
+
+                    <li>
+                        <b>Vyhledávání IP adresy</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Otevřete příkazový řádek. Zadejte \'ipconfig\' a stiskněte Enter. Najděte \"IPv4 adresu\" adaptéru, kterým jsou Windows a Android zařízení připojené ke stejné síti.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>    </string>
+  <string name="share_limit">Nelze sdílet více než 100 souborů</string>
+  <string name="otg_access">Vyberte kořenovou složku OTG zařízení</string>
+  <string name="no_profile_pic">Žádný obrázek profilu G+</string>
+  <string name="opening">Otevírání..</string>
   <string name="information">Informace</string>
   <!-- reference to file accessed date -->
   <string name="accessed">Poslední přístup</string>
@@ -319,8 +446,12 @@
   <string name="date_modified">Datum změny</string>
   <string name="software">Software</string>
   <string name="creator">Autor</string>
+  <string name="camera_brand">Značka fotoaparátu</string>
   <string name="camera_model">Model fotoaparátu</string>
+  <string name="date_taken">Datum pořízení</string>
   <string name="exposure_time">Expoziční čas</string>
+  <string name="aperture_value">Hodnota clony</string>
+  <string name="image_iso">Hodnoty ISO</string>
   <string name="flash_fired">S bleskem</string>
   <string name="focal_length">Ohnisková vzdálenost</string>
   <string name="document">Dokument</string>
@@ -329,34 +460,75 @@
   <string name="keywords">Klíčová slova</string>
   <string name="producer">Producent</string>
   <string name="created">Vytvořeno</string>
+  <string name="format">Formát</string>
   <string name="pages">Počet stránek</string>
   <!-- reference to a document file -->
   <string name="optimized">Optimalizováno</string>
   <string name="security">Zabezpečení</string>
   <string name="paper_size">Velikost papíru</string>
+  <string name="root_error">Chyba při spouštění interaktivního root shellu</string>
   <!-- %s will be replaced with either copied or moved -->
+  <string name="copy_error">Některé soubory nebyly úspěšné %s</string>
   <string name="copied">zkopírováno</string>
   <string name="moved">přesunuto</string>
   <string name="process_chart_description">Průběh</string>
   <string name="copy_complete">Kopírování dokončeno</string>
+  <string name="move_complete">Přesunutí bylo dokončeno</string>
   <string name="waiting_title">Čekám</string>
+  <string name="waiting_content">Čekání na dokončení operace</string>
+  <string name="extract_complete">Extrakce byla dokončena</string>
+  <string name="compression_complete">Komprese byla dokončena</string>
   <string name="compressing">Komprimace</string>
   <string name="cancelled">Zrušeno</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="written">Zapsáno</string>
+  <string name="out_of">z</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="of">z</string>
+  <string name="processing_file">Zpracování souboru</string>
   <string name="current_speed">Aktuální rychlost</string>
+  <string name="smb_launch_error">Budete muset zkopírovat tento soubor na úložiště a otevřít ho</string>
   <string name="error_file_not_found">Chyba: Soubor nebyl nalezen</string>
   <string name="error_io">Chyba I/O</string>
   <string name="error_root_not_permitted">Chyba: Root oprávnění není uděleno</string>
   <string name="medium_text">Střední Text</string>
+  <string name="tap_and_hold_tips">Klepněte a podržte soubor nebo složku pro zobrazení více možností</string>
   <string name="permission_read">Načíst</string>
   <string name="permission_write">Napsat</string>
   <string name="permission_execute">Vykonat</string>
   <string name="permission_owner">Majitel</string>
   <string name="permission_group">Skupina</string>
   <string name="permission_other">Ostatní</string>
+  <string name="clipboard_path_copy">Cesta byla zkopírována do schránky</string>
+  <string name="error_busybox">Busybox nenalezen. Zavírání interaktivního shellu.</string>
   <string name="service_timer">Uplynulý čas</string>
   <string name="please_wait">Čekejte prosím</string>
+  <string name="no_applications">Žádné aplikace</string>
+  <string name="ftp_path">Cesta sdílení</string>
+  <string name="ftp_path_hint">Cesta ke kořenovému adresáře sdílení</string>
+  <string name="error_ftp_path_file">Cesta není adresář</string>
+  <string name="change">Změnit</string>
+  <string name="unknown_error">Oops, něco se pokazilo!</string>
+  <string name="ftp_path_change_success">FTP cesta byla úspěšně změněna</string>
+  <string name="ftp_path_change_error_invalid">Neplatná cesta</string>
+  <string name="ftp_status_no_connection">Žádné připojení</string>
+  <string name="ftp_status_secure_connection">Zabezpečené připojení</string>
+  <string name="ftp_status_title">Stav</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Přihlášení</string>
+  <string name="field_empty">Pole nemůže být prázdné</string>
+  <string name="ftp_timeout">Časový limit nečinnosti</string>
+  <string name="ftp_seconds">Sekundy</string>
+  <string name="intellihide_toolbar_title">Inteligentně schovat nástrojovou lištu</string>
+  <string name="intellihide_toolbar_summary">Automaticky schovat nástrojovou lištu během scrollování</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">zkopírováno do schránky</string>
+  <string name="contributors_1_summary">Překlady</string>
+  <string name="contributors_2_summary">Ikony a bannery</string>
+  <string name="contributors_3_summary">Pohon motivu</string>
+  <string name="contributors_4_summary">Stín za plovoucím FAB tlačítkem</string>
+  <string name="contributors_5_summary">Barevný přechod při potáhnutí karty</string>
   <string name="contributors_6_summary">Server FTP</string>
+  <string name="contributors_7_summary">Spustit interaktivní shell</string>
 </resources>
