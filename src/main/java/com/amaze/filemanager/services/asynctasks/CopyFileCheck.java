@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
- * Created by arpitkh996 on 12-01-2016.
+ * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
  *  This AsyncTask works by creating a tree where each folder that can be fusioned together with
  *  another in the destination is a node (CopyNode), each node is copied when the conflicts are dealt

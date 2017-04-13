@@ -38,7 +38,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by root on 11/22/15.
+ * Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 public class MainActivityHelper {
 
