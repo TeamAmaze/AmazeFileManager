@@ -255,6 +255,7 @@ public class MainActivity extends BaseActivity implements
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
 
+    //TODO make var names meaningful
     private static final int SELECT_MINUS_2 = -2, NO_VALUE = -1, SELECT_0 = 0, SELECT_102 = 102;
     private int selectedStorage;
 
