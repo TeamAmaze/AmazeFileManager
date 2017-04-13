@@ -56,23 +56,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 public class CopyService extends Service {
-
-    // list of data packages, to initiate chart in process viewer fragment
-    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
-    NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
-    Context c;
-
-    ProgressListener progressListener;
-    private final IBinder mBinder = new LocalBinder();
-    private ProgressHandler progressHandler;
-    private ServiceWatcherUtil watcherUtil;
-
-    long totalSize = 0l;
-    int totalSourceFiles = 0;
-    int sourceProgress = 0;
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -82,9 +66,23 @@ public class CopyService extends Service {
 
     public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private Context c;
+
+    private ProgressListener progressListener;
+    private final IBinder mBinder = new LocalBinder();
+    private ProgressHandler progressHandler;
+    private ServiceWatcherUtil watcherUtil;
+
+    private long totalSize = 0L;
+    private int totalSourceFiles = 0;
+    private int sourceProgress = 0;
+
     @Override
     public void onCreate() {
-
         registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
     }
 
@@ -123,7 +121,7 @@ public class CopyService extends Service {
     }
 
     long getTotalBytes(final ArrayList<BaseFile> files) {
-        long totalBytes = 0l;
+        long totalBytes = 0L;
         try {
             for (int i = 0; i < files.size(); i++) {
                 HFile f1 = (files.get(i));
@@ -384,8 +382,6 @@ public class CopyService extends Service {
                                 file.getName(), file.isDirectory());
                         copyFiles(file, destFile, progressHandler);
                     }
-                    if (progressHandler.getCancelled()) return;
-
                 } else {
                     if (progressHandler.getCancelled()) return;
                     if (!Operations.isFileNameValid(sourceFile.getName())) {
@@ -551,9 +547,7 @@ public class CopyService extends Service {
                     break;
                 }
             }
-            if (baseFiles.get(index).getSize() == baseFiles1.get(index1).getSize())
-                return true;
-            else return false;
+            return baseFiles.get(index).getSize() == baseFiles1.get(index1).getSize();
         }
     }
 

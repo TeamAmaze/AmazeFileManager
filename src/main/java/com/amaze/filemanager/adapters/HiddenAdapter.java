@@ -92,7 +92,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                 @Override
                 public void onClick(View view) {
                     if (!file.isSmb() && file.isDirectory()) {
-                        ArrayList<BaseFile> a = new ArrayList<BaseFile>();
+                        ArrayList<BaseFile> a = new ArrayList<>();
                         BaseFile baseFile = new BaseFile(items.get(position).getPath() + "/.nomedia");
                         baseFile.setMode(OpenMode.FILE);
                         a.add(baseFile);

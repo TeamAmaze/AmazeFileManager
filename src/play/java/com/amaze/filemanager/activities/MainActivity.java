@@ -209,47 +209,48 @@ public class MainActivity extends BaseActivity implements
     public static final String KEY_PREF_OTG = "uri_usb_otg";
     public static final String KEY_INTENT_PROCESS_VIEWER = "openProcesses";
 
-    static final int image_selector_request_code = 31;
+    private static final int image_selector_request_code = 31;
 
-    HistoryManager history, grid;
-    Futils utils;
-    MainActivity mainActivity = this;
-    IconUtils util;
-    Context con = this;
-    String zippath;
-    FragmentTransaction pending_fragmentTransaction;
-    String pendingPath;
-    boolean openProcesses = false;
-    int hidemode;
-    MaterialDialog materialDialog;
-    String newPath = null;
-    boolean backPressedToExitOnce = false;
-    Toast toast = null;
-    ActionBarDrawerToggle mDrawerToggle;
-    Intent intent;
-    GoogleApiClient mGoogleApiClient;
-    View drawerHeaderLayout;
-    View drawerHeaderView, indicator_layout;
-    RoundedImageView drawerProfilePic;
-    ImageLoader mImageLoader;
-    int COUNTER = 0;
-    TextView mGoogleName, mGoogleId;
-    LinearLayout buttons;
-    HorizontalScrollView scroll, scroll1;
-    CountDownTimer timer;
-    IconUtils icons;
-    TabHandler tabHandler;
+    private HistoryManager history, grid;
+    private Futils utils;
+    private MainActivity mainActivity = this;
+    private IconUtils util;
+    private Context con = this;
+    private String zippath;
+    private FragmentTransaction pending_fragmentTransaction;
+    private String pendingPath;
+    private boolean openProcesses = false;
+    private int hidemode;
+    private MaterialDialog materialDialog;
+    private String newPath = null;
+    private boolean backPressedToExitOnce = false;
+    private Toast toast = null;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Intent intent;
+    private GoogleApiClient mGoogleApiClient;
+    private View drawerHeaderLayout;
+    private View drawerHeaderView, indicator_layout;
+    private RoundedImageView drawerProfilePic;
+    private ImageLoader mImageLoader;
+
+    private TextView mGoogleName, mGoogleId;
+    private LinearLayout buttons;
+    private HorizontalScrollView scroll, scroll1;
+    private CountDownTimer timer;
+    private IconUtils icons;
+    private TabHandler tabHandler;
     // Check for user interaction for Google+ api only once
-    boolean mGoogleApiKey = false;
+    private boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    boolean mIntentInProgress, showHidden = false;
+    private boolean mIntentInProgress, showHidden = false;
 
     // string builder object variables for pathBar animations
-    StringBuffer newPathBuilder, oldPathBuilder;
-    AppBarLayout appBarLayout;
+    private StringBuffer newPathBuilder, oldPathBuilder;
+    private AppBarLayout appBarLayout;
 
+    private int COUNTER = 0;//TODO why does this exist
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
 

@@ -141,7 +141,7 @@ public class HFile {
     }
 
     public long length() {
-        long s = 0l;
+        long s = 0L;
         switch (mode) {
             case SMB:
                 SmbFile smbFile = getSmbFile();
@@ -314,14 +314,14 @@ public class HFile {
     }
 
     public long folderSize() {
-        long size = 0l;
+        long size = 0L;
 
         switch (mode) {
             case SMB:
                 try {
                     size = Futils.folderSize(new SmbFile(path));
                 } catch (MalformedURLException e) {
-                    size = 0l;
+                    size = 0L;
                     e.printStackTrace();
                 }
                 break;
@@ -333,7 +333,7 @@ public class HFile {
                 if (baseFile != null) size = baseFile.getSize();
                 break;
             default:
-                return 0l;
+                return 0L;
         }
         return size;
     }
@@ -350,15 +350,15 @@ public class HFile {
 
 
     public long getUsableSpace() {
-        long size = 0l;
+        long size = 0L;
         if (isSmb()) {
             try {
                 size = (new SmbFile(path).getDiskFreeSpace());
             } catch (MalformedURLException e) {
-                size = 0l;
+                size = 0L;
                 e.printStackTrace();
             } catch (SmbException e) {
-                size = 0l;
+                size = 0L;
                 e.printStackTrace();
             }
         } else

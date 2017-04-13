@@ -66,7 +66,7 @@ public class ExtractService extends Service {
     private ArrayList<DataPackage> dataPackages = new ArrayList<>();
 
     // total size of file, can change later
-    private long totalSize = 0l;
+    private long totalSize = 0L;
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
@@ -212,7 +212,7 @@ public class ExtractService extends Service {
 
     public class DoWork extends AsyncTask<Bundle, Void, Integer> {
 
-        long totalBytes = 0l;
+        long totalBytes = 0L;
         private ServiceWatcherUtil watcherUtil;
 
         private void createDir(File dir) {
@@ -337,7 +337,7 @@ public class ExtractService extends Service {
         private boolean extract(File archive, String destinationPath,
                                 ArrayList<String> entryNamesList) {
 
-            ArrayList<ZipEntry> entry1 = new ArrayList<ZipEntry>();
+            ArrayList<ZipEntry> entry1 = new ArrayList<>();
             try {
                 ZipFile zipfile = new ZipFile(archive);
 
@@ -390,7 +390,7 @@ public class ExtractService extends Service {
         private boolean extract(File archive, String destinationPath) {
 
             try {
-                ArrayList<ZipEntry> arrayList = new ArrayList<ZipEntry>();
+                ArrayList<ZipEntry> arrayList = new ArrayList<>();
                 ZipFile zipfile = new ZipFile(archive);
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
 
@@ -434,7 +434,7 @@ public class ExtractService extends Service {
 
             try {
 
-                ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<TarArchiveEntry>();
+                ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
 
                 TarArchiveInputStream inputStream;
 
@@ -487,7 +487,7 @@ public class ExtractService extends Service {
         private boolean extractRar(File archive, String destinationPath) {
 
             try {
-                ArrayList<FileHeader> arrayList = new ArrayList<FileHeader>();
+                ArrayList<FileHeader> arrayList = new ArrayList<>();
                 Archive zipFile = new Archive(archive);
                 FileHeader fh = zipFile.nextFileHeader();
 
@@ -533,7 +533,7 @@ public class ExtractService extends Service {
 
                 Archive rarFile = new Archive(archive);
 
-                ArrayList<FileHeader> arrayList = new ArrayList<FileHeader>();
+                ArrayList<FileHeader> arrayList = new ArrayList<>();
 
                 // iterating archive elements to find file names that are to be extracted
                 for (FileHeader header : rarFile.getFileHeaders()) {

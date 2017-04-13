@@ -385,8 +385,7 @@ public class Operations {
             OutputStream outputStream = proc.getOutputStream();
             String buffer = null;
             outputStream.write(buffer.getBytes());
-            if (buffer != null && buffer.contains(FAT)) return true;
-            else return false;
+            return buffer != null && buffer.contains(FAT);
         } catch (IOException e) {
             e.printStackTrace();
             // process interrupted, returning true, as a word of cation

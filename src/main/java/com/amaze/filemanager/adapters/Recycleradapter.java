@@ -747,9 +747,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private boolean isPositionHeader(int position) {
-        if (mainFrag.IS_LIST)
-            return (position == items.size());
-        return false;
+        return mainFrag.IS_LIST && (position == items.size());
     }
 
     @Override

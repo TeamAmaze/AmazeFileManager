@@ -19,20 +19,13 @@ public class DisablableViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (this.enabled) {
-            return super.onTouchEvent(event);
-        }
-
-        return false;
+        return this.enabled && super.onTouchEvent(event);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (this.enabled) {
-            return super.onInterceptTouchEvent(event);
-        }
+        return this.enabled && super.onInterceptTouchEvent(event);
 
-        return false;
     }
 
     public void setPagingEnabled(boolean enabled) {

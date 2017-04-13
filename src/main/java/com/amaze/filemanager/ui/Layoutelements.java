@@ -173,9 +173,7 @@ public class LayoutElements implements Parcelable {
     }
 
     public boolean hasSymlink() {
-        if (getSymlink() != null && getSymlink().length() != 0) {
-            return true;
-        } else return false;
+        return getSymlink() != null && getSymlink().length() != 0;
     }
 
     @Override

@@ -74,11 +74,7 @@ public class ZipObj implements Parcelable {
         size = im.readLong();
         date = im.readLong();
         int i = im.readInt();
-        if (i == 0) {
-            directory = false;
-        } else {
-            directory = true;
-        }
+        directory = i != 0;
         entry = new ZipEntry(name);
     }
 

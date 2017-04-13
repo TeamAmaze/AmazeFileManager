@@ -102,7 +102,7 @@ public class TabHandler extends SQLiteOpenHelper {
     }
 
     public List<Tab> getAllTabs() {
-        List<Tab> tabList = new ArrayList<Tab>();
+        List<Tab> tabList = new ArrayList<>();
         // Select all query
         String query = "Select * FROM " + TABLE_TAB;
 

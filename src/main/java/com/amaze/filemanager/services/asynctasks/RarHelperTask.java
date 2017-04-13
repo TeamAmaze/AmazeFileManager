@@ -42,7 +42,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
 
     @Override
     protected ArrayList<FileHeader> doInBackground(File... params) {
-        ArrayList<FileHeader> elements = new ArrayList<FileHeader>();
+        ArrayList<FileHeader> elements = new ArrayList<>();
         try {
             Archive zipfile = new Archive(params[0]);
             zipViewer.archive = zipfile;

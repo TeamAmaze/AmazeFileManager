@@ -141,7 +141,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     public ArrayList<Integer> getCheckedItemPositions() {
-        ArrayList<Integer> checkedItemPositions = new ArrayList<Integer>();
+        ArrayList<Integer> checkedItemPositions = new ArrayList<>();
 
         for (int i = 0; i < myChecked.size(); i++) {
             if (myChecked.get(i)) {
@@ -427,7 +427,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                                     zipViewer.getContext().getResources().getString(R.string.please_wait),
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(zipViewer.getContext(), ExtractService.class);
-                            ArrayList<String> a = new ArrayList<String>();
+                            ArrayList<String> a = new ArrayList<>();
 
                             // adding name of entry to extract from zip, before opening it
                             a.add(rowItem.getName());
@@ -561,7 +561,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                                 zipViewer.getContext().getResources().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(zipViewer.getContext(), ExtractService.class);
-                        ArrayList<String> a = new ArrayList<String>();
+                        ArrayList<String> a = new ArrayList<>();
 
                         // adding name of entry to extract from zip, before opening it
                         a.add(rowItem.getFileNameString());

@@ -42,7 +42,7 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
 
     @Override
     protected ArrayList<ZipObj> doInBackground(String... params) {
-        ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
+        ArrayList<ZipObj> elements = new ArrayList<>();
         try {
             if (zipViewer.wholelist.size() == 0) {
                 Uri uri = Uri.parse(params[0]);
@@ -62,7 +62,7 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
                     }
                 }
             }
-            ArrayList<String> strings = new ArrayList<String>();
+            ArrayList<String> strings = new ArrayList<>();
             //  int fileCount = zipfile.size();
 
             for (ZipObj entry : zipViewer.wholelist) {

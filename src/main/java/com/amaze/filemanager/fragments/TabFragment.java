@@ -45,7 +45,7 @@ import java.util.List;
 public class TabFragment extends android.support.v4.app.Fragment
         implements ViewPager.OnPageChangeListener {
 
-    public List<Fragment> fragments = new ArrayList<Fragment>();
+    public List<Fragment> fragments = new ArrayList<>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
     public DisablableViewPager mViewPager;
     SharedPreferences sharedPrefs;
@@ -198,7 +198,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (tabHandler == null)
             tabHandler = new TabHandler(getActivity());
         int i = 1;
-        ArrayList<String> items = new ArrayList<String>();
+        ArrayList<String> items = new ArrayList<>();
 
         // Getting old path from database before clearing
 

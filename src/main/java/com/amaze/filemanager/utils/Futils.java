@@ -192,7 +192,7 @@ public class Futils {
      * @return
      */
     public static long folderSize(String path, Context context) {
-        long length = 0l;
+        long length = 0L;
         for (BaseFile baseFile : RootHelper.getDocumentFilesList(path, context)) {
             if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
             else length += baseFile.length();
@@ -327,7 +327,7 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
-        ArrayList<Uri> uris = new ArrayList<Uri>();
+        ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
@@ -365,8 +365,8 @@ public class Futils {
         String s="";
         ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
-        if (s.equals("com.amaze.filemanager") || rii==null) return true;
-        else return false;
+
+        return s.equals("com.amaze.filemanager") || rii == null;
     }
 
     public void openunknown(File f, Context c, boolean forcechooser) {
@@ -810,8 +810,8 @@ public class Futils {
     }
 
     public Bundle getPaths(String path, Context c) {
-        ArrayList<String> names = new ArrayList<String>();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
         Bundle b = new Bundle();
         while (path.contains("/")) {
 
@@ -843,10 +843,7 @@ public class Futils {
 
     public static boolean canListFiles(File f) {
         try {
-            if (f.canRead() && f.isDirectory())
-                return true;
-            else
-                return false;
+            return f.canRead() && f.isDirectory();
         } catch (Exception e) {
             return false;
         }
@@ -1349,7 +1346,7 @@ public class Futils {
     }
 
     public ArrayList<Boolean[]> parse(String permLine) {
-        ArrayList<Boolean[]> arrayList=new ArrayList<Boolean[]>();
+        ArrayList<Boolean[]> arrayList= new ArrayList<>();
         Boolean[] read=new Boolean[]{false,false,false};
         Boolean[] write=new Boolean[]{false,false,false};
         Boolean[] execute=new Boolean[]{false,false,false};

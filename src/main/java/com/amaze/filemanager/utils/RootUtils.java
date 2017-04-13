@@ -84,7 +84,7 @@ public class RootUtils {
                     mountPoint = words[2];
                     types = words[5];
                 }
-            } else continue;
+            }
         }
 
         if (!mountPoint.equals("") && types!=null) {

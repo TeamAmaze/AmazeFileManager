@@ -77,7 +77,7 @@ public class ProcessViewer extends Fragment {
     private CardView mCardView;
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
-    private long time = 0l;
+    private long time = 0L;
     private TextView mProgressTypeText, mProgressFileNameText,
             mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 

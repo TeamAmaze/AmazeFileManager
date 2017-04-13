@@ -198,7 +198,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         //TODO empty
                         @Override
                         public void exists(HFile file) {
-                            return;
+
                         }
 
                         @Override

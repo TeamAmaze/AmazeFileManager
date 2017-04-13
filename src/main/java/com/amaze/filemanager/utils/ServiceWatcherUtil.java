@@ -42,7 +42,7 @@ public class ServiceWatcherUtil {
     public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
-        POSITION = 0l;
+        POSITION = 0L;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();

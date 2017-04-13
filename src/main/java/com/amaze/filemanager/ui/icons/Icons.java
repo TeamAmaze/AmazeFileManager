@@ -31,7 +31,7 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
-    private static HashMap<String, Integer> sMimeIconIds = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> sMimeIconIds = new HashMap<>();
     private static SparseArray<Bitmap> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
@@ -263,32 +263,27 @@ public class Icons {
 
     public static boolean isCode(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_codes) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_codes;
     }
 
     public static boolean isArchive(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_zip_box_white_36dp) return true;
-        return false;
+        return res != null && res == R.drawable.ic_zip_box_white_36dp;
     }
 
     public static boolean isApk(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_apk_white) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_apk_white;
     }
 
     public static boolean isPdf(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_pdf) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_pdf;
     }
 
     public static boolean isPicture(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_image) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_image;
     }
 
     public static boolean isGeneric(String name) {
@@ -297,11 +292,8 @@ public class Icons {
             return true;
         }
         Integer resId = sMimeIconIds.get(mimeType);
-        if (resId == null) {
-            return true;
-        }
 
-        return false;
+        return resId == null;
     }
 
     public static BitmapDrawable loadMimeIcon(String path, boolean grid, final Resources res) {

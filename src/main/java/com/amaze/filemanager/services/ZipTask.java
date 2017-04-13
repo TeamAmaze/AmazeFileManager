@@ -61,7 +61,7 @@ public class ZipTask extends Service {
     String mZipPath;
     Context c;
     ProgressListener progressListener;
-    long totalBytes = 0l;
+    long totalBytes = 0L;
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
     private ArrayList<DataPackage> dataPackages = new ArrayList<>();
@@ -117,7 +117,7 @@ public class ZipTask extends Service {
     }
 
     private long getTotalBytes(ArrayList<BaseFile> baseFiles) {
-        long totalBytes = 0l;
+        long totalBytes = 0L;
         for (BaseFile f1 : baseFiles) {
             if (f1.isDirectory()) {
                 totalBytes += f1.folderSize();

@@ -143,23 +143,23 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public int skinTwoColor;
     public int icon_skin_color;
 
-    IconUtils icons;
-    View footerView;
-    String itemsstring;
-    TabHandler tabHandler;
-    LinearLayoutManager mLayoutManager;
-    GridLayoutManager mLayoutManagerGrid;
-    boolean addheader = false;
-    StickyRecyclerHeadersDecoration headersDecor;
-    DividerItemDecoration dividerItemDecoration;
-    int hidemode;
-    AppBarLayout mToolbarContainer;
-    TextView pathname, mFullPath;
-    boolean stopAnims = true;
-    View nofilesview;
-    DisplayMetrics displayMetrics;
-    HFile f;
-    Streamer s;
+    private IconUtils icons;
+    private View footerView;
+    private String itemsstring;
+    private TabHandler tabHandler;
+    private LinearLayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManagerGrid;
+    private boolean addheader = false;
+    private StickyRecyclerHeadersDecoration headersDecor;
+    private DividerItemDecoration dividerItemDecoration;
+    private int hidemode;
+    private AppBarLayout mToolbarContainer;
+    private TextView pathname, mFullPath;
+    private boolean stopAnims = true;
+    private View nofilesview;
+    private DisplayMetrics displayMetrics;
+    private HFile f;
+    private Streamer s;
 
     private UtilitiesProviderInterface utilsProvider;
     private Futils utils;
@@ -635,7 +635,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case R.id.openmulti:
                     if (Build.VERSION.SDK_INT >= 16) {
                         Intent intentresult = new Intent();
-                        ArrayList<Uri> resulturis = new ArrayList<Uri>();
+                        ArrayList<Uri> resulturis = new ArrayList<>();
                         for (int k : plist) {
                             try {
                                 resulturis.add(Uri.fromFile(new File(LIST_ELEMENTS.get(k).getDesc())));
@@ -700,7 +700,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     utils.deleteFiles(LIST_ELEMENTS, ma, plist, utilsProvider.getAppTheme());
                     return true;
                 case R.id.share:
-                    ArrayList<File> arrayList = new ArrayList<File>();
+                    ArrayList<File> arrayList = new ArrayList<>();
                     for (int i : plist) {
                         arrayList.add(new File(LIST_ELEMENTS.get(i).getDesc()));
                     }
@@ -968,7 +968,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         for (String s : DataUtils.listfiles) {
             index2++;
             if ((path).contains(s)) {
-                if (grid == true) both_contain = true;
+                if (grid) both_contain = true;
                 grid = false;
                 break;
             }
@@ -1311,7 +1311,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     public ArrayList<LayoutElements> addToSmb(SmbFile[] mFile, String path) throws SmbException {
-        ArrayList<LayoutElements> a = new ArrayList<LayoutElements>();
+        ArrayList<LayoutElements> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
             if (DataUtils.hiddenfiles.contains(mFile[i].getPath()))
@@ -1362,7 +1362,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 long longSize = 0;
                 try {
                     if (mFile.getSize() != -1) {
-                        longSize = Long.valueOf(mFile.getSize());
+                        longSize = mFile.getSize();
                         size = Formatter.formatFileSize(getContext(), longSize);
                     } else {
                         size = "";

@@ -79,7 +79,7 @@ public class HistoryManager {
     public ArrayList<String> readTable(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> paths = new ArrayList<>();
         do {
             try {
                 paths.add(c.getString(c.getColumnIndex("PATH")));
@@ -152,7 +152,7 @@ public class HistoryManager {
     public ArrayList<String[]> readTableSecondary(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
-        ArrayList<String[]> paths = new ArrayList<String[]>();
+        ArrayList<String[]> paths = new ArrayList<>();
         do {
             try {
                 paths.add(new String[]{c.getString(c.getColumnIndex("NAME")),c.getString(c.getColumnIndex("PATH"))});

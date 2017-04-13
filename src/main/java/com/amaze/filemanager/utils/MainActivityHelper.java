@@ -345,7 +345,7 @@ public class MainActivityHelper {
      * Helper method to start Compress service
      *
      * @param file the new compressed file
-     * @param b    list of {@link BaseFile} to be compressed
+     * @param baseFiles list of {@link BaseFile} to be compressed
      */
     public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
@@ -608,8 +608,6 @@ public class MainActivityHelper {
      * @return
      */
     public static boolean isNewDirectoryRecursive(HFile file) {
-
-        if (file.getName().equals(file.getParentName())) return true;
-        else return false;
+        return file.getName().equals(file.getParentName());
     }
 }

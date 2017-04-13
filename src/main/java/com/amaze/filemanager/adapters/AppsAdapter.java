@@ -103,7 +103,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElements> implements View.On
     }
 
     public List<Integer> getCheckedItemPositions() {
-        List<Integer> checkedItemPositions = new ArrayList<Integer>();
+        List<Integer> checkedItemPositions = new ArrayList<>();
 
         for (int i = 0; i < myChecked.size(); i++) {
             if (myChecked.get(i)) {
@@ -237,7 +237,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElements> implements View.On
                             Toast.LENGTH_LONG).show();
                 return true;
             case R.id.share:
-                ArrayList<File> arrayList2 = new ArrayList<File>();
+                ArrayList<File> arrayList2 = new ArrayList<>();
                 arrayList2.add(new File(rowItem.getDesc()));
                 int color1 = Color.parseColor(PreferenceUtils.getAccentString(appsList.Sp));
                 utils.shareFiles(arrayList2, appsList.getActivity(), utilsProvider.getAppTheme(), color1);

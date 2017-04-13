@@ -151,9 +151,9 @@ public class SubnetScanner extends Thread {
                         SmbFile[] listFiles = smbFile.listFiles();
                         for (SmbFile smbFile2 : listFiles) {
                             SmbFile[] listFiles2 = smbFile2.listFiles();
-                            for (int i2 = 0; i2 < listFiles2.length; i2++) {
+                            for (SmbFile aListFiles2 : listFiles2) {
                                 try {
-                                    String substring = listFiles2[i2].getName().substring(0, listFiles2[i2].getName().length() - 1);
+                                    String substring = aListFiles2.getName().substring(0, aListFiles2.getName().length() - 1);
                                     UniAddress byName = UniAddress.getByName(substring);
                                     if (byName != null) {
                                         SubnetScanner.this.onFound(new Computer(substring, byName.getHostAddress()));

@@ -95,7 +95,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private ArrayList<String[]> getDbTableDetails(Cursor c) {
-        ArrayList<String[]> result = new ArrayList<String[]>();
+        ArrayList<String[]> result = new ArrayList<>();
         int j = 0;
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             if (!isCancelled()) {
@@ -137,7 +137,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
         return result;
     }
     private ArrayList<String> getDbTableSchema(Cursor c) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             if (!isCancelled()) {
 

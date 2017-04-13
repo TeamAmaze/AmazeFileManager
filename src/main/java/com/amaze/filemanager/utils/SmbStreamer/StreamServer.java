@@ -348,7 +348,7 @@ public abstract class StreamServer {
                 String method = pre.getProperty("method");
                 String uri = pre.getProperty("uri");
 
-                long size = 0x7FFFFFFFFFFFFFFFl;
+                long size = 0x7FFFFFFFFFFFFFFFL;
                 String contentLength = header.getProperty("content-length");
                 if (contentLength != null)
                 {
@@ -382,7 +382,7 @@ public abstract class StreamServer {
                 // expect the first byte of the body at the next read.
                 if (splitbyte < rlen)
                     size -= rlen - splitbyte +1;
-                else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFl)
+                else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFL)
                     size = 0;
 
                 // Now read all the body and write it to f
@@ -626,7 +626,7 @@ public abstract class StreamServer {
                     matchcount++;
                     if (matchcount==boundary.length)
                     {
-                        matchbytes.addElement(new Integer(matchbyte));
+                        matchbytes.addElement(matchbyte);
                         matchcount = 0;
                         matchbyte = -1;
                     }
@@ -641,7 +641,7 @@ public abstract class StreamServer {
             int[] ret = new int[matchbytes.size()];
             for (int i=0; i < ret.length; i++)
             {
-                ret[i] = ((Integer)matchbytes.elementAt(i)).intValue();
+                ret[i] = (Integer) matchbytes.elementAt(i);
             }
             return ret;
         }

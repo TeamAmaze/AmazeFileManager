@@ -188,7 +188,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     }
 
     private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> mFile) {
-        ArrayList<LayoutElements> a = new ArrayList<LayoutElements>();
+        ArrayList<LayoutElements> a = new ArrayList<>();
         for (int i = 0; i < mFile.size(); i++) {
             BaseFile ele = mFile.get(i);
             File f = new File(ele.getPath());
@@ -206,7 +206,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                     long longSize = 0;
                     try {
                         if (ele.getSize() != -1) {
-                            longSize = Long.valueOf(ele.getSize());
+                            longSize = ele.getSize();
                             size = Formatter.formatFileSize(c, longSize);
                         } else {
                             size = "";
@@ -302,7 +302,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     }
 
     ArrayList<BaseFile> listRecentFiles() {
-        ArrayList<BaseFile> songs = new ArrayList<BaseFile>();
+        ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
@@ -327,7 +327,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         Collections.sort(songs, new Comparator<BaseFile>() {
             @Override
             public int compare(BaseFile lhs, BaseFile rhs) {
-                return -1 * Long.valueOf(lhs.getDate()).compareTo(Long.valueOf(rhs.getDate()));
+                return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
 
             }
         });
@@ -339,7 +339,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     }
 
     ArrayList<BaseFile> listApks() {
-        ArrayList<BaseFile> songs = new ArrayList<BaseFile>();
+        ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
         Cursor cursor = c.getContentResolver().query(MediaStore.Files
