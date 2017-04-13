@@ -29,7 +29,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -61,7 +60,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -208,7 +206,7 @@ public class MainActivity extends BaseActivity implements
     int sdk, COUNTER = 0;
     TextView mGoogleName, mGoogleId;
     LinearLayout buttons;
-    HorizontalScrollView scroll, scroll1;
+    HorizontalScrollView pathbarScroll;
     CountDownTimer timer;
     IconUtils icons;
     TabHandler tabHandler;
@@ -1742,11 +1740,10 @@ public class MainActivity extends BaseActivity implements
                 }
             }
 
-            scroll.post(new Runnable() {
+            pathbarScroll.post(new Runnable() {
                 @Override
                 public void run() {
-                    sendScroll(scroll);
-                    sendScroll(scroll1);
+                    sendScroll(pathbarScroll);
                 }
             });
 
@@ -1867,10 +1864,10 @@ public class MainActivity extends BaseActivity implements
 
         pathbar = (LinearLayout) findViewById(R.id.pathbar);
         buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
-        scroll1.setSmoothScrollingEnabled(true);
+
+        pathbarScroll = (HorizontalScrollView) findViewById(R.id.pathbar_scroll);
+        pathbarScroll.setSmoothScrollingEnabled(true);
+
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
@@ -2162,10 +2159,10 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(newPathBuilder.toString());
                     //bapath.setText(oldPath);
 
-                    scroll.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                            pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
                 }
@@ -2191,10 +2188,10 @@ public class MainActivity extends BaseActivity implements
                     animPath.setVisibility(View.GONE);
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                            pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                         }
                     });
                 }
@@ -2206,10 +2203,10 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(oldPathBuilder.toString());
                     bapath.setText(newPath);
 
-                    scroll.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
+                            pathbarScroll.fullScroll(View.FOCUS_LEFT);
                         }
                     });
                 }
@@ -2229,10 +2226,10 @@ public class MainActivity extends BaseActivity implements
                         super.onAnimationStart(animation);
                         animPath.setVisibility(View.VISIBLE);
                         bapath.setText("");
-                        scroll.post(new Runnable() {
+                        pathbarScroll.post(new Runnable() {
                             @Override
                             public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
+                                pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                             }
                         });
                     }
@@ -2270,10 +2267,10 @@ public class MainActivity extends BaseActivity implements
                     animPath.setText(oldPath);
                     bapath.setText("");
 
-                    scroll.post(new Runnable() {
+                    pathbarScroll.post(new Runnable() {
                         @Override
                         public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
+                            pathbarScroll.fullScroll(View.FOCUS_LEFT);
                         }
                     });
                 }
@@ -2306,10 +2303,10 @@ public class MainActivity extends BaseActivity implements
                             // we should not be having anything here in path bar
                             animPath.setVisibility(View.VISIBLE);
                             bapath.setText("");
-                            scroll.post(new Runnable() {
+                            pathbarScroll.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
+                                    pathbarScroll.fullScroll(View.FOCUS_RIGHT);
                                 }
                             });
                         }
