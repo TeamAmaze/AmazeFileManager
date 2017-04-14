@@ -126,7 +126,7 @@ public class CopyService extends Service {
     }
 
     /**
-     * Helper method to calculate source files size in an otg device
+     * Helper method to calculate source files size
      * @param files
      * @param context
      * @return
@@ -134,7 +134,7 @@ public class CopyService extends Service {
     long getTotalBytes(ArrayList<BaseFile> files, Context context) {
         long totalBytes = 0;
         for (BaseFile file : files) {
-            if (file.isDirectory(context)) totalBytes += file.folderSize(context);
+            if (file.isDirectory()) totalBytes += file.folderSize(context);
             else totalBytes += file.length(context);
         }
         return totalBytes;
@@ -364,9 +364,11 @@ public class CopyService extends Service {
      * @param move
      */
     void generateNotification(ArrayList<HFile> failedOps, boolean move) {
-        if(failedOps.size()==0)return;
 
         mNotifyManager.cancelAll();
+
+        if(failedOps.size()==0)return;
+
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(c);
         mBuilder.setContentTitle(c.getString(R.string.operationunsuccesful));
         mBuilder.setContentText(c.getString(R.string.copy_error).replace("%s",

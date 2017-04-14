@@ -165,6 +165,7 @@ public class Futils {
                     length += folderSize(file);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return length;
     }

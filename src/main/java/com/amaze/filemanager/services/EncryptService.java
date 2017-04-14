@@ -40,7 +40,7 @@ public class EncryptService extends Service {
 
     private static final int ID_NOTIFICATION = 27978;
 
-    public static final String TAG_CANCEL = "crypt_cancel";
+    public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
     // list of data packages which contains progress
     private ArrayList<DataPackage> dataPackages = new ArrayList<>();
@@ -63,7 +63,7 @@ public class EncryptService extends Service {
         super.onCreate();
 
         context = getApplicationContext();
-        registerReceiver(cancelReceiver, new IntentFilter(TAG_CANCEL));
+        registerReceiver(cancelReceiver, new IntentFilter(TAG_BROADCAST_CRYPT_CANCEL));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class EncryptService extends Service {
 
         openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Intent notificationIntent = new Intent();
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
@@ -107,7 +107,7 @@ public class EncryptService extends Service {
         @Override
         protected Void doInBackground(Void... params) {
 
-            if (baseFile.isDirectory(context))  totalSize = baseFile.folderSize(context);
+            if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
             progressHandler = new ProgressHandler(1, totalSize);
@@ -139,7 +139,7 @@ public class EncryptService extends Service {
                 if (cryptEnum == CryptEnum.ENCRYPT) {
                     // we're here to encrypt
                     try {
-                        new CryptUtil(context, baseFile);
+                        new CryptUtil(context, baseFile, progressHandler);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
@@ -150,7 +150,7 @@ public class EncryptService extends Service {
                     // the path is to the same directory as in encrypted one in normal case
                     // and the cache directory in case we're here because of the viewer
                     try {
-                        new CryptUtil(context, baseFile, decryptPath);
+                        new CryptUtil(context, baseFile, decryptPath, progressHandler);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
@@ -250,14 +250,15 @@ public class EncryptService extends Service {
      * @param move
      */
     void generateNotification(ArrayList<HFile> failedOps, boolean move) {
+        notificationManager.cancelAll();
+
         if(failedOps.size()==0)return;
 
-        notificationManager.cancelAll();
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context);
         mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
         mBuilder.setContentText(context.getString(R.string.copy_error).replace("%s",
-                move ? context.getString(R.string.crypt_encrypted) :
-                        context.getString(R.string.crypt_decrypted)));
+                move ? context.getString(R.string.crypt_encrypted).toLowerCase() :
+                        context.getString(R.string.crypt_decrypted).toLowerCase()));
         mBuilder.setAutoCancel(true);
 
         progressHandler.setCancelled(true);

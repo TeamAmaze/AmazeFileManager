@@ -73,6 +73,8 @@ public class CryptUtil {
     // TODO: Generate a random IV every time, and keep track of it (in database against encrypted files)
     private static final String IV = "LxbHiJhhUXcj";    // 12 byte long IV supported by android for GCM
 
+    private ProgressHandler progressHandler;
+
     /**
      * Constructor will start encryption process serially. Make sure to call with background thread.
      * The result file of encryption will be in the same directory with a .sec extension
@@ -84,10 +86,13 @@ public class CryptUtil {
      * @param context
      * @param sourceFile the file to encrypt
      */
-    public CryptUtil(Context context, BaseFile sourceFile) throws IOException, CertificateException,
+    public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler)
+            throws IOException, CertificateException,
             NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
             BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+
+        this.progressHandler = progressHandler;
 
         // target encrypted file
         HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
@@ -108,10 +113,12 @@ public class CryptUtil {
      * @param targetPath the directory in which file is to be decrypted
      *                   the source's parent in normal case
      */
-    public CryptUtil(Context context, BaseFile baseFile, String targetPath) throws IOException,
-            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+    public CryptUtil(Context context, BaseFile baseFile, String targetPath, ProgressHandler progressHandler)
+            throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+
+        this.progressHandler = progressHandler;
 
         HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
         if (!targetPath.equals(context.getExternalCacheDir())) {
@@ -145,10 +152,10 @@ public class CryptUtil {
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-        if (sourceFile.isDirectory(context)) {
+        if (sourceFile.isDirectory()) {
 
             HFile hFile = new HFile(targetDirectory.getMode(), targetDirectory.getPath(),
-                    sourceFile.getName(context).replace(".sec", ""), sourceFile.isDirectory(context));
+                    sourceFile.getName().replace(".sec", ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
@@ -160,11 +167,15 @@ public class CryptUtil {
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
             HFile targetFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName(context).replace(".sec", ""),
-                    sourceFile.isDirectory(context));
+                    targetDirectory.getPath(), sourceFile.getName().replace(".sec", ""),
+                    sourceFile.isDirectory());
+
+            progressHandler.setFileName(sourceFile.getName());
 
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            if (progressHandler.getCancelled()) return;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesDecrypt(inputStream, outputStream);
@@ -197,12 +208,12 @@ public class CryptUtil {
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
 
-        if (sourceFile.isDirectory(context)) {
+        if (sourceFile.isDirectory()) {
 
             // succeed .sec at end of directory/file name
             HFile hFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName(context) + ".sec",
-                    sourceFile.isDirectory(context));
+                    targetDirectory.getPath(), sourceFile.getName() + ".sec",
+                    sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
@@ -215,11 +226,15 @@ public class CryptUtil {
 
             // succeed .sec at end of directory/file name
             HFile targetFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName(context) + ".sec",
-                    sourceFile.isDirectory(context));
+                    targetDirectory.getPath(), sourceFile.getName() + ".sec",
+                    sourceFile.isDirectory());
+
+            progressHandler.setFileName(sourceFile.getName());
 
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            if (progressHandler.getCancelled()) return;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesEncrypt(inputStream, outputStream);

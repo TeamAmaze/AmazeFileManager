@@ -160,7 +160,7 @@ public class HFile {
     }
 
     /**
-     * Helper method to find length of file under otg
+     * Helper method to find length
      * @param context
      * @return
      */
@@ -185,6 +185,8 @@ public class HFile {
                 break;
             case OTG:
                 s = RootHelper.getDocumentFile(path, context, false).length();
+                break;
+            default:
                 break;
         }
         return s;
