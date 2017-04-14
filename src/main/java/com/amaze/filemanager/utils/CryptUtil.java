@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 
 import java.io.BufferedInputStream;
@@ -88,23 +89,10 @@ public class CryptUtil {
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
             BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-        BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
-                GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
         // target encrypted file
-        HFile hFile = new HFile(sourceFile.getMode(),
-                sourceFile.getParent(context), sourceFile.getName(context) + ".sec",
-                sourceFile.isDirectory(context));
+        HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
 
-        BufferedOutputStream outputStream = new BufferedOutputStream(hFile.getOutputStream(context),
-                GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            encrypt(inputStream, outputStream);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            rsaEncrypt(context, inputStream, outputStream);
-        }
+        encrypt(context, sourceFile, hFile);
     }
 
     /**
@@ -118,37 +106,126 @@ public class CryptUtil {
      * @param context
      * @param baseFile the encrypted file
      * @param targetPath the directory in which file is to be decrypted
+     *                   the source's parent in normal case
      */
     public CryptUtil(Context context, BaseFile baseFile, String targetPath) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-        BufferedInputStream inputStream =  new BufferedInputStream(baseFile.getInputStream(context),
-                GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
-        // target decrypted file
-        HFile targetFile;
-        if (targetPath.equals(context.getExternalCacheDir())) {
-
-            // not the same file system as of base file
-            targetFile = new HFile(OpenMode.FILE, targetPath,
-                    baseFile.getName().replace(".sec", ""), baseFile.isDirectory(context));
-        } else {
+        HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
+        if (!targetPath.equals(context.getExternalCacheDir())) {
 
             // same file system as of base file
-            targetFile = new HFile(baseFile.getMode(), targetPath,
-                    baseFile.getName().replace(".sec", ""), baseFile.isDirectory(context));
+            targetDirectory.setMode(baseFile.getMode());
         }
 
-        BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
-                GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+        decrypt(context, baseFile, targetDirectory);
+    }
+
+    /**
+     * Wrapper around handling decryption for directory tree
+     * @param context
+     * @param sourceFile        the source file to decrypt
+     * @param targetDirectory   the target directory inside which we're going to decrypt
+     * @throws IOException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws UnrecoverableEntryException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchPaddingException
+     * @throws NoSuchProviderException
+     * @throws BadPaddingException
+     * @throws KeyStoreException
+     * @throws IllegalBlockSizeException
+     */
+    private void decrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
+            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+
+        if (sourceFile.isDirectory(context)) {
+
+            HFile hFile = new HFile(targetDirectory.getMode(), targetDirectory.getPath(),
+                    sourceFile.getName(context).replace(".sec", ""), sourceFile.isDirectory(context));
+            FileUtil.mkdirs(context, hFile);
+
+            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
+                decrypt(context, baseFile, hFile);
+            }
+        } else {
+
+            BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
+                    GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            HFile targetFile = new HFile(targetDirectory.getMode(),
+                    targetDirectory.getPath(), sourceFile.getName(context).replace(".sec", ""),
+                    sourceFile.isDirectory(context));
+
+            BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
+                    GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                aesDecrypt(inputStream, outputStream);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                rsaDecrypt(context, inputStream, outputStream);
+            }
+        }
+    }
+
+    /**
+     * Wrapper around handling encryption in directory tree
+     * @param context
+     * @param sourceFile        the source file to encrypt
+     * @param targetDirectory   the target directory in which we're going to encrypt
+     * @throws IOException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws UnrecoverableEntryException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchPaddingException
+     * @throws NoSuchProviderException
+     * @throws BadPaddingException
+     * @throws KeyStoreException
+     * @throws IllegalBlockSizeException
+     */
+    private void encrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
+            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            decrypt(inputStream, outputStream);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            rsaDecrypt(context, inputStream, outputStream);
+        if (sourceFile.isDirectory(context)) {
+
+            // succeed .sec at end of directory/file name
+            HFile hFile = new HFile(targetDirectory.getMode(),
+                    targetDirectory.getPath(), sourceFile.getName(context) + ".sec",
+                    sourceFile.isDirectory(context));
+            FileUtil.mkdirs(context, hFile);
+
+            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
+                encrypt(context, baseFile, hFile);
+            }
+        } else {
+
+            BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
+                    GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            // succeed .sec at end of directory/file name
+            HFile targetFile = new HFile(targetDirectory.getMode(),
+                    targetDirectory.getPath(), sourceFile.getName(context) + ".sec",
+                    sourceFile.isDirectory(context));
+
+            BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
+                    GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                aesEncrypt(inputStream, outputStream);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                rsaEncrypt(context, inputStream, outputStream);
+            }
         }
     }
 
@@ -229,7 +306,7 @@ public class CryptUtil {
      * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static void encrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
+    private static void aesEncrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
             NoSuchProviderException, InvalidAlgorithmParameterException, IOException,
             NoSuchPaddingException, UnrecoverableKeyException, InvalidKeyException,
@@ -278,7 +355,7 @@ public class CryptUtil {
      * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static void decrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
+    private static void aesDecrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws NoSuchPaddingException, NoSuchAlgorithmException, CertificateException,
             UnrecoverableKeyException, KeyStoreException, NoSuchProviderException,
             InvalidAlgorithmParameterException, IOException, InvalidKeyException,

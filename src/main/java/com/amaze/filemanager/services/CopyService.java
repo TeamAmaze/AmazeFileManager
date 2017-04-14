@@ -333,8 +333,7 @@ public class CopyService extends Service {
                     }
                     targetFile.setLastModified(sourceFile.lastModified());
                     if(progressHandler.getCancelled())return;
-                    ArrayList<BaseFile> filePaths = sourceFile.getMode() == OpenMode.OTG ?
-                            sourceFile.listFiles(c) : sourceFile.listFiles(false);
+                    ArrayList<BaseFile> filePaths = sourceFile.listFiles(c, false);
                     for (BaseFile file : filePaths) {
                         HFile destFile = new HFile(targetFile.getMode(),targetFile.getPath(),
                                 file.getName(),file.isDirectory());

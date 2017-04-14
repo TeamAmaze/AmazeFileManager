@@ -45,6 +45,7 @@ public class HFile {
             else this.path=path+name;
         } else this.path = path + "/" + name;
     }
+
     public void generateMode(Context context){
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
@@ -501,6 +502,11 @@ public class HFile {
         return size;
     }
 
+    /**
+     * @deprecated use {@link #listFiles(Context, boolean)}
+     * @param rootmode
+     * @return
+     */
     public ArrayList<BaseFile> listFiles(boolean rootmode) {
         ArrayList<BaseFile> arrayList = new ArrayList<>();
         if (isSmb()) {
@@ -517,11 +523,9 @@ public class HFile {
                 }
             } catch (MalformedURLException e) {
                 if (arrayList != null) arrayList.clear();
-                else arrayList = new ArrayList<>();
                 e.printStackTrace();
             } catch (SmbException e) {
                 if (arrayList != null) arrayList.clear();
-                else arrayList = new ArrayList<>();
                 e.printStackTrace();
             }
         } else if (isOtgFile()) {
@@ -531,10 +535,8 @@ public class HFile {
                 arrayList = RootHelper.getFilesList(path, rootmode, true,null);
             } catch (RootNotPermittedException e) {
                 e.printStackTrace();
-                arrayList = null;
             }
         }
-        if (arrayList == null) arrayList = new ArrayList<>();
         return arrayList;
     }
 
@@ -543,8 +545,41 @@ public class HFile {
      * @param context
      * @return
      */
-    public ArrayList<BaseFile> listFiles(Context context) {
-        return RootHelper.getDocumentFilesList(path, context);
+    public ArrayList<BaseFile> listFiles(Context context, boolean isRoot) {
+        ArrayList<BaseFile> arrayList = new ArrayList<>();
+        switch (mode) {
+            case SMB:
+                try {
+                    SmbFile smbFile = new SmbFile(path);
+                    for (SmbFile smbFile1 : smbFile.listFiles()) {
+                        BaseFile baseFile=new BaseFile(smbFile1.getPath());
+                        baseFile.setName(smbFile1.getName());
+                        baseFile.setMode(OpenMode.SMB);
+                        baseFile.setDirectory(smbFile1.isDirectory());
+                        baseFile.setDate(smbFile1.lastModified());
+                        baseFile.setSize(baseFile.isDirectory()?0:smbFile1.length());
+                        arrayList.add(baseFile);
+                    }
+                } catch (MalformedURLException e) {
+                    if (arrayList != null) arrayList.clear();
+                    e.printStackTrace();
+                } catch (SmbException e) {
+                    if (arrayList != null) arrayList.clear();
+                    e.printStackTrace();
+                }
+                break;
+            case OTG:
+                arrayList = RootHelper.getDocumentFilesList(path, context);
+                break;
+            default:
+                try {
+                    arrayList = RootHelper.getFilesList(path, isRoot, true, null);
+                } catch (RootNotPermittedException e) {
+                    e.printStackTrace();
+                }
+        }
+
+        return arrayList;
     }
 
     public String getReadablePath(String path){
