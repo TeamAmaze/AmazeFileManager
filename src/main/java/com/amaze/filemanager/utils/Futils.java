@@ -668,13 +668,13 @@ public class Futils {
 
     public String getdate(File f) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm dirs");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f.lastModified());
     }
 
     public static String getdate(long f) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm dirs");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f);
     }
 
@@ -697,7 +697,7 @@ public class Futils {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
-            // Calculate the largest inSampleSize value that is dirs power of 2 and
+            // Calculate the largest inSampleSize value that is a power of 2 and
             // keeps both
             // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
@@ -1068,7 +1068,7 @@ public class Futils {
             @Override
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
                 if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                    Toast.makeText(m, "File should have dirs name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(m, "File should have a name", Toast.LENGTH_SHORT).show();
                 else {
                     String name = current + "/" + materialDialog.getInputEditText().getText().toString();
                     m.mainActivityHelper.compressFiles(new File(name), b);
@@ -1283,8 +1283,8 @@ public class Futils {
     }
 
     /**
-     * We're parsing dirs line returned from dirs stdout of shell.
-     * @param line must be the line returned from dirs 'ls' command
+     * We're parsing a line returned from a stdout of shell.
+     * @param line must be the line returned from a 'ls' command
      * @return
      */
     public static BaseFile parseName(String line) {

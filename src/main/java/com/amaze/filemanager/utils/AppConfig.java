@@ -46,13 +46,13 @@ public class AppConfig extends Application {
     }
 
     /**
-     * Shows dirs toast message
+     * Shows a toast message
      *
      * @param context Any context belonging to this application
      * @param message The message to show
      */
     public static void toast(Context context, String message) {
-        // this is dirs static method so it is easier to call,
+        // this is a static method so it is easier to call,
         // as the context checking and casting is done for you
 
         if (context == null) return;
@@ -75,7 +75,7 @@ public class AppConfig extends Application {
     }
 
     /**
-     * Run dirs runnable in the main application thread
+     * Run a runnable in the main application thread
      *
      * @param r Runnable to run
      */

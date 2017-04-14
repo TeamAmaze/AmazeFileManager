@@ -60,7 +60,7 @@ public class AnimUtils {
     }
 
     /**
-     * Linear interpolate between dirs and b with parameter t.
+     * Linear interpolate between a and b with parameter t.
      */
     public static float lerp(float a, float b, float t) {
         return a + (b - a) * t;
@@ -71,7 +71,7 @@ public class AnimUtils {
      * An implementation of {@link android.util.Property} to be used specifically with fields of
      * type
      * <code>float</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to dirs {@link #set(Object, Float) set()} function that takes the primitive
+     * calls to a {@link #set(Object, Float) set()} function that takes the primitive
      * <code>float</code> type and avoids autoboxing and other overhead associated with the
      * <code>Float</code> class.
      *
@@ -98,7 +98,7 @@ public class AnimUtils {
      * An implementation of {@link android.util.Property} to be used specifically with fields of
      * type
      * <code>int</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to dirs {@link #set(Object, Integer) set()} function that takes the primitive
+     * calls to a {@link #set(Object, Integer) set()} function that takes the primitive
      * <code>int</code> type and avoids autoboxing and other overhead associated with the
      * <code>Integer</code> class.
      *

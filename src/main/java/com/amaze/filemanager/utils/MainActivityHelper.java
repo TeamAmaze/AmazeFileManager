@@ -96,7 +96,7 @@ public class MainActivityHelper {
     };
 
     /**
-     * Prompt dirs dialog to user to input directory name
+     * Prompt a dialog to user to input directory name
      *
      * @param openMode
      * @param path     current path at which directory to create
@@ -114,7 +114,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Prompt dirs dialog to user to input file name
+     * Prompt a dialog to user to input file name
      *
      * @param openMode
      * @param path     current path at which file to create
@@ -539,7 +539,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Creates dirs fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
+     * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
      *
      * @param query the text query entered the by user
      */
@@ -572,7 +572,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Adds dirs search fragment that can persist it's state on config change
+     * Adds a search fragment that can persist it's state on config change
      *
      * @param fragmentManager fragmentManager
      * @param fragment        current fragment
@@ -600,7 +600,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Check whether creation of new directory is inside the same directory with dirs same name or not
+     * Check whether creation of new directory is inside the same directory with the same name or not
      * Directory inside the same directory with similar filename shall not be allowed
      * Doesn't work at an OTG path
      *
