@@ -40,6 +40,7 @@
   <string name="properties">プロパティ</string>
   <string name="copyingapk">apk をコピー中</string>
   <string name="addbook">ブックマークを追加</string>
+  <string name="delbook">ブックマークを削除する</string>
   <string name="addtobook">ブックマークに追加</string>
   <string name="enterpath">パスを入力</string>
   <string name="cancel">キャンセル</string>
@@ -117,6 +118,7 @@
   <string name="history">履歴</string>
   <string name="refresh">更新</string>
   <string name="copy">コピー</string>
+  <string name="rootmode">ルート エクスプ ローラー</string>
   <string name="rootmodesummary">Root 化したデバイスのみ。何を行うかを理解している場合にのみ、チェックしてください。</string>
   <string name="mountsystemsummary">システムファイルを編集したい場合は、これを有効にします</string>
   <string name="mountsystem">システムフォルダーを書き込み可能としてマウント</string>
@@ -157,6 +159,7 @@
   <string name="brown">茶</string>
   <string name="black">黒</string>
   <string name="blue_grey">ブルーグレー</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">トップのフォルダー</string>
   <string name="filesOnTop">トップのファイル</string>
@@ -304,6 +307,8 @@
   <string name="database">データベース</string>
   <string name="colourednavigation">色付きのナビゲーションバー</string>
   <string name="colourednavigationsum">システムのナビゲーションバーがスキンで色付けされているかどうかにかかわらず</string>
+  <string name="sd_card_grant_next">次のSDカードを許可する</string>
+  <string name="sd_card_grant_first">最初のSDカードを許可する</string>
   <string name="fab_skin">FAB スキン</string>
   <string name="gplus_pic_title">G+ でサインイン</string>
   <string name="gplus_pic_summary">ドロワーに G+ カバー画像を表示します</string>
@@ -341,6 +346,7 @@
   <string name="username">ユーザー名</string>
   <string name="password">パスワード</string>
   <string name="anonymous">匿名</string>
+  <string name="bluetooth">ブルートゥース</string>
   <string name="extstorage">外部ストレージ</string>
   <string name="folders">フォルダー</string>
   <string name="videos">ビデオ</string>
@@ -348,6 +354,7 @@
   <string name="documents">ドキュメント</string>
   <string name="images">画像</string>
   <string name="clear">クリア</string>
+  <string name="md5">MD5</string>
   <string name="md5_2">md5 をコピー</string>
   <string name="total">合計: </string>
   <string name="calculating">計算中</string>
@@ -522,9 +529,38 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="processing_file">ファイル処理中</string>
   <string name="current_speed">現在の速度</string>
   <string name="smb_launch_error">このファイルをストレージにコピーして開く必要があります</string>
+  <string name="error_file_not_found">エラー: ファイルが見つかりません</string>
+  <string name="error_io">I/O エラー</string>
+  <string name="error_root_not_permitted">エラー: ルート許可を付与されていません</string>
+  <string name="medium_text">テキストサイズ中</string>
   <string name="tap_and_hold_tips">ファイルまたはフォルダーを長押しすると追加のオプション</string>
+  <string name="permission_read">読み取り</string>
+  <string name="permission_write">書込み</string>
+  <string name="permission_execute">実行</string>
+  <string name="permission_owner">オーナー</string>
+  <string name="permission_group">グループ</string>
   <string name="permission_other">その他</string>
   <string name="clipboard_path_copy">パスをクリップボードにコピーしました</string>
+  <string name="service_timer">経過時間</string>
+  <string name="please_wait">お待ちください</string>
+  <string name="ftp_path">共有パス</string>
+  <string name="error_ftp_path_file">パスはディレクトリではありません</string>
+  <string name="change">変更</string>
+  <string name="unknown_error">不具合が発生しました</string>
+  <string name="ftp_path_change_success">FTP パスが正常に変更された</string>
+  <string name="ftp_path_change_error_invalid">無効なパス</string>
+  <string name="ftp_status_no_connection">ネットワーク接続なし</string>
+  <string name="ftp_status_title">ステータス</string>
+  <string name="ftp_port">ポート</string>
+  <string name="ftp_login">ログイン</string>
+  <string name="ftp_seconds">秒</string>
+  <string name="intellihide_toolbar_summary">スクロールしながらツールバーを非表示する</string>
+  <string name="hash_sha256">SHAー256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">クリップボードにコピーする</string>
+  <string name="contributors_1_summary">翻訳</string>
+  <string name="contributors_2_summary">アイコンとバナー</string>
+  <string name="contributors_3_summary">テーマ エンジン</string>
   <string name="contributors_6_summary">FTP サーバー</string>
+  <string name="bytes">バイト</string>
 </resources>

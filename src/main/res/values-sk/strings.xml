@@ -118,13 +118,13 @@
   <string name="history">História</string>
   <string name="refresh">Obnoviť</string>
   <string name="copy">Kopírovať</string>
-  <string name="rootmode">Root explorer</string>
+  <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">Iba pre rootované zariadenie. Používajte len vtedy, ak ste si istí, že máte root.</string>
   <string name="mountsystemsummary">Zapnite, ak chcete upravovať systémové súbory</string>
   <string name="mountsystem">Pripojiť systémové priečinky ako zapisovateľné</string>
   <string name="rootfailure">Root prístup nebol udelený</string>
   <string name="selectall">Vybrať všetko</string>
-  <string name="delete">Odstrániť</string>
+  <string name="delete">Vymazať</string>
   <string name="setashome">Nastaviť ako domovský</string>
   <string name="sethome">Nastaviť domovský adresár</string>
   <string name="foldercolor">Farba priečinka</string>
@@ -163,13 +163,13 @@
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Priečinky na vrchole</string>
   <string name="filesOnTop">Súbory na vrchole</string>
-  <string name="noneOnTop">Nič na začiatku</string>
+  <string name="noneOnTop">Nič na vrchole</string>
   <!--SortBy-->
   <string name="sortName">Meno</string>
   <string name="lastModified">Naposledy zmenené</string>
   <string name="sortSize">Veľkosť</string>
   <string name="sortNameDesc">Názov (popis)</string>
-  <string name="lastModifiedDesc">Modifikované (popis)</string>
+  <string name="lastModifiedDesc">Naposledy modifikované (popis)</string>
   <string name="sortSizeDesc">Veľkosť (popis)</string>
   <!--ListMode-->
   <string name="detailedView">Zobrazenie podrobností</string>
@@ -239,7 +239,7 @@
   <string name="hiddenfiles">Skryté súbory</string>
   <string name="type">Typ</string>
   <string name="typeDesc">Typ (popis)</string>
-  <string name="rootdirectory">Koreň</string>
+  <string name="rootdirectory">Koreňový adresár</string>
   <string name="new_string">Nová</string>
   <string name="setringtone">Nastaviť ako zvonenie</string>
   <string name="copy_path">Kopírovať cestu</string>
@@ -330,7 +330,7 @@
   <string name="hide_mode_nothing">Panel aplikácie zostane nezmenený</string>
   <string name="hide_mode_toolbar">Panel s nástrojmi sa pri posúvaní skryje</string>
   <string name="hide_mode_app_bar">Panel aplikácie sa pri posúvaní skryje</string>
-  <string name="no_cover_photo">Žiadna titulná fotka</string>
+  <string name="no_cover_photo">Žiadna fotka obalu</string>
   <string name="files">Súbory</string>
   <string name="directories">Adresáre</string>
   <string name="textreader">Prehliadač textov</string>
@@ -340,9 +340,9 @@
   <string name="topFabS">Tlačidlo by malo byť hore alebo dolu. To platí len v prípade, ak sa panel aplikácie neskrýva.</string>
   <string name="needsaccess">Potrebný prístup na zápis</string>
   <string name="needsaccesssummary">Prosím vyberte koreňový adresár \t</string>
-  <string name="needsaccesssummary1">\ts oprávením na zapisovanie </string>
+  <string name="needsaccesssummary1">\tto udeliť oprávnenie na zápis </string>
   <string name="smb_con">SMB pripojenie</string>
-  <string name="smb_server">IP alebo adresa servera</string>
+  <string name="smb_server">IP adresa servera</string>
   <string name="username">Meno používateľa</string>
   <string name="password">Heslo</string>
   <string name="anonymous">Anonymný</string>
@@ -571,4 +571,5 @@
   <string name="contributors_5_summary">Farebný prechod Keď potiahnete kartu</string>
   <string name="contributors_6_summary">FTP Server</string>
   <string name="contributors_7_summary">Spustiť interaktívny shell</string>
+  <string name="bytes">Bajtov</string>
 </resources>

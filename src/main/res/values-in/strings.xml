@@ -76,6 +76,8 @@
   <string name="tab">Tab</string>
   <string name="file">Berkas</string>
   <string name="folder">Folder</string>
+  <string name="title_files">BERKAS</string>
+  <string name="title_dirs">DIREKTORI</string>
   <string name="newfolder">Folder Baru</string>
   <string name="entername">Masukan Nama</string>
   <string name="extracting">Mengekstrak</string>

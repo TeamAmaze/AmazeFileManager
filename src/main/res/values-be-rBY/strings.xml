@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Адкрыць панэль</string>
   <string name="drawer_close">Зачыніць панель</string>
   <string name="books">Закладкі</string>
@@ -26,7 +27,7 @@
   <string name="efn">Увядзіце імя файла</string>
   <string name="storage">Сховішча</string>
   <string name="gallery">Галерэя</string>
-  <string name="apps">Мэнеджэр дадаткаў</string>
+  <string name="apps">Мэнеджэр праграм</string>
   <string name="ftp">FTP сервер</string>
   <string name="bookmanag">Кіраванне закладкамі</string>
   <string name="setting">Налады</string>
@@ -42,7 +43,7 @@
   <string name="delbook">Выдаліць закладку</string>
   <string name="addtobook">Дадаць у закладкі</string>
   <string name="enterpath">Увядзіце шлях</string>
-  <string name="cancel">АДМЕНА</string>
+  <string name="cancel">СКАСАВАЦЬ</string>
   <string name="create">СТВАРЫЦЬ</string>
   <string name="success">Паспяхова</string>
   <string name="filenotexists">Файл не існуе</string>
@@ -112,7 +113,7 @@
   <string name="colorize_summary">Усталёўвае статычны колер значкоў. Не перавызначае ўстаноўлены колер значкоў дырэкторый.</string>
   <string name="back">Назад</string>
   <string name="home">Хатняя</string>
-  <string name="paste">Усталяваць</string>
+  <string name="paste">Уставіць</string>
   <string name="close">Зачыніць</string>
   <string name="history">Гісторыя</string>
   <string name="refresh">Абнавiць</string>
@@ -242,7 +243,7 @@
   <string name="new_string">Новае</string>
   <string name="setringtone">Усталяваць як рынгтон</string>
   <string name="copy_path">Капіяваць шлях</string>
-  <string name="addshortcut">Дадаць ярлык</string>
+  <string name="addshortcut">Дадаць цэтлік</string>
   <string name="unsavedchanges">Незахаваныя змены</string>
   <string name="unsavedchangesdesc">У Вас ёсць незахаваныя змены, вы хочаце захаваць іх перад выхадам?</string>
   <string name="saving">Захаванне</string>
@@ -401,7 +402,7 @@
   <string name="ftp_notif_starting">FTP сервер запушчаны</string>
   <string name="ftp_notif_title">Amaze FTP сервер запушчаны</string>
   <string name="ftp_notif_text">на %s</string>
-  <string name="ftp_notif_stop_server">СТОП</string>
+  <string name="ftp_notif_stop_server">СПЫНІЦЬ</string>
   <string name="ftp_port_edit_menu_title">Выбраць порт FTP</string>
   <string name="ftp_port_change_success">Порт FTP зменены паспяхова</string>
   <string name="ftp_port_change_error_invalid">Выбраны недапушчальны нумар порта</string>
@@ -425,10 +426,10 @@
                 <h1>Як атрымаць доступ да агульнай тэчцы вокны на андроіда (smb)</h1>\n\n
                 <ul>
                     <li>
-                        <b>Ўключыць агульны доступ да файлаў</b>\n
+                        <b>Уключыць агульны доступ да файлаў</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                     Адкрыйце панэль кіравання, націсніце Выбраць хатнія групы і сумеснае выкарыстанне магчымасцяў у межах сеткі і Інтэрнэт, і націсніце кнопку Змяніць дадатковыя параметры агульнага доступу. Ўключыць функцыі агульнага доступу да файлаў і друкарак.\n\n
+                     Адкрыйце панэль кіравання, націсніце Выбраць хатнія групы і сумеснае выкарыстанне магчымасцяў у межах сеткі і Інтэрнэт, і націсніце кнопку Змяніць дадатковыя параметры агульнага доступу. Уключыць функцыі агульнага доступу да файлаў і друкарак.\n\n
                     </p>
 
                     <li>
@@ -438,7 +439,7 @@
                         Вы таксама можаце наладзіць іншыя дадатковыя параметры агульнага доступу тут.\n
                         Напрыклад, вы можаце дазволіць доступ да файлаў без пароля, калі вы давяраеце ўсім
                         прылады на вашай лакальнай сеткі.Адзін раз да файлаў і друкарак уключаны, вы можаце
-                        адкрыйце Правадыр або Правадыр Windows, пстрыкніце правай кнопкай мышы тэчку, якую вы хочаце падзяліцца, і
+                        адкрыйце Праваднік або Праваднік Windows, націсніце правай кнопкай мышы тэчку, якой вы хочаце падзяліцца, і
                         выберыце Уласцівасці. \n
                         Націсніце кнопку падзяліцца і зрабіць тэчку даступнай у сетцы.\n\n
                         </p>
@@ -468,7 +469,7 @@
             </body>
         </html>
     </string>
-  <string name="share_limit">Немагчыма абменьвацца больш за 100 файламі</string>
+  <string name="share_limit">Немагчыма абменьвацца больш за 100 файлаў</string>
   <string name="otg_access">Выберыце каранёвую тэчку OTG прылады</string>
   <string name="no_profile_pic">Няма выявы профілю G+</string>
   <string name="opening">Адкрыццё..</string>
@@ -503,7 +504,7 @@
   <string name="exposure_time">Вытрымка</string>
   <string name="aperture_value">Значенне дыяфрагмы</string>
   <string name="image_iso">Адчувальнасць ISO</string>
-  <string name="flash_fired">Выбліск ўключаны</string>
+  <string name="flash_fired">Выбліск уключаны</string>
   <string name="focal_length">Фокусная адлегласць</string>
   <string name="document">Дакумент</string>
   <string name="subject">Тэма</string>
@@ -543,7 +544,7 @@
   <string name="error_io">Памылка ўводу/вываду</string>
   <string name="error_root_not_permitted">Памылка: Root правы не прадастаўленны</string>
   <string name="medium_text">Сярэдні тэкст</string>
-  <string name="tap_and_hold_tips">Націсніце і ўтрымлівайце файл або тэчку для дадатковых опцый</string>
+  <string name="tap_and_hold_tips">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="permission_read">Чытаць</string>
   <string name="permission_write">Запісаць</string>
   <string name="permission_execute">Выканаць</string>
@@ -582,4 +583,5 @@
   <string name="contributors_5_summary">Колер пры змене ўкладкі</string>
   <string name="contributors_6_summary">FTP сервер</string>
   <string name="contributors_7_summary">Запусціць інтэрактыўную абалонку</string>
+  <string name="bytes">Байты</string>
 </resources>

@@ -544,4 +544,5 @@
   <string name="contributors_5_summary">滑动按钮时进行颜色过渡</string>
   <string name="contributors_6_summary">FTP 服务器</string>
   <string name="contributors_7_summary">启动交互式 shell</string>
+  <string name="bytes">字节</string>
 </resources>
