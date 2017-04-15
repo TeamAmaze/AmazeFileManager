@@ -420,47 +420,6 @@
   <string name="searchingdevices">Buscando dispositivos</string>
   <string name="use_custom_ip">Utilizar IP personalizada</string>
   <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
-  <string name="smb_instructions">
-<html>
-            <body>
-                <h1>Cómo acceder a la carpeta compartida de Windows en android (smb)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Habilitar compartir archivos</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Abra el Panel de control, haga clic en Elegir grupos domésticos y opciones de compartir sobre red
-                        E Internet, y haga clic en Cambiar la configuración avanzada de uso compartido. Habilitar el archivo y
-                        Impresora compartida.\n\n
-                    </p>
-
-                    <li>
-                        <b>Configuración de archivos compartidos adicionales</b>\n
-                    <li>
-                        <b>Asegúrese de que ambos dispositivos estén en el mismo Wifi</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Esta característica hace que los archivos estén disponibles en la red local, por lo que su PC y dispositivos móviles
-                         Tienen que estar en la misma red local. No puede acceder a una carpeta de Windows compartida
-                         A través de Internet o cuando el teléfono inteligente está conectado a sus datos móviles:
-                         Tiene que estar conectado a Wi-Fi.\n\n
-                    </p>
-
-                    <li>
-                        <b>Buscar dirección IP</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Abra el símbolo del sistema. Escriba \'ipconfig\' y presione Enter. Buscar Gateway predeterminado
-                         Bajo su adaptador de red para la dirección IP de su enrutador. Buscar
-                         \\ \"Dirección IPv4 \\" en la misma sección de adaptador para encontrar la dirección IP de su equipo
-                         dirección.\n\n
-                    </p>
-
-                    <b>Introducir detalles en el cuadro de diálogo smb</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
   <string name="share_limit">No se pueden compartir más de 100 archivos</string>
   <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
   <string name="no_profile_pic">Sin foto de Perfil de G +</string>
