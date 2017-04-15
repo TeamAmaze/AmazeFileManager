@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -26,7 +26,7 @@ import android.os.AsyncTask;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -42,13 +42,13 @@ import jcifs.smb.SmbFile;
 
 public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
-    private Main main;
+    private MainFragment mainFrag;
     private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
 
-    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, Main ma, Context context, OpenMode mode) {
-        main = ma;
+    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, MainFragment ma, Context context, OpenMode mode) {
+        mainFrag = ma;
         this.context = context;
         this.files = files;
         this.mode = mode;
@@ -109,8 +109,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
     @Override
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
-            if (main != null && main.CURRENT_PATH.equals(paths.get(0)))
-                    main.updateList();
+            if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0)))
+                    mainFrag.updateList();
 
             for (int i = 0; i < paths.size(); i++) {
                 for (BaseFile f : files.get(i)) {

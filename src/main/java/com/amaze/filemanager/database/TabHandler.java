@@ -49,9 +49,10 @@ public class TabHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
-                + COLUMN_TAB_NO
-                + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT," + COLUMN_HOME + " TEXT" + ")";
+                + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                + COLUMN_PATH + " TEXT,"
+                + COLUMN_HOME + " TEXT"
+                + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
     }
 
@@ -101,7 +102,7 @@ public class TabHandler extends SQLiteOpenHelper {
     }
 
     public List<Tab> getAllTabs() {
-        List<Tab> tabList = new ArrayList<Tab>();
+        List<Tab> tabList = new ArrayList<>();
         // Select all query
         String query = "Select * FROM " + TABLE_TAB;
 

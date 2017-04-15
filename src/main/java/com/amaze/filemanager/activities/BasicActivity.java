@@ -55,6 +55,5 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
             initialize();
 
         return utilsProvider.getThemeManager();
-
     }
 }

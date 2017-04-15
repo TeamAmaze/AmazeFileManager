@@ -27,22 +27,22 @@
             android:summary="@string/color_summary"
             android:title="@string/color_title"/>
 
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="circularimages"
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:enabled="true"
             android:key="plus_pic"
             android:summary="@string/gplus_pic_summary"
             android:title="@string/gplus_pic_title"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="intelliHideToolbar"
             android:summary="@string/intellihide_toolbar_summary"
@@ -51,32 +51,32 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="savepaths"
             android:summary="@string/savepathsummary"
             android:title="@string/savepaths"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="showThumbs"
             android:summary="@string/thumbSummary"
             android:title="@string/thumb"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:key="showHidden"
             android:title="@string/hidden"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:enabled="false"
             android:key="showLastModified"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:key="goBack_checkbox"
             android:summary="@string/back_summary"
@@ -104,24 +104,24 @@
         <PreferenceScreen
             android:title="@string/advanced_search"
             >
-            <com.amaze.filemanager.ui.views.CheckBx
+            <com.amaze.filemanager.ui.views.CheckBox
                 android:key="regex"
                 android:summary="@string/regular_expression_summary"
                 android:title="@string/regular_expression"
                 />
-            <com.amaze.filemanager.ui.views.CheckBx
+            <com.amaze.filemanager.ui.views.CheckBox
                 android:key="matches"
                 android:summary="@string/match_content_summary"
                 android:title="@string/match_content"
                 />
         </PreferenceScreen>
 
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:key="showPermissions"
             android:summary="@string/rootPrefSummary"
             android:title="@string/rootPref"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/rootmodesummary"

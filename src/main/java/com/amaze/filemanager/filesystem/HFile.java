@@ -30,7 +30,8 @@ import jcifs.smb.SmbFile;
 public class HFile {
     String path;
     //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
-    OpenMode mode=OpenMode.FILE;
+    OpenMode mode = OpenMode.FILE;
+
     public HFile(OpenMode mode, String path) {
         this.path = path;
         this.mode = mode;
@@ -39,39 +40,41 @@ public class HFile {
     public HFile(OpenMode mode, String path, String name, boolean isDirectory) {
         this.mode = mode;
         if (path.startsWith("smb://") || isSmb()) {
-            if(!isDirectory)this.path = path + name;
-            else if(!name.endsWith("/")) this.path=path+name+"/";
-            else this.path=path+name;
+            if (!isDirectory) this.path = path + name;
+            else if (!name.endsWith("/")) this.path = path + name + "/";
+            else this.path = path + name;
         } else this.path = path + "/" + name;
     }
-    public void generateMode(Context context){
+
+    public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
         } else if (path.startsWith("otg:/")) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
             mode = OpenMode.CUSTOM;
-        }else {
-            if(context==null){
-                mode=OpenMode.FILE;
+        } else {
+            if (context == null) {
+                mode = OpenMode.FILE;
                 return;
             }
-            boolean rootmode=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode",false);
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT) {
-                mode=OpenMode.FILE;
-                if(rootmode){
-                    if(!getFile().canRead())mode=OpenMode.ROOT;
+            boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode", false);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                mode = OpenMode.FILE;
+                if (rootmode) {
+                    if (!getFile().canRead()) mode = OpenMode.ROOT;
                 }
                 return;
             }
-            if(FileUtil.isOnExtSdCard(getFile(),context))mode=OpenMode.FILE;
-            else if(rootmode){
-                if(!getFile().canRead())mode=OpenMode.ROOT;
+            if (FileUtil.isOnExtSdCard(getFile(), context)) mode = OpenMode.FILE;
+            else if (rootmode) {
+                if (!getFile().canRead()) mode = OpenMode.ROOT;
             }
-            if(mode==OpenMode.UNKNOWN)mode=OpenMode.FILE;
+            if (mode == OpenMode.UNKNOWN) mode = OpenMode.FILE;
         }
 
     }
+
     public void setMode(OpenMode mode) {
         this.mode = mode;
     }
@@ -84,59 +87,65 @@ public class HFile {
         this.path = path;
     }
 
-    public boolean isLocal(){
-        return mode==OpenMode.FILE;
+    public boolean isLocal() {
+        return mode == OpenMode.FILE;
     }
-    public boolean isRoot(){
-        return mode==OpenMode.ROOT;
+
+    public boolean isRoot() {
+        return mode == OpenMode.ROOT;
     }
-    public boolean isSmb(){
-        return mode==OpenMode.SMB;
+
+    public boolean isSmb() {
+        return mode == OpenMode.SMB;
     }
 
     public boolean isOtgFile() {
-        return mode==OpenMode.OTG;
+        return mode == OpenMode.OTG;
     }
 
-    File getFile(){return new File(path);}
-    BaseFile generateBaseFileFromParent(){
-        ArrayList<BaseFile> arrayList= null;
+    File getFile() {
+        return new File(path);
+    }
+
+    BaseFile generateBaseFileFromParent() {
+        ArrayList<BaseFile> arrayList = null;
         try {
-            arrayList = RootHelper.getFilesList(getFile().getParent(),true,true,null);
+            arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
         } catch (RootNotPermittedException e) {
             e.printStackTrace();
             return null;
         }
-        for(BaseFile baseFile:arrayList){
-            if(baseFile.getPath().equals(path))
+        for (BaseFile baseFile : arrayList) {
+            if (baseFile.getPath().equals(path))
                 return baseFile;
         }
         return null;
     }
+
     public long lastModified() throws MalformedURLException, SmbException {
-        switch (mode){
+        switch (mode) {
             case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
+                SmbFile smbFile = getSmbFile();
+                if (smbFile != null)
                     return smbFile.lastModified();
                 break;
             case FILE:
                 new File(path).lastModified();
                 break;
             case ROOT:
-                BaseFile baseFile=generateBaseFileFromParent();
-                if(baseFile!=null)
+                BaseFile baseFile = generateBaseFileFromParent();
+                if (baseFile != null)
                     return baseFile.getDate();
         }
         return new File("/").lastModified();
     }
 
     public long length() {
-        long s = 0l;
-        switch (mode){
+        long s = 0L;
+        switch (mode) {
             case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
+                SmbFile smbFile = getSmbFile();
+                if (smbFile != null)
                     try {
                         s = smbFile.length();
                     } catch (SmbException e) {
@@ -146,8 +155,8 @@ public class HFile {
                 s = new File(path).length();
                 return s;
             case ROOT:
-                BaseFile baseFile=generateBaseFileFromParent();
-                if(baseFile!=null) return baseFile.getSize();
+                BaseFile baseFile = generateBaseFileFromParent();
+                if (baseFile != null) return baseFile.getSize();
                 break;
         }
         return s;
@@ -155,6 +164,7 @@ public class HFile {
 
     /**
      * Helper method to find length of file under otg
+     *
      * @param context
      * @return
      */
@@ -168,10 +178,10 @@ public class HFile {
 
     public String getName() {
         String name = null;
-        switch (mode){
+        switch (mode) {
             case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
+                SmbFile smbFile = getSmbFile();
+                if (smbFile != null)
                     return smbFile.getName();
                 break;
             case FILE:
@@ -180,40 +190,42 @@ public class HFile {
                 return new File(path).getName();
             default:
                 StringBuilder builder = new StringBuilder(path);
-                name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
+                name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
         }
         return name;
     }
-    public SmbFile getSmbFile(int timeout){
+
+    public SmbFile getSmbFile(int timeout) {
         try {
-            SmbFile smbFile=new SmbFile(path);
+            SmbFile smbFile = new SmbFile(path);
             smbFile.setConnectTimeout(timeout);
             return smbFile;
         } catch (MalformedURLException e) {
             return null;
         }
     }
-    public SmbFile getSmbFile(){
+
+    public SmbFile getSmbFile() {
         try {
             return new SmbFile(path);
         } catch (MalformedURLException e) {
             return null;
         }
     }
-    public boolean isCustomPath(){
-        if(path.equals("0") ||
+
+    public boolean isCustomPath() {
+        return path.equals("0") ||
                 path.equals("1") ||
                 path.equals("2") ||
                 path.equals("3") ||
                 path.equals("4") ||
                 path.equals("5") ||
-                path.equals("6"))
-            return true;
-        return false;
+                path.equals("6");
     }
 
     /**
      * Returns a path to parent for various {@link #mode}
+     *
      * @return
      */
     public String getParent() {
@@ -233,15 +245,14 @@ public class HFile {
                 break;
             default:
                 StringBuilder builder = new StringBuilder(path);
-                StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
-                        builder.length()-(getName().length()+1)));
-                return parentPathBuilder.toString();
+                return builder.substring(0, builder.length() - (getName().length() + 1));
         }
         return parentPath;
     }
 
     /**
      * Helper method to get parent path
+     *
      * @param context
      * @return
      */
@@ -253,14 +264,15 @@ public class HFile {
     public String getParentName() {
         StringBuilder builder = new StringBuilder(path);
         StringBuilder parentPath = new StringBuilder(builder.substring(0,
-                builder.length()-(getName().length()+1)));
-        String parentName = parentPath.substring(parentPath.lastIndexOf("/")+1,
+                builder.length() - (getName().length() + 1)));
+        String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1,
                 parentPath.length());
         return parentName;
     }
 
     /**
      * Whether this object refers to a directory or file, handles all types of files
+     *
      * @return
      */
     public boolean isDirectory() {
@@ -282,7 +294,7 @@ public class HFile {
                 break;
             case ROOT:
                 try {
-                    isDirectory=RootHelper.isDirectory(path,true,5);
+                    isDirectory = RootHelper.isDirectory(path, true, 5);
                 } catch (RootNotPermittedException e) {
                     e.printStackTrace();
                     isDirectory = false;
@@ -302,14 +314,14 @@ public class HFile {
     }
 
     public long folderSize() {
-        long size = 0l;
+        long size = 0L;
 
-        switch (mode){
+        switch (mode) {
             case SMB:
                 try {
                     size = Futils.folderSize(new SmbFile(path));
                 } catch (MalformedURLException e) {
-                    size = 0l;
+                    size = 0L;
                     e.printStackTrace();
                 }
                 break;
@@ -317,17 +329,18 @@ public class HFile {
                 size = Futils.folderSize(new File(path));
                 break;
             case ROOT:
-                BaseFile baseFile=generateBaseFileFromParent();
-                if(baseFile!=null) size = baseFile.getSize();
+                BaseFile baseFile = generateBaseFileFromParent();
+                if (baseFile != null) size = baseFile.getSize();
                 break;
             default:
-                return 0l;
+                return 0L;
         }
         return size;
     }
 
     /**
      * Helper method to get length of folder in an otg
+     *
      * @param context
      * @return
      */
@@ -337,15 +350,15 @@ public class HFile {
 
 
     public long getUsableSpace() {
-        long size = 0l;
+        long size = 0L;
         if (isSmb()) {
             try {
                 size = (new SmbFile(path).getDiskFreeSpace());
             } catch (MalformedURLException e) {
-                size = 0l;
+                size = 0L;
                 e.printStackTrace();
             } catch (SmbException e) {
-                size = 0l;
+                size = 0L;
                 e.printStackTrace();
             }
         } else
@@ -359,12 +372,12 @@ public class HFile {
             try {
                 SmbFile smbFile = new SmbFile(path);
                 for (SmbFile smbFile1 : smbFile.listFiles()) {
-                    BaseFile baseFile=new BaseFile(smbFile1.getPath());
+                    BaseFile baseFile = new BaseFile(smbFile1.getPath());
                     baseFile.setName(smbFile1.getName());
                     baseFile.setMode(OpenMode.SMB);
                     baseFile.setDirectory(smbFile1.isDirectory());
                     baseFile.setDate(smbFile1.lastModified());
-                    baseFile.setSize(baseFile.isDirectory()?0:smbFile1.length());
+                    baseFile.setSize(baseFile.isDirectory() ? 0 : smbFile1.length());
                     arrayList.add(baseFile);
                 }
             } catch (MalformedURLException e) {
@@ -380,7 +393,7 @@ public class HFile {
 
         } else {
             try {
-                arrayList = RootHelper.getFilesList(path, rootmode, true,null);
+                arrayList = RootHelper.getFilesList(path, rootmode, true, null);
             } catch (RootNotPermittedException e) {
                 e.printStackTrace();
                 arrayList = null;
@@ -392,6 +405,7 @@ public class HFile {
 
     /**
      * Helper method to list children of this file
+     *
      * @param context
      * @return
      */
@@ -399,8 +413,8 @@ public class HFile {
         return RootHelper.getDocumentFilesList(path, context);
     }
 
-    public String getReadablePath(String path){
-        if(isSmb())
+    public String getReadablePath(String path) {
+        if (isSmb())
             return parseSmbPath(path);
         return path;
     }
@@ -444,7 +458,7 @@ public class HFile {
             try {
                 inputStream = FileUtil.getOutputStream(new File(path), context, length());
             } catch (Exception e) {
-                inputStream=null;
+                inputStream = null;
             }
 
         }
@@ -455,14 +469,14 @@ public class HFile {
         boolean exists = false;
         if (isSmb()) {
             try {
-                SmbFile smbFile=getSmbFile(2000);
-                exists =smbFile!=null?smbFile .exists():false;
+                SmbFile smbFile = getSmbFile(2000);
+                exists = smbFile != null && smbFile.exists();
             } catch (SmbException e) {
                 exists = false;
             }
-        }
-        else if(isLocal())exists = new File(path).exists();
-        else if(isRoot()) {
+        } else if (isLocal()) {
+            exists = new File(path).exists();
+        } else if (isRoot()) {
             try {
                 return RootHelper.fileExists(path);
             } catch (RootNotPermittedException e) {
@@ -470,35 +484,36 @@ public class HFile {
                 return false;
             }
         }
+
         return exists;
     }
 
     /**
      * Helper method to check file existence in otg
+     *
      * @param context
      * @return
      */
     public boolean exists(Context context) {
         if (isOtgFile()) {
             DocumentFile fileToCheck = RootHelper.getDocumentFile(path, context, false);
-            return fileToCheck!=null;
+            return fileToCheck != null;
         } else return (exists());
     }
 
     /**
      * Whether file is a simple file (i.e. not a directory/smb/otg/other)
+     *
      * @return true if file; other wise false
      */
-    public boolean isSimpleFile(){
-        if(!isSmb() && !isOtgFile() && !isCustomPath()
-                && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()){
-            if(!new File(path).isDirectory())return true;
-        }
-        return false;
+    public boolean isSimpleFile() {
+        return !isSmb() && !isOtgFile() && !isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
+                !new File(path).isDirectory();
     }
 
-    public boolean setLastModified(long date){
-        if(isSmb())
+    public boolean setLastModified(long date) {
+        if (isSmb())
             try {
                 new SmbFile(path).setLastModified(date);
                 return true;
@@ -507,23 +522,22 @@ public class HFile {
             } catch (MalformedURLException e) {
                 return false;
             }
-        File f=new File(path);
+        File f = new File(path);
         return f.setLastModified(date);
 
     }
+
     public void mkdir(Context context) {
         if (isSmb()) {
             try {
                 new SmbFile(path).mkdirs();
-            } catch (SmbException e) {
-                Logger.log(e,path,context);
-            } catch (MalformedURLException e) {
-                Logger.log(e,path,context);
+            } catch (SmbException | MalformedURLException e) {
+                Logger.log(e, path, context);
             }
         } else if (isOtgFile()) {
-            if (!exists(context)){
+            if (!exists(context)) {
                 DocumentFile parentDirectory = RootHelper.getDocumentFile(getParent(), context, false);
-                if (parentDirectory.isDirectory())  {
+                if (parentDirectory.isDirectory()) {
                     parentDirectory.createDirectory(getName());
                 }
             }
@@ -532,17 +546,15 @@ public class HFile {
             FileUtil.mkdir(new File(path), context);
     }
 
-    public boolean delete(Context context,boolean rootmode) throws RootNotPermittedException {
+    public boolean delete(Context context, boolean rootmode) throws RootNotPermittedException {
         if (isSmb()) {
             try {
                 new SmbFile(path).delete();
-            } catch (SmbException e) {
-                Logger.log(e,path,context);
-            } catch (MalformedURLException e) {
-                Logger.log(e,path,context);
+            } catch (SmbException | MalformedURLException e) {
+                Logger.log(e, path, context);
             }
         } else {
-            if(isRoot() && rootmode) {
+            if (isRoot() && rootmode) {
                 setMode(OpenMode.ROOT);
 
                 RootUtils.delete(getPath());
@@ -553,4 +565,5 @@ public class HFile {
         }
         return !exists();
     }
+
 }

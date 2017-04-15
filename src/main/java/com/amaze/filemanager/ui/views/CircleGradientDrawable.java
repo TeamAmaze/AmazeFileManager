@@ -43,7 +43,6 @@ public class CircleGradientDrawable extends GradientDrawable {
         setColor(color);
     }
 
-
     public CircleGradientDrawable(AppTheme appTheme, DisplayMetrics metrics) {
         this.mDisplayMetrics = metrics;
 

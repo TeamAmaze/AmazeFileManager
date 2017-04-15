@@ -29,11 +29,9 @@ import java.security.NoSuchAlgorithmException;
 public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
 
     private MaterialDialog a;
-    private String name, parent, size, items, date;
+    private String name, parent, items, date;
     private HFile f;
     private BaseActivity c;
-    private String sizeString;
-    private View textView;
     private SizeDrawable sizeDrawable;
     private GenerateMD5Task g = this;
     private TextView t5, t6, t7, t8, t9, t10;
@@ -44,16 +42,14 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
     private int accentColor;
 
     public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
-                           String size, String items, String date, final BaseActivity c, final View textView) {
+                           String items, String date, final BaseActivity c, final View textView) {
         this.a = a;
         this.c = c;
         this.f = f;
         this.name = name;
         this.parent = parent;
-        this.size = size;
         this.items = items;
         this.date = date;
-        this.textView = textView;
         this.sizeDrawable = (SizeDrawable) textView.findViewById(R.id.sizedrawable);
         final TextView t1 = (TextView) textView.findViewById(R.id.t1);
         final TextView t2 = (TextView) textView.findViewById(R.id.t2);
@@ -246,8 +242,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         }
     }
 
-        // see this How-to for a faster way to convert
-        // a byte array to a HEX string
+    // see this How-to for a faster way to convert a byte array to a HEX string
 
     public String getMD5Checksum(String filename) throws Exception {
         byte[] b = createChecksum();

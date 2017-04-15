@@ -15,7 +15,6 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -80,9 +79,9 @@ public class SmbConnectDialog extends DialogFragment {
         final TextInputLayout ipTIL = (TextInputLayout)v2.findViewById(R.id.ipTIL);
         final TextInputLayout domainTIL = (TextInputLayout)v2.findViewById(R.id.domainTIL);
         final TextInputLayout usernameTIL = (TextInputLayout)v2.findViewById(R.id.usernameTIL);
-        final AppCompatEditText con_name = (AppCompatEditText) v2.findViewById(R.id.connectionET);
+        final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.connectionET);
 
-        con_name.addTextChangedListener(new TextWatcher() {
+        conName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -95,7 +94,7 @@ public class SmbConnectDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-            if(con_name.getText().toString().length()==0)
+            if(conName.getText().toString().length()==0)
                 connectionTIL.setError(emptyName);
             else connectionTIL.setError("");
             }
@@ -161,7 +160,7 @@ public class SmbConnectDialog extends DialogFragment {
         final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
-        setTint(con_name,color);
+        setTint(conName,color);
         setTint(user,color);
         setTint(pass,color);
         Futils.setTint(ch,color);
@@ -186,7 +185,7 @@ public class SmbConnectDialog extends DialogFragment {
         });
         if (edit) {
             String userp = "", passp = "", ipp = "",domainp = "";
-            con_name.setText(name);
+            conName.setText(name);
             try {
                 jcifs.Config.registerSmbURLHandler();
                 URL a = new URL(path);
@@ -212,13 +211,13 @@ public class SmbConnectDialog extends DialogFragment {
             }
 
         }else if(path!=null && path.length()>0){
-            con_name.setText(name);
+            conName.setText(name);
             ip.setText(path);
             user.requestFocus();
         }
         else {
-            con_name.setText(R.string.smb_con);
-            con_name.requestFocus();
+            conName.setText(R.string.smb_con);
+            conName.requestFocus();
         }
         ba3.customView(v2, true);
         ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
@@ -231,7 +230,7 @@ public class SmbConnectDialog extends DialogFragment {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 String s[];
                 String ipa = ip.getText().toString();
-                String con_nam=con_name.getText().toString();
+                String con_nam=conName.getText().toString();
                 String sDomain = domain.getText().toString();
                 String username = user.getText().toString();
                 TextInputLayout firstInvalidField  = null;
@@ -272,7 +271,7 @@ public class SmbConnectDialog extends DialogFragment {
                     smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
                 }
                 if (smbFile == null) return;
-                s = new String[]{con_name.getText().toString(), smbFile.getPath()};
+                s = new String[]{conName.getText().toString(), smbFile.getPath()};
                 if(smbConnectionListener!=null){
                     smbConnectionListener.addConnection(edit,s[0],s[1],name,path);
                 }

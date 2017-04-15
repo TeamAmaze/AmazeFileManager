@@ -39,21 +39,19 @@ import java.util.List;
 public class SmbSearchDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
-    Listviewadapter listviewadapter;
+    listViewAdapter listViewAdapter;
     ArrayList<Computer> computers = new ArrayList<>();
-    SharedPreferences Sp;
+    SharedPreferences sharedPrefs;
     int fabskin;
     SubnetScanner subnetScanner;
-    Context context;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        context = getActivity();
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        fabskin = Color.parseColor(PreferenceUtils.getAccentString(Sp));
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        fabskin = Color.parseColor(PreferenceUtils.getAccentString(sharedPrefs));
     }
 
     @Override
@@ -92,7 +90,7 @@ public class SmbSearchDialog extends DialogFragment {
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(fabskin);
         computers.add(new Computer("-1", "-1"));
-        listviewadapter = new Listviewadapter(getActivity(), R.layout.smb_computers_row, computers);
+        listViewAdapter = new listViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
         subnetScanner = new SubnetScanner(getActivity());
         subnetScanner.setObserver(new SubnetScanner.ScanObserver() {
             @Override
@@ -103,7 +101,7 @@ public class SmbSearchDialog extends DialogFragment {
                         public void run() {
                             if (!computers.contains(computer))
                                 computers.add(computers.size() - 1, computer);
-                            listviewadapter.notifyDataSetChanged();
+                            listViewAdapter.notifyDataSetChanged();
                         }
                     });
             }
@@ -122,7 +120,7 @@ public class SmbSearchDialog extends DialogFragment {
                                 return;
                             }
                             computers.remove(computers.size() - 1);
-                            listviewadapter.notifyDataSetChanged();
+                            listViewAdapter.notifyDataSetChanged();
                         }
                     });
                 }
@@ -130,18 +128,18 @@ public class SmbSearchDialog extends DialogFragment {
         });
         subnetScanner.start();
 
-        builder.adapter(listviewadapter, null);
+        builder.adapter(listViewAdapter, null);
         return builder.build();
     }
 
-    private class Listviewadapter extends RecyclerArrayAdapter<Computer, Listviewadapter.ViewHolder> {
+    private class listViewAdapter extends RecyclerArrayAdapter<Computer, listViewAdapter.ViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
         LayoutInflater mInflater;
         Context context;
 
-        public Listviewadapter(Context context, @LayoutRes int resource, List<Computer> objects) {
+        public listViewAdapter(Context context, @LayoutRes int resource, List<Computer> objects) {
             this.context = context;
             addAll(objects);
             mInflater = (LayoutInflater) context
@@ -207,7 +205,7 @@ public class SmbSearchDialog extends DialogFragment {
                         if (getActivity() != null && getActivity() instanceof MainActivity) {
                             dismiss();
                             MainActivity mainActivity = (MainActivity) getActivity();
-                            mainActivity.showSMBDialog(listviewadapter.getItem(p).name, listviewadapter.getItem(p).addr, false);
+                            mainActivity.showSMBDialog(listViewAdapter.getItem(p).name, listViewAdapter.getItem(p).addr, false);
                         }
                     }
                 });
@@ -229,5 +227,7 @@ public class SmbSearchDialog extends DialogFragment {
                 return VIEW_ELEMENT;
             }
         }
+
     }
+
 }

@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.fragments;
 
-
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -69,7 +68,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.Recycleradapter;
+import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -77,7 +76,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.services.asynctasks.LoadList;
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -106,20 +105,18 @@ import java.util.List;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+public class MainFragment extends android.support.v4.app.Fragment {
 
-public class Main extends android.support.v4.app.Fragment {
-    private UtilitiesProviderInterface utilsProvider;
-    private Futils utils;
-
-    public ArrayList<Layoutelements> LIST_ELEMENTS;
-    public Recycleradapter adapter;
+    public ArrayList<LayoutElements> LIST_ELEMENTS;
+    public RecyclerAdapter adapter;
     public ActionMode mActionMode;
-    public SharedPreferences Sp;
+    public SharedPreferences sharedPref;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home, CURRENT_PATH = "", goback;
-    public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS, SHOW_SIZE, SHOW_LAST_MODIFIED;
+    public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
+            SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
     public OpenMode openMode = OpenMode.FILE;
     public android.support.v7.widget.RecyclerView listView;
@@ -127,7 +124,7 @@ public class Main extends android.support.v4.app.Fragment {
     public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
 
     /**
-     * {@link Main#IS_LIST} boolean to identify if the view is a list or grid
+     * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
     public IconHolder ic;
@@ -137,30 +134,7 @@ public class Main extends android.support.v4.app.Fragment {
     public String smbPath;
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public Resources res;
-    HashMap<String, Bundle> scrolls = new HashMap<String, Bundle>();
-    Main ma = this;
-    IconUtils icons;
-    View footerView;
-    String itemsstring;
     public int no;
-    TabHandler tabHandler;
-    LinearLayoutManager mLayoutManager;
-    GridLayoutManager mLayoutManagerGrid;
-    boolean addheader = false;
-    StickyRecyclerHeadersDecoration headersDecor;
-    DividerItemDecoration dividerItemDecoration;
-    int hidemode;
-    AppBarLayout mToolbarContainer;
-    TextView pathname, mFullPath;
-    boolean stopAnims = true;
-    View nofilesview;
-    DisplayMetrics displayMetrics;
-    HFile f;
-    Streamer s;
-    private View rootView;
-    private View actionModeView;
-    private FastScroller fastScroller;
-    private Bitmap mFolderBitmap;
 
     // ATTRIBUTES FOR APPEARANCE AND COLORS
     public String fabSkin, iconskin;
@@ -168,6 +142,33 @@ public class Main extends android.support.v4.app.Fragment {
     public int skin_color;
     public int skinTwoColor;
     public int icon_skin_color;
+
+    private IconUtils icons;
+    private View footerView;
+    private String itemsstring;
+    private TabHandler tabHandler;
+    private LinearLayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManagerGrid;
+    private boolean addheader = false;
+    private StickyRecyclerHeadersDecoration headersDecor;
+    private DividerItemDecoration dividerItemDecoration;
+    private int hidemode;
+    private AppBarLayout mToolbarContainer;
+    private TextView pathname, mFullPath;
+    private boolean stopAnims = true;
+    private View nofilesview;
+    private DisplayMetrics displayMetrics;
+    private HFile f;
+    private Streamer s;
+
+    private UtilitiesProviderInterface utilsProvider;
+    private Futils utils;
+    private HashMap<String, Bundle> scrolls = new HashMap<>();
+    private MainFragment ma = this;
+    private View rootView;
+    private View actionModeView;
+    private FastScroller fastScroller;
+    private Bitmap mFolderBitmap;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -177,10 +178,6 @@ public class Main extends android.support.v4.app.Fragment {
      * any of the search result
      */
     private boolean mRetainSearchTask = false;
-
-    public Main() {
-
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -193,8 +190,8 @@ public class Main extends android.support.v4.app.Fragment {
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        hidemode = Sp.getInt("hidemode", 0);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        hidemode = sharedPref.getInt("hidemode", 0);
 
         fabSkin = MAIN_ACTIVITY.getColorPreference().getColorAsString(ColorUsage.ACCENT);
         iconskin = MAIN_ACTIVITY.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
@@ -202,13 +199,13 @@ public class Main extends android.support.v4.app.Fragment {
         skinTwoColor = MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         icon_skin_color = Color.parseColor(iconskin);
 
-        SHOW_PERMISSIONS = Sp.getBoolean("showPermissions", false);
-        SHOW_SIZE = Sp.getBoolean("showFileSize", false);
-        SHOW_DIVIDERS = Sp.getBoolean("showDividers", true);
-        GO_BACK_ITEM = Sp.getBoolean("goBack_checkbox", false);
-        CIRCULAR_IMAGES = Sp.getBoolean("circularimages", true);
-        SHOW_LAST_MODIFIED = Sp.getBoolean("showLastModified", true);
-        icons = new IconUtils(Sp, getActivity());
+        SHOW_PERMISSIONS = sharedPref.getBoolean("showPermissions", false);
+        SHOW_SIZE = sharedPref.getBoolean("showFileSize", false);
+        SHOW_DIVIDERS = sharedPref.getBoolean("showDividers", true);
+        GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);
+        CIRCULAR_IMAGES = sharedPref.getBoolean("circularimages", true);
+        SHOW_LAST_MODIFIED = sharedPref.getBoolean("showLastModified", true);
+        icons = new IconUtils(sharedPref, getActivity());
     }
 
     @Override
@@ -266,7 +263,7 @@ public class Main extends android.support.v4.app.Fragment {
         });
         buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
         pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
-        SHOW_THUMBS = Sp.getBoolean("showThumbs", true);
+        SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
         res = getResources();
         pathname = (TextView) getActivity().findViewById(R.id.pathname);
         mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
@@ -274,8 +271,9 @@ public class Main extends android.support.v4.app.Fragment {
         apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
 
-        if (!Sp.getBoolean("intelliHideToolbar", true)){
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity().findViewById(R.id.action_bar).getLayoutParams();
+        if (!sharedPref.getBoolean("intelliHideToolbar", true)){
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity()
+                    .findViewById(R.id.action_bar).getLayoutParams();
             params.setScrollFlags(0);
             mToolbarContainer.setExpanded(true, true);
         }
@@ -297,11 +295,11 @@ public class Main extends android.support.v4.app.Fragment {
         setHasOptionsMenu(false);
         //MAIN_ACTIVITY = (MainActivity) getActivity();
         initNoFileLayout();
-        SHOW_HIDDEN = Sp.getBoolean("showHidden", false);
-        COLORISE_ICONS = Sp.getBoolean("coloriseIcons", true);
+        SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
+        COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
         mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
         goback = res.getString(R.string.goback);
-        folder = new BitmapDrawable(res, mFolderBitmap);;
+        folder = new BitmapDrawable(res, mFolderBitmap);
         getSortModes();
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
         DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
@@ -316,7 +314,7 @@ public class Main extends android.support.v4.app.Fragment {
         else    listView.setBackgroundDrawable(null);
 
         listView.setHasFixedSize(true);
-        columns = Integer.parseInt(Sp.getString("columns", "-1"));
+        columns = Integer.parseInt(sharedPref.getString("columns", "-1"));
         if (IS_LIST) {
             mLayoutManager = new LinearLayoutManager(getActivity());
             listView.setLayoutManager(mLayoutManager);
@@ -637,7 +635,7 @@ public class Main extends android.support.v4.app.Fragment {
                 case R.id.openmulti:
                     if (Build.VERSION.SDK_INT >= 16) {
                         Intent intentresult = new Intent();
-                        ArrayList<Uri> resulturis = new ArrayList<Uri>();
+                        ArrayList<Uri> resulturis = new ArrayList<>();
                         for (int k : plist) {
                             try {
                                 resulturis.add(Uri.fromFile(new File(LIST_ELEMENTS.get(k).getDesc())));
@@ -657,7 +655,7 @@ public class Main extends android.support.v4.app.Fragment {
                     }
                     return true;
                 case R.id.about:
-                    Layoutelements x;
+                    LayoutElements x;
                     x = LIST_ELEMENTS.get((plist.get(0)));
                     utils.showProps((x).generateBaseFile(), x.getPermissions(), ma, BaseActivity.rootMode, utilsProvider.getAppTheme());
                     /*PropertiesSheet propertiesSheet = new PropertiesSheet();
@@ -702,7 +700,7 @@ public class Main extends android.support.v4.app.Fragment {
                     utils.deleteFiles(LIST_ELEMENTS, ma, plist, utilsProvider.getAppTheme());
                     return true;
                 case R.id.share:
-                    ArrayList<File> arrayList = new ArrayList<File>();
+                    ArrayList<File> arrayList = new ArrayList<>();
                     for (int i : plist) {
                         arrayList.add(new File(LIST_ELEMENTS.get(i).getDesc()));
                     }
@@ -849,7 +847,7 @@ public class Main extends android.support.v4.app.Fragment {
             mRetainSearchTask = false;
             MainActivityHelper.SEARCH_TEXT = null;
         }
-        if (selection == true) {
+        if (selection) {
             if (!LIST_ELEMENTS.get(position).getSize().equals(goback)) {
                 // the first {goback} item if back navigation is enabled
                 adapter.toggleChecked(position, imageView);
@@ -867,7 +865,7 @@ public class Main extends android.support.v4.app.Fragment {
                 if (MainActivity.isSearchViewEnabled)   MAIN_ACTIVITY.hideSearchView();
 
                 String path;
-                Layoutelements l = LIST_ELEMENTS.get(position);
+                LayoutElements l = LIST_ELEMENTS.get(position);
                 if (!l.hasSymlink()) {
 
                     path = l.getDesc();
@@ -900,9 +898,7 @@ public class Main extends android.support.v4.app.Fragment {
                     DataUtils.addHistoryFile(l.getDesc());
                 }
             } else {
-
                 goBackItemClick();
-
             }
         }
     }
@@ -972,7 +968,7 @@ public class Main extends android.support.v4.app.Fragment {
         for (String s : DataUtils.listfiles) {
             index2++;
             if ((path).contains(s)) {
-                if (grid == true) both_contain = true;
+                if (grid) both_contain = true;
                 grid = false;
                 break;
             }
@@ -996,7 +992,7 @@ public class Main extends android.support.v4.app.Fragment {
      * @param results is the list of elements a result from search
      * @param grid whether to set grid view or list view
      */
-    public void createViews(ArrayList<Layoutelements> bitmap, boolean back, String path, OpenMode
+    public void createViews(ArrayList<LayoutElements> bitmap, boolean back, String path, OpenMode
             openMode, boolean results, boolean grid) {
         try {
             if (bitmap != null) {
@@ -1027,7 +1023,7 @@ public class Main extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null)
-                    adapter = new Recycleradapter(ma, utilsProvider, bitmap, ma.getActivity());
+                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity());
                 else {
                     adapter.generate(LIST_ELEMENTS);
                 }
@@ -1062,7 +1058,7 @@ public class Main extends android.support.v4.app.Fragment {
                         }
                     }
                     //floatingActionButton.show();
-                    MAIN_ACTIVITY.updatepaths(no);
+                    MAIN_ACTIVITY.updatePaths(no);
                     listView.stopScroll();
                     fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
                     mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -1093,7 +1089,6 @@ public class Main extends android.support.v4.app.Fragment {
             }
         } catch (Exception e) {
         }
-
     }
 
     /**
@@ -1101,17 +1096,17 @@ public class Main extends android.support.v4.app.Fragment {
      * @param f the file to rename
      */
     public void rename(final BaseFile f) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         String name = f.getName();
-        a.input("", name, false, new MaterialDialog.InputCallback() {
+        builder.input("", name, false, new MaterialDialog.InputCallback() {
             @Override
             public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
             }
         });
-        a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        a.title(getResources().getString(R.string.rename));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+        builder.title(getResources().getString(R.string.rename));
+        builder.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
                 String name = materialDialog.getInputEditText().getText().toString();
@@ -1129,11 +1124,11 @@ public class Main extends android.support.v4.app.Fragment {
                 materialDialog.cancel();
             }
         });
-        a.positiveText(R.string.save);
-        a.negativeText(R.string.cancel);
+        builder.positiveText(R.string.save);
+        builder.negativeText(R.string.cancel);
         int color = Color.parseColor(fabSkin);
-        a.positiveColor(color).negativeColor(color).widgetColor(color);
-        a.build().show();
+        builder.positiveColor(color).negativeColor(color).widgetColor(color);
+        builder.build().show();
     }
 
     public void computeScroll() {
@@ -1186,7 +1181,7 @@ public class Main extends android.support.v4.app.Fragment {
             if (MainActivityHelper.SEARCH_TEXT!=null) {
 
                 // starting the search query again :O
-                MAIN_ACTIVITY.mainFragment = (Main) MAIN_ACTIVITY.getFragment().getTab();
+                MAIN_ACTIVITY.mainFragment = (MainFragment) MAIN_ACTIVITY.getFragment().getTab();
                 FragmentManager fm = MAIN_ACTIVITY.getSupportFragmentManager();
 
                 // getting parent path to resume search from there
@@ -1197,8 +1192,8 @@ public class Main extends android.support.v4.app.Fragment {
 
                 MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
                         parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
-                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
-                        Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
+                        sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                        sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
             } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
 
             mRetainSearchTask = false;
@@ -1278,7 +1273,7 @@ public class Main extends android.support.v4.app.Fragment {
      * Final value of {@link #sortby} varies from 0 to 3
      */
     public void getSortModes() {
-        int t = Integer.parseInt(Sp.getString("sortby", "0"));
+        int t = Integer.parseInt(sharedPref.getString("sortby", "0"));
         if (t <= 3) {
             sortby = t;
             asc = 1;
@@ -1287,7 +1282,7 @@ public class Main extends android.support.v4.app.Fragment {
             sortby = t - 4;
         }
 
-        dsort = Integer.parseInt(Sp.getString("dirontop", "0"));
+        dsort = Integer.parseInt(sharedPref.getString("dirontop", "0"));
     }
 
     @Override
@@ -1308,15 +1303,15 @@ public class Main extends android.support.v4.app.Fragment {
     }
 
     void fixIcons() {
-        for (Layoutelements layoutelements : LIST_ELEMENTS) {
-            BitmapDrawable iconDrawable = layoutelements.isDirectory() ?
-                    folder : Icons.loadMimeIcon(layoutelements.getDesc(), !IS_LIST, res);
-            layoutelements.setImageId(iconDrawable);
+        for (LayoutElements layoutElements : LIST_ELEMENTS) {
+            BitmapDrawable iconDrawable = layoutElements.isDirectory() ?
+                    folder : Icons.loadMimeIcon(layoutElements.getDesc(), !IS_LIST, res);
+            layoutElements.setImageId(iconDrawable);
         }
     }
 
-    public ArrayList<Layoutelements> addToSmb(SmbFile[] mFile, String path) throws SmbException {
-        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+    public ArrayList<LayoutElements> addToSmb(SmbFile[] mFile, String path) throws SmbException {
+        ArrayList<LayoutElements> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
             if (DataUtils.hiddenfiles.contains(mFile[i].getPath()))
@@ -1328,22 +1323,22 @@ public class Main extends android.support.v4.app.Fragment {
             }
             if (mFile[i].isDirectory()) {
                 folder_count++;
-                Layoutelements layoutelements = new Layoutelements(folder, name, mFile[i].getPath(),
+                LayoutElements layoutElements = new LayoutElements(folder, name, mFile[i].getPath(),
                         "", "", "", 0, false, mFile[i].lastModified() + "", true);
-                layoutelements.setMode(OpenMode.SMB);
-                searchHelper.add(layoutelements.generateBaseFile());
-                a.add(layoutelements);
+                layoutElements.setMode(OpenMode.SMB);
+                searchHelper.add(layoutElements.generateBaseFile());
+                a.add(layoutElements);
             } else {
                 file_count++;
                 try {
-                    Layoutelements layoutelements = new Layoutelements(
+                    LayoutElements layoutElements = new LayoutElements(
                             Icons.loadMimeIcon(mFile[i].getPath(), !IS_LIST, res), name,
                             mFile[i].getPath(), "", "", Formatter.formatFileSize(getContext(),
                             mFile[i].length()), mFile[i].length(), false,
                             mFile[i].lastModified() + "", false);
-                    layoutelements.setMode(OpenMode.SMB);
-                    searchHelper.add(layoutelements.generateBaseFile());
-                    a.add(layoutelements);
+                    layoutElements.setMode(OpenMode.SMB);
+                    searchHelper.add(layoutElements.generateBaseFile());
+                    a.add(layoutElements);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1359,15 +1354,15 @@ public class Main extends android.support.v4.app.Fragment {
         if (!DataUtils.hiddenfiles.contains(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                Layoutelements layoutelements = utils.newElement(folder, f.getPath(), mFile.getPermisson(), mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
-                layoutelements.setMode(mFile.getMode());
-                LIST_ELEMENTS.add(layoutelements);
+                LayoutElements layoutElements = utils.newElement(folder, f.getPath(), mFile.getPermission(), mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+                layoutElements.setMode(mFile.getMode());
+                LIST_ELEMENTS.add(layoutElements);
                 folder_count++;
             } else {
                 long longSize = 0;
                 try {
                     if (mFile.getSize() != -1) {
-                        longSize = Long.valueOf(mFile.getSize());
+                        longSize = mFile.getSize();
                         size = Formatter.formatFileSize(getContext(), longSize);
                     } else {
                         size = "";
@@ -1377,9 +1372,9 @@ public class Main extends android.support.v4.app.Fragment {
                     //e.printStackTrace();
                 }
                 try {
-                    Layoutelements layoutelements = utils.newElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermisson(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
-                    layoutelements.setMode(mFile.getMode());
-                    LIST_ELEMENTS.add(layoutelements);
+                    LayoutElements layoutElements = utils.newElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    layoutElements.setMode(mFile.getMode());
+                    LIST_ELEMENTS.add(layoutElements);
                     file_count++;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1410,7 +1405,7 @@ public class Main extends android.support.v4.app.Fragment {
 
     }
 
-    private void addShortcut(Layoutelements path) {
+    private void addShortcut(LayoutElements path) {
         //Adding shortcut for MainActivity
         //on Home screen
         Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
@@ -1466,7 +1461,7 @@ public class Main extends android.support.v4.app.Fragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc, BaseActivity.rootMode));
+                Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc));
                 return null;
             }
 

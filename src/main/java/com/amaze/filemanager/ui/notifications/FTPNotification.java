@@ -90,7 +90,6 @@ public class FTPNotification extends BroadcastReceiver{
 
         // Pass Notification to NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification);
-
     }
 
     private void removeNotification(Context context){

@@ -38,7 +38,7 @@
 
     <item
         app:showAsAction="ifRoom"
-        android:id="@+id/item10"
+        android:id="@+id/sort"
         android:title="@string/sort"
         android:icon="@drawable/ic_sort_white_48dp">
         <menu >
@@ -69,11 +69,11 @@
         android:title="@string/extract"
         android:visible="false"/>
 
-    <!-- orderInCategory=9999 to have the element exit always at the end of the list -->
+    <!-- orderInCategory=100 to have the element exit always at the end of the list -->
     <item
-        android:id="@+id/item3"
+        android:id="@+id/exit"
         android:title="@string/exit"
-        android:orderInCategory="9999"
+        android:orderInCategory="100"
         android:icon="@drawable/ic_action_cancel_light" />
 
 </menu>

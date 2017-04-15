@@ -89,7 +89,6 @@ import java.util.TimerTask;
 
 public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
 
-    Context c = this;
     public EditText mInput, searchEditText;
     private File mFile;
     private String mOriginal;
@@ -97,8 +96,8 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     private boolean mModified, isEditAllowed = true;
     private android.support.v7.widget.Toolbar toolbar;
     //ArrayList<StringBuilder> texts;
-    //static final int maxlength=200;
-    //int index=0;
+    //static final int maxlength = 200;
+    //int index = 0;
     ScrollView scrollView;
 
     /*
@@ -135,11 +134,11 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (getAppTheme().equals(AppTheme.DARK)) {
+        if (getAppTheme().equals(AppTheme.DARK))
             getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-        }
+
         setContentView(R.layout.search);
         searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -147,7 +146,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -179,7 +178,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boolean colourednavigation = Sp.getBoolean("colorednavigation", true);
+            boolean colourednavigation = sharedPref.getBoolean("colorednavigation", true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -189,7 +188,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         }
         mInput = (EditText) findViewById(R.id.fname);
-        scrollView=(ScrollView)findViewById(R.id.editscroll);
+        scrollView = (ScrollView) findViewById(R.id.editscroll);
 
         if (getIntent().getData() != null) {
             // getting uri from external source
@@ -219,7 +218,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         throw new Exception();
                     }
 
-                    cursor = client.query(uri, new String[] {
+                    cursor = client.query(uri, new String[]{
                             MediaStore.Images.ImageColumns.DISPLAY_NAME
                     }, null, null, null);
 
@@ -249,7 +248,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         }
 
-        if (savedInstanceState!=null) {
+        if (savedInstanceState != null) {
 
             mOriginal = savedInstanceState.getString(KEY_ORIGINAL_TEXT);
             int index = savedInstanceState.getInt(KEY_INDEX);
@@ -267,18 +266,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
         outState.putInt(KEY_INDEX, mInput.getScrollY());
         outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
-    }
-
-    class a extends ScrollView {
-        public a(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
-            super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
-
-        }
     }
 
     private void checkUnsavedChanges() {
@@ -312,17 +299,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     /**
      * Method initiates a worker thread which writes the {@link #mInput} bytes to the defined
      * file/uri 's output stream
-     * @param uri the uri associated with this text (if any)
-     * @param file the file associated with this text (if any)
+     *
+     * @param uri            the uri associated with this text (if any)
+     * @param file           the file associated with this text (if any)
      * @param editTextString the edit text string
      */
     private void saveFile(final Uri uri, final File file, final String editTextString) {
-
-        Toast.makeText(c, R.string.saving, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 try {
                     writeTextFile(uri, file, editTextString);
                 } catch (StreamNotFoundException e) {
@@ -331,7 +317,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         @Override
                         public void run() {
 
-                            Toast.makeText(c, R.string.error_file_not_found,
+                            Toast.makeText(getApplicationContext(), R.string.error_file_not_found,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -341,7 +327,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         @Override
                         public void run() {
 
-                            Toast.makeText(c, R.string.error_io,
+                            Toast.makeText(getApplicationContext(), R.string.error_io,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -351,7 +337,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         @Override
                         public void run() {
 
-                            Toast.makeText(c, R.string.rootfailure,
+                            Toast.makeText(getApplicationContext(), R.string.rootfailure,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -363,13 +349,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     /**
      * Helper method for {@link #saveFile(Uri, File, String)}
      * Works on a background thread to save data to output stream associated with this reader
-     * @see #saveFile(Uri, File, String)
+     *
      * @param uri
      * @param file
      * @param inputText
      * @throws StreamNotFoundException
      * @throws IOException
      * @throws RootNotPermittedException
+     * @see #saveFile(Uri, File, String)
      */
     private void writeTextFile(final Uri uri, final File file, String inputText)
             throws StreamNotFoundException, IOException, RootNotPermittedException {
@@ -417,7 +404,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
         }
 
-        if (outputStream == null)   throw new StreamNotFoundException();
+        if (outputStream == null) throw new StreamNotFoundException();
 
         // saving data to file
         outputStream.write(inputText.getBytes());
@@ -427,7 +414,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         mModified = false;
         invalidateOptionsMenu();
 
-        if (cacheFile!=null && cacheFile.exists()) {
+        if (cacheFile != null && cacheFile.exists()) {
             // cat cache content to original file and delete cache file
             RootUtils.cat(cacheFile.getPath(), mFile.getPath());
 
@@ -437,8 +424,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                Toast.makeText(c, getString(R.string.done), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -451,6 +437,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     /**
      * Initiates loading of file/uri by getting an input stream associated with it
      * on a worker thread
+     *
      * @param uri
      * @param mFile
      */
@@ -461,21 +448,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 try {
                     inputStream = getInputStream(uri, mFile);
 
                     String str;
 
-                    StringBuilder stringBuilder=new StringBuilder();
-                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-                    if(bufferedReader!=null){
-
-                        while ((str=bufferedReader.readLine())!=null){
-                            stringBuilder.append(str+"\n");
+                    StringBuilder stringBuilder = new StringBuilder();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    if (bufferedReader != null) {
+                        while ((str = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(str).append("\n");
                         }
                     }
-                    mOriginal=stringBuilder.toString();
+                    mOriginal = stringBuilder.toString();
                     inputStream.close();
 
                     runOnUiThread(new Runnable() {
@@ -549,16 +534,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 saveFile(uri, mFile, mInput.getText().toString());
                 break;
             case R.id.details:
-                if(mFile.canRead()){
-                    HFile hFile=new HFile(OpenMode.FILE,mFile.getPath());
+                if (mFile.canRead()) {
+                    HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
                     hFile.generateMode(this);
                     getFutils().showProps(hFile, this, getAppTheme());
-                }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
-                if(mFile.canRead()){
-                    getFutils().openunknown(mFile, c, false);
-                }else Toast.makeText(this,R.string.not_allowed,Toast.LENGTH_SHORT).show();
+                if (mFile.canRead()) {
+                    getFutils().openunknown(mFile, this, false);
+                } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
                 if (searchViewLayout.isShown()) hideSearchView();
@@ -589,12 +574,11 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
         // condition to check if callback is called in search editText
         if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
 
             // clearing before adding new values
-            if (searchTextTask!=null) searchTextTask.cancel(true);
+            if (searchTextTask != null) searchTextTask.cancel(true);
 
             cleanSpans();
         }
@@ -610,7 +594,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             }
             mTimer = new Timer();
             mTimer.schedule(new TimerTask() {
-
                 boolean modified;
 
                 @Override
@@ -627,7 +610,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
     @Override
     public void afterTextChanged(Editable editable) {
-
         // searchBox callback block
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
 
@@ -640,21 +622,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     /**
      * Helper method to {@link #load(Uri, File)}
      * Tries to find an input stream associated with file/uri
+     *
      * @param uri
      * @param file
      * @return
      * @throws StreamNotFoundException exception thrown when we couldn't find a stream
-     * after all the attempts
+     *                                 after all the attempts
      */
-    private InputStream getInputStream(Uri uri, File file)
-            throws StreamNotFoundException {
+    private InputStream getInputStream(Uri uri, File file) throws StreamNotFoundException {
         InputStream stream = null;
 
         if (uri.toString().contains("file://")) {
-
             // dealing with files
             if (!file.canWrite() && BaseActivity.rootMode) {
-
                 // try loading stream associated using root
 
                 try {
@@ -678,15 +658,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                 // readable file in filesystem
                 try {
-                    stream=new FileInputStream(file.getPath());
+                    stream = new FileInputStream(file.getPath());
                 } catch (FileNotFoundException e) {
-                    stream=null;
+                    stream = null;
                 }
             }
         } else if (uri.toString().contains("content://")) {
-
-            // dealing with content provider
-            // trying to get URI from intent action
+            // dealing with content provider trying to get URI from intent action
             try {
                 // getting a writable file descriptor
                 parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
@@ -694,7 +672,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                 stream = new FileInputStream(parcelFile);
             } catch (FileNotFoundException e) {
-
                 // falling back to readable file descriptor
                 try {
                     parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
@@ -729,7 +706,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      * show search view with a circular reveal animation
      */
     void revealSearchView() {
-
         int startRadius = 4;
         int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
@@ -740,13 +716,14 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         int cx = metrics.widthPixels - 160;
         int cy = toolbar.getBottom();
         Animator animator;
+
         // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
                     startRadius, endRadius);
-        }else {
-            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
-        }
+        else
+            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
+
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         searchViewLayout.setVisibility(View.VISIBLE);
@@ -783,7 +760,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      * hide search view with a circular reveal animation
      */
     void hideSearchView() {
-
         int endRadius = 4;
         int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
@@ -796,11 +772,11 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         Animator animator;
         // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             animator = ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy,
                     startRadius, endRadius);
-        }else {
-            animator = new ObjectAnimator().ofFloat(searchViewLayout, "alpha", 0f, 1f);
+        } else {
+            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
         }
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -814,7 +790,6 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
             @Override
             public void onAnimationEnd(Animator animation) {
-
                 searchViewLayout.setVisibility(View.GONE);
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(),
@@ -838,7 +813,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         switch (v.getId()) {
             case R.id.prev:
                 // upButton
-                if (mCurrent>0) {
+                if (mCurrent > 0) {
 
                     // setting older span back before setting new one
                     Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
@@ -861,10 +836,10 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.next:
                 // downButton
-                if (mCurrent<nodes.size()-1) {
+                if (mCurrent < nodes.size() - 1) {
 
                     // setting older span back before setting new one
-                    if (mCurrent!=-1) {
+                    if (mCurrent != -1) {
 
                         Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
                         mInput.getText().setSpan(getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
@@ -889,13 +864,10 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 findViewById(R.id.searchview).setVisibility(View.GONE);
                 cleanSpans();
                 break;
-            default:
-                return;
         }
     }
 
     private void cleanSpans() {
-
         // resetting current highlight and line number
         nodes.clear();
         mCurrent = -1;

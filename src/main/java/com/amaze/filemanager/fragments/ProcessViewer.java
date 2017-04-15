@@ -65,22 +65,21 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessViewer extends Fragment {
 
-    private View rootView;
-    private CardView mCardView;
-
     boolean isInitialized = false;
-    SharedPreferences Sp;
+    SharedPreferences sharedPrefs;
     IconUtils icons;
     MainActivity mainActivity;
     int accentColor, primaryColor;
     ImageButton mCancelButton;
     ImageView mProgressImage;
-    private TextView mProgressTypeText, mProgressFileNameText,
-            mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 
+    private View rootView;
+    private CardView mCardView;
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
-    private long time = 0l;
+    private long time = 0L;
+    private TextView mProgressTypeText, mProgressFileNameText,
+            mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,8 +96,8 @@ public class ProcessViewer extends Fragment {
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.setActionBarTitle(getResources().getString(R.string.process_viewer));
         mainActivity.floatingActionButton.hideMenuButton(true);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        icons = new IconUtils(Sp, getActivity());
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        icons = new IconUtils(sharedPrefs, getActivity());
         mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = (CardView) rootView.findViewById(R.id.card_view);
@@ -216,10 +215,8 @@ public class ProcessViewer extends Fragment {
     };
 
     private ServiceConnection mCompressConnection = new ServiceConnection() {
-
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
             ZipTask zipTask = localBinder.getService();
@@ -242,7 +239,6 @@ public class ProcessViewer extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
                             processResults(dataPackage, ServiceType.COMPRESS);
                         }
                     });
@@ -257,6 +253,7 @@ public class ProcessViewer extends Fragment {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
+
         }
     };
 
@@ -296,9 +293,6 @@ public class ProcessViewer extends Fragment {
 
     public void processResults(final DataPackage dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
-
-            boolean completed = dataPackage.isCompleted();
-
             String name = dataPackage.getName();
             long total = dataPackage.getTotal();
             long doneBytes = dataPackage.getByteProgress();
@@ -473,7 +467,6 @@ public class ProcessViewer extends Fragment {
      * @param totalBytes maximum value for x-axis
      */
     private void chartInit(long totalBytes) {
-
         mLineChart.setBackgroundColor(accentColor);
         mLineChart.getLegend().setEnabled(false);
 

@@ -60,7 +60,6 @@ public class SearchAsyncHelper extends Fragment {
         isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);
         mSearchTask = new SearchTask();
         mSearchTask.execute(mPath);
-
     }
 
     @Override
@@ -72,10 +71,8 @@ public class SearchAsyncHelper extends Fragment {
     }
 
     public class SearchTask extends AsyncTask<String, BaseFile, Void> {
-
         @Override
         protected void onPreExecute() {
-
             /*
             * Note that we need to check if the callbacks are null in each
             * method in case they are invoked after the Activity's and
@@ -136,7 +133,6 @@ public class SearchAsyncHelper extends Fragment {
          * @param query the searched text
          */
         private void search(HFile file, String query) {
-
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
                 // do you have permission to read this directory?
@@ -158,10 +154,8 @@ public class SearchAsyncHelper extends Fragment {
                             }
                         } else return;
                     }
-                else return;
             } else {
-                System.out
-                        .println(file.getPath() + "Permission Denied");
+                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
             }
         }
 
@@ -171,11 +165,10 @@ public class SearchAsyncHelper extends Fragment {
          * @param pattern the compiled java regex
          */
         private void searchRegExFind(HFile file, Pattern pattern) {
-
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
 
-                if (!isCancelled())
+                if (!isCancelled()) {
                     for (BaseFile x : f) {
                         if (!isCancelled()) {
                             if (x.isDirectory()) {
@@ -189,10 +182,9 @@ public class SearchAsyncHelper extends Fragment {
                             }
                         } else return;
                     }
-                else return;
+                }
             } else {
-                System.out
-                        .println(file.getPath() + "Permission Denied");
+                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
             }
         }
 
@@ -202,7 +194,6 @@ public class SearchAsyncHelper extends Fragment {
          * @param pattern the compiled java regex
          */
         private void searchRegExMatch(HFile file, Pattern pattern) {
-
             if (file.isDirectory()) {
                 ArrayList<BaseFile> f = file.listFiles(mRootMode);
 
@@ -220,10 +211,8 @@ public class SearchAsyncHelper extends Fragment {
                             }
                         } else return;
                     }
-                else return;
             } else {
-                System.out
-                        .println(file.getPath() + "Permission Denied");
+                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
             }
         }
 

@@ -21,7 +21,6 @@ package com.amaze.filemanager.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,29 +35,25 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<Layoutelements>> {
+public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElements>> {
 
     UtilitiesProviderInterface utilsProvider;
     AppsList app = this;
     AppsAdapter adapter;
 
     public SharedPreferences Sp;
-    public ArrayList<PackageInfo> c = new ArrayList<>();
     ListView vl;
     public IconHolder ic;
-    ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
-    private MainActivity mainActivity;
     int asc, sortby;
 
-    int index=0, top=0;
+    int index = 0, top = 0;
 
     public static final int ID_LOADER_APP_LIST = 0;
 
@@ -68,24 +63,25 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
         setHasOptionsMenu(false);
-        ic = new IconHolder(getActivity(),true,true);
+        ic = new IconHolder(getActivity(), true, true);
 
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        mainActivity=(MainActivity)getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setActionBarTitle(getResources().getString(R.string.apps));
         mainActivity.floatingActionButton.hideMenuButton(true);
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
-        vl=getListView();
+        vl = getListView();
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         getSortModes();
         ListView vl = getListView();
         vl.setDivider(null);
-        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
 
         adapter = new AppsAdapter(getContext(), utilsProvider, R.layout.rowlayout, app);
@@ -106,8 +102,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     public void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
 
-        if(vl!=null) {
-
+        if (vl != null) {
             int index = vl.getFirstVisiblePosition();
             View vi = vl.getChildAt(0);
             int top = (vi == null) ? 0 : vi.getTop();
@@ -117,7 +112,6 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     }
 
     public boolean unin(String pkg) {
-
         try {
             Intent intent = new Intent(Intent.ACTION_DELETE);
             intent.setData(Uri.parse("package:" + pkg));
@@ -134,7 +128,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
      * Assigns sort modes
      * A value from 0 to 2 defines sort mode as name/last modified/size in ascending order
      * Values from 3 to 5 defines sort mode as name/last modified/size in descending order
-     *
+     * <p>
      * Final value of {@link #sortby} varies from 0 to 2
      */
     public void getSortModes() {
@@ -149,13 +143,12 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public Loader<List<Layoutelements>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<LayoutElements>> onCreateLoader(int id, Bundle args) {
         return new AppListLoader(getContext(), sortby, asc);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Layoutelements>> loader, List<Layoutelements> data) {
-
+    public void onLoadFinished(Loader<List<LayoutElements>> loader, List<LayoutElements> data) {
         // set new data to adapter
         adapter.setData(data);
 
@@ -170,8 +163,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Layoutelements>> loader) {
-
+    public void onLoaderReset(Loader<List<LayoutElements>> loader) {
         adapter.setData(null);
     }
 }

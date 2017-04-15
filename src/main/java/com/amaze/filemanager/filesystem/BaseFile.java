@@ -10,32 +10,31 @@ import com.amaze.filemanager.utils.OpenMode;
  */
 public class BaseFile extends HFile implements Parcelable {
 
-    long date,size;
-    boolean isDirectory;
-    String permisson;
-    String name;
-
-    String link="";
+    private long date, size;
+    private boolean isDirectory;
+    private String permission;
+    private String name;
+    private String link = "";
 
     public BaseFile(String path) {
         super(OpenMode.FILE, path);
         this.path = path;
     }
 
-    public BaseFile(String path, String permisson, long date, long size, boolean isDirectory) {
+    public BaseFile(String path, String permission, long date, long size, boolean isDirectory) {
         super(OpenMode.FILE, path);
         this.date = date;
         this.size = size;
         this.isDirectory = isDirectory;
         this.path = path;
-        this.permisson = permisson;
+        this.permission = permission;
 
     }
 
     @Override
     public String getName() {
-        if(name!=null && name.length()>0)
-        return name;
+        if (name != null && name.length() > 0)
+            return name;
         else return super.getName();
     }
 
@@ -47,7 +46,6 @@ public class BaseFile extends HFile implements Parcelable {
         return mode;
     }
 
-
     public String getLink() {
         return link;
     }
@@ -55,6 +53,7 @@ public class BaseFile extends HFile implements Parcelable {
     public void setLink(String link) {
         this.link = link;
     }
+
     public long getDate() {
         return date;
     }
@@ -83,19 +82,18 @@ public class BaseFile extends HFile implements Parcelable {
         return path;
     }
 
-
-    public String getPermisson() {
-        return permisson;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setPermisson(String permisson) {
-        this.permisson = permisson;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
     protected BaseFile(Parcel in) {
-        super(OpenMode.getOpenMode(in.readInt()),in.readString());
-        permisson = in.readString();
-        name=in.readString();
+        super(OpenMode.getOpenMode(in.readInt()), in.readString());
+        permission = in.readString();
+        name = in.readString();
         date = in.readLong();
         size = in.readLong();
         isDirectory = in.readByte() != 0;
@@ -123,11 +121,12 @@ public class BaseFile extends HFile implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mode.ordinal());
         dest.writeString(path);
-        dest.writeString(permisson);
+        dest.writeString(permission);
         dest.writeString(name);
         dest.writeLong(date);
         dest.writeLong(size);
         dest.writeByte((byte) (isDirectory ? 1 : 0));
 
     }
+
 }

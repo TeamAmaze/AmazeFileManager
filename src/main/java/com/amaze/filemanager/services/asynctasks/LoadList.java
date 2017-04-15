@@ -31,8 +31,8 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.Main;
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
@@ -51,16 +51,15 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements>> {
 
-public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements>> {
     private UtilitiesProviderInterface utilsProvider;
-
     private String path;
     boolean back;
-    Main ma;
+    MainFragment ma;
     Context c;
     OpenMode openmode;
-    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back, Main ma, OpenMode openmode) {
+    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back, MainFragment ma, OpenMode openmode) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;
@@ -84,9 +83,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
 
     @Override
     // Actual download method, run in the task thread
-    protected ArrayList<Layoutelements> doInBackground(String... params) {
+    protected ArrayList<LayoutElements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-        ArrayList<Layoutelements> list = null;
+        ArrayList<LayoutElements> list = null;
         path = params[0];
         grid = ma.checkforpath(path);
         ma.folder_count = 0;
@@ -119,10 +118,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                     if(!e.getMessage().toLowerCase().contains("denied"))
                         ma.reauthenticateSmb();
                     publishProgress(e.getLocalizedMessage());
-                } catch (SmbException e) {
-                    publishProgress(e.getLocalizedMessage());
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
+                } catch (SmbException | NullPointerException e) {
                     publishProgress(e.getLocalizedMessage());
                     e.printStackTrace();
                 }
@@ -131,34 +127,30 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                 ArrayList<BaseFile> arrayList = null;
                 switch (Integer.parseInt(path)) {
                     case 0:
-                        arrayList = (listImages());
-                        path = "0";
+                        arrayList = listImages();
                         break;
                     case 1:
-                        arrayList = (listVideos());
-                        path = "1";
+                        arrayList = listVideos();
                         break;
                     case 2:
-                        arrayList = (listaudio());
-                        path = "2";
+                        arrayList = listaudio();
                         break;
                     case 3:
-                        arrayList = (listDocs());
-                        path = "3";
+                        arrayList = listDocs();
                         break;
                     case 4:
-                        arrayList = (listApks());
-                        path = "4";
+                        arrayList = listApks();
                         break;
                     case 5:
                         arrayList = listRecent();
-                        path = "5";
                         break;
                     case 6:
                         arrayList = listRecentFiles();
-                        path = "6";
                         break;
                 }
+
+                path = String.valueOf(Integer.parseInt(path));
+
                 try {
                     if (arrayList != null)
                         list = addTo(arrayList);
@@ -191,13 +183,12 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         }
 
         if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6"))))
-            Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc, BaseActivity.rootMode));
+            Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc));
         return list;
-
     }
 
-    private ArrayList<Layoutelements> addTo(ArrayList<BaseFile> mFile) {
-        ArrayList<Layoutelements> a = new ArrayList<Layoutelements>();
+    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> mFile) {
+        ArrayList<LayoutElements> a = new ArrayList<>();
         for (int i = 0; i < mFile.size(); i++) {
             BaseFile ele = mFile.get(i);
             File f = new File(ele.getPath());
@@ -205,17 +196,17 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
-                    Layoutelements layoutelements = utilsProvider.getFutils().newElement(ma.folder,
-                            f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false,
+                    LayoutElements layoutElements = utilsProvider.getFutils().newElement(ma.folder,
+                            f.getPath(), ele.getPermission(), ele.getLink(), size, 0, true, false,
                             ele.getDate() + "");
-                    layoutelements.setMode(ele.getMode());
-                    a.add(layoutelements);
+                    layoutElements.setMode(ele.getMode());
+                    a.add(layoutElements);
                     ma.folder_count++;
                 } else {
                     long longSize = 0;
                     try {
                         if (ele.getSize() != -1) {
-                            longSize = Long.valueOf(ele.getSize());
+                            longSize = ele.getSize();
                             size = Formatter.formatFileSize(c, longSize);
                         } else {
                             size = "";
@@ -225,11 +216,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
                         //e.printStackTrace();
                     }
                     try {
-                        Layoutelements layoutelements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermisson(),
+                        LayoutElements layoutElements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
+                                f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermission(),
                                 ele.getLink(), size, longSize, false, false, ele.getDate() + "");
-                        layoutelements.setMode(ele.getMode());
-                        a.add(layoutelements);
+                        layoutElements.setMode(ele.getMode());
+                        a.add(layoutElements);
                         ma.file_count++;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -241,7 +232,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Layoutelements> list) {
+    protected void onPostExecute(ArrayList<LayoutElements> list) {
         if (isCancelled()) {
             list = null;
         }
@@ -280,10 +271,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = c.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
+                projection, null, null, null);
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
@@ -299,12 +287,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     ArrayList<BaseFile> listVideos() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
-        final Cursor cursor = c.getContentResolver().query(MediaStore.Video.Media
-                        .EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
+        final Cursor cursor = c.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                projection, null, null, null);
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
@@ -318,7 +302,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
 
     ArrayList<BaseFile> listRecentFiles() {
-        ArrayList<BaseFile> songs = new ArrayList<BaseFile>();
+        ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
@@ -343,7 +327,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
         Collections.sort(songs, new Comparator<BaseFile>() {
             @Override
             public int compare(BaseFile lhs, BaseFile rhs) {
-                return -1 * Long.valueOf(lhs.getDate()).compareTo(Long.valueOf(rhs.getDate()));
+                return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
 
             }
         });
@@ -355,7 +339,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     }
 
     ArrayList<BaseFile> listApks() {
-        ArrayList<BaseFile> songs = new ArrayList<BaseFile>();
+        ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
         Cursor cursor = c.getContentResolver().query(MediaStore.Files
@@ -395,10 +379,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
     ArrayList<BaseFile> listDocs() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
-        Cursor cursor = c.getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), projection,
-                null,
-                null, null);
+        Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
+                projection, null, null, null);
         String[] types = new String[]{".pdf", ".xml", ".html", ".asm", ".text/x-asm", ".def", ".in", ".rc",
                 ".list", ".log", ".pl", ".prop", ".properties", ".rc",
                 ".doc", ".docx", ".msg", ".odt", ".pages", ".rtf", ".txt", ".wpd", ".wps"};

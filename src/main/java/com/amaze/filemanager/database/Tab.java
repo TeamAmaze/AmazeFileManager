@@ -29,6 +29,7 @@ public class Tab {
     private String _label;
     private String _path;
     private String _home;
+
     public Tab() {
         // Empty constructor
     }

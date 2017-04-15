@@ -84,7 +84,7 @@ public class RootUtils {
                     mountPoint = words[2];
                     types = words[5];
                 }
-            } else continue;
+            }
         }
 
         if (!mountPoint.equals("") && types!=null) {
@@ -179,7 +179,7 @@ public class RootUtils {
     private static int getFilePermissions(String path) throws RootNotPermittedException {
         String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
 
-        return Integer.valueOf(line.toString());
+        return Integer.valueOf(line);
     }
 
     /**

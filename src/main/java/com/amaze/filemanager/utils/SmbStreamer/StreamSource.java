@@ -3,13 +3,13 @@ package com.amaze.filemanager.utils.SmbStreamer;
 /**
  * Created by Arpit on 06-07-2015.
  */
+import android.webkit.MimeTypeMap;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
-import android.webkit.MimeTypeMap;
 
 public class StreamSource {
 
@@ -36,18 +36,19 @@ public class StreamSource {
      * but streaming required returning to the original one so I renamed it to "old".
      * However, I needed to specify a buffer size in the constructor. It looks now like this:
      *
-     *     public SmbFileInputStreamOld( SmbFile file, int readBuffer, int openFlags) throws SmbException, MalformedURLException, UnknownHostException {
-     this.file = file;
-     this.openFlags = SmbFile.O_RDONLY & 0xFFFF;
-     this.access = (openFlags >>> 16) & 0xFFFF;
-     if (file.type != SmbFile.TYPE_NAMED_PIPE) {
-     file.open( openFlags, access, SmbFile.ATTR_NORMAL, 0 );
-     this.openFlags &= ~(SmbFile.O_CREAT | SmbFile.O_TRUNC);
-     } else {
-     file.connect0();
-     }
-     readSize = readBuffer;
-     fs = file.length();
+     *
+     public SmbFileInputStreamOld( SmbFile file, int readBuffer, int openFlags) throws SmbException, MalformedURLException, UnknownHostException {
+         this.file = file;
+         this.openFlags = SmbFile.O_RDONLY & 0xFFFF;
+         this.access = (openFlags >>> 16) & 0xFFFF;
+         if (file.type != SmbFile.TYPE_NAMED_PIPE) {
+            file.open( openFlags, access, SmbFile.ATTR_NORMAL, 0 );
+            this.openFlags &= ~(SmbFile.O_CREAT | SmbFile.O_TRUNC);
+         } else {
+             file.connect0();
+         }
+         readSize = readBuffer;
+         fs = file.length();
      }
      *
      * Setting buffer size by properties didn't work for me so I created this constructor.
