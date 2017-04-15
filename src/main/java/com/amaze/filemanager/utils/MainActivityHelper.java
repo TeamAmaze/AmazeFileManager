@@ -21,6 +21,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -211,7 +213,7 @@ public class MainActivityHelper {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         mainActivity.startActivityForResult(intent, 3);
     }
-    public void rename(OpenMode mode, String oldPath, String newPath, final Activity context, boolean rootmode) {
+    public void rename(OpenMode mode, final String oldPath, final String newPath, final Activity context, boolean rootmode) {
         final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
                 Toast.LENGTH_SHORT);
         toast.show();
@@ -255,6 +257,24 @@ public class MainActivityHelper {
                         if (b) {
                             Intent intent = new Intent("loadlist");
                             mainActivity.sendBroadcast(intent);
+
+                            // update the database entry to reflect rename for encrypted file
+                            if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+
+                                try {
+
+                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                                    EncryptedEntry newEntry = new EncryptedEntry();
+                                    newEntry.setId(oldEntry.getId());
+                                    newEntry.setPassword(oldEntry.getPassword());
+                                    newEntry.setPath(newPath);
+                                    cryptHandler.updateEntry(oldEntry, newEntry);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    // couldn't change the entry, leave it alone
+                                }
+                            }
                         } else
                             Toast.makeText(context, context.getString(R.string.operationunsuccesful),
                                     Toast.LENGTH_SHORT).show();

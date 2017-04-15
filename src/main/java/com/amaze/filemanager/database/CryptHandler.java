@@ -88,7 +88,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void updateEntryPassword(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry)
+    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
             UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             BadPaddingException, KeyStoreException, NoSuchProviderException, IllegalBlockSizeException {
@@ -99,8 +99,8 @@ public class CryptHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
                 newEncryptedEntry.getPassword()));
 
-        sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_PATH + " = ?s",
-                new String[]{oldEncryptedEntry.getPath()});
+        sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_ID + " = ?s",
+                new String[]{oldEncryptedEntry.getId() + ""});
         sqLiteDatabase.close();
     }
 
