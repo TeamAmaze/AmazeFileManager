@@ -10,6 +10,7 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -82,11 +83,15 @@ public class CryptUtil {
     // TODO: Generate a random IV every time, and keep track of it (in database against encrypted files)
     private static final String IV = "LxbHiJhhUXcj";    // 12 byte long IV supported by android for GCM
 
+    public static final String CRYPT_EXTENSION = ".amze";
+
     private ProgressHandler progressHandler;
+    private ArrayList<HFile> failedOps;
 
     /**
      * Constructor will start encryption process serially. Make sure to call with background thread.
-     * The result file of encryption will be in the same directory with a .sec extension
+     * The result file of encryption will be in the same directory with a {@link #CRYPT_EXTENSION} extension
+     *
      * Make sure you're done with encrypting password for this file and map it with this file in database
      *
      * Be sure to use constructors to encrypt/decrypt files only, and to call service through
@@ -95,13 +100,15 @@ public class CryptUtil {
      * @param context
      * @param sourceFile the file to encrypt
      */
-    public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler)
+    public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler,
+                     ArrayList<HFile> failedOps)
             throws IOException, CertificateException,
             NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
-            BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+            BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
 
         this.progressHandler = progressHandler;
+        this.failedOps = failedOps;
 
         // target encrypted file
         HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
@@ -122,12 +129,14 @@ public class CryptUtil {
      * @param targetPath the directory in which file is to be decrypted
      *                   the source's parent in normal case
      */
-    public CryptUtil(Context context, BaseFile baseFile, String targetPath, ProgressHandler progressHandler)
+    public CryptUtil(Context context, BaseFile baseFile, String targetPath,
+                     ProgressHandler progressHandler, ArrayList<HFile> failedOps)
             throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
 
         this.progressHandler = progressHandler;
+        this.failedOps = failedOps;
 
         HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
         if (!targetPath.equals(context.getExternalCacheDir())) {
@@ -159,12 +168,12 @@ public class CryptUtil {
     private void decrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
 
         if (sourceFile.isDirectory()) {
 
             HFile hFile = new HFile(targetDirectory.getMode(), targetDirectory.getPath(),
-                    sourceFile.getName().replace(".sec", ""), sourceFile.isDirectory());
+                    sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
@@ -172,11 +181,16 @@ public class CryptUtil {
             }
         } else {
 
+            if (!sourceFile.getPath().endsWith(CRYPT_EXTENSION)) {
+                failedOps.add(sourceFile);
+                return;
+            }
+
             BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
             HFile targetFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName().replace(".sec", ""),
+                    targetDirectory.getPath(), sourceFile.getName().replace(CRYPT_EXTENSION, ""),
                     sourceFile.isDirectory());
 
             progressHandler.setFileName(sourceFile.getName());
@@ -214,14 +228,14 @@ public class CryptUtil {
     private void encrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
-
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException,
+            CryptException {
 
         if (sourceFile.isDirectory()) {
 
-            // succeed .sec at end of directory/file name
+            // succeed #CRYPT_EXTENSION at end of directory/file name
             HFile hFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + ".sec",
+                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
@@ -230,12 +244,17 @@ public class CryptUtil {
             }
         } else {
 
+            if (sourceFile.getName().endsWith(CRYPT_EXTENSION)) {
+                failedOps.add(sourceFile);
+                return;
+            }
+
             BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-            // succeed .sec at end of directory/file name
+            // succeed #CRYPT_EXTENSION at end of directory/file name
             HFile targetFile = new HFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + ".sec",
+                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
 
             progressHandler.setFileName(sourceFile.getName());

@@ -139,7 +139,7 @@ public class EncryptService extends Service {
                 if (cryptEnum == CryptEnum.ENCRYPT) {
                     // we're here to encrypt
                     try {
-                        new CryptUtil(context, baseFile, progressHandler);
+                        new CryptUtil(context, baseFile, progressHandler, failedOps);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
@@ -150,7 +150,7 @@ public class EncryptService extends Service {
                     // the path is to the same directory as in encrypted one in normal case
                     // and the cache directory in case we're here because of the viewer
                     try {
-                        new CryptUtil(context, baseFile, decryptPath, progressHandler);
+                        new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
