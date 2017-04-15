@@ -10,7 +10,6 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -105,7 +104,7 @@ public class CryptUtil {
             throws IOException, CertificateException,
             NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
-            BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
+            BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
@@ -133,7 +132,7 @@ public class CryptUtil {
                      ProgressHandler progressHandler, ArrayList<HFile> failedOps)
             throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
@@ -168,7 +167,7 @@ public class CryptUtil {
     private void decrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException, CryptException {
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         if (sourceFile.isDirectory()) {
 
@@ -228,8 +227,7 @@ public class CryptUtil {
     private void encrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException,
-            CryptException {
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         if (sourceFile.isDirectory()) {
 

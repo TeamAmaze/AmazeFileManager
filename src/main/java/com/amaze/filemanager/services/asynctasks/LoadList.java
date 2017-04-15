@@ -21,11 +21,15 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -34,6 +38,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -205,7 +210,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<Layoutelements
             if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
-                    Layoutelements layoutelements = utilsProvider.getFutils().newElement(ma.folder,
+
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(),
+                            R.drawable.ic_folder_lock_white_36dp);
+                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
+
+                    Layoutelements layoutelements = utilsProvider.getFutils()
+                            .newElement(f.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
+                                            : ma.folder,
                             f.getPath(), ele.getPermisson(), ele.getLink(), size, 0, true, false,
                             ele.getDate() + "");
                     layoutelements.setMode(ele.getMode());

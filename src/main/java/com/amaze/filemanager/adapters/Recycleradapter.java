@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -351,6 +354,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
+            else if (Icons.isEncrypted(rowItem.getDesc())) filetype = 4;
             else if (Icons.isGeneric(rowItem.getDesc())) filetype = 3;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
@@ -467,6 +471,21 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.pictureIcon.setVisibility(View.GONE);
                 holder.apkIcon.setVisibility(View.GONE);
 
+            } else if (filetype == 4) {
+
+
+                Bitmap lockBitmap = BitmapFactory.decodeResource(main.getResources(),
+                        R.drawable.ic_folder_lock_white_36dp);
+                BitmapDrawable lockBitmapDrawable = new BitmapDrawable(main.getResources(), lockBitmap);
+
+                if (main.SHOW_THUMBS) {
+                    holder.genericIcon.setVisibility(View.VISIBLE);
+                    holder.pictureIcon.setVisibility(View.GONE);
+                    holder.apkIcon.setVisibility(View.GONE);
+                    holder.genericIcon.setImageDrawable(lockBitmapDrawable);
+                    //main.ic.cancelLoad(holder.apkIcon);
+                    //main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                }
             } else {
                 holder.pictureIcon.setVisibility(View.GONE);
                 holder.apkIcon.setVisibility(View.GONE);
@@ -820,78 +839,9 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 }
                                 return true;
                             case R.id.decrypt:
-                                Intent decryptIntent = new Intent(context, EncryptService.class);
-                                decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
-                                decryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
-                                        EncryptService.CryptEnum.DECRYPT.ordinal());
-                                decryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
-                                decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH,
-                                        rowItem.generateBaseFile().getParent(context));
-
-                                SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(context);
-
-                                EncryptedEntry encryptedEntry;
-                                try {
-                                    encryptedEntry = findEncryptedEntry(rowItem.generateBaseFile().getPath());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    encryptedEntry = null;
-                                }
-
-                                if (encryptedEntry == null) {
-
-                                    // we couldn't find any entry in database or lost the key to decipher
-                                    Toast.makeText(context,
-                                            main.getResources().getString(R.string.crypt_decryption_fail),
-                                            Toast.LENGTH_LONG).show();
-                                    return true;
-                                }
-
-                                DecryptButtonCallbackInterface decryptButtonCallbackInterface =
-                                        new DecryptButtonCallbackInterface() {
-                                    @Override
-                                    public void confirm(Intent intent) {
-
-                                        ServiceWatcherUtil.runService(context, intent);
-                                    }
-
-                                    @Override
-                                    public void failed() {
-                                        Toast.makeText(context,
-                                                main.getResources().getString(R.string.crypt_decryption_fail_password),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                };
-
-                                switch (encryptedEntry.getPassword()) {
-                                    case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
-                                        try {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                utilsProvider.getFutils().showDecryptFingerprintDialog(decryptIntent,
-                                                        main, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
-                                            } else throw new Exception();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-
-                                            Toast.makeText(context,
-                                                    main.getResources().getString(R.string.crypt_decryption_fail),
-                                                    Toast.LENGTH_LONG).show();
-                                        }
-                                        break;
-                                    case Preffrag.ENCRYPT_PASSWORD_MASTER:
-                                        utilsProvider.getFutils().showDecryptDialog(decryptIntent,
-                                                main, utilsProvider.getAppTheme(),
-                                                preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
-                                                decryptButtonCallbackInterface);
-                                        break;
-                                    default:
-                                        utilsProvider.getFutils().showDecryptDialog(decryptIntent,
-                                                main, utilsProvider.getAppTheme(),
-                                                encryptedEntry.getPassword(),
-                                                decryptButtonCallbackInterface);
-                                        break;
-                                }
+                                Main.decryptFile(main, main.openMode, rowItem.generateBaseFile(),
+                                        rowItem.generateBaseFile().getParent(context),
+                                        utilsProvider);
                                 return true;
                         }
                         return false;
@@ -930,29 +880,6 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         // start the encryption process
         ServiceWatcherUtil.runService(main.getContext(), intent);
-    }
-
-    /**
-     * Queries database to find entry for the specific path
-     * @param path  the path to match with
-     * @return the entry
-     */
-    private EncryptedEntry findEncryptedEntry(String path) throws Exception {
-
-        CryptHandler handler = new CryptHandler(context);
-
-        EncryptedEntry matchedEntry = null;
-        // find closest path which matches with database entry
-        for (EncryptedEntry encryptedEntry : handler.getAllEntries()) {
-            if (path.contains(encryptedEntry.getPath())) {
-
-                if (matchedEntry == null || (matchedEntry != null &&
-                        matchedEntry.getPath().length()<encryptedEntry.getPath().length())) {
-                    matchedEntry = encryptedEntry;
-                }
-            }
-        }
-        return matchedEntry;
     }
 
     public interface EncryptButtonCallbackInterface {
