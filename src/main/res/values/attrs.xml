@@ -31,4 +31,8 @@
         <attr name="animationDuration" format="integer" />
         <attr name="currentPageIndicatorColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="ImageView">
+        <attr name="src_dark" format="reference" />
+    </declare-styleable>
 </resources>

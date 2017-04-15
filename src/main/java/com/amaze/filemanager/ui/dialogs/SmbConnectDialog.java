@@ -30,11 +30,23 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import jcifs.smb.SmbFile;
 
@@ -382,7 +394,13 @@ public class SmbConnectDialog extends DialogFragment {
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String encryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
 
-        String decryptedPassword =  CryptUtil.decryptPassword(context, encryptedPassword);
+        String decryptedPassword;
+        try {
+            decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            decryptedPassword = encryptedPassword;
+        }
 
         buffer.append(decryptedPassword);
         buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
@@ -395,7 +413,13 @@ public class SmbConnectDialog extends DialogFragment {
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String decryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
 
-        String encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
+        String encryptPassword;
+        try {
+            encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            encryptPassword = decryptedPassword;
+        }
 
         buffer.append(encryptPassword);
         buffer.append(path.substring(path.lastIndexOf("@"), path.length()));

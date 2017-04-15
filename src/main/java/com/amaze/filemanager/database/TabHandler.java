@@ -25,8 +25,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.amaze.filemanager.utils.CryptUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +33,16 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    protected static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
-    private static final String TABLE_ENCRYPTED = "encrypted";
 
     private static final String COLUMN_TAB_NO = "tab_no";
     private static final String COLUMN_LABEL = "label";
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_HOME = "home";
+
+    private static final String TABLE_ENCRYPTED = "encrypted";
 
     private static final String COLUMN_ENCRYPTED_ID = "_id";
     private static final String COLUMN_ENCRYPTED_PATH = "path";
@@ -62,6 +61,7 @@ public class TabHandler extends SQLiteOpenHelper {
                 + COLUMN_TAB_NO
                 + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT," + COLUMN_HOME + " TEXT" + ")";
+
         String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
                 + COLUMN_ENCRYPTED_ID
                 + " INTEGER PRIMARY KEY,"
@@ -151,95 +151,6 @@ public class TabHandler extends SQLiteOpenHelper {
             getWritableDatabase().close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public class EncryptCRUD {
-
-        public void addEntry(EncryptedEntry encryptedEntry) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
-            contentValues.put(COLUMN_ENCRYPTED_PATH, encryptedEntry.getPath());
-            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
-                    encryptedEntry.getPassword()));
-
-            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-            sqLiteDatabase.insert(TABLE_ENCRYPTED, null, contentValues);
-            sqLiteDatabase.close();
-        }
-
-        public void clear(String path) {
-            try {
-                SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-                sqLiteDatabase.delete(TABLE_ENCRYPTED, COLUMN_ENCRYPTED_PATH + " = ?s", new String[]{path});
-                sqLiteDatabase.close();
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void updateEntryPassword(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) {
-            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(COLUMN_ENCRYPTED_ID, newEncryptedEntry.getId());
-            contentValues.put(COLUMN_ENCRYPTED_PATH, newEncryptedEntry.getPath());
-            contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
-                    newEncryptedEntry.getPassword()));
-
-            sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_PATH + " = ?s",
-                    new String[]{oldEncryptedEntry.getPath()});
-            sqLiteDatabase.close();
-        }
-
-        public EncryptedEntry findEntry(String path) {
-            String query = "Select * FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_ENCRYPTED_PATH
-                    + "= \"" + path + "\"";
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-            EncryptedEntry encryptedEntry = new EncryptedEntry();
-            if (cursor.moveToFirst()) {
-                cursor.moveToFirst();
-                encryptedEntry.setId((cursor.getInt(0)));
-                encryptedEntry.setPath(cursor.getString(1));
-                encryptedEntry.setPassword(CryptUtil.decryptPassword(context, cursor.getString(2)));
-
-                cursor.close();
-            } else {
-                encryptedEntry = null;
-            }
-            sqLiteDatabase.close();
-            return encryptedEntry;
-        }
-
-        public List<EncryptedEntry> getAllEntries() {
-            List<EncryptedEntry> entryList = new ArrayList<EncryptedEntry>();
-            // Select all query
-            String query = "Select * FROM " + TABLE_ENCRYPTED;
-
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-            Cursor cursor = null;
-            try {
-                cursor = sqLiteDatabase.rawQuery(query, null);
-                // Looping through all rows and adding them to list
-                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-                    do {
-                        EncryptedEntry encryptedEntry = new EncryptedEntry();
-                        encryptedEntry.setId((cursor.getInt(0)));
-                        encryptedEntry.setPath(cursor.getString(1));
-                        encryptedEntry.setPassword(CryptUtil.decryptPassword(context,
-                                cursor.getString(2)));
-
-                        entryList.add(encryptedEntry);
-                    } while (cursor.moveToNext());
-                }
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-            sqLiteDatabase.close();
-
-            return entryList;
         }
     }
 }

@@ -3,9 +3,11 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -23,8 +25,11 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.Layoutelements;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -742,12 +747,76 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), main.getActivity());
                                 return true;
                             case R.id.encrypt:
-                                Intent encryptIntent = new Intent(context, EncryptService.class);
+                                final Intent encryptIntent = new Intent(context, EncryptService.class);
                                 encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
                                 encryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
                                         EncryptService.CryptEnum.ENCRYPT.ordinal());
                                 encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
-                                ServiceWatcherUtil.runService(context, encryptIntent);
+
+                                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                                final EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
+                                        new EncryptButtonCallbackInterface() {
+                                    @Override
+                                    public void onButtonPressed(Intent intent) {
+                                        // do nothing
+                                    }
+
+                                    @Override
+                                    public void onButtonPressed(Intent intent, String password) throws Exception {
+
+                                        startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
+                                    }
+                                };
+
+                                EncryptButtonCallbackInterface encryptButtonCallbackInterface =
+                                        new EncryptButtonCallbackInterface() {
+
+                                    @Override
+                                    public void onButtonPressed(Intent intent) throws Exception {
+
+
+                                        // check if a master password or fingerprint is set
+                                        if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+
+                                            startEncryption(rowItem.generateBaseFile().getPath(),
+                                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                        } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                                Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+
+                                            startEncryption(rowItem.generateBaseFile().getPath(),
+                                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                        } else {
+                                            // let's ask a password from user
+                                            utilsProvider.getFutils().showEncryptAuthenticateDialog(encryptIntent,
+                                                    main, utilsProvider.getAppTheme(),
+                                                    encryptButtonCallbackInterfaceAuthenticate);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onButtonPressed(Intent intent, String password) {
+                                        // do nothing
+                                    }
+                                };
+
+                                if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
+                                        Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
+                                    // let's skip warning dialog call
+                                    try {
+                                        encryptButtonCallbackInterface.onButtonPressed(encryptIntent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context,
+                                                main.getResources().getString(R.string.crypt_encryption_fail),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+
+                                    utilsProvider.getFutils().showEncryptWarningDialog(encryptIntent,
+                                            main, utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
+                                }
                                 return true;
                             case R.id.decrypt:
                                 Intent decryptIntent = new Intent(context, EncryptService.class);
@@ -757,7 +826,71 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 decryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
                                 decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH,
                                         rowItem.generateBaseFile().getParent(context));
-                                ServiceWatcherUtil.runService(context, decryptIntent);
+
+                                SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(context);
+
+                                EncryptedEntry encryptedEntry;
+                                try {
+                                    encryptedEntry = findEncryptedEntry(rowItem.generateBaseFile().getPath());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    encryptedEntry = null;
+                                }
+
+                                if (encryptedEntry == null) {
+
+                                    // we couldn't find any entry in database or lost the key to decipher
+                                    Toast.makeText(context,
+                                            main.getResources().getString(R.string.crypt_decryption_fail),
+                                            Toast.LENGTH_LONG).show();
+                                    return true;
+                                }
+
+                                DecryptButtonCallbackInterface decryptButtonCallbackInterface =
+                                        new DecryptButtonCallbackInterface() {
+                                    @Override
+                                    public void confirm(Intent intent) {
+
+                                        ServiceWatcherUtil.runService(context, intent);
+                                    }
+
+                                    @Override
+                                    public void failed() {
+                                        Toast.makeText(context,
+                                                main.getResources().getString(R.string.crypt_decryption_fail_password),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                };
+
+                                switch (encryptedEntry.getPassword()) {
+                                    case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
+                                        try {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                utilsProvider.getFutils().showDecryptFingerprintDialog(decryptIntent,
+                                                        main, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
+                                            } else throw new Exception();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+
+                                            Toast.makeText(context,
+                                                    main.getResources().getString(R.string.crypt_decryption_fail),
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case Preffrag.ENCRYPT_PASSWORD_MASTER:
+                                        utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                                                main, utilsProvider.getAppTheme(),
+                                                preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
+                                                decryptButtonCallbackInterface);
+                                        break;
+                                    default:
+                                        utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                                                main, utilsProvider.getAppTheme(),
+                                                encryptedEntry.getPassword(),
+                                                decryptButtonCallbackInterface);
+                                        break;
+                                }
                                 return true;
                         }
                         return false;
@@ -780,7 +913,77 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 popupMenu.show();
             }
         });
+    }
 
+    /**
+     * Queries database to map path and password.
+     * Starts the encryption process after database query
+     * @param path the path of file to encrypt
+     * @param password the password in plaintext
+     */
+    private void startEncryption(final String path, final String password, Intent intent) throws Exception {
+
+        CryptHandler cryptHandler = new CryptHandler(context);
+        EncryptedEntry encryptedEntry = new EncryptedEntry(path, password);
+        cryptHandler.addEntry(encryptedEntry);
+
+        // start the encryption process
+        ServiceWatcherUtil.runService(main.getContext(), intent);
+    }
+
+    /**
+     * Queries database to find entry for the specific path
+     * @param path  the path to match with
+     * @return the entry
+     */
+    private EncryptedEntry findEncryptedEntry(String path) throws Exception {
+
+        CryptHandler handler = new CryptHandler(context);
+
+        EncryptedEntry matchedEntry = null;
+        // find closest path which matches with database entry
+        for (EncryptedEntry encryptedEntry : handler.getAllEntries()) {
+            if (path.contains(encryptedEntry.getPath())) {
+
+                if (matchedEntry == null || (matchedEntry != null &&
+                        matchedEntry.getPath().length()<encryptedEntry.getPath().length())) {
+                    matchedEntry = encryptedEntry;
+                }
+            }
+        }
+        return matchedEntry;
+    }
+
+    public interface EncryptButtonCallbackInterface {
+
+        /**
+         * Callback fired when we've just gone through warning dialog before encryption
+         * @param intent
+         * @throws Exception
+         */
+        void onButtonPressed(Intent intent) throws Exception;
+
+        /**
+         * Callback fired when user has entered a password for encryption
+         * Not called when we've a master password set or enable fingerprint authentication
+         * @param intent
+         * @param password the password entered by user
+         * @throws Exception
+         */
+        void onButtonPressed(Intent intent, String password) throws Exception;
+    }
+
+    public interface DecryptButtonCallbackInterface {
+        /**
+         * Callback fired when we've confirmed the password matches the database
+         * @param intent
+         */
+        void confirm(Intent intent);
+
+        /**
+         * Callback fired when password doesn't match the value entered by user
+         */
+        void failed();
     }
 
     private boolean isPositionHeader(int position) {

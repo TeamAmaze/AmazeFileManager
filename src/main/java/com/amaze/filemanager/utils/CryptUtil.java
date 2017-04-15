@@ -50,12 +50,21 @@ import javax.security.auth.x500.X500Principal;
  * Created by vishal on 6/4/17.
  *
  * Class provide helper methods to encrypt/decrypt various type of files, or passwords
- * We take the password from user before encrypting file. First, the password is first encrypted against
+ * We take the password from user before encrypting file. First, the password is encrypted against
  * the key created in keystore in android {@see #encryptPassword(String)}.
  * We're using AES encryption with GCM as the processor algorithm.
  * The encrypted password is mapped against the file path to be encrypted in database for later use.
  * This is handled by the service invoking this instance.
  * The service then calls the constructor which fires up the subsequent encryption/decryption process.
+ *
+ * We differentiate between already encrypted files from <i>new ones</i> by encrypting the plaintext
+ * {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_MASTER}
+ * and {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_FINGERPRINT}
+ * against the path in database. At the time of decryption, we check for these values
+ * and either retrieve master password from preferences or fire up the fingerprint sensor authentication.
+ *
+ * From <i>new ones</i> we mean the ones when were encrypted after user changed preference
+ * for master password/fingerprint sensor from settings.
  *
  * We use buffered streams to process files, usage of NIO will probably mildly effect the performance.
  *
@@ -535,21 +544,18 @@ public class CryptUtil {
      * @param plainText
      * @return
      */
-    public static String encryptPassword(Context context, String plainText) {
+    public static String encryptPassword(Context context, String plainText) throws IOException,
+            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return CryptUtil.aesEncryptPassword(plainText);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
-                return CryptUtil.aesEncryptPassword(plainText);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-                return CryptUtil.rsaEncryptPassword(context, plainText);
-            } else return plainText;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return plainText;
-        }
+            return CryptUtil.rsaEncryptPassword(context, plainText);
+        } else return plainText;
     }
 
     /**
@@ -558,20 +564,55 @@ public class CryptUtil {
      * @param cipherText
      * @return
      */
-    public static String decryptPassword(Context context, String cipherText) {
-        try {
+    public static String decryptPassword(Context context, String cipherText) throws IOException,
+            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
+            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                return CryptUtil.aesDecryptPassword(cipherText);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return CryptUtil.aesDecryptPassword(cipherText);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
-                return CryptUtil.rsaDecryptPassword(context, cipherText);
-            } else return cipherText;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return cipherText;
+            return CryptUtil.rsaDecryptPassword(context, cipherText);
+        } else return cipherText;
+    }
+
+    /**
+     * Method initializes a Cipher to be used by {@link android.hardware.fingerprint.FingerprintManager}
+     * @param context
+     * @return
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws UnrecoverableEntryException
+     * @throws KeyStoreException
+     * @throws NoSuchProviderException
+     * @throws InvalidAlgorithmParameterException
+     * @throws IOException
+     * @throws InvalidKeyException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    public static Cipher initCipher(Context context) throws NoSuchPaddingException, NoSuchAlgorithmException,
+            CertificateException, UnrecoverableEntryException, KeyStoreException,
+            NoSuchProviderException, InvalidAlgorithmParameterException, IOException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+
+        Cipher cipher = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            cipher = Cipher.getInstance(ALGO_AES);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            cipher = Cipher.getInstance(ALGO_AES, "BC");
+            RSAKeygen keygen = new RSAKeygen(context);
+
+            cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
         }
+        return cipher;
     }
 
     /**

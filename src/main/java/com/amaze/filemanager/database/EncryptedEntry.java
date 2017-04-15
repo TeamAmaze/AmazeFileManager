@@ -11,8 +11,7 @@ public class EncryptedEntry {
 
     public EncryptedEntry() {}
 
-    public EncryptedEntry(int _id, String path, String password) {
-        this._id = _id;
+    public EncryptedEntry(String path, String password) {
         this.path = path;
         this.password = password;
     }
