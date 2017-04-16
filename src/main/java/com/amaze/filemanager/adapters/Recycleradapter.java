@@ -354,7 +354,7 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
             else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
             else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
-            else if (Icons.isEncrypted(rowItem.getDesc())) filetype = 4;
+            else if (Icons.isEncrypted(rowItem.getDesc()) && !rowItem.isDirectory()) filetype = 4;
             else if (Icons.isGeneric(rowItem.getDesc())) filetype = 3;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
@@ -473,9 +473,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
             } else if (filetype == 4) {
 
-
                 Bitmap lockBitmap = BitmapFactory.decodeResource(main.getResources(),
-                        R.drawable.ic_folder_lock_white_36dp);
+                        R.drawable.ic_file_lock_white_36dp);
                 BitmapDrawable lockBitmapDrawable = new BitmapDrawable(main.getResources(), lockBitmap);
 
                 if (main.SHOW_THUMBS) {
@@ -875,7 +874,8 @@ public class Recycleradapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private void startEncryption(final String path, final String password, Intent intent) throws Exception {
 
         CryptHandler cryptHandler = new CryptHandler(context);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path, password);
+        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
+                password);
         cryptHandler.addEntry(encryptedEntry);
 
         // start the encryption process

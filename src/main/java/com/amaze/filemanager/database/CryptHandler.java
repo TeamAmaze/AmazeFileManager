@@ -68,7 +68,7 @@ public class CryptHandler extends SQLiteOpenHelper {
             NoSuchProviderException, IllegalBlockSizeException {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
+        //contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
         contentValues.put(COLUMN_ENCRYPTED_PATH, encryptedEntry.getPath());
         contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
                 encryptedEntry.getPassword()));
@@ -81,7 +81,7 @@ public class CryptHandler extends SQLiteOpenHelper {
     public void clear(String path) {
         try {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-            sqLiteDatabase.delete(TABLE_ENCRYPTED, COLUMN_ENCRYPTED_PATH + " = ?s", new String[]{path});
+            sqLiteDatabase.delete(TABLE_ENCRYPTED, COLUMN_ENCRYPTED_PATH + " = ?", new String[]{path});
             sqLiteDatabase.close();
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
                 newEncryptedEntry.getPassword()));
 
-        sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_ID + " = ?s",
+        sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_ID + " = ?",
                 new String[]{oldEncryptedEntry.getId() + ""});
         sqLiteDatabase.close();
     }
