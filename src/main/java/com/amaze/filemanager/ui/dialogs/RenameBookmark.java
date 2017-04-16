@@ -30,12 +30,12 @@ import java.net.URLEncoder;
 public class RenameBookmark extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
-    String title,path,user="",pass="",ipp="";
+    String title, path, user = "", pass = "", ipp = "";
     String fabskin;
     Context c;
     BookmarkCallback bookmarkCallback;
     SharedPreferences Sp;
-    int studiomode=0;
+    int studiomode = 0;
 
     public static RenameBookmark getInstance(String name, String path, String fabskin) {
         RenameBookmark renameBookmark = new RenameBookmark();
@@ -55,14 +55,14 @@ public class RenameBookmark extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        c=getActivity();
-        if(getActivity() instanceof BookmarkCallback)
-            bookmarkCallback=(BookmarkCallback)getActivity();
-        title=getArguments().getString("title");
-        path=getArguments().getString("path");
-        fabskin=getArguments().getString("fabskin");
-        Sp=PreferenceManager.getDefaultSharedPreferences(c);
-        studiomode=Sp.getInt("studio", 0);
+        c = getActivity();
+        if (getActivity() instanceof BookmarkCallback)
+            bookmarkCallback = (BookmarkCallback) getActivity();
+        title = getArguments().getString("title");
+        path = getArguments().getString("path");
+        fabskin = getArguments().getString("fabskin");
+        Sp = PreferenceManager.getDefaultSharedPreferences(c);
+        studiomode = Sp.getInt("studio", 0);
         if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
@@ -103,42 +103,42 @@ public class RenameBookmark extends DialogFragment {
                 }
             });
             final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.editText);
-            if(studiomode!=0){
+            if (studiomode != 0) {
                 if (path.startsWith("smb:/")) {
-                try {
-                    jcifs.Config.registerSmbURLHandler();
-                    URL a = new URL(path);
-                    String userinfo = a.getUserInfo();
-                    if (userinfo != null) {
-                        String inf = URLDecoder.decode(userinfo, "UTF-8");
-                        user = inf.substring(0, inf.indexOf(":"));
-                        pass = inf.substring(inf.indexOf(":") + 1, inf.length());
-                        ipp = a.getHost();
-                        pa = "smb://" + ipp + a.getPath();
+                    try {
+                        jcifs.Config.registerSmbURLHandler();
+                        URL a = new URL(path);
+                        String userinfo = a.getUserInfo();
+                        if (userinfo != null) {
+                            String inf = URLDecoder.decode(userinfo, "UTF-8");
+                            user = inf.substring(0, inf.indexOf(":"));
+                            pass = inf.substring(inf.indexOf(":") + 1, inf.length());
+                            ipp = a.getHost();
+                            pa = "smb://" + ipp + a.getPath();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-            ip.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                ip.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                }
+                    }
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (ip.getText().toString().length() == 0)
-                        t2.setError(s1);
-                    else t2.setError("");
-                }
-            });
-            }else t2.setVisibility(View.GONE);
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (ip.getText().toString().length() == 0)
+                            t2.setError(s1);
+                        else t2.setError("");
+                    }
+                });
+            } else t2.setVisibility(View.GONE);
             ip.setText(pa);
             builder.onNeutral(new MaterialDialog.SingleButtonCallback() {
                 @Override
@@ -152,12 +152,12 @@ public class RenameBookmark extends DialogFragment {
                 public void onClick(View v) {
                     String t = ip.getText().toString();
                     String name = con_name.getText().toString();
-                    if (studiomode!=0 && t.startsWith("smb://")) {
+                    if (studiomode != 0 && t.startsWith("smb://")) {
                         try {
                             URL a = new URL(t);
                             String userinfo = a.getUserInfo();
                             if (userinfo == null && user.length() > 0) {
-                                t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() +a.getPath();
+                                t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() + a.getPath();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -169,8 +169,8 @@ public class RenameBookmark extends DialogFragment {
                             DataUtils.removeBook(i);
                             DataUtils.addBook(new String[]{name, t});
                             DataUtils.sortBook();
-                            if(bookmarkCallback!=null){
-                                bookmarkCallback.modify(path,title,t,name);
+                            if (bookmarkCallback != null) {
+                                bookmarkCallback.modify(path, title, t, name);
                             }
                         }
                     }
@@ -184,8 +184,8 @@ public class RenameBookmark extends DialogFragment {
                     int i = -1;
                     if ((i = DataUtils.containsBooks(new String[]{title, path})) != -1) {
                         DataUtils.removeBook(i);
-                        if(bookmarkCallback!=null){
-                            bookmarkCallback.delete(title,path);
+                        if (bookmarkCallback != null) {
+                            bookmarkCallback.delete(title, path);
                         }
                     }
                     materialDialog.dismiss();
@@ -195,8 +195,10 @@ public class RenameBookmark extends DialogFragment {
         }
         return null;
     }
-    public interface BookmarkCallback{
-        void delete(String title,String path);
-        void modify(String oldpath,String oldname,String newpath,String newname);
-     }
+
+    public interface BookmarkCallback {
+        void delete(String title, String path);
+
+        void modify(String oldpath, String oldname, String newpath, String newname);
     }
+}

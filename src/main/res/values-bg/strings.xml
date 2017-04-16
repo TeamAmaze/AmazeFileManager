@@ -21,6 +21,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="drawer_open">Отваряне на панела за навигация</string>
   <string name="drawer_close">Затваряне на панела за навигация</string>
+  <string name="storage">Хранилище</string>
+  <string name="gallery">Галерия</string>
   <string name="setting">Настройки</string>
   <string name="cancel">ОТКАЗ</string>
   <string name="save">Запиши</string>
@@ -59,6 +61,7 @@
   <string name="install">Обнови</string>
   <string name="archive">Архивиране</string>
   <string name="details">Подробности</string>
+  <string name="warning">Внимание</string>
   <string name="donate">Дарение</string>
   <string name="text">Текст</string>
   <string name="other">Други</string>
@@ -69,6 +72,7 @@
   <string name="defualt">Основен</string>
   <string name="edit">Редактиране</string>
   <string name="path">Път</string>
+  <string name="search">Търсене</string>
   <string name="start_ftp">Начало</string>
   <string name="information">Информация</string>
   <!-- reference to file accessed date -->
@@ -86,4 +90,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_read">Прочети</string>
   <string name="permission_other">Други</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
 </resources>

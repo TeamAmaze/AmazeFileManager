@@ -2,9 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.ui.ZipObj;
 
@@ -44,9 +42,8 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
 
     @Override
     protected ArrayList<ZipObj> doInBackground(String... params) {
-        ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
+        ArrayList<ZipObj> elements = new ArrayList<>();
         try {
-            int i = 0;
             if (zipViewer.wholelist.size() == 0) {
                 Uri uri = Uri.parse(params[0]);
                 if (new File(uri.getPath()).canRead()) {
@@ -65,13 +62,12 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
                     }
                 }
             }
-            ArrayList<String> strings = new ArrayList<String>();
+            ArrayList<String> strings = new ArrayList<>();
             //  int fileCount = zipfile.size();
 
             for (ZipObj entry : zipViewer.wholelist) {
 
-                i++;
-                String s = entry.getName().toString();
+                String s = entry.getName();
                 //  System.out.println(s);
                 File file = new File(entry.getName());
                 if (dir == null || dir.trim().length() == 0) {
@@ -137,13 +133,7 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
         zipViewer.createviews(zipEntries, dir);
     }
 
-    class FileListSorter implements Comparator<ZipObj> {
-
-
-        public FileListSorter() {
-
-        }
-
+    private class FileListSorter implements Comparator<ZipObj> {
         @Override
         public int compare(ZipObj file1, ZipObj file2) {
             if (file1.isDirectory() && !file2.isDirectory()) {
@@ -155,5 +145,7 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
             }
             return file1.getEntry().getName().compareToIgnoreCase(file2.getEntry().getName());
         }
+
     }
+
 }

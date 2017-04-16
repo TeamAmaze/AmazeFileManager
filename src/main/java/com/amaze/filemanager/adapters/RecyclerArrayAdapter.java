@@ -11,9 +11,9 @@ import java.util.Collection;
  */
 public abstract class RecyclerArrayAdapter<M, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
-    private ArrayList<M> items = new ArrayList<M>();
+    private ArrayList<M> items = new ArrayList<>();
 
-    public RecyclerArrayAdapter() {
+    protected RecyclerArrayAdapter() {
         setHasStableIds(true);
     }
 
@@ -27,7 +27,7 @@ public abstract class RecyclerArrayAdapter<M, VH extends RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void addAll(Collection<? extends M> collection) {
+    protected void addAll(Collection<? extends M> collection) {
         if (collection != null) {
             items.addAll(collection);
             notifyDataSetChanged();

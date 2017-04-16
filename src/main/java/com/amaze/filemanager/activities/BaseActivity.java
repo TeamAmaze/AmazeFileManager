@@ -22,7 +22,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  * Created by arpitkh996 on 03-03-2016.
  */
 public class BaseActivity extends BasicActivity {
-    public SharedPreferences Sp;
+    public SharedPreferences sharedPref;
 
     // Accent and Primary hex color string respectively
     @Deprecated
@@ -33,18 +33,18 @@ public class BaseActivity extends BasicActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         // checking if theme should be set light/dark or automatic
-        if (Sp.getBoolean("random_checkbox", false)) {
+        if (sharedPref.getBoolean("random_checkbox", false)) {
             getColorPreference().randomize()
-                    .saveToPreferences(Sp);
+                    .saveToPreferences(sharedPref);
         }
 
         accentSkin = getColorPreference().getColorAsString(ColorUsage.ACCENT);
         setTheme();
 
-        rootMode = Sp.getBoolean(PreferenceUtils.KEY_ROOT, false);
+        rootMode = sharedPref.getBoolean(PreferenceUtils.KEY_ROOT, false);
 
         //requesting storage permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage)
@@ -61,11 +61,8 @@ public class BaseActivity extends BasicActivity {
     public boolean checkStoragePermission() {
 
         // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     void requestStoragePermission() {
@@ -245,8 +242,4 @@ public class BaseActivity extends BasicActivity {
         setTheme();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 }

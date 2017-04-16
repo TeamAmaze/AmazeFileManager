@@ -84,7 +84,7 @@ public class RootUtils {
                     mountPoint = words[2];
                     types = words[5];
                 }
-            } else continue;
+            }
         }
 
         if (!mountPoint.equals("") && types!=null) {
@@ -179,7 +179,7 @@ public class RootUtils {
     private static int getFilePermissions(String path) throws RootNotPermittedException {
         String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
 
-        return Integer.valueOf(line.toString());
+        return Integer.valueOf(line);
     }
 
     /**
@@ -233,18 +233,21 @@ public class RootUtils {
      * @param oldPath path to file before rename
      * @param newPath path to file after rename
      * @throws RootNotPermittedException
+     * @return if rename was successful or not
      */
-    public static void rename(String oldPath, String newPath)
+    public static boolean rename(String oldPath, String newPath)
             throws RootNotPermittedException {
 
         String mountPoint = mountFileSystemRW(oldPath);
 
-        RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        ArrayList<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
 
         if (mountPoint!=null) {
             // we mounted the filesystem as rw, let's mount it back to ro
             mountFileSystemRO(mountPoint);
         }
+
+        return output.size()==0;
     }
 
     public static void cat(String sourcePath, String destinationPath)

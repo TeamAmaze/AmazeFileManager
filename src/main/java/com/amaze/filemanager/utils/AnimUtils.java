@@ -19,7 +19,6 @@ package com.amaze.filemanager.utils;
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
-import android.transition.Transition;
 import android.util.ArrayMap;
 import android.util.Property;
 import android.view.animation.AnimationUtils;
@@ -31,9 +30,6 @@ import java.util.ArrayList;
  * Utility methods for working with animations.
  */
 public class AnimUtils {
-
-    private AnimUtils() {
-    }
 
     private static Interpolator fastOutSlowIn;
     private static Interpolator fastOutLinearIn;
@@ -122,9 +118,8 @@ public class AnimUtils {
 
         @Override
         final public void set(T object, Integer value) {
-            setValue(object, value.intValue());
+            setValue(object, value);
         }
-
     }
 
     /**
@@ -135,8 +130,7 @@ public class AnimUtils {
      */
     public static class NoPauseAnimator extends Animator {
         private final Animator mAnimator;
-        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners =
-                new ArrayMap<AnimatorListener, AnimatorListener>();
+        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners = new ArrayMap<>();
 
         public NoPauseAnimator(Animator animator) {
             mAnimator = animator;
@@ -178,7 +172,7 @@ public class AnimUtils {
 
         @Override
         public ArrayList<AnimatorListener> getListeners() {
-            return new ArrayList<AnimatorListener>(mListeners.keySet());
+            return new ArrayList<>(mListeners.keySet());
         }
 
         @Override
@@ -256,7 +250,7 @@ public class AnimUtils {
         }
     }
 
-    static class AnimatorListenerWrapper implements Animator.AnimatorListener {
+    private static class AnimatorListenerWrapper implements Animator.AnimatorListener {
         private final Animator mAnimator;
         private final Animator.AnimatorListener mListener;
 
@@ -283,34 +277,6 @@ public class AnimUtils {
         @Override
         public void onAnimationRepeat(Animator animator) {
             mListener.onAnimationRepeat(mAnimator);
-        }
-    }
-
-    public static class TransitionListenerAdapter implements Transition.TransitionListener {
-
-        @Override
-        public void onTransitionStart(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionEnd(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionCancel(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionPause(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionResume(Transition transition) {
-
         }
     }
 

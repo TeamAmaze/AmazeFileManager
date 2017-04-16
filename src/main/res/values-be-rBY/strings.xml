@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Адкрыць панэль</string>
   <string name="drawer_close">Зачыніць панель</string>
   <string name="books">Закладкі</string>
@@ -26,7 +27,7 @@
   <string name="efn">Увядзіце імя файла</string>
   <string name="storage">Сховішча</string>
   <string name="gallery">Галерэя</string>
-  <string name="apps">Мэнеджэр дадаткаў</string>
+  <string name="apps">Мэнеджэр праграм</string>
   <string name="ftp">FTP сервер</string>
   <string name="bookmanag">Кіраванне закладкамі</string>
   <string name="setting">Налады</string>
@@ -42,7 +43,7 @@
   <string name="delbook">Выдаліць закладку</string>
   <string name="addtobook">Дадаць у закладкі</string>
   <string name="enterpath">Увядзіце шлях</string>
-  <string name="cancel">АДМЕНА</string>
+  <string name="cancel">СКАСАВАЦЬ</string>
   <string name="create">СТВАРЫЦЬ</string>
   <string name="success">Паспяхова</string>
   <string name="filenotexists">Файл не існуе</string>
@@ -65,7 +66,7 @@
   <string name="name">Імя</string>
   <string name="date">Дата</string>
   <string name="location">Месцазнаходжанне</string>
-  <string name="size">Памер</string>
+  <string name="size">Памер тэчкі</string>
   <string name="totalitems">Усяго элементаў</string>
   <string name="enterzipname">Увядзіце імя zip-архіва</string>
   <string name="noappfound">Няма праграм для адкрыцця гэтага файла</string>
@@ -75,6 +76,8 @@
   <string name="tab">Закладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тэчка</string>
+  <string name="title_files">ФАЙЛЫ</string>
+  <string name="title_dirs">ТЭЧКІ</string>
   <string name="newfolder">Новая тэчка</string>
   <string name="entername">Увядзіце назву</string>
   <string name="extracting">Выманне</string>
@@ -110,7 +113,7 @@
   <string name="colorize_summary">Усталёўвае статычны колер значкоў. Не перавызначае ўстаноўлены колер значкоў дырэкторый.</string>
   <string name="back">Назад</string>
   <string name="home">Хатняя</string>
-  <string name="paste">Усталяваць</string>
+  <string name="paste">Уставіць</string>
   <string name="close">Зачыніць</string>
   <string name="history">Гісторыя</string>
   <string name="refresh">Абнавiць</string>
@@ -133,10 +136,10 @@
   <!-- Array -->
   <!-- UI -->
   <string name="simple">Просты карыст. інтэрфейс</string>
-  <string name="card">Карткі</string>
+  <string name="card">Карткі карыст. інтэрфейсу</string>
   <!-- Theme -->
-  <string name="light">Светлы</string>
-  <string name="dark">Цёмны</string>
+  <string name="light">Светлая</string>
+  <string name="dark">Цёмная</string>
   <string name="daytime">Дзённы час</string>
   <!--Skin-->
   <string name="red">Чырвоны</string>
@@ -196,7 +199,7 @@
   <string name="nofiles">Няма файлаў</string>
   <string name="tapnhold">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="pathcopied">Шлях скапіяваны ў буфер абмену</string>
-  <string name="used">Астатняе:  </string>
+  <string name="used">Выкарыстоўваецца:  </string>
   <string name="free">Вольна:  </string>
   <string name="atroot">Вы знаходзіцеся ў каранёвай дырэкторыі</string>
   <string name="listview">Спіс</string>
@@ -215,17 +218,17 @@
   <string name="changelog">Спic змен</string>
   <string name="fullChangelog">Поўны спіс змен</string>
   <string name="ok">ОК</string>
-  <string name="chooseUI">Выберыце UI элемент</string>
+  <string name="chooseUI">Выберыце элемент інтэрфейсу</string>
   <string name="ui">Інтэрфейс</string>
   <string name="general">Агульныя</string>
-  <string name="thumbSummary">Паказваць мініяцюры прыкладанняў і малюнкаў</string>
+  <string name="thumbSummary">Паказваць мініяцюры праграм і малюнкаў</string>
   <string name="thumb">Паказваць мініяцюры</string>
-  <string name="hidden">Паказвае схаваныя файлы і тэчкі</string>
+  <string name="hidden">Паказваць схаваныя файлы і тэчкі</string>
   <string name="lastModifiedSummary">Паказваць дату і час, калі файл быў зменены ў апошні раз</string>
   <string name="lastModifiedPref">Паказаць апошнія змены</string>
   <string name="sizePrefSummary">Паказаць памер файлаў і колькасць элементаў у тэчках</string>
   <string name="sizePref">Паказаць памеры</string>
-  <string name="miscellaneous">Рознае</string>
+  <string name="miscellaneous">Іншае</string>
   <string name="rootPrefSummary">Паказваць дазволы файлаў і тэчак</string>
   <string name="rootPref">Паказаць дазволы</string>
   <string name="aboutFileManager">Аб Amaze File Manager</string>
@@ -240,7 +243,7 @@
   <string name="new_string">Новае</string>
   <string name="setringtone">Усталяваць як рынгтон</string>
   <string name="copy_path">Капіяваць шлях</string>
-  <string name="addshortcut">Дадаць ярлык</string>
+  <string name="addshortcut">Дадаць цэтлік</string>
   <string name="unsavedchanges">Незахаваныя змены</string>
   <string name="unsavedchangesdesc">У Вас ёсць незахаваныя змены, вы хочаце захаваць іх перад выхадам?</string>
   <string name="saving">Захаванне</string>
@@ -300,7 +303,7 @@
   <string name="select_intent">Выбраць</string>
   <string name="md5copied">MD5 скапіяваны ў буфер абмену</string>
   <string name="generating">Стварэнне..</string>
-  <string name="tables">Табліцы</string>
+  <string name="tables">Табліца(ы)</string>
   <string name="database">База дадзеных</string>
   <string name="colourednavigation">Каляровая панэль навігацыі</string>
   <string name="colourednavigationsum">Афарбоўка панэлі навігацыі разам з тэмай</string>
@@ -309,23 +312,23 @@
   <string name="fab_skin">FAB skin</string>
   <string name="gplus_pic_title">Увайсці з дапамогай G+</string>
   <string name="gplus_pic_summary">Паказаць вокладку і значок профілю з G+ у бакавым меню</string>
-  <string name="icon_credits">Графіка ад &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
+  <string name="icon_credits">Графіка ад <a href="http://cookicons.co/">CookIcons</a></string>
   <string name="color_title">Колер</string>
   <string name="color_summary">Усталяваць колер для розных кампанентаў UI</string>
-  <string name="primary_color_title">Асноўны колер (левая ўкладка)</string>
+  <string name="primary_color_title">Асноўны колер (Левая ўкладка)</string>
   <string name="primary_color_summary">Усталяваць колер вялікіх элементаў UI для левай ўкладкі</string>
   <string name="accent_color_title">Колер акцэнту</string>
   <string name="accent_color_summary">Усталяваць колер плаваючай кнопкі FAB і іншых дробных элементаў UI</string>
-  <string name="icon_color_title">Колер іконак</string>
-  <string name="icon_color_summary">Усталяваць колер абразкоў</string>
+  <string name="icon_color_title">Колер цэтліка</string>
+  <string name="icon_color_summary">Усталяваць колер цэтлікаў</string>
   <string name="hide_mode_title">Схаваны рэжым</string>
   <string name="none">Нічога</string>
   <string name="hide_toolbar">Схаваць панэль інструментаў</string>
   <string name="hide_appbar">Схаваць усю панэль праграмы</string>
-  <string name="choose_color">Абраць колер</string>
+  <string name="choose_color">Выбраць колер</string>
   <string name="g_plus_community_title">Супольнасць G+</string>
   <string name="hide_mode_nothing">AppBar застаецца нязменным</string>
-  <string name="hide_mode_toolbar">Toolbar хаваецца пры прагортцы</string>
+  <string name="hide_mode_toolbar">Toolbar хаваецца падчас прагорткі</string>
   <string name="hide_mode_app_bar">App бар хаваецца падчас прагорткі</string>
   <string name="no_cover_photo">Няма вокладкі</string>
   <string name="files">Файлы</string>
@@ -334,7 +337,7 @@
   <string name="databasereader">Прагляднік баз дадзеных</string>
   <string name="showDividers">Паказаць падзельнікі</string>
   <string name="topFab">Плав. кнопка на AppBar</string>
-  <string name="topFabS">Кнопка + павінна быць наверсе або ўнізе. Ужываецца толькі калі AppBar не скрыты.</string>
+  <string name="topFabS">Кнопка + павінна быць наверсе або ўнізе. Ужываецца толькі калі AppBar не схаваны.</string>
   <string name="needsaccess">Неабходны доступ да запісу</string>
   <string name="needsaccesssummary">Калі ласка, абярыце каранёвую тэчку\t</string>
   <string name="needsaccesssummary1">\tпрадастаўляць доступ на запіс для працы </string>
@@ -359,7 +362,7 @@
   <string name="ascending">Па ўзрастанні</string>
   <string name="descending">Па змяншэнні</string>
   <string name="defualt">Па змаўчанні</string>
-  <string name="doit">Зрабіць гэта</string>
+  <string name="doit">Зрабі гэта</string>
   <string name="wanthelp"><u>Патрэбна дапамога?</u></string>
   <string name="quick">Хуткі доступ</string>
   <string name="recent">Апошнія файлы</string>
@@ -368,7 +371,7 @@
   <string name="grant">Прадастаўленне</string>
   <string name="grantper">Прадастаўленне дазволу</string>
   <string name="grantfailed">Дазвол не прадстаўлены</string>
-  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць прыкладанне.</string>
+  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць праграму.</string>
   <string name="grantgplus">Праграме патрабуецца дазвол для гэтай функцыі. Закрыццё гэтага дыялогу здыме дадзеную функцыю.</string>
   <string name="operationunsuccesful">Аперацыя беспаспяховая</string>
   <string name="creatingfile">Стварыць файл</string>
@@ -399,11 +402,11 @@
   <string name="ftp_notif_starting">FTP сервер запушчаны</string>
   <string name="ftp_notif_title">Amaze FTP сервер запушчаны</string>
   <string name="ftp_notif_text">на %s</string>
-  <string name="ftp_notif_stop_server">СТОП</string>
+  <string name="ftp_notif_stop_server">СПЫНІЦЬ</string>
   <string name="ftp_port_edit_menu_title">Выбраць порт FTP</string>
   <string name="ftp_port_change_success">Порт FTP зменены паспяхова</string>
   <string name="ftp_port_change_error_invalid">Выбраны недапушчальны нумар порта</string>
-  <string name="primary_two_title">Асноўны колер (правая ўкладка)</string>
+  <string name="primary_two_title">Асноўны колер (Правая ўкладка)</string>
   <string name="primary_two_summary">Усталяваць колер вялікіх элементаў UI для правай ўкладкі</string>
   <string name="g_plus">Google Plus</string>
   <string name="support_development">Падтрымаць распрацоўку</string>
@@ -423,10 +426,10 @@
                 <h1>Як атрымаць доступ да агульнай тэчцы вокны на андроіда (smb)</h1>\n\n
                 <ul>
                     <li>
-                        <b>Ўключыць агульны доступ да файлаў</b>\n
+                        <b>Уключыць агульны доступ да файлаў</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                     Адкрыйце панэль кіравання, націсніце Выбраць хатнія групы і сумеснае выкарыстанне магчымасцяў у межах сеткі і Інтэрнэт, і націсніце кнопку Змяніць дадатковыя параметры агульнага доступу. Ўключыць функцыі агульнага доступу да файлаў і друкарак.\n\n
+                     Адкрыйце панэль кіравання, націсніце Выбраць хатнія групы і сумеснае выкарыстанне магчымасцяў у межах сеткі і Інтэрнэт, і націсніце кнопку Змяніць дадатковыя параметры агульнага доступу. Уключыць функцыі агульнага доступу да файлаў і друкарак.\n\n
                     </p>
 
                     <li>
@@ -436,7 +439,7 @@
                         Вы таксама можаце наладзіць іншыя дадатковыя параметры агульнага доступу тут.\n
                         Напрыклад, вы можаце дазволіць доступ да файлаў без пароля, калі вы давяраеце ўсім
                         прылады на вашай лакальнай сеткі.Адзін раз да файлаў і друкарак уключаны, вы можаце
-                        адкрыйце Правадыр або Правадыр Windows, пстрыкніце правай кнопкай мышы тэчку, якую вы хочаце падзяліцца, і
+                        адкрыйце Праваднік або Праваднік Windows, націсніце правай кнопкай мышы тэчку, якой вы хочаце падзяліцца, і
                         выберыце Уласцівасці. \n
                         Націсніце кнопку падзяліцца і зрабіць тэчку даступнай у сетцы.\n\n
                         </p>
@@ -466,7 +469,7 @@
             </body>
         </html>
     </string>
-  <string name="share_limit">Немагчыма абменьвацца больш за 100 файламі</string>
+  <string name="share_limit">Немагчыма абменьвацца больш за 100 файлаў</string>
   <string name="otg_access">Выберыце каранёвую тэчку OTG прылады</string>
   <string name="no_profile_pic">Няма выявы профілю G+</string>
   <string name="opening">Адкрыццё..</string>
@@ -474,7 +477,7 @@
   <!-- reference to file accessed date -->
   <string name="accessed">Даступна</string>
   <!-- reference to file modified date -->
-  <string name="modified">Зменены</string>
+  <string name="modified">Зменена</string>
   <string name="title">Назва</string>
   <string name="artist">Выканаўца</string>
   <string name="album">Альбом</string>
@@ -501,7 +504,7 @@
   <string name="exposure_time">Вытрымка</string>
   <string name="aperture_value">Значенне дыяфрагмы</string>
   <string name="image_iso">Адчувальнасць ISO</string>
-  <string name="flash_fired">Выбліск ўключаны</string>
+  <string name="flash_fired">Выбліск уключаны</string>
   <string name="focal_length">Фокусная адлегласць</string>
   <string name="document">Дакумент</string>
   <string name="subject">Тэма</string>
@@ -541,7 +544,7 @@
   <string name="error_io">Памылка ўводу/вываду</string>
   <string name="error_root_not_permitted">Памылка: Root правы не прадастаўленны</string>
   <string name="medium_text">Сярэдні тэкст</string>
-  <string name="tap_and_hold_tips">Націсніце і ўтрымлівайце файл або тэчку для дадатковых опцый</string>
+  <string name="tap_and_hold_tips">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="permission_read">Чытаць</string>
   <string name="permission_write">Запісаць</string>
   <string name="permission_execute">Выканаць</string>
@@ -552,4 +555,33 @@
   <string name="error_busybox">BusyBox не знойдзены. Закрыццё інтэрактыўнай абалонкі.</string>
   <string name="service_timer">Прайшло часу</string>
   <string name="please_wait">Калі ласка, пачакайце</string>
+  <string name="no_applications">Няма праграм</string>
+  <string name="ftp_path">Агульны шлях</string>
+  <string name="ftp_path_hint">Шлях да каранёвага каталогу для агульнага доступу</string>
+  <string name="error_ftp_path_file">Шлях не з\'яўляецца каталогам</string>
+  <string name="change">Змяніць</string>
+  <string name="unknown_error">Штосьці пайшло не так!</string>
+  <string name="ftp_path_change_success">FTP шлях паспяхова зменены</string>
+  <string name="ftp_path_change_error_invalid">Няправільны шлях</string>
+  <string name="ftp_status_no_connection">Няма злучэння</string>
+  <string name="ftp_status_secure_connection">Бяспечнае злучэнне</string>
+  <string name="ftp_status_title">Стан</string>
+  <string name="ftp_port">Порт</string>
+  <string name="ftp_login">Увайсці</string>
+  <string name="field_empty">Поле не можа быць пустым</string>
+  <string name="ftp_timeout">Тайм-аўт прастою</string>
+  <string name="ftp_seconds">Секунд</string>
+  <string name="intellihide_toolbar_title">Схаваць панэль інструментаў</string>
+  <string name="intellihide_toolbar_summary">Аўтаматычна хаваць панэль пры прагортцы</string>
+  <string name="hash_sha256">SHA-256</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">скапіявана ў буфер абмену</string>
+  <string name="contributors_1_summary">Пераклад</string>
+  <string name="contributors_2_summary">Цэтлік і банеры</string>
+  <string name="contributors_3_summary">Тэма рухавіка</string>
+  <string name="contributors_4_summary">Цень для плаваючай кнопкі FAB</string>
+  <string name="contributors_5_summary">Колер пры змене ўкладкі</string>
+  <string name="contributors_6_summary">FTP сервер</string>
+  <string name="contributors_7_summary">Запусціць інтэрактыўную абалонку</string>
+  <string name="bytes">Байты</string>
 </resources>

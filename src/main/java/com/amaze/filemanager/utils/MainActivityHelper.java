@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -21,11 +22,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
@@ -37,9 +40,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by root on 11/22/15.
+ * Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 public class MainActivityHelper {
+
+    public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_GOGLEDRIVE = 3;
 
     private MainActivity mainActivity;
     private Futils utils;
@@ -50,17 +55,19 @@ public class MainActivityHelper {
      */
     public static String SEARCH_TEXT;
 
-    public MainActivityHelper(MainActivity mainActivity){
+    public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         this.utils = mainActivity.getFutils();
     }
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc){
+
+    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move,
+                                          Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
-        mat.title("Operation Unsuccessful");
+        mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
-        String content="Following files were not "+(move?"moved":"copied")+" successfully";
+        String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
         for(BaseFile s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
@@ -69,12 +76,13 @@ public class MainActivityHelper {
         mat.content(content);
         mat.build().show();
     }
+
     public final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                    Toast.makeText( mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
                         DataUtils.storages.add(a);
@@ -92,91 +100,112 @@ public class MainActivityHelper {
 
     /**
      * Prompt a dialog to user to input directory name
+     *
      * @param openMode
-     * @param path current path at which directory to create
-     * @param ma {@link Main} current fragment
+     * @param path     current path at which directory to create
+     * @param ma       {@link MainFragment} current fragment
      */
-    void mkdir(final OpenMode openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfolder),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+    void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
+        mk(R.string.newfolder, new OnClickMaterialListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode,path + "/" + a),ma);
+                mkDir(new HFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
-        materialDialog.show();
     }
 
     /**
      * Prompt a dialog to user to input file name
+     *
      * @param openMode
-     * @param path current path at which file to create
-     * @param ma {@link Main} current fragment
+     * @param path     current path at which file to create
+     * @param ma       {@link MainFragment} current fragment
      */
-    void mkfile(final OpenMode openMode,final String path,final Main ma){
-        final MaterialDialog materialDialog=utils.showNameDialog(mainActivity,new String[]{mainActivity.getResources().getString(R.string.entername), "",mainActivity.getResources().getString(R.string.newfile),mainActivity.getResources().getString(R.string.create),mainActivity.getResources().getString(R.string.cancel),null});
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+    void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
+        mk(R.string.newfile, new OnClickMaterialListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HFile(openMode,path + "/" + a),ma);
+                mkFile(new HFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
+    }
+
+    private void mk(@StringRes int newText, final OnClickMaterialListener l) {
+        final MaterialDialog materialDialog = utils.showNameDialog(mainActivity,
+                new String[]{mainActivity.getResources().getString(R.string.entername),
+                        "",
+                        mainActivity.getResources().getString(newText),
+                        mainActivity.getResources().getString(R.string.create),
+                        mainActivity.getResources().getString(R.string.cancel),
+                        null});
+
+        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                l.onClick(materialDialog);
+            }
+        });
         materialDialog.show();
+
+    }
+
+    private interface OnClickMaterialListener {
+        void onClick(MaterialDialog materialDialog);
     }
 
     public void add(int pos) {
-        final Main ma = (Main) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-        switch (pos) {
+        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final String path = ma.CURRENT_PATH;
 
-            case 0:
-                final String path = ma.CURRENT_PATH;
-                mkdir(ma.openMode,path,ma);
+        switch (pos) {
+            case NEW_FOLDER:
+                mkdir(ma.openMode, path, ma);
                 break;
-            case 1:
-                final String path1 = ma.CURRENT_PATH;
-                mkfile(ma.openMode,path1,ma);
+            case NEW_FILE:
+                mkfile(ma.openMode, path, ma);
                 break;
-            case 2:
-                SmbSearchDialog smbDialog=new SmbSearchDialog();
-                smbDialog.show(mainActivity.getFragmentManager(),"tab");
+            case NEW_SMB:
+                SmbSearchDialog smbDialog = new SmbSearchDialog();
+                smbDialog.show(mainActivity.getFragmentManager(), "tab");
                 break;
-            /*case 3:
+            /*case NEW_GOOGLEDRIVE:
                 mainActivity.bindDrive();
                 break;*/
         }
     }
 
-    public String getIntegralNames(String path){
-        String newPath="";
-        switch (Integer.parseInt(path)){
+    public String getIntegralNames(String path) {
+        String newPath = "";
+        switch (Integer.parseInt(path)) {
             case 0:
-                newPath=mainActivity.getResources().getString(R.string.images);
+                newPath = mainActivity.getResources().getString(R.string.images);
                 break;
             case 1:
-                newPath=mainActivity.getResources().getString(R.string.videos);
+                newPath = mainActivity.getResources().getString(R.string.videos);
                 break;
             case 2:
-                newPath=mainActivity.getResources().getString(R.string.audio);
+                newPath = mainActivity.getResources().getString(R.string.audio);
                 break;
             case 3:
-                newPath=mainActivity.getResources().getString(R.string.documents);
+                newPath = mainActivity.getResources().getString(R.string.documents);
                 break;
             case 4:
-                newPath=mainActivity.getResources().getString(R.string.apks);
+                newPath = mainActivity.getResources().getString(R.string.apks);
                 break;
             case 5:
-                newPath=mainActivity.getResources().getString(R.string.quick);
+                newPath = mainActivity.getResources().getString(R.string.quick);
                 break;
             case 6:
-                newPath=mainActivity.getResources().getString(R.string.recent);
+                newPath = mainActivity.getResources().getString(R.string.recent);
                 break;
         }
         return newPath;
     }
+
     public void guideDialogForLEXA(String path) {
         final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
         x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
@@ -211,7 +240,9 @@ public class MainActivityHelper {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         mainActivity.startActivityForResult(intent, 3);
     }
-    public void rename(OpenMode mode, String oldPath, String newPath, final Activity context, boolean rootmode) {
+
+    public void rename(OpenMode mode, final String oldPath, final String newPath,
+                       final Activity context, boolean rootmode) {
         final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
                 Toast.LENGTH_SHORT);
         toast.show();
@@ -255,6 +286,24 @@ public class MainActivityHelper {
                         if (b) {
                             Intent intent = new Intent("loadlist");
                             mainActivity.sendBroadcast(intent);
+
+                            // update the database entry to reflect rename for encrypted file
+                            if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+
+                                try {
+
+                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                                    EncryptedEntry newEntry = new EncryptedEntry();
+                                    newEntry.setId(oldEntry.getId());
+                                    newEntry.setPassword(oldEntry.getPassword());
+                                    newEntry.setPath(newPath);
+                                    cryptHandler.updateEntry(oldEntry, newEntry);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    // couldn't change the entry, leave it alone
+                                }
+                            }
                         } else
                             Toast.makeText(context, context.getString(R.string.operationunsuccesful),
                                     Toast.LENGTH_SHORT).show();
@@ -278,40 +327,47 @@ public class MainActivityHelper {
         });
     }
 
+    public static final int DOESNT_EXIST = 0;
+    public static final int WRITABLE_OR_ON_SDCARD = 1;
+    //For Android 5
+    public static final int CAN_CREATE_FILES = 2;
+
     public int checkFolder(final File folder, Context context) {
-        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-        if (lol) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (FileUtil.isOnExtSdCard(folder, context)) {
                 if (!folder.exists() || !folder.isDirectory()) {
-                    return 0;
+                    return DOESNT_EXIST;
                 }
 
                 // On Android 5, trigger storage access framework.
                 if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
                     guideDialogForLEXA(folder.getPath());
-                    return 2;
+                    return CAN_CREATE_FILES;
                 }
-                return 1;
-            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
-            else return 0;
+
+                return WRITABLE_OR_ON_SDCARD;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                return WRITABLE_OR_ON_SDCARD;
+            } else return DOESNT_EXIST;
         } else if (Build.VERSION.SDK_INT == 19) {
             if (FileUtil.isOnExtSdCard(folder, context)) {
-
                 // Assume that Kitkat workaround works
-                return 1;
-            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) return 1;
-            else return 0;
+                return WRITABLE_OR_ON_SDCARD;
+            } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+                return WRITABLE_OR_ON_SDCARD;
+            } else return DOESNT_EXIST;
         } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-            return 1;
+            return WRITABLE_OR_ON_SDCARD;
         } else {
-            return 0;
+            return DOESNT_EXIST;
         }
     }
 
     /**
      * Helper method to start Compress service
+     *
      * @param file the new compressed file
-     * @param b list of {@link BaseFile} to be compressed
+     * @param baseFiles list of {@link BaseFile} to be compressed
      */
     public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
@@ -328,8 +384,8 @@ public class MainActivityHelper {
     }
 
 
-    public void mkFile(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
+    public void mkFile(final HFile path, final MainFragment ma) {
+        final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkfile(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
@@ -338,12 +394,12 @@ public class MainActivityHelper {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+                        if (toast != null) toast.cancel();
                         Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
                                 Toast.LENGTH_SHORT).show();
-                        if(ma!=null && ma.getActivity()!=null) {
+                        if (ma != null && ma.getActivity() != null) {
                             // retry with dialog prompted again
-                            mkfile(file.getMode(),file.getParent(),ma);
+                            mkfile(file.getMode(), file.getParent(), ma);
                         }
 
                     }
@@ -356,11 +412,12 @@ public class MainActivityHelper {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(toast!=null)toast.cancel();
+                        if (toast != null) toast.cancel();
                         mainActivity.oppathe = path.getPath();
                         mainActivity.operation = DataUtils.NEW_FILE;
                         guideDialogForLEXA(mainActivity.oppathe);
-                    }});
+                    }
+                });
 
             }
 
@@ -370,16 +427,16 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void done(HFile hFile,final boolean b) {
+            public void done(HFile hFile, final boolean b) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        if(b){
+                        if (b) {
                             ma.updateList();
-                        }
-                        else Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
-                                Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                    Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -400,8 +457,8 @@ public class MainActivityHelper {
         });
     }
 
-    public void mkDir(final HFile path,final Main ma) {
-        final Toast toast=Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
+    public void mkDir(final HFile path, final MainFragment ma) {
+        final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkdir(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
@@ -505,25 +562,25 @@ public class MainActivityHelper {
 
     /**
      * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
+     *
      * @param query the text query entered the by user
      */
     public void search(String query) {
-        TabFragment tabFragment=mainActivity.getFragment();
-        if(tabFragment==null)return;
-        final Main ma = (Main) tabFragment.getTab();
+        TabFragment tabFragment = mainActivity.getFragment();
+        if (tabFragment == null) return;
+        final MainFragment ma = (MainFragment) tabFragment.getTab();
         final String fpath = ma.CURRENT_PATH;
 
         /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
         //ma.searchTask = task;
         SEARCH_TEXT = query;
-        mainActivity.mainFragment = (Main) mainActivity.getFragment().getTab();
+        mainActivity.mainFragment = (MainFragment) mainActivity.getFragment().getTab();
         FragmentManager fm = mainActivity.getSupportFragmentManager();
         SearchAsyncHelper fragment =
                 (SearchAsyncHelper) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
 
         if (fragment != null) {
-
             if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
 
                 fragment.mSearchTask.cancel(true);
@@ -532,20 +589,21 @@ public class MainActivityHelper {
         }
 
         addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, BaseActivity.rootMode,
-                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
-                mainActivity.Sp.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
+                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
+                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
     }
 
     /**
      * Adds a search fragment that can persist it's state on config change
+     *
      * @param fragmentManager fragmentManager
-     * @param fragment current fragment
-     * @param path current path
-     * @param input query typed by user
-     * @param openMode defines the file type
-     * @param rootMode is root enabled
-     * @param regex is regular expression search enabled
-     * @param matches is matches enabled for patter matching
+     * @param fragment        current fragment
+     * @param path            current path
+     * @param input           query typed by user
+     * @param openMode        defines the file type
+     * @param rootMode        is root enabled
+     * @param regex           is regular expression search enabled
+     * @param matches         is matches enabled for patter matching
      */
     public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
                                          String path, String input, OpenMode openMode, boolean rootMode,
@@ -564,15 +622,14 @@ public class MainActivityHelper {
     }
 
     /**
-     * Check whether creation of new directory is inside the same directory with a same name or not
+     * Check whether creation of new directory is inside the same directory with the same name or not
      * Directory inside the same directory with similar filename shall not be allowed
      * Doesn't work at an OTG path
+     *
      * @param file
      * @return
      */
     public static boolean isNewDirectoryRecursive(HFile file) {
-
-        if (file.getName().equals(file.getParentName())) return true;
-        else return false;
+        return file.getName().equals(file.getParentName());
     }
 }

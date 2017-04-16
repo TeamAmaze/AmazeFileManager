@@ -25,7 +25,6 @@ public class InterestingConfigChange {
      * @return
      */
     public static boolean isConfigChanged(Resources resources) {
-
         int changedFieldsMask = lastConfiguration.updateFrom(resources.getConfiguration());
         boolean densityChanged = lastDensity!=resources.getDisplayMetrics().densityDpi;
 
@@ -42,7 +41,6 @@ public class InterestingConfigChange {
      * Recycle after usage, to avoid getting inconsistent result because of static modifiers
      */
     public static void recycle() {
-
         lastConfiguration = new Configuration();
         lastDensity = -1;
     }

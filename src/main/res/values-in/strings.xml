@@ -76,6 +76,8 @@
   <string name="tab">Tab</string>
   <string name="file">Berkas</string>
   <string name="folder">Folder</string>
+  <string name="title_files">BERKAS</string>
+  <string name="title_dirs">DIREKTORI</string>
   <string name="newfolder">Folder Baru</string>
   <string name="entername">Masukan Nama</string>
   <string name="extracting">Mengekstrak</string>
@@ -508,4 +510,32 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="error_busybox">BusyBox tidak ditemukan. Menutup shell interaktif.</string>
   <string name="service_timer">Waktu berlalu</string>
   <string name="please_wait">Mohon tunggu</string>
+  <string name="no_applications">Tidak ada aplikasi</string>
+  <string name="ftp_path">Path Dibagikan</string>
+  <string name="ftp_path_hint">Path ke root direktori untuk berbagi</string>
+  <string name="error_ftp_path_file">Jalur bukan sebuah direktori</string>
+  <string name="change">Ganti</string>
+  <string name="unknown_error">Aduh, ada sesuatu yang tidak beres!</string>
+  <string name="ftp_path_change_success">Path FTP berhasil diganti</string>
+  <string name="ftp_path_change_error_invalid">Path tidak valid</string>
+  <string name="ftp_status_no_connection">Tidak ada koneksi</string>
+  <string name="ftp_status_secure_connection">Koneksi aman</string>
+  <string name="ftp_status_title">Status</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Masuk</string>
+  <string name="field_empty">Bidang tidak boleh kosong</string>
+  <string name="ftp_timeout">Batas waktu menganggur</string>
+  <string name="ftp_seconds">Detik</string>
+  <string name="intellihide_toolbar_title">Sembunyi Toolbar</string>
+  <string name="intellihide_toolbar_summary">Menyembunyikan toolbar secara otomatis saat bergulir</string>
+  <string name="hash_sha256">SHA-265</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">telah disalin</string>
+  <string name="contributors_1_summary">Terjemahan</string>
+  <string name="contributors_2_summary">Ikon dan spanduk</string>
+  <string name="contributors_3_summary">Mesin Tema</string>
+  <string name="contributors_4_summary">Bayangan di belakang FAB</string>
+  <string name="contributors_5_summary">Warna transisi ketika menggesekkan tab</string>
+  <string name="contributors_6_summary">Server FTP</string>
+  <string name="contributors_7_summary">Menembakkan shell interaktif</string>
 </resources>

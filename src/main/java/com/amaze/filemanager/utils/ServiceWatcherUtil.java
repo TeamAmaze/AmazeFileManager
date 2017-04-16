@@ -32,6 +32,8 @@ public class ServiceWatcherUtil {
     // position of byte in total byte size to be copied
     public static long POSITION = 0L;
 
+    private static int HAULT_COUNTER = -1;
+
     public static final int ID_NOTIFICATION_WAIT =  9248;
 
     /**
@@ -42,7 +44,8 @@ public class ServiceWatcherUtil {
     public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
-        POSITION = 0l;
+        POSITION = 0L;
+        HAULT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -69,6 +72,22 @@ public class ServiceWatcherUtil {
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;
+                }
+
+                if (POSITION == progressHandler.getWrittenSize()) {
+                    HAULT_COUNTER++;
+
+                    if (HAULT_COUNTER>10) {
+                        // we suspect the progress has been haulted for some reason, stop the watcher
+
+                        // workaround for decryption when we have a length retreived by
+                        // CipherInputStream less than the orginal stream, and hence the total size
+                        // we passed at the beginning is never reached
+                        progressHandler.addWrittenLength(totalSize);
+                        handler.removeCallbacks(this);
+                        handlerThread.quit();
+                        return;
+                    }
                 }
                 handler.postDelayed(this, 1000);
             }
@@ -97,13 +116,13 @@ public class ServiceWatcherUtil {
      * @param context
      * @param intent
      */
-    public static void runService(final Context context, final Intent intent) {
+    public static synchronized void runService(final Context context, final Intent intent) {
 
-        if (handlerThread==null || !handlerThread.isAlive()) {
+        /*if (handlerThread==null || !handlerThread.isAlive()) {
             // we're not bound, no need to proceed further and waste up resources
             // start the service directly
 
-            /**
+            *//**
              * We can actually end up racing at this point with the {@link HandlerThread} started
              * in {@link #init(Context)}. If older service has returned, we already have the runnable
              * waiting to execute in #init, and user is in app, and starts another service, and
@@ -113,10 +132,10 @@ public class ServiceWatcherUtil {
              * Though chances are very slim, but even if this condition occurs, only the progress will
              * be flawed, but the actual operation will go fine, due to android's native serial service
              * execution. #nough' said!
-             */
+             *//*
             context.startService(intent);
             return;
-        }
+        }*/
 
         if (pendingIntents.size()==0) {
             init(context);
@@ -131,7 +150,7 @@ public class ServiceWatcherUtil {
      * Halting condition depends on the state of {@link #handlerThread}
      * @param context
      */
-    private static void init(final Context context) {
+    private static synchronized void init(final Context context) {
 
         final HandlerThread waitingThread = new HandlerThread("service_startup_watcher");
         waitingThread.start();
@@ -144,7 +163,6 @@ public class ServiceWatcherUtil {
         mBuilder.setAutoCancel(false);
         mBuilder.setSmallIcon(R.drawable.ic_all_inclusive_white_36dp);
         mBuilder.setProgress(0, 0, true);
-        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
 
         Runnable runnable = new Runnable() {
             @Override
@@ -162,12 +180,15 @@ public class ServiceWatcherUtil {
                         handler.removeCallbacks(this);
                         waitingThread.quit();
                         return;
+                    } else {
+
+                        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
                     }
                 }
                 handler.postDelayed(this, 5000);
             }
         };
 
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 0);
     }
 }

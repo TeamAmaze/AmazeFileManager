@@ -26,6 +26,9 @@
     <dimen name="material_generic_large">72dp</dimen>
     <dimen name="material_generic_card_elevation">4dp</dimen>
     <dimen name="material_generic_title">16sp</dimen>
+    <dimen name="material_generic_title_large">20sp</dimen>
     <dimen name="material_generic_title_summary">12sp</dimen>
     <dimen name="material_generic_list_item">72dp</dimen>
+
+    <dimen name="height_divider">1dp</dimen>
 </resources>

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.ui.views.CheckBx;
+import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -51,7 +51,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         preferences = (com.amaze.filemanager.activities.Preferences) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final CheckBx checkBoxPreference = (CheckBx) findPreference("random_checkbox");
+        final CheckBox checkBoxPreference = (CheckBox) findPreference("random_checkbox");
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -60,7 +60,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 return true;
             }
         });
-        CheckBx preference8 = (CheckBx) findPreference("colorednavigation");
+        CheckBox preference8 = (CheckBox) findPreference("colorednavigation");
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -80,7 +80,6 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     @Override
     public boolean onPreferenceClick(final Preference preference) {
         if (preferences != null) preferences.changed = 1;
-
 
         final ColorUsage usage = ColorUsage.fromString(preference.getKey());
         if (usage != null) {
@@ -118,7 +117,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         return false;
     }
 
-    class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
+    private class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
         private String prefKey;
         private ColorUsage usage;
         @ColorInt
@@ -136,7 +135,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
          * @param colors  array list of color hex values in form of string; for the views
          * @param usage   the preference usage for setting new selected color preference value
          */
-        public ColorAdapter(Context context, List<Integer> colors, ColorUsage usage) {
+        ColorAdapter(Context context, List<Integer> colors, ColorUsage usage) {
             super(context, R.layout.rowlayout, colors);
             this.prefKey = usage.asString();
             this.usage = usage;
@@ -163,6 +162,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         @Override
         public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //TODO solve unconditional layout inflation
             View rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
 
             int color = getColor(getColorResAt(position));

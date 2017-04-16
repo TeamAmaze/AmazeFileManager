@@ -163,9 +163,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         // calculating cardview height as per the youtube video thumb aspect ratio
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         float vidAspectRatio = (float) HEADER_WIDTH / (float) HEADER_HEIGHT;
-        Log.d(getClass().getSimpleName(), Float.valueOf(vidAspectRatio) + "");
+        Log.d(getClass().getSimpleName(), vidAspectRatio + "");
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        float reqHeightAsPerAspectRatio = Float.valueOf(screenWidth)*vidAspectRatio;
+        float reqHeightAsPerAspectRatio = (float) screenWidth *vidAspectRatio;
         Log.d(getClass().getSimpleName(), reqHeightAsPerAspectRatio + "");
 
 
@@ -192,7 +192,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private void switchIcons() {
         if (getAppTheme().equals(AppTheme.DARK)) {
             // dark theme
-            mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark));
+            mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark_card));
         }
     }
 

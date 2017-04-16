@@ -243,4 +243,6 @@
   <string name="tap_and_hold_tips">Paliesti ir laikyti failą ar aplankalą dėl daugiau parinkčių</string>
   <string name="permission_other">Kita</string>
   <string name="clipboard_path_copy">Kelias nukopijuotas į iškarpinę</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP Serveris</string>
 </resources>

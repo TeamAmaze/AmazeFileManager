@@ -50,14 +50,14 @@
   <string name="loading">Caricamento in corso&#8230;</string>
   <string name="file_empty">Il file è vuoto</string>
   <string name="error">Errore</string>
-  <string name="cantlistfiles">Non è possibile elencare i file senza essere root</string>
+  <string name="cantlistfiles">Non è possibile elencare i file senza il percorso root</string>
   <string name="searchresults">Risultati ricerca</string>
   <string name="itemsselected">Elementi selezionati</string>
   <string name="newhomedirectory">Nuova home directory</string>
   <string name="rename">Rinomina</string>
   <string name="save">Salva</string>
-  <string name="renameerror">Ridenominazione non riuscita</string>
-  <string name="renamed">Ridenominazione riuscita</string>
+  <string name="renameerror">Rinominazione non riuscita</string>
+  <string name="renamed">Rinominazione riuscita</string>
   <string name="bookmarksadded">Segnalibri aggiunti</string>
   <string name="fileexist">Un file con quel nome esiste già</string>
   <string name="filecreated">File creato</string>
@@ -76,6 +76,8 @@
   <string name="tab">Scheda</string>
   <string name="file">File</string>
   <string name="folder">Cartella</string>
+  <string name="title_files">File</string>
+  <string name="title_dirs">Cartelle</string>
   <string name="newfolder">Nuova cartella</string>
   <string name="entername">Inserisci nome</string>
   <string name="extracting">Estrazione</string>
@@ -522,4 +524,13 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="error_busybox">Busybox non trovato. Chiusura shell interattiva.</string>
   <string name="service_timer">Tempo Trascorso</string>
   <string name="please_wait">Attendere, per favore</string>
+  <string name="no_applications">Nessuna applicazione</string>
+  <string name="ftp_path">Percorso condiviso</string>
+  <string name="ftp_path_hint">Percorso dell\'origine della directory da condividere</string>
+  <string name="error_ftp_path_file">Errore del percorso della directory</string>
+  <string name="change">Cambia</string>
+  <string name="ftp_path_change_success">Percorso FTP modificato con successo</string>
+  <string name="ftp_path_change_error_invalid">Percorso invalido</string>
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">Server FTP</string>
 </resources>

@@ -61,7 +61,7 @@ public class ZipTask extends Service {
     String mZipPath;
     Context c;
     ProgressListener progressListener;
-    long totalBytes = 0l;
+    long totalBytes = 0L;
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
     private ArrayList<DataPackage> dataPackages = new ArrayList<>();
@@ -72,7 +72,7 @@ public class ZipTask extends Service {
 
     @Override
     public void onCreate() {
-        c=getApplicationContext();
+        c = getApplicationContext();
         registerReceiver(receiver1, new IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL));
     }
 
@@ -84,10 +84,10 @@ public class ZipTask extends Service {
         ArrayList<BaseFile> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
         File zipFile = new File(path);
-        mZipPath= PreferenceManager.getDefaultSharedPreferences(this)
+        mZipPath = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString(PreferenceUtils.KEY_PATH_COMPRESS, path);
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(!mZipPath.equals(path)) {
+        if (!mZipPath.equals(path)) {
             mZipPath.concat(mZipPath.endsWith("/") ? (zipFile.getName()) : ("/" + zipFile.getName()));
         }
 
@@ -100,28 +100,6 @@ public class ZipTask extends Service {
             }
         }
 
-        totalBytes = getTotalBytes(baseFiles);
-        progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-        progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-            @Override
-            public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, int speed) {
-                publishResults(startId, fileName, sourceFiles, sourceProgress,
-                        totalSize, writtenSize, speed, false);
-            }
-        });
-
-        DataPackage intent1 = new DataPackage();
-        intent1.setName(baseFiles.get(0).getName());
-        intent1.setSourceFiles(baseFiles.size());
-        intent1.setSourceProgress(0);
-        intent1.setTotal(totalBytes);
-        intent1.setByteProgress(0);
-        intent1.setSpeedRaw(0);
-        intent1.setMove(false);
-        intent1.setCompleted(false);
-        putDataPackage(intent1);
-
         mBuilder = new NotificationCompat.Builder(this);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
@@ -129,7 +107,7 @@ public class ZipTask extends Service {
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
-        startForeground(Integer.parseInt("789"+startId),mBuilder.build());
+        startForeground(Integer.parseInt("789" + startId), mBuilder.build());
         b.putInt("id", startId);
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
         b.putString(KEY_COMPRESS_PATH, mZipPath);
@@ -138,13 +116,13 @@ public class ZipTask extends Service {
         return START_STICKY;
     }
 
-    private long getTotalBytes(ArrayList<BaseFile> baseFiles) {
-        long totalBytes = 0l;
+    private long getTotalBytes(ArrayList<BaseFile> baseFiles, Context context) {
+        long totalBytes = 0L;
         for (BaseFile f1 : baseFiles) {
-            if (f1.isDirectory()) {
-                totalBytes += f1.folderSize();
+            if (f1.isDirectory(context)) {
+                totalBytes += f1.folderSize(context);
             } else {
-                totalBytes += f1.length();
+                totalBytes += f1.length(context);
             }
         }
         return totalBytes;
@@ -163,6 +141,7 @@ public class ZipTask extends Service {
 
     public interface ProgressListener {
         void onUpdate(DataPackage dataPackage);
+
         void refresh();
     }
 
@@ -185,8 +164,33 @@ public class ZipTask extends Service {
         }
 
         protected Integer doInBackground(Bundle... p1) {
-            int id = p1[0].getInt("id");
+            final int id = p1[0].getInt("id");
             ArrayList<BaseFile> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
+
+            // setting up service watchers and initial data packages
+            // finding total size on background thread (this is necessary condition for SMB!)
+            totalBytes = getTotalBytes(baseFiles, c);
+            progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
+            progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
+                @Override
+                public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
+                                         long totalSize, long writtenSize, int speed) {
+                    publishResults(id, fileName, sourceFiles, sourceProgress,
+                            totalSize, writtenSize, speed, false);
+                }
+            });
+
+            DataPackage intent1 = new DataPackage();
+            intent1.setName(baseFiles.get(0).getName());
+            intent1.setSourceFiles(baseFiles.size());
+            intent1.setSourceProgress(0);
+            intent1.setTotal(totalBytes);
+            intent1.setByteProgress(0);
+            intent1.setSpeedRaw(0);
+            intent1.setMove(false);
+            intent1.setCompleted(false);
+            putDataPackage(intent1);
+
             zipPath = p1[0].getString(KEY_COMPRESS_PATH);
             execute(toFileArray(baseFiles), zipPath);
             return id;
@@ -240,7 +244,7 @@ public class ZipTask extends Service {
 
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
-                BufferedInputStream in=new BufferedInputStream( new FileInputStream(file));
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
 
@@ -264,7 +268,7 @@ public class ZipTask extends Service {
     private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
-            float progressPercent = ((float) done/total)*100;
+            float progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.compressing;
@@ -294,16 +298,16 @@ public class ZipTask extends Service {
             intent.setCompleted(isCompleted);
 
             putDataPackage(intent);
-            if(progressListener!=null){
+            if (progressListener != null) {
                 progressListener.onUpdate(intent);
-                if(isCompleted) progressListener.refresh();
+                if (isCompleted) progressListener.refresh();
             }
         } else {
             publishCompletedResult(Integer.parseInt("789" + id));
         }
     }
 
-    public void publishCompletedResult(int id1){
+    public void publishCompletedResult(int id1) {
         try {
             mNotifyManager.cancel(id1);
         } catch (Exception e) {
@@ -341,6 +345,7 @@ public class ZipTask extends Service {
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     *
      * @return
      */
     public synchronized DataPackage getDataPackage(int index) {
@@ -356,9 +361,11 @@ public class ZipTask extends Service {
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     *
      * @param dataPackage
      */
     private synchronized void putDataPackage(DataPackage dataPackage) {
         this.dataPackages.add(dataPackage);
     }
+
 }

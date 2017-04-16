@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<com.amaze.filemanager.ui.views.CustomViewPager
+<com.amaze.filemanager.ui.views.DisablableViewPager
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pager"
     android:layout_width="match_parent"
@@ -33,4 +33,4 @@
         android:paddingBottom="4dp"
         android:elevation="7dp"
         android:paddingTop="4dp" />-->
-</com.amaze.filemanager.ui.views.CustomViewPager>
+</com.amaze.filemanager.ui.views.DisablableViewPager>
