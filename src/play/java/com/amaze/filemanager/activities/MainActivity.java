@@ -1382,7 +1382,6 @@ public class MainActivity extends BaseActivity implements
         }
     };
 
-
     /**
      * Receiver to check if a USB device is connected at the runtime of application
      * If device is not connected at runtime (i.e. it was connected when the app was closed)
