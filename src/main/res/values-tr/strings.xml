@@ -585,4 +585,5 @@ Kaydırma sırasında araç çubuğunu otomatik olarak gizle</string>
   <string name="contributors_5_summary">Sekmeleri kaydırırken renk geçişi</string>
   <string name="contributors_6_summary">FTP Sunucu</string>
   <string name="contributors_7_summary">Etkileşimli bir kabuk hazırlama</string>
+  <string name="bytes">Byte </string>
 </resources>

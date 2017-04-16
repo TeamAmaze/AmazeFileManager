@@ -36,7 +36,7 @@
   <string name="open">Otwórz</string>
   <string name="backup">Utwórz kopię zapasową</string>
   <string name="uninstall">Odinstaluj</string>
-  <string name="play">Otwórz w sklepie Play</string>
+  <string name="play">Sklep Play</string>
   <string name="properties">Właściwości</string>
   <string name="copyingapk">Kopiowanie aplikacji do </string>
   <string name="addbook">Dodaj zakładkę</string>
@@ -547,6 +547,22 @@ smb_instructions
   <string name="clipboard_path_copy">Skopiowano ścieżkę</string>
   <string name="error_busybox">Nie znaleziono BusyBox. Zamykanie warstwy interaktywnej.</string>
   <string name="service_timer">Czas trwania</string>
+  <string name="please_wait">Proszę czekać</string>
+  <string name="change">Zmień</string>
+  <string name="unknown_error">Ups, coś poszło nie tak!</string>
+  <string name="ftp_path_change_error_invalid">Nieprawidłowa ścieżka</string>
+  <string name="ftp_status_no_connection">Brak połączenia</string>
+  <string name="ftp_status_secure_connection">Bezpieczne połączenie</string>
+  <string name="ftp_status_title">Status</string>
+  <string name="ftp_port">Port</string>
+  <string name="ftp_login">Zaloguj</string>
+  <string name="field_empty">Pole nie może być puste</string>
+  <string name="intellihide_toolbar_summary">Automatycznie ukryj paski narzędzi podczas przewijania</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">skopiowano do schowka</string>
+  <string name="contributors_1_summary">Tłumaczenie</string>
+  <string name="contributors_2_summary">Ikony i bannery</string>
   <string name="contributors_6_summary">Serwer FTP</string>
+  <string name="bytes">Bajtów</string>
 </resources>
