@@ -21,11 +21,15 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -34,6 +38,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
@@ -196,7 +201,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
             if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
-                    LayoutElements layoutElements = utilsProvider.getFutils().newElement(ma.folder,
+
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(),
+                            R.drawable.ic_folder_lock_white_36dp);
+                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
+
+                    LayoutElements layoutElements = utilsProvider.getFutils()
+                            .newElement(f.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
+                                    : ma.folder,
                             f.getPath(), ele.getPermission(), ele.getLink(), size, 0, true, false,
                             ele.getDate() + "");
                     layoutElements.setMode(ele.getMode());

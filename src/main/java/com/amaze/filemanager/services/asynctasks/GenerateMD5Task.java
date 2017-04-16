@@ -83,7 +83,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_md5);
         mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_sha256);
 
-        if (!f.isDirectory()) {
+        if (!f.isDirectory(c)) {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
             textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
         } else {
@@ -181,8 +181,8 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
     @Override
     protected String[] doInBackground(String... params) {
         String param = params[0];
-        if (f.isDirectory()) {
-            int x = f.listFiles(false).size();
+        if (f.isDirectory(c)) {
+            int x = f.listFiles(c, false).size();
             items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
         } else {
             items = Formatter.formatFileSize(c, f.length()) + (" (" + f.length() + " "
@@ -192,7 +192,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         String md5 = "";
         String sha256 = "";
         try {
-            if (!f.isDirectory()) {
+            if (!f.isDirectory(c)) {
                 md5 = getMD5Checksum(param);
                 sha256 = getSHA256Checksum();
             }
@@ -211,7 +211,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         super.onPostExecute(aVoid);
         if (a.isShowing()) {
 
-            if (!f.isDirectory()) {
+            if (!f.isDirectory(c)) {
                 t9.setText(aVoid[0]);
                 t10.setText(aVoid[1]);
 
@@ -258,7 +258,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int length;
-        InputStream inputStream = f.getInputStream();
+        InputStream inputStream = f.getInputStream(c);
         while ((length = inputStream.read(input)) != -1) {
             if (length > 0)
                 messageDigest.update(input, 0, length);
@@ -279,7 +279,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
     }
 
     public  byte[] createChecksum() throws Exception {
-        InputStream fis = f.getInputStream();
+        InputStream fis = f.getInputStream(c);
 
         byte[] buffer = new byte[8192];
         MessageDigest complete = MessageDigest.getInstance("MD5");

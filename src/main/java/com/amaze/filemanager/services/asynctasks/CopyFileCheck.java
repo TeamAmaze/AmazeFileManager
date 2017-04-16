@@ -304,7 +304,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
                     deleteCopiedFolder.add(new File(conflictingFiles.get(i).getPath()));
 
-                    nextNodes.add(new CopyNode(path + MainActivity.DIR_SEPARATOR
+                    nextNodes.add(new CopyNode(path + "/"
                             + conflictingFiles.get(i).getName(),
                             conflictingFiles.get(i).listFiles(rootMode)));
 

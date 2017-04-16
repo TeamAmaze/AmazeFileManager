@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.icons.IconUtils;
@@ -257,16 +258,66 @@ public class ProcessViewer extends Fragment {
         }
     };
 
+    private ServiceConnection mCryptConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            EncryptService.LocalBinder binder = (EncryptService.LocalBinder) service;
+            EncryptService encryptService = binder.getService();
+
+            for (int i=0; i<encryptService.getDataPackageSize(); i++) {
+                DataPackage dataPackage = encryptService.getDataPackage(i);
+                processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                        : ServiceType.ENCRYPT);
+            }
+
+            // animate the chart a little after initial values have been applied
+            mLineChart.animateXY(500, 500);
+
+            encryptService.setProgressListener(new EncryptService.ProgressListener() {
+                @Override
+                public void onUpdate(final DataPackage dataPackage) {
+                    if (getActivity() == null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                                    : ServiceType.ENCRYPT);
+                        }
+                    });
+                }
+
+                @Override
+                public void refresh() {
+
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
 
         Intent intent = new Intent(getActivity(), CopyService.class);
         getActivity().bindService(intent, mConnection, 0);
+
         Intent intent1 = new Intent(getActivity(), ExtractService.class);
         getActivity().bindService(intent1, mExtractConnection, 0);
+
         Intent intent2 = new Intent(getActivity(), ZipTask.class);
         getActivity().bindService(intent2, mCompressConnection, 0);
+
+        Intent intent3 = new Intent(getActivity(), EncryptService.class);
+        getActivity().bindService(intent3, mCryptConnection, 0);
     }
 
     @Override
@@ -275,6 +326,7 @@ public class ProcessViewer extends Fragment {
         getActivity().unbindService(mConnection);
         getActivity().unbindService(mExtractConnection);
         getActivity().unbindService(mCompressConnection);
+        getActivity().unbindService(mCryptConnection);
     }
 
     @Override
@@ -288,7 +340,7 @@ public class ProcessViewer extends Fragment {
      */
     enum ServiceType {
 
-        COPY, EXTRACT, COMPRESS
+        COPY, EXTRACT, COMPRESS, ENCRYPT, DECRYPT
     }
 
     public void processResults(final DataPackage dataPackage, ServiceType serviceType) {
@@ -393,6 +445,30 @@ public class ProcessViewer extends Fragment {
                 }
                 mProgressTypeText.setText(getResources().getString(R.string.compressing));
                 cancelBroadcast(new Intent(ZipTask.KEY_COMPRESS_BROADCAST_CANCEL));
+                break;
+            case ENCRYPT:
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_folder_lock_white_36dp));
+                } else {
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_folder_lock_grey600_36dp));
+                }
+                mProgressTypeText.setText(getResources().getString(R.string.crypt_encrypting));
+                cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
+                break;
+            case DECRYPT:
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_folder_lock_open_white_36dp));
+                } else {
+                    mProgressImage.setImageDrawable(getResources()
+                            .getDrawable(R.drawable.ic_folder_lock_open_grey600_36dp));
+                }
+                mProgressTypeText.setText(getResources().getString(R.string.crypt_decrypting));
+                cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
                 break;
         }
     }

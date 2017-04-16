@@ -37,6 +37,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.fingerprint.FingerprintManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -46,13 +47,17 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -63,11 +68,13 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
 import com.amaze.filemanager.ui.LayoutElements;
@@ -77,12 +84,24 @@ import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbException;
@@ -165,6 +184,7 @@ public class Futils {
                     length += folderSize(file);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return length;
     }
@@ -714,7 +734,7 @@ public class Futils {
         String date = getdate(last);
         String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
         name = hFile.getName();
-        parent = hFile.getReadablePath(hFile.getParent());
+        parent = hFile.getReadablePath(hFile.getParent(c.getContext()));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
         String fabskin = PreferenceUtils.getAccentString(sp);
         MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
@@ -743,7 +763,8 @@ public class Futils {
             });
         }
         a.customView(v, true);
-        a.neutralText(R.string.ok);
+        //a.neutralText(R.string.ok);
+        a.positiveText(c.getResources().getString(R.string.ok));
         a.neutralColor(Color.parseColor(fabskin));
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
@@ -754,6 +775,184 @@ public class Futils {
         new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
                 c.MAIN_ACTIVITY, v).execute(hFile.getPath());
     }
+
+    public void showEncryptWarningDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                         final RecyclerAdapter.EncryptButtonCallbackInterface
+                                                 encryptButtonCallbackInterface) {
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
+
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
+        builder.title(main.getResources().getString(R.string.warning));
+        builder.content(main.getResources().getString(R.string.crypt_warning_key));
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.negativeText(main.getResources().getString(R.string.warning_never_show));
+        builder.positiveText(main.getResources().getString(R.string.warning_confirm));
+        builder.positiveColor(Color.parseColor(main.fabSkin));
+
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                try {
+                    encryptButtonCallbackInterface.onButtonPressed(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(main.getActivity(),
+                            main.getResources().getString(R.string.crypt_encryption_fail),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                preferences.edit().putBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
+                try {
+                    encryptButtonCallbackInterface.onButtonPressed(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(main.getActivity(),
+                            main.getResources().getString(R.string.crypt_encryption_fail),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        builder.show();
+    }
+
+    public void showEncryptAuthenticateDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                              final RecyclerAdapter.EncryptButtonCallbackInterface
+                                                      encryptButtonCallbackInterface) {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
+        builder.title(main.getResources().getString(R.string.crypt_encrypt));
+
+        View rootView = View.inflate(main.getActivity(), R.layout.dialog_encrypt_authenticate, null);
+
+        final AppCompatEditText passwordEditText = (AppCompatEditText)
+                rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
+        final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
+                rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
+
+        builder.customView(rootView, true);
+
+        builder.positiveText(main.getResources().getString(R.string.ok));
+        builder.negativeText(main.getResources().getString(R.string.cancel));
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.positiveColor(Color.parseColor(main.fabSkin));
+        builder.negativeColor(Color.parseColor(main.fabSkin));
+
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                if (TextUtils.isEmpty(passwordEditText.getText()) ||
+                        TextUtils.isEmpty(passwordConfirmEditText.getText())) {
+                    dialog.cancel();
+                    return;
+                }
+
+                try {
+                    encryptButtonCallbackInterface.onButtonPressed(intent,
+                            passwordEditText.getText().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(main.getActivity(),
+                            main.getResources().getString(R.string.crypt_encryption_fail),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        builder.show();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void showDecryptFingerprintDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                             final RecyclerAdapter.DecryptButtonCallbackInterface
+                                                     decryptButtonCallbackInterface) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
+        builder.title(main.getResources().getString(R.string.crypt_decrypt));
+
+        View rootView = View.inflate(main.getActivity(),
+                R.layout.dialog_decrypt_fingerprint_authentication, null);
+
+        Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
+        cancelButton.setTextColor(Color.parseColor(main.fabSkin));
+        builder.customView(rootView, true);
+
+        builder.theme(appTheme.getMaterialDialogTheme());
+
+        final MaterialDialog dialog = builder.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        FingerprintManager manager = (FingerprintManager) main.getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+        FingerprintManager.CryptoObject object = new
+                FingerprintManager.CryptoObject(CryptUtil.initCipher(main.getContext()));
+
+        FingerprintHandler handler = new FingerprintHandler(main.getActivity(), intent, dialog,
+                decryptButtonCallbackInterface);
+        handler.authenticate(manager, object);
+    }
+
+    public void showDecryptDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                  final String password,
+                                  final RecyclerAdapter.DecryptButtonCallbackInterface
+                                          decryptButtonCallbackInterface) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
+        builder.title(main.getResources().getString(R.string.crypt_decrypt));
+
+        builder.input(main.getResources().getString(R.string.authenticate_password), "", false,
+                new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+            }
+        });
+
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.positiveText(main.getResources().getString(R.string.ok));
+        builder.negativeText(main.getResources().getString(R.string.cancel));
+        builder.positiveColor(Color.parseColor(main.fabSkin));
+        builder.negativeColor(Color.parseColor(main.fabSkin));
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                EditText editText = dialog.getInputEditText();
+
+                if (editText.getText().toString().equals(password))
+                    decryptButtonCallbackInterface.confirm(intent);
+                else decryptButtonCallbackInterface.failed();
+            }
+        });
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
     public static long[] getSpaces(HFile hFile){
         if(!hFile.isSmb() && hFile.isDirectory()){
             try {

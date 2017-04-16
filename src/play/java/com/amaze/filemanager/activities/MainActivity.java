@@ -26,11 +26,13 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -47,6 +49,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -108,6 +111,7 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -143,12 +147,14 @@ import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
+import jcifs.smb.SmbFile;
 
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -198,17 +204,9 @@ public class MainActivity extends BaseActivity implements
     public ArrayList<String> oppatheList;
     public RelativeLayout drawerHeaderParent;
 
-    // the current visible tab, either 0 or 1
-    public static int currentTab;
-
-    public static boolean isSearchViewEnabled = false;
-    public static Shell.Interactive shellInteractive;
-    public static Handler handler;
-
     public MainFragment mainFragment;
 
     public static final String KEY_PREF_OTG = "uri_usb_otg";
-    public static final String KEY_INTENT_PROCESS_VIEWER = "openProcesses";
 
     private static final int image_selector_request_code = 31;
 
@@ -268,7 +266,21 @@ public class MainActivity extends BaseActivity implements
 
     private static final int REQUEST_CODE_SAF = 223;
     private static final String VALUE_PREF_OTG_NULL = "n/a";
+
+    public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
+    public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
+    public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
+
+    // the current visible tab, either 0 or 1
+    public static int currentTab;
+
+    public static boolean isSearchViewEnabled = false;
+    public static Shell.Interactive shellInteractive;
+    public static Handler handler;
+
     private static HandlerThread handlerThread;
+    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destoyed
+    public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     /**
      * Called when the activity is first created.
@@ -331,8 +343,8 @@ public class MainActivity extends BaseActivity implements
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
-            if (intent.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra("failedOps");
+            if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
@@ -1280,6 +1292,8 @@ public class MainActivity extends BaseActivity implements
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
+        unbindService(mEncryptServiceConnection);
+
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
         }
@@ -1299,7 +1313,7 @@ public class MainActivity extends BaseActivity implements
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
-        registerReceiver(receiver2, new IntentFilter("general_communications"));
+        registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
         if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
                 .getClass().getName().contains("TabFragment")) {
 
@@ -1318,7 +1332,55 @@ public class MainActivity extends BaseActivity implements
             otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
             registerReceiver(mOtgReceiver, otgFilter);
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            // let's register encryption service to know when we've decrypted
+            Intent encryptIntent = new Intent(this, EncryptService.class);
+            bindService(encryptIntent, mEncryptServiceConnection, 0);
+
+            if (!isEncryptOpen && encryptBaseFile != null) {
+                // we've opened the file and are ready to delete it
+                // don't move this to ondestroy as we'll be getting destroyed and starting
+                // an async task just before it is not a good idea
+                ArrayList<BaseFile> baseFiles = new ArrayList<>();
+                baseFiles.add(encryptBaseFile);
+                new DeleteTask(getContentResolver(), this).execute(baseFiles);
+            }
+        }
     }
+
+    ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            if (isEncryptOpen && encryptBaseFile != null) {
+                if (mainFragment != null) {
+                    switch (mainFragment.openMode) {
+                        case OTG:
+                            getFutils().openFile(RootHelper.getDocumentFile(encryptBaseFile.getPath(),
+                                    MainActivity.this, false), MainActivity.this);
+                            break;
+                        case SMB:
+                            try {
+                                MainFragment.launch(new SmbFile(encryptBaseFile.getPath()),
+                                        encryptBaseFile.getSize(), MainActivity.this);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                        default:
+                            getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
+                    }
+                } else
+                    getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
+                isEncryptOpen = false;
+            }
+        }
+    };
 
 
     /**
@@ -2519,8 +2581,8 @@ public class MainActivity extends BaseActivity implements
                     m.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
-        } else if (i.getStringArrayListExtra("failedOps") != null) {
-            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
+        } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
@@ -2594,10 +2656,11 @@ public class MainActivity extends BaseActivity implements
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent i) {
-            if (i.getStringArrayListExtra("failedOps") != null) {
-                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra("failedOps");
-                if (failedOps != null)
+            if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+                if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
+                }
             }
         }
     };
@@ -2666,14 +2729,15 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void addConnection(boolean edit, String name, String path, String oldname, String oldPath) {
+    public void addConnection(boolean edit, String name, String path, String encryptedPath,
+                              String oldname, String oldPath) {
         try {
             String[] s = new String[]{name, path};
             if (!edit) {
                 if ((DataUtils.containsServer(path)) == -1) {
-                    DataUtils.addServer(new String[]{name, path});
+                    DataUtils.addServer(s);
                     refreshDrawer();
-                    grid.addPath(name, path, DataUtils.SMB, 1);
+                    grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                     TabFragment fragment = getFragment();
                     if (fragment != null) {
                         Fragment fragment1 = fragment.getTab();
@@ -2683,7 +2747,7 @@ public class MainActivity extends BaseActivity implements
                         }
                     }
                 } else
-                    Snackbar.make(frameLayout, "Connection already exists", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             } else {
                 int i = DataUtils.containsServer(new String[]{oldname, oldPath});
                 if (i != -1) {
@@ -2693,7 +2757,7 @@ public class MainActivity extends BaseActivity implements
                 DataUtils.addServer(s);
                 Collections.sort(DataUtils.servers, new BookSorter());
                 mainActivity.refreshDrawer();
-                mainActivity.grid.addPath(s[0], s[1], DataUtils.SMB, 1);
+                mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
             }
         } catch (Exception e) {
             Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();

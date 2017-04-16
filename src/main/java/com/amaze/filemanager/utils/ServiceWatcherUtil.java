@@ -32,6 +32,8 @@ public class ServiceWatcherUtil {
     // position of byte in total byte size to be copied
     public static long POSITION = 0L;
 
+    private static int HAULT_COUNTER = -1;
+
     public static final int ID_NOTIFICATION_WAIT =  9248;
 
     /**
@@ -43,6 +45,7 @@ public class ServiceWatcherUtil {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
         POSITION = 0L;
+        HAULT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -69,6 +72,22 @@ public class ServiceWatcherUtil {
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;
+                }
+
+                if (POSITION == progressHandler.getWrittenSize()) {
+                    HAULT_COUNTER++;
+
+                    if (HAULT_COUNTER>10) {
+                        // we suspect the progress has been haulted for some reason, stop the watcher
+
+                        // workaround for decryption when we have a length retreived by
+                        // CipherInputStream less than the orginal stream, and hence the total size
+                        // we passed at the beginning is never reached
+                        progressHandler.addWrittenLength(totalSize);
+                        handler.removeCallbacks(this);
+                        handlerThread.quit();
+                        return;
+                    }
                 }
                 handler.postDelayed(this, 1000);
             }
@@ -97,7 +116,7 @@ public class ServiceWatcherUtil {
      * @param context
      * @param intent
      */
-    public static void runService(final Context context, final Intent intent) {
+    public static synchronized void runService(final Context context, final Intent intent) {
 
         /*if (handlerThread==null || !handlerThread.isAlive()) {
             // we're not bound, no need to proceed further and waste up resources
@@ -131,7 +150,7 @@ public class ServiceWatcherUtil {
      * Halting condition depends on the state of {@link #handlerThread}
      * @param context
      */
-    private static void init(final Context context) {
+    private static synchronized void init(final Context context) {
 
         final HandlerThread waitingThread = new HandlerThread("service_startup_watcher");
         waitingThread.start();

@@ -26,9 +26,6 @@ public enum OpenMode {
      * @return
      */
     public static OpenMode getOpenMode(int ordinal) {
-        for (OpenMode openMode : OpenMode.values()) {
-            if (openMode.ordinal()==ordinal) return openMode;
-        }
-        return null;
+        return OpenMode.values()[ordinal];
     }
 }

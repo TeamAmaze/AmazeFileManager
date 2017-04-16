@@ -26,6 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.CryptUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -218,7 +219,6 @@ public class Icons {
                 "application/x-quicktimeplayer",
                 "application/x-shockwave-flash"
         );
-
     }
 
     public static boolean isText(String name) {
@@ -246,6 +246,12 @@ public class Icons {
             }
         }
         return false;
+    }
+
+    public static boolean isEncrypted(String name) {
+        if (name.endsWith(CryptUtil.CRYPT_EXTENSION))
+            return true;
+        else return false;
     }
 
     public static boolean isAudio(String name) {
@@ -351,6 +357,8 @@ public class Icons {
         } else if ("video".equals(typeOnly)) {
             /*if (grid) resId = R.drawable.ic_doc_video_am_grid; else*/
             resId = R.drawable.ic_doc_video_am;
+        } else if (path.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+            resId = R.drawable.ic_file_lock_white_36dp;
         }
         if (resId == null) {
             /*if (grid) resId = R.drawable.ic_doc_generic_am_grid; else*/

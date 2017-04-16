@@ -70,6 +70,9 @@ public class BaseFile extends HFile implements Parcelable {
         this.size = size;
     }
 
+    /**
+     * @return
+     */
     public boolean isDirectory() {
         return isDirectory;
     }

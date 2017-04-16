@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    >
+
+
+    <com.amaze.filemanager.ui.views.ThemedImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fingerprint_grey600_36dp"
+        app:src_dark="@drawable/ic_fingerprint_white_36dp"
+        />
+
+    <com.amaze.filemanager.ui.views.ThemedTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/crypt_fingerprint_authenticate"
+        android:layout_marginTop="@dimen/material_generic"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_generic_medium"
+        android:text="@string/cancel"
+        android:id="@+id/button_decrypt_fingerprint_cancel"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginTop="@dimen/material_generic"
+        />
+</LinearLayout>

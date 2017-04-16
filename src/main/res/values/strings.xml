@@ -601,6 +601,33 @@
     <string name="contributors_5_summary">Color transition when swiping tabs</string>
     <string name="contributors_6_summary">FTP Server</string>
     <string name="contributors_7_summary">Firing up an interactive shell</string>
+    <string name="connection_exists">Connection already exists</string>
+
+    <string name="crypt_encrypting">Encrypting</string>
+    <string name="crypt_decrypting">Decrypting</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Encrypted</string>
+    <string name="crypt_decrypted">Decrypted</string>
+    <string name="crypt_encrypt">Encrypt</string>
+    <string name="crypt_decrypt">Decrypt</string>
+    <string name="operation_fail_following">Operation failed for following files</string>
+    <string name="crypt_pref_master_password_title">Master Password</string>
+    <string name="crypt_pref_master_password_summary">Set a master password for encryption.
+        Leave empty to remove.</string>
+    <string name="crypt_pref_fingerprint_title">Fingerprint</string>
+    <string name="crypt_pref_fingerprint_summary">Use fingerprint to authenticate encryption</string>
+    <string name="crypt_fingerprint_no_permission">Fingerprint permissions missing</string>
+    <string name="crypt_fingerprint_not_enrolled">No fingerprint enrolled</string>
+    <string name="crypt_fingerprint_no_security">No lockscreen security found</string>
+    <string name="crypt_warning_key">Be advised, when you change your security pattern from
+        System settings, you won\'t be able to decrypt this content.</string>
+    <string name="warning_never_show">Don\'t inform again</string>
+    <string name="warning_confirm">Got it!</string>
+    <string name="crypt_encryption_fail">Failed to encrypt</string>
+    <string name="crypt_decryption_fail">Failed to decrypt</string>
+    <string name="crypt_decryption_fail_password">Wrong password!</string>
+    <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
+    <string name="authenticate_password">Enter password</string>
     <string name="bytes">Bytes</string>
 </resources>
 

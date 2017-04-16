@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -58,16 +60,17 @@ public class MainActivityHelper {
         this.utils = mainActivity.getFutils();
     }
 
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc) {
-        MaterialDialog.Builder mat = new MaterialDialog.Builder(contextc);
-        mat.title("Operation Unsuccessful");
+    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move,
+                                          Context contextc) {
+        MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
+        mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         mat.positiveText(R.string.cancel);
-        String content = "Following files were not " + (move ? "moved" : "copied") + " successfully";
-        int k = 1;
-        for (BaseFile s : failedOps) {
-            content = content + "\n" + (k) + ". " + s.getName();
+        String content = contextc.getResources().getString(R.string.operation_fail_following);
+        int k=1;
+        for(BaseFile s:failedOps){
+            content=content+ "\n" + (k) + ". " + s.getName();
             k++;
         }
         mat.content(content);
@@ -238,8 +241,9 @@ public class MainActivityHelper {
         mainActivity.startActivityForResult(intent, 3);
     }
 
-    public void rename(OpenMode mode, String oldPath, String newPath, final Activity context, boolean rootmode) {
-        final Toast toast = Toast.makeText(context, context.getString(R.string.renaming),
+    public void rename(OpenMode mode, final String oldPath, final String newPath,
+                       final Activity context, boolean rootmode) {
+        final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
                 Toast.LENGTH_SHORT);
         toast.show();
         Operations.rename(new HFile(mode, oldPath), new HFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
@@ -282,6 +286,24 @@ public class MainActivityHelper {
                         if (b) {
                             Intent intent = new Intent("loadlist");
                             mainActivity.sendBroadcast(intent);
+
+                            // update the database entry to reflect rename for encrypted file
+                            if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+
+                                try {
+
+                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                                    EncryptedEntry newEntry = new EncryptedEntry();
+                                    newEntry.setId(oldEntry.getId());
+                                    newEntry.setPassword(oldEntry.getPassword());
+                                    newEntry.setPath(newPath);
+                                    cryptHandler.updateEntry(oldEntry, newEntry);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    // couldn't change the entry, leave it alone
+                                }
+                            }
                         } else
                             Toast.makeText(context, context.getString(R.string.operationunsuccesful),
                                     Toast.LENGTH_SHORT).show();

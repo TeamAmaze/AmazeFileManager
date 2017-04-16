@@ -99,6 +99,23 @@
             android:title="@string/zip_create_folder">
         </EditTextPreference>
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/security">
+        <EditTextPreference
+            android:key="crypt_password"
+            android:summary="@string/crypt_pref_master_password_summary"
+            android:title="@string/crypt_pref_master_password_title">
+        </EditTextPreference>
+
+        <com.amaze.filemanager.ui.views.CheckBox
+            android:key="crypt_fingerprint"
+            android:summary="@string/crypt_pref_fingerprint_summary"
+            android:title="@string/crypt_pref_fingerprint_title"
+            android:enabled="false"
+            >
+        </com.amaze.filemanager.ui.views.CheckBox>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/miscellaneous">
 
         <PreferenceScreen

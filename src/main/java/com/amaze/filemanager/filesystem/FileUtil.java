@@ -30,9 +30,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
 /**
  * Utility class for helping parsing file systems.
@@ -272,11 +276,12 @@ public abstract class FileUtil {
     /**
      * Create a folder. The folder may even be on external SD card for Kitkat.
      *
-     * @param file The folder to be created.
+     * @deprecated use {@link #mkdirs(Context, HFile)}
+     * @param file  The folder to be created.
      * @return True if creation was successful.
      */
     public static boolean mkdir(final File file, Context context) {
-        if (file == null)
+        if(file==null)
             return false;
         if (file.exists()) {
             // nothing to create.
@@ -307,8 +312,38 @@ public abstract class FileUtil {
         return false;
     }
 
-    static boolean mkfile(final File file, Context context) throws IOException {
-        if (file == null)
+    public static boolean mkdirs(Context context, HFile file) {
+        boolean isSuccessful = true;
+        switch (file.mode) {
+            case SMB:
+                try {
+                    SmbFile smbFile = new SmbFile(file.getPath());
+                    smbFile.mkdirs();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    isSuccessful =  false;
+                } catch (SmbException e) {
+                    e.printStackTrace();
+                    isSuccessful = false;
+                }
+                break;
+            case OTG:
+                DocumentFile documentFile = RootHelper.getDocumentFile(file.getPath(), context, true);
+                isSuccessful = documentFile != null;
+                break;
+            case FILE:
+                isSuccessful = mkdir(new File(file.getPath()), context);
+                break;
+            default:
+                isSuccessful = true;
+                break;
+        }
+
+        return isSuccessful;
+    }
+
+    public static boolean mkfile(final File file,Context context) throws IOException {
+        if(file==null)
             return false;
         if (file.exists()) {
             // nothing to create.
@@ -755,6 +790,37 @@ public abstract class FileUtil {
             }
         }
         return targetFile;
+    }
+
+    /**
+     * Checks whether the target path exists or is writable
+     * @param f the target path
+     * @param context
+     * @return 1 if exists or writable, 0 if not writable
+     */
+    public static int checkFolder(final String f,Context context) {
+        if(f==null)return 0;
+        if(f.startsWith("smb://") || f.startsWith("otg:")) return 1;
+        File folder=new File(f);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
+            if (!folder.exists() || !folder.isDirectory()) {
+                return 0;
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+                return 1;
+
+            }
+        } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+            // Assume that Kitkat workaround works
+            return 1;
+        } else if (folder.canWrite()) {
+            return 1;
+        } else {
+            return 0;
+        }
+        return 0;
     }
 
     /**

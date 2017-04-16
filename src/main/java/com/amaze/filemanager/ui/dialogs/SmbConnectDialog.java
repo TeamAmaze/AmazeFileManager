@@ -22,15 +22,30 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import jcifs.smb.SmbFile;
 
@@ -44,8 +59,34 @@ public class SmbConnectDialog extends DialogFragment {
 
 
     public interface SmbConnectionListener{
-        void addConnection(boolean edit,String name,String path,String oldname,String oldPath);
-        void deleteConnection(String name,String path);
+
+        /**
+         * Callback denoting a new connection been added from dialog
+         * @param edit whether we edit existing connection or not
+         * @param name name of connection as appears in navigation drawer
+         * @param path the full path to the server. Includes an un-encrypted password to support
+         *             runtime loading without reloading stuff from database.
+         * @param encryptedPath the full path to the server. Includes encrypted password to save in
+         *                      database. Later be decrypted at every boot when we read from db entry.
+         * @param oldname the old name of connection if we're here to edit
+         * @param oldPath the old full path (un-encrypted as we read from existing entry in db, which
+         *                we decrypted beforehand).
+         */
+        void addConnection(boolean edit, String name, String path, String encryptedPath,
+                           String oldname, String oldPath);
+
+        /**
+         * Callback denoting a connection been deleted from dialog
+         * @param name name of connection as in navigation drawer and in database entry
+         * @param path the full path to server. Includes an un-encrypted password as we decrypted it
+         *             beforehand while reading from database before coming here to delete.
+         *             We'll later have to encrypt the password back again in order to match entry
+         *             from db and to successfully delete it. If we don't want this behaviour,
+         *             then we'll have to not allow duplicate connection name, and delete entry based
+         *             on the name only. But that is not supported as of now.
+         *             See {@link com.amaze.filemanager.utils.HistoryManager#removePath(String, String, String)}
+         */
+        void deleteConnection(String name, String path);
     }
     Context context;
     SmbConnectionListener smbConnectionListener;
@@ -273,7 +314,8 @@ public class SmbConnectDialog extends DialogFragment {
                 if (smbFile == null) return;
                 s = new String[]{conName.getText().toString(), smbFile.getPath()};
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.addConnection(edit,s[0],s[1],name,path);
+                    smbConnectionListener.addConnection(edit, s[0], pass.getText().toString(),
+                            s[1], name, path);
                 }
                 dismiss();
             }
@@ -300,8 +342,16 @@ public class SmbConnectDialog extends DialogFragment {
     public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
         try {
             String yourPeerIP = auth[0], domain = auth[3];
-            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? "" :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") + ":" + URLEncoder.encode(auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
-            SmbFile smbFile = new SmbFile(path);
+            String path;
+
+            path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
+                    "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
+                    (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
+                            ":" + CryptUtil.encryptPassword(context, auth[2]) + "@"))
+                    + yourPeerIP + "/";
+
+            HFile hFile = new HFile(OpenMode.SMB, path);
+            SmbFile smbFile = hFile.getSmbFile(5000);
             return smbFile;
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,5 +382,47 @@ public class SmbConnectDialog extends DialogFragment {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             editText.setBackgroundTintList(editTextColorStateList);
         }
+    }
+
+    /**
+     * Parse path to decrypt smb password
+     * @return
+     */
+    public static String getSmbDecryptedPath(Context context, String path) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(path.substring(0, path.indexOf(":", 4)+1));
+        String encryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
+
+        String decryptedPassword;
+        try {
+            decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            decryptedPassword = encryptedPassword;
+        }
+
+        buffer.append(decryptedPassword);
+        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+
+        return buffer.toString();
+    }
+
+    public static String getSmbEncryptedPath(Context context, String path) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(path.substring(0, path.indexOf(":", 4)+1));
+        String decryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
+
+        String encryptPassword;
+        try {
+            encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            encryptPassword = decryptedPassword;
+        }
+
+        buffer.append(encryptPassword);
+        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+
+        return buffer.toString();
     }
 }

@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    protected static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 
@@ -42,8 +42,17 @@ public class TabHandler extends SQLiteOpenHelper {
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_HOME = "home";
 
+    private static final String TABLE_ENCRYPTED = "encrypted";
+
+    private static final String COLUMN_ENCRYPTED_ID = "_id";
+    private static final String COLUMN_ENCRYPTED_PATH = "path";
+    private static final String COLUMN_ENCRYPTED_PASSWORD = "password";
+
+    private Context context;
+
     public TabHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -53,12 +62,20 @@ public class TabHandler extends SQLiteOpenHelper {
                 + COLUMN_PATH + " TEXT,"
                 + COLUMN_HOME + " TEXT"
                 + ")";
+
+        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+                + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                + ")";
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_ENCRYPTED);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
         onCreate(sqLiteDatabase);
     }
 

@@ -116,13 +116,13 @@ public class ZipTask extends Service {
         return START_STICKY;
     }
 
-    private long getTotalBytes(ArrayList<BaseFile> baseFiles) {
+    private long getTotalBytes(ArrayList<BaseFile> baseFiles, Context context) {
         long totalBytes = 0L;
         for (BaseFile f1 : baseFiles) {
-            if (f1.isDirectory()) {
-                totalBytes += f1.folderSize();
+            if (f1.isDirectory(context)) {
+                totalBytes += f1.folderSize(context);
             } else {
-                totalBytes += f1.length();
+                totalBytes += f1.length(context);
             }
         }
         return totalBytes;
@@ -169,7 +169,7 @@ public class ZipTask extends Service {
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalBytes = getTotalBytes(baseFiles);
+            totalBytes = getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
             progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
                 @Override

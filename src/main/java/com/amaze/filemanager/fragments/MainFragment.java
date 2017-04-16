@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -68,6 +69,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
@@ -75,6 +78,8 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -84,11 +89,13 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -873,6 +880,23 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                     path = l.getSymlink();
                 }
+
+                // check if we're trying to click on encrypted file
+                if (!LIST_ELEMENTS.get(position).isDirectory() &&
+                        LIST_ELEMENTS.get(position).getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                    // decrypt the file
+                    MAIN_ACTIVITY.isEncryptOpen = true;
+
+                    MAIN_ACTIVITY.encryptBaseFile = new BaseFile(getActivity().getExternalCacheDir().getPath()
+                            + "/"
+                            + LIST_ELEMENTS.get(position).generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
+
+                    decryptFile(this, openMode, LIST_ELEMENTS.get(position).generateBaseFile(),
+                            getActivity().getExternalCacheDir().getPath(),
+                            utilsProvider);
+                    return;
+                }
+
                 if (LIST_ELEMENTS.get(position).isDirectory()) {
                     computeScroll();
                     loadlist(path, false, openMode);
@@ -880,7 +904,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (l.getMode() == OpenMode.SMB) {
                         try {
                             SmbFile smbFile = new SmbFile(l.getDesc());
-                            launch(smbFile, l.getlongSize());
+                            launch(smbFile, l.getlongSize(), MAIN_ACTIVITY);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -901,6 +925,105 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 goBackItemClick();
             }
         }
+    }
+
+    public static void decryptFile(final MainFragment main, OpenMode openMode, BaseFile sourceFile,
+                                   String decryptPath,
+                                   UtilitiesProviderInterface utilsProvider) {
+
+        Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
+        decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
+        decryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
+                EncryptService.CryptEnum.DECRYPT.ordinal());
+        decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
+        decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
+
+        SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
+
+        EncryptedEntry encryptedEntry;
+        try {
+            encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            encryptedEntry = null;
+        }
+
+        if (encryptedEntry == null) {
+
+            // we couldn't find any entry in database or lost the key to decipher
+            Toast.makeText(main.getContext(),
+                    main.getActivity().getResources().getString(R.string.crypt_decryption_fail),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        RecyclerAdapter.DecryptButtonCallbackInterface decryptButtonCallbackInterface =
+                new RecyclerAdapter.DecryptButtonCallbackInterface() {
+                    @Override
+                    public void confirm(Intent intent) {
+
+                        ServiceWatcherUtil.runService(main.getContext(), intent);
+                    }
+
+                    @Override
+                    public void failed() {
+                        Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail_password),
+                                Toast.LENGTH_LONG).show();
+                    }
+                };
+
+        switch (encryptedEntry.getPassword()) {
+            case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        utilsProvider.getFutils().showDecryptFingerprintDialog(decryptIntent,
+                                main, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
+                    } else throw new Exception();
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(main.getContext(),
+                            main.getResources().getString(R.string.crypt_decryption_fail),
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+            case Preffrag.ENCRYPT_PASSWORD_MASTER:
+                utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                        main, utilsProvider.getAppTheme(),
+                        preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
+                        decryptButtonCallbackInterface);
+                break;
+            default:
+                utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                        main, utilsProvider.getAppTheme(),
+                        encryptedEntry.getPassword(),
+                        decryptButtonCallbackInterface);
+                break;
+        }
+    }
+
+    /**
+     * Queries database to find entry for the specific path
+     * @param path  the path to match with
+     * @return the entry
+     */
+    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
+
+        CryptHandler handler = new CryptHandler(context);
+
+        EncryptedEntry matchedEntry = null;
+        // find closest path which matches with database entry
+        for (EncryptedEntry encryptedEntry : handler.getAllEntries()) {
+            if (path.contains(encryptedEntry.getPath())) {
+
+                if (matchedEntry == null || (matchedEntry != null &&
+                        matchedEntry.getPath().length()<encryptedEntry.getPath().length())) {
+                    matchedEntry = encryptedEntry;
+                }
+            }
+        }
+        return matchedEntry;
     }
 
     public void updateTabWithDb(Tab tab) {
@@ -1474,8 +1597,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void launch(final SmbFile smbFile, final long si) {
-        s = Streamer.getInstance();
+    public static void launch(final SmbFile smbFile, final long si, final Activity activity) {
+        final Streamer s = Streamer.getInstance();
         new Thread() {
             public void run() {
                 try {
@@ -1488,19 +1611,20 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }*/
 
                     s.setStreamSrc(smbFile, si);
-                    getActivity().runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
                         public void run() {
                             try {
                                 Uri uri = Uri.parse(Streamer.URL + Uri.fromFile(new File(Uri.parse(smbFile.getPath()).getPath())).getEncodedPath());
                                 Intent i = new Intent(Intent.ACTION_VIEW);
                                 i.setDataAndType(uri, MimeTypes.getMimeType(new File(smbFile.getPath())));
-                                PackageManager packageManager = getActivity().getPackageManager();
+                                PackageManager packageManager = activity.getPackageManager();
                                 List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                                 if (resInfos != null && resInfos.size() > 0)
-                                    startActivity(i);
+                                    activity.startActivity(i);
                                 else
-                                    Toast.makeText(getActivity(),
-                                            getString(R.string.smb_launch_error), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity,
+                                            activity.getResources().getString(R.string.smb_launch_error),
+                                            Toast.LENGTH_SHORT).show();
                             } catch (ActivityNotFoundException e) {
                                 e.printStackTrace();
                             }
