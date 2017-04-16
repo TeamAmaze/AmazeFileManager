@@ -10,31 +10,41 @@ import java.util.zip.ZipEntry;
  */
 public class ZipObj implements Parcelable {
 
-    boolean directory;
-    ZipEntry entry;
-    String name;
-    long date,size;
+    private boolean directory;
+    private ZipEntry entry;
+    private String name;
+    private long date, size;
 
-    public ZipObj(ZipEntry entry,long date,long size,boolean directory) {
-        this.directory=directory;
-        this.entry=entry;
-        if(entry!=null) {
-            name=entry.getName();
-            this.date=date;
-            this.size=size;
+    public ZipObj(ZipEntry entry, long date, long size, boolean directory) {
+        this.directory = directory;
+        this.entry = entry;
+        if (entry != null) {
+            name = entry.getName();
+            this.date = date;
+            this.size = size;
 
         }
     }
 
-    public ZipEntry getEntry(){return entry;}
+    public ZipEntry getEntry() {
+        return entry;
+    }
 
-    public boolean isDirectory(){return directory;}
+    public boolean isDirectory() {
+        return directory;
+    }
 
-    public String getName(){return name;}
+    public String getName() {
+        return name;
+    }
 
-    public long getSize(){return size;}
+    public long getSize() {
+        return size;
+    }
 
-    public long getTime(){return date;}
+    public long getTime() {
+        return date;
+    }
 
     @Override
     public int describeContents() {
@@ -45,7 +55,7 @@ public class ZipObj implements Parcelable {
         p1.writeString(name);
         p1.writeLong(size);
         p1.writeLong(date);
-        p1.writeInt(isDirectory() ? 1 :0);
+        p1.writeInt(isDirectory() ? 1 : 0);
     }
 
     public static final Parcelable.Creator<ZipObj> CREATOR =
@@ -60,13 +70,12 @@ public class ZipObj implements Parcelable {
             };
 
     public ZipObj(Parcel im) {
-        name=im.readString();
-        size=im.readLong();
-        date=im.readLong();
-        int i=im.readInt();
-        if(i==0){directory=false;}
-        else{directory=true;}
-        entry=new ZipEntry(name);
+        name = im.readString();
+        size = im.readLong();
+        date = im.readLong();
+        int i = im.readInt();
+        directory = i != 0;
+        entry = new ZipEntry(name);
     }
 
 }

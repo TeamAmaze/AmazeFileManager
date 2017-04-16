@@ -68,16 +68,16 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
-import com.amaze.filemanager.adapters.Recycleradapter;
+import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.Main;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
@@ -212,7 +212,7 @@ public class Futils {
      * @return
      */
     public static long folderSize(String path, Context context) {
-        long length = 0l;
+        long length = 0L;
         for (BaseFile baseFile : RootHelper.getDocumentFilesList(path, context)) {
             if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
             else length += baseFile.length();
@@ -347,7 +347,7 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
-        ArrayList<Uri> uris = new ArrayList<Uri>();
+        ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
@@ -385,8 +385,8 @@ public class Futils {
         String s="";
         ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
-        if (s.equals("com.amaze.filemanager") || rii==null) return true;
-        else return false;
+
+        return s.equals("com.amaze.filemanager") || rii == null;
     }
 
     public void openunknown(File f, Context c, boolean forcechooser) {
@@ -619,7 +619,7 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<Layoutelements> a, final Main b, List<Integer> pos, AppTheme appTheme) {
+    public void deleteFiles(ArrayList<LayoutElements> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
         int fileCounter = 0, dirCounter = 0;
@@ -689,13 +689,13 @@ public class Futils {
     public String getdate(File f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return (sdf.format(f.lastModified())).toString();
+        return sdf.format(f.lastModified());
     }
 
     public static String getdate(long f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return (sdf.format(f)).toString();
+        return sdf.format(f);
     }
 
     public static String getdate(long f, String year) {
@@ -729,7 +729,7 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final Main c, boolean root, AppTheme appTheme) {
+    public void showProps(final BaseFile hFile, final String perm, final MainFragment c, boolean root, AppTheme appTheme) {
         long last=hFile.getDate();
         String date = getdate(last);
         String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
@@ -772,12 +772,12 @@ public class Futils {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
-        new GenerateMD5Task(materialDialog, hFile, name, parent, size, items, date,
+        new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
                 c.MAIN_ACTIVITY, v).execute(hFile.getPath());
     }
 
-    public void showEncryptWarningDialog(final Intent intent, final Main main, AppTheme appTheme,
-                                         final Recycleradapter.EncryptButtonCallbackInterface
+    public void showEncryptWarningDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                         final RecyclerAdapter.EncryptButtonCallbackInterface
                                                  encryptButtonCallbackInterface) {
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
@@ -824,8 +824,8 @@ public class Futils {
         builder.show();
     }
 
-    public void showEncryptAuthenticateDialog(final Intent intent, final Main main, AppTheme appTheme,
-                                              final Recycleradapter.EncryptButtonCallbackInterface
+    public void showEncryptAuthenticateDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                              final RecyclerAdapter.EncryptButtonCallbackInterface
                                                       encryptButtonCallbackInterface) {
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
@@ -881,8 +881,8 @@ public class Futils {
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showDecryptFingerprintDialog(final Intent intent, final Main main, AppTheme appTheme,
-                                             final Recycleradapter.DecryptButtonCallbackInterface
+    public void showDecryptFingerprintDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+                                             final RecyclerAdapter.DecryptButtonCallbackInterface
                                                      decryptButtonCallbackInterface) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
@@ -914,9 +914,9 @@ public class Futils {
         handler.authenticate(manager, object);
     }
 
-    public void showDecryptDialog(final Intent intent, final Main main, AppTheme appTheme,
+    public void showDecryptDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
                                   final String password,
-                                  final Recycleradapter.DecryptButtonCallbackInterface
+                                  final RecyclerAdapter.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
         builder.title(main.getResources().getString(R.string.crypt_decrypt));
@@ -992,7 +992,7 @@ public class Futils {
                 .neutralColor(Color.parseColor(fabskin))
                 .build();
         materialDialog.show();
-        new GenerateMD5Task(materialDialog, (f), name, parent, size, items, date, c, v).execute(f.getPath());
+        new GenerateMD5Task(materialDialog, (f), name, parent, items, date, c, v).execute(f.getPath());
     }
 
     public static boolean copyToClipboard(Context context, String text) {
@@ -1009,8 +1009,8 @@ public class Futils {
     }
 
     public Bundle getPaths(String path, Context c) {
-        ArrayList<String> names = new ArrayList<String>();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
         Bundle b = new Bundle();
         while (path.contains("/")) {
 
@@ -1042,10 +1042,7 @@ public class Futils {
 
     public static boolean canListFiles(File f) {
         try {
-            if (f.canRead() && f.isDirectory())
-                return true;
-            else
-                return false;
+            return f.canRead() && f.isDirectory();
         } catch (Exception e) {
             return false;
         }
@@ -1108,7 +1105,7 @@ public class Futils {
     }
 
     public void openFile(final DocumentFile f, final MainActivity m) {
-        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
+        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
         try {
             openunknown(f, m, false);
         } catch (Exception e) {
@@ -1131,7 +1128,7 @@ public class Futils {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             m.startActivity(intent);
         }  else if (Icons.isAudio(f.getName())) {
-            final int studio_count = sharedPreferences.getInt("studio", 0);
+            final int studio_count = sharedPref.getInt("studio", 0);
             final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -1237,8 +1234,8 @@ public class Futils {
 
     }
 
-    public Layoutelements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
-        Layoutelements item = new Layoutelements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
+    public LayoutElements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
+        LayoutElements item = new LayoutElements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }
 
@@ -1282,9 +1279,9 @@ public class Futils {
         a.build().show();
     }
 
-    public void showSortDialog(final Main m, AppTheme appTheme) {
+    public void showSortDialog(final MainFragment m, AppTheme appTheme) {
         String[] sort = m.getResources().getStringArray(R.array.sortby);
-        int current = Integer.parseInt(m.Sp.getString("sortby", "0"));
+        int current = Integer.parseInt(m.sharedPref.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1301,7 +1298,7 @@ public class Futils {
             public void onPositive(MaterialDialog dialog) {
                 super.onPositive(dialog);
                 int which = dialog.getSelectedIndex();
-                m.Sp.edit().putString("sortby", "" + which).commit();
+                m.sharedPref.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -1312,7 +1309,7 @@ public class Futils {
             public void onNegative(MaterialDialog dialog) {
                 super.onNegative(dialog);
                 int which = 4 + dialog.getSelectedIndex();
-                m.Sp.edit().putString("sortby", "" + which).commit();
+                m.sharedPref.edit().putString("sortby", "" + which).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -1361,7 +1358,7 @@ public class Futils {
         a.build().show();
     }
 
-    public void showHistoryDialog(final Main m, AppTheme appTheme) {
+    public void showHistoryDialog(final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1386,7 +1383,7 @@ public class Futils {
 
     }
 
-    public void showHiddenDialog(final Main m, AppTheme appTheme) {
+    public void showHiddenDialog(final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1404,7 +1401,7 @@ public class Futils {
     public boolean isAtleastKitkat(){
         return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
     }
-    public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final Main main) {
+    public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final MainFragment mainFrag) {
         final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
         final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
         final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
@@ -1418,7 +1415,7 @@ public class Futils {
         if(perm.length()<6){
             v.setVisibility(View.GONE);
             but.setVisibility(View.GONE);
-            Toast.makeText(main.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainFrag.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
             return;
         }
         ArrayList<Boolean[]> arrayList=parse(perm);
@@ -1465,17 +1462,17 @@ public class Futils {
                         @Override
                         public void onCommandResult(int commandCode, int exitCode, List<String> output) {
                             if (exitCode<0) {
-                                Toast.makeText(main.getActivity(), main.getString(R.string.operationunsuccesful),
+                                Toast.makeText(mainFrag.getActivity(), mainFrag.getString(R.string.operationunsuccesful),
                                         Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(main.getActivity(),
-                                        main.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
+                                Toast.makeText(mainFrag.getActivity(),
+                                        mainFrag.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
-                    main.updateList();
+                    mainFrag.updateList();
                 } catch (RootNotPermittedException e1) {
-                    Toast.makeText(main.getActivity(), main.getResources().getString(R.string.rootfailure),
+                    Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.rootfailure),
                             Toast.LENGTH_LONG).show();
                     e1.printStackTrace();
                 }
@@ -1548,7 +1545,7 @@ public class Futils {
     }
 
     public ArrayList<Boolean[]> parse(String permLine) {
-        ArrayList<Boolean[]> arrayList=new ArrayList<Boolean[]>();
+        ArrayList<Boolean[]> arrayList= new ArrayList<>();
         Boolean[] read=new Boolean[]{false,false,false};
         Boolean[] write=new Boolean[]{false,false,false};
         Boolean[] execute=new Boolean[]{false,false,false};

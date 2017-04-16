@@ -10,16 +10,16 @@ import android.widget.Switch;
 /**
  * Created by Arpit on 10/18/2015.
  */
-public class CheckBx extends SwitchPreference {
-    public CheckBx(Context context) {
+public class CheckBox extends SwitchPreference {
+    public CheckBox(Context context) {
         super(context);
     }
 
-    public CheckBx(Context context, AttributeSet attrs) {
+    public CheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CheckBx(Context context, AttributeSet attrs, int defStyle) {
+    public CheckBox(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

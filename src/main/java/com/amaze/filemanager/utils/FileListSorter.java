@@ -19,26 +19,23 @@
 
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.LayoutElements;
 
 import java.util.Comparator;
 
-public class FileListSorter implements Comparator<Layoutelements> {
+public class FileListSorter implements Comparator<LayoutElements> {
 
     private int dirsOnTop = 0;
-
     private int asc = 1;
-    int sort = 0;
-    boolean rootMode;
+    private int sort = 0;
 
-    public FileListSorter(int dir, int sort, int asc, boolean rootMode) {
+    public FileListSorter(int dir, int sort, int asc) {
         this.dirsOnTop = dir;
         this.asc = asc;
         this.sort = sort;
-        this.rootMode=rootMode;
     }
 
-    boolean isDirectory(Layoutelements path) {
+    private boolean isDirectory(LayoutElements path) {
         return path.isDirectory();
     }
 
@@ -50,7 +47,7 @@ public class FileListSorter implements Comparator<Layoutelements> {
      * @return
      */
     @Override
-    public int compare(Layoutelements file1, Layoutelements file2) {
+    public int compare(LayoutElements file1, LayoutElements file2) {
 
         /*File f1;
 
@@ -94,13 +91,13 @@ public class FileListSorter implements Comparator<Layoutelements> {
         } else if (sort == 1) {
 
             // sort by last modified
-            return asc * Long.valueOf(file1.getDate1()).compareTo(Long.valueOf(file2.getDate1()));
+            return asc * Long.valueOf(file1.getDate1()).compareTo(file2.getDate1());
         } else if (sort == 2) {
 
             // sort by size
             if (!file1.isDirectory() && !file2.isDirectory()) {
 
-                return asc * Long.valueOf(file1.getlongSize()).compareTo(Long.valueOf(file2.getlongSize()));
+                return asc * Long.valueOf(file1.getlongSize()).compareTo(file2.getlongSize());
             } else {
 
                 return file1.getTitle().compareToIgnoreCase(file2.getTitle());
@@ -128,7 +125,7 @@ public class FileListSorter implements Comparator<Layoutelements> {
 
     }
 
-    static String getExtension(String a) {
+    private static String getExtension(String a) {
         return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
     }
 

@@ -80,14 +80,12 @@ public class FTPService extends Service implements Runnable {
 
     private String username, password;
     private boolean isPasswordProtected = false;
-    protected boolean shouldExit = false;
 
     private FtpServer server;
     protected static Thread serverThread = null;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        shouldExit = false;
         int attempts = 10;
         while (serverThread != null) {
             if (attempts > 0) {
@@ -190,7 +188,6 @@ public class FTPService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy() Stopping server");
-        shouldExit = true;
         if (serverThread == null) {
             Log.w(TAG, "Stopping with null serverThread");
             return;
@@ -216,7 +213,6 @@ public class FTPService extends Service implements Runnable {
     //Restart the service if the app is closed from the recent list
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-
         super.onTaskRemoved(rootIntent);
 
         Intent restartService = new Intent(getApplicationContext(), this.getClass());
@@ -249,7 +245,6 @@ public class FTPService extends Service implements Runnable {
         } catch (InterruptedException ignored) {
         }
     }
-
 
     public static boolean isConnectedToLocalNetwork(Context context) {
         boolean connected = false;

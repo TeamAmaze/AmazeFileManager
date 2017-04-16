@@ -45,7 +45,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.ui.views.CheckBx;
+import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -66,9 +66,8 @@ public class Preffrag extends PreferenceFragment {
     public static final String ENCRYPT_PASSWORD_MASTER = "master";
 
     private UtilitiesProviderInterface utilsProvider;
-
     SharedPreferences sharedPref;
-    CheckBx gplus;
+    CheckBox gplus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,21 +84,21 @@ public class Preffrag extends PreferenceFragment {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final String[] sort = getResources().getStringArray(R.array.columns);
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-                a.title(R.string.gridcolumnno);
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+                builder.title(R.string.gridcolumnno);
                 int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
-                current=current==-1?0:current;
-                if(current!=0)current=current-1;
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                current = current == -1 ? 0 : current;
+                if (current != 0) current = current - 1;
+                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("columns", "" + (which!=0?sort[which]:""+-1)).commit();
+                        sharedPref.edit().putString("columns", "" + (which != 0 ? sort[which] : "" + -1)).commit();
                         dialog.dismiss();
                         return true;
                     }
                 });
-                a.build().show();
+                builder.build().show();
                 return true;
             }
         });
@@ -109,14 +108,14 @@ public class Preffrag extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 String[] sort = getResources().getStringArray(R.array.theme);
                 int current = Integer.parseInt(sharedPref.getString("theme", "0"));
-                MaterialDialog.Builder a = new MaterialDialog.Builder(getActivity());
-//                a.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-                a.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+//              builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         utilsProvider.getThemeManager()
-                                     .setAppTheme(AppTheme.fromIndex(which))
-                                     .save();
+                                .setAppTheme(AppTheme.fromIndex(which))
+                                .save();
 
                         Log.d("theme", AppTheme.fromIndex(which).name());
 
@@ -125,8 +124,8 @@ public class Preffrag extends PreferenceFragment {
                         return true;
                     }
                 });
-                a.title(R.string.theme);
-                a.build().show();
+                builder.title(R.string.theme);
+                builder.build().show();
                 return true;
             }
         });
@@ -137,8 +136,6 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-
-
 
         /*final CheckBx rootmode = (CheckBx) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -161,20 +158,18 @@ public class Preffrag extends PreferenceFragment {
             }
         });*/
 
-        // Feedback
-        Preference preference3 = (Preference) findPreference("feedback");
-        preference3.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference preferenceFeedback = findPreference("feedback");
+        preferenceFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","vishalmeham2@gmail.com", null));
+                        "mailto", "vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
                 startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feedback)));
                 return false;
             }
         });
 
-        // About
         Preference aboutPreference = findPreference(PREFERENCE_KEY_ABOUT);
         aboutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -184,14 +179,13 @@ public class Preffrag extends PreferenceFragment {
             }
         });
 
-        // G+
-        gplus = (CheckBx) findPreference("plus_pic");
+        gplus = (CheckBox) findPreference("plus_pic");
         gplus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if(gplus.isChecked()){
-                    boolean b=checkGplusPermission();
-                    if(!b)requestGplusPermission();
+                if (gplus.isChecked()) {
+                    boolean b = checkGplusPermission();
+                    if (!b) requestGplusPermission();
                 }
                 return false;
             }
@@ -218,7 +212,7 @@ public class Preffrag extends PreferenceFragment {
         final KeyguardManager keyguardManager = (KeyguardManager)
                 getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
-        CheckBx checkBx = (CheckBx) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
+        CheckBox checkBx = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
 
@@ -257,8 +251,8 @@ public class Preffrag extends PreferenceFragment {
     }
 
     public static void restartPC(final Activity activity) {
-        if (activity == null)
-            return;
+        if (activity == null) return;
+
         final int enter_anim = android.R.anim.fade_in;
         final int exit_anim = android.R.anim.fade_out;
         activity.overridePendingTransition(enter_anim, exit_anim);
@@ -267,19 +261,17 @@ public class Preffrag extends PreferenceFragment {
         activity.startActivity(activity.getIntent());
     }
 
-    public void invalidateGplus(){
-        boolean a=checkGplusPermission();
-        if(!a)gplus.setChecked(false);
+    public void invalidateGplus() {
+        boolean a = checkGplusPermission();
+        if (!a) gplus.setChecked(false);
     }
 
     public boolean checkGplusPermission() {
         // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
+        return ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS)
+                        == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
+                        == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestGplusPermission() {
@@ -298,7 +290,7 @@ public class Preffrag extends PreferenceFragment {
                 @Override
                 public void onClick(View v) {
                     ActivityCompat
-                            .requestPermissions(getActivity(),PERMISSIONS, 66);
+                            .requestPermissions(getActivity(), PERMISSIONS, 66);
                     materialDialog.dismiss();
                 }
             });

@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -47,7 +48,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.ui.Layoutelements;
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -59,20 +60,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppsAdapter extends ArrayAdapter<Layoutelements> {
+public class AppsAdapter extends ArrayAdapter<LayoutElements> implements View.OnClickListener,
+        PopupMenu.OnMenuItemClickListener {
 
     private UtilitiesProviderInterface utilsProvider;
-    Context context;
-    List<Layoutelements> items;
-    public SparseBooleanArray myChecked = new SparseBooleanArray();
-    AppsList app;
+    private Context context;
+    private List<LayoutElements> items;
+    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private AppsList appsList;
+    private LayoutElements rowItem;
 
     public AppsAdapter(Context context, UtilitiesProviderInterface utilsProvider, int resourceId,
-                       AppsList app) {
+                       AppsList appsList) {
         super(context, resourceId);
         this.utilsProvider = utilsProvider;
         this.context = context;
-        this.app = app;
+        this.appsList = appsList;
 
         /*for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
@@ -91,7 +94,6 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     }
 
     public void toggleChecked(boolean b) {
-
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, b);
         }
@@ -101,7 +103,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
     }
 
     public List<Integer> getCheckedItemPositions() {
-        List<Integer> checkedItemPositions = new ArrayList<Integer>();
+        List<Integer> checkedItemPositions = new ArrayList<>();
 
         for (int i = 0; i < myChecked.size(); i++) {
             if (myChecked.get(i)) {
@@ -122,7 +124,7 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         return b;
     }
 
-    public void setData(List<Layoutelements> data) {
+    public void setData(List<LayoutElements> data) {
         clear();
 
         if (data != null) {
@@ -139,12 +141,11 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         ImageButton about;
     }
 
-    public View getView(final int position, View convertView, ViewGroup parent) {
-
-        final Layoutelements rowItem = getItem(position);
+    @NonNull
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        final LayoutElements rowItem = getItem(position);
 
         View view;
-        final int p = position;
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -153,8 +154,8 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
             vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
             vholder.apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
             vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
-            vholder.txtDesc= (TextView) view.findViewById(R.id.date);
-            vholder.about=(ImageButton)view.findViewById(R.id.properties);
+            vholder.txtDesc = (TextView) view.findViewById(R.id.date);
+            vholder.about = (ImageButton) view.findViewById(R.id.properties);
             vholder.apkIcon.setVisibility(View.VISIBLE);
             view.findViewById(R.id.generic_icon).setVisibility(View.GONE);
             view.findViewById(R.id.picture_icon).setVisibility(View.GONE);
@@ -166,12 +167,12 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         }
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.apkIcon.setImageDrawable(rowItem.getImageId());
-        app.ic.cancelLoad(holder.apkIcon);
-        app.ic.loadDrawable(holder.apkIcon,(rowItem.getDesc()),null);
+        appsList.ic.cancelLoad(holder.apkIcon);
+        appsList.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
         if (holder.about != null) {
-            if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 holder.about.setColorFilter(Color.parseColor("#ff666666"));
-            showPopup(holder.about,rowItem);
+            attachPopup(holder.about, rowItem);
         }
         holder.txtTitle.setText(rowItem.getTitle());
         //	File f = new File(rowItem.getDesc());
@@ -180,11 +181,11 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
+                Intent i1 = appsList.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
                 if (i1 != null)
-                    app.startActivity(i1);
+                    appsList.startActivity(i1);
                 else
-                    Toast.makeText(app.getActivity(), app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(appsList.getActivity(), appsList.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
                 // TODO: Implement this method
             }
         });
@@ -205,117 +206,120 @@ public class AppsAdapter extends ArrayAdapter<Layoutelements> {
         }
         return view;
     }
-    void showPopup(View v,final Layoutelements rowItem){
+
+    private void attachPopup(View v, final LayoutElements rowItem) {
+        this.rowItem = rowItem;
+        v.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        PopupMenu popupMenu = new PopupMenu(appsList.getActivity(), view);
+        popupMenu.setOnMenuItemClickListener(this);
+
+        popupMenu.inflate(R.menu.app_options);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
         final Futils utils = utilsProvider.getFutils();
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.open:
-                                Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
-                                if (i1!= null)
-                                    app.startActivity(i1);
-                                else
-                                    Toast.makeText(app.getActivity(),app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
-                                return true;
-                            case R.id.share:
-                                ArrayList<File> arrayList2=new ArrayList<File>();
-                                arrayList2.add(new File(rowItem.getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
-                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), color1);
-                                return true;
-                            case R.id.unins:
-                                final BaseFile f1 = new BaseFile(rowItem.getDesc());
-                                f1.setMode(OpenMode.ROOT);
-                                int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
 
-                                if ((Integer.valueOf(rowItem.getSymlink().substring(0,
-                                        rowItem.getSymlink().indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                                    // system package
-                                    if(app.Sp.getBoolean("rootmode",false)) {
-                                        MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
-                                        builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
-                                                .content(app.getResources().getString(R.string.unin_system_apk))
-                                                .title(app.getResources().getString(R.string.warning))
-                                                .negativeColor(color)
-                                                .positiveColor(color)
-                                                .negativeText(app.getResources().getString(R.string.no))
-                                                .positiveText(app.getResources().getString(R.string.yes))
-                                                .callback(new MaterialDialog.ButtonCallback() {
-                                                    @Override
-                                                    public void onNegative(MaterialDialog materialDialog) {
+        switch (item.getItemId()) {
+            case R.id.open:
+                Intent i1 = appsList.getActivity().getPackageManager()
+                        .getLaunchIntentForPackage(rowItem.getPermissions());
+                if (i1 != null)
+                    appsList.startActivity(i1);
+                else
+                    Toast.makeText(appsList.getActivity(),
+                            appsList.getResources().getString(R.string.not_allowed),
+                            Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.share:
+                ArrayList<File> arrayList2 = new ArrayList<>();
+                arrayList2.add(new File(rowItem.getDesc()));
+                int color1 = Color.parseColor(PreferenceUtils.getAccentString(appsList.Sp));
+                utils.shareFiles(arrayList2, appsList.getActivity(), utilsProvider.getAppTheme(), color1);
+                return true;
+            case R.id.unins:
+                final BaseFile f1 = new BaseFile(rowItem.getDesc());
+                f1.setMode(OpenMode.ROOT);
+                int color = Color.parseColor(PreferenceUtils.getAccentString(appsList.Sp));
 
-                                                        materialDialog.cancel();
-                                                    }
-
-                                                    @Override
-                                                    public void onPositive(MaterialDialog materialDialog) {
-
-                                                        ArrayList<BaseFile> files = new ArrayList<>();
-                                                        if (Build.VERSION.SDK_INT >= 21) {
-                                                            String parent = f1.getParent();
-                                                            if (!parent.equals("app") && !parent.equals("priv-app")) {
-                                                                BaseFile baseFile=new BaseFile(f1.getParent());
-                                                                baseFile.setMode(OpenMode.ROOT);
-                                                                files.add(baseFile);
-                                                            }
-                                                            else files.add(f1);
-                                                        } else {
-                                                            files.add(f1);
-                                                        }
-                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
-                                                    }
-                                                }).build().show();
-                                    } else {
-                                        Toast.makeText(app.getActivity(),app.getResources().getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();
+                if ((Integer.valueOf(rowItem.getSymlink().substring(0,
+                        rowItem.getSymlink().indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    // system package
+                    if (appsList.Sp.getBoolean("rootmode", false)) {
+                        MaterialDialog.Builder builder1 = new MaterialDialog.Builder(appsList.getActivity());
+                        builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
+                                .content(appsList.getResources().getString(R.string.unin_system_apk))
+                                .title(appsList.getResources().getString(R.string.warning))
+                                .negativeColor(color)
+                                .positiveColor(color)
+                                .negativeText(appsList.getResources().getString(R.string.no))
+                                .positiveText(appsList.getResources().getString(R.string.yes))
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onNegative(MaterialDialog materialDialog) {
+                                        materialDialog.cancel();
                                     }
-                                } else {
-                                    app.unin(rowItem.getPermissions());
-                                }
-                                return true;
-                            case R.id.play:
-                                Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                                intent1.setData(Uri.parse("market://details?id=" + rowItem.getPermissions()));
-                                app.startActivity(intent1);
-                                return true;
-                            case R.id.properties:
 
-                                app.startActivity(new Intent(
-                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.parse("package:" + rowItem.getPermissions())));
-                                return true;
-                            case R.id.backup:
-                                Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-                                File f = new File(rowItem.getDesc());
-                                ArrayList<BaseFile> ab = new ArrayList<>();
-                                File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
-                                if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
-                                Intent intent = new Intent(app.getActivity(), CopyService.class);
-                                BaseFile baseFile=RootHelper.generateBaseFile(f,true);
-                                baseFile.setName(rowItem.getTitle() + "_" +
-                                        rowItem.getSymlink().substring(rowItem.getSymlink().indexOf("_")+1) + ".apk");
-                                ab.add(baseFile);
-
-                                intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
-                                intent.putExtra(CopyService.TAG_COPY_TARGET, dst.getPath());
-                                intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0);
-
-                                ServiceWatcherUtil.runService(app.getActivity(), intent);
-                                return true;
-                        }
-                        return false;
+                                    @Override
+                                    public void onPositive(MaterialDialog materialDialog) {
+                                        ArrayList<BaseFile> files = new ArrayList<>();
+                                        if (Build.VERSION.SDK_INT >= 21) {
+                                            String parent = f1.getParent();
+                                            if (!parent.equals("appsList") && !parent.equals("priv-appsList")) {
+                                                BaseFile baseFile = new BaseFile(f1.getParent());
+                                                baseFile.setMode(OpenMode.ROOT);
+                                                files.add(baseFile);
+                                            } else files.add(f1);
+                                        } else {
+                                            files.add(f1);
+                                        }
+                                        new DeleteTask(appsList.getActivity().getContentResolver(),
+                                                appsList.getActivity()).execute((files));
+                                    }
+                                }).build().show();
+                    } else {
+                        Toast.makeText(appsList.getActivity(), appsList.getResources().getString(R.string.enablerootmde), Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    appsList.unin(rowItem.getPermissions());
+                }
+                return true;
+            case R.id.play:
+                Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                intent1.setData(Uri.parse("market://details?id=" + rowItem.getPermissions()));
+                appsList.startActivity(intent1);
+                return true;
+            case R.id.properties:
 
-                popupMenu.inflate(R.menu.app_options);
-                popupMenu.show();
-            }
-        });
+                appsList.startActivity(new Intent(
+                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.parse("package:" + rowItem.getPermissions())));
+                return true;
+            case R.id.backup:
+                Toast.makeText(appsList.getActivity(), appsList.getResources().getString(R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
+                File f = new File(rowItem.getDesc());
+                ArrayList<BaseFile> ab = new ArrayList<>();
+                File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
+                if (!dst.exists() || !dst.isDirectory()) dst.mkdirs();
+                Intent intent = new Intent(appsList.getActivity(), CopyService.class);
+                BaseFile baseFile = RootHelper.generateBaseFile(f, true);
+                baseFile.setName(rowItem.getTitle() + "_" +
+                        rowItem.getSymlink().substring(rowItem.getSymlink().indexOf("_") + 1) + ".apk");
+                ab.add(baseFile);
 
+                intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
+                intent.putExtra(CopyService.TAG_COPY_TARGET, dst.getPath());
+                intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0);
+
+                ServiceWatcherUtil.runService(appsList.getActivity(), intent);
+                return true;
+        }
+        return false;
     }
 
 }

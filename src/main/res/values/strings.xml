@@ -628,5 +628,6 @@
     <string name="crypt_decryption_fail_password">Wrong password!</string>
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
+    <string name="bytes">Bytes</string>
 </resources>
 

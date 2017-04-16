@@ -265,7 +265,7 @@
             fab:menu_backgroundColor="@android:color/transparent">
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item"
+                android:id="@+id/menu_new_folder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/folder_fab"
@@ -273,22 +273,23 @@
                 fab:fab_label="@string/folder" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item1"
+                android:id="@+id/menu_new_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_insert_drive_file_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_label="@string/file" />
-
+            
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item2"
+                android:id="@+id/menu_new_SMBconnection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_settings_remote_white_48dp"
                 fab:fab_size="mini"
                 fab:fab_label="@string/smb_con" />
+
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item3"
+                android:id="@+id/menu_new_googledrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/drive"

@@ -99,10 +99,10 @@ public class ZipViewer extends Fragment {
     SharedPreferences Sp;
     ZipViewer zipViewer = this;
     public Archive archive;
-    public ArrayList<FileHeader> wholelistRar = new ArrayList<FileHeader>();
-    public ArrayList<FileHeader> elementsRar = new ArrayList<FileHeader>();
-    public ArrayList<ZipObj> wholelist = new ArrayList<ZipObj>();
-    public ArrayList<ZipObj> elements = new ArrayList<ZipObj>();
+    public ArrayList<FileHeader> wholelistRar = new ArrayList<>();
+    public ArrayList<FileHeader> elementsRar = new ArrayList<>();
+    public ArrayList<ZipObj> wholelist = new ArrayList<>();
+    public ArrayList<ZipObj> elements = new ArrayList<>();
     public MainActivity mainActivity;
     public RecyclerView listView;
     View rootView;
@@ -386,7 +386,7 @@ public class ZipViewer extends Fragment {
 
                     Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), ExtractService.class);
-                    ArrayList<String> a = new ArrayList<String>();
+                    ArrayList<String> a = new ArrayList<>();
                     for (int i : rarAdapter.getCheckedItemPositions()) {
                         a.add(openmode==0 ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
                     }
@@ -515,9 +515,7 @@ public class ZipViewer extends Fragment {
     }
 
     public boolean cangoBackRar() {
-        if (current == null || current.trim().length() == 0)
-            return false;
-        else return true;
+        return !(current == null || current.trim().length() == 0);
     }
 
     public void goBackRar() {
@@ -530,11 +528,9 @@ public class ZipViewer extends Fragment {
         new RarHelperTask(this, path).execute(f);
     }
 
-    public boolean cangoBack() {
+    public boolean canGoBack() {
         if (openmode == 1) return cangoBackRar();
-        if (current == null || current.trim().length() == 0)
-            return false;
-        else return true;
+        else return !(current == null || current.trim().length() == 0);
     }
 
     public void goBack() {

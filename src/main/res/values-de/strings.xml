@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze File Manager</string>
   <string name="drawer_open">Öffne Navigationsleiste</string>
   <string name="drawer_close">Schließe Navigationsleiste</string>
   <string name="books">Lesezeichen</string>
@@ -39,7 +40,7 @@
   <string name="properties">Eigenschaften</string>
   <string name="copyingapk">Kopiere apk nach </string>
   <string name="addbook">Lesezeichen hinzufügen</string>
-  <string name="delbook">gelöschte Lesezeichen</string>
+  <string name="delbook">Lesezeichen löschen</string>
   <string name="addtobook">Zu Lesezeichen hinzufügen</string>
   <string name="enterpath">Pfad eingeben</string>
   <string name="cancel">Abbrechen</string>
@@ -62,7 +63,7 @@
   <string name="filecreated">Datei erstellt</string>
   <string name="searchpath">Suchpfad</string>
   <string name="enterfile">Dateinamen eingeben</string>
-  <string name="name">Name: </string>
+  <string name="name">Name</string>
   <string name="date">Datum</string>
   <string name="location">Standort</string>
   <string name="size">Ordnergröße</string>

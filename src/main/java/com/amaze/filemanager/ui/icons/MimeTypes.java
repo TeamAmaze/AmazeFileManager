@@ -48,12 +48,7 @@ public final class MimeTypes {
 
     public static final String ALL_MIME_TYPES = "*/*";
 
-
-    private static final HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
-
-    private MimeTypes() {
-
-    }
+    private static final HashMap<String, String> MIME_TYPES = new HashMap<>();
 
     static {
 

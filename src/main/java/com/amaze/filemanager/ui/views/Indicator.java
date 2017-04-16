@@ -378,7 +378,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
 
         if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION)
                 && dotRevealFraction == 0f
-                && !(page == currentPage && selectedDotInPosition == true)) {
+                && !(page == currentPage && selectedDotInPosition)) {
 
             // case #1 – At rest
             unselectedDotPath.addCircle(dotCenterX[page], dotCenterY, dotRadius, Path.Direction.CW);
@@ -626,8 +626,8 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
         });
         // slightly delay the start to give the joins a chance to run
         // unless dot isn't in position yet – then don't delay!
-        moveSelected.setStartDelay(selectedDotInPosition ? animDuration / 4l : 0l);
-        moveSelected.setDuration(animDuration * 3l / 4l);
+        moveSelected.setStartDelay(selectedDotInPosition ? animDuration / 4L : 0L);
+        moveSelected.setDuration(animDuration * 3L / 4L);
         moveSelected.setInterpolator(interpolator);
         return moveSelected;
     }
@@ -663,7 +663,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     /**
      * A {@link ValueAnimator} that starts once a given predicate returns true.
      */
-    public abstract class PendingStartAnimator extends ValueAnimator {
+    abstract class PendingStartAnimator extends ValueAnimator {
 
         protected boolean hasStarted;
         protected StartPredicate predicate;
@@ -687,9 +687,9 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
      * selected pages.  This also sets up some pending dot reveals – to be started when the retreat
      * has passed the dot to be revealed.
      */
-    public class PendingRetreatAnimator extends PendingStartAnimator {
+    private class PendingRetreatAnimator extends PendingStartAnimator {
 
-        public PendingRetreatAnimator(int was, int now, int steps, StartPredicate predicate) {
+        PendingRetreatAnimator(int was, int now, int steps, StartPredicate predicate) {
             super(predicate);
             setDuration(animHalfDuration);
             setInterpolator(interpolator);
@@ -779,7 +779,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     /**
      * An Animator that animates a given dot's revealFraction i.e. scales it up
      */
-    public class PendingRevealAnimator extends PendingStartAnimator {
+    private class PendingRevealAnimator extends PendingStartAnimator {
 
         private int dot;
 
@@ -810,7 +810,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     /**
      * A predicate used to start an animation when a test passes
      */
-    public abstract class StartPredicate {
+    abstract class StartPredicate {
 
         protected float thresholdValue;
 
@@ -825,7 +825,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     /**
      * A predicate used to start an animation when a given value is greater than a threshold
      */
-    public class RightwardStartPredicate extends StartPredicate {
+    private class RightwardStartPredicate extends StartPredicate {
 
         public RightwardStartPredicate(float thresholdValue) {
             super(thresholdValue);
@@ -839,7 +839,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     /**
      * A predicate used to start an animation then a given value is less than a threshold
      */
-    public class LeftwardStartPredicate extends StartPredicate {
+    private class LeftwardStartPredicate extends StartPredicate {
 
         public LeftwardStartPredicate(float thresholdValue) {
             super(thresholdValue);
@@ -849,4 +849,5 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
             return currentValue < thresholdValue;
         }
     }
+
 }

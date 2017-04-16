@@ -44,7 +44,7 @@ public class ServiceWatcherUtil {
     public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
-        POSITION = 0l;
+        POSITION = 0L;
         HAULT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");

@@ -19,12 +19,10 @@
 
 package com.amaze.filemanager.activities;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -52,6 +50,8 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import java.io.File;
 import java.util.ArrayList;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 /**
  * Created by Vishal on 02-02-2015.
  */
@@ -65,13 +65,13 @@ public class DbViewer extends BaseActivity {
 
     // the copy of db file which is to be opened, in the app cache
     private File pathFile;
-    boolean delete=false;
+    boolean delete = false;
     public Toolbar toolbar;
     public SQLiteDatabase sqLiteDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.checkStorage=false;
+        this.checkStorage = false;
         super.onCreate(savedInstanceState);
 
 
@@ -82,32 +82,31 @@ public class DbViewer extends BaseActivity {
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (Build.VERSION.SDK_INT>=21) {
+        if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
-                    ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap
+                    ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap
                             .ic_launcher))
                             .getBitmap(),
                             getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            ((Activity)this).setTaskDescription(taskDescription);
+            setTaskDescription(taskDescription);
         }
         getSupportActionBar()
                 .setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        int sdk= Build.VERSION.SDK_INT;
-        if(sdk==20 || sdk==19) {
+        if (SDK_INT == 20 || SDK_INT == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.parentdb).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        }else if(Build.VERSION.SDK_INT>=21){
-            boolean colourednavigation=Sp.getBoolean("colorednavigation",true);
-            Window window =getWindow();
+        } else if (SDK_INT >= 21) {
+            boolean colourednavigation = sharedPref.getBoolean("colorednavigation", true);
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-            if(colourednavigation)
+            if (colourednavigation)
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
@@ -120,7 +119,6 @@ public class DbViewer extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 DbViewerFragment fragment = new DbViewerFragment();
                 Bundle bundle = new Bundle();
@@ -135,7 +133,7 @@ public class DbViewer extends BaseActivity {
     }
 
     private ArrayList<String> getDbTableNames(Cursor c) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             for (int i = 0; i < c.getColumnCount(); i++) {
                 result.add(c.getString(i));
@@ -143,11 +141,11 @@ public class DbViewer extends BaseActivity {
         }
         return result;
     }
+
     private void load(final File file) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 File file1 = getExternalCacheDir();
 
                 // if the db can't be read, and we have root enabled, try reading it by
@@ -156,12 +154,12 @@ public class DbViewer extends BaseActivity {
 
                     try {
                         RootUtils.copy(pathFile.getPath(),
-                                new File(file1.getPath(),file.getName()).getPath());
-                        pathFile=new File(file1.getPath(),file.getName());
+                                new File(file1.getPath(), file.getName()).getPath());
+                        pathFile = new File(file1.getPath(), file.getName());
                     } catch (RootNotPermittedException e) {
                         e.printStackTrace();
                     }
-                    delete=true;
+                    delete = true;
                 }
                 try {
                     sqLiteDatabase = SQLiteDatabase.openDatabase(pathFile.getPath(), null,
@@ -189,19 +187,13 @@ public class DbViewer extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(sqLiteDatabase!=null) sqLiteDatabase.close();
-        if(c!=null) c.close();
-        if(delete)pathFile.delete();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
+        if (sqLiteDatabase != null) sqLiteDatabase.close();
+        if (c != null) c.close();
+        if (delete) pathFile.delete();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         toolbar.setTitle(pathFile.getName());
         return super.onPrepareOptionsMenu(menu);
     }
@@ -221,13 +213,4 @@ public class DbViewer extends BaseActivity {
         toolbar.setTitle(pathFile.getName());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 }

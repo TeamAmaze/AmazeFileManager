@@ -561,8 +561,27 @@
   <string name="ftp_path_hint">Шлях до кореневої директорії для поширення</string>
   <string name="error_ftp_path_file">Шлях не директорія</string>
   <string name="change">Змінити</string>
+  <string name="unknown_error">Дідько... щось пішло не так!</string>
   <string name="ftp_path_change_success">Порт FTP змінено успішно</string>
   <string name="ftp_path_change_error_invalid">Недійсний шлях</string>
+  <string name="ftp_status_no_connection">Відсутнє з\'єднання</string>
+  <string name="ftp_status_secure_connection">Безпечне з\'єднання</string>
+  <string name="ftp_status_title">Статус</string>
+  <string name="ftp_port">Порт</string>
+  <string name="ftp_login">Логін</string>
+  <string name="field_empty">Поле не може бути порожнім</string>
+  <string name="ftp_timeout">Час простою</string>
+  <string name="ftp_seconds">Секунди</string>
+  <string name="intellihide_toolbar_title">Інтелектуальна панель інструментів</string>
+  <string name="intellihide_toolbar_summary">Автоматично приховувати панель інструментів при прокручуванні</string>
+  <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="properties_copied_clipboard">скопійовано до буфера обміну</string>
+  <string name="contributors_1_summary">Переклад</string>
+  <string name="contributors_2_summary">Іконка і банери</string>
+  <string name="contributors_3_summary">Движок тем</string>
+  <string name="contributors_4_summary">Тінь позаду FAB</string>
+  <string name="contributors_5_summary">Колірний перехід, при перемиканні вкладок</string>
   <string name="contributors_6_summary">FTP Сервер</string>
+  <string name="contributors_7_summary">Запустити інтерактивну оболонку</string>
 </resources>

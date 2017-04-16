@@ -18,7 +18,7 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
- * Created by arpitkh996 on 12-01-2016.
+ * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
  *  This AsyncTask works by creating a tree where each folder that can be fusioned together with
  *  another in the destination is a node (CopyNode), each node is copied when the conflicts are dealt
@@ -48,7 +48,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         REPLACE
     }
 
-    private Main main;
+    private MainFragment mainFrag;
     private String path;
     private Boolean move;
     private int counter = 0;
@@ -65,12 +65,12 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
     private ArrayList<BaseFile> filesToCopy;    // a copy of params sent to this
 
-    public CopyFileCheck(Main ma, String path, Boolean move, MainActivity con, boolean rootMode) {
-        main = ma;
+    public CopyFileCheck(MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
+        mainFrag = ma;
         this.move = move;
         mainActivity = con;
         context = con;
-        openMode = main.openMode;
+        openMode = mainFrag.openMode;
         this.rootMode = rootMode;
 
         this.path = path;
@@ -139,8 +139,6 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     }
 
     private void startService(ArrayList<BaseFile> sourceFiles, String target, OpenMode openmode) {
-
-
         Intent intent = new Intent(context, CopyService.class);
         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles);
         intent.putExtra(CopyService.TAG_COPY_TARGET, target);
@@ -278,7 +276,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
                         startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
                     }
                 } else {
-                    new MoveFiles(filesToCopyPerFolder, main, context, openMode)
+                    new MoveFiles(filesToCopyPerFolder, mainFrag, context, openMode)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
                 }
             }

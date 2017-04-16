@@ -224,7 +224,7 @@ public class GenericCopyUtil {
      * Inner class responsible for getting a {@link ReadableByteChannel} from the input channel
      * and to watch over the read progress
      */
-    class CustomReadableByteChannel implements ReadableByteChannel {
+    private class CustomReadableByteChannel implements ReadableByteChannel {
 
         ReadableByteChannel byteChannel;
 

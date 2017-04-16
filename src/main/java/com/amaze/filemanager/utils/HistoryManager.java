@@ -32,16 +32,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class HistoryManager {
-    SQLiteDatabase db;
-    Context c;
-    String dbname;
-    String[] a;
+    private SQLiteDatabase db;
+    private Context c;
+    private String dbname;
+    String[] dirs;
     public HistoryManager(Context c ,String dbname) {
         this.c = c;
         this.dbname=dbname;
         open();
         String sd = Environment.getExternalStorageDirectory() + "/";
-        a = new String[] {
+        dirs = new String[] {
                 sd + Environment.DIRECTORY_DCIM,
                 sd + Environment.DIRECTORY_DOWNLOADS,
                 sd + Environment.DIRECTORY_MOVIES,
@@ -50,7 +50,7 @@ public class HistoryManager {
         };
     }
     public void make(String table){
-        for(String d:a){
+        for(String d: dirs){
             addPath(new File(d).getName(),d,table,1);
         }
     }
@@ -81,7 +81,7 @@ public class HistoryManager {
     public ArrayList<String> readTable(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> paths = new ArrayList<>();
         do {
             try {
                 paths.add(c.getString(c.getColumnIndex("PATH")));
@@ -162,7 +162,7 @@ public class HistoryManager {
     public ArrayList<String[]> readTableSecondary(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
-        ArrayList<String[]> paths = new ArrayList<String[]>();
+        ArrayList<String[]> paths = new ArrayList<>();
         do {
             try {
                 // decrypt path from smb table first!

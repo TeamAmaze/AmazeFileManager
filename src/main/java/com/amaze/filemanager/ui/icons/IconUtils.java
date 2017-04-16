@@ -27,12 +27,11 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
 public class IconUtils {
-    int LIGHT = 0, DARK = 1, CURRENT, rand;
-    Context c;
+    private int LIGHT = 0, DARK = 1, CURRENT, rand;
+    private Context c;
 
-    public IconUtils(SharedPreferences Sp, Context c) {
-
-        rand = Integer.parseInt(Sp.getString("theme", "0"));
+    public IconUtils(SharedPreferences sharedPrefs, Context c) {
+        rand = Integer.parseInt(sharedPrefs.getString("theme", "0"));
         CURRENT = rand==2 ? PreferenceUtils.hourOfDay() : rand;
         this.c = c;
     }
