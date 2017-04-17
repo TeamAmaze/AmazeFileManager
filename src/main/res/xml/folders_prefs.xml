@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.amaze.filemanager.ui.views.CheckBox
+        android:dependency="sidebar_folders"
+        android:defaultValue="true"
+        android:key="dcim"
+        android:title="DCIM"/>
+    <com.amaze.filemanager.ui.views.CheckBox
+        android:dependency="sidebar_folders"
+        android:defaultValue="true"
+        android:key="download"
+        android:title="Download"/>
+    <com.amaze.filemanager.ui.views.CheckBox
+        android:dependency="sidebar_folders"
+        android:defaultValue="true"
+        android:key="movie"
+        android:title="Movie"/>
+    <com.amaze.filemanager.ui.views.CheckBox
+        android:dependency="sidebar_folders"
+        android:defaultValue="true"
+        android:key="music"
+        android:title="Music"/>
+    <com.amaze.filemanager.ui.views.CheckBox
+        android:dependency="sidebar_folders"
+        android:defaultValue="true"
+        android:key="pictures"
+        android:title="Pictures"/>
+</PreferenceScreen>
