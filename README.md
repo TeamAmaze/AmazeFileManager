@@ -69,7 +69,7 @@ Authors
 - Arpit Khurana
 - Vishal Nehra
 
-###License: 
+### License: 
 
     Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
     This file is part of Amaze File Manager.
