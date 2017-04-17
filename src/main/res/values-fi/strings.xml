@@ -80,6 +80,16 @@
   <string name="title_dirs">Hakemistot</string>
   <string name="newfolder">Uusi kansio</string>
   <string name="entername">Anna nimi</string>
+  <string name="extracting">Puretaan</string>
+  <string name="stopping">Pysäytetään</string>
+  <string name="guide1">Tervetuloa käyttämään Amaze-tiedostonhallintaa</string>
+  <string name="guide2">Kosketa sinistä nauhaa piilottaaksesi/näyttääksesi tilarivin</string>
+  <string name="guide3">Paina tiedostoa saadaksesi lisää asetuksia</string>
+  <string name="guide4">Kuten kopioida, siirtää, ominaisuudet jne</string>
+  <string name="guide5">Poistu sovelluksesta painamalla takaisin painiketta&#8230;</string>
+  <string name="guide6">.. Ja Käytä vasenta nuolipainiketta navigoidaksesi tiedostonhallinnassa</string>
+  <string name="maintab">Main-välilehteä ei voi poistaa</string>
+  <string name="openparent">Avaa päähakemisto</string>
   <string name="openwith">Avaa sovelluksessa</string>
   <string name="share">Jaa</string>
   <string name="about">Tietoja</string>
@@ -89,10 +99,18 @@
   <string name="no">Ei</string>
   <string name="confirm">Vahvista</string>
   <string name="deleting">Poistetaan</string>
+  <string name="questiondelete">Haluatko varmasti poistaa nämä tiedostot?</string>
+  <string name="questionset">Haluatko asettaa nykyisen polun kodiksi tässä välilehdessä?</string>
   <string name="viewmode">Näyttötila</string>
+  <string name="uimode">Käyttöliittymätila</string>
+  <string name="directorysort">Kansion lajittelu</string>
   <string name="sortby">Lajitteluperuste</string>
   <string name="theme">Teema</string>
   <string name="skin">Ulkoasu</string>
+  <string name="random">Satunnaisesti valittu teema</string>
+  <string name="random_summary">Asettaa satunnaisen päävärin käynnistyessä</string>
+  <string name="colorize">Väritä kuvakkeet</string>
+  <string name="colorize_summary">Määrittää staattisen kuvakkeen väri. Ei korvaa kansiokuvakkeen väriä.</string>
   <string name="back">Edellinen</string>
   <string name="home">Koti</string>
   <string name="paste">Liitä</string>
@@ -103,41 +121,69 @@
   <string name="selectall">Valitse kaikki</string>
   <string name="delete">Poista</string>
   <string name="setashome">Aseta kotisivuksi</string>
+  <string name="sethome">Määritä kotihakemisto</string>
   <string name="foldercolor">Kansion väri</string>
   <string name="imagegallery">Kuvagalleria</string>
   <string name="fileexplorer">Tiedostoselain</string>
   <string name="changegallerypath">Muuta Gallerian hakemisto</string>
+  <string name="usedefaultgallerypath">Käytä oletuspolkua Galleriassa</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <string name="simple">Yksinkertainen käyttöliittymä</string>
+  <string name="card">Kortin UI</string>
   <!-- Theme -->
+  <string name="light">Materiaali vaalea</string>
+  <string name="dark">Materiaali tumma</string>
   <string name="daytime">Päivällä</string>
   <!--Skin-->
   <string name="red">Punainen</string>
   <string name="pink">Vaaleanpunainen</string>
   <string name="purple">Purppura</string>
   <string name="blue">Sininen</string>
+  <string name="light_blue">Vaaleansininen</string>
   <string name="cyan">Turkoosi</string>
   <string name="green">Vihreä</string>
+  <string name="light_green">Vaaleanvihreä</string>
+  <string name="amber">Meripihka</string>
   <string name="orange">Oranssi</string>
   <string name="deep_orange">Syvä oranssi</string>
+  <string name="brown">Ruskea</string>
   <string name="black">Musta</string>
   <string name="blue_grey">Siniharmaa</string>
   <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
+  <string name="foldersOnTop">Kansiot ylimpänä</string>
+  <string name="filesOnTop">Tiedostot ylimpänä</string>
   <!--SortBy-->
   <string name="sortName">Nimi</string>
   <string name="sortSize">Koko</string>
+  <string name="sortNameDesc">Nimi (laskeva)</string>
+  <string name="sortSizeDesc">Koko (laskeva)</string>
   <!--ListMode-->
+  <string name="detailedView">Tiedot-näkymä</string>
+  <string name="simpleView">Yksinkertainen näkymä</string>
   <!--Folder-->
   <string name="Yellow">Keltainen</string>
+  <string name="pick_a_file">Valitse tiedosto</string>
   <string name="skip">Ohita</string>
+  <string name="overwrite">Korvaa</string>
+  <string name="cant_read_file">Tiedostoa ei voida lukea</string>
+  <string name="not_allowed">Ei sallittu</string>
+  <string name="searching">Etsii</string>
+  <string name="copying_fles">Kopioidaan tiedostoja</string>
   <string name="done">Valmis</string>
+  <string name="Extracting_fles">Puretaan tiedostoja</string>
   <string name="items">Kohteet</string>
+  <string name="set">Aseta</string>
   <string name="goback">Mene takaisin</string>
+  <string name="foldercreated">Kansio on luotu</string>
   <string name="newfile">Uusi tiedosto</string>
   <string name="nofiles">Ei tiedostoja</string>
+  <string name="pathcopied">Polku kopioitu leikepöydälle</string>
+  <string name="free">Vapaa tila:  </string>
+  <string name="listview">Listanäkymä</string>
+  <string name="gridview">Ruudukkonäkymä</string>
   <string name="hide">Piilota</string>
   <string name="exit">Lopeta</string>
   <string name="authors">Tekijät</string>
@@ -154,6 +200,8 @@
   <string name="rootdirectory">Juurihakemisto</string>
   <string name="new_string">Uusi</string>
   <string name="setringtone">Aseta soittoääneksi</string>
+  <string name="copy_path">Kopioi polku</string>
+  <string name="addshortcut">Luo pikakuvake</string>
   <string name="view">Näytä</string>
   <string name="install">Asenna</string>
   <string name="archive">Arkistoi</string>
@@ -174,6 +222,7 @@
   <string name="polish_translation_title">Polish</string>
   <string name="korean_translation_title">Korean</string>
   <string name="greek_translation_title">Greek</string>
+  <string name="dutch_translation_title">Dutch</string>
   <string name="romanian_translation_title">Romanian</string>
   <string name="vietnamese_translation_title">Vietnamese</string>
   <string name="japanese_translation_title">Japanese</string>
@@ -195,9 +244,12 @@
   <string name="icon_color_title">Kuvakkeen väri</string>
   <string name="hide_mode_title">Piilota tila</string>
   <string name="none">Ei mitään</string>
+  <string name="hide_toolbar">Piilota työkalurivi</string>
+  <string name="choose_color">Valitse väri</string>
   <string name="files">Tiedostot</string>
   <string name="directories">Hakemistot</string>
   <string name="smb_server">Palvelimen IP-osoite</string>
+  <string name="username">Käyttäjänimi</string>
   <string name="password">Salasana</string>
   <string name="anonymous">Anonyymi</string>
   <string name="bluetooth">Bluetooth</string>
@@ -226,16 +278,29 @@
   <string name="grantper">Anna lupa</string>
   <string name="grantfailed">Oikeuksia ei myönnetty</string>
   <string name="path">Polku</string>
+  <string name="cut">Leikkaa</string>
   <string name="search">Etsi</string>
+  <string name="invalid_name">Virheellinen nimi</string>
   <string name="start_ftp">Aloita</string>
+  <string name="stop_ftp">Lopeta</string>
+  <string name="report_bugs_title">Ilmoita virheestä</string>
+  <string name="translate_title">Käännä</string>
+  <string name="easter_egg_title">Studio-tila</string>
   <string name="information">Tietoja</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <string name="title">Nimi</string>
+  <string name="artist">Artisti</string>
+  <string name="album">Albumi</string>
+  <string name="year">Vuosi</string>
   <string name="duration">Kesto</string>
+  <string name="comment">Kommentti</string>
   <!-- reference to audio/video file -->
+  <string name="codec">Koodekki</string>
   <string name="channels">Kanavat</string>
+  <string name="sample_rate">Näytteenottotaajuus</string>
   <string name="bitrate">Bittinopeus</string>
+  <string name="image_type">Kuvatyyppi</string>
   <string name="width">Leveys</string>
   <string name="height">Korkeus</string>
   <string name="software">Ohjelmisto</string>
@@ -243,6 +308,9 @@
   <string name="exposure_time">Valotusaika</string>
   <string name="focal_length">Polttoväli</string>
   <string name="document">Asiakirja</string>
+  <string name="author">Tekijä</string>
+  <string name="keywords">Avainsanat</string>
+  <string name="producer">Tuottaja</string>
   <string name="created">Luotu</string>
   <string name="format">Formaatti</string>
   <string name="pages">Sivumäärä</string>
