@@ -57,7 +57,6 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-
         schemaList = getDbTableSchema(schemaCursor);
         contentList = getDbTableDetails(contentCursor);
         return null;
@@ -78,7 +77,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
         // init schema row
         stringBuilder.append("<tr>");
         for (String s : schemaList) {
-            stringBuilder.append("<th>" + s + "</th>");
+            stringBuilder.append("<th>").append(s).append("</th>");
         }
         stringBuilder.append("</tr>");
 
@@ -86,7 +85,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
             // init content row
             stringBuilder.append("<tr>");
             for (int i = 0; i<strings.length; i++) {
-                stringBuilder.append("<td>" + strings[i] + "</td>");
+                stringBuilder.append("<td>").append(strings[i]).append("</td>");
             }
             stringBuilder.append("</tr>");
         }
@@ -96,7 +95,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     }
 
     private ArrayList<String[]> getDbTableDetails(Cursor c) {
-        ArrayList<String[]> result = new ArrayList<String[]>();
+        ArrayList<String[]> result = new ArrayList<>();
         int j = 0;
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             if (!isCancelled()) {
@@ -138,7 +137,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
         return result;
     }
     private ArrayList<String> getDbTableSchema(Cursor c) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             if (!isCancelled()) {
 

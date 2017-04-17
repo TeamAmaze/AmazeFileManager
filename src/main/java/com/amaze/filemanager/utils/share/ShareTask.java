@@ -8,7 +8,6 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -92,7 +91,6 @@ public class ShareTask extends AsyncTask<String, String, Void> {
     @Override
     public void onPostExecute(Void v) {
         if (!targetShareIntents.isEmpty()) {
-
             MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
             builder.title(R.string.share);
             builder.theme(appTheme.getMaterialDialogTheme());

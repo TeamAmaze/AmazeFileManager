@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -23,25 +23,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.fragments.Main;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
 public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
-    private Main main;
+    private MainFragment mainFrag;
     private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
 
-    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, Main ma, Context context, OpenMode mode) {
-        main = ma;
+    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, MainFragment ma, Context context, OpenMode mode) {
+        mainFrag = ma;
         this.context = context;
         this.files = files;
         this.mode = mode;
@@ -50,30 +57,60 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
     @Override
     protected Boolean doInBackground(ArrayList<String>... strings) {
         paths = strings[0];
-        boolean movedCorrectly = true;
 
         if (files.size() == 0) return true;
 
-        if (mode != OpenMode.FILE) return false;
-
-        for (int i = 0; i < paths.size(); i++) {
-            for (BaseFile f : files.get(i)) {
-                File dest = new File(paths.get(i) + "/" + f.getName());
-                File source = new File(f.getPath());
-                if (!source.renameTo(dest)) {
-                    movedCorrectly = false;
+        switch (mode) {
+            case SMB:
+                for (int i = 0; i < paths.size(); i++) {
+                    for (BaseFile f : files.get(i)) {
+                        try {
+                            SmbFile source = new SmbFile(f.getPath());
+                            SmbFile dest = new SmbFile(paths.get(i) + "/" + f.getName());
+                            source.renameTo(dest);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                            return false;
+                        } catch (SmbException e) {
+                            e.printStackTrace();
+                            return false;
+                        }
+                    }
                 }
-            }
+                break;
+            case FILE:
+                for (int i = 0; i < paths.size(); i++) {
+                    for (BaseFile f : files.get(i)) {
+                        File dest = new File(paths.get(i) + "/" + f.getName());
+                        File source = new File(f.getPath());
+                        if (!source.renameTo(dest)) {
+
+                            // check if we have root
+                            if (BaseActivity.rootMode) {
+                                try {
+                                    if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName()))
+                                        return false;
+                                } catch (RootNotPermittedException e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+                            } else return false;
+                        }
+                    }
+                }
+                break;
+            default:
+                return false;
         }
 
-        return movedCorrectly;
+        return true;
     }
 
     @Override
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
-            if (main != null && main.CURRENT_PATH.equals(paths.get(0)))
-                    main.updateList();
+            if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0)))
+                    mainFrag.updateList();
 
             for (int i = 0; i < paths.size(); i++) {
                 for (BaseFile f : files.get(i)) {

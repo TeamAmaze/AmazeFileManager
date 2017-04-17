@@ -3,13 +3,6 @@ package com.amaze.filemanager.filesystem;
 /**
  * Created by Arpit on 29-06-2015.
  */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,6 +14,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Locale;
 
 /**
  * Wrapper for manipulating files via the Android Media Content Provider. As of Android 4.4 KitKat,
@@ -55,7 +55,7 @@ public class MediaStoreHack {
      */
     public static boolean delete(final Context context, final File file) {
         final String where = MediaStore.MediaColumns.DATA + "=?";
-        final String[] selectionArgs = new String[] {
+        final String[] selectionArgs = new String[]{
                 file.getAbsolutePath()
         };
         final ContentResolver contentResolver = context.getContentResolver();
@@ -81,7 +81,7 @@ public class MediaStoreHack {
     getInputStream(final Context context, final File file, final long size) {
         try {
             final String where = MediaStore.MediaColumns.DATA + "=?";
-            final String[] selectionArgs = new String[] {
+            final String[] selectionArgs = new String[]{
                     file.getAbsolutePath()
             };
             final ContentResolver contentResolver = context.getContentResolver();
@@ -96,9 +96,10 @@ public class MediaStoreHack {
             return null;
         }
     }
-    public static OutputStream getOutputStream(Context context,String str) {
+
+    public static OutputStream getOutputStream(Context context, String str) {
         OutputStream outputStream = null;
-        Uri fileUri = getUriFromFile(str,context);
+        Uri fileUri = getUriFromFile(str, context);
         if (fileUri != null) {
             try {
                 outputStream = context.getContentResolver().openOutputStream(fileUri);
@@ -107,12 +108,13 @@ public class MediaStoreHack {
         }
         return outputStream;
     }
-    public static Uri getUriFromFile(final String path,Context context) {
+
+    public static Uri getUriFromFile(final String path, Context context) {
         ContentResolver resolver = context.getContentResolver();
 
         Cursor filecursor = resolver.query(MediaStore.Files.getContentUri("external"),
-                new String[] { BaseColumns._ID }, MediaStore.MediaColumns.DATA + " = ?",
-                new String[] { path }, MediaStore.MediaColumns.DATE_ADDED + " desc");
+                new String[]{BaseColumns._ID}, MediaStore.MediaColumns.DATA + " = ?",
+                new String[]{path}, MediaStore.MediaColumns.DATE_ADDED + " desc");
         filecursor.moveToFirst();
 
         if (filecursor.isAfterLast()) {
@@ -120,8 +122,7 @@ public class MediaStoreHack {
             ContentValues values = new ContentValues();
             values.put(MediaStore.MediaColumns.DATA, path);
             return resolver.insert(MediaStore.Files.getContentUri("external"), values);
-        }
-        else {
+        } else {
             int imageId = filecursor.getInt(filecursor.getColumnIndex(BaseColumns._ID));
             Uri uri = MediaStore.Files.getContentUri("external").buildUpon().appendPath(
                     Integer.toString(imageId)).build();

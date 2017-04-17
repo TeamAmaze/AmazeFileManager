@@ -264,7 +264,7 @@
             fab:menu_backgroundColor="@android:color/transparent">
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item"
+                android:id="@+id/menu_new_folder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/folder_fab"
@@ -272,7 +272,7 @@
                 fab:fab_label="@string/folder" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item1"
+                android:id="@+id/menu_new_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_insert_drive_file_white_48dp"
@@ -280,7 +280,7 @@
                 fab:fab_label="@string/file" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item2"
+                android:id="@+id/menu_new_cloud"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_cloud_white_24dp"
@@ -288,11 +288,13 @@
                 fab:fab_label="@string/cloud_connection" />
         </com.github.clans.fab.FloatingActionMenu>
     </android.support.design.widget.CoordinatorLayout>
+
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/drawer_width"
         android:background="#9e9e9e"/>
+
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="@dimen/drawer_width"

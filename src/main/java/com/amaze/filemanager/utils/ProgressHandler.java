@@ -83,6 +83,10 @@ public class ProgressHandler {
         return this.isCancelled;
     }
 
+    public synchronized long getWrittenSize() {
+        return writtenSize;
+    }
+
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }

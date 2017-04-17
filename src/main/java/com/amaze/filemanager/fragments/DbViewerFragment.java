@@ -31,7 +31,6 @@ public class DbViewerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         dbViewer = (DbViewer) getActivity();
 
         rootView = inflater.inflate(R.layout.fragment_db_viewer, null);
@@ -53,11 +52,9 @@ public class DbViewerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (dbViewer.getAppTheme().equals(AppTheme.DARK)) {
-
             relativeLayout.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
             webView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
         } else {
-
             relativeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
             webView.setBackgroundColor(Color.parseColor("#ffffff"));
         }

@@ -21,7 +21,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
- * Created by arpitkh996 on 13-01-2016.
+ * Created by arpitkh996 on 13-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 public class Operations {
 
@@ -41,6 +41,7 @@ public class Operations {
 
         /**
          * Callback fired when file being created in process already exists
+         *
          * @param file
          */
         void exists(HFile file);
@@ -48,6 +49,7 @@ public class Operations {
         /**
          * Callback fired when creating new file/directory and required storage access framework permission
          * to access SD Card is not available
+         *
          * @param file
          */
         void launchSAF(HFile file);
@@ -55,6 +57,7 @@ public class Operations {
         /**
          * Callback fired when renaming file and required storage access framework permission to access
          * SD Card is not available
+         *
          * @param file
          * @param file1
          */
@@ -62,24 +65,25 @@ public class Operations {
 
         /**
          * Callback fired when we're done processing the operation
+         *
          * @param hFile
-         * @param b defines whether operation was successful
+         * @param b     defines whether operation was successful
          */
         void done(HFile hFile, boolean b);
 
         /**
          * Callback fired when an invalid file name is found.
+         *
          * @param file
          */
         void invalidName(HFile file);
     }
 
-    public static void mkdir(final HFile file,final Context context,final boolean rootMode,@NonNull final ErrorCallBack errorCallBack){
-        if(file==null || errorCallBack==null)return;
-        new AsyncTask<Void,Void,Void>(){
+    public static void mkdir(@NonNull final HFile file, final Context context, final boolean rootMode,
+                             @NonNull final ErrorCallBack errorCallBack) {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 // checking whether filename is valid or a recursive call possible
                 if (MainActivityHelper.isNewDirectoryRecursive(file) ||
                         !Operations.isFileNameValid(file.getName())) {
@@ -87,28 +91,28 @@ public class Operations {
                     return null;
                 }
 
-                if(file.exists()) {
+                if (file.exists()) {
                     errorCallBack.exists(file);
                     return null;
                 }
-                if(file.isSmb()){
+                if (file.isSmb()) {
                     try {
                         file.getSmbFile(2000).mkdirs();
                     } catch (SmbException e) {
-                        Logger.log(e,file.getPath(),context);
-                        errorCallBack.done(file,false);
+                        Logger.log(e, file.getPath(), context);
+                        errorCallBack.done(file, false);
                         return null;
                     }
-                    errorCallBack.done(file,file.exists());
+                    errorCallBack.done(file, file.exists());
                     return null;
                 } else if (file.isOtgFile()) {
 
                     // first check whether new directory already exists
                     DocumentFile directoryToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
-                    if (directoryToCreate!=null) errorCallBack.exists(file);
+                    if (directoryToCreate != null) errorCallBack.exists(file);
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
-                    if (parentDirectory.isDirectory())  {
+                    if (parentDirectory.isDirectory()) {
                         parentDirectory.createDirectory(file.getName());
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
@@ -145,40 +149,40 @@ public class Operations {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
-    public static void mkfile(final HFile file,final Context context,final boolean rootMode,@NonNull final ErrorCallBack errorCallBack){
-        if(file==null || errorCallBack==null)return;
-        new AsyncTask<Void,Void,Void>(){
+
+    public static void mkfile(@NonNull final HFile file, final Context context, final boolean rootMode,
+                              @NonNull final ErrorCallBack errorCallBack) {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 // check whether filename is valid or not
                 if (!Operations.isFileNameValid(file.getName())) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
 
-                if(file.exists()) {
+                if (file.exists()) {
                     errorCallBack.exists(file);
                     return null;
                 }
-                if(file.isSmb()){
+                if (file.isSmb()) {
                     try {
                         file.getSmbFile(2000).createNewFile();
                     } catch (SmbException e) {
-                        Logger.log(e,file.getPath(),context);
-                        errorCallBack.done(file,false);
+                        Logger.log(e, file.getPath(), context);
+                        errorCallBack.done(file, false);
                         return null;
                     }
-                    errorCallBack.done(file,file.exists());
+                    errorCallBack.done(file, file.exists());
                     return null;
                 } else if (file.isOtgFile()) {
 
                     // first check whether new file already exists
                     DocumentFile fileToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
-                    if (fileToCreate!=null) errorCallBack.exists(file);
+                    if (fileToCreate != null) errorCallBack.exists(file);
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
-                    if (parentDirectory.isDirectory())  {
+                    if (parentDirectory.isDirectory()) {
                         parentDirectory.createFile(file.getName().substring(file.getName().lastIndexOf(".")),
                                 file.getName());
                         errorCallBack.done(file, true);
@@ -220,13 +224,11 @@ public class Operations {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-
     public static void rename(final HFile oldFile, final HFile newFile, final boolean rootMode,
-                              final Context context, final ErrorCallBack errorCallBack){
+                              final Context context, final ErrorCallBack errorCallBack) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
                 // check whether file names for new file are valid or recursion occurs
                 if (MainActivityHelper.isNewDirectoryRecursive(newFile) ||
                         !Operations.isFileNameValid(newFile.getName())) {
@@ -234,7 +236,7 @@ public class Operations {
                     return null;
                 }
 
-                if(newFile.exists()){
+                if (newFile.exists()) {
                     errorCallBack.exists(newFile);
                     return null;
                 }
@@ -242,14 +244,14 @@ public class Operations {
                 if (oldFile.isSmb()) {
                     try {
                         SmbFile smbFile = new SmbFile(oldFile.getPath());
-                        SmbFile smbFile1=new SmbFile(newFile.getPath());
-                        if(smbFile1.exists()){
+                        SmbFile smbFile1 = new SmbFile(newFile.getPath());
+                        if (smbFile1.exists()) {
                             errorCallBack.exists(newFile);
                             return null;
                         }
                         smbFile.renameTo(smbFile1);
-                        if(!smbFile.exists() && smbFile1.exists())
-                            errorCallBack.done(newFile,true);
+                        if (!smbFile.exists() && smbFile1.exists())
+                            errorCallBack.done(newFile, true);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     } catch (SmbException e) {
@@ -259,7 +261,7 @@ public class Operations {
                 } else if (oldFile.isOtgFile()) {
                     DocumentFile oldDocumentFile = RootHelper.getDocumentFile(oldFile.getPath(), context, false);
                     DocumentFile newDocumentFile = RootHelper.getDocumentFile(newFile.getPath(), context, false);
-                    if (newDocumentFile!=null) {
+                    if (newDocumentFile != null) {
                         errorCallBack.exists(newFile);
                         return null;
                     }
@@ -269,29 +271,29 @@ public class Operations {
 
                     File file = new File(oldFile.getPath());
                     File file1 = new File(newFile.getPath());
-                    switch (oldFile.getMode()){
+                    switch (oldFile.getMode()) {
                         case FILE:
                             int mode = checkFolder(file.getParentFile(), context);
                             if (mode == 2) {
                                 errorCallBack.launchSAF(oldFile, newFile);
-                            } else if (mode == 1 || mode==0) {
+                            } else if (mode == 1 || mode == 0) {
                                 try {
                                     FileUtil.renameFolder(file, file1, context);
                                 } catch (RootNotPermittedException e) {
                                     e.printStackTrace();
                                 }
                                 boolean a = !file.exists() && file1.exists();
-                                if (!a && rootMode){
+                                if (!a && rootMode) {
                                     try {
                                         RootUtils.rename(file.getPath(), file1.getPath());
                                     } catch (Exception e) {
-                                        Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
+                                        Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
                                     }
                                     oldFile.setMode(OpenMode.ROOT);
                                     newFile.setMode(OpenMode.ROOT);
                                     a = !file.exists() && file1.exists();
                                 }
-                                errorCallBack.done(newFile,a);
+                                errorCallBack.done(newFile, a);
                                 return null;
                             }
                             break;
@@ -300,7 +302,7 @@ public class Operations {
 
                                 RootUtils.rename(file.getPath(), file1.getPath());
                             } catch (Exception e) {
-                                Logger.log(e,oldFile.getPath()+"\n"+newFile.getPath(),context);
+                                Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
                             }
 
                             newFile.setMode(OpenMode.ROOT);
@@ -315,8 +317,8 @@ public class Operations {
 
     }
 
-    public static int checkFolder(final File folder, Context context) {
-        boolean lol= Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    private static int checkFolder(final File folder, Context context) {
+        boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         if (lol) {
 
             boolean ext = FileUtil.isOnExtSdCard(folder, context);
@@ -349,45 +351,41 @@ public class Operations {
     /**
      * Well, we wouldn't want to copy when the target is inside the source
      * otherwise it'll end into a loop
+     *
      * @param sourceFile
      * @param targetFile
      * @return true when copy loop is possible
      */
     public static boolean isCopyLoopPossible(BaseFile sourceFile, HFile targetFile) {
-        if (targetFile.getPath().contains(sourceFile.getPath())) return true;
-        else return false;
+        return targetFile.getPath().contains(sourceFile.getPath());
     }
 
     /**
      * Validates file name
      * special reserved characters shall not be allowed in the file names on FAT filesystems
+     *
      * @param fileName the filename, not the full path!
      * @return boolean if the file name is valid or invalid
      */
     public static boolean isFileNameValid(String fileName) {
-
         //String fileName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
 
-
         // TODO: check file name validation only for FAT filesystems
-        if ((fileName.contains(ASTERISK) || fileName.contains(BACKWARD_SLASH) ||
+        return !(fileName.contains(ASTERISK) || fileName.contains(BACKWARD_SLASH) ||
                 fileName.contains(COLON) || fileName.contains(FOREWARD_SLASH) ||
                 fileName.contains(GREATER_THAN) || fileName.contains(LESS_THAN) ||
-                fileName.contains(QUESTION_MARK) || fileName.contains(QUOTE))) {
-            return false;
-        } else return true;
+                fileName.contains(QUESTION_MARK) || fileName.contains(QUOTE));
     }
 
     private static boolean isFileSystemFAT(String mountPoint) {
-        String[] args = new String[] {"/bin/bash", "-c", "df -DO_NOT_REPLACE | awk '{print $1,$2,$NF}' | grep \"^"
+        String[] args = new String[]{"/bin/bash", "-c", "df -DO_NOT_REPLACE | awk '{print $1,$2,$NF}' | grep \"^"
                 + mountPoint + "\""};
         try {
             Process proc = new ProcessBuilder(args).start();
             OutputStream outputStream = proc.getOutputStream();
             String buffer = null;
             outputStream.write(buffer.getBytes());
-            if (buffer!=null && buffer.contains(FAT)) return true;
-            else return false;
+            return buffer != null && buffer.contains(FAT);
         } catch (IOException e) {
             e.printStackTrace();
             // process interrupted, returning true, as a word of cation

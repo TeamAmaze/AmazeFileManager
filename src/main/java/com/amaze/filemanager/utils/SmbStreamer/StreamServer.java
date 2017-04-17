@@ -3,6 +3,9 @@ package com.amaze.filemanager.utils.SmbStreamer;
 /**
  * Created by Arpit on 06-07-2015.
  */
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,9 +26,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
-
-import android.net.Uri;
-import android.util.Log;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
@@ -70,8 +70,7 @@ import android.util.Log;
  * See the end of the source file for distribution license
  * (Modified BSD licence)
  */
-public abstract class StreamServer
-{
+public abstract class StreamServer {
     // ==================================================
     // API parts
     // ==================================================
@@ -349,7 +348,7 @@ public abstract class StreamServer
                 String method = pre.getProperty("method");
                 String uri = pre.getProperty("uri");
 
-                long size = 0x7FFFFFFFFFFFFFFFl;
+                long size = 0x7FFFFFFFFFFFFFFFL;
                 String contentLength = header.getProperty("content-length");
                 if (contentLength != null)
                 {
@@ -383,7 +382,7 @@ public abstract class StreamServer
                 // expect the first byte of the body at the next read.
                 if (splitbyte < rlen)
                     size -= rlen - splitbyte +1;
-                else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFl)
+                else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFL)
                     size = 0;
 
                 // Now read all the body and write it to f
@@ -627,7 +626,7 @@ public abstract class StreamServer
                     matchcount++;
                     if (matchcount==boundary.length)
                     {
-                        matchbytes.addElement(new Integer(matchbyte));
+                        matchbytes.addElement(matchbyte);
                         matchcount = 0;
                         matchbyte = -1;
                     }
@@ -642,7 +641,7 @@ public abstract class StreamServer
             int[] ret = new int[matchbytes.size()];
             for (int i=0; i < ret.length; i++)
             {
-                ret[i] = ((Integer)matchbytes.elementAt(i)).intValue();
+                ret[i] = (Integer) matchbytes.elementAt(i);
             }
             return ret;
         }

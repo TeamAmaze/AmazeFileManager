@@ -24,6 +24,14 @@
         android:id="@+id/rename"
         android:title="@string/rename" />
     <item
+        android:id="@+id/encrypt"
+        android:title="@string/crypt_encrypt"
+        android:visible="false" />
+    <item
+        android:id="@+id/decrypt"
+        android:title="@string/crypt_decrypt"
+        android:visible="false" />
+    <item
         android:id="@+id/about"
         android:title="@string/properties"/>
     <item

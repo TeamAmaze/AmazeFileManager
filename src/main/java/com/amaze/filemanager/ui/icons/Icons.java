@@ -26,12 +26,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.CryptUtil;
 
 import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
-    private static HashMap<String, Integer> sMimeIconIds = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> sMimeIconIds = new HashMap<>();
     private static SparseArray<Bitmap> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
@@ -218,7 +219,6 @@ public class Icons {
                 "application/x-quicktimeplayer",
                 "application/x-shockwave-flash"
         );
-
     }
 
     public static boolean isText(String name) {
@@ -248,6 +248,12 @@ public class Icons {
         return false;
     }
 
+    public static boolean isEncrypted(String name) {
+        if (name.endsWith(CryptUtil.CRYPT_EXTENSION))
+            return true;
+        else return false;
+    }
+
     public static boolean isAudio(String name) {
         String mimeType = MimeTypes.getMimeType(new File(name));
         Integer res = sMimeIconIds.get(mimeType);
@@ -263,32 +269,27 @@ public class Icons {
 
     public static boolean isCode(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_codes) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_codes;
     }
 
     public static boolean isArchive(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_zip_box_white_36dp) return true;
-        return false;
+        return res != null && res == R.drawable.ic_zip_box_white_36dp;
     }
 
     public static boolean isApk(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_apk_white) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_apk_white;
     }
 
     public static boolean isPdf(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_pdf) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_pdf;
     }
 
     public static boolean isPicture(String name) {
         Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
-        if (res != null && res == R.drawable.ic_doc_image) return true;
-        return false;
+        return res != null && res == R.drawable.ic_doc_image;
     }
 
     public static boolean isGeneric(String name) {
@@ -297,11 +298,8 @@ public class Icons {
             return true;
         }
         Integer resId = sMimeIconIds.get(mimeType);
-        if (resId == null) {
-            return true;
-        }
 
-        return false;
+        return resId == null;
     }
 
     public static BitmapDrawable loadMimeIcon(String path, boolean grid, final Resources res) {
@@ -359,6 +357,8 @@ public class Icons {
         } else if ("video".equals(typeOnly)) {
             /*if (grid) resId = R.drawable.ic_doc_video_am_grid; else*/
             resId = R.drawable.ic_doc_video_am;
+        } else if (path.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+            resId = R.drawable.ic_file_lock_white_36dp;
         }
         if (resId == null) {
             /*if (grid) resId = R.drawable.ic_doc_generic_am_grid; else*/

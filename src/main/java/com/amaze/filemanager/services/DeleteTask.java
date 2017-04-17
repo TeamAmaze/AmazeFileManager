@@ -30,20 +30,21 @@ import android.support.v4.provider.DocumentFile;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.Futils;
 
 import java.util.ArrayList;
 
 public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
-    ArrayList<BaseFile> files;
-    ContentResolver contentResolver;
-    Context cd;
-    boolean rootMode;
-    ZipViewer zipViewer;
+    private ArrayList<BaseFile> files;
+    private Context cd;
+    private boolean rootMode;
+    private ZipViewer zipViewer;
 
     public DeleteTask(ContentResolver c, Context cd) {
         this.cd = cd;
@@ -69,6 +70,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
 
         if (files.get(0).isOtgFile()) {
             for (BaseFile a : files) {
+
                 DocumentFile documentFile = RootHelper.getDocumentFile(a.getPath(), cd, false);
                  b = documentFile.delete();
             }
@@ -83,14 +85,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
                 }
         }
 
-        return b;
-    }
-
-    @Override
-    public void onPostExecute(Boolean b) {
-        Intent intent = new Intent("loadlist");
-        cd.sendBroadcast(intent);
-
+        // delete file from media database
         if(!files.get(0).isSmb()) {
             try {
                 for (BaseFile f : files) {
@@ -101,17 +96,36 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
                     Futils.scanFile(f.getPath(), cd);
                 }
             }
-        }if (!b) {
+        }
+
+        // delete file entry from encrypted database
+        for (BaseFile file : files) {
+            if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                CryptHandler handler = new CryptHandler(cd);
+                handler.clear(file.getPath());
+            }
+        }
+
+        return b;
+    }
+
+    @Override
+    public void onPostExecute(Boolean b) {
+        Intent intent = new Intent("loadlist");
+        cd.sendBroadcast(intent);
+
+        if (!b) {
             Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
         } else if (zipViewer==null) {
             Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
+
         if (zipViewer!=null) {
             zipViewer.files.clear();
         }
     }
 
-    void delete(final Context context, final String file) {
+    private void delete(final Context context, final String file) {
         final String where = MediaStore.MediaColumns.DATA + "=?";
         final String[] selectionArgs = new String[] {
                 file

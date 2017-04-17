@@ -20,22 +20,30 @@
 package com.amaze.filemanager.ui.icons;
 
 
-import android.content.*;
-import android.content.pm.*;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.*;
-import android.graphics.drawable.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
-import android.os.*;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.widget.*;
+import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Futils;
 
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import jcifs.smb.SmbFileInputStream;
 
@@ -53,15 +61,13 @@ public class IconHolder {
     private final Map<String, Bitmap> mIcons;     // Themes based
     private final Map<String, Bitmap> mAppIcons;  // App based
 
-    private Map<String, Long> mAlbums;      // Media albums
-
     private Map<ImageView, String> mRequests;
 
     private final Context mContext;
     private final boolean mUseThumbs; 
 	private HandlerThread mWorkerThread;
     private Handler mWorkerHandler;
-    boolean grid;
+
     private static class LoadResult {
         String fso;
         Bitmap result;
@@ -90,7 +96,7 @@ public class IconHolder {
             for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
                 final ImageView imageView = entry.getKey();
                 final String fso = entry.getValue();
-                if (fso == result.fso) {
+                if (Objects.equals(fso, result.fso)) {
                     imageView.setImageBitmap(result.result);
                     mRequests.remove(imageView);
                     break;
@@ -119,8 +125,6 @@ public class IconHolder {
                 return size() > MAX_CACHE;
             }
         };
-        this.mAlbums = new HashMap<>();
-        this.grid=grid;
         Resources res=mContext.getResources();
         int dp=50;
         if(grid){dp=150;}
@@ -183,7 +187,7 @@ public class IconHolder {
     }
 
     private class WorkerHandler extends Handler {
-        public WorkerHandler(Looper looper) {
+        WorkerHandler(Looper looper) {
             super(looper);
         }
 
@@ -253,7 +257,7 @@ public class IconHolder {
         return bitsat;
         }
 
-		public Bitmap loadImage(String path) throws OutOfMemoryError{
+		private Bitmap loadImage(String path) throws OutOfMemoryError{
 			Bitmap bitsat;
 
             try {
@@ -308,5 +312,6 @@ public class IconHolder {
        
         shutdownWorker();
     }
+
 }
 

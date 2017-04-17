@@ -40,17 +40,18 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
  */
 public class FTPServerFragment extends Fragment {
 
-    TextView statusText, username, password, port, sharedPath;
+    private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
-    Button ftpBtn;
+    private Button ftpBtn;
     private MainActivity mainActivity;
     private View rootView, startDividerView, statusDividerView;
     private int skin_color, skinTwoColor, accentColor;
@@ -353,7 +354,7 @@ public class FTPServerFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action == FTPService.ACTION_STARTED) {
+            if (Objects.equals(action, FTPService.ACTION_STARTED)) {
                 if (getSecurePreference()) {
                     statusText.setText(spannedStatusSecure);
                 } else {
@@ -361,14 +362,14 @@ public class FTPServerFragment extends Fragment {
                 }
                 ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
 
-            } else if (action == FTPService.ACTION_FAILEDTOSTART) {
+            } else if (Objects.equals(action, FTPService.ACTION_FAILEDTOSTART)) {
                 statusText.setText(spannedStatusNotRunning);
 
                 Toast.makeText(getContext(),
                         getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
 
                 ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
-            } else if (action == FTPService.ACTION_STOPPED) {
+            } else if (Objects.equals(action, FTPService.ACTION_STOPPED)) {
                 statusText.setText(spannedStatusNotRunning);
                 ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
             }

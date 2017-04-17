@@ -18,18 +18,18 @@
             android:key="icon_skin"
             android:title="@string/icon_color_title"
             android:summary="@string/icon_color_summary"/>
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:key="coloriseIcons"
             android:defaultValue="true"
             android:title="@string/colorize"
             android:summary="@string/colorize_summary" />
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:key="colorednavigation"
             android:defaultValue="false"
             android:title="@string/colourednavigation"
             android:summary="@string/colourednavigationsum"
             android:enabled="false" />
-        <com.amaze.filemanager.ui.views.CheckBx
+        <com.amaze.filemanager.ui.views.CheckBox
             android:key="random_checkbox"
             android:title="@string/random"
             android:summary="@string/random_summary"/>
