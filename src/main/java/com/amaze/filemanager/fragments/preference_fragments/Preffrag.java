@@ -45,6 +45,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.Preferences;
 import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -129,13 +130,9 @@ public class Preffrag extends PreferenceFragment {
                 return true;
             }
         });
-        findPreference("colors").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(1);
-                return true;
-            }
-        });
+        setClickListenerForPref("colors", Preferences.COLORS_PREFERENCE);
+        setClickListenerForPref("sidebar_folders", Preferences.FOLDERS_PREFERENCE);
+        setClickListenerForPref("sidebar_quickaccess", Preferences.QUICKACCESS_PREFERENCE);
 
         /*final CheckBx rootmode = (CheckBx) findPreference("rootmode");
         rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -272,6 +269,16 @@ public class Preffrag extends PreferenceFragment {
                         == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
                         == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void setClickListenerForPref(String key, final int i) {
+        findPreference(key).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(i);
+                return true;
+            }
+        });
     }
 
     private void requestGplusPermission() {

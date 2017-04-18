@@ -24,16 +24,18 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.util.List;
 
 /**
- * Created by Arpit on 21-06-2015.
+ * @author Emmanuel
+ *         on 17/4/2017, at 23:17.
  */
-public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+
+public class QuickAccessPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private UtilitiesProviderInterface utilsProvider;
 
     SharedPreferences sharedPref;
@@ -47,7 +49,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         activity = (BaseActivity) getActivity();
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.color_prefs);
+        addPreferencesFromResource(R.xml.fastaccess_prefs);
         preferences = (com.amaze.filemanager.activities.Preferences) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -64,7 +66,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (preferences != null)preferences.setChanged();
+                if (preferences != null) preferences.setChanged();
                 return true;
             }
         });
@@ -79,7 +81,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
-        if (preferences != null) preferences.setChanged();
+        if (preferences != null)preferences.setChanged();
 
         final ColorUsage usage = ColorUsage.fromString(preference.getKey());
         if (usage != null) {
@@ -186,4 +188,5 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             if (dialog != null) dialog.dismiss();
         }
     }
+
 }
