@@ -118,6 +118,11 @@
   <string name="history">Historia</string>
   <string name="refresh">Päivitä</string>
   <string name="copy">Kopioi</string>
+  <string name="rootmode">Juurihakemisto</string>
+  <string name="rootmodesummary">Ainoastaan rootatulle laitteelle, tarkista vain jos tiedät mitä teet.</string>
+  <string name="mountsystemsummary">Ota tämä käyttöön jos haluat muokata järjestelmätiedostoja</string>
+  <string name="mountsystem">Kiinnitä järjestelmäkansiot kirjoitettaviksi</string>
+  <string name="rootfailure">Pääkäyttäjän oikeuksia ei myönnetä</string>
   <string name="selectall">Valitse kaikki</string>
   <string name="delete">Poista</string>
   <string name="setashome">Aseta kotisivuksi</string>
@@ -140,9 +145,12 @@
   <string name="red">Punainen</string>
   <string name="pink">Vaaleanpunainen</string>
   <string name="purple">Purppura</string>
+  <string name="deep_purple">Syvä purppura</string>
+  <string name="indigo">Indigo</string>
   <string name="blue">Sininen</string>
   <string name="light_blue">Vaaleansininen</string>
   <string name="cyan">Turkoosi</string>
+  <string name="teal">Sinivihreä</string>
   <string name="green">Vihreä</string>
   <string name="light_green">Vaaleanvihreä</string>
   <string name="amber">Meripihka</string>
@@ -155,10 +163,13 @@
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Kansiot ylimpänä</string>
   <string name="filesOnTop">Tiedostot ylimpänä</string>
+  <string name="noneOnTop">Ei mitään ylimpänä</string>
   <!--SortBy-->
   <string name="sortName">Nimi</string>
+  <string name="lastModified">Viimeisin muokkaus</string>
   <string name="sortSize">Koko</string>
   <string name="sortNameDesc">Nimi (laskeva)</string>
+  <string name="lastModifiedDesc">Viimeksi muokattu</string>
   <string name="sortSizeDesc">Koko (laskeva)</string>
   <!--ListMode-->
   <string name="detailedView">Tiedot-näkymä</string>
@@ -166,46 +177,89 @@
   <!--Folder-->
   <string name="Yellow">Keltainen</string>
   <string name="pick_a_file">Valitse tiedosto</string>
+  <string name="process_viewer">Prosessintutkija</string>
+  <string name="in_safe">Muisti ei riitä</string>
+  <string name="no_file_overwrite">Tiedostoa ei korvata</string>
   <string name="skip">Ohita</string>
   <string name="overwrite">Korvaa</string>
   <string name="cant_read_file">Tiedostoa ei voida lukea</string>
   <string name="not_allowed">Ei sallittu</string>
+  <string name="processes">Prosessit</string>
   <string name="searching">Etsii</string>
   <string name="copying_fles">Kopioidaan tiedostoja</string>
   <string name="done">Valmis</string>
   <string name="Extracting_fles">Puretaan tiedostoja</string>
   <string name="items">Kohteet</string>
+  <string name="item">Kohde</string>
   <string name="set">Aseta</string>
+  <string name="enablerootmde">Ota Root-tila käyttöön</string>
   <string name="goback">Mene takaisin</string>
   <string name="foldercreated">Kansio on luotu</string>
   <string name="newfile">Uusi tiedosto</string>
   <string name="nofiles">Ei tiedostoja</string>
+  <string name="tapnhold">Napauta ja pidä pohjassa nähdäksesi lisää asetuksia</string>
   <string name="pathcopied">Polku kopioitu leikepöydälle</string>
+  <string name="used">Muut käyttää:  </string>
   <string name="free">Vapaa tila:  </string>
+  <string name="atroot">Olet juuri</string>
   <string name="listview">Listanäkymä</string>
   <string name="gridview">Ruudukkonäkymä</string>
+  <string name="setlistview">Setting ListView</string>
+  <string name="setgridview">Setting GridView</string>
+  <string name="permission">Käyttöoikeudet</string>
   <string name="hide">Piilota</string>
   <string name="exit">Lopeta</string>
+  <string name="enternewname">Syötä uusi nimi</string>
+  <string name="doforall">Tee kaikille kohteille</string>
+  <string name="gridcolumnno">Number of columns in grid view</string>
+  <string name="randomDialog">Satunnainen</string>
+  <string name="setRandom">Changes will take place after you restart the app</string>
   <string name="authors">Tekijät</string>
   <string name="changelog">Muutoslogi</string>
   <string name="fullChangelog">Koko muutosloki</string>
   <string name="ok">OK</string>
+  <string name="chooseUI">Choose Item UI</string>
+  <string name="ui">Interface</string>
   <string name="general">Yleinen</string>
+  <string name="thumbSummary">Show Thumbnails of apps and images</string>
+  <string name="thumb">Show Thumbnails</string>
+  <string name="hidden">Näytä piilotetut tiedostot ja kansiot</string>
+  <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
+  <string name="lastModifiedPref">Show Last Modified</string>
+  <string name="sizePrefSummary">Show size of files and number of items in folders</string>
   <string name="sizePref">Näytä koot</string>
+  <string name="miscellaneous">Sekalaiset</string>
+  <string name="rootPrefSummary">Kansioiden ja tiedostojen oikeudet</string>
+  <string name="rootPref">Näytä käyttöoikeudet</string>
+  <string name="aboutFileManager">Tietoja Amaze-tiedostonhallinnasta</string>
   <string name="version">Versio</string>
   <string name="rate">Arvostele sovellus</string>
+  <string name="license">Open Source Lisenssit</string>
   <string name="feedback">Lähetä palautetta</string>
   <string name="hiddenfiles">Piilotetut Tiedostot</string>
   <string name="type">Tyyppi</string>
+  <string name="typeDesc">Koko (laskeva)</string>
   <string name="rootdirectory">Juurihakemisto</string>
   <string name="new_string">Uusi</string>
   <string name="setringtone">Aseta soittoääneksi</string>
   <string name="copy_path">Kopioi polku</string>
   <string name="addshortcut">Luo pikakuvake</string>
+  <string name="unsavedchanges">Tallentamattomat muutokset</string>
+  <string name="unsavedchangesdesc">Tallentamattomia muutoksia. Haluatko tallentaa nyt?</string>
+  <string name="saving">Tallentaminen</string>
+  <string name="packageinstaller">Paketin asentaja</string>
   <string name="view">Näytä</string>
   <string name="install">Asenna</string>
   <string name="archive">Arkistoi</string>
+  <string name="archtext">Tämä on arkisto. Mitä haluat tehdä?</string>
+  <string name="pitext">This is a package installer. What action would you like to perform?</string>
   <string name="xda_title">XDA-ketju</string>
+  <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
+  <string name="invalid_dir">Virheellinen kansio</string>
+  <string name="circularimages">Käytä pyöreitä kuvakkeita kuville ja videoille</string>
+  <string name="circularicons">Käytä pyöreitä kuvakkeita</string>
+  <string name="back_title">Edellinen</string>
+  <string name="back_summary">Sallii mukautetun palaamisen alkuun</string>
   <string name="details">Tiedot</string>
   <string name="translators">Kääntäjät</string>
   <string name="german_translation_title">German</string>
@@ -228,8 +282,15 @@
   <string name="japanese_translation_title">Japanese</string>
   <string name="brazilian_portuguese_translation_title">Brazilian portuguese</string>
   <string name="tamil_translation_title">Tamil</string>
+  <string name="zip_viewer">Zip-lukija</string>
+  <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
   <string name="warning">Varoitus</string>
   <string name="donate">Lahjoita</string>
+  <string name="archive_preferences">Arkisto asetukset</string>
+  <string name="archive_extract_folder">Archive Extract Folder</string>
+  <string name="zip_create_folder">Zip Create Folder</string>
+  <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
+  <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
   <string name="openas">Avaa</string>
   <string name="text">Teksti</string>
   <string name="audio">Ääni</string>
@@ -238,16 +299,49 @@
   <string name="image">Kuva</string>
   <string name="contributors">Kehittäjät</string>
   <string name="savepaths">Muista polut</string>
+  <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
   <string name="select_intent">Valitse</string>
+  <string name="md5copied">MD5 kopioitu leikepöydälle</string>
+  <string name="generating">Muodostetaan..</string>
+  <string name="tables">Taulukot</string>
   <string name="database">Tietokanta</string>
+  <string name="colourednavigation">Värillinen navigointipalkki</string>
+  <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+  <string name="sd_card_grant_next">sd_card_grant_next</string>
+  <string name="sd_card_grant_first">sd_card_grant_first</string>
+  <string name="fab_skin">FAB skin</string>
+  <string name="gplus_pic_title">Kirjaudu sisään G+</string>
+  <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
+  <string name="icon_credits">Graphics by &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Väri</string>
+  <string name="color_summary">Set color to various UI components</string>
+  <string name="primary_color_title">Primary Color (Left Tab)</string>
+  <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
+  <string name="accent_color_title">Aksenttiväri</string>
+  <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
   <string name="icon_color_title">Kuvakkeen väri</string>
+  <string name="icon_color_summary">Set color to icons</string>
   <string name="hide_mode_title">Piilota tila</string>
   <string name="none">Ei mitään</string>
   <string name="hide_toolbar">Piilota työkalurivi</string>
+  <string name="hide_appbar">Hide whole App bar</string>
   <string name="choose_color">Valitse väri</string>
+  <string name="g_plus_community_title">Liity G+ yhteisöön</string>
+  <string name="hide_mode_nothing">App bar remains intact</string>
+  <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
+  <string name="hide_mode_app_bar">App bar hides on scroll</string>
+  <string name="no_cover_photo">Ei kannen kuvaa</string>
   <string name="files">Tiedostot</string>
   <string name="directories">Hakemistot</string>
+  <string name="textreader">Tekstinlukija</string>
+  <string name="databasereader">Tietokannan lukija</string>
+  <string name="showDividers">Näytä välipalkit</string>
+  <string name="topFab">FAB on App bar</string>
+  <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
+  <string name="needsaccess">Write Access Required</string>
+  <string name="needsaccesssummary">Please choose the root directory of \t</string>
+  <string name="needsaccesssummary1">\tto grant write access to operate </string>
+  <string name="smb_con">SMB yhteys</string>
   <string name="smb_server">Palvelimen IP-osoite</string>
   <string name="username">Käyttäjänimi</string>
   <string name="password">Salasana</string>
@@ -277,18 +371,116 @@
   <string name="grant">Myönnä</string>
   <string name="grantper">Anna lupa</string>
   <string name="grantfailed">Oikeuksia ei myönnetty</string>
+  <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+  <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
+  <string name="operationunsuccesful">Toiminto ei onnistunut</string>
+  <string name="creatingfile">Luodaan tiedosto</string>
+  <string name="creatingfolder">Luodaan kansio</string>
+  <string name="renaming">Uudelleennimeäminen</string>
+  <string name="cantbeempty">%s ei voi olla tyhjä</string>
+  <string name="ip">Osoite</string>
+  <string name="connectionname">Yhteyden nimi</string>
+  <string name="nodevicefound">Laitetta ei löytynyt</string>
   <string name="path">Polku</string>
+  <string name="renamebookmark">Muokkaa kirjanmerkkiä</string>
   <string name="cut">Leikkaa</string>
   <string name="search">Etsi</string>
   <string name="invalid_name">Virheellinen nimi</string>
+  <string name="search_hint">Kirjoita hakeaksesi&#8230;</string>
+  <string name="advanced_search">Tarkennettu haku</string>
+  <string name="regular_expression">Regular Expression</string>
+  <string name="regular_expression_summary">Search using a BASH style regular expression</string>
+  <string name="match_content">Match content</string>
+  <string name="match_content_summary">If set, regular expression will be matched with entire file name,
+        will look for occurrence otherwise.</string>
   <string name="start_ftp">Aloita</string>
   <string name="stop_ftp">Lopeta</string>
+  <string name="ftp_status_running">Running</string>
+  <string name="ftp_status_not_running">Not Running</string>
+  <string name="ftp_no_wifi">Varmista, että olet Wifi-verkossa</string>
+  <string name="domain">Toimialue</string>
+  <string name="invalid">Virheellinen %s</string>
+  <string name="ftp_notif_starting">FTP-palvelin käynnistyy</string>
+  <string name="ftp_notif_title">Amaze FTP-palvelin on käynnissä</string>
+  <string name="ftp_notif_text">%s</string>
+  <string name="ftp_notif_stop_server">LOPETA</string>
+  <string name="ftp_port_edit_menu_title">FTP-portti</string>
+  <string name="ftp_port_change_success">FTP-portti muutettu onnistuneesti</string>
+  <string name="ftp_port_change_error_invalid">Virheellinen porttinumero valittu</string>
+  <string name="primary_two_title">Pääväri (oikea-välilehti)</string>
+  <string name="primary_two_summary">Määritä väri isoilla käyttöliittymän osille</string>
+  <string name="g_plus">Google+</string>
+  <string name="support_development">Tue kehitystä</string>
   <string name="report_bugs_title">Ilmoita virheestä</string>
+  <string name="report_bugs_summary">Raportoi bugeja tai pyydä uusia ominaisuuksia</string>
   <string name="translate_title">Käännä</string>
+  <string name="translate_summary">Käännä Amaze omalle kielelle</string>
+  <string name="g_plus_community_summary">Ota osaa beta testaukseen ja kehityskeskusteluihin</string>
   <string name="easter_egg_title">Studio-tila</string>
+  <string name="paypal_copy_message">PayPal-tunnus kopioitu leikepöydälle</string>
+  <string name="searchingdevices">Etsitään laitteita</string>
+  <string name="use_custom_ip">Käytä mukautettu IP-osoitetta</string>
+  <string name="bookmark_lost">Kirjanmerkkiä ei löydy, luodaan uudestaan&#8230;</string>
+  <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>How to access shared windows folder on android (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Enable File Sharing</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Open the Control Panel, click Choose homegroup and sharing options under Network
+                        and Internet, and click Change advanced sharing settings. Enable the file and
+                        printer sharing feature.\n\n
+                    </p>
+
+                    <li>
+                        <b>Additional File Sharing settings</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        You may also want to configure the other advanced sharing settings here. \n
+                        For example, you could enable access to your files without a password if you trust all
+                        the devices on your local network.Once file and printer sharing is enabled, you can
+                        open File Explorer or Windows Explorer, right-click a folder you want to share, and
+                        select Properties. \n
+                        Click the Share button and make the folder available on the network.\n\n
+                        </p>
+
+                    <li>
+                        <b>Make sure both devices are on same Wifi</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        This feature makes files available on the local network, so your PC and mobile devices
+                        have to be on the same local network. You can\’t access a shared Windows folder
+                        over the Internet or when your smartphone is connected to its mobile data — it
+                        has to be connected to Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Find IP Address</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
+                        under your network adapter for your router\'s IP address. Look for
+                        \\"IPv4 Address\\" under the same adapter section to find your computer\'s IP
+                        address.\n\n
+                    </p>
+
+                    <b>Enter details in smb dialog box</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+  <string name="share_limit">Ei voi jakaa yli 100 tiedostoa</string>
+  <string name="otg_access">Valitse OTG-laitteen juurihakemisto</string>
+  <string name="no_profile_pic">Ei G++ profiilikuvaa</string>
+  <string name="opening">Avataan..</string>
   <string name="information">Tietoja</string>
   <!-- reference to file accessed date -->
+  <string name="accessed">Käytetty</string>
   <!-- reference to file modified date -->
+  <string name="modified">Muokattu</string>
   <string name="title">Nimi</string>
   <string name="artist">Artisti</string>
   <string name="album">Albumi</string>
@@ -296,18 +488,29 @@
   <string name="duration">Kesto</string>
   <string name="comment">Kommentti</string>
   <!-- reference to audio/video file -->
+  <string name="container">Sisältää</string>
   <string name="codec">Koodekki</string>
   <string name="channels">Kanavat</string>
   <string name="sample_rate">Näytteenottotaajuus</string>
   <string name="bitrate">Bittinopeus</string>
+  <string name="dimensions">Mitat</string>
+  <string name="frame_rate">Kuvanopeus</string>
   <string name="image_type">Kuvatyyppi</string>
   <string name="width">Leveys</string>
   <string name="height">Korkeus</string>
+  <string name="date_modified">Muokkauspäivämäärä</string>
   <string name="software">Ohjelmisto</string>
   <string name="creator">Luoja</string>
+  <string name="camera_brand">Kamera merkki</string>
+  <string name="camera_model">Kameran malli</string>
+  <string name="date_taken">Kuvauspäivä</string>
   <string name="exposure_time">Valotusaika</string>
+  <string name="aperture_value">Aukon arvo</string>
+  <string name="image_iso">ISO nopeusluokka</string>
+  <string name="flash_fired">Salama käyt</string>
   <string name="focal_length">Polttoväli</string>
   <string name="document">Asiakirja</string>
+  <string name="subject">Aihe</string>
   <string name="author">Tekijä</string>
   <string name="keywords">Avainsanat</string>
   <string name="producer">Tuottaja</string>
