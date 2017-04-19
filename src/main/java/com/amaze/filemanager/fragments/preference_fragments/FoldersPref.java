@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference;
 
 /**
  * @author Emmanuel
@@ -28,14 +29,25 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         addPreferencesFromResource(R.xml.folders_prefs);
         preferences = (com.amaze.filemanager.activities.Preferences) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        for(int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++)
+            getPreferenceScreen().getPreference(i).setOnPreferenceClickListener(this);
     }
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
         if (preferences != null) preferences.setChanged();
-
-
-
+        if(preference instanceof NamePathSwitchPreference) {
+            NamePathSwitchPreference p = (NamePathSwitchPreference) preference;
+            switch (p.getLastItemClicked()) {
+                case NamePathSwitchPreference.EDIT:
+                    break;
+                case NamePathSwitchPreference.SWITCH:
+                    break;
+                case NamePathSwitchPreference.DELETE:
+                    break;
+            }
+        }
         return false;
     }
 

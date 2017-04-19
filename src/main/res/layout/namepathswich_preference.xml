@@ -20,7 +20,11 @@
         android:id="@+id/switch_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:paddingLeft="4dip"
+        android:paddingStart="4dip"
+        android:paddingRight="4dip"
+        android:paddingEnd="4dip"/>
 
     <ImageButton
         android:id="@+id/delete"
