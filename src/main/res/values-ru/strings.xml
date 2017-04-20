@@ -555,9 +555,25 @@
 </string>
   <string name="ftp_path_change_success">FTP путь успешно изменен</string>
   <string name="ftp_path_change_error_invalid">Неверный путь</string>
+  <string name="ftp_status_no_connection">Нет Соединения</string>
+  <string name="ftp_status_secure_connection">Безопасное соединение</string>
+  <string name="ftp_status_title">Статус</string>
   <string name="ftp_port">Порт</string>
+  <string name="ftp_login">Логин</string>
+  <string name="field_empty">Поле не может быть пустым</string>
+  <string name="ftp_timeout">Тайм-аут простоя</string>
+  <string name="ftp_seconds">Секунды</string>
+  <string name="intellihide_toolbar_title">Интеллектуальное скрытие панели инструментов</string>
+  <string name="intellihide_toolbar_summary">Автоматически скрывать панель инструментов при прокрутке</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">скопировано в буфер обмена</string>
+  <string name="contributors_1_summary">Перевод</string>
+  <string name="contributors_2_summary">Значок и баннеры</string>
+  <string name="contributors_3_summary">Тематический движок</string>
+  <string name="contributors_4_summary">Тень позади FAB</string>
+  <string name="contributors_5_summary">Цветовой переход при свайпе вкладок</string>
   <string name="contributors_6_summary">FTP сервер</string>
+  <string name="contributors_7_summary">Вызов интерактивной оболочки</string>
+  <string name="bytes">Байты</string>
 </resources>
