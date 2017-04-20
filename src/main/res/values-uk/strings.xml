@@ -584,4 +584,5 @@
   <string name="contributors_5_summary">Колірний перехід, при перемиканні вкладок</string>
   <string name="contributors_6_summary">FTP Сервер</string>
   <string name="contributors_7_summary">Запустити інтерактивну оболонку</string>
+  <string name="bytes">Байт</string>
 </resources>

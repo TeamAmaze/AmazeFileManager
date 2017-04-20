@@ -21,11 +21,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="drawer_open">Отваряне на панела за навигация</string>
   <string name="drawer_close">Затваряне на панела за навигация</string>
+  <string name="books">Отметки</string>
   <string name="storage">Хранилище</string>
   <string name="gallery">Галерия</string>
   <string name="setting">Настройки</string>
   <string name="cancel">ОТКАЗ</string>
   <string name="save">Запиши</string>
+  <string name="location">Местоположение</string>
   <string name="share">Споделяне</string>
   <string name="about">Относно</string>
   <string name="yes">Да</string>
@@ -77,6 +79,7 @@
   <string name="information">Информация</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
+  <string name="title">Заглавие</string>
   <string name="duration">Времетраене</string>
   <!-- reference to audio/video file -->
   <string name="width">Ширина</string>
