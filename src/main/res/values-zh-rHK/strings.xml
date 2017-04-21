@@ -537,6 +537,31 @@
   <string name="contributors_5_summary">當滑動分頁時的過渡顏色</string>
   <string name="contributors_6_summary">FTP 伺服器</string>
   <string name="contributors_7_summary">啟動交互式 shell</string>
+  <string name="connection_exists">連接已存在</string>
+  <string name="crypt_encrypting">加密中</string>
+  <string name="crypt_decrypting">解密中</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">已加密</string>
+  <string name="crypt_decrypted">已解密</string>
+  <string name="crypt_encrypt">加密</string>
+  <string name="crypt_decrypt">解密</string>
+  <string name="operation_fail_following">以下檔案操作失敗</string>
+  <string name="crypt_pref_master_password_title">主密碼</string>
+  <string name="crypt_pref_master_password_summary">設定一組加密的主密碼。
+         留空以刪除。</string>
+  <string name="crypt_pref_fingerprint_title">指紋</string>
+  <string name="crypt_pref_fingerprint_summary">使用指紋驗證加密</string>
+  <string name="crypt_fingerprint_no_permission">指紋權限遺失</string>
+  <string name="crypt_fingerprint_not_enrolled">沒有指紋登記</string>
+  <string name="crypt_fingerprint_no_security">沒有找到鎖定畫面安全</string>
+  <string name="crypt_warning_key">當您改變安全模式時，請注意
+         系統設定，您將無法解密此內容。</string>
+  <string name="warning_never_show">不再通知</string>
+  <string name="warning_confirm">明白了！</string>
+  <string name="crypt_encryption_fail">加密失敗</string>
+  <string name="crypt_decryption_fail">解密失敗</string>
+  <string name="crypt_decryption_fail_password">密碼錯誤 ！</string>
+  <string name="crypt_fingerprint_authenticate">繼續觸控感應器</string>
+  <string name="authenticate_password">請輸入密碼</string>
   <string name="bytes">位元組</string>
 </resources>
