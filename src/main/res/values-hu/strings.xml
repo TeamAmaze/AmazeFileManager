@@ -550,4 +550,5 @@ megtalálásához..</li><li/><br/>\\n
   <string name="ftp_path_change_error_invalid">Érvénytelen útvonal</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">FTP-kiszolgáló</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

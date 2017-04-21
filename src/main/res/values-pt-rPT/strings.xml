@@ -478,4 +478,5 @@ debater ideias com os programadores</string>
   <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">Servidor FTP</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

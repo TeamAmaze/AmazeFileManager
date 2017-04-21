@@ -564,5 +564,6 @@ smb_instructions
   <string name="contributors_1_summary">Tłumaczenie</string>
   <string name="contributors_2_summary">Ikony i bannery</string>
   <string name="contributors_6_summary">Serwer FTP</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Bajtów</string>
 </resources>

@@ -583,5 +583,6 @@
   <string name="contributors_5_summary">Колер пры змене ўкладкі</string>
   <string name="contributors_6_summary">FTP сервер</string>
   <string name="contributors_7_summary">Запусціць інтэрактыўную абалонку</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Байты</string>
 </resources>

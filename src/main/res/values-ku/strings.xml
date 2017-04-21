@@ -37,4 +37,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

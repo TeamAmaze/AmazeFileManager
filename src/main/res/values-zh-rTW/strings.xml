@@ -574,5 +574,6 @@
   <string name="contributors_5_summary">當滑動分頁時的過渡顏色</string>
   <string name="contributors_6_summary">FTP 伺服器</string>
   <string name="contributors_7_summary">啟動交互式 shell</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">位元組</string>
 </resources>

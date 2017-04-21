@@ -533,4 +533,5 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="ftp_path_change_error_invalid">Percorso invalido</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">Server FTP</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

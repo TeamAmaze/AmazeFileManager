@@ -534,5 +534,6 @@
   <string name="contributors_5_summary">Transición de color al barrer pestañas</string>
   <string name="contributors_6_summary">Servidor FTP</string>
   <string name="contributors_7_summary">Creando una pantalla de comandos interactiva</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Bytes</string>
 </resources>

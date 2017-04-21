@@ -57,4 +57,5 @@
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="permission_other">Beste bat</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

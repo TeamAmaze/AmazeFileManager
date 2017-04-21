@@ -93,4 +93,5 @@
   <string name="permission_read">Preberi</string>
   <string name="permission_other">Drugo</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

@@ -432,4 +432,5 @@
   <string name="clipboard_path_copy">Путања копирана на клипборд</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">ФТП сервер</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

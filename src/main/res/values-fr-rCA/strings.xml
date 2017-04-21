@@ -558,4 +558,5 @@
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">copié dans le presse-papier</string>
   <string name="contributors_6_summary">Serveur FTP</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

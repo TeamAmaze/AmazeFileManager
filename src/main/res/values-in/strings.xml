@@ -538,5 +538,6 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="contributors_5_summary">Warna transisi ketika menggesekkan tab</string>
   <string name="contributors_6_summary">Server FTP</string>
   <string name="contributors_7_summary">Menembakkan shell interaktif</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Bytes</string>
 </resources>
