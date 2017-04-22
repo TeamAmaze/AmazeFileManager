@@ -22,12 +22,58 @@
   <string name="drawer_open">Отваряне на панела за навигация</string>
   <string name="drawer_close">Затваряне на панела за навигация</string>
   <string name="books">Отметки</string>
+  <string name="icon">икона</string>
+  <string name="efn">Въведете име на файл</string>
   <string name="storage">Хранилище</string>
   <string name="gallery">Галерия</string>
+  <string name="apps">Мениджър приложения</string>
+  <string name="ftp">FTP сървър</string>
+  <string name="bookmanag">Мениджър за отметки</string>
   <string name="setting">Настройки</string>
+  <string name="select">Избери елемент</string>
+  <string name="pressagain">Натиснете отново, за изход</string>
+  <string name="open">Отвори</string>
+  <string name="backup">Архивиране</string>
+  <string name="uninstall">Деинсталирай</string>
+  <string name="play">Play Store</string>
+  <string name="properties">Свойства</string>
+  <string name="copyingapk">Копиране на apk към </string>
+  <string name="addbook">Добави отметка</string>
+  <string name="delbook">Изтрий отметка</string>
+  <string name="addtobook">Добави в отметки</string>
+  <string name="enterpath">Въведете път</string>
   <string name="cancel">ОТКАЗ</string>
+  <string name="create">СЪЗДАЙ</string>
+  <string name="success">Успех</string>
+  <string name="filenotexists">Файлът не съществува</string>
+  <string name="loading">Зареждане&#8230;</string>
+  <string name="file_empty">Файлът е празен</string>
+  <string name="error">Грешка</string>
+  <string name="searchresults">Резултати от търсенето</string>
+  <string name="itemsselected">Избрани елементи</string>
+  <string name="newhomedirectory">Нова начална директория</string>
+  <string name="rename">Преименувай</string>
   <string name="save">Запиши</string>
+  <string name="renameerror">Неуспешно преименуване</string>
+  <string name="renamed">Успешно преименуване</string>
+  <string name="fileexist">Вече съществува файл със същото име </string>
+  <string name="filecreated">Файлът е създаден</string>
+  <string name="searchpath">Път за търсене</string>
+  <string name="enterfile">Въведете име на файл</string>
+  <string name="name">Име</string>
+  <string name="date">Дата</string>
   <string name="location">Местоположение</string>
+  <string name="size">Размера на папка</string>
+  <string name="totalitems">Общо елементи</string>
+  <string name="noappfound">Не е намерено приложение за този тип файлове</string>
+  <string name="copying">Копиране</string>
+  <string name="moving">Преместване</string>
+  <string name="add">Добави</string>
+  <string name="tab">Раздел</string>
+  <string name="file">Файл</string>
+  <string name="folder">Папка</string>
+  <string name="title_files">Файлове</string>
+  <string name="title_dirs">Директории</string>
   <string name="share">Споделяне</string>
   <string name="about">Относно</string>
   <string name="yes">Да</string>
@@ -44,16 +90,41 @@
   <!-- Theme -->
   <!--Skin-->
   <string name="red">Червено</string>
+  <string name="pink">Розов</string>
+  <string name="purple">Лилаво</string>
+  <string name="indigo">Индиго</string>
   <string name="blue">Синьо</string>
+  <string name="light_blue">Светло синьо</string>
   <string name="cyan">Синьозелено</string>
   <string name="green">Зелено</string>
+  <string name="light_green">Светло зелено</string>
+  <string name="amber">Амбър</string>
+  <string name="orange">Оранжево</string>
+  <string name="brown">Кафяво</string>
+  <string name="black">Черно</string>
+  <string name="blue_grey">Синьо сиво</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
+  <string name="foldersOnTop">Папки на върха</string>
   <!--SortBy-->
+  <string name="sortName">Име</string>
+  <string name="lastModified">Последно променени</string>
   <string name="sortSize">Размер</string>
+  <string name="sortNameDesc">Име (Низходящо)</string>
+  <string name="sortSizeDesc">Размер (Низходящо)</string>
   <!--ListMode-->
+  <string name="detailedView">Подробен изглед</string>
+  <string name="simpleView">Прост изглед</string>
   <!--Folder-->
   <string name="Yellow">Жълто</string>
+  <string name="pick_a_file">Изберете файл</string>
+  <string name="in_safe">Недостатъчно място</string>
   <string name="skip">Прескочи</string>
+  <string name="overwrite">Презапиши</string>
+  <string name="cant_read_file">Не може да се проче файла</string>
+  <string name="not_allowed">Не е позволено</string>
+  <string name="processes">Процеси</string>
+  <string name="searching">Търсене</string>
   <string name="done">Готово</string>
   <string name="exit">Изход</string>
   <string name="changelog">Нови неща</string>
@@ -94,5 +165,6 @@
   <string name="permission_read">Прочети</string>
   <string name="permission_other">Други</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP сървър</string>
   <!-- references to 'Some files weren't successfully %s -->
 </resources>

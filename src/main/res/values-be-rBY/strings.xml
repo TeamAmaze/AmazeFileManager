@@ -583,6 +583,13 @@
   <string name="contributors_5_summary">Колер пры змене ўкладкі</string>
   <string name="contributors_6_summary">FTP сервер</string>
   <string name="contributors_7_summary">Запусціць інтэрактыўную абалонку</string>
+  <string name="connection_exists">Злучэнне ўжо існуе</string>
+  <string name="crypt_encrypting">Шыфраванне</string>
+  <string name="crypt_decrypting">Дэшыфроўка</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Зашыфраваныя</string>
+  <string name="crypt_decrypted">Расшыфраваны</string>
+  <string name="crypt_encrypt">Шыфраваць</string>
+  <string name="crypt_decrypt">Расшыфроўваць</string>
   <string name="bytes">Байты</string>
 </resources>

@@ -541,6 +541,7 @@
   <string name="please_wait">Veuillez patienter</string>
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
+  <string name="change">Modifier</string>
   <string name="unknown_error">Oups, une erreur c\'est produite!</string>
   <string name="ftp_path_change_error_invalid">Chemin invalide</string>
   <string name="ftp_status_no_connection">Aucune connexion</string>
@@ -556,6 +557,29 @@
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">copié dans le presse-papier</string>
+  <string name="contributors_1_summary">Traduction</string>
+  <string name="contributors_2_summary">Icône et bannières</string>
   <string name="contributors_6_summary">Serveur FTP</string>
+  <string name="connection_exists">Connexion déjà existante</string>
+  <string name="crypt_encrypting">Chiffrement</string>
+  <string name="crypt_decrypting">Déchiffrement</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Chiffré</string>
+  <string name="crypt_decrypted">Déchiffré</string>
+  <string name="crypt_encrypt">Chiffrer</string>
+  <string name="crypt_decrypt">Déchiffrer</string>
+  <string name="operation_fail_following">L\'opération a échoué pour les fichiers suivants</string>
+  <string name="crypt_pref_master_password_title">Mot de passe principal</string>
+  <string name="crypt_pref_fingerprint_title">Empreinte digitale</string>
+  <string name="crypt_pref_fingerprint_summary">Utiliser l\'empreinte digitale pour authentifier le chiffrement</string>
+  <string name="crypt_fingerprint_not_enrolled">Aucune empreinte digitale inscrite</string>
+  <string name="crypt_fingerprint_no_security">Aucune sécurité de l\'écran de verrouillage trouvée</string>
+  <string name="warning_never_show">Ne plus afficher</string>
+  <string name="warning_confirm">Ok !</string>
+  <string name="crypt_encryption_fail">Échec du chiffrement</string>
+  <string name="crypt_decryption_fail">Échec du déchiffrement</string>
+  <string name="crypt_decryption_fail_password">Mot de passe incorrect !</string>
+  <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
+  <string name="authenticate_password">Saisissez le mot de passe</string>
+  <string name="bytes">Octets</string>
 </resources>
