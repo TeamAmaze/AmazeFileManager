@@ -99,7 +99,7 @@
   <string name="no">Nee</string>
   <string name="confirm">Bevestigen</string>
   <string name="deleting">Verwijderen</string>
-  <string name="questiondelete">Weet je zeker dat je de volgende bestanden wilt verwijderen?</string>
+  <string name="questiondeletefolders">Weet je zeker dat je de volgende bestanden wilt verwijderen?</string>
   <string name="questionset">Wilt u het huidige pad instellen als standaard voor dit tabblad?</string>
   <string name="viewmode">Weergavemodus</string>
   <string name="uimode">UI-modus</string>

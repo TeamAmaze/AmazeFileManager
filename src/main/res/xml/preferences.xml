@@ -54,20 +54,20 @@
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="sidebar_folders_enable"
-            android:title="Show folders"/>
+            android:title="@string/showfolders_pref_title"/>
         <Preference
             android:dependency="sidebar_folders_enable"
             android:key="sidebar_folders"
-            android:title="Folders"/>
+            android:title="@string/showfolders_pref"/>
 
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
             android:key="sidebar_quickaccess_enable"
-            android:title="Show Quick Access"/>
+            android:title="@string/showquickaccess_pref_title"/>
         <Preference
             android:dependency="sidebar_quickaccess_enable"
             android:key="sidebar_quickaccess"
-            android:title="Quick Access"/>
+            android:title="@string/showquickaccess_pref"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">

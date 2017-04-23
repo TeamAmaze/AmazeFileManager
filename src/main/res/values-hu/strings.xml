@@ -99,7 +99,7 @@
   <string name="no">Nem</string>
   <string name="confirm">Megerősítés</string>
   <string name="deleting">Törlés</string>
-  <string name="questiondelete">Valóban törölni szeretné a következő fájlokat?</string>
+  <string name="questiondeletefolders">Valóban törölni szeretné a következő fájlokat?</string>
   <string name="questionset">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
   <string name="viewmode">Megjelenítési mód</string>
   <string name="uimode">Kezelőfelület mód</string>

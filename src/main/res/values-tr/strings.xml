@@ -99,7 +99,7 @@
   <string name="no">Hayır</string>
   <string name="confirm">Onayla</string>
   <string name="deleting">Siliniyor</string>
-  <string name="questiondelete">Aşağıdaki dosyaları silmek istediğinize emin misiniz?</string>
+  <string name="questiondeletefolders">Aşağıdaki dosyaları silmek istediğinize emin misiniz?</string>
   <string name="questionset">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
   <string name="viewmode">Görünüm modu</string>
   <string name="uimode">Arayüz modu</string>

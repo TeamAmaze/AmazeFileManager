@@ -99,7 +99,7 @@
   <string name="no">Não</string>
   <string name="confirm">Confirmar</string>
   <string name="deleting">Excluindo</string>
-  <string name="questiondelete">Deseja excluir este(s) arquivo(s)?</string>
+  <string name="questiondeletefolders">Deseja excluir este(s) arquivo(s)?</string>
   <string name="questionset">Deseja definir o caminho atual como pasta inicial desta aba?</string>
   <string name="viewmode">Modo de exibição</string>
   <string name="uimode">Modo de interface</string>

@@ -171,10 +171,10 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
                 loadPrefFragment(new ColorPref(), R.string.color_title);
                 break;
             case FOLDERS_PREFERENCE:
-                loadPrefFragment(new FoldersPref(), R.string.color_title);
+                loadPrefFragment(new FoldersPref(), R.string.sidebarfolders_title);
                 break;
             case QUICKACCESS_PREFERENCE:
-                loadPrefFragment(new QuickAccessPref(), R.string.color_title);
+                loadPrefFragment(new QuickAccessPref(), R.string.sidebarquickaccess_title);
                 break;
         }
     }

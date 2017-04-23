@@ -99,7 +99,7 @@
   <string name="no">いいえ</string>
   <string name="confirm">確認</string>
   <string name="deleting">削除中</string>
-  <string name="questiondelete">次のファイルを削除してもよろしいですか?</string>
+  <string name="questiondeletefolders">次のファイルを削除してもよろしいですか?</string>
   <string name="questionset">現在のパスをこのタブのホームとして設定しますか?</string>
   <string name="viewmode">表示モード</string>
   <string name="uimode">UI モード</string>

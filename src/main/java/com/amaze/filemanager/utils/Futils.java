@@ -647,13 +647,13 @@ public class Futils {
         String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
 
         if(fileNames.length() == 0)
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+            c.content(b.getResources().getString(R.string.questiondeletefolders) + "\n\n" + "---" +
                     titleDirs + "---" + dirNames);
         else if(dirNames.length() == 0)
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+            c.content(b.getResources().getString(R.string.questiondeletefolders) + "\n\n" + "---" +
                     titleFiles + "---" + fileNames);
         else
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
+            c.content(b.getResources().getString(R.string.questiondeletefolders) + "\n\n" + "---" +
                     titleDirs + "---" + dirNames + "\n\n" + "---" +
                     titleFiles + "---" + fileNames);
         c.theme(appTheme.getMaterialDialogTheme());

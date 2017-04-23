@@ -99,7 +99,7 @@
   <string name="no">Non</string>
   <string name="confirm">Confirmer</string>
   <string name="deleting">Suppression</string>
-  <string name="questiondelete">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
+  <string name="questiondeletefolders">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
   <string name="questionset">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
   <string name="viewmode">Mode d\'affichage</string>
   <string name="uimode">Mode d\'interface utilisateur</string>

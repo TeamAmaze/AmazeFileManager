@@ -99,7 +99,7 @@
   <string name="no">Nein</string>
   <string name="confirm">Bestätigen</string>
   <string name="deleting">Löschen</string>
-  <string name="questiondelete">Möchten Sie die folgenden Dateien wirklich endgültig löschen?</string>
+  <string name="questiondeletefolders">Möchten Sie die folgenden Dateien wirklich endgültig löschen?</string>
   <string name="questionset">Möchten Sie den aktuellen Pfad als Standard für dieses Tab setzen?</string>
   <string name="viewmode">Ansichtsmodus</string>
   <string name="uimode">Listenmodus</string>
