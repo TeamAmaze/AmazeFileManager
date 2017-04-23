@@ -19,10 +19,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="books">Zaznamki</string>
   <string name="storage">Mesto za shranjevanje</string>
   <string name="setting">Nastavitve</string>
   <string name="cancel">PREKLIČI</string>
   <string name="save">Shrani</string>
+  <string name="location">Lokacija</string>
   <string name="title_files">Datoteke</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
@@ -79,6 +81,7 @@
   <string name="information">Podatki</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
+  <string name="title">Naslov</string>
   <string name="duration">Trajanje</string>
   <!-- reference to audio/video file -->
   <string name="width">Širina</string>
