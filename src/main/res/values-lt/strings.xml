@@ -245,4 +245,5 @@
   <string name="clipboard_path_copy">Kelias nukopijuotas į iškarpinę</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">FTP Serveris</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

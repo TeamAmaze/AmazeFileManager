@@ -571,5 +571,6 @@
   <string name="contributors_5_summary">Barevný přechod při potáhnutí karty</string>
   <string name="contributors_6_summary">Server FTP</string>
   <string name="contributors_7_summary">Spustit interaktivní shell</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Bajtů</string>
 </resources>

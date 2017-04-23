@@ -571,5 +571,6 @@
   <string name="contributors_5_summary">Farebný prechod Keď potiahnete kartu</string>
   <string name="contributors_6_summary">FTP Server</string>
   <string name="contributors_7_summary">Spustiť interaktívny shell</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Bajtov</string>
 </resources>

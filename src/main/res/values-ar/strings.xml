@@ -297,4 +297,5 @@
   <string name="permission_other">آخرى</string>
   <string name="clipboard_path_copy">تم نسخ المسار إلى الحافظة</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

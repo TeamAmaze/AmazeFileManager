@@ -372,4 +372,5 @@
   <string name="clipboard_path_copy">클립보드에 복사되었습니다</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">FTP 서버</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

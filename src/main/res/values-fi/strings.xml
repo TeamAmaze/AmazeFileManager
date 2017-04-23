@@ -586,5 +586,6 @@
   <string name="contributors_5_summary">Värin muutos välilehdillä liikuttaessa</string>
   <string name="contributors_6_summary">FTP-palvelin</string>
   <string name="contributors_7_summary">Interaktiivinen shell tulille</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">Tavua</string>
 </resources>

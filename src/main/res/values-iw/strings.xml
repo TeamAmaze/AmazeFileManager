@@ -86,4 +86,5 @@
   <string name="permission_read">קרא</string>
   <string name="permission_other">אחר</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

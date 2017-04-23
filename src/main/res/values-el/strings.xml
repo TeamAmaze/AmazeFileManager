@@ -484,4 +484,5 @@
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_3_summary">Μηχανή Θεμάτων</string>
   <string name="contributors_6_summary">Διακομιστής FTP</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>
