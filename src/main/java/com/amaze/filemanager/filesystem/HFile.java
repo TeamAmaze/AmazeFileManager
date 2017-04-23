@@ -6,6 +6,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
@@ -54,6 +55,14 @@ public class HFile {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
             mode = OpenMode.CUSTOM;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+            mode = OpenMode.BOX;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+            mode = OpenMode.ONEDRIVE;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+            mode = OpenMode.GDRIVE;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+            mode = OpenMode.DROPBOX;
         } else {
             if (context == null) {
                 mode = OpenMode.FILE;
@@ -102,6 +111,22 @@ public class HFile {
 
     public boolean isOtgFile() {
         return mode == OpenMode.OTG;
+    }
+
+    public boolean isBoxFile() {
+        return mode == OpenMode.BOX;
+    }
+
+    public boolean isDropBoxFile() {
+        return mode == OpenMode.DROPBOX;
+    }
+
+    public boolean isOneDriveFile() {
+        return mode == OpenMode.ONEDRIVE;
+    }
+
+    public boolean isGoogleDriveFile() {
+        return mode == OpenMode.GDRIVE;
     }
 
     File getFile() {
@@ -738,7 +763,8 @@ public class HFile {
     public boolean isSimpleFile() {
         return !isSmb() && !isOtgFile() && !isCustomPath()
                 && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
-                !new File(path).isDirectory();
+                !new File(path).isDirectory() && !isOneDriveFile() && !isGoogleDriveFile()
+                && !isDropBoxFile() && !isBoxFile();
     }
 
     public boolean setLastModified(long date) {

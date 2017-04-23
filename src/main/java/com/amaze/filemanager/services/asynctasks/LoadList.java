@@ -31,19 +31,27 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.database.CloudEntry;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.cloudrail.si.exceptions.ParseException;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Box;
+import com.cloudrail.si.services.Dropbox;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,6 +113,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                 ma.smbPath = path;
             } else if (hFile.isOtgFile()) {
                 openmode = OpenMode.OTG;
+            } else if (hFile.isBoxFile()) {
+                openmode = OpenMode.BOX;
+            } else if (hFile.isDropBoxFile()) {
+                openmode = OpenMode.DROPBOX;
+            } else if (hFile.isGoogleDriveFile()) {
+                openmode = OpenMode.GDRIVE;
+            } else if (hFile.isOneDriveFile()) {
+                openmode = OpenMode.ONEDRIVE;
             } else if (hFile.isCustomPath())
                 openmode = OpenMode.CUSTOM;
             else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
@@ -166,6 +182,54 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
             case OTG:
                 list = addTo(listOtg(path));
                 openmode = OpenMode.OTG;
+                break;
+            case DROPBOX:
+
+                CloudEntry cloudEntry = DataUtils.getAccountFromPath(path, OpenMode.DROPBOX);
+                CloudStorage dropBox = new Dropbox(c.getApplicationContext(), "35x9e2zmn2m6q6t",
+                        "fv3yv6yqxlkkdjm");
+                try {
+                    list = addTo(listCloud(path, dropBox, OpenMode.DROPBOX));
+                } catch (CloudPluginException e) {
+                    return new ArrayList<>();
+                }
+                break;
+            case BOX:
+
+                CloudStorage box = new Box(c.getApplicationContext(), "4xmnmy28nikxdo9dbywrys4cjp72tpz4",
+                        "xxa88WhmbXPcPtiavc2lvERw0xVOIRGC");
+
+                try {
+                    box.loadAsString(box.saveAsString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    list = addTo(listCloud(path, box, OpenMode.BOX));
+                } catch (CloudPluginException e) {
+                    return new ArrayList<>();
+                }
+                break;
+            case GDRIVE:
+
+                CloudStorage gdrive = new Dropbox(c.getApplicationContext(),
+                        "772998477150-8fbm4o8a1a8unal1l8ifersk21o74bbi.apps.googleusercontent.com",
+                        "fv3yv6yqxlkkdjm");
+                try {
+                    list = addTo(listCloud(path, gdrive, OpenMode.DROPBOX));
+                } catch (CloudPluginException e) {
+                    return new ArrayList<>();
+                }
+                break;
+            case ONEDRIVE:
+
+                CloudStorage onedrive = new Dropbox(c.getApplicationContext(), "35x9e2zmn2m6q6t",
+                        "fv3yv6yqxlkkdjm");
+                try {
+                    list = addTo(listCloud(path, onedrive, OpenMode.DROPBOX));
+                } catch (CloudPluginException e) {
+                    return new ArrayList<>();
+                }
                 break;
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
@@ -426,5 +490,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
             if (path.endsWith(string)) return true;
         }
         return false;
+    }
+
+    private ArrayList<BaseFile> listCloud(String path, CloudStorage cloudStorage, OpenMode openMode)
+            throws CloudPluginException {
+        if (!CloudSheetFragment.isCloudProviderAvailable(c))
+            throw new CloudPluginException();
+
+        return CloudUtil.listFiles(path, cloudStorage, openMode);
     }
 }

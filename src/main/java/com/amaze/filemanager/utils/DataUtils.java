@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.ui.drawer.Item;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ public class DataUtils {
     public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
             RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
     public static ArrayList<Item> list = new ArrayList<>();
-    public static ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>(),
-            accounts = new ArrayList<>();
+    public static ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
+
+    private static ArrayList<CloudEntry> accounts = new ArrayList<>();
 
     static DataChangeListener dataChangeListener;
 
@@ -44,12 +46,16 @@ public class DataUtils {
         return contains(a, books);
     }
 
-    public static int containsAccounts(String[] a) {
+    /*public static int containsAccounts(CloudEntry cloudEntry) {
         return contains(a, accounts);
-    }
+    }*/
 
-    public static int containsAccounts(String a) {
-        return contains(a, accounts);
+    public static boolean containsAccounts(OpenMode serviceType) {
+        for (CloudEntry entry : accounts) {
+            if (entry.getServiceType() == serviceType)
+                return true;
+        }
+        return false;
     }
 
     public static void clear() {
@@ -93,9 +99,15 @@ public class DataUtils {
             books.remove(i);
     }
 
-    public static void removeAcc(int i) {
-        if (accounts.size() > i)
-            accounts.remove(i);
+    public static void removeAccount(OpenMode serviceType) {
+        int i=0;
+        for (CloudEntry cloudEntry : accounts) {
+            if (cloudEntry.getServiceType() == serviceType) {
+                accounts.remove(i);
+                return;
+            }
+            i++;
+        }
     }
 
     public static void removeServer(int i) {
@@ -112,8 +124,8 @@ public class DataUtils {
         books.add(i);
     }
 
-    public static void addAcc(String[] i) {
-        accounts.add(i);
+    public static void addAccount(CloudEntry entry) {
+        accounts.add(entry);
     }
 
     public static void addServer(String[] i) {
@@ -152,13 +164,27 @@ public class DataUtils {
             DataUtils.books = books;
     }
 
-    public static void setAccounts(ArrayList<String[]> accounts) {
+    public static void setAccounts(ArrayList<CloudEntry> accounts) {
         if (accounts != null)
             DataUtils.accounts = accounts;
     }
 
     public static ArrayList<String[]> getServers() {
         return servers;
+    }
+
+    public static ArrayList<CloudEntry> getAccounts() {
+        return accounts;
+    }
+
+    public static CloudEntry getAccount(OpenMode serviceType) {
+        for (CloudEntry cloudEntry : accounts) {
+
+            if (cloudEntry.getServiceType() == serviceType) {
+                return cloudEntry;
+            }
+        }
+        return null;
     }
 
     public static ArrayList<String[]> getBooks() {

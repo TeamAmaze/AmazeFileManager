@@ -640,6 +640,9 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
     <string name="bytes">Bytes</string>
->>>>>>> 2a161f4c1a7efe5dfeb1edec1a48bc8494b16fd6
+    <string name="cloud_error_new_account">Failed to add new account</string>
+    <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
+    <string name="cloud_error_failed_restart">Failed to load the connection.
+        Please open Amaze Cloud once.</string>
 </resources>
 

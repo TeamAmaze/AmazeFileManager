@@ -37,12 +37,15 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CloudEntry;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -143,11 +146,28 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         // not to remove the first bookmark (storage) and permanent bookmarks
                         if (position > m.storage_count && position < values.size() - 7) {
                             EntryItem item = (EntryItem) getItem(position);
+                            String title = item.getTitle();
                             String path = (item).getPath();
                             if (DataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+
+                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.BOX);
+                                m.mainActivityHelper.showCloudEditDialog(entry);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+
+                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.DROPBOX);
+                                m.mainActivityHelper.showCloudEditDialog(entry);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+
+                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.GDRIVE);
+                                m.mainActivityHelper.showCloudEditDialog(entry);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+
+                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.ONEDRIVE);
+                                m.mainActivityHelper.showCloudEditDialog(entry);
                             }
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();

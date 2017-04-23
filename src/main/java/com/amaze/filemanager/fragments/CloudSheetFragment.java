@@ -11,10 +11,9 @@ import android.widget.LinearLayout;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.ui.dialogs.CloudConnectDialog;
+import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.provider.DatabaseContract;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -78,7 +77,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
         PackageManager pm = context.getPackageManager();
         try {
-            pm.getPackageInfo(DatabaseContract.APP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+            pm.getPackageInfo(CloudContract.APP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
@@ -88,32 +87,31 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
     @Override
     public void onClick(View v) {
 
-        Bundle args = new Bundle();
-
         switch (v.getId()) {
             case R.id.linear_layout_smb:
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(getActivity().getFragmentManager(), "tab");
                 return;
             case R.id.linear_layout_box:
-                args.putInt(CloudConnectDialog.KEY_TYPE, OpenMode.BOX.ordinal());
+                ((MainActivity) getActivity()).addConnection(OpenMode.BOX);
                 break;
             case R.id.linear_layout_dropbox:
-                args.putInt(CloudConnectDialog.KEY_TYPE, OpenMode.DROPBOX.ordinal());
+                ((MainActivity) getActivity()).addConnection(OpenMode.DROPBOX);
                 break;
             case R.id.linear_layout_google_drive:
-                args.putInt(CloudConnectDialog.KEY_TYPE, OpenMode.GDRIVE.ordinal());
+                ((MainActivity) getActivity()).addConnection(OpenMode.GDRIVE);
                 break;
             case R.id.linear_layout_onedrive:
-                args.putInt(CloudConnectDialog.KEY_TYPE, OpenMode.ONEDRIVE.ordinal());
+                ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
                 break;
         }
 
-        CloudConnectDialog dialog = new CloudConnectDialog();
-        dialog.setArguments(args);
-        dialog.show(getActivity().getFragmentManager(), CloudConnectDialog.TAG_FRAGMENT);
-
         // dismiss this sheet dialog
         dismiss();
+    }
+
+    public interface CloudConnectionCallbacks {
+        void addConnection(OpenMode service);
+        void deleteConnection(OpenMode service);
     }
 }

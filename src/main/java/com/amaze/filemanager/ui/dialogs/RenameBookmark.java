@@ -64,7 +64,7 @@ public class RenameBookmark extends DialogFragment {
         fabskin = getArguments().getString("fabskin");
         Sp = PreferenceManager.getDefaultSharedPreferences(c);
         studiomode = Sp.getInt("studio", 0);
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);

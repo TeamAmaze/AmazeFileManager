@@ -1,9 +1,5 @@
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.utils.provider.DatabaseContract;
-
-import java.util.HashMap;
-
 /**
  * Created by vishal on 10/11/16.
  *
@@ -27,17 +23,6 @@ public enum OpenMode {
     DROPBOX,
     BOX,
     ONEDRIVE;
-
-    public static HashMap<OpenMode, String> ACCOUNT_MAP = new HashMap<>();
-
-    static {
-
-        // adding account names wrt their providers
-        ACCOUNT_MAP.put(GDRIVE, DatabaseContract.ACCOUNT_TYPE_GOOGLE_DRIVE);
-        ACCOUNT_MAP.put(DROPBOX, DatabaseContract.ACCOUNT_TYPE_DROPBOX);
-        ACCOUNT_MAP.put(BOX, DatabaseContract.ACCOUNT_TYPE_BOX);
-        ACCOUNT_MAP.put(ONEDRIVE, DatabaseContract.ACCOUNT_TYPE_ONE_DRIVE);
-    }
 
     /**
      * Get open mode based on the id assigned.

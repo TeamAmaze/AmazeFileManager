@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -29,6 +28,7 @@ import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -36,6 +36,7 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -54,14 +55,16 @@ import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
@@ -98,15 +101,19 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.database.CloudEntry;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.exceptions.TypeNotSupportedException;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
+import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
@@ -118,7 +125,6 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
-import com.amaze.filemanager.ui.dialogs.CloudConnectDialog;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -140,11 +146,15 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.DatabaseContract;
-import com.amaze.filemanager.utils.provider.SyncUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.cloudrail.si.CloudRail;
+import com.cloudrail.si.exceptions.ParseException;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Box;
+import com.cloudrail.si.services.Dropbox;
+import com.cloudrail.si.services.GoogleDrive;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -170,7 +180,8 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchAsyncHelper.HelperCallbacks, CloudConnectDialog.CloudConnectionListener {
+        SearchAsyncHelper.HelperCallbacks, CloudConnectionCallbacks,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -277,6 +288,8 @@ public class MainActivity extends BaseActivity implements
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
     public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
+    public static final int ID_LOADER_CURSOR_CLOUD = 25683;
+    public static final String ARGS_KEY_LOADER = "loader_service_args";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -286,8 +299,12 @@ public class MainActivity extends BaseActivity implements
     public static Handler handler;
 
     private static HandlerThread handlerThread;
-    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destoyed
+    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
+
+    private static final String KEY_REQUEST_CODE_CLOUD = "cloud_request_code";
+    private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
+    private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
     /**
      * Called when the activity is first created.
@@ -331,6 +348,8 @@ public class MainActivity extends BaseActivity implements
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
                     .build();
         }
+
+        CloudRail.setAppKey("57dbd94b626e592ca46ae96d");
 
         util = new IconUtils(sharedPref, this);
         icons = new IconUtils(sharedPref, this);
@@ -714,7 +733,7 @@ public class MainActivity extends BaseActivity implements
         List<String> storageDirectories = getStorageDirectories();
         ArrayList<String[]> books = new ArrayList<>();
         ArrayList<String[]> servers = new ArrayList<>();
-        ArrayList<String[]> accounts = new ArrayList<>();
+
         storage_count = 0;
         for (String file : storageDirectories) {
             File f = new File(file);
@@ -753,70 +772,16 @@ public class MainActivity extends BaseActivity implements
             e.printStackTrace();
         }
 
-        try {
-
-            // for cloud accounts, title = user id, path = service type
-            // iterating all accounts in cloud types from central repository
-            for (OpenMode openMode : OpenMode.values()) {
-
-                switch (openMode) {
-                    case BOX:
-                    case DROPBOX:
-                    case GDRIVE:
-                    case ONEDRIVE:
-                        for (Account account : SyncUtils.QueryAccounts(this, openMode)) {
-
-                            String[] strings = new String[] {
-                                    account.name,
-                                    account.type
-                            };
-                            accounts.add(strings);
-                        }
-                        break;
-                }
-            }
-
-            if (accounts.size() > 0 && CloudSheetFragment.isCloudProviderAvailable(this)) {
-
-                Collections.sort(accounts, new BookSorter());
-                for (String[] file : accounts) {
-                    switch (file[1]) {
-                        case DatabaseContract.ACCOUNT_TYPE_BOX:
-                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
-                            break;
-                        case DatabaseContract.ACCOUNT_TYPE_DROPBOX:
-                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
-                            break;
-                        case DatabaseContract.ACCOUNT_TYPE_GOOGLE_DRIVE:
-                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
-                            break;
-                        case DatabaseContract.ACCOUNT_TYPE_ONE_DRIVE:
-                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
-                            break;
-                        default:
-                            break;
-
-                    }
-                }
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+            books.add(file);
         }
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-                books.add(file);
-            }
-            DataUtils.setBooks(books);
-            if (books.size() > 0) {
-                Collections.sort(books, new BookSorter());
-                for (String[] file : books)
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                            .folder_fab)));
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-
+        DataUtils.setBooks(books);
+        if (books.size() > 0) {
+            Collections.sort(books, new BookSorter());
+            for (String[] file : books)
+                sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
+                        .folder_fab)));
+            sectionItems.add(new SectionItem());
         }
 
         sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
@@ -918,12 +883,12 @@ public class MainActivity extends BaseActivity implements
 
                 if (((EntryItem) directoryItems.get(i)).getPath().equals("otg:/") &&
                         sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
-                        // we've not gotten otg path yet
-                        // start system request for storage access framework
-                        Toast.makeText(getApplicationContext(),
-                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
+                    // we've not gotten otg path yet
+                    // start system request for storage access framework
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    startActivityForResult(safIntent, REQUEST_CODE_SAF);
                 } else {
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
@@ -1580,57 +1545,110 @@ public class MainActivity extends BaseActivity implements
             items.add(new SectionItem());
         }
 
-        ArrayList<String[]> accounts = new ArrayList<>();
+        ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
+        CloudHandler cloudHandler = new CloudHandler(this);
 
-        // for cloud accounts, title = user id, path = service type
-        // iterating all accounts in cloud types from central repository
-        for (OpenMode openMode : OpenMode.values()) {
+        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
-            switch (openMode) {
-                case BOX:
-                case DROPBOX:
-                case GDRIVE:
-                case ONEDRIVE:
-                    try {
-                        for (Account account : SyncUtils.QueryAccounts(this, openMode)) {
 
-                            String[] strings = new String[] {
-                                    account.name,
-                                    account.type
-                            };
-                            accounts.add(strings);
+            for (CloudEntry cloudEntry : DataUtils.getAccounts()) {
+
+                switch (cloudEntry.getServiceType()) {
+                    case BOX:
+                        CloudStorage box = new Box(getApplicationContext(),
+                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+
+                        try {
+                            box.loadAsString(cloudEntry.getPersistData());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+
+                            // problem parsing saved string, due to unknown error (probably change in
+                            // api, clean up the database entry for this type
+                            cloudHandler.clear(OpenMode.BOX);
+
                         }
-                    } catch (TypeNotSupportedException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                    break;
-            }
-        }
+                        items.add(new EntryItem(box.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
+                                ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
 
-        if (accounts.size() > 0 && CloudSheetFragment.isCloudProviderAvailable(this)) {
-            Collections.sort(accounts, new BookSorter());
-            for (String[] file : accounts) {
-                switch (file[1]) {
-                    case DatabaseContract.ACCOUNT_TYPE_BOX:
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
+                        accountAuthenticationList.add(new String[] {
+                                box.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
+                        });
                         break;
-                    case DatabaseContract.ACCOUNT_TYPE_DROPBOX:
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
+                    case DROPBOX:
+                        CloudStorage dropbox = new Dropbox(getApplicationContext(),
+                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                        try {
+                            dropbox.loadAsString(cloudEntry.getPersistData());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+
+                            // problem parsing saved string, due to unknown error (probably change in
+                            // api, clean up the database entry for this type
+                            cloudHandler.clear(OpenMode.DROPBOX);
+                        }
+                        items.add(new EntryItem(dropbox.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
+                                ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
+
+                        accountAuthenticationList.add(new String[] {
+                                dropbox.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
+                        });
                         break;
-                    case DatabaseContract.ACCOUNT_TYPE_GOOGLE_DRIVE:
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
+                    case GDRIVE:
+                        CloudStorage gdrive = new GoogleDrive(getApplicationContext(),
+                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                        try {
+                            gdrive.loadAsString(cloudEntry.getPersistData());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+
+                            // problem parsing saved string, due to unknown error (probably change in
+                            // api, clean up the database entry for this type
+                            cloudHandler.clear(OpenMode.GDRIVE);
+                        }
+                        items.add(new EntryItem(gdrive.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
+                                ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
+
+                        accountAuthenticationList.add(new String[] {
+                                gdrive.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
+                        });
                         break;
-                    case DatabaseContract.ACCOUNT_TYPE_ONE_DRIVE:
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
+                    case ONEDRIVE:
+                        CloudStorage onedrive = new Dropbox(getApplicationContext(),
+                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                        try {
+                            onedrive.loadAsString(cloudEntry.getPersistData());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+
+                            // problem parsing saved string, due to unknown error (probably change in
+                            // api, clean up the database entry for this type
+                            cloudHandler.clear(OpenMode.ONEDRIVE);
+                        }
+                        items.add(new EntryItem(onedrive.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
+                                ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
+
+                        accountAuthenticationList.add(new String[] {
+                                onedrive.getUserName(),
+                                CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
+                        });
                         break;
                     default:
                         break;
                 }
             }
+            Collections.sort(accountAuthenticationList, new BookSorter());
 
             items.add(new SectionItem());
         }
+
         ArrayList<String[]> books = DataUtils.getBooks();
         if (books != null && books.size() > 0) {
             Collections.sort(books, new BookSorter());
@@ -1807,7 +1825,7 @@ public class MainActivity extends BaseActivity implements
                 // If not confirmed SAF, or if still not writable, then revert settings.
                 /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
                         ||!FileUtil.isWritableNormalOrSaf(currentFolder)*/
-               return;
+                return;
             }
 
             // After confirmation, update stored value of folder.
@@ -1993,7 +2011,7 @@ public class MainActivity extends BaseActivity implements
             }
         } catch (Exception e) {
             e.printStackTrace();
-           Log.d("BBar", "button view not available");
+            Log.d("BBar", "button view not available");
         }
     }
 
@@ -2587,8 +2605,7 @@ public class MainActivity extends BaseActivity implements
 
     public void renameBookmark(final String title, final String path) {
 
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1
-                || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
             RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, Color.parseColor(BaseActivity.accentSkin));
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
@@ -2900,29 +2917,218 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void addConnection(boolean edit, String userId, String password, OpenMode accountType,
-                              String oldUserId, String oldPassword) {
-
-        if (SyncUtils.ContainsAccount(this, userId, accountType)) {
-            // account already exists
-
-            Snackbar.make(frameLayout, getString(R.string.connection_exists),
-                    Snackbar.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!edit) {
-            SyncUtils.CreateSyncAccount(this, userId, accountType, password);
-            mainActivity.refreshDrawer();
-        } else {
-            SyncUtils.RenameAccount(this, new Account(oldUserId, OpenMode.ACCOUNT_MAP.get(accountType)),
-                    userId, password);
+    public void addConnection(OpenMode service) {
+        CloudHandler cloudHandler = new CloudHandler(this);
+        try {
+            if (cloudHandler.findEntry(service) != null) {
+                // cloud entry already exists
+                Toast.makeText(this, getResources().getString(R.string.connection_exists),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Bundle args = new Bundle();
+                args.putInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEY);
+                args.putInt(ARGS_KEY_LOADER, service.ordinal());
+                getSupportLoaderManager().initLoader(ID_LOADER_CURSOR_CLOUD, null, this);
+            }
+        } catch (CloudPluginException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void deleteConnection(String name, OpenMode accountType) {
+    public void deleteConnection(OpenMode service) {
 
-        SyncUtils.RemoveAccount(this, new Account(name, OpenMode.ACCOUNT_MAP.get(accountType)));
+        CloudHandler cloudHandler = new CloudHandler(this);
+        cloudHandler.clear(service);
+        DataUtils.removeAccount(service);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri uri = Uri.parse(CloudContract.PROVIDER_AUTHORITY);
+
+        String[] projection = new String[] {
+                CloudContract.COLUMN_ID,
+                CloudContract.COLUMN_CLIENT_ID,
+                CloudContract.COLUMN_CLIENT_SECRET_KEY
+        };
+
+
+        if (args.getInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEYS)
+                == REQUEST_CODE_CLOUD_LIST_KEYS) {
+            // we need a list of all secret keys
+            return new CursorLoader(this, uri, projection, null, null, null);
+        } else if (args.getInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEYS)
+                == REQUEST_CODE_CLOUD_LIST_KEY) {
+
+            Uri uriAppendedPath = uri;
+            switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
+                case GDRIVE:
+                    uriAppendedPath = ContentUris.withAppendedId(uri, 1);
+                    break;
+                case DROPBOX:
+                    uriAppendedPath = ContentUris.withAppendedId(uri, 2);
+                    break;
+                case BOX:
+                    uriAppendedPath = ContentUris.withAppendedId(uri, 3);
+                    break;
+                case ONEDRIVE:
+                    uriAppendedPath = ContentUris.withAppendedId(uri, 4);
+                    break;
+            }
+            return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
+        } else return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        if (data == null) {
+            Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        CloudStorage cloudStorage;
+        CloudHandler cloudHandler = new CloudHandler(this);
+
+        if (data.getCount() > 0 && data.moveToFirst()) {
+            do {
+
+
+                switch (data.getInt(0)) {
+                    case 1:
+                        // DRIVE
+                        try {
+
+                            CloudEntry cloudEntryGdrive = null;
+                            CloudEntry savedCloudEntryGdrive;
+                            if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
+                                // we already have the entry and saved state, get it
+                                cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE,
+                                        savedCloudEntryGdrive.getPersistData());
+                            } else {
+
+                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
+                                        data.getString(2));
+                                cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorage.saveAsString());
+                                cloudHandler.addEntry(cloudEntryGdrive);
+                            }
+
+                            cloudEntryGdrive.setClientId(data.getString(1));
+                            cloudEntryGdrive.setClientSecretKey(data.getString(2));
+                            DataUtils.addAccount(cloudEntryGdrive);
+                        } catch (CloudPluginException e) {
+
+                            e.printStackTrace();
+                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    case 2:
+                        // DROPBOX
+                        try {
+
+                            CloudEntry cloudEntryDropbox = null;
+                            CloudEntry savedCloudEntryDropbox;
+                            if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
+                                // we already have the entry and saved state, get it
+                                cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX,
+                                        savedCloudEntryDropbox.getPersistData());
+                            } else {
+
+                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
+                                        data.getString(2));
+                                cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorage.saveAsString());
+                                cloudHandler.addEntry(cloudEntryDropbox);
+                            }
+
+                            cloudEntryDropbox.setClientId(data.getString(1));
+                            cloudEntryDropbox.setClientSecretKey(data.getString(2));
+                            DataUtils.addAccount(cloudEntryDropbox);
+                        } catch (CloudPluginException e) {
+
+                            e.printStackTrace();
+                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    case 3:
+                        // BOX
+                        try {
+
+                            CloudEntry cloudEntryBox = null;
+                            CloudEntry savedCloudEntryBox;
+                            if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
+                                // we already have the entry and saved state, get it
+                                cloudEntryBox = new CloudEntry(OpenMode.BOX,
+                                        savedCloudEntryBox.getPersistData());
+                            } else {
+
+                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
+                                        data.getString(2));
+                                cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorage.saveAsString());
+                                cloudHandler.addEntry(cloudEntryBox);
+                            }
+
+                            cloudEntryBox.setClientId(data.getString(1));
+                            cloudEntryBox.setClientSecretKey(data.getString(2));
+                            DataUtils.addAccount(cloudEntryBox);
+                        } catch (CloudPluginException e) {
+
+                            e.printStackTrace();
+                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    case 4:
+                        // ONEDRIVE
+                        try {
+
+                            CloudEntry cloudEntryOnedrive = null;
+                            CloudEntry savedCloudEntryOnedrive;
+                            if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
+                                // we already have the entry and saved state, get it
+                                cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE,
+                                        savedCloudEntryOnedrive.getPersistData());
+                            } else {
+
+                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
+                                        data.getString(2));
+                                cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorage.saveAsString());
+                                cloudHandler.addEntry(cloudEntryOnedrive);
+                            }
+
+                            cloudEntryOnedrive.setClientId(data.getString(1));
+                            cloudEntryOnedrive.setClientSecretKey(data.getString(2));
+                            DataUtils.addAccount(cloudEntryOnedrive);
+                        } catch (CloudPluginException e) {
+
+                            e.printStackTrace();
+                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    default:
+                        Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                }
+            } while (data.moveToNext());
+        }
+
+        refreshDrawer();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
