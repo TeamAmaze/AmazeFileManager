@@ -3,7 +3,8 @@
     <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
         android:defaultValue="true"
         android:key="dcim"
-        android:title="DCIM"/>
+        android:title="DCIM"
+        android:summary="SD/docs"/>
     <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
         android:defaultValue="true"
         android:key="download"

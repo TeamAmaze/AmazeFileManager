@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_edit_black_24dp"/>
+        app:srcCompat="@drawable/disableable_ic_edit_black_24dp"/>
 
     <Switch
         android:id="@+id/switch_button"

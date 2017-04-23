@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.amaze.filemanager.R;
 
@@ -43,6 +44,8 @@ public class NamePathSwitchPreference extends Preference {
         setListener(view, R.id.switch_button, SWITCH);
         setListener(view, R.id.delete, DELETE);
 
+        ((Switch) view.findViewById(R.id.switch_button)).setChecked(true);
+
         super.onBindView(view);
     }
 
@@ -50,14 +53,24 @@ public class NamePathSwitchPreference extends Preference {
         return lastItemClicked;
     }
 
-    private void setListener(View v, @IdRes int id, final int elem) {
+    private void setListener(final View v, @IdRes int id, final int elem) {
         final NamePathSwitchPreference t = this;
 
         v.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 lastItemClicked = elem;
-                getOnPreferenceClickListener().onPreferenceClick(t);
+
+                Switch s = (Switch) v.findViewById(R.id.switch_button);
+                if(lastItemClicked == SWITCH) {
+                    v.findViewById(android.R.id.title).setEnabled(s.isChecked());
+                    v.findViewById(android.R.id.summary).setEnabled(s.isChecked());
+                    v.findViewById(R.id.edit).setEnabled(s.isChecked());
+                }
+
+                if(s.isChecked() || lastItemClicked != EDIT) {
+                    getOnPreferenceClickListener().onPreferenceClick(t);
+                }
             }
         });
     }
