@@ -160,7 +160,6 @@ import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.utils.DataUtils.servers;
 
-
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
@@ -1391,7 +1390,7 @@ public class MainActivity extends BaseActivity implements
         if (val == null)
             val = getStorageDirectories();
 
-        createDrawerItems(DataUtils.getAccounts(), DataUtils.getServers(), val);
+        createDrawerItems(val);
     }
 
     public void updateDrawer() {
@@ -1399,7 +1398,6 @@ public class MainActivity extends BaseActivity implements
         DataUtils.setStorages(storageDirectories);
 
         ArrayList<String[]> servers = new ArrayList<>();
-
         for (String[] file : grid.readTableSecondary(DataUtils.SMB))
             servers.add(file);
         DataUtils.setServers(servers);
@@ -1411,7 +1409,13 @@ public class MainActivity extends BaseActivity implements
         }
         DataUtils.setAccounts(accounts);
 
-        createDrawerItems(accounts, servers, storageDirectories);
+        ArrayList<String[]> books = new ArrayList<>();
+        for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+            books.add(file);
+        }
+        DataUtils.setBooks(books);
+
+        createDrawerItems(storageDirectories);
     }
 
     public void updateDrawer(String path) {
@@ -1439,8 +1443,7 @@ public class MainActivity extends BaseActivity implements
 
     }
 
-    private void createDrawerItems(ArrayList<String[]> accounts, ArrayList<String[]> servers,
-                                   List<String> storageDirectories) {
+    private void createDrawerItems(List<String> storageDirectories) {
         ArrayList<Item> sectionItems = new ArrayList<>();
 
         storage_count = 0;
@@ -1466,6 +1469,7 @@ public class MainActivity extends BaseActivity implements
         }
         sectionItems.add(new SectionItem());
 
+        ArrayList<String[]> servers = DataUtils.getServers();
         if (servers != null && servers.size() > 0) {
             for (String[] file : servers) {
                 sectionItems.add(new EntryItem(file[0], file[1],
@@ -1475,6 +1479,7 @@ public class MainActivity extends BaseActivity implements
             sectionItems.add(new SectionItem());
         }
 
+        ArrayList<String[]> accounts = DataUtils.getAccounts();
         if (accounts != null && accounts.size() > 0) {
             Collections.sort(accounts, new BookSorter());
             for (String[] file : accounts) {
@@ -1488,6 +1493,7 @@ public class MainActivity extends BaseActivity implements
         ArrayList<String[]> books = DataUtils.getBooks();
         if (books != null && books.size() > 0) {
             Collections.sort(books, new BookSorter());
+
             for (String[] file : books) {
                 sectionItems.add(new EntryItem(file[0], file[1],
                         ContextCompat.getDrawable(this, R.drawable.folder_fab)));
@@ -1495,20 +1501,22 @@ public class MainActivity extends BaseActivity implements
             sectionItems.add(new SectionItem());
         }
 
-        sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+        if(sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+            sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                    ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                    ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+            sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+        }
         DataUtils.setList(sectionItems);
 
         adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
