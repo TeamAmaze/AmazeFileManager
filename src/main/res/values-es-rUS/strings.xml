@@ -420,6 +420,57 @@
   <string name="searchingdevices">Buscando dispositivos</string>
   <string name="use_custom_ip">Utilizar IP personalizada</string>
   <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
+  <string name="smb_instructions">
+<html>
+            <body>
+                <h1>Cómo acceder a la carpeta compartida de Windows en android (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Habilitar compartir archivos</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Abra el Panel de control, haga clic en Elegir grupos domésticos y opciones de
+                         Internet, y haga clic en Cambiar la configuración avanzada de uso compartido. Habilitar el archivo y
+                         Función de compartir impresoras.\n\n
+                    </p>
+
+                    <li>
+                        <b>Configuración de archivos compartidos adicionales</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        También puedes configurar la configuración de uso compartido avanzada aquí.\n
+                         Por ejemplo, puedes habilitar el acceso a tus archivos sin una contraseña si confía en todos
+                         Los dispositivos de tu red local. Una vez que se habilite el intercambio de archivos e impresoras, puedes
+                         abrir el Explorador de archivos o el Explorador de Windows, hacer clic con el botón derecho en una carpeta que desees compartir y
+                         Seleccionar Propiedades.\n
+                        Hacer clic en el botón Compartir y hacer que la carpeta esté disponible en la red.\n\n
+                        </p>
+
+                    <li>
+                        <b>Asegúrate de que ambos dispositivos estén en la misma red Wifi</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Esta característica hace que los archivos estén disponibles en la red local, por lo que su PC y dispositivos móviles
+                         tienen que estar en la misma red local. No puedes acceder a una carpeta de Windows compartida
+                         a través de Internet o cuando el teléfono esté conectado con datos móviles:
+                         Tiene que estar conectado al mismo Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Buscar dirección IP</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Abra el símbolo del sistema. Escriba \'ipconfig\' y presione Enter. Buscar Default Gateway
+                         bajo tu adaptador de red para la dirección IP de tu enrutador. Busca
+                         \\ \"Dirección IPv4 \\" en la misma sección del adaptador para encontrar la dirección IP de tu equipo
+                         dirección.\n\n
+                    </p>
+
+                    <b>Introducir detalles en el cuadro de diálogo smb</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
   <string name="share_limit">No se pueden compartir más de 100 archivos</string>
   <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
   <string name="no_profile_pic">Sin foto de Perfil de G +</string>
@@ -534,6 +585,30 @@
   <string name="contributors_5_summary">Transición de color al barrer pestañas</string>
   <string name="contributors_6_summary">Servidor FTP</string>
   <string name="contributors_7_summary">Creando una pantalla de comandos interactiva</string>
+  <string name="connection_exists">Ya existe la conexión</string>
+  <string name="crypt_encrypting">Cifrando</string>
+  <string name="crypt_decrypting">Descifrando</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Cifrado</string>
+  <string name="crypt_decrypted">Descifrado</string>
+  <string name="crypt_encrypt">Cifrar</string>
+  <string name="crypt_decrypt">Descifrar</string>
+  <string name="operation_fail_following">Error en la operación para los siguientes archivos</string>
+  <string name="crypt_pref_master_password_title">Contraseña maestra</string>
+  <string name="crypt_pref_master_password_summary">Establecer una contraseña maestra para el cifrado.
+        Deje en blanco para eliminar.</string>
+  <string name="crypt_pref_fingerprint_title">Huella digital</string>
+  <string name="crypt_pref_fingerprint_summary">Usar la huella para la autenticación del cifrado</string>
+  <string name="crypt_fingerprint_no_permission">Permisos de la huella digital faltantes</string>
+  <string name="crypt_fingerprint_not_enrolled">No hay huellas dactilares registradas</string>
+  <string name="crypt_fingerprint_no_security">No hay seguridad establecida en la pantalla de bloqueo</string>
+  <string name="crypt_warning_key">Tenga en cuenta que al cambiar su patrón de seguridad del sistema, tu no serás capaz de descifrar este contenido.</string>
+  <string name="warning_never_show">No informar otra vez</string>
+  <string name="warning_confirm">¡Entiendo!</string>
+  <string name="crypt_encryption_fail">Error al Cifrar</string>
+  <string name="crypt_decryption_fail">Error al Descifrar</string>
+  <string name="crypt_decryption_fail_password">¡Contraseña incorrecta!</string>
+  <string name="crypt_fingerprint_authenticate">Tocar sensor para continuar</string>
+  <string name="authenticate_password">Introducir contraseña</string>
   <string name="bytes">Bytes</string>
 </resources>

@@ -591,6 +591,7 @@
   <string name="crypt_fingerprint_no_permission">Отсутствуют разрешения для отпечатка пальцев</string>
   <string name="crypt_fingerprint_not_enrolled">Отпечаток не зарегистрирован</string>
   <string name="crypt_fingerprint_no_security">Защищенный экран не найден</string>
+  <string name="crypt_warning_key">Имейте ввиду, при смене графического ключа в системных настройках, вы не сможете расшифровать эти данные.</string>
   <string name="warning_never_show">Не информировать снова</string>
   <string name="warning_confirm">Понял!</string>
   <string name="crypt_encryption_fail">Не удалось зашифровать</string>
