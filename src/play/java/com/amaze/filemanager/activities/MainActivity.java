@@ -109,6 +109,7 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
@@ -134,6 +135,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -158,6 +160,7 @@ import jcifs.smb.SmbFile;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
+import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 import static com.amaze.filemanager.utils.DataUtils.servers;
 
 public class MainActivity extends BaseActivity implements
@@ -1490,33 +1493,49 @@ public class MainActivity extends BaseActivity implements
             sectionItems.add(new SectionItem());
         }
 
-        ArrayList<String[]> books = DataUtils.getBooks();
-        if (books != null && books.size() > 0) {
-            Collections.sort(books, new BookSorter());
-
-            for (String[] file : books) {
-                sectionItems.add(new EntryItem(file[0], file[1],
-                        ContextCompat.getDrawable(this, R.drawable.folder_fab)));
-            }
-            sectionItems.add(new SectionItem());
-        }
-
         if(sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-            sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                    ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                    ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                    ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                    ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                    ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                    ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-            sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                    ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+            ArrayList<String[]> books = DataUtils.getBooks();
+            if (books != null && books.size() > 0) {
+                Collections.sort(books, new BookSorter());
+
+                for (String[] file : books) {
+                    sectionItems.add(new EntryItem(file[0], file[1],
+                            ContextCompat.getDrawable(this, R.drawable.folder_fab)));
+                }
+                sectionItems.add(new SectionItem());
+            }
         }
+
+        Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
+                QuickAccessPref.DEFAULT);
+
+        if(sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+            if(quickAccessPref[0])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                    ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+            if(quickAccessPref[1])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                    ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
+            if(quickAccessPref[2])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+            if(quickAccessPref[3])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+            if(quickAccessPref[4])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+            if(quickAccessPref[5])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+            if(quickAccessPref[6])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                    ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+        } else {
+            sectionItems.remove(sectionItems.size()-1); //Deletes last divider
+        }
+
+
         DataUtils.setList(sectionItems);
 
         adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);

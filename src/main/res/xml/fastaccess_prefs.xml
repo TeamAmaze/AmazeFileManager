@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="fastaccess"
         android:title="Fast access"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="recent"
         android:title="Recent"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="image"
         android:title="Image"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="video"
+        android:title="Movie"/>
+    <SwitchPreference
         android:defaultValue="true"
         android:key="audio"
         android:title="Audio"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="documents"
         android:title="Documents"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="apks"
         android:title="APKs"/>
