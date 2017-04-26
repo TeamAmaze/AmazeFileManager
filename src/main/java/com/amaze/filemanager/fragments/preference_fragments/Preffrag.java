@@ -57,6 +57,14 @@ import static com.amaze.filemanager.R.string.feedback;
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     private static final String PREFERENCE_KEY_ABOUT = "about";
+    private static final String[] PREFERENCE_KEYS =
+            {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
+                    /*"rootmode",*/"feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
+                    "sidebar_folders", "sidebar_quickaccess"};
+
+
+    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
+    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "show_sidebar_quickaccesses";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -83,8 +91,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
-            getPreferenceScreen().getPreference(i).setOnPreferenceClickListener(this);
+        for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
+            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
         }
 
         gplus = (CheckBox) findPreference("plus_pic");
@@ -100,8 +108,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             masterPasswordPreference.setEnabled(false);
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (preferences.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
+        if (sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
             masterPasswordPreference.setEnabled(false);
         }
 
@@ -192,6 +199,14 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 });
                 builder.title(R.string.theme);
                 builder.build().show();
+                return true;
+            case "sidebar_folders_enable":
+                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS,
+                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)).apply();
+                return true;
+            case "sidebar_quickaccess_enable":
+                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
+                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
                 return true;
             /*
             case "rootmode":
