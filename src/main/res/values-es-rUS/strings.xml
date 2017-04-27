@@ -19,29 +19,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Panel de navegación de ejemplo</string>
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">Abra el cajón navegación</string>
   <string name="drawer_close">Cierre el cajón navegación</string>
-  <string name="books">Marcadored</string>
+  <string name="books">Marcadores</string>
   <string name="icon">icono</string>
   <string name="efn">Introduce el nombre del archivo</string>
   <string name="storage">Almacenamiento</string>
-  <string name="gallery">Galeria</string>
+  <string name="gallery">Galería</string>
   <string name="apps">Administrador de Apps</string>
   <string name="ftp">Servidor FTP</string>
   <string name="bookmanag">Administrador de favoritos</string>
   <string name="setting">Configuración</string>
   <string name="select">Seleccionar elemento</string>
   <string name="pressagain">Presione nuevamente para salir</string>
-  <string name="open">Abierto</string>
+  <string name="open">Abrir</string>
   <string name="backup">Copia de seguridad</string>
   <string name="uninstall">Desinstalar</string>
   <string name="play">Play Store</string>
   <string name="properties">Propiedades</string>
   <string name="copyingapk">Copiando apk a </string>
-  <string name="addbook">Añadir favorito</string>
+  <string name="addbook">Añadir marcador</string>
   <string name="delbook">Borrar marcador</string>
-  <string name="addtobook">Añadir a Favoritos</string>
+  <string name="addtobook">Añadir a Marcadores</string>
   <string name="enterpath">Escribe la ruta</string>
   <string name="cancel">CANCELAR</string>
   <string name="create">CREAR</string>
@@ -64,10 +64,10 @@
   <string name="searchpath">Ruta de búsqueda</string>
   <string name="enterfile">Introduce el nombre del archivo</string>
   <string name="name">Nombre </string>
-  <string name="date">Fecha: </string>
+  <string name="date">Fecha</string>
   <string name="location">Ubicación</string>
-  <string name="size">Tamaño:  </string>
-  <string name="totalitems">Número de elementos: </string>
+  <string name="size">Tamaño de carpeta</string>
+  <string name="totalitems">Número de elementos</string>
   <string name="enterzipname">Introducir nombre del Zip</string>
   <string name="noappfound">No se encontró una aplicación para abrir este archivo</string>
   <string name="copying">Copiando</string>
