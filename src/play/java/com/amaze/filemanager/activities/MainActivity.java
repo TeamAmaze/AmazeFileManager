@@ -142,6 +142,7 @@ import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -155,6 +156,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
+import com.cloudrail.si.services.OneDrive;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -288,8 +290,7 @@ public class MainActivity extends BaseActivity implements
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
     public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
-    public static final int ID_LOADER_CURSOR_CLOUD = 25683;
-    public static final String ARGS_KEY_LOADER = "loader_service_args";
+    public static final String ARGS_KEY_LOADER = "loader_cloud_args_service";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -302,9 +303,9 @@ public class MainActivity extends BaseActivity implements
     public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
 
-    private static final String KEY_REQUEST_CODE_CLOUD = "cloud_request_code";
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
+    private static final int REQUEST_CODE_CLOUD_LIST_KEY_CLOUD = 5434;
 
     /**
      * Called when the activity is first created.
@@ -349,7 +350,10 @@ public class MainActivity extends BaseActivity implements
                     .build();
         }
 
-        CloudRail.setAppKey("57dbd94b626e592ca46ae96d");
+        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
+
+            getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY_CLOUD, null, this);
+        }
 
         util = new IconUtils(sharedPref, this);
         icons = new IconUtils(sharedPref, this);
@@ -609,7 +613,7 @@ public class MainActivity extends BaseActivity implements
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isUsbDeviceConnected()) rv.add("otg:/");
+            if (isUsbDeviceConnected()) rv.add(OTGUtil.PREFIX_OTG);
         }
         return rv;
     }
@@ -746,7 +750,7 @@ public class MainActivity extends BaseActivity implements
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if ("otg:/".equals(file)) {
+            } else if (OTGUtil.PREFIX_OTG.equals(file)) {
                 name = "OTG";
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
@@ -881,7 +885,7 @@ public class MainActivity extends BaseActivity implements
                 selectedStorage = i;
                 adapter.toggleChecked(selectedStorage);
 
-                if (((EntryItem) directoryItems.get(i)).getPath().equals("otg:/") &&
+                if (((EntryItem) directoryItems.get(i)).getPath().equals(OTGUtil.PREFIX_OTG) &&
                         sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
@@ -1510,165 +1514,188 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void refreshDrawer() {
-        List<String> val = DataUtils.getStorages();
-        if (val == null)
-            val = getStorageDirectories();
-        ArrayList<Item> items = new ArrayList<>();
-        storage_count = 0;
-        for (String file : val) {
-            File f = new File(file);
-            String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                name = getResources().getString(R.string.storage);
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
-            } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if ("otg:/".equals(file)) {
-                name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
-            } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
-                items.add(new EntryItem(name, file, icon1));
-            }
-        }
-        items.add(new SectionItem());
-        ArrayList<String[]> Servers = DataUtils.getServers();
-        if (Servers != null && Servers.size() > 0) {
-            for (String[] file : Servers) {
-                items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
-            }
 
-            items.add(new SectionItem());
-        }
+        new AsyncTask<Void, Void, ArrayList<Item>>() {
 
-        ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
-        CloudHandler cloudHandler = new CloudHandler(this);
+            @Override
+            protected ArrayList<Item> doInBackground(Void... params) {
 
-        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
-
-
-            for (CloudEntry cloudEntry : DataUtils.getAccounts()) {
-
-                switch (cloudEntry.getServiceType()) {
-                    case BOX:
-                        CloudStorage box = new Box(getApplicationContext(),
-                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
-
-                        try {
-                            box.loadAsString(cloudEntry.getPersistData());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-
-                            // problem parsing saved string, due to unknown error (probably change in
-                            // api, clean up the database entry for this type
-                            cloudHandler.clear(OpenMode.BOX);
-
-                        }
-                        items.add(new EntryItem(box.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
-                                ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
-
-                        accountAuthenticationList.add(new String[] {
-                                box.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
-                        });
-                        break;
-                    case DROPBOX:
-                        CloudStorage dropbox = new Dropbox(getApplicationContext(),
-                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
-                        try {
-                            dropbox.loadAsString(cloudEntry.getPersistData());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-
-                            // problem parsing saved string, due to unknown error (probably change in
-                            // api, clean up the database entry for this type
-                            cloudHandler.clear(OpenMode.DROPBOX);
-                        }
-                        items.add(new EntryItem(dropbox.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
-                                ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
-
-                        accountAuthenticationList.add(new String[] {
-                                dropbox.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
-                        });
-                        break;
-                    case GDRIVE:
-                        CloudStorage gdrive = new GoogleDrive(getApplicationContext(),
-                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
-                        try {
-                            gdrive.loadAsString(cloudEntry.getPersistData());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-
-                            // problem parsing saved string, due to unknown error (probably change in
-                            // api, clean up the database entry for this type
-                            cloudHandler.clear(OpenMode.GDRIVE);
-                        }
-                        items.add(new EntryItem(gdrive.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
-                                ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
-
-                        accountAuthenticationList.add(new String[] {
-                                gdrive.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
-                        });
-                        break;
-                    case ONEDRIVE:
-                        CloudStorage onedrive = new Dropbox(getApplicationContext(),
-                                cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
-                        try {
-                            onedrive.loadAsString(cloudEntry.getPersistData());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-
-                            // problem parsing saved string, due to unknown error (probably change in
-                            // api, clean up the database entry for this type
-                            cloudHandler.clear(OpenMode.ONEDRIVE);
-                        }
-                        items.add(new EntryItem(onedrive.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
-                                ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
-
-                        accountAuthenticationList.add(new String[] {
-                                onedrive.getUserName(),
-                                CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
-                        });
-                        break;
-                    default:
-                        break;
+                List<String> val = DataUtils.getStorages();
+                if (val == null)
+                    val = getStorageDirectories();
+                final ArrayList<Item> items = new ArrayList<>();
+                storage_count = 0;
+                for (String file : val) {
+                    File f = new File(file);
+                    String name;
+                    Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
+                    if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
+                        name = getResources().getString(R.string.storage);
+                    } else if ("/storage/sdcard1".equals(file)) {
+                        name = getResources().getString(R.string.extstorage);
+                    } else if ("/".equals(file)) {
+                        name = getResources().getString(R.string.rootdirectory);
+                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
+                    } else if (OTGUtil.PREFIX_OTG.equals(file)) {
+                        name = "OTG";
+                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
+                    } else name = f.getName();
+                    if (!f.isDirectory() || f.canExecute()) {
+                        storage_count++;
+                        items.add(new EntryItem(name, file, icon1));
+                    }
                 }
+                items.add(new SectionItem());
+                ArrayList<String[]> Servers = DataUtils.getServers();
+                if (Servers != null && Servers.size() > 0) {
+                    for (String[] file : Servers) {
+                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_settings_remote_white_48dp)));
+                    }
+
+                    items.add(new SectionItem());
+                }
+
+                ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
+
+                if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
+
+                    for (CloudStorage cloudStorage : DataUtils.getAccounts()) {
+
+                        if (cloudStorage instanceof Dropbox) {
+
+                            items.add(new EntryItem(cloudStorage.getUserName(),
+                                    CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                                    ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+
+                            accountAuthenticationList.add(new String[] {
+                                    cloudStorage.getUserName(),
+                                    CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                            });
+                        }/*
+
+                        switch (cl.getServiceType()) {*//*
+                            case BOX:
+                                CloudStorage box = new Box(getApplicationContext(),
+                                        cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+
+                                try {
+                                    box.loadAsString(cloudEntry.getPersistData());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+
+                                    // problem parsing saved string, due to unknown error (probably change in
+                                    // api, clean up the database entry for this type
+                                    cloudHandler.clear(OpenMode.BOX);
+
+                                }
+                                items.add(new EntryItem(box.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        box.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_BOX + box.getUserLogin() + "/",
+                                });
+                                break;*//*
+                            case DROPBOX:
+                                CloudStorage dropbox = new Dropbox(getApplicationContext(),
+                                        cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                                try {
+                                    dropbox.loadAsString(cloudEntry.getPersistData());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+
+                                    // problem parsing saved string, due to unknown error (probably change in
+                                    // api, clean up the database entry for this type
+                                    cloudHandler.clear(OpenMode.DROPBOX);
+                                }
+                                items.add(new EntryItem(dropbox.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        dropbox.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + dropbox.getUserLogin() + "/",
+                                });
+                                break;*//*
+                            case GDRIVE:
+                                CloudStorage gdrive = new GoogleDrive(getApplicationContext(),
+                                        cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                                try {
+                                    gdrive.loadAsString(cloudEntry.getPersistData());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+
+                                    // problem parsing saved string, due to unknown error (probably change in
+                                    // api, clean up the database entry for this type
+                                    cloudHandler.clear(OpenMode.GDRIVE);
+                                }
+                                items.add(new EntryItem(gdrive.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        gdrive.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + gdrive.getUserLogin() + "/",
+                                });
+                                break;
+                            case ONEDRIVE:
+                                CloudStorage onedrive = new Dropbox(getApplicationContext(),
+                                        cloudEntry.getClientId(), cloudEntry.getClientSecretKey());
+                                try {
+                                    onedrive.loadAsString(cloudEntry.getPersistData());
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+
+                                    // problem parsing saved string, due to unknown error (probably change in
+                                    // api, clean up the database entry for this type
+                                    cloudHandler.clear(OpenMode.ONEDRIVE);
+                                }
+                                items.add(new EntryItem(onedrive.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        onedrive.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + onedrive.getUserLogin() + "/",
+                                });
+                                break;*//*
+                            default:
+                                break;
+                        }*/
+                    }
+                    Collections.sort(accountAuthenticationList, new BookSorter());
+
+                    items.add(new SectionItem());
+                }
+
+                ArrayList<String[]> books = DataUtils.getBooks();
+                if (books != null && books.size() > 0) {
+                    Collections.sort(books, new BookSorter());
+                    for (String[] file : books) {
+                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable
+                                .folder_fab)));
+                    }
+                    items.add(new SectionItem());
+                }
+                items.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+                items.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+                items.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+                items.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+                items.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+                items.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+                items.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+                DataUtils.setList(items);
+                return items;
             }
-            Collections.sort(accountAuthenticationList, new BookSorter());
 
-            items.add(new SectionItem());
-        }
-
-        ArrayList<String[]> books = DataUtils.getBooks();
-        if (books != null && books.size() > 0) {
-            Collections.sort(books, new BookSorter());
-            for (String[] file : books) {
-                items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                        .folder_fab)));
+            @Override
+            protected void onPostExecute(ArrayList<Item> items) {
+                super.onPostExecute(items);
+                adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, items, MainActivity.this, sharedPref);
+                mDrawerList.setAdapter(adapter);
             }
-            items.add(new SectionItem());
-        }
-        items.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-        items.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-        items.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        items.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        items.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        items.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-        items.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
-        DataUtils.setList(items);
-        adapter = new DrawerAdapter(this, this, items, MainActivity.this, sharedPref);
-        mDrawerList.setAdapter(adapter);
-
+        }.execute();
     }
 
     @Override
@@ -2328,11 +2355,24 @@ public class MainActivity extends BaseActivity implements
 
         if (news.length() == 0) return;
 
-        if (openmode == OpenMode.SMB && news.startsWith("smb:/"))
-            newPath = mainActivityHelper.parseSmbPath(news);
-        else if (openmode == OpenMode.CUSTOM)
-            newPath = mainActivityHelper.getIntegralNames(news);
-        else newPath = news;
+        switch (openmode) {
+            case SMB:
+                newPath = mainActivityHelper.parseSmbPath(news);
+                break;
+            case OTG:
+                newPath = mainActivityHelper.parseOTGPath(news);
+                break;
+            case CUSTOM:
+                newPath = mainActivityHelper.getIntegralNames(news);
+            case DROPBOX:
+            case BOX:
+            case ONEDRIVE:
+            case GDRIVE:
+                newPath = mainActivityHelper.parseCloudPath(openmode, news);
+                break;
+            default:
+                newPath = news;
+        }
 
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
@@ -2926,9 +2966,8 @@ public class MainActivity extends BaseActivity implements
                         Toast.LENGTH_LONG).show();
             } else {
                 Bundle args = new Bundle();
-                args.putInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEY);
                 args.putInt(ARGS_KEY_LOADER, service.ordinal());
-                getSupportLoaderManager().initLoader(ID_LOADER_CURSOR_CLOUD, null, this);
+                getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
             }
         } catch (CloudPluginException e) {
             e.printStackTrace();
@@ -2948,7 +2987,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Uri uri = Uri.parse(CloudContract.PROVIDER_AUTHORITY);
+        Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys/");
 
         String[] projection = new String[] {
                 CloudContract.COLUMN_ID,
@@ -2956,35 +2995,69 @@ public class MainActivity extends BaseActivity implements
                 CloudContract.COLUMN_CLIENT_SECRET_KEY
         };
 
+        switch (id) {
+            case REQUEST_CODE_CLOUD_LIST_KEY:
+                Uri uriAppendedPath = uri;
+                switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
+                    case GDRIVE:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 1);
+                        break;
+                    case DROPBOX:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 2);
+                        break;
+                    case BOX:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 3);
+                        break;
+                    case ONEDRIVE:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 4);
+                        break;
+                }
+                return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
+            case REQUEST_CODE_CLOUD_LIST_KEYS:
+                // we need a list of all secret keys
+                Uri uriAll = Uri.withAppendedPath(Uri.parse("content://" +
+                        CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
+                CloudHandler cloudHandler = new CloudHandler(getApplicationContext());
+                try {
+                    List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
 
-        if (args.getInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEYS)
-                == REQUEST_CODE_CLOUD_LIST_KEYS) {
-            // we need a list of all secret keys
-            return new CursorLoader(this, uri, projection, null, null, null);
-        } else if (args.getInt(KEY_REQUEST_CODE_CLOUD, REQUEST_CODE_CLOUD_LIST_KEYS)
-                == REQUEST_CODE_CLOUD_LIST_KEY) {
+                    String ids[] = new String[cloudEntries.size()];
 
-            Uri uriAppendedPath = uri;
-            switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
-                case GDRIVE:
-                    uriAppendedPath = ContentUris.withAppendedId(uri, 1);
-                    break;
-                case DROPBOX:
-                    uriAppendedPath = ContentUris.withAppendedId(uri, 2);
-                    break;
-                case BOX:
-                    uriAppendedPath = ContentUris.withAppendedId(uri, 3);
-                    break;
-                case ONEDRIVE:
-                    uriAppendedPath = ContentUris.withAppendedId(uri, 4);
-                    break;
-            }
-            return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
-        } else return null;
+                    for (int i=0; i<cloudEntries.size(); i++) {
+
+                        // we need to get only those cloud details which user wants
+                        switch (cloudEntries.get(i).getServiceType()) {
+                            case GDRIVE:
+                                ids[i] = 1 + "";
+                                break;
+                            case DROPBOX:
+                                ids[i] = 2 + "";
+                                break;
+                            case BOX:
+                                ids[i] = 3 + "";
+                                break;
+                            case ONEDRIVE:
+                                ids[i] = 4 + "";
+                                break;
+                        }
+                    }
+                    return new CursorLoader(this, uriAll, projection, CloudContract.COLUMN_ID, ids, null);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                            Toast.LENGTH_LONG).show();
+                }
+            case REQUEST_CODE_CLOUD_LIST_KEY_CLOUD:
+                Uri uriAppendedPathCloud = ContentUris.withAppendedId(uri, 5);
+                return new CursorLoader(this, uriAppendedPathCloud, projection, null, null, null);
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         if (data == null) {
             Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
@@ -2992,139 +3065,204 @@ public class MainActivity extends BaseActivity implements
             return;
         }
 
-        CloudStorage cloudStorage;
-        CloudHandler cloudHandler = new CloudHandler(this);
+        new AsyncTask<Void, Void, Boolean>() {
 
-        if (data.getCount() > 0 && data.moveToFirst()) {
-            do {
+            @Override
+            protected Boolean doInBackground(Void... params) {
 
 
-                switch (data.getInt(0)) {
-                    case 1:
-                        // DRIVE
-                        try {
+                CloudHandler cloudHandler = new CloudHandler(MainActivity.this);
 
-                            CloudEntry cloudEntryGdrive = null;
-                            CloudEntry savedCloudEntryGdrive;
-                            if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
-                                // we already have the entry and saved state, get it
-                                cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE,
-                                        savedCloudEntryGdrive.getPersistData());
-                            } else {
+                if (data.getCount() > 0 && data.moveToFirst()) {
+                    do {
 
-                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
-                                        data.getString(2));
-                                cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorage.saveAsString());
-                                cloudHandler.addEntry(cloudEntryGdrive);
-                            }
+                        switch (data.getInt(0)) {
+                            case 1:
+                                // DRIVE
+                                try {
 
-                            cloudEntryGdrive.setClientId(data.getString(1));
-                            cloudEntryGdrive.setClientSecretKey(data.getString(2));
-                            DataUtils.addAccount(cloudEntryGdrive);
-                        } catch (CloudPluginException e) {
+                                    CloudEntry cloudEntryGdrive = null;
+                                    CloudEntry savedCloudEntryGdrive;
 
-                            e.printStackTrace();
-                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
-                                    Toast.LENGTH_LONG).show();
-                            return;
+                                    CloudStorage cloudStorageDrive = new GoogleDrive(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageDrive.loadAsString(savedCloudEntryGdrive.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to update the persist string as existing one is been compromised
+
+                                            cloudStorageDrive.login();
+                                            cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.GDRIVE, cloudEntryGdrive);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageDrive.login();
+                                        cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryGdrive);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageDrive);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                }
+                                break;
+                            case 2:
+                                // DROPBOX
+                                try {
+
+                                    CloudEntry cloudEntryDropbox = null;
+                                    CloudEntry savedCloudEntryDropbox;
+
+                                    CloudStorage cloudStorageDropbox = new Dropbox(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageDropbox.login();
+                                            cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.DROPBOX, cloudEntryDropbox);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageDropbox.login();
+                                        cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryDropbox);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageDropbox);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                }
+                                break;
+                            case 3:
+                                // BOX
+                                try {
+
+                                    CloudEntry cloudEntryBox = null;
+                                    CloudEntry savedCloudEntryBox;
+
+                                    CloudStorage cloudStorageBox = new Box(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageBox.login();
+                                            cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.BOX, cloudEntryBox);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageBox.login();
+                                        cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryBox);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageBox);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                }
+                                break;
+                            case 4:
+                                // ONEDRIVE
+                                try {
+
+                                    CloudEntry cloudEntryOnedrive = null;
+                                    CloudEntry savedCloudEntryOnedrive;
+
+                                    CloudStorage cloudStorageOnedrive = new OneDrive(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageOnedrive.login();
+                                            cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.ONEDRIVE, cloudEntryOnedrive);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageOnedrive.login();
+                                        cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryOnedrive);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageOnedrive);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                }
+                                break;
+                            case 5:
+                                CloudRail.setAppKey(data.getString(1));
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, MainActivity.this);
+                                    }
+                                });
+                                data.close();
+                                return false;
+                            default:
+                                Toast.makeText(MainActivity.this, getResources().getString(R.string.cloud_error_failed_restart),
+                                        Toast.LENGTH_LONG).show();
+                                return false;
                         }
-                        break;
-                    case 2:
-                        // DROPBOX
-                        try {
-
-                            CloudEntry cloudEntryDropbox = null;
-                            CloudEntry savedCloudEntryDropbox;
-                            if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
-                                // we already have the entry and saved state, get it
-                                cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX,
-                                        savedCloudEntryDropbox.getPersistData());
-                            } else {
-
-                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
-                                        data.getString(2));
-                                cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorage.saveAsString());
-                                cloudHandler.addEntry(cloudEntryDropbox);
-                            }
-
-                            cloudEntryDropbox.setClientId(data.getString(1));
-                            cloudEntryDropbox.setClientSecretKey(data.getString(2));
-                            DataUtils.addAccount(cloudEntryDropbox);
-                        } catch (CloudPluginException e) {
-
-                            e.printStackTrace();
-                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                    case 3:
-                        // BOX
-                        try {
-
-                            CloudEntry cloudEntryBox = null;
-                            CloudEntry savedCloudEntryBox;
-                            if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
-                                // we already have the entry and saved state, get it
-                                cloudEntryBox = new CloudEntry(OpenMode.BOX,
-                                        savedCloudEntryBox.getPersistData());
-                            } else {
-
-                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
-                                        data.getString(2));
-                                cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorage.saveAsString());
-                                cloudHandler.addEntry(cloudEntryBox);
-                            }
-
-                            cloudEntryBox.setClientId(data.getString(1));
-                            cloudEntryBox.setClientSecretKey(data.getString(2));
-                            DataUtils.addAccount(cloudEntryBox);
-                        } catch (CloudPluginException e) {
-
-                            e.printStackTrace();
-                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                    case 4:
-                        // ONEDRIVE
-                        try {
-
-                            CloudEntry cloudEntryOnedrive = null;
-                            CloudEntry savedCloudEntryOnedrive;
-                            if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
-                                // we already have the entry and saved state, get it
-                                cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE,
-                                        savedCloudEntryOnedrive.getPersistData());
-                            } else {
-
-                                cloudStorage = new GoogleDrive(getApplicationContext(), data.getString(1),
-                                        data.getString(2));
-                                cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorage.saveAsString());
-                                cloudHandler.addEntry(cloudEntryOnedrive);
-                            }
-
-                            cloudEntryOnedrive.setClientId(data.getString(1));
-                            cloudEntryOnedrive.setClientSecretKey(data.getString(2));
-                            DataUtils.addAccount(cloudEntryOnedrive);
-                        } catch (CloudPluginException e) {
-
-                            e.printStackTrace();
-                            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                    default:
-                        Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
-                                Toast.LENGTH_LONG).show();
-                        return;
+                    } while (data.moveToNext());
                 }
-            } while (data.moveToNext());
-        }
 
-        refreshDrawer();
+                data.close();
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean refreshDrawer) {
+                super.onPostExecute(refreshDrawer);
+                if (refreshDrawer)
+                    refreshDrawer();
+            }
+        }.execute();
     }
 
     @Override

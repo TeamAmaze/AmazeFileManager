@@ -2,7 +2,9 @@ package com.amaze.filemanager.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -25,7 +27,8 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 public class CloudSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private View rootView;
-    private LinearLayout mSmbLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout;
+    private LinearLayout mSmbLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout
+            , mGetCloudLayout;
 
     public static final String TAG_FRAGMENT = "cloud_fragment";
 
@@ -52,6 +55,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         mDropboxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_dropbox);
         mGoogleDriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_google_drive);
         mOnedriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_onedrive);
+        mGetCloudLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_get_cloud);
 
         if (isCloudProviderAvailable(getContext())) {
 
@@ -59,6 +63,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             mDropboxLayout.setVisibility(View.VISIBLE);
             mGoogleDriveLayout.setVisibility(View.VISIBLE);
             mOnedriveLayout.setVisibility(View.VISIBLE);
+            mGetCloudLayout.setVisibility(View.GONE);
         }
 
         mSmbLayout.setOnClickListener(this);
@@ -66,6 +71,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         mDropboxLayout.setOnClickListener(this);
         mGoogleDriveLayout.setOnClickListener(this);
         mOnedriveLayout.setOnClickListener(this);
+        mGetCloudLayout.setOnClickListener(this);
     }
 
     /**
@@ -103,6 +109,11 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
                 break;
             case R.id.linear_layout_onedrive:
                 ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
+                break;
+            case R.id.linear_layout_get_cloud:
+                Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);
+                cloudPluginIntent.setData(Uri.parse("market://details?id=com.filemanager.amazecloud"));
+                startActivity(cloudPluginIntent);
                 break;
         }
 

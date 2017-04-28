@@ -69,6 +69,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
@@ -94,6 +95,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
@@ -1121,7 +1123,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                            && !path.equals("otg:/")) {
+                            && !path.equals(OTGUtil.PREFIX_OTG + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
@@ -1273,13 +1279,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
             return;
         }
 
-        File f = new File(CURRENT_PATH);
+        HFile currentFile = new HFile(openMode, CURRENT_PATH);
         if (!results && !mRetainSearchTask) {
 
             // normal case
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
+
                 if (openMode == OpenMode.SMB) {
                     try {
                         if (!smbPath.equals(CURRENT_PATH)) {
@@ -1289,11 +1296,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
+
                 } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
-                        CURRENT_PATH.equals("otg:/"))
+                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                        )
                     MAIN_ACTIVITY.exit();
-                else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, openMode);
+                else if (utils.canGoBack(getContext(), currentFile)) {
+                    loadlist(currentFile.getParent(getContext()), true, openMode);
                 } else MAIN_ACTIVITY.exit();
             }
         } else if (!results && mRetainSearchTask) {
@@ -1308,7 +1321,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 FragmentManager fm = MAIN_ACTIVITY.getSupportFragmentManager();
 
                 // getting parent path to resume search from there
-                String parentPath = new File(CURRENT_PATH).getParent();
+                String parentPath = new HFile(openMode, CURRENT_PATH).getParent(getActivity());
                 // don't fuckin' remove this line, we need to change
                 // the path back to parent on back press
                 CURRENT_PATH = parentPath;
@@ -1357,12 +1370,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
             loadlist(home, false, OpenMode.FILE);
             return;
         }
-        File f = new File(CURRENT_PATH);
+        HFile currentFile = new HFile(openMode, CURRENT_PATH);
         if (!results) {
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
-                if (openMode == OpenMode.SMB)
+                if (openMode == OpenMode.SMB) {
+
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
@@ -1371,14 +1385,20 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-                else if (CURRENT_PATH.equals("/"))
-                    MAIN_ACTIVITY.exit();
-                else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, openMode);
-                } else MAIN_ACTIVITY.exit();
+                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
+                            CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            )
+                        MAIN_ACTIVITY.exit();
+                    else if (utils.canGoBack(getContext(), currentFile)) {
+                        loadlist(currentFile.getParent(getContext()), true, openMode);
+                    } else MAIN_ACTIVITY.exit();
             }
         } else {
-            loadlist(f.getPath(), true, openMode);
+            loadlist(currentFile.getPath(), true, openMode);
         }
     }
 

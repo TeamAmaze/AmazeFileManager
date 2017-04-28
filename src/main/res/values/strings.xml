@@ -579,6 +579,7 @@
     <string name="cloud_drive">Google Drive</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
+    <string name="cloud_get">Get Cloud plugin</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
     <string name="cloud_error_email">E-mail address</string>
     <string name="cloud_email">E-mail ID</string>

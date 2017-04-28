@@ -10,7 +10,7 @@ public class CloudEntry {
 
     private int _id;
     private OpenMode serviceType;
-    private String persistData, clientId, clientSecretKey;
+    private String persistData;
 
     public CloudEntry() {}
 
@@ -50,21 +50,5 @@ public class CloudEntry {
      */
     public OpenMode getServiceType() {
         return this.serviceType;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getClientId() {
-        return this.clientId;
-    }
-
-    public void setClientSecretKey(String clientSecretKey) {
-        this.clientSecretKey = clientSecretKey;
-    }
-
-    public String getClientSecretKey() {
-        return this.clientSecretKey;
     }
 }

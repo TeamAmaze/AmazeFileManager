@@ -25,10 +25,10 @@ public class CloudHandler extends SQLiteOpenHelper {
     protected static final String COLUMN_CLOUD_SERVICE = "service";
     protected static final String COLUMN_CLOUD_PERSIST = "persist";
 
-    public static final String CLOUD_PREFIX_BOX = "box://";
-    public static final String CLOUD_PREFIX_DROPBOX = "dropbox://";
-    public static final String CLOUD_PREFIX_GOOGLE_DRIVE = "gdrive://";
-    public static final String CLOUD_PREFIX_ONE_DRIVE = "onedrive://";
+    public static final String CLOUD_PREFIX_BOX = "box:/";
+    public static final String CLOUD_PREFIX_DROPBOX = "dropbox:/";
+    public static final String CLOUD_PREFIX_GOOGLE_DRIVE = "gdrive:/";
+    public static final String CLOUD_PREFIX_ONE_DRIVE = "onedrive:/";
 
 
     private Context context;
@@ -83,7 +83,7 @@ public class CloudHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void updateEntry(CloudEntry oldCloudEntry, CloudEntry newCloudEntry)
+    public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
             throws CloudPluginException {
 
         if (!CloudSheetFragment.isCloudProviderAvailable(context))
@@ -97,7 +97,7 @@ public class CloudHandler extends SQLiteOpenHelper {
 
 
         sqLiteDatabase.update(TABLE_CLOUD_PERSIST, contentValues, COLUMN_CLOUD_SERVICE + " = ?",
-                new String[]{oldCloudEntry.getServiceType().ordinal() + ""});
+                new String[]{serviceType.ordinal() + ""});
 
         sqLiteDatabase.close();
     }

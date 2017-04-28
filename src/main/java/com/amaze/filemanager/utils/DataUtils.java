@@ -2,6 +2,11 @@ package com.amaze.filemanager.utils;
 
 import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.ui.drawer.Item;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Box;
+import com.cloudrail.si.services.Dropbox;
+import com.cloudrail.si.services.GoogleDrive;
+import com.cloudrail.si.services.OneDrive;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +29,7 @@ public class DataUtils {
     public static ArrayList<Item> list = new ArrayList<>();
     public static ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
 
-    private static ArrayList<CloudEntry> accounts = new ArrayList<>();
+    private static ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
     static DataChangeListener dataChangeListener;
 
@@ -50,12 +55,39 @@ public class DataUtils {
         return contains(a, accounts);
     }*/
 
-    public static boolean containsAccounts(OpenMode serviceType) {
-        for (CloudEntry entry : accounts) {
-            if (entry.getServiceType() == serviceType)
-                return true;
+    /**
+     * Checks whether cloud account of certain type is present or not
+     * @param serviceType the {@link OpenMode} of account to check
+     * @return the index of account, -1 if not found
+     */
+    public static int containsAccounts(OpenMode serviceType) {
+        int i = 0;
+
+        for (CloudStorage storage : accounts) {
+
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        return i;
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        return i;
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        return i;
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        return i;
+                    break;
+                default:
+                    return -1;
+            }
+            i++;
         }
-        return false;
+        return -1;
     }
 
     public static void clear() {
@@ -100,13 +132,28 @@ public class DataUtils {
     }
 
     public static void removeAccount(OpenMode serviceType) {
-        int i=0;
-        for (CloudEntry cloudEntry : accounts) {
-            if (cloudEntry.getServiceType() == serviceType) {
-                accounts.remove(i);
-                return;
+
+        for (CloudStorage storage : accounts) {
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        accounts.remove(storage);
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        accounts.remove(storage);
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        accounts.remove(storage);
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        accounts.remove(storage);
+                    break;
+                default:
+                    return;
             }
-            i++;
         }
     }
 
@@ -124,8 +171,8 @@ public class DataUtils {
         books.add(i);
     }
 
-    public static void addAccount(CloudEntry entry) {
-        accounts.add(entry);
+    public static void addAccount(CloudStorage storage) {
+        accounts.add(storage);
     }
 
     public static void addServer(String[] i) {
@@ -164,7 +211,7 @@ public class DataUtils {
             DataUtils.books = books;
     }
 
-    public static void setAccounts(ArrayList<CloudEntry> accounts) {
+    public static void setAccounts(ArrayList<CloudStorage> accounts) {
         if (accounts != null)
             DataUtils.accounts = accounts;
     }
@@ -173,15 +220,33 @@ public class DataUtils {
         return servers;
     }
 
-    public static ArrayList<CloudEntry> getAccounts() {
+    public static ArrayList<CloudStorage> getAccounts() {
         return accounts;
     }
 
-    public static CloudEntry getAccount(OpenMode serviceType) {
-        for (CloudEntry cloudEntry : accounts) {
+    public static CloudStorage getAccount(OpenMode serviceType) {
 
-            if (cloudEntry.getServiceType() == serviceType) {
-                return cloudEntry;
+        for (CloudStorage storage : accounts) {
+
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        return storage;
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        return storage;
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        return storage;
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        return storage;
+                    break;
+                default:
+                    return null;
             }
         }
         return null;

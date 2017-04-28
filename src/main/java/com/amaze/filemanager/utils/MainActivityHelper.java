@@ -26,6 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -561,6 +562,42 @@ public class MainActivityHelper {
         if (a.contains("@"))
             return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
         else return a;
+    }
+
+    /**
+     * Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix
+     * @param path
+     * @return
+     */
+    public String parseOTGPath(String path) {
+        if (path.contains(OTGUtil.PREFIX_OTG))
+            return path;
+        else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1, path.length());
+    }
+
+    public String parseCloudPath(OpenMode serviceType, String path) {
+        switch (serviceType) {
+            case DROPBOX:
+                if (path.contains(CloudHandler.CLOUD_PREFIX_DROPBOX)) return path;
+                else
+                    return CloudHandler.CLOUD_PREFIX_DROPBOX
+                            + path.substring(path.indexOf(":") + 1, path.length());
+            case BOX:
+                if (path.contains(CloudHandler.CLOUD_PREFIX_BOX)) return path;
+                else return CloudHandler.CLOUD_PREFIX_BOX
+                        + path.substring(path.indexOf(":") + 1, path.length());
+            case GDRIVE:
+                if (path.contains(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) return path;
+                else return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
+                        + path.substring(path.indexOf(":") + 1, path.length());
+            case ONEDRIVE:
+                if (path.contains(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) return path;
+                else
+                    return CloudHandler.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1,
+                            path.length());
+            default:
+                return path;
+        }
     }
 
     /**

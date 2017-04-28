@@ -8,8 +8,10 @@ import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 
@@ -51,7 +53,7 @@ public class HFile {
     public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
-        } else if (path.startsWith("otg:/")) {
+        } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
             mode = OpenMode.CUSTOM;
@@ -600,7 +602,7 @@ public class HFile {
                 }
                 break;
             case OTG:
-                arrayList = RootHelper.getDocumentFilesList(path, context);
+                arrayList = OTGUtil.getDocumentFilesList(path, context);
                 break;
             default:
                 try {

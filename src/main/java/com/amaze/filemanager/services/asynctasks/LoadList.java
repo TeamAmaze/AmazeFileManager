@@ -46,12 +46,15 @@ import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.exceptions.ParseException;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
+import com.cloudrail.si.services.GoogleDrive;
+import com.cloudrail.si.services.OneDrive;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,7 +98,6 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     boolean grid;
 
     @Override
-    // Actual download method, run in the task thread
     protected ArrayList<LayoutElements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
         ArrayList<LayoutElements> list = null;
@@ -185,49 +187,42 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                 break;
             case DROPBOX:
 
-                CloudEntry cloudEntry = DataUtils.getAccountFromPath(path, OpenMode.DROPBOX);
-                CloudStorage dropBox = new Dropbox(c.getApplicationContext(), "35x9e2zmn2m6q6t",
-                        "fv3yv6yqxlkkdjm");
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+
                 try {
-                    list = addTo(listCloud(path, dropBox, OpenMode.DROPBOX));
+                    list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
                 } catch (CloudPluginException e) {
+                    e.printStackTrace();
                     return new ArrayList<>();
                 }
                 break;
             case BOX:
-
-                CloudStorage box = new Box(c.getApplicationContext(), "4xmnmy28nikxdo9dbywrys4cjp72tpz4",
-                        "xxa88WhmbXPcPtiavc2lvERw0xVOIRGC");
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
 
                 try {
-                    box.loadAsString(box.saveAsString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    list = addTo(listCloud(path, box, OpenMode.BOX));
+                    list = addTo(listCloud(path, cloudStorageBox, OpenMode.BOX));
                 } catch (CloudPluginException e) {
+                    e.printStackTrace();
                     return new ArrayList<>();
                 }
                 break;
             case GDRIVE:
+                CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
-                CloudStorage gdrive = new Dropbox(c.getApplicationContext(),
-                        "772998477150-8fbm4o8a1a8unal1l8ifersk21o74bbi.apps.googleusercontent.com",
-                        "fv3yv6yqxlkkdjm");
                 try {
-                    list = addTo(listCloud(path, gdrive, OpenMode.DROPBOX));
+                    list = addTo(listCloud(path, cloudStorageGDrive, OpenMode.GDRIVE));
                 } catch (CloudPluginException e) {
+                    e.printStackTrace();
                     return new ArrayList<>();
                 }
                 break;
             case ONEDRIVE:
+                CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
-                CloudStorage onedrive = new Dropbox(c.getApplicationContext(), "35x9e2zmn2m6q6t",
-                        "fv3yv6yqxlkkdjm");
                 try {
-                    list = addTo(listCloud(path, onedrive, OpenMode.DROPBOX));
+                    list = addTo(listCloud(path, cloudStorageOneDrive, OpenMode.ONEDRIVE));
                 } catch (CloudPluginException e) {
+                    e.printStackTrace();
                     return new ArrayList<>();
                 }
                 break;
@@ -256,14 +251,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return list;
     }
 
-    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> mFile) {
+    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> baseFiles) {
         ArrayList<LayoutElements> a = new ArrayList<>();
-        for (int i = 0; i < mFile.size(); i++) {
-            BaseFile ele = mFile.get(i);
-            File f = new File(ele.getPath());
+        for (int i = 0; i < baseFiles.size(); i++) {
+            BaseFile baseFile = baseFiles.get(i);
+            //File f = new File(ele.getPath());
             String size = "";
-            if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
-                if (ele.isDirectory()) {
+            if (!DataUtils.hiddenfiles.contains(baseFile.getPath())) {
+                if (baseFile.isDirectory()) {
                     size = "";
 
                     Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(),
@@ -271,18 +266,18 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
                     LayoutElements layoutElements = utilsProvider.getFutils()
-                            .newElement(f.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
+                            .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
                                     : ma.folder,
-                            f.getPath(), ele.getPermission(), ele.getLink(), size, 0, true, false,
-                            ele.getDate() + "");
-                    layoutElements.setMode(ele.getMode());
+                            baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
+                            baseFile.getDate() + "");
+                    layoutElements.setMode(baseFile.getMode());
                     a.add(layoutElements);
                     ma.folder_count++;
                 } else {
                     long longSize = 0;
                     try {
-                        if (ele.getSize() != -1) {
-                            longSize = ele.getSize();
+                        if (baseFile.getSize() != -1) {
+                            longSize = baseFile.getSize();
                             size = Formatter.formatFileSize(c, longSize);
                         } else {
                             size = "";
@@ -293,9 +288,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                     }
                     try {
                         LayoutElements layoutElements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermission(),
-                                ele.getLink(), size, longSize, false, false, ele.getDate() + "");
-                        layoutElements.setMode(ele.getMode());
+                                baseFile.getPath(), !ma.IS_LIST, ma.res), baseFile.getPath(), baseFile.getPermission(),
+                                baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
+                        layoutElements.setMode(baseFile.getMode());
                         a.add(layoutElements);
                         ma.file_count++;
                     } catch (Exception e) {
@@ -476,13 +471,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
 
     /**
      * Lists files from an OTG device
-     * @param path the path to the directory tree, starts with prefix 'otg:/'
+     * @param path the path to the directory tree, starts with prefix {@link com.amaze.filemanager.utils.OTGUtil#PREFIX_OTG}
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
      */
     ArrayList<BaseFile> listOtg(String path) {
 
-        return RootHelper.getDocumentFilesList(path, c);
+        return OTGUtil.getDocumentFilesList(path, c);
     }
 
     boolean contains(String[] types, String path) {

@@ -213,7 +213,7 @@ public class Futils {
      */
     public static long folderSize(String path, Context context) {
         long length = 0L;
-        for (BaseFile baseFile : RootHelper.getDocumentFilesList(path, context)) {
+        for (BaseFile baseFile : OTGUtil.getDocumentFilesList(path, context)) {
             if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
             else length += baseFile.length();
 
@@ -677,13 +677,19 @@ public class Futils {
         c.build().show();
     }
 
-    public boolean canGoBack(File f) {
-        try {
-            f.getParentFile().listFiles();
-            return true;
-        } catch (NullPointerException e) {
-            return false;
-        }
+    /**
+     * Method determines if there is something to go back to
+     * @param currentFile
+     * @param context
+     * @return
+     */
+    public boolean canGoBack(Context context, HFile currentFile) {
+
+        HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
+        ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
+
+        if (parentFiles == null) return false;
+        else return true;
     }
 
     public String getdate(File f) {

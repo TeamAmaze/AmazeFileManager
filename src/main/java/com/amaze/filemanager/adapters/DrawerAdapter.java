@@ -152,22 +152,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
-
-                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.BOX);
-                                m.mainActivityHelper.showCloudEditDialog(entry);
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
-
-                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.DROPBOX);
-                                m.mainActivityHelper.showCloudEditDialog(entry);
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
-
-                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.GDRIVE);
-                                m.mainActivityHelper.showCloudEditDialog(entry);
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
-
-                                CloudEntry entry = DataUtils.getAccount(title, OpenMode.ONEDRIVE);
-                                m.mainActivityHelper.showCloudEditDialog(entry);
                             }
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();
