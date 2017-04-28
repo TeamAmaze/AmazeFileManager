@@ -372,10 +372,6 @@ public class HFile {
                 parentPath = new File(path).getParent();
                 break;
             case OTG:
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
-                        context, false);
-                parentPath =  documentSourceFile.getParentFile().getName();
-                break;
             default:
                 StringBuilder builder = new StringBuilder(path);
                 StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,

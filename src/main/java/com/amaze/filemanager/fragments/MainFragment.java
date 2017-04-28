@@ -941,7 +941,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         MAIN_ACTIVITY.isCloudOpen = true;
                         MAIN_ACTIVITY.cloudBaseFile = new BaseFile(getActivity().getExternalCacheDir()
                                 + "/" + sourceFile.getName());
-                        
+
                         new CopyFileCheck(this, getActivity().getExternalCacheDir().getPath(),
                                 false, MAIN_ACTIVITY, false).execute(baseFiles);
                     }
@@ -1328,7 +1328,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }
 
                 } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
-                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")

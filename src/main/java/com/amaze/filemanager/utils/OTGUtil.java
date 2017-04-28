@@ -40,8 +40,8 @@ public class OTGUtil {
         for (int i = 0; i < parts.length; i++) {
 
             // first omit 'otg:/' before iterating through DocumentFile
-            if (path.equals(OTGUtil.PREFIX_OTG)) break;
-            if (parts[i].equals("")) continue;
+            if (path.equals(OTGUtil.PREFIX_OTG + "/")) break;
+            if (parts[i].equals("otg:") || parts[i].equals("")) continue;
             Log.d(context.getClass().getSimpleName(), "Currently at: " + parts[i]);
             // iterating through the required path to find the end point
             rootUri = rootUri.findFile(parts[i]);

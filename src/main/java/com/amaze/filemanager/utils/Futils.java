@@ -731,6 +731,7 @@ public class Futils {
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case OTG:
                 return true;
             default:
                 HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
@@ -1067,31 +1068,40 @@ public class Futils {
             }
         } else if (hFile.isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
+                    hFile.getPath()));
 
             return new long[] {cloudStorageDropbox.getAllocation().getTotal(),
                     (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
-                    cloudStorageDropbox.getAllocation().getUsed()
+                    folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
             };
         } else if (hFile.isBoxFile()) {
             CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
+                    hFile.getPath()));
 
             return new long[] {cloudStorageBox.getAllocation().getTotal(),
                     (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
-                    cloudStorageBox.getAllocation().getUsed()
+                    folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
             };
         } else if (hFile.isGoogleDriveFile()) {
             CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
+            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
+                    hFile.getPath()));
+
             return new long[] {cloudStorageGDrive.getAllocation().getTotal(),
                     (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
-                    cloudStorageGDrive.getAllocation().getUsed()
+                    folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
             };
         } else if (hFile.isOneDriveFile()) {
             CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
+            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                    hFile.getPath()));
             return new long[] {cloudStorageOneDrive.getAllocation().getTotal(),
                     (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
-                    cloudStorageOneDrive.getAllocation().getUsed()
+                    folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
             };
         }
         return new long[]{-1,-1,-1};

@@ -616,7 +616,7 @@ public class MainActivity extends BaseActivity implements
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isUsbDeviceConnected()) rv.add(OTGUtil.PREFIX_OTG);
+            if (isUsbDeviceConnected()) rv.add(OTGUtil.PREFIX_OTG + "/");
         }
         return rv;
     }
@@ -753,7 +753,7 @@ public class MainActivity extends BaseActivity implements
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if (OTGUtil.PREFIX_OTG.equals(file)) {
+            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                 name = "OTG";
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
@@ -888,7 +888,7 @@ public class MainActivity extends BaseActivity implements
                 selectedStorage = i;
                 adapter.toggleChecked(selectedStorage);
 
-                if (((EntryItem) directoryItems.get(i)).getPath().equals(OTGUtil.PREFIX_OTG) &&
+                if (((EntryItem) directoryItems.get(i)).getPath().contains(OTGUtil.PREFIX_OTG) &&
                         sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
@@ -1571,7 +1571,7 @@ public class MainActivity extends BaseActivity implements
                     } else if ("/".equals(file)) {
                         name = getResources().getString(R.string.rootdirectory);
                         icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
-                    } else if (OTGUtil.PREFIX_OTG.equals(file)) {
+                    } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                         name = "OTG";
                         icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
                     } else name = f.getName();
@@ -2768,11 +2768,11 @@ public class MainActivity extends BaseActivity implements
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                     if (sharedPref.getString(KEY_PREF_OTG, null) == null) {
                         sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                        updateDrawer();
+                        refreshDrawer();
                     }
                 } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                     sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
-                    updateDrawer();
+                    refreshDrawer();
                 }
             }
         }
