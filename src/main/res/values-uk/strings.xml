@@ -77,7 +77,7 @@
   <string name="file">Файл</string>
   <string name="folder">Тека</string>
   <string name="title_files">Файли</string>
-  <string name="title_dirs">Теки</string>
+  <string name="title_dirs">Папки</string>
   <string name="newfolder">Нова тека</string>
   <string name="entername">Введіть ім\'я</string>
   <string name="extracting">Розпаковування...</string>
@@ -355,7 +355,7 @@
   <string name="documents">Документи</string>
   <string name="images">Зображення</string>
   <string name="clear">Очистити</string>
-  <string name="md5">md5: </string>
+  <string name="md5">MD5</string>
   <string name="md5_2">Копіювати md5</string>
   <string name="total">Загалом: </string>
   <string name="calculating">обчислюю </string>
@@ -584,6 +584,29 @@
   <string name="contributors_5_summary">Колірний перехід, при перемиканні вкладок</string>
   <string name="contributors_6_summary">FTP Сервер</string>
   <string name="contributors_7_summary">Запустити інтерактивну оболонку</string>
+  <string name="connection_exists">З\'єднання вже існує</string>
+  <string name="crypt_encrypting">Шифрування</string>
+  <string name="crypt_decrypting">Дешифрування</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Зашифровано</string>
+  <string name="crypt_decrypted">Розшифровано</string>
+  <string name="crypt_encrypt">Шифрувати</string>
+  <string name="crypt_decrypt">Розшифрувати</string>
+  <string name="operation_fail_following">Невдала операція для наступних файлів</string>
+  <string name="crypt_pref_master_password_title">Основний пароль</string>
+  <string name="crypt_pref_master_password_summary">Встановіть основний пароль для шифрування.          Залиште порожнім для видалення.</string>
+  <string name="crypt_pref_fingerprint_title">Відбиток пальця</string>
+  <string name="crypt_pref_fingerprint_summary">Використайте відбиток пальця для підтвердження шифрування</string>
+  <string name="crypt_fingerprint_no_permission">Відсутні дозволи відбитка пальців</string>
+  <string name="crypt_fingerprint_not_enrolled">Відсутні зареєстровані відбитки пальця</string>
+  <string name="crypt_fingerprint_no_security">Захист блокування екрану не знайдено</string>
+  <string name="crypt_warning_key">Майте на увазі, при зміні графічного ключа          в параметрах системи, ви не зможете розшифрувати цей вміст.</string>
+  <string name="warning_never_show">Більше не нагадувати</string>
+  <string name="warning_confirm">Готово!</string>
+  <string name="crypt_encryption_fail">Не вдалося зашифрувати</string>
+  <string name="crypt_decryption_fail">Не вдалося розшифрувати</string>
+  <string name="crypt_decryption_fail_password">Пароль невірний!</string>
+  <string name="crypt_fingerprint_authenticate">Торкніться сенсору для продовження</string>
+  <string name="authenticate_password">Введіть пароль</string>
   <string name="bytes">Байт</string>
 </resources>

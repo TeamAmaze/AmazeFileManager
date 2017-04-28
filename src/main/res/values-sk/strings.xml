@@ -571,6 +571,29 @@
   <string name="contributors_5_summary">Farebný prechod Keď potiahnete kartu</string>
   <string name="contributors_6_summary">FTP Server</string>
   <string name="contributors_7_summary">Spustiť interaktívny shell</string>
+  <string name="connection_exists">Pripojenie už existuje</string>
+  <string name="crypt_encrypting">Šifrovanie</string>
+  <string name="crypt_decrypting">Dešifrovanie</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Šifrované</string>
+  <string name="crypt_decrypted">Dešifrované</string>
+  <string name="crypt_encrypt">Šifrovať</string>
+  <string name="crypt_decrypt">Dešifrovať</string>
+  <string name="operation_fail_following">Operácia zlyhala pre nasledovné súbory</string>
+  <string name="crypt_pref_master_password_title">Hlavné heslo</string>
+  <string name="crypt_pref_master_password_summary">Nastavte hlavné heslo pre šifrovanie. Pre odstránenie hesla ponechajte prázdne.</string>
+  <string name="crypt_pref_fingerprint_title">Odtlačok prsta</string>
+  <string name="crypt_pref_fingerprint_summary">Použiť odtlačok prsta na overenie šifrovania</string>
+  <string name="crypt_fingerprint_no_permission">Oprávnenie odtlačkov prstov chýba</string>
+  <string name="crypt_fingerprint_not_enrolled">Nebol zapísaný žiadny odtlačok prsta</string>
+  <string name="crypt_fingerprint_no_security">Nebolo nájdené žiadne zabezpečenie obrazovky uzamknutia</string>
+  <string name="crypt_warning_key">Upozorňujeme, že keď zmeníte bezpečnostný vzor v nastaveniach systému,  nebudete môcť tento obsah dešifrovať.</string>
+  <string name="warning_never_show">Nabudúce neinformovať</string>
+  <string name="warning_confirm">Rozumiem!</string>
+  <string name="crypt_encryption_fail">Zašifrovanie sa nepodarilo</string>
+  <string name="crypt_decryption_fail">Dešifrovanie sa nepodarilo</string>
+  <string name="crypt_decryption_fail_password">Nesprávne heslo!</string>
+  <string name="crypt_fingerprint_authenticate">Pre pokračovanie sa dotknite sa senzora</string>
+  <string name="authenticate_password">Zadajte heslo</string>
   <string name="bytes">Bajtov</string>
 </resources>

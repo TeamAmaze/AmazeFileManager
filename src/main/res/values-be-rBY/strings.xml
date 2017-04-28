@@ -591,5 +591,21 @@
   <string name="crypt_decrypted">Расшыфраваны</string>
   <string name="crypt_encrypt">Шыфраваць</string>
   <string name="crypt_decrypt">Расшыфроўваць</string>
+  <string name="operation_fail_following">Не атрымалася выканаць аперацыю для наступных файлаў</string>
+  <string name="crypt_pref_master_password_title">Асноўны пароль</string>
+  <string name="crypt_pref_master_password_summary">Задайце пароль для шыфравання. Пакіньце поле пустым для выдалення.</string>
+  <string name="crypt_pref_fingerprint_title">Адбітак пальца</string>
+  <string name="crypt_pref_fingerprint_summary">Выкарыстоўваць адбіткі пальцаў для аўтэнтыфікацыі шыфравання</string>
+  <string name="crypt_fingerprint_no_permission">Адсутнічаюць дазволы для адбітка пальцаў</string>
+  <string name="crypt_fingerprint_not_enrolled">Адбітак не зарэгістраваны</string>
+  <string name="crypt_fingerprint_no_security">Абаронены экран не знойдзены</string>
+  <string name="crypt_warning_key">Майце на ўвазе, пры змене графічнага ключа ў параметрах сістэмы, вы не зможаце расшыфраваць гэта змесціва.</string>
+  <string name="warning_never_show">Не інфармаваць зноў</string>
+  <string name="warning_confirm">Зразумела!</string>
+  <string name="crypt_encryption_fail">Не атрымалася зашыфраваць</string>
+  <string name="crypt_decryption_fail">Не атрымалася расшыфраваць</string>
+  <string name="crypt_decryption_fail_password">Няслушны пароль!</string>
+  <string name="crypt_fingerprint_authenticate">Краніцеся сэнсара для працягу</string>
+  <string name="authenticate_password">Увядзіце пароль</string>
   <string name="bytes">Байты</string>
 </resources>
