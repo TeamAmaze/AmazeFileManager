@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
+import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;
@@ -64,7 +66,16 @@ public class CloudHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         //contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
         contentValues.put(COLUMN_CLOUD_SERVICE, cloudEntry.getServiceType().ordinal());
-        contentValues.put(COLUMN_CLOUD_PERSIST, cloudEntry.getPersistData());
+
+        try {
+
+            contentValues.put(COLUMN_CLOUD_PERSIST, CryptUtil.encryptPassword(context,
+                    cloudEntry.getPersistData()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            // failed to encrypt, revert back to plain
+            contentValues.put(COLUMN_CLOUD_PERSIST, cloudEntry.getPersistData());
+        }
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_CLOUD_PERSIST, null, contentValues);
@@ -93,8 +104,15 @@ public class CloudHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_CLOUD_ID, newCloudEntry.getId());
         contentValues.put(COLUMN_CLOUD_SERVICE, newCloudEntry.getServiceType().ordinal());
-        contentValues.put(COLUMN_CLOUD_PERSIST, newCloudEntry.getServiceType().ordinal());
+        try {
 
+            contentValues.put(COLUMN_CLOUD_PERSIST, CryptUtil.encryptPassword(context,
+                    newCloudEntry.getPersistData()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            // failed to encrypt, revert back to plain
+            contentValues.put(COLUMN_CLOUD_PERSIST, newCloudEntry.getPersistData());
+        }
 
         sqLiteDatabase.update(TABLE_CLOUD_PERSIST, contentValues, COLUMN_CLOUD_SERVICE + " = ?",
                 new String[]{serviceType.ordinal() + ""});
@@ -116,7 +134,14 @@ public class CloudHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             cloudEntry.setId((cursor.getInt(0)));
             cloudEntry.setServiceType(serviceType);
-            cloudEntry.setPersistData(cursor.getString(2));
+            try {
+                cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                cloudEntry.setPersistData(cursor.getString(2));
+                // we're getting plain text, just in case it works,
+                // if this doesn't restore the cloud storage state, it'll automatically be updated later
+            }
 
             cursor.close();
         } else {
@@ -146,7 +171,14 @@ public class CloudHandler extends SQLiteOpenHelper {
                     CloudEntry cloudEntry = new CloudEntry();
                     cloudEntry.setId((cursor.getInt(0)));
                     cloudEntry.setServiceType(OpenMode.getOpenMode(cursor.getInt(1)));
-                    cloudEntry.setPersistData(cursor.getString(2));
+                    try {
+                        cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        cloudEntry.setPersistData(cursor.getString(2));
+                        // we're getting plain text, just in case it works,
+                        // if this doesn't restore the cloud storage state, it'll automatically be updated later
+                    }
 
                     entryList.add(cloudEntry);
                 } while (cursor.moveToNext());

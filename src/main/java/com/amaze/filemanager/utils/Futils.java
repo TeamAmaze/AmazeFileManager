@@ -997,6 +997,7 @@ public class Futils {
         Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
         cancelButton.setTextColor(Color.parseColor(main.fabSkin));
         builder.customView(rootView, true);
+        builder.canceledOnTouchOutside(false);
 
         builder.theme(appTheme.getMaterialDialogTheme());
 
