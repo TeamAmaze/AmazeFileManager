@@ -38,7 +38,15 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -87,7 +95,7 @@ public class IconHolder {
             }
         }
 
-        private void processResult(LoadResult result) {
+        private synchronized void processResult(LoadResult result) {
             // Cache the new drawable
             final String filePath =(result.fso);
             mAppIcons.put(filePath, result.result);
@@ -147,7 +155,7 @@ public class IconHolder {
      * @param defaultIcon Drawable to be used in case no specific one could be found
      * @return Drawable The drawable reference
      */
-    public void loadDrawable(ImageView iconView, final String fso, Drawable defaultIcon) {
+    public void loadDrawable(final ImageView iconView, final String fso, Drawable defaultIcon) {
         if (!mUseThumbs) {
             return;
         }
@@ -158,7 +166,6 @@ public class IconHolder {
             iconView.setImageBitmap(this.mAppIcons.get(filePath));
             return;
         }
-        mRequests.put(iconView, fso);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -169,11 +176,14 @@ public class IconHolder {
                     mWorkerThread.start();
                     mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
                 }
+
+                mRequests.put(iconView, fso);
                 Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
                 msg.sendToTarget();
 
             }
-        }).start();    }
+        }).start();
+    }
 
     /**
      * Cancel loading of a drawable for a certain ImageView.
@@ -235,7 +245,7 @@ public class IconHolder {
             return null;
         }
     }
-        private Bitmap getAppDrawable(String path) throws OutOfMemoryError{
+        private Bitmap getAppDrawable(String path) throws OutOfMemoryError {
             Bitmap bitsat;
             try {
                 PackageManager pm = mContext.getPackageManager();
@@ -257,7 +267,7 @@ public class IconHolder {
         return bitsat;
         }
 
-		private Bitmap loadImage(String path) throws OutOfMemoryError{
+		private Bitmap loadImage(String path) throws OutOfMemoryError {
 			Bitmap bitsat;
 
             try {
@@ -272,7 +282,35 @@ public class IconHolder {
 				options.inJustDecodeBounds = false;
 
 				Bitmap bit;
-                if(path.startsWith("smb:/"))bit= BitmapFactory.decodeStream(new SmbFileInputStream(path));
+                if(path.startsWith("smb:/")) {
+                    bit = BitmapFactory.decodeStream(new SmbFileInputStream(path));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+
+                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageDropbox.download(CloudUtil
+                            .stripPath(OpenMode.DROPBOX, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+
+                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageBox.download(CloudUtil
+                            .stripPath(OpenMode.BOX, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+
+                    CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageGDrive.download(CloudUtil
+                            .stripPath(OpenMode.GDRIVE, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+
+                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageOneDrive.download(CloudUtil
+                            .stripPath(OpenMode.ONEDRIVE, path)));
+                } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
+                    bit = BitmapFactory.decodeStream(OTGUtil.getDocumentFilesList(path, mContext).get(0).getInputStream(mContext));
+                }
                 else bit= BitmapFactory.decodeFile(path, options);
 
 				bitsat = bit;// decodeFile(path);//.createScaledBitmap(bits,imageViewReference.get().getHeight(),imageViewReference.get().getWidth(),true);

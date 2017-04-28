@@ -39,6 +39,7 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -152,6 +154,21 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                             }
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();

@@ -9,6 +9,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -70,6 +71,30 @@ public class GenericCopyUtil {
 
                 // source is in smb
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
+            } else if (mSourceFile.isDropBoxFile()) {
+
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                bufferedInputStream = new BufferedInputStream(cloudStorageDropbox
+                        .download(CloudUtil.stripPath(OpenMode.DROPBOX,
+                        mSourceFile.getPath())));
+            } else if (mSourceFile.isBoxFile()) {
+
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                bufferedInputStream = new BufferedInputStream(cloudStorageBox
+                        .download(CloudUtil.stripPath(OpenMode.BOX,
+                                mSourceFile.getPath())));
+            } else if (mSourceFile.isGoogleDriveFile()) {
+
+                CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                bufferedInputStream = new BufferedInputStream(cloudStorageGdrive
+                        .download(CloudUtil.stripPath(OpenMode.GDRIVE,
+                                mSourceFile.getPath())));
+            } else if (mSourceFile.isOneDriveFile()) {
+
+                CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                bufferedInputStream = new BufferedInputStream(cloudStorageOnedrive
+                        .download(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                                mSourceFile.getPath())));
             } else {
 
                 // source file is neither smb nor otg; getting a channel from direct file instead of stream

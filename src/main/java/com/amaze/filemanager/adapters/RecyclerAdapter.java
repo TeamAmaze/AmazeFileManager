@@ -445,7 +445,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             } else if (filetype == 3) {
 
                 // if the file type is any unknown variable
-                String ext = !new File(rowItem.getDesc()).isDirectory()
+                String ext = !rowItem.isDirectory()
                         ? MimeTypes.getExtension(rowItem.getTitle()) : null;
                 if (ext != null && ext.trim().length() != 0) {
                     holder.genericText.setText(ext);
@@ -714,9 +714,19 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);*/
                                 return true;
                             case R.id.share:
-                                ArrayList<File> arrayList = new ArrayList<>();
-                                arrayList.add(new File(rowItem.getDesc()));
-                                utilsProvider.getFutils().shareFiles(arrayList, mainFrag.MAIN_ACTIVITY, utilsProvider.getAppTheme(), Color.parseColor(mainFrag.fabSkin));
+                                switch (rowItem.getMode()) {
+                                    case DROPBOX:
+                                    case BOX:
+                                    case GDRIVE:
+                                    case ONEDRIVE:
+                                        utilsProvider.getFutils().shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
+                                        break;
+                                    default:
+                                        ArrayList<File> arrayList = new ArrayList<>();
+                                        arrayList.add(new File(rowItem.getDesc()));
+                                        utilsProvider.getFutils().shareFiles(arrayList, mainFrag.MAIN_ACTIVITY, utilsProvider.getAppTheme(), Color.parseColor(mainFrag.fabSkin));
+                                        break;
+                                }
                                 return true;
                             case R.id.rename:
                                 mainFrag.rename(rowItem.generateBaseFile());

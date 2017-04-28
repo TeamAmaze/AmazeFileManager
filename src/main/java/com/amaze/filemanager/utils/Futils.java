@@ -40,6 +40,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -69,6 +70,7 @@ import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -82,6 +84,8 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
 
 import java.io.File;
 import java.io.IOException;
@@ -202,6 +206,21 @@ public class Futils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return length;
+    }
+
+    public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
+        long length = 0;
+        CloudStorage cloudStorage = DataUtils.getAccount(openMode);
+        for (CloudMetaData metaData : cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
+
+            if (metaData.getFolder()) {
+                length += folderSizeCloud(openMode, metaData);
+            } else {
+                length += metaData.getSize();
+            }
+        }
+
         return length;
     }
 
@@ -344,6 +363,27 @@ public class Futils {
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
         shareFiles(a,c, AppTheme.fromIndex(theme), fab_skin);
+    }
+
+    public void shareCloudFile(String path, final OpenMode openMode, final Context context) {
+        new AsyncTask<String, Void, String>() {
+
+            @Override
+            protected String doInBackground(String... params) {
+                String shareFilePath = params[0];
+                CloudStorage cloudStorage = DataUtils.getAccount(openMode);
+                return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                Futils.copyToClipboard(context, s);
+                Toast.makeText(context,
+                        context.getResources().getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
+            }
+        }.execute(path);
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
@@ -685,11 +725,19 @@ public class Futils {
      */
     public boolean canGoBack(Context context, HFile currentFile) {
 
-        HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
-        ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
-
-        if (parentFiles == null) return false;
-        else return true;
+        // we're on main thread and can't list the cloud files
+        switch (currentFile.getMode()) {
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+                return true;
+            default:
+                HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
+                ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
+                if (parentFiles == null) return false;
+                else return true;
+        }
     }
 
     public String getdate(File f) {
@@ -771,7 +819,7 @@ public class Futils {
         a.customView(v, true);
         //a.neutralText(R.string.ok);
         a.positiveText(c.getResources().getString(R.string.ok));
-        a.neutralColor(Color.parseColor(fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
@@ -780,6 +828,54 @@ public class Futils {
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
         new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
                 c.MAIN_ACTIVITY, v).execute(hFile.getPath());
+    }
+
+    public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        String fabskin = PreferenceUtils.getAccentString(sp);
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+
+        switch (openMode) {
+            case DROPBOX:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_dropbox));
+                break;
+            case BOX:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_box));
+                break;
+            case GDRIVE:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_drive));
+                break;
+            case ONEDRIVE:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_onedrive));
+                break;
+        }
+
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.content(mainActivity.getResources().getString(R.string.cloud_remove));
+
+        builder.positiveText(mainActivity.getResources().getString(R.string.yes));
+        builder.positiveColor(Color.parseColor(fabskin));
+        builder.negativeText(mainActivity.getResources().getString(R.string.no));
+        builder.negativeColor(Color.parseColor(fabskin));
+
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                CloudHandler cloudHandler = new CloudHandler(mainActivity);
+                cloudHandler.clear(openMode);
+                DataUtils.removeAccount(openMode);
+                mainActivity.refreshDrawer();
+            }
+        });
+
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public void showEncryptWarningDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
@@ -959,21 +1055,49 @@ public class Futils {
         builder.show();
     }
 
-    public static long[] getSpaces(HFile hFile){
-        if(!hFile.isSmb() && hFile.isDirectory()){
+    public static long[] getSpaces(HFile hFile) {
+        if(!hFile.isSmb() && hFile.isDirectory() && (hFile.isSimpleFile() || hFile.isRoot())) {
             try {
                 File file=new File(hFile.getPath());
-                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(),folderSize
+                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(), folderSize
                         (new File(hFile.getPath()))};
                 return ints;
             } catch (Exception e) {
                 return new long[]{-1,-1,-1};
             }
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+
+            return new long[] {cloudStorageDropbox.getAllocation().getTotal(),
+                    (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
+                    cloudStorageDropbox.getAllocation().getUsed()
+            };
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+
+            return new long[] {cloudStorageBox.getAllocation().getTotal(),
+                    (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
+                    cloudStorageBox.getAllocation().getUsed()
+            };
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
+
+            return new long[] {cloudStorageGDrive.getAllocation().getTotal(),
+                    (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
+                    cloudStorageGDrive.getAllocation().getUsed()
+            };
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            return new long[] {cloudStorageOneDrive.getAllocation().getTotal(),
+                    (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
+                    cloudStorageOneDrive.getAllocation().getUsed()
+            };
         }
         return new long[]{-1,-1,-1};
     }
 
-    public void showProps(final HFile f, final BaseActivity c, AppTheme appTheme) {
+    public void showProps(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
         String date = null;
         try {
             date = getdate(f.lastModified());
@@ -994,8 +1118,8 @@ public class Futils {
                 .title(c.getResources().getString(R.string.properties))
                 .theme(appTheme.getMaterialDialogTheme())
                 .customView(v, true)
-                .neutralText(R.string.ok)
-                .neutralColor(Color.parseColor(fabskin))
+                .positiveText(R.string.ok)
+                .positiveColor(Color.parseColor(fabskin))
                 .build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, (f), name, parent, items, date, c, v).execute(f.getPath());
@@ -1297,8 +1421,8 @@ public class Futils {
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {
@@ -1337,8 +1461,8 @@ public class Futils {
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
         a.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog dialog) {

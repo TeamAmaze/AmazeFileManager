@@ -151,6 +151,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.CloudRail;
+import com.cloudrail.si.exceptions.AuthenticationException;
 import com.cloudrail.si.exceptions.ParseException;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -301,7 +302,9 @@ public class MainActivity extends BaseActivity implements
 
     private static HandlerThread handlerThread;
     public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
+    public boolean isCloudOpen = false;         // flag denotes whether to open a cloud file
     public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
+    public BaseFile cloudBaseFile;              // cloud base file for opening
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -1303,6 +1306,7 @@ public class MainActivity extends BaseActivity implements
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
         unbindService(mEncryptServiceConnection);
+        unbindService(mCloudServiceConnection);
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
@@ -1357,6 +1361,18 @@ public class MainActivity extends BaseActivity implements
                 new DeleteTask(getContentResolver(), this).execute(baseFiles);
             }
         }
+
+        Intent cloudIntent = new Intent(this, CopyService.class);
+        bindService(cloudIntent, mCloudServiceConnection, 0);
+
+        if (!isCloudOpen && cloudBaseFile != null) {
+            // we've opened the file and are ready to delete it
+            // don't move this to ondestroy as we'll be getting destroyed and starting
+            // an async task just before it is not a good idea
+            ArrayList<BaseFile> cloudBaseFiles = new ArrayList<>();
+            cloudBaseFiles.add(cloudBaseFile);
+            new DeleteTask(getContentResolver(), this).execute(cloudBaseFiles);
+        }
     }
 
     ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
@@ -1388,6 +1404,25 @@ public class MainActivity extends BaseActivity implements
                 } else
                     getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
                 isEncryptOpen = false;
+            }
+        }
+    };
+
+    ServiceConnection mCloudServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            if (isCloudOpen && cloudBaseFile != null) {
+                if (mainFragment != null) {
+
+                    getFutils().openFile(new File(cloudBaseFile.getPath()), MainActivity.this);
+                }
+                isCloudOpen = false;
             }
         }
     };
@@ -3114,6 +3149,10 @@ public class MainActivity extends BaseActivity implements
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
                                     return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    return false;
                                 }
                                 break;
                             case 2:
@@ -3149,9 +3188,12 @@ public class MainActivity extends BaseActivity implements
 
                                     DataUtils.addAccount(cloudStorageDropbox);
                                 } catch (CloudPluginException e) {
-
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
                                     return false;
                                 }
                                 break;
@@ -3192,6 +3234,10 @@ public class MainActivity extends BaseActivity implements
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
                                     return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    return false;
                                 }
                                 break;
                             case 4:
@@ -3230,6 +3276,10 @@ public class MainActivity extends BaseActivity implements
 
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
                                     return false;
                                 }
                                 break;

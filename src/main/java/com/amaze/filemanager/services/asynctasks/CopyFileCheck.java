@@ -86,7 +86,12 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         filesToCopy = params[0];
         long totalBytes = 0;
 
-        if (openMode==OpenMode.OTG) {
+        if (openMode == OpenMode.OTG ||
+                openMode == OpenMode.DROPBOX
+                || openMode == OpenMode.BOX
+                || openMode == OpenMode.GDRIVE
+                || openMode == OpenMode.ONEDRIVE
+                ) {
             // no helper method for OTG to determine storage space
             return null;
         }
@@ -129,12 +134,16 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     @Override
     protected void onPostExecute(CopyNode copyFolder) {
         super.onPostExecute(copyFolder);
-        if (openMode!=OpenMode.OTG) {
-
-            onEndDialog(null, null, null);
-        } else {
+        if (openMode == OpenMode.OTG
+                || openMode == OpenMode.GDRIVE
+                || openMode == OpenMode.DROPBOX
+                || openMode == OpenMode.BOX
+                || openMode == OpenMode.ONEDRIVE) {
 
             startService(filesToCopy, path, openMode);
+        } else {
+
+            onEndDialog(null, null, null);
         }
     }
 
@@ -143,6 +152,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles);
         intent.putExtra(CopyService.TAG_COPY_TARGET, target);
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openmode.ordinal());
+        intent.putExtra(CopyService.TAG_COPY_MOVE, move);
         ServiceWatcherUtil.runService(context, intent);
     }
 

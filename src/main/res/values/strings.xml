@@ -645,5 +645,8 @@
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
         Please open Amaze Cloud once.</string>
+    <string name="cloud_remove">Do you want to remove the cloud connection?</string>
+    <string name="cloud_fail_authenticate">Failed to authenticate</string>
+    <string name="cloud_share_copied">Sharable link copied to clipboard</string>
 </resources>
 

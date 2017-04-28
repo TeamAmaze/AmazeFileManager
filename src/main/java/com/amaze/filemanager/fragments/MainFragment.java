@@ -80,7 +80,9 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.EncryptService;
+import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -716,8 +718,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
                                 Toast.LENGTH_SHORT).show();
-                    else
-                        utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), Color.parseColor(fabSkin));
+                    else {
+
+                        switch (LIST_ELEMENTS.get(0).getMode()) {
+                            case DROPBOX:
+                            case BOX:
+                            case GDRIVE:
+                            case ONEDRIVE:
+                                utils.shareCloudFile(LIST_ELEMENTS.get(0).getDesc(),
+                                        LIST_ELEMENTS.get(0).getMode(), getContext());
+                                break;
+                            default:
+                                utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), Color.parseColor(fabSkin));
+                                break;
+                        }
+                    }
                     return true;
                 case R.id.openparent:
                     loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, OpenMode.FILE);
@@ -914,6 +929,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                         utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext(), false),
                                 (MainActivity) getActivity());
+                    } else if (l.getMode() == OpenMode.DROPBOX
+                            || l.getMode() == OpenMode.BOX
+                            || l.getMode() == OpenMode.GDRIVE
+                            || l.getMode() == OpenMode.ONEDRIVE) {
+                        ArrayList<BaseFile> baseFiles = new ArrayList<>();
+
+                        BaseFile sourceFile = LIST_ELEMENTS.get(position).generateBaseFile();
+
+                        baseFiles.add(sourceFile);
+                        MAIN_ACTIVITY.isCloudOpen = true;
+                        MAIN_ACTIVITY.cloudBaseFile = new BaseFile(getActivity().getExternalCacheDir()
+                                + "/" + sourceFile.getName());
+                        
+                        new CopyFileCheck(this, getActivity().getExternalCacheDir().getPath(),
+                                false, MAIN_ACTIVITY, false).execute(baseFiles);
                     }
                     else if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(new File(l.getDesc()));

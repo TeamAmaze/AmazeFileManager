@@ -35,8 +35,12 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OpenMode;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.ArrayList;
 
@@ -73,6 +77,50 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
 
                 DocumentFile documentFile = RootHelper.getDocumentFile(a.getPath(), cd, false);
                  b = documentFile.delete();
+            }
+        } else if (files.get(0).isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+            for (BaseFile baseFile : files) {
+                try {
+                    cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    b = false;
+                    break;
+                }
+            }
+        } else if (files.get(0).isBoxFile()) {
+            CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+            for (BaseFile baseFile : files) {
+                try {
+                    cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    b = false;
+                    break;
+                }
+            }
+        } else if (files.get(0).isGoogleDriveFile()) {
+            CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+            for (BaseFile baseFile : files) {
+                try {
+                    cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    b = false;
+                    break;
+                }
+            }
+        } else if (files.get(0).isOneDriveFile()) {
+            CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+            for (BaseFile baseFile : files) {
+                try {
+                    cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    b = false;
+                    break;
+                }
             }
         } else {
 
