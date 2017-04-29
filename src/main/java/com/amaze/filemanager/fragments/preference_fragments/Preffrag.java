@@ -45,7 +45,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.activities.Preferences;
+import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -242,16 +242,16 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 return false;
             /*FROM HERE BE FRAGMENTS*/
             case "colors":
-                ((com.amaze.filemanager.activities.Preferences) getActivity())
-                        .selectItem(Preferences.COLORS_PREFERENCE);
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.COLORS_PREFERENCE);
                 return true;
             case "sidebar_folders":
-                ((com.amaze.filemanager.activities.Preferences) getActivity())
-                        .selectItem(Preferences.FOLDERS_PREFERENCE);
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.FOLDERS_PREFERENCE);
                 return true;
             case "sidebar_quickaccess":
-                ((com.amaze.filemanager.activities.Preferences) getActivity())
-                        .selectItem(Preferences.QUICKACCESS_PREFERENCE);
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.QUICKACCESS_PREFERENCE);
                 return true;
         }
 

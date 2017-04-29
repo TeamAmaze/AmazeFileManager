@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.Preferences;
+import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -35,7 +35,7 @@ import java.util.List;
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     SharedPreferences sharedPref;
-    Preferences activity;
+    PreferencesActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.color_prefs);
 
-        activity = (Preferences) getActivity();
+        activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         final CheckBox checkBoxPreference = (CheckBox) findPreference("random_checkbox");

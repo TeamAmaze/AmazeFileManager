@@ -2015,7 +2015,7 @@ public class MainActivity extends BaseActivity implements
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MainActivity.this, Preferences.class);
+                Intent in = new Intent(MainActivity.this, PreferencesActivity.class);
                 startActivity(in);
                 finish();
             }

@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.utils.TinyDB;
 
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class QuickAccessPref extends PreferenceFragment implements Preference.On
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
+        if (preferences != null) ((PreferencesActivity) getActivity()).setChanged();
         currentValue[prefPos.get(preference.getKey())] = ((SwitchPreference) preference).isChecked();
         TinyDB.putBooleanArray(preferences, KEY, currentValue);
         return true;
