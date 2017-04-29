@@ -109,6 +109,7 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -1417,8 +1418,19 @@ public class MainActivity extends BaseActivity implements
         dataUtils.setAccounts(accounts);
 
         ArrayList<String[]> books = new ArrayList<>();
-        for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-            books.add(file);
+        if(!sharedPref.contains(FoldersPref.KEY)) {
+            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+                books.add(file);
+            }
+        } else {
+            ArrayList<FoldersPref.Trio> booksPref =
+                    FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
+                            FoldersPref.KEY, null));
+
+            for (FoldersPref.Trio t : booksPref) {
+                if(t.third)
+                    books.add(new String[] {t.first, t.second});
+            }
         }
         dataUtils.setBooks(books);
 

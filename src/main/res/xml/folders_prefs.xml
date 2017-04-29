@@ -1,24 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
-        android:defaultValue="true"
-        android:key="dcim"
-        android:title="DCIM"
-        android:summary="SD/docs"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
-        android:defaultValue="true"
-        android:key="download"
-        android:title="Download"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
-        android:defaultValue="true"
-        android:key="movie"
-        android:title="Movie"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
-        android:defaultValue="true"
-        android:key="music"
-        android:title="Music"/>
-    <com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference
-        android:defaultValue="true"
-        android:key="pictures"
-        android:title="Pictures"/>
 </PreferenceScreen>

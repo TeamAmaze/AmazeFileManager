@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 import com.amaze.filemanager.R;
@@ -20,6 +21,9 @@ public class NamePathSwitchPreference extends Preference {
     public static final int EDIT = 0, SWITCH = 1, DELETE = 2;
 
     private int lastItemClicked = -1;
+    private Switch switchView;
+    private Boolean shouldEnableSwitch = null;
+    private ImageButton deleteButton;
 
     public NamePathSwitchPreference(Context context) {
         super(context);
@@ -44,9 +48,22 @@ public class NamePathSwitchPreference extends Preference {
         setListener(view, R.id.switch_button, SWITCH);
         setListener(view, R.id.delete, DELETE);
 
-        ((Switch) view.findViewById(R.id.switch_button)).setChecked(true);
+        switchView = ((Switch) view.findViewById(R.id.switch_button));
+        switchView.setChecked(shouldEnableSwitch != null? shouldEnableSwitch : true);
+
+        deleteButton = ((ImageButton) view.findViewById(R.id.delete));
 
         super.onBindView(view);
+    }
+
+    public void setChecked(boolean checked) {
+        if(switchView != null)
+            switchView.setChecked(checked);
+        else shouldEnableSwitch = checked;
+    }
+
+    public boolean isChecked() {
+        return switchView.isChecked();
     }
 
     public int getLastItemClicked() {
