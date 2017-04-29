@@ -91,6 +91,22 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         return false;
     }
 
+    public static ArrayList<Trio> castStringListToTrioList(ArrayList<String> arrayList) {
+        ArrayList<Trio> newList = new ArrayList<>(arrayList.size());
+        for(String s : arrayList) {
+            newList.add(new Trio(s));
+        }
+        return newList;
+    }
+
+    protected ArrayList<String> castTrioListToStringList(ArrayList<Trio> arrayList) {
+        ArrayList<String> newList = new ArrayList<>(arrayList.size());
+        for(Trio s : arrayList) {
+            newList.add(s.toRestorableString());
+        }
+        return newList;
+    }
+
     private ArrayList<String> getValue() {
         ArrayList<String> dflt = new ArrayList<>();
 
@@ -110,15 +126,15 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         LayoutInflater li = LayoutInflater.from(activity);
-        final View v = li.inflate(R.layout.dialog_twoedittexts, null);
+        final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.create_quick_access)
+                .title(R.string.edit_shortcut)
                 .theme(activity.getAppTheme().getMaterialDialogTheme())
                 .positiveColor(fab_skin)
-                .positiveText(R.string.create)
+                .positiveText(getString(R.string.edit).toUpperCase())
                 .negativeColor(fab_skin)
                 .negativeText(R.string.cancel)
                 .customView(v, false)
@@ -147,7 +163,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.questiondelete)
+                .title(R.string.questiondelete_shortcut)
                 .theme(activity.getAppTheme().getMaterialDialogTheme())
                 .positiveColor(fab_skin)
                 .positiveText(R.string.yes)
@@ -170,26 +186,13 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         dialog.show();
     }
 
-    public static ArrayList<Trio> castStringListToTrioList(ArrayList<String> arrayList) {
-        ArrayList<Trio> newList = new ArrayList<>(arrayList.size());
-        for(String s : arrayList) {
-            newList.add(new Trio(s));
-        }
-        return newList;
-    }
-
-    protected ArrayList<String> castTrioListToStringList(ArrayList<Trio> arrayList) {
-        ArrayList<String> newList = new ArrayList<>(arrayList.size());
-        for(Trio s : arrayList) {
-            newList.add(s.toRestorableString());
-        }
-        return newList;
-    }
-
     /**
      * Contains 2 Strings and a boolean
      */
     public static class Trio {
+        /**
+         * For explanation check TinyDB.DIVIDER
+         */
         static final String DIVIDER = "‚‗‗‚";
 
         static final String TRUE = "T", FALSE = "F";

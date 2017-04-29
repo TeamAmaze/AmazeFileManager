@@ -34,7 +34,7 @@ public class TinyDB {
      *  The "‚" character is not a comma, it is the SINGLE LOW-9 QUOTATION MARK. U-201A
      *  + U-2017 + U-201A are used for separating the items in a list.
      */
-    public static final String DIVIDER = "‚‗‚";
+    private static final String DIVIDER = "‚‗‚";
 
     /**
      * Put array of Boolean into SharedPreferences with 'key' and save
