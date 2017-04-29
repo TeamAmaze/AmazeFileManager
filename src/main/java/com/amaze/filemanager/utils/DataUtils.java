@@ -13,24 +13,29 @@ import java.util.List;
 //Central data being used across activity,fragments and classes
 public class DataUtils {
 
-    public static ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
-            listfiles = new ArrayList<>(), history = new ArrayList<>();
-    public static List<String> storages = new ArrayList<>();
-    public static final String DRIVE = "drive", SMB = "smb", BOOKS = "books",
-            HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
     public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
             RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
-    public static ArrayList<Item> list = new ArrayList<>();
-    public static ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>(),
+    public static final String DRIVE = "drive", SMB = "smb", BOOKS = "books",
+            HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
+
+    private ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
+            listfiles = new ArrayList<>(), history = new ArrayList<>(), storages = new ArrayList<>();
+
+    private ArrayList<Item> list = new ArrayList<>();
+    private ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>(),
             accounts = new ArrayList<>();
 
-    static DataChangeListener dataChangeListener;
+    private DataChangeListener dataChangeListener;
 
-    public static int containsServer(String[] a) {
+    public DataUtils() {
+
+    }
+
+    public int containsServer(String[] a) {
         return contains(a, servers);
     }
 
-    public static int containsServer(String path) {
+    public int containsServer(String path) {
         if (servers == null) return -1;
         int i = 0;
         for (String[] x : servers) {
@@ -41,19 +46,19 @@ public class DataUtils {
         return -1;
     }
 
-    public static int containsBooks(String[] a) {
+    public int containsBooks(String[] a) {
         return contains(a, books);
     }
 
-    public static int containsAccounts(String[] a) {
+    public int containsAccounts(String[] a) {
         return contains(a, accounts);
     }
 
-    public static int containsAccounts(String a) {
+    public int containsAccounts(String a) {
         return contains(a, accounts);
     }
 
-    public static void clear() {
+    public void clear() {
         hiddenfiles = new ArrayList<>();
         gridfiles = new ArrayList<>();
         listfiles = new ArrayList<>();
@@ -64,11 +69,11 @@ public class DataUtils {
         accounts = new ArrayList<>();
     }
 
-    public static void registerOnDataChangedListener(DataChangeListener dataChangeListener) {
-        DataUtils.dataChangeListener = dataChangeListener;
+    public void registerOnDataChangedListener(DataChangeListener l) {
+        dataChangeListener = l;
     }
 
-    static int contains(String a, ArrayList<String[]> b) {
+    int contains(String a, ArrayList<String[]> b) {
         int i = 0;
         for (String[] x : b) {
             if (x[1].equals(a)) return i;
@@ -78,7 +83,7 @@ public class DataUtils {
         return -1;
     }
 
-    static int contains(String[] a, ArrayList<String[]> b) {
+    int contains(String[] a, ArrayList<String[]> b) {
         if (b == null) return -1;
         int i = 0;
         for (String[] x : b) {
@@ -89,139 +94,151 @@ public class DataUtils {
         return -1;
     }
 
-    public static void removeBook(int i) {
+    public void removeBook(int i) {
         if (books.size() > i)
             books.remove(i);
     }
 
-    public static void removeAcc(int i) {
+    public void removeAcc(int i) {
         if (accounts.size() > i)
             accounts.remove(i);
     }
 
-    public static void removeServer(int i) {
+    public void removeServer(int i) {
         if (servers.size() > i)
             servers.remove(i);
     }
 
-    public static void addBook(String[] i) {
+    public void addBook(String[] i) {
         books.add(i);
     }
 
-    public static void addBook(String[] i, boolean refreshdrawer) {
+    public void addBook(String[] i, boolean refreshdrawer) {
         if (refreshdrawer && dataChangeListener != null) dataChangeListener.onBookAdded(i, true);
         books.add(i);
     }
 
-    public static void addAcc(String[] i) {
+    public void addAcc(String[] i) {
         accounts.add(i);
     }
 
-    public static void addServer(String[] i) {
+    public void addServer(String[] i) {
         servers.add(i);
     }
 
-    public static void addHiddenFile(String i) {
+    public void addHiddenFile(String i) {
         hiddenfiles.add(i);
         if (dataChangeListener != null)
             dataChangeListener.onHiddenFileAdded(i);
     }
 
-    public static void removeHiddenFile(String i) {
+    public void removeHiddenFile(String i) {
         hiddenfiles.remove(i);
         if (dataChangeListener != null)
             dataChangeListener.onHiddenFileRemoved(i);
     }
 
-    public static void addHistoryFile(String i) {
+    public ArrayList<String> getHistory() {
+        return history;
+    }
+
+    public void addHistoryFile(String i) {
         history.add(i);
         if (dataChangeListener != null)
             dataChangeListener.onHistoryAdded(i);
     }
 
-    public static void sortBook() {
+    public void sortBook() {
         Collections.sort(books, new BookSorter());
     }
 
-    public static void setServers(ArrayList<String[]> servers) {
+    public void setServers(ArrayList<String[]> servers) {
         if (servers != null)
-            DataUtils.servers = servers;
+            this.servers = servers;
     }
 
-    public static void setBooks(ArrayList<String[]> books) {
+    public void setBooks(ArrayList<String[]> books) {
         if (books != null)
-            DataUtils.books = books;
+            this.books = books;
     }
 
-    public static void setAccounts(ArrayList<String[]> accounts) {
+    public void setAccounts(ArrayList<String[]> accounts) {
         if (accounts != null)
-            DataUtils.accounts = accounts;
+            this.accounts = accounts;
     }
 
-    public static ArrayList<String[]> getServers() {
+    public ArrayList<String[]> getServers() {
         return servers;
     }
 
-    public static ArrayList<String[]> getBooks() {
+    public ArrayList<String[]> getBooks() {
         return books;
     }
 
-    public static ArrayList<String[]> getAccounts() {
+    public ArrayList<String[]> getAccounts() {
         return accounts;
     }
 
-    public static ArrayList<String> getHiddenfiles() {
+    public ArrayList<String> getHiddenfiles() {
         return hiddenfiles;
     }
 
-    public static void setHiddenfiles(ArrayList<String> hiddenfiles) {
+    public void setHiddenfiles(ArrayList<String> hiddenfiles) {
         if (hiddenfiles != null)
-            DataUtils.hiddenfiles = hiddenfiles;
+            this.hiddenfiles = hiddenfiles;
     }
 
+    public ArrayList<String> getGridFiles() {
+        return gridfiles;
+    }
 
-    public static void setGridfiles(ArrayList<String> gridfiles) {
+    public void setGridfiles(ArrayList<String> gridfiles) {
         if (gridfiles != null)
-            DataUtils.gridfiles = gridfiles;
+            this.gridfiles = gridfiles;
     }
 
-    public static ArrayList<String> getListfiles() {
+    public ArrayList<String> getListfiles() {
         return listfiles;
     }
 
-    public static void setListfiles(ArrayList<String> listfiles) {
+    public void setListfiles(ArrayList<String> listfiles) {
         if (listfiles != null)
-            DataUtils.listfiles = listfiles;
+            this.listfiles = listfiles;
     }
 
-    public static void clearHistory() {
+    public void clearHistory() {
         history = new ArrayList<>();
         if (dataChangeListener != null)
             dataChangeListener.onHistoryCleared();
     }
 
-    public static List<String> getStorages() {
+    public List<String> getStorages() {
         return storages;
     }
 
-    public static void setStorages(List<String> storages) {
-        DataUtils.storages = storages;
+    public void setStorages(ArrayList<String> storages) {
+        this.storages = storages;
     }
 
-    public static ArrayList<Item> getList() {
+    public ArrayList<Item> getList() {
         return list;
     }
 
-    public static void setList(ArrayList<Item> list) {
-        DataUtils.list = list;
+    public void setList(ArrayList<Item> list) {
+        this.list = list;
     }
 
     //Callbacks to do original changes in database (and ui if required)
     public interface DataChangeListener {
         void onHiddenFileAdded(String path);
+
         void onHiddenFileRemoved(String path);
+
         void onHistoryAdded(String path);
+
         void onBookAdded(String path[], boolean refreshdrawer);
+
         void onHistoryCleared();
     }
+
 }

@@ -56,6 +56,8 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
+
 public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements>> {
 
     private UtilitiesProviderInterface utilsProvider;
@@ -198,7 +200,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
             BaseFile ele = mFile.get(i);
             File f = new File(ele.getPath());
             String size = "";
-            if (!DataUtils.hiddenfiles.contains(ele.getPath())) {
+            if (!dataUtils.getHiddenfiles().contains(ele.getPath())) {
                 if (ele.isDirectory()) {
                     size = "";
 

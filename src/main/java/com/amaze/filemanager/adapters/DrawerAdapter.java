@@ -42,13 +42,14 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
@@ -127,7 +128,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 public void onClick(View p1) {
                     EntryItem item = (EntryItem) getItem(position);
 
-                    if (DataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
+                    if (dataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
 
                         checkForPath(item.getPath());
                     }
@@ -144,7 +145,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         if (position > m.storage_count && position < values.size() - 7) {
                             EntryItem item = (EntryItem) getItem(position);
                             String path = (item).getPath();
-                            if (DataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
+                            if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);

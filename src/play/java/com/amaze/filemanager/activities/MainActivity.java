@@ -161,7 +161,6 @@ import jcifs.smb.SmbFile;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
-import static com.amaze.filemanager.utils.DataUtils.servers;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -174,6 +173,9 @@ public class MainActivity extends BaseActivity implements
 
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
+
+    /*Global variable for transpassing data. MUST be set null if cleared*/
+    public static DataUtils dataUtils = null;
 
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -294,7 +296,8 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initialisePreferences();
         initializeInteractiveShell();
-        DataUtils.registerOnDataChangedListener(this);
+        dataUtils = new DataUtils();
+        dataUtils.registerOnDataChangedListener(this);
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
@@ -317,9 +320,11 @@ public class MainActivity extends BaseActivity implements
             grid.make(DataUtils.BOOKS);
             sharedPref.edit().putBoolean("booksadded", true).commit();
         }
-        DataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
-        DataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
-        DataUtils.setListfiles(grid.readTable(DataUtils.LIST));
+
+        dataUtils = new DataUtils();
+        dataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
+        dataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
+        dataUtils.setListfiles(grid.readTable(DataUtils.LIST));
         // initialize g+ api client as per preferences
         if (sharedPref.getBoolean("plus_pic", false)) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -524,7 +529,7 @@ public class MainActivity extends BaseActivity implements
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public List<String> getStorageDirectories() {
+    public ArrayList<String> getStorageDirectories() {
         // Final set of paths
         final ArrayList<String> rv = new ArrayList<>();
         // Primary physical SD-CARD (not emulated)
@@ -578,7 +583,7 @@ public class MainActivity extends BaseActivity implements
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && utils.canListFiles(f))
+                if (!rv.contains(s) && Futils.canListFiles(f))
                     rv.add(s);
             }
         }
@@ -734,7 +739,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void selectItem(final int i) {
-        ArrayList<Item> directoryItems = DataUtils.getList();
+        ArrayList<Item> directoryItems = dataUtils.getList();
         if (!directoryItems.get(i).isSection()) {
             if ((selectedStorage == NO_VALUE || selectedStorage >= directoryItems.size())) {
                 TabFragment tabFragment = new TabFragment();
@@ -942,7 +947,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    utils.showHistoryDialog(ma, getAppTheme());
+                    utils.showHistoryDialog(dataUtils, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -999,23 +1004,23 @@ public class MainActivity extends BaseActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                utils.showHiddenDialog(ma, getAppTheme());
+                utils.showHiddenDialog(dataUtils, ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
-                    if (DataUtils.listfiles.contains(ma.CURRENT_PATH)) {
-                        DataUtils.listfiles.remove(ma.CURRENT_PATH);
+                    if (dataUtils.getListfiles().contains(ma.CURRENT_PATH)) {
+                        dataUtils.getListfiles().remove(ma.CURRENT_PATH);
                         grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
                     }
                     grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
-                    DataUtils.gridfiles.add(ma.CURRENT_PATH);
+                    dataUtils.getGridFiles().add(ma.CURRENT_PATH);
                 } else {
-                    if (DataUtils.gridfiles.contains(ma.CURRENT_PATH)) {
-                        DataUtils.gridfiles.remove(ma.CURRENT_PATH);
+                    if (dataUtils.getGridFiles().contains(ma.CURRENT_PATH)) {
+                        dataUtils.getGridFiles().remove(ma.CURRENT_PATH);
                         grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
                     }
                     grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
-                    DataUtils.listfiles.add(ma.CURRENT_PATH);
+                    dataUtils.getListfiles().add(ma.CURRENT_PATH);
                 }
                 ma.switchView();
                 break;
@@ -1306,7 +1311,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DataUtils.clear();
 
         closeInteractiveShell();
 
@@ -1389,7 +1393,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void refreshDrawer() {
-        List<String> val = DataUtils.getStorages();
+        List<String> val = dataUtils.getStorages();
         if (val == null)
             val = getStorageDirectories();
 
@@ -1397,26 +1401,26 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void updateDrawer() {
-        List<String> storageDirectories = getStorageDirectories();
-        DataUtils.setStorages(storageDirectories);
+        ArrayList<String> storageDirectories = getStorageDirectories();
+        dataUtils.setStorages(storageDirectories);
 
         ArrayList<String[]> servers = new ArrayList<>();
         for (String[] file : grid.readTableSecondary(DataUtils.SMB))
             servers.add(file);
-        DataUtils.setServers(servers);
+        dataUtils.setServers(servers);
         Collections.sort(servers, new BookSorter());
 
         ArrayList<String[]> accounts = new ArrayList<>();
         for (String[] file : grid.readTableSecondary(DataUtils.DRIVE)) {
             accounts.add(file);
         }
-        DataUtils.setAccounts(accounts);
+        dataUtils.setAccounts(accounts);
 
         ArrayList<String[]> books = new ArrayList<>();
         for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
             books.add(file);
         }
-        DataUtils.setBooks(books);
+        dataUtils.setBooks(books);
 
         createDrawerItems(storageDirectories);
     }
@@ -1427,7 +1431,7 @@ public class MainActivity extends BaseActivity implements
             protected Integer doInBackground(String... strings) {
                 String path = strings[0];
                 int k = 0, i = 0;
-                for (Item item : DataUtils.getList()) {
+                for (Item item : dataUtils.getList()) {
                     if (!item.isSection()) {
                         if (((EntryItem) item).getPath().equals(path))
                             k = i;
@@ -1472,7 +1476,7 @@ public class MainActivity extends BaseActivity implements
         }
         sectionItems.add(new SectionItem());
 
-        ArrayList<String[]> servers = DataUtils.getServers();
+        ArrayList<String[]> servers = dataUtils.getServers();
         if (servers != null && servers.size() > 0) {
             for (String[] file : servers) {
                 sectionItems.add(new EntryItem(file[0], file[1],
@@ -1482,7 +1486,7 @@ public class MainActivity extends BaseActivity implements
             sectionItems.add(new SectionItem());
         }
 
-        ArrayList<String[]> accounts = DataUtils.getAccounts();
+        ArrayList<String[]> accounts = dataUtils.getAccounts();
         if (accounts != null && accounts.size() > 0) {
             Collections.sort(accounts, new BookSorter());
             for (String[] file : accounts) {
@@ -1494,9 +1498,9 @@ public class MainActivity extends BaseActivity implements
         }
 
         if(sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-            ArrayList<String[]> books = DataUtils.getBooks();
+            ArrayList<String[]> books = dataUtils.getBooks();
             if (books != null && books.size() > 0) {
-                Collections.sort(books, new BookSorter());
+                Collections.sort(books, new BookSorter());// TODO: 26/4/2017 optimize sorting (so that it is made only once)
 
                 for (String[] file : books) {
                     sectionItems.add(new EntryItem(file[0], file[1],
@@ -1536,7 +1540,7 @@ public class MainActivity extends BaseActivity implements
         }
 
 
-        DataUtils.setList(sectionItems);
+        dataUtils.setList(sectionItems);
 
         adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
         mDrawerList.setAdapter(adapter);
@@ -1887,7 +1891,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     boolean isStorage(String path) {
-        for (String s : DataUtils.getStorages())
+        for (String s : dataUtils.getStorages())
             if (s.equals(path)) return true;
         return false;
     }
@@ -2500,8 +2504,8 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1
-                || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (dataUtils.containsBooks(new String[]{title, path}) != -1
+                || dataUtils.containsAccounts(new String[]{title, path}) != -1) {
             RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
@@ -2650,14 +2654,14 @@ public class MainActivity extends BaseActivity implements
                 if (b) {
                     tabHandler.clear();
                     if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, "", ((EntryItem) DataUtils.list.get(1)).getPath(), "/"));
+                        tabHandler.addTab(new Tab(1, "", ((EntryItem) dataUtils.getList().get(1)).getPath(), "/"));
                     else
                         tabHandler.addTab(new Tab(1, "", "/", "/"));
-                    if (!DataUtils.list.get(0).isSection()) {
-                        String pa = ((EntryItem) DataUtils.list.get(0)).getPath();
+                    if (!dataUtils.getList().get(0).isSection()) {
+                        String pa = ((EntryItem) dataUtils.getList().get(0)).getPath();
                         tabHandler.addTab(new Tab(2, "", pa, pa));
                     } else
-                        tabHandler.addTab(new Tab(2, "", ((EntryItem) DataUtils.list.get(1)).getPath(), "/"));
+                        tabHandler.addTab(new Tab(2, "", ((EntryItem) dataUtils.getList().get(1)).getPath(), "/"));
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getTab(0);
                         if (main != null)
@@ -2687,9 +2691,9 @@ public class MainActivity extends BaseActivity implements
 
     public void showSMBDialog(String name, String path, boolean edit) {
         if (path.length() > 0 && name.length() == 0) {
-            int i = DataUtils.containsServer(new String[]{name, path});
+            int i = dataUtils.containsServer(new String[]{name, path});
             if (i != -1)
-                name = servers.get(i)[0];
+                name = dataUtils.getServers().get(i)[0];
         }
         SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
         Bundle bundle = new Bundle();
@@ -2706,8 +2710,8 @@ public class MainActivity extends BaseActivity implements
         try {
             String[] s = new String[]{name, path};
             if (!edit) {
-                if ((DataUtils.containsServer(path)) == -1) {
-                    DataUtils.addServer(s);
+                if ((dataUtils.containsServer(path)) == -1) {
+                    dataUtils.addServer(s);
                     refreshDrawer();
                     grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                     TabFragment fragment = getFragment();
@@ -2721,13 +2725,13 @@ public class MainActivity extends BaseActivity implements
                 } else
                     Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             } else {
-                int i = DataUtils.containsServer(new String[]{oldname, oldPath});
+                int i = dataUtils.containsServer(new String[]{oldname, oldPath});
                 if (i != -1) {
-                    DataUtils.removeServer(i);
+                    dataUtils.removeServer(i);
                     mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
                 }
-                DataUtils.addServer(s);
-                Collections.sort(servers, new BookSorter());
+                dataUtils.addServer(s);
+                Collections.sort(dataUtils.getServers(), new BookSorter());
                 mainActivity.refreshDrawer();
                 mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
             }
@@ -2739,9 +2743,9 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void deleteConnection(String name, String path) {
-        int i = DataUtils.containsServer(new String[]{name, path});
+        int i = dataUtils.containsServer(new String[]{name, path});
         if (i != -1) {
-            DataUtils.removeServer(i);
+            dataUtils.removeServer(i);
             grid.removePath(name, path, DataUtils.SMB);
             refreshDrawer();
         }

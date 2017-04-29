@@ -17,12 +17,13 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by arpitkh996 on 21-01-2016.
@@ -43,6 +44,7 @@ public class RenameBookmark extends DialogFragment {
         bundle.putString("title", name);
         bundle.putString("path", path);
         bundle.putString("fabskin", fabskin);
+
         renameBookmark.setArguments(bundle);
         return renameBookmark;
     }
@@ -64,6 +66,7 @@ public class RenameBookmark extends DialogFragment {
         Sp = PreferenceManager.getDefaultSharedPreferences(c);
         studiomode = Sp.getInt("studio", 0);
         if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (dataUtils.containsBooks(new String[]{title, path}) != -1 || dataUtils.containsAccounts(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -164,11 +167,11 @@ public class RenameBookmark extends DialogFragment {
                         }
                     }
                     int i = -1;
-                    if ((i = DataUtils.containsBooks(new String[]{title, path})) != -1) {
+                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
                         if (!t.equals(title) && t.length() >= 1) {
-                            DataUtils.removeBook(i);
-                            DataUtils.addBook(new String[]{name, t});
-                            DataUtils.sortBook();
+                            dataUtils.removeBook(i);
+                            dataUtils.addBook(new String[]{name, t});
+                            dataUtils.sortBook();
                             if (bookmarkCallback != null) {
                                 bookmarkCallback.modify(path, title, t, name);
                             }
@@ -181,9 +184,9 @@ public class RenameBookmark extends DialogFragment {
             materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int i = -1;
-                    if ((i = DataUtils.containsBooks(new String[]{title, path})) != -1) {
-                        DataUtils.removeBook(i);
+                    int i;
+                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                        dataUtils.removeBook(i);
                         if (bookmarkCallback != null) {
                             bookmarkCallback.delete(title, path);
                         }
@@ -201,4 +204,5 @@ public class RenameBookmark extends DialogFragment {
 
         void modify(String oldpath, String oldname, String newpath, String newname);
     }
+
 }

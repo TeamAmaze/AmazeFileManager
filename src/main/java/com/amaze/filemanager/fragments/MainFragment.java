@@ -69,9 +69,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
-import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -90,7 +90,6 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.CryptUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -111,6 +110,8 @@ import java.util.List;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class MainFragment extends android.support.v4.app.Fragment {
 
@@ -919,7 +920,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                         utils.openFile(new File(l.getDesc()), (MainActivity) getActivity());
                     }
-                    DataUtils.addHistoryFile(l.getDesc());
+                    dataUtils.addHistoryFile(l.getDesc());
                 }
             } else {
                 goBackItemClick();
@@ -1081,14 +1082,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public boolean checkforpath(String path) {
         boolean grid = false, both_contain = false;
         int index1 = -1, index2 = -1;
-        for (String s : DataUtils.gridfiles) {
+        for (String s : dataUtils.getGridFiles()) {
             index1++;
             if ((path).contains(s)) {
                 grid = true;
                 break;
             }
         }
-        for (String s : DataUtils.listfiles) {
+        for (String s : dataUtils.getListfiles()) {
             index2++;
             if ((path).contains(s)) {
                 if (grid) both_contain = true;
@@ -1097,7 +1098,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             }
         }
         if (!both_contain) return grid;
-        String path1 = DataUtils.gridfiles.get(index1), path2 = DataUtils.listfiles.get(index2);
+        String path1 = dataUtils.getGridFiles().get(index1), path2 = dataUtils.getListfiles().get(index2);
         if (path1.contains(path2))
             return true;
         else if (path2.contains(path1))
@@ -1153,7 +1154,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 stopAnims = true;
                 this.openMode = openMode;
                 if (openMode != OpenMode.CUSTOM)
-                    DataUtils.addHistoryFile(path);
+                    dataUtils.addHistoryFile(path);
                 //mSwipeRefreshLayout.setRefreshing(false);
                 try {
                     listView.setAdapter(adapter);
@@ -1341,8 +1342,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         int i=-1;
-                        if((i=DataUtils.containsServer(smbPath))!=-1){
-                            MAIN_ACTIVITY.showSMBDialog(DataUtils.getServers().get(i)[0], smbPath, true);
+                        if((i=dataUtils.containsServer(smbPath))!=-1){
+                            MAIN_ACTIVITY.showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
                         }
                     }
                 });
@@ -1437,7 +1438,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         ArrayList<LayoutElements> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (int i = 0; i < mFile.length; i++) {
-            if (DataUtils.hiddenfiles.contains(mFile[i].getPath()))
+            if (dataUtils.getHiddenfiles().contains(mFile[i].getPath()))
                 continue;
             String name = mFile[i].getName();
             name = (mFile[i].isDirectory() && name.endsWith("/")) ? name.substring(0, name.length() - 1) : name;
@@ -1474,7 +1475,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private void addTo(BaseFile mFile) {
         File f = new File(mFile.getPath());
         String size = "";
-        if (!DataUtils.hiddenfiles.contains(mFile.getPath())) {
+        if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
                 LayoutElements layoutElements = utils.newElement(folder, f.getPath(), mFile.getPermission(), mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
@@ -1513,7 +1514,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     public void hide(String path) {
 
-        DataUtils.addHiddenFile(path);
+        dataUtils.addHiddenFile(path);
         if (new File(path).isDirectory()) {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
