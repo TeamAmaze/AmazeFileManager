@@ -49,7 +49,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
 
-public class Preferences extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     //Start is the first activity you see
     public static final int START_PREFERENCE = 0;
@@ -105,7 +105,7 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
         } else {
-            Intent in = new Intent(Preferences.this, MainActivity.class);
+            Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
             in.setAction(Intent.ACTION_MAIN);
             in.setAction(Intent.CATEGORY_LAUNCHER);
             this.startActivity(in);
@@ -123,7 +123,7 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
                 else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
                 } else {
-                    Intent in = new Intent(Preferences.this, MainActivity.class);
+                    Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
                     in.setAction(Intent.ACTION_MAIN);
                     in.setAction(Intent.CATEGORY_LAUNCHER);
 
