@@ -11,12 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
@@ -31,12 +31,13 @@ import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 public class RenameBookmark extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
-    String title, path, user = "", pass = "", ipp = "";
-    String fabskin;
-    Context c;
-    BookmarkCallback bookmarkCallback;
-    SharedPreferences Sp;
-    int studiomode = 0;
+    private String title;
+    private String path;
+    private String user = "";
+    private String pass = "";
+    private String fabskin;
+    private BookmarkCallback bookmarkCallback;
+    private int studiomode = 0;
 
     public static RenameBookmark getInstance(String name, String path, String fabskin) {
         RenameBookmark renameBookmark = new RenameBookmark();
@@ -57,15 +58,16 @@ public class RenameBookmark extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        c = getActivity();
+        Context c = getActivity();
         if (getActivity() instanceof BookmarkCallback)
             bookmarkCallback = (BookmarkCallback) getActivity();
         title = getArguments().getString("title");
         path = getArguments().getString("path");
         fabskin = getArguments().getString("fabskin");
-        Sp = PreferenceManager.getDefaultSharedPreferences(c);
-        studiomode = Sp.getInt("studio", 0);
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+
+        studiomode = sp.getInt("studio", 0);
         if (dataUtils.containsBooks(new String[]{title, path}) != -1 || dataUtils.containsAccounts(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
@@ -83,24 +85,14 @@ public class RenameBookmark extends DialogFragment {
             builder.customView(v2, true);
             final TextInputLayout t1 = (TextInputLayout) v2.findViewById(R.id.t1);
             final TextInputLayout t2 = (TextInputLayout) v2.findViewById(R.id.t2);
-            final AppCompatEditText con_name = (AppCompatEditText) v2.findViewById(R.id.editText4);
-            con_name.setText(title);
+            final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.editText4);
+            conName.setText(title);
             final String s1 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.name));
             final String s2 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.path));
-            con_name.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
+            conName.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (con_name.getText().toString().length() == 0)
+                    if (conName.getText().toString().length() == 0)
                         t1.setError(s2);
                     else t1.setError("");
                 }
@@ -116,24 +108,14 @@ public class RenameBookmark extends DialogFragment {
                             String inf = URLDecoder.decode(userinfo, "UTF-8");
                             user = inf.substring(0, inf.indexOf(":"));
                             pass = inf.substring(inf.indexOf(":") + 1, inf.length());
-                            ipp = a.getHost();
+                            String ipp = a.getHost();
                             pa = "smb://" + ipp + a.getPath();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                ip.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
+                ip.addTextChangedListener(new SimpleTextWatcher() {
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (ip.getText().toString().length() == 0)
@@ -149,12 +131,13 @@ public class RenameBookmark extends DialogFragment {
                     dialog.dismiss();
                 }
             });
+
             materialDialog = builder.build();
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String t = ip.getText().toString();
-                    String name = con_name.getText().toString();
+                    String name = conName.getText().toString();
                     if (studiomode != 0 && t.startsWith("smb://")) {
                         try {
                             URL a = new URL(t);
