@@ -53,7 +53,7 @@ public class CloudUtil {
                 }
                 break;
             case BOX:
-                if (path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
+                if (path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")) {
                     // we're at root, just replace the prefix
                     strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_BOX, "");
                 } else {

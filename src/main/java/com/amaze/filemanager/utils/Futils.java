@@ -862,10 +862,7 @@ public class Futils {
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                CloudHandler cloudHandler = new CloudHandler(mainActivity);
-                cloudHandler.clear(openMode);
-                DataUtils.removeAccount(openMode);
-                mainActivity.refreshDrawer();
+                mainActivity.deleteConnection(openMode);
             }
         });
 
