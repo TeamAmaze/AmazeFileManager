@@ -30,13 +30,19 @@ import java.util.Arrays;
 
 public class TinyDB {
 
+    /*
+     *  The "‚" character is not a comma, it is the SINGLE LOW-9 QUOTATION MARK. U-201A
+     *  + U-2017 + U-201A are used for separating the items in a list.
+     */
+    public static final String DIVIDER = "‚‗‚";
+
     /**
      * Put array of Boolean into SharedPreferences with 'key' and save
      * @param key SharedPreferences key
      * @param array array of Booleans to be added
      */
     public static void putBooleanArray(SharedPreferences preferences, String key, Boolean[] array) {
-        preferences.edit().putString(key, TextUtils.join("‚‗‚", array)).apply();
+        preferences.edit().putString(key, TextUtils.join(DIVIDER, array)).apply();
     }
 
     /**
@@ -50,7 +56,7 @@ public class TinyDB {
             return defaultValue;
         }
 
-        String[] temp = TextUtils.split(prefValue, "‚‗‚");
+        String[] temp = TextUtils.split(prefValue, DIVIDER);
         Boolean[] newArray = new Boolean[temp.length];
         for(int i = 0; i < temp.length; i++)
             newArray[i] = Boolean.valueOf(temp[i]);
@@ -62,8 +68,15 @@ public class TinyDB {
      * @param key SharedPreferences key
      * @return ArrayList of T
      */
-    public static <T> ArrayList<T> getList(SharedPreferences preferences, Class<T> klazz, String key) {
-        String[] myList = TextUtils.split(preferences.getString(key, ""), "‚‗‚");
+    public static <T> ArrayList<T> getList(SharedPreferences preferences, Class<T> klazz, String key,
+                                           ArrayList<T> defaultValue) {
+        String pref = preferences.getString(key, "");
+
+        if(pref.equals("")) {
+            return defaultValue;
+        }
+
+        String[] myList = TextUtils.split(pref, DIVIDER);
         ArrayList<String> arrayToList = new ArrayList<>(Arrays.asList(myList));
         ArrayList<T> newList = new ArrayList<>();
 
@@ -76,13 +89,13 @@ public class TinyDB {
     // Put methods
 
     /**
-     * Put ArrayList of Integer into SharedPreferences with 'key' and save
+     * Put ArrayList of T into SharedPreferences with 'key' and save
      * @param key SharedPreferences key
      */
     public static <T> void putList(SharedPreferences preferences, String key, ArrayList<T> list) {
         checkForNullKey(key);
         Object[] myList = list.toArray();
-        preferences.edit().putString(key, TextUtils.join("‚‗‚", myList)).apply();
+        preferences.edit().putString(key, TextUtils.join(DIVIDER, myList)).apply();
     }
 
     /**
@@ -97,17 +110,22 @@ public class TinyDB {
 
     private static <T> T valueOf(Class<T> klazz, String arg) {
         Exception cause = null;
-        T ret = null;
-        try {
-            ret = klazz.cast(klazz.getDeclaredMethod("valueOf", String.class).invoke(null, arg));
-        } catch (Exception e) {
-            cause = e;
-        }
 
-        if (cause == null) {
-            return ret;
+        if(klazz != String.class) {
+            T ret = null;
+            try {
+                ret = klazz.cast(klazz.getDeclaredMethod("valueOf", String.class).invoke(null, arg));
+            } catch (Exception e) {
+                cause = e;
+            }
+
+            if (cause == null) {
+                return ret;
+            } else {
+                throw new IllegalArgumentException(cause);
+            }
         } else {
-            throw new IllegalArgumentException(cause);
+            return (T) arg;//Is string but String.valueOf(String) doesn't exist
         }
     }
 }
