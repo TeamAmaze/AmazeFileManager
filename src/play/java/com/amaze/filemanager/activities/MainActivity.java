@@ -1754,7 +1754,7 @@ public class MainActivity extends BaseActivity implements
                     }
 
                     new MoveFiles(oparrayListList, ((MainFragment) getFragment().getTab()),
-                            ((MainFragment) getFragment().getTab()).getActivity(), OpenMode.FILE)
+                            getFragment().getTab().getActivity(), OpenMode.FILE)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
@@ -1944,7 +1944,7 @@ public class MainActivity extends BaseActivity implements
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
-        drawerHeaderView = (View) drawerHeaderLayout.findViewById(R.id.drawer_header);
+        drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         drawerHeaderView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
