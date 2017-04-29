@@ -74,7 +74,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     loadEditDialog((NamePathSwitchPreference) preference);
                     break;
                 case NamePathSwitchPreference.SWITCH:
-                    //Deactivation is automatically dealt with by the Preference
                     Trio trio = new Trio(p.getTitle().toString(),  p.getSummary().toString(),
                             p.isChecked());
 
@@ -130,13 +129,18 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
+        final AppCompatEditText editText1 = ((AppCompatEditText) v.findViewById(R.id.text1)),
+                editText2 = ((AppCompatEditText) v.findViewById(R.id.text2));
+        editText1.setText(p.getTitle());
+        editText2.setText(p.getSummary());
+
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.edit_shortcut)
                 .theme(activity.getAppTheme().getMaterialDialogTheme())
                 .positiveColor(fab_skin)
-                .positiveText(getString(R.string.edit).toUpperCase())
+                .positiveText(getString(R.string.edit).toUpperCase())// TODO: 29/4/2017 don't use toUpperCase()
                 .negativeColor(fab_skin)
-                .negativeText(R.string.cancel)
+                .negativeText(android.R.string.cancel)
                 .customView(v, false)
                 .build();
 
@@ -144,8 +148,11 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Trio trio = new Trio(((AppCompatEditText) v.findViewById(R.id.text1)).getText().toString(),
-                                ((AppCompatEditText) v.findViewById(R.id.text2)).getText().toString(),
+                        p.setTitle(editText1.getText());
+                        p.setSummary(editText2.getText());
+
+                        Trio trio = new Trio(editText1.getText().toString(),
+                                editText2.getText().toString(),
                                 p.isChecked());
 
                         dataUtils.getBooks().set(position.get(p), new String[] {trio.first, trio.second});
@@ -166,9 +173,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .title(R.string.questiondelete_shortcut)
                 .theme(activity.getAppTheme().getMaterialDialogTheme())
                 .positiveColor(fab_skin)
-                .positiveText(R.string.yes)
+                .positiveText(getString(R.string.delete).toUpperCase())// TODO: 29/4/2017 don't use toUpperCase()
                 .negativeColor(fab_skin)
-                .negativeText(R.string.no)
+                .negativeText(android.R.string.cancel)
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)

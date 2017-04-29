@@ -629,12 +629,12 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
     <string name="bytes">Bytes</string>
-    <string name="sidebarfolders_title">Sidebar folders</string>
+    <string name="sidebarfolders_title">Sidebar shortcuts</string>
     <string name="sidebarquickaccess_title">Sidebar quick access</string>
-    <string name="showfolders_pref_title">Show folders</string>
-    <string name="showfolders_pref">Folders</string>
-    <string name="showquickaccess_pref_title">Show Quick Accesses</string>
-    <string name="showquickaccess_pref">Quick Acceses</string>
+    <string name="showfolders_pref_title">Show shortcuts</string>
+    <string name="showfolders_pref">Shortcuts</string>
+    <string name="showquickaccess_pref_title">Show quick accesses</string>
+    <string name="showquickaccess_pref">Quick acceses</string>
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
     <string name="questiondelete_shortcut">Delete shortcut?</string>
