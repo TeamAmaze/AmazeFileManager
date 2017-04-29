@@ -3,7 +3,9 @@ package com.amaze.filemanager.utils;
 import android.util.Log;
 
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 
@@ -17,20 +19,29 @@ import java.util.ArrayList;
 
 public class CloudUtil {
 
-    public static ArrayList<BaseFile> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode) {
+    public static ArrayList<BaseFile> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
+            throws CloudPluginException {
+
         ArrayList<BaseFile> baseFiles = new ArrayList<>();
 
         String strippedPath = stripPath(openMode, path);
 
-        for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
+        try {
 
-            BaseFile baseFile = new BaseFile(path + "/" + cloudMetaData.getName(),
-                    "", (cloudMetaData.getModifiedAt() == null)
-                    ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
-                    cloudMetaData.getFolder());
-            baseFile.setName(cloudMetaData.getName());
-            baseFile.setMode(openMode);
-            baseFiles.add(baseFile);
+            for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
+
+                Log.d("FOUND FILE: ", cloudMetaData.getName());
+                BaseFile baseFile = new BaseFile(path + "/" + cloudMetaData.getName(),
+                        "", (cloudMetaData.getModifiedAt() == null)
+                        ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
+                        cloudMetaData.getFolder());
+                baseFile.setName(cloudMetaData.getName());
+                baseFile.setMode(openMode);
+                baseFiles.add(baseFile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CloudPluginException();
         }
         return baseFiles;
     }

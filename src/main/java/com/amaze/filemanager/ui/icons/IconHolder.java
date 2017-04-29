@@ -288,25 +288,25 @@ public class IconHolder {
 
                     CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
 
-                    bit = BitmapFactory.decodeStream(cloudStorageDropbox.download(CloudUtil
+                    bit = BitmapFactory.decodeStream(cloudStorageDropbox.getThumbnail(CloudUtil
                             .stripPath(OpenMode.DROPBOX, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
                     CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
 
-                    bit = BitmapFactory.decodeStream(cloudStorageBox.download(CloudUtil
+                    bit = BitmapFactory.decodeStream(cloudStorageBox.getThumbnail(CloudUtil
                             .stripPath(OpenMode.BOX, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
 
                     CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
-                    bit = BitmapFactory.decodeStream(cloudStorageGDrive.download(CloudUtil
+                    bit = BitmapFactory.decodeStream(cloudStorageGDrive.getThumbnail(CloudUtil
                             .stripPath(OpenMode.GDRIVE, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
                     CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
-                    bit = BitmapFactory.decodeStream(cloudStorageOneDrive.download(CloudUtil
+                    bit = BitmapFactory.decodeStream(cloudStorageOneDrive.getThumbnail(CloudUtil
                             .stripPath(OpenMode.ONEDRIVE, path)));
                 } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
                     bit = BitmapFactory.decodeStream(OTGUtil.getDocumentFilesList(path, mContext).get(0).getInputStream(mContext));

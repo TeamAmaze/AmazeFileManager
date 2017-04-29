@@ -8,6 +8,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.DataUtils;
@@ -647,16 +648,43 @@ public class HFile {
                 arrayList = OTGUtil.getDocumentFilesList(path, context);
                 break;
             case DROPBOX:
-                arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
                 break;
             case BOX:
-                arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    arrayList = new ArrayList<>();
+                }
                 break;
             case GDRIVE:
-                arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
                 break;
             case ONEDRIVE:
-                arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
                 break;
             default:
                 try {

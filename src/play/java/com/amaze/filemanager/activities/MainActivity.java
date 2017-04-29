@@ -168,6 +168,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -294,6 +295,9 @@ public class MainActivity extends BaseActivity implements
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
     public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
     public static final String ARGS_KEY_LOADER = "loader_cloud_args_service";
+
+    private static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
+    private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/oauth2redirect";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -1629,12 +1633,12 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem("DROPBOX",
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
                                 accountAuthenticationList.add(new String[] {
-                                        "DROPBOX",
+                                        CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                 });
                             }
@@ -1653,12 +1657,12 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem("BOX",
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
                                 accountAuthenticationList.add(new String[] {
-                                        "BOX",
+                                        CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                 });
                             }
@@ -1676,12 +1680,12 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem("ONE DRIVE",
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
                                 accountAuthenticationList.add(new String[] {
-                                        "ONE DRIVE",
+                                        CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                 });
                             }
@@ -1699,12 +1703,12 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem("GOOGLE DRIVE",
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
                                 accountAuthenticationList.add(new String[] {
-                                        "GOOGLE DRIVE",
+                                        CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                 });
                             }
@@ -2749,6 +2753,10 @@ public class MainActivity extends BaseActivity implements
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
+        } else if (intent.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
+
+            // we used an external authenticator instead of APIs. Probably for Google Drive
+            CloudRail.setAuthenticationResponse(intent);
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
@@ -3137,8 +3145,10 @@ public class MainActivity extends BaseActivity implements
                                     CloudEntry cloudEntryGdrive = null;
                                     CloudEntry savedCloudEntryGdrive;
 
-                                    CloudStorage cloudStorageDrive = new GoogleDrive(getApplicationContext(),
-                                            data.getString(1), data.getString(2));
+
+                                    GoogleDrive cloudStorageDrive = new GoogleDrive(getApplicationContext(),
+                                            data.getString(1), "", CLOUD_AUTHENTICATOR_REDIRECT_URI, data.getString(2));
+                                    cloudStorageDrive.useAdvancedAuthentication();
 
                                     if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
                                         // we already have the entry and saved state, get it
@@ -3166,10 +3176,12 @@ public class MainActivity extends BaseActivity implements
 
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.GDRIVE);
                                     return false;
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.GDRIVE);
                                     return false;
                                 }
                                 break;
@@ -3208,10 +3220,12 @@ public class MainActivity extends BaseActivity implements
                                 } catch (CloudPluginException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.DROPBOX);
                                     return false;
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.DROPBOX);
                                     return false;
                                 }
                                 break;
@@ -3251,10 +3265,12 @@ public class MainActivity extends BaseActivity implements
 
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.BOX);
                                     return false;
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.BOX);
                                     return false;
                                 }
                                 break;
@@ -3294,10 +3310,12 @@ public class MainActivity extends BaseActivity implements
 
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.ONEDRIVE);
                                     return false;
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.ONEDRIVE);
                                     return false;
                                 }
                                 break;
