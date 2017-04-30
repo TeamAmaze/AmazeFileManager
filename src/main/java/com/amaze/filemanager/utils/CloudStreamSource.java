@@ -1,35 +1,32 @@
-package com.amaze.filemanager.utils.SmbStreamer;
+package com.amaze.filemanager.utils;
 
-/**
- * Created by Arpit on 06-07-2015.
- */
 import android.webkit.MimeTypeMap;
+
+import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
+/**
+ * Created by Vishal on 30-04-2017.
+ */
 
-public class StreamSource {
-
+public class CloudStreamSource extends StreamSource {
     protected String mime;
     protected long fp;
     protected long len;
     protected String name;
-    protected SmbFile file;
-    InputStream input;
     protected int bufferSize;
+    private InputStream inputStream;
 
-    public StreamSource() {}
-
-    public StreamSource(SmbFile file,long l) throws SmbException {
+    public CloudStreamSource(String fileName, long length, InputStream inputStream) {
 
         fp = 0;
-        len = l;
-        mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
-        name = file.getName();
-        this.file = file;
+        len = length;
+        this.name = fileName;
+        this.inputStream = inputStream;
         bufferSize = 1024*60;
     }
 
@@ -41,17 +38,17 @@ public class StreamSource {
      *
      *
      public SmbFileInputStreamOld( SmbFile file, int readBuffer, int openFlags) throws SmbException, MalformedURLException, UnknownHostException {
-         this.file = file;
-         this.openFlags = SmbFile.O_RDONLY & 0xFFFF;
-         this.access = (openFlags >>> 16) & 0xFFFF;
-         if (file.type != SmbFile.TYPE_NAMED_PIPE) {
-            file.open( openFlags, access, SmbFile.ATTR_NORMAL, 0 );
-            this.openFlags &= ~(SmbFile.O_CREAT | SmbFile.O_TRUNC);
-         } else {
-             file.connect0();
-         }
-         readSize = readBuffer;
-         fs = file.length();
+     this.file = file;
+     this.openFlags = SmbFile.O_RDONLY & 0xFFFF;
+     this.access = (openFlags >>> 16) & 0xFFFF;
+     if (file.type != SmbFile.TYPE_NAMED_PIPE) {
+     file.open( openFlags, access, SmbFile.ATTR_NORMAL, 0 );
+     this.openFlags &= ~(SmbFile.O_CREAT | SmbFile.O_TRUNC);
+     } else {
+     file.connect0();
+     }
+     readSize = readBuffer;
+     fs = file.length();
      }
      *
      * Setting buffer size by properties didn't work for me so I created this constructor.
@@ -62,9 +59,8 @@ public class StreamSource {
      */
     public void open() throws IOException {
         try {
-            input = file.getInputStream();//new SmbFileInputStream(file, bufferSize, 1);
             if(fp>0)
-                input.skip(fp);
+                inputStream.skip(fp);
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -73,7 +69,7 @@ public class StreamSource {
         return read(buff, 0, buff.length);
     }
     public int read(byte[] bytes, int start, int offs) throws IOException {
-        int read =  input.read(bytes, start, offs);
+        int read =  inputStream.read(bytes, start, offs);
         fp += read;
         return read;
     }
@@ -84,7 +80,7 @@ public class StreamSource {
 
     public void close() {
         try {
-            input.close();
+            inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,13 +102,7 @@ public class StreamSource {
         fp = 0;
     }
 
-    public SmbFile getFile(){
-        return file;
-    }
-
     public int getBufferSize(){
         return bufferSize;
     }
-
 }
-

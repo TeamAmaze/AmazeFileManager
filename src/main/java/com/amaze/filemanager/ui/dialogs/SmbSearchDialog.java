@@ -100,7 +100,7 @@ public class SmbSearchDialog extends DialogFragment {
                         @Override
                         public void run() {
                             if (!computers.contains(computer))
-                                computers.add(computers.size() - 1, computer);
+                                computers.add(computer);
                             listViewAdapter.notifyDataSetChanged();
                         }
                     });
@@ -114,7 +114,7 @@ public class SmbSearchDialog extends DialogFragment {
                         public void run() {
                             if (computers.size() == 1) {
                                 dismiss();
-                                Toast.makeText(getActivity(), R.string.nodevicefound, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getResources().getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
                                 MainActivity mainActivity = (MainActivity) getActivity();
                                 mainActivity.showSMBDialog("", "", false);
                                 return;

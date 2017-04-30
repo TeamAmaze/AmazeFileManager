@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -45,11 +46,13 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Dropbox;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -135,6 +138,11 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     if (DataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
 
                         checkForPath(item.getPath());
+                    }
+
+                    if (DataUtils.getAccounts().size() > 0) {
+                        // we have cloud accounts, try see if token is expired or not
+                        CloudUtil.checkToken(item.getPath(), m);
                     }
                     m.selectItem(position);
                 }

@@ -1,8 +1,5 @@
 package com.amaze.filemanager.utils.SmbStreamer;
 
-/**
- * Created by Arpit on 06-07-2015.
- */
 import android.net.Uri;
 import android.util.Log;
 
@@ -70,7 +67,7 @@ import java.util.Vector;
  * See the end of the source file for distribution license
  * (Modified BSD licence)
  */
-public abstract class StreamServer {
+public abstract class CloudStreamServer {
     // ==================================================
     // API parts
     // ==================================================
@@ -193,7 +190,7 @@ public abstract class StreamServer {
      */
 
     //private HTTPSession session;
-    public StreamServer( int port, File wwwroot ) throws IOException
+    public CloudStreamServer(int port, File wwwroot ) throws IOException
     {
         myTcpPort = port;
         this.myRootDir = wwwroot;
@@ -225,7 +222,7 @@ public abstract class StreamServer {
         myThread.start();
     }
 
-    public StreamServer( File wwwroot ) throws IOException
+    public CloudStreamServer(File wwwroot ) throws IOException
     {
         this.myRootDir = wwwroot;
         myServerSocket = new ServerSocket( myTcpPort );

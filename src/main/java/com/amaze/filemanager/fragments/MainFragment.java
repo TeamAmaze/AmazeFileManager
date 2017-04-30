@@ -80,9 +80,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.EncryptService;
-import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -92,6 +90,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
@@ -921,7 +920,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (l.getMode() == OpenMode.SMB) {
                         try {
                             SmbFile smbFile = new SmbFile(l.getDesc());
-                            launch(smbFile, l.getlongSize(), MAIN_ACTIVITY);
+                            launchSMB(smbFile, l.getlongSize(), MAIN_ACTIVITY);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -933,17 +932,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             || l.getMode() == OpenMode.BOX
                             || l.getMode() == OpenMode.GDRIVE
                             || l.getMode() == OpenMode.ONEDRIVE) {
-                        ArrayList<BaseFile> baseFiles = new ArrayList<>();
 
-                        BaseFile sourceFile = LIST_ELEMENTS.get(position).generateBaseFile();
-
-                        baseFiles.add(sourceFile);
-                        MAIN_ACTIVITY.isCloudOpen = true;
-                        MAIN_ACTIVITY.cloudBaseFile = new BaseFile(getActivity().getExternalCacheDir()
-                                + "/" + sourceFile.getName());
-
-                        new CopyFileCheck(this, getActivity().getExternalCacheDir().getPath(),
-                                false, MAIN_ACTIVITY, false).execute(baseFiles);
+                        Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                        CloudUtil.launchCloud(LIST_ELEMENTS.get(position).generateBaseFile(), openMode, MAIN_ACTIVITY);
                     }
                     else if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(new File(l.getDesc()));
@@ -1647,7 +1638,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void launch(final SmbFile smbFile, final long si, final Activity activity) {
+    public static void launchSMB(final SmbFile smbFile, final long si, final Activity activity) {
         final Streamer s = Streamer.getInstance();
         new Thread() {
             public void run() {
@@ -1686,6 +1677,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 }
             }
         }.start();
+    }
+
+    public static void launchDecrypt(BaseFile baseFile) {
+
     }
 
     @Override

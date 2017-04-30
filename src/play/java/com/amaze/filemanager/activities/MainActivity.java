@@ -308,9 +308,7 @@ public class MainActivity extends BaseActivity implements
 
     private static HandlerThread handlerThread;
     public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
-    public boolean isCloudOpen = false;         // flag denotes whether to open a cloud file
     public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
-    public BaseFile cloudBaseFile;              // cloud base file for opening
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -558,7 +556,7 @@ public class MainActivity extends BaseActivity implements
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public List<String> getStorageDirectories() {
+    public synchronized List<String> getStorageDirectories() {
         // Final set of paths
         final ArrayList<String> rv = new ArrayList<>();
         // Primary physical SD-CARD (not emulated)
@@ -1328,7 +1326,6 @@ public class MainActivity extends BaseActivity implements
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
         unbindService(mEncryptServiceConnection);
-        unbindService(mCloudServiceConnection);
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
@@ -1383,18 +1380,6 @@ public class MainActivity extends BaseActivity implements
                 new DeleteTask(getContentResolver(), this).execute(baseFiles);
             }
         }
-
-        Intent cloudIntent = new Intent(this, CopyService.class);
-        bindService(cloudIntent, mCloudServiceConnection, 0);
-
-        if (!isCloudOpen && cloudBaseFile != null) {
-            // we've opened the file and are ready to delete it
-            // don't move this to ondestroy as we'll be getting destroyed and starting
-            // an async task just before it is not a good idea
-            ArrayList<BaseFile> cloudBaseFiles = new ArrayList<>();
-            cloudBaseFiles.add(cloudBaseFile);
-            new DeleteTask(getContentResolver(), this).execute(cloudBaseFiles);
-        }
     }
 
     ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
@@ -1415,7 +1400,7 @@ public class MainActivity extends BaseActivity implements
                             break;
                         case SMB:
                             try {
-                                MainFragment.launch(new SmbFile(encryptBaseFile.getPath()),
+                                MainFragment.launchSMB(new SmbFile(encryptBaseFile.getPath()),
                                         encryptBaseFile.getSize(), MainActivity.this);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
@@ -1426,25 +1411,6 @@ public class MainActivity extends BaseActivity implements
                 } else
                     getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
                 isEncryptOpen = false;
-            }
-        }
-    };
-
-    ServiceConnection mCloudServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-            if (isCloudOpen && cloudBaseFile != null) {
-                if (mainFragment != null) {
-
-                    getFutils().openFile(new File(cloudBaseFile.getPath()), MainActivity.this);
-                }
-                isCloudOpen = false;
             }
         }
     };

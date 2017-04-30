@@ -60,7 +60,7 @@ public class DataUtils {
      * @param serviceType the {@link OpenMode} of account to check
      * @return the index of account, -1 if not found
      */
-    public static int containsAccounts(OpenMode serviceType) {
+    public static synchronized int containsAccounts(OpenMode serviceType) {
         int i = 0;
 
         for (CloudStorage storage : accounts) {
@@ -131,7 +131,7 @@ public class DataUtils {
             books.remove(i);
     }
 
-    public static void removeAccount(OpenMode serviceType) {
+    public static synchronized void removeAccount(OpenMode serviceType) {
 
         for (CloudStorage storage : accounts) {
             switch (serviceType) {
@@ -171,7 +171,7 @@ public class DataUtils {
         books.add(i);
     }
 
-    public static void addAccount(CloudStorage storage) {
+    public static synchronized void addAccount(CloudStorage storage) {
         accounts.add(storage);
     }
 
@@ -211,20 +211,20 @@ public class DataUtils {
             DataUtils.books = books;
     }
 
-    public static void setAccounts(ArrayList<CloudStorage> accounts) {
+    public static synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
         if (accounts != null)
             DataUtils.accounts = accounts;
     }
 
-    public static ArrayList<String[]> getServers() {
+    public static synchronized ArrayList<String[]> getServers() {
         return servers;
     }
 
-    public static ArrayList<CloudStorage> getAccounts() {
+    public static synchronized ArrayList<CloudStorage> getAccounts() {
         return accounts;
     }
 
-    public static CloudStorage getAccount(OpenMode serviceType) {
+    public static synchronized CloudStorage getAccount(OpenMode serviceType) {
 
         for (CloudStorage storage : accounts) {
 
@@ -252,7 +252,7 @@ public class DataUtils {
         return null;
     }
 
-    public static ArrayList<String[]> getBooks() {
+    public static synchronized ArrayList<String[]> getBooks() {
         return books;
     }
 
@@ -286,7 +286,7 @@ public class DataUtils {
             dataChangeListener.onHistoryCleared();
     }
 
-    public static List<String> getStorages() {
+    public static synchronized List<String> getStorages() {
         return storages;
     }
 
@@ -298,7 +298,7 @@ public class DataUtils {
         return list;
     }
 
-    public static void setList(ArrayList<Item> list) {
+    public static synchronized void setList(ArrayList<Item> list) {
         DataUtils.list = list;
     }
 
