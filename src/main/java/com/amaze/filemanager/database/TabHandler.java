@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    protected static final int DATABASE_VERSION = 3;
+    protected static final int DATABASE_VERSION = 4;
     protected static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 

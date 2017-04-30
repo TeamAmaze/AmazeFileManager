@@ -1679,10 +1679,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }.start();
     }
 
-    public static void launchDecrypt(BaseFile baseFile) {
-
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();

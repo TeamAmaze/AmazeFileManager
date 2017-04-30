@@ -146,12 +146,6 @@ public class GenericCopyUtil {
                 // API doesn't support output stream, we'll upload the file directly
                 CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
 
-                // creating an empty file first
-                byte[] tempBytes = new byte[0];
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
-                cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, mTargetFile.getPath()),
-                        byteArrayInputStream, 0l, true);
-
                 if (mSourceFile.isDropBoxFile()) {
                     // we're in the same provider, use api method
                     cloudStorageDropbox.copy(CloudUtil.stripPath(OpenMode.DROPBOX, mSourceFile.getPath()),
