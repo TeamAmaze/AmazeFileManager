@@ -37,6 +37,7 @@
   <string name="version">Versioni</string>
   <string name="color_title">Ngjyra</string>
   <string name="none">Asnjë</string>
+  <string name="password">Fjalëkalimi</string>
   <string name="information">Informacione</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
@@ -48,4 +49,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

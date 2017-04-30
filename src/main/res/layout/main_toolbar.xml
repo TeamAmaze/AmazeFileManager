@@ -193,7 +193,7 @@
         <LinearLayout
             android:layout_gravity="bottom|center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="16dp"
             android:id="@+id/indicator_layout"
             android:layout_height="wrap_content">
 

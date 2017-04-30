@@ -376,7 +376,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons();
+        fixIcons(true);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
@@ -403,7 +403,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons();
+        fixIcons(true);
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
@@ -1453,6 +1453,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
+        fixIcons(false);
     }
 
     @Override
@@ -1466,11 +1467,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
         super.onStop();
     }
 
-    void fixIcons() {
+    void fixIcons(boolean forceReload) {
+        if (LIST_ELEMENTS == null) return;
+        BitmapDrawable iconDrawable;
         for (LayoutElements layoutElements : LIST_ELEMENTS) {
-            BitmapDrawable iconDrawable = layoutElements.isDirectory() ?
-                    folder : Icons.loadMimeIcon(layoutElements.getDesc(), !IS_LIST, res);
-            layoutElements.setImageId(iconDrawable);
+            if (forceReload || layoutElements.getImageId() == null) {
+                iconDrawable = layoutElements.isDirectory() ?
+                        folder : Icons.loadMimeIcon(layoutElements.getDesc(), !IS_LIST, res);
+                layoutElements.setImageId(iconDrawable);
+            }
         }
     }
 

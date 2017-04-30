@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="setting">تەڭشەش</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -28,8 +29,11 @@
   <!--SortBy-->
   <!--ListMode-->
   <!--Folder-->
+  <string name="done">تامام</string>
+  <string name="exit">چېكىنىش</string>
   <string name="text">تېكىست</string>
   <string name="password">ئىم</string>
+  <string name="edit">تەھرىرلەش</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->
@@ -39,4 +43,5 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

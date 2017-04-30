@@ -562,5 +562,6 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="contributors_2_summary">アイコンとバナー</string>
   <string name="contributors_3_summary">テーマ エンジン</string>
   <string name="contributors_6_summary">FTP サーバー</string>
+  <!-- references to 'Some files weren't successfully %s -->
   <string name="bytes">バイト</string>
 </resources>

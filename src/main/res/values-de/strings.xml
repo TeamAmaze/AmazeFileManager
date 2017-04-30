@@ -519,4 +519,5 @@ rund um die Entwicklung</string>
   <string name="ftp_path_change_error_invalid">Ungültiger Pfad</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">FTP Server</string>
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>
