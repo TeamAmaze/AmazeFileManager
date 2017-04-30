@@ -309,7 +309,11 @@ public class SmbConnectDialog extends DialogFragment {
                 if (smbFile == null) return;
                 s = new String[]{conName.getText().toString(), smbFile.getPath()};
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.addConnection(edit, s[0], pass.getText().toString(),
+                    // encrypted path means path with encrypted pass
+                    smbConnectionListener.addConnection(edit, s[0], createSMBPath(new String[]{ipa,
+                                    user.getText().toString().replaceAll(" ", "\\ "),
+                                    pass.getText().toString(),
+                                    domaind}, false).getPath(),
                             s[1], name, path);
                 }
                 dismiss();
@@ -352,6 +356,23 @@ public class SmbConnectDialog extends DialogFragment {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private SmbFile createSMBPath(String[] auth, boolean anonym) {
+        try {
+            String yourPeerIP = auth[0], domain = auth[3];
+
+            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? ""
+                    :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" :
+                    (URLEncoder.encode(auth[1], "UTF-8") + ":" + URLEncoder.encode(auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
+            SmbFile smbFile = new SmbFile(path);
+            return smbFile;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static ColorStateList createEditTextColorStateList(int color) {

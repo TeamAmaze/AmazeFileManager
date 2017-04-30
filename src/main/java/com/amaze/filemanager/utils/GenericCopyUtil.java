@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -45,10 +46,14 @@ public class GenericCopyUtil {
 
     /**
      * Starts copy of file
-     * Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile}
+     * Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile}, {@link CloudStorage}
+     * @param lowOnMemory defines whether system is running low on memory, in which case we'll switch to
+     *                    using streams instead of channel which maps the who buffer in memory.
+     *                    TODO: Use buffers even on low memory but don't map the whole file to memory but
+     *                          parts of it, and transfer each part instead.
      * @throws IOException
      */
-    private void startCopy() throws IOException {
+    private void startCopy(boolean lowOnMemory) throws IOException {
 
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
@@ -105,7 +110,8 @@ public class GenericCopyUtil {
                     if (mTargetFile.isOneDriveFile()
                             || mTargetFile.isDropBoxFile()
                             || mTargetFile.isGoogleDriveFile()
-                            || mTargetFile.isBoxFile()) {
+                            || mTargetFile.isBoxFile()
+                            || lowOnMemory) {
                         // our target is cloud, we need a stream not channel
                         bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
                     } else {
@@ -208,7 +214,13 @@ public class GenericCopyUtil {
                 // copying normal file, target not in OTG
                 File file = new File(mTargetFile.getPath());
                 if (FileUtil.isWritable(file)) {
-                    outChannel = new RandomAccessFile(file, "rw").getChannel();
+
+                    if (lowOnMemory) {
+                        bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
+                    } else {
+
+                        outChannel = new RandomAccessFile(file, "rw").getChannel();
+                    }
                 } else {
                     ContentResolver contentResolver = mContext.getContentResolver();
                     DocumentFile documentTargetFile = FileUtil.getDocumentFile(file,
@@ -233,6 +245,13 @@ public class GenericCopyUtil {
             e.printStackTrace();
             Log.d(getClass().getSimpleName(), "I/O Error!");
             throw new IOException();
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+            // we ran out of memory to map the whole channel, let's switch to streams
+            AppConfig.toast(mContext, mContext.getResources().getString(R.string.copy_low_memory));
+
+            startCopy(true);
         } finally {
 
             try {
@@ -259,7 +278,7 @@ public class GenericCopyUtil {
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;
 
-        startCopy();
+        startCopy(false);
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, FileChannel outChannel)

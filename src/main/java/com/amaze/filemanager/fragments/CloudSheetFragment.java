@@ -96,6 +96,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
         switch (v.getId()) {
             case R.id.linear_layout_smb:
+                dismiss();
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(getActivity().getFragmentManager(), "tab");
                 return;

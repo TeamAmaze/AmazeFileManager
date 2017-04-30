@@ -7,6 +7,7 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.types.CloudMetaData;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class CloudUtil {
 
         String strippedPath = stripPath(openMode, path);
 
+        Log.d("PATH", path);
+        Log.d("STRIPPED PATH", strippedPath);
+
         try {
 
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
@@ -38,6 +42,7 @@ public class CloudUtil {
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
                 baseFiles.add(baseFile);
+                Log.d("FILE", cloudMetaData.getName());
             }
         } catch (Exception e) {
             e.printStackTrace();
