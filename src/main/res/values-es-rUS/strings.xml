@@ -122,7 +122,7 @@
   <string name="rootmodesummary">Para el dispositivos root solamente. Activar solo si estas seguro de ello.</string>
   <string name="mountsystemsummary">Habilite esta opción si desea editar archivos de sistema</string>
   <string name="mountsystem">Montar carpetas del sistema para escritura</string>
-  <string name="rootfailure">Acceso Root no concedido</string>
+  <string name="rootfailure">Acceso de Superusuario no concedido</string>
   <string name="selectall">Seleccionar todo</string>
   <string name="delete">Eliminar</string>
   <string name="setashome"> Establecer como carpeta principal</string>
@@ -339,7 +339,7 @@
   <string name="topFab">Botón flotante en la barra superior</string>
   <string name="topFabS">Establece si el botón de añadir (+) debe estar arriba y no abajo. Sólo se tendrá en cuenta si la barra superior no se esconde.</string>
   <string name="needsaccess">Se requiere acceso de escritura</string>
-  <string name="needsaccesssummary">Escoja por favor el directorio raíz de \t</string>
+  <string name="needsaccesssummary">Por favor elije el directorio raíz de \t</string>
   <string name="needsaccesssummary1">\tpara conceder permisos de escritura y proceder</string>
   <string name="smb_con">Conexión SMB</string>
   <string name="smb_server">Dirección IP del servidor</string>
