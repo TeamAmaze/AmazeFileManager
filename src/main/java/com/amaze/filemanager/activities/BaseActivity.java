@@ -25,7 +25,9 @@ public class BaseActivity extends BasicActivity {
     public SharedPreferences sharedPref;
 
     // Accent and Primary hex color string respectively
-    @Deprecated
+    /**
+     * @deprecated use {@link #getColorPreference()#getColor(int)} and {@link ColorUsage#ACCENT}
+     */
     public static String accentSkin;
     public static boolean rootMode;
     boolean checkStorage = true;

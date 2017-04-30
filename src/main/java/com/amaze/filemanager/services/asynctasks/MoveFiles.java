@@ -28,10 +28,13 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -40,7 +43,7 @@ import java.util.ArrayList;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
+public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
     private MainFragment mainFrag;
     private ArrayList<String> paths;
@@ -99,6 +102,30 @@ public class MoveFiles extends AsyncTask<ArrayList<String>,Void,Boolean> {
                     }
                 }
                 break;
+            case DROPBOX:
+            case BOX:
+            case ONEDRIVE:
+            case GDRIVE:
+                for (int i=0; i<paths.size(); i++) {
+                    for (BaseFile baseFile : files.get(i)) {
+
+                        CloudStorage cloudStorage = DataUtils.getAccount(mode);
+                        String targetPath = paths.get(i) + "/" + baseFile.getName();
+                        if (baseFile.getMode() == mode) {
+                            // source and target both in same filesystem, use API method
+                            try {
+
+                                cloudStorage.move(CloudUtil.stripPath(mode, baseFile.getPath()),
+                                        CloudUtil.stripPath(mode, targetPath));
+                            } catch (Exception e) {
+                                return false;
+                            }
+                        }  else {
+                            // not in same filesystem, execute service
+                            return false;
+                        }
+                    }
+                }
             default:
                 return false;
         }

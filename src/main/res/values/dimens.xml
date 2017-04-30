@@ -30,5 +30,7 @@
     <dimen name="material_generic_title_summary">12sp</dimen>
     <dimen name="material_generic_list_item">72dp</dimen>
 
+    <dimen name="material_sheet_row_height_title">56dp</dimen>
+    <dimen name="material_sheet_row_height_content">48dp</dimen>
     <dimen name="height_divider">1dp</dimen>
 </resources>

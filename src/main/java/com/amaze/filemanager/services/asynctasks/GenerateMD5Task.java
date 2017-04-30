@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.views.SizeDrawable;
@@ -30,7 +31,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
 
     private MaterialDialog a;
     private String name, parent, items, date;
-    private HFile f;
+    private BaseFile f;
     private BaseActivity c;
     private SizeDrawable sizeDrawable;
     private GenerateMD5Task g = this;
@@ -41,7 +42,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
     private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
     private int accentColor;
 
-    public GenerateMD5Task(MaterialDialog a, HFile f, String name, String parent,
+    public GenerateMD5Task(MaterialDialog a, BaseFile f, String name, String parent,
                            String items, String date, final BaseActivity c, final View textView) {
         this.a = a;
         this.c = c;
@@ -83,7 +84,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_md5);
         mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_sha256);
 
-        if (!f.isDirectory(c)) {
+        if (!f.isDirectory()) {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
             textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
         } else {
@@ -185,7 +186,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
             int x = f.listFiles(c, false).size();
             items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
         } else {
-            items = Formatter.formatFileSize(c, f.length()) + (" (" + f.length() + " "
+            items = Formatter.formatFileSize(c, f.length(c)) + (" (" + f.length(c) + " "
                     + c.getResources().getString(R.string.bytes).toLowerCase() + ")");
         }
         publishProgress("");
@@ -211,7 +212,7 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         super.onPostExecute(aVoid);
         if (a.isShowing()) {
 
-            if (!f.isDirectory(c)) {
+            if (!f.isDirectory()) {
                 t9.setText(aVoid[0]);
                 t10.setText(aVoid[1]);
 

@@ -33,8 +33,8 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    protected static final int DATABASE_VERSION = 2;
-    private static final String DATABASE_NAME = "explorer.db";
+    protected static final int DATABASE_VERSION = 4;
+    protected static final String DATABASE_NAME = "explorer.db";
     private static final String TABLE_TAB = "tab";
 
     private static final String COLUMN_TAB_NO = "tab_no";
@@ -68,14 +68,23 @@ public class TabHandler extends SQLiteOpenHelper {
                 + COLUMN_ENCRYPTED_PATH + " TEXT,"
                 + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
                 + ")";
+
+        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + "("
+                + CloudHandler.COLUMN_CLOUD_ID
+                + " INTEGER PRIMARY KEY,"
+                + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
+                + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+
         sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_ENCRYPTED);
+        sqLiteDatabase.execSQL(CREATE_TABLE_CLOUD);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CloudHandler.TABLE_CLOUD_PERSIST);
         onCreate(sqLiteDatabase);
     }
 

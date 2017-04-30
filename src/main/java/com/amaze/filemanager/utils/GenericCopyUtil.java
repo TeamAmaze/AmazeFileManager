@@ -5,13 +5,16 @@ import android.content.Context;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,10 +46,14 @@ public class GenericCopyUtil {
 
     /**
      * Starts copy of file
-     * Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile}
+     * Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile}, {@link CloudStorage}
+     * @param lowOnMemory defines whether system is running low on memory, in which case we'll switch to
+     *                    using streams instead of channel which maps the who buffer in memory.
+     *                    TODO: Use buffers even on low memory but don't map the whole file to memory but
+     *                          parts of it, and transfer each part instead.
      * @throws IOException
      */
-    private void startCopy() throws IOException {
+    private void startCopy(boolean lowOnMemory) throws IOException {
 
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
@@ -70,12 +77,47 @@ public class GenericCopyUtil {
 
                 // source is in smb
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
+            } else if (mSourceFile.isDropBoxFile()) {
+
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                bufferedInputStream = new BufferedInputStream(cloudStorageDropbox
+                        .download(CloudUtil.stripPath(OpenMode.DROPBOX,
+                        mSourceFile.getPath())));
+            } else if (mSourceFile.isBoxFile()) {
+
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                bufferedInputStream = new BufferedInputStream(cloudStorageBox
+                        .download(CloudUtil.stripPath(OpenMode.BOX,
+                                mSourceFile.getPath())));
+            } else if (mSourceFile.isGoogleDriveFile()) {
+
+                CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                bufferedInputStream = new BufferedInputStream(cloudStorageGdrive
+                        .download(CloudUtil.stripPath(OpenMode.GDRIVE,
+                                mSourceFile.getPath())));
+            } else if (mSourceFile.isOneDriveFile()) {
+
+                CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                bufferedInputStream = new BufferedInputStream(cloudStorageOnedrive
+                        .download(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                                mSourceFile.getPath())));
             } else {
 
                 // source file is neither smb nor otg; getting a channel from direct file instead of stream
                 File file = new File(mSourceFile.getPath());
                 if (FileUtil.isReadable(file)) {
-                    inChannel = new RandomAccessFile(file, "r").getChannel();
+
+                    if (mTargetFile.isOneDriveFile()
+                            || mTargetFile.isDropBoxFile()
+                            || mTargetFile.isGoogleDriveFile()
+                            || mTargetFile.isBoxFile()
+                            || lowOnMemory) {
+                        // our target is cloud, we need a stream not channel
+                        bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+                    } else {
+
+                        inChannel = new RandomAccessFile(file, "r").getChannel();
+                    }
                 } else {
                     ContentResolver contentResolver = mContext.getContentResolver();
                     DocumentFile documentSourceFile = FileUtil.getDocumentFile(file,
@@ -100,11 +142,79 @@ public class GenericCopyUtil {
             } else if (mTargetFile.isSmb()) {
 
                 bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
+            } else if (mTargetFile.isDropBoxFile()) {
+                // API doesn't support output stream, we'll upload the file directly
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+
+                if (mSourceFile.isDropBoxFile()) {
+                    // we're in the same provider, use api method
+                    cloudStorageDropbox.copy(CloudUtil.stripPath(OpenMode.DROPBOX, mSourceFile.getPath()),
+                            CloudUtil.stripPath(OpenMode.DROPBOX, mTargetFile.getPath()));
+                    return;
+                } else {
+                    cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, mTargetFile.getPath()),
+                            bufferedInputStream, mSourceFile.getSize(), true);
+                    return;
+                }
+            } else if (mTargetFile.isBoxFile()) {
+                // API doesn't support output stream, we'll upload the file directly
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+
+                if (mSourceFile.isBoxFile()) {
+                    // we're in the same provider, use api method
+                    bufferedInputStream.close();
+                    cloudStorageBox.copy(CloudUtil.stripPath(OpenMode.BOX, mSourceFile.getPath()),
+                            CloudUtil.stripPath(OpenMode.BOX, mTargetFile.getPath()));
+                    return;
+                } else {
+                    cloudStorageBox.upload(CloudUtil.stripPath(OpenMode.BOX, mTargetFile.getPath()),
+                            bufferedInputStream, mSourceFile.getSize(), true);
+                    bufferedInputStream.close();
+                    return;
+                }
+            } else if (mTargetFile.isGoogleDriveFile()) {
+                // API doesn't support output stream, we'll upload the file directly
+                CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+
+                if (mSourceFile.isGoogleDriveFile()) {
+                    // we're in the same provider, use api method
+                    bufferedInputStream.close();
+                    cloudStorageGdrive.copy(CloudUtil.stripPath(OpenMode.GDRIVE, mSourceFile.getPath()),
+                            CloudUtil.stripPath(OpenMode.GDRIVE, mTargetFile.getPath()));
+                    return;
+                } else {
+                    cloudStorageGdrive.upload(CloudUtil.stripPath(OpenMode.GDRIVE, mTargetFile.getPath()),
+                            bufferedInputStream, mSourceFile.getSize(), true);
+                    bufferedInputStream.close();
+                    return;
+                }
+            } else if (mTargetFile.isOneDriveFile()) {
+                // API doesn't support output stream, we'll upload the file directly
+                CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+
+                if (mSourceFile.isOneDriveFile()) {
+                    // we're in the same provider, use api method
+                    bufferedInputStream.close();
+                    cloudStorageOnedrive.copy(CloudUtil.stripPath(OpenMode.ONEDRIVE, mSourceFile.getPath()),
+                            CloudUtil.stripPath(OpenMode.ONEDRIVE, mTargetFile.getPath()));
+                    return;
+                } else {
+                    cloudStorageOnedrive.upload(CloudUtil.stripPath(OpenMode.ONEDRIVE, mTargetFile.getPath()),
+                            bufferedInputStream, mSourceFile.getSize(), true);
+                    bufferedInputStream.close();
+                    return;
+                }
             } else {
                 // copying normal file, target not in OTG
                 File file = new File(mTargetFile.getPath());
                 if (FileUtil.isWritable(file)) {
-                    outChannel = new RandomAccessFile(file, "rw").getChannel();
+
+                    if (lowOnMemory) {
+                        bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
+                    } else {
+
+                        outChannel = new RandomAccessFile(file, "rw").getChannel();
+                    }
                 } else {
                     ContentResolver contentResolver = mContext.getContentResolver();
                     DocumentFile documentTargetFile = FileUtil.getDocumentFile(file,
@@ -129,6 +239,13 @@ public class GenericCopyUtil {
             e.printStackTrace();
             Log.d(getClass().getSimpleName(), "I/O Error!");
             throw new IOException();
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+            // we ran out of memory to map the whole channel, let's switch to streams
+            AppConfig.toast(mContext, mContext.getResources().getString(R.string.copy_low_memory));
+
+            startCopy(true);
         } finally {
 
             try {
@@ -155,7 +272,7 @@ public class GenericCopyUtil {
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;
 
-        startCopy();
+        startCopy(false);
     }
 
     private void copyFile(BufferedInputStream bufferedInputStream, FileChannel outChannel)

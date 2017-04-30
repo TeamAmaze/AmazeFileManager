@@ -31,11 +31,17 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Class provides helper methods to handle database transactions to vaious {@link DataUtils}
+ */
+
 public class HistoryManager {
+
     private SQLiteDatabase db;
     private Context c;
     private String dbname;
     String[] dirs;
+
     public HistoryManager(Context c ,String dbname) {
         this.c = c;
         this.dbname=dbname;
@@ -54,6 +60,12 @@ public class HistoryManager {
             addPath(new File(d).getName(),d,table,1);
         }
     }
+
+    /**
+     * Create table for various {@link DataUtils} components
+     * @param table
+     * @param mode
+     */
     public void initializeTable(String table,int mode){
         if(mode==0)
             db.execSQL("CREATE TABLE IF NOT EXISTS " + table + " (PATH VARCHAR)");

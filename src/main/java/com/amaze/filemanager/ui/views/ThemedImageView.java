@@ -16,7 +16,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  * dark preference
  */
 
-public class ThemedImageView extends ImageView {
+public class ThemedImageView extends android.support.v7.widget.AppCompatImageView {
 
     public ThemedImageView(Context context) {
         this(context, null, 0);

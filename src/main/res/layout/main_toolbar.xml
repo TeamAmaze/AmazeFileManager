@@ -281,20 +281,12 @@
                 fab:fab_label="@string/file" />
             
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_new_SMBconnection"
+                android:id="@+id/menu_new_cloud"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings_remote_white_48dp"
+                android:src="@drawable/ic_cloud_white_24dp"
                 fab:fab_size="mini"
-                fab:fab_label="@string/smb_con" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_new_googledrive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/drive"
-                fab:fab_size="mini"
-                fab:fab_label="Drive Connection" />
+                fab:fab_label="@string/cloud_connection" />
         </com.github.clans.fab.FloatingActionMenu>
 
     </android.support.design.widget.CoordinatorLayout>

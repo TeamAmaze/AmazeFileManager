@@ -28,8 +28,8 @@ import java.net.URLEncoder;
  * Created by arpitkh996 on 21-01-2016.
  */
 public class RenameBookmark extends DialogFragment {
-    private UtilitiesProviderInterface utilsProvider;
 
+    private UtilitiesProviderInterface utilsProvider;
     String title, path, user = "", pass = "", ipp = "";
     String fabskin;
     Context c;
@@ -37,12 +37,12 @@ public class RenameBookmark extends DialogFragment {
     SharedPreferences Sp;
     int studiomode = 0;
 
-    public static RenameBookmark getInstance(String name, String path, String fabskin) {
+    public static RenameBookmark getInstance(String name, String path, int fabskin) {
         RenameBookmark renameBookmark = new RenameBookmark();
         Bundle bundle = new Bundle();
         bundle.putString("title", name);
         bundle.putString("path", path);
-        bundle.putString("fabskin", fabskin);
+        bundle.putInt("fabskin", fabskin);
         renameBookmark.setArguments(bundle);
         return renameBookmark;
     }
@@ -55,6 +55,7 @@ public class RenameBookmark extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         c = getActivity();
         if (getActivity() instanceof BookmarkCallback)
             bookmarkCallback = (BookmarkCallback) getActivity();
@@ -63,7 +64,7 @@ public class RenameBookmark extends DialogFragment {
         fabskin = getArguments().getString("fabskin");
         Sp = PreferenceManager.getDefaultSharedPreferences(c);
         studiomode = Sp.getInt("studio", 0);
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);

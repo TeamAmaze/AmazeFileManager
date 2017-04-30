@@ -28,6 +28,7 @@ import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -35,6 +36,7 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -59,7 +61,10 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
@@ -96,13 +101,19 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.database.CloudEntry;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
+import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
@@ -131,6 +142,7 @@ import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -138,6 +150,14 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.cloudrail.si.CloudRail;
+import com.cloudrail.si.exceptions.AuthenticationException;
+import com.cloudrail.si.exceptions.ParseException;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Box;
+import com.cloudrail.si.services.Dropbox;
+import com.cloudrail.si.services.GoogleDrive;
+import com.cloudrail.si.services.OneDrive;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -148,9 +168,11 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -163,7 +185,8 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchAsyncHelper.HelperCallbacks {
+        SearchAsyncHelper.HelperCallbacks, CloudConnectionCallbacks,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -244,6 +267,7 @@ public class MainActivity extends BaseActivity implements
    * us from starting further intents.
    */
     private boolean mIntentInProgress, showHidden = false;
+    private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
     // string builder object variables for pathBar animations
     private StringBuffer newPathBuilder, oldPathBuilder;
@@ -270,6 +294,10 @@ public class MainActivity extends BaseActivity implements
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
     public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
+    public static final String ARGS_KEY_LOADER = "loader_cloud_args_service";
+
+    private static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
+    private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/oauth2redirect";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
@@ -279,8 +307,12 @@ public class MainActivity extends BaseActivity implements
     public static Handler handler;
 
     private static HandlerThread handlerThread;
-    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destoyed
+    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
+
+    private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
+    private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
+    private static final int REQUEST_CODE_CLOUD_LIST_KEY_CLOUD = 5434;
 
     /**
      * Called when the activity is first created.
@@ -306,7 +338,6 @@ public class MainActivity extends BaseActivity implements
         grid.initializeTable(DataUtils.LIST, 0);
         grid.initializeTable(DataUtils.GRID, 0);
         grid.initializeTable(DataUtils.BOOKS, 1);
-        grid.initializeTable(DataUtils.DRIVE, 1);
         grid.initializeTable(DataUtils.SMB, 1);
 
         if (!sharedPref.getBoolean("booksadded", false)) {
@@ -324,6 +355,11 @@ public class MainActivity extends BaseActivity implements
                     .addApi(Plus.API)
                     .addScope(Plus.SCOPE_PLUS_LOGIN)
                     .build();
+        }
+
+        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
+
+            getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY_CLOUD, null, this);
         }
 
         util = new IconUtils(sharedPref, this);
@@ -520,7 +556,7 @@ public class MainActivity extends BaseActivity implements
      *
      * @return paths to all available SD-Cards in the system (include emulated)
      */
-    public List<String> getStorageDirectories() {
+    public synchronized List<String> getStorageDirectories() {
         // Final set of paths
         final ArrayList<String> rv = new ArrayList<>();
         // Primary physical SD-CARD (not emulated)
@@ -584,7 +620,7 @@ public class MainActivity extends BaseActivity implements
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isUsbDeviceConnected()) rv.add("otg:/");
+            if (isUsbDeviceConnected()) rv.add(OTGUtil.PREFIX_OTG + "/");
         }
         return rv;
     }
@@ -708,7 +744,7 @@ public class MainActivity extends BaseActivity implements
         List<String> storageDirectories = getStorageDirectories();
         ArrayList<String[]> books = new ArrayList<>();
         ArrayList<String[]> servers = new ArrayList<>();
-        ArrayList<String[]> accounts = new ArrayList<>();
+
         storage_count = 0;
         for (String file : storageDirectories) {
             File f = new File(file);
@@ -721,7 +757,7 @@ public class MainActivity extends BaseActivity implements
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if ("otg:/".equals(file)) {
+            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                 name = "OTG";
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
@@ -747,35 +783,16 @@ public class MainActivity extends BaseActivity implements
             e.printStackTrace();
         }
 
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.DRIVE)) {
-                accounts.add(file);
-            }
-            DataUtils.setAccounts(accounts);
-            if (accounts.size() > 0) {
-                Collections.sort(accounts, new BookSorter());
-                for (String[] file : accounts)
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                            .drive)));
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+            books.add(file);
         }
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-                books.add(file);
-            }
-            DataUtils.setBooks(books);
-            if (books.size() > 0) {
-                Collections.sort(books, new BookSorter());
-                for (String[] file : books)
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                            .folder_fab)));
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-
+        DataUtils.setBooks(books);
+        if (books.size() > 0) {
+            Collections.sort(books, new BookSorter());
+            for (String[] file : books)
+                sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
+                        .folder_fab)));
+            sectionItems.add(new SectionItem());
         }
 
         sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
@@ -803,10 +820,26 @@ public class MainActivity extends BaseActivity implements
             protected Integer doInBackground(String... strings) {
                 String path = strings[0];
                 int k = 0, i = 0;
+                String entryItemPathOld = "";
                 for (Item item : DataUtils.getList()) {
                     if (!item.isSection()) {
-                        if (((EntryItem) item).getPath().equals(path))
-                            k = i;
+
+                        String entryItemPath = ((EntryItem) item).getPath();
+
+                        if (path.contains(((EntryItem) item).getPath())) {
+
+                            if (entryItemPath.length() > entryItemPathOld.length()) {
+
+
+                                // we don't need to match with the quick search drawer items
+                                // whether current entry item path is bigger than the older one found,
+                                // for eg. when we have /storage and /storage/Movies as entry items
+                                // we would choose to highlight /storage/Movies in drawer adapter
+                                k = i;
+
+                                entryItemPathOld = entryItemPath;
+                            }
+                        }
                     }
                     i++;
                 }
@@ -875,14 +908,14 @@ public class MainActivity extends BaseActivity implements
                 selectedStorage = i;
                 adapter.toggleChecked(selectedStorage);
 
-                if (((EntryItem) directoryItems.get(i)).getPath().equals("otg:/") &&
+                if (((EntryItem) directoryItems.get(i)).getPath().contains(OTGUtil.PREFIX_OTG) &&
                         sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
-                        // we've not gotten otg path yet
-                        // start system request for storage access framework
-                        Toast.makeText(getApplicationContext(),
-                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
+                    // we've not gotten otg path yet
+                    // start system request for storage access framework
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    startActivityForResult(safIntent, REQUEST_CODE_SAF);
                 } else {
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
@@ -1367,7 +1400,7 @@ public class MainActivity extends BaseActivity implements
                             break;
                         case SMB:
                             try {
-                                MainFragment.launch(new SmbFile(encryptBaseFile.getPath()),
+                                MainFragment.launchSMB(new SmbFile(encryptBaseFile.getPath()),
                                         encryptBaseFile.getSize(), MainActivity.this);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
@@ -1504,69 +1537,182 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void refreshDrawer() {
-        List<String> val = DataUtils.getStorages();
-        if (val == null)
-            val = getStorageDirectories();
-        ArrayList<Item> items = new ArrayList<>();
-        storage_count = 0;
-        for (String file : val) {
-            File f = new File(file);
-            String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                name = getResources().getString(R.string.storage);
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
-            } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if ("otg:/".equals(file)) {
-                name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
-            } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
-                items.add(new EntryItem(name, file, icon1));
-            }
-        }
-        items.add(new SectionItem());
-        ArrayList<String[]> Servers = DataUtils.getServers();
-        if (Servers != null && Servers.size() > 0) {
-            for (String[] file : Servers) {
-                items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.ic_settings_remote_white_48dp)));
+
+        new AsyncTask<Void, Void, ArrayList<Item>>() {
+
+            @Override
+            protected ArrayList<Item> doInBackground(Void... params) {
+
+                List<String> val = DataUtils.getStorages();
+                if (val == null)
+                    val = getStorageDirectories();
+                final ArrayList<Item> items = new ArrayList<>();
+                storage_count = 0;
+                for (String file : val) {
+                    File f = new File(file);
+                    String name;
+                    Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
+                    if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
+                        name = getResources().getString(R.string.storage);
+                    } else if ("/storage/sdcard1".equals(file)) {
+                        name = getResources().getString(R.string.extstorage);
+                    } else if ("/".equals(file)) {
+                        name = getResources().getString(R.string.rootdirectory);
+                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
+                    } else if (file.contains(OTGUtil.PREFIX_OTG)) {
+                        name = "OTG";
+                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
+                    } else name = f.getName();
+                    if (!f.isDirectory() || f.canExecute()) {
+                        storage_count++;
+                        items.add(new EntryItem(name, file, icon1));
+                    }
+                }
+                items.add(new SectionItem());
+                ArrayList<String[]> Servers = DataUtils.getServers();
+                if (Servers != null && Servers.size() > 0) {
+                    for (String[] file : Servers) {
+                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_settings_remote_white_48dp)));
+                    }
+
+                    items.add(new SectionItem());
+                }
+
+                ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
+
+                if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
+
+                    for (CloudStorage cloudStorage : DataUtils.getAccounts()) {
+
+                        if (cloudStorage instanceof Dropbox) {
+
+                            try {
+
+                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        CloudHandler.CLOUD_NAME_DROPBOX,
+                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                                });
+                            }
+                        } else if (cloudStorage instanceof Box) {
+
+                            try {
+
+                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
+                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        CloudHandler.CLOUD_NAME_BOX,
+                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
+                                });
+                            }
+                        } else if (cloudStorage instanceof OneDrive) {
+
+                            try {
+                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                                });
+                            }
+                        } else if (cloudStorage instanceof GoogleDrive) {
+
+                            try {
+                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        cloudStorage.getUserName(),
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+
+                                accountAuthenticationList.add(new String[] {
+                                        CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                                });
+                            }
+                        }
+                    }
+                    Collections.sort(accountAuthenticationList, new BookSorter());
+
+                    if (accountAuthenticationList.size() != 0)
+                        items.add(new SectionItem());
+                }
+
+                ArrayList<String[]> books = DataUtils.getBooks();
+                if (books != null && books.size() > 0) {
+                    Collections.sort(books, new BookSorter());
+                    for (String[] file : books) {
+                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable
+                                .folder_fab)));
+                    }
+                    items.add(new SectionItem());
+                }
+                items.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+                items.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+                items.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+                items.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+                items.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+                items.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+                items.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+                DataUtils.setList(items);
+                return items;
             }
 
-            items.add(new SectionItem());
-        }
-        ArrayList<String[]> accounts = DataUtils.getAccounts();
-        if (accounts != null && accounts.size() > 0) {
-            Collections.sort(accounts, new BookSorter());
-            for (String[] file : accounts) {
-                items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable.drive)));
+            @Override
+            protected void onPostExecute(ArrayList<Item> items) {
+                super.onPostExecute(items);
+                adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, items, MainActivity.this, sharedPref);
+                mDrawerList.setAdapter(adapter);
             }
-
-            items.add(new SectionItem());
-        }
-        ArrayList<String[]> books = DataUtils.getBooks();
-        if (books != null && books.size() > 0) {
-            Collections.sort(books, new BookSorter());
-            for (String[] file : books) {
-                items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                        .folder_fab)));
-            }
-            items.add(new SectionItem());
-        }
-        items.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-        items.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-        items.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        items.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        items.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        items.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-        items.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
-        DataUtils.setList(items);
-        adapter = new DrawerAdapter(this, this, items, MainActivity.this, sharedPref);
-        mDrawerList.setAdapter(adapter);
-
+        }.execute();
     }
 
     @Override
@@ -1723,7 +1869,7 @@ public class MainActivity extends BaseActivity implements
                 // If not confirmed SAF, or if still not writable, then revert settings.
                 /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
                         ||!FileUtil.isWritableNormalOrSaf(currentFolder)*/
-               return;
+                return;
             }
 
             // After confirmation, update stored value of folder.
@@ -1909,7 +2055,7 @@ public class MainActivity extends BaseActivity implements
             }
         } catch (Exception e) {
             e.printStackTrace();
-           Log.d("BBar", "button view not available");
+            Log.d("BBar", "button view not available");
         }
     }
 
@@ -2191,8 +2337,9 @@ public class MainActivity extends BaseActivity implements
         fabNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 mainActivityHelper.add(MainActivityHelper.NEW_FOLDER);
-                utils.revealShow(fabBgView, false);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
@@ -2203,47 +2350,21 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(MainActivityHelper.NEW_FILE);
-                utils.revealShow(fabBgView, false);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton fabNewSMB = (FloatingActionButton) findViewById(R.id.menu_new_SMBconnection);
-        fabNewSMB.setColorNormal(folderskin);
-        fabNewSMB.setColorPressed(fabskinpressed);
-        fabNewSMB.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
+        floatingActionButton3.setColorNormal(folderskin);
+        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(MainActivityHelper.NEW_SMB);
-                utils.revealShow(fabBgView, false);
+                mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
+                //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton fabGoogleDrive = (FloatingActionButton) findViewById(R.id.menu_new_googledrive);
-        fabGoogleDrive.setColorNormal(folderskin);
-        fabGoogleDrive.setColorPressed(fabskinpressed);
-        fabGoogleDrive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivityHelper.add(MainActivityHelper.NEW_GOGLEDRIVE);
-                utils.revealShow(fabBgView, false);
-                floatingActionButton.close(true);
-            }
-        });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PackageManager pm = getPackageManager();
-                boolean app_installed;
-                try {
-                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
-                    app_installed = true;
-                } catch (PackageManager.NameNotFoundException e) {
-                    app_installed = false;
-                }
-                if (!app_installed) fabGoogleDrive.setVisibility(View.GONE);
-            }
-        }).run();
     }
 
     public void updatePath(@NonNull final String news, boolean results, OpenMode openmode,
@@ -2251,11 +2372,24 @@ public class MainActivity extends BaseActivity implements
 
         if (news.length() == 0) return;
 
-        if (openmode == OpenMode.SMB && news.startsWith("smb:/"))
-            newPath = mainActivityHelper.parseSmbPath(news);
-        else if (openmode == OpenMode.CUSTOM)
-            newPath = mainActivityHelper.getIntegralNames(news);
-        else newPath = news;
+        switch (openmode) {
+            case SMB:
+                newPath = mainActivityHelper.parseSmbPath(news);
+                break;
+            case OTG:
+                newPath = mainActivityHelper.parseOTGPath(news);
+                break;
+            case CUSTOM:
+                newPath = mainActivityHelper.getIntegralNames(news);
+            case DROPBOX:
+            case BOX:
+            case ONEDRIVE:
+            case GDRIVE:
+                newPath = mainActivityHelper.parseCloudPath(openmode, news);
+                break;
+            default:
+                newPath = news;
+        }
 
         final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
         final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
@@ -2527,9 +2661,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void renameBookmark(final String title, final String path) {
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1
-                || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, Color.parseColor(BaseActivity.accentSkin));
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }
@@ -2585,6 +2719,10 @@ public class MainActivity extends BaseActivity implements
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
+        } else if (intent.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
+
+            // we used an external authenticator instead of APIs. Probably for Google Drive
+            CloudRail.setAuthenticationResponse(intent);
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
@@ -2616,11 +2754,11 @@ public class MainActivity extends BaseActivity implements
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                     if (sharedPref.getString(KEY_PREF_OTG, null) == null) {
                         sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                        updateDrawer();
+                        refreshDrawer();
                     }
                 } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                     sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
-                    updateDrawer();
+                    refreshDrawer();
                 }
             }
         }
@@ -2746,6 +2884,7 @@ public class MainActivity extends BaseActivity implements
                         }
                     }
                 } else
+
                     Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             } else {
                 int i = DataUtils.containsServer(new String[]{oldname, oldPath});
@@ -2836,5 +2975,347 @@ public class MainActivity extends BaseActivity implements
         mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void addConnection(OpenMode service) {
+        CloudHandler cloudHandler = new CloudHandler(this);
+        try {
+            if (cloudHandler.findEntry(service) != null) {
+                // cloud entry already exists
+                Toast.makeText(this, getResources().getString(R.string.connection_exists),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                Bundle args = new Bundle();
+                args.putInt(ARGS_KEY_LOADER, service.ordinal());
+                getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
+            }
+        } catch (CloudPluginException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void deleteConnection(OpenMode service) {
+
+        CloudHandler cloudHandler = new CloudHandler(this);
+        cloudHandler.clear(service);
+        DataUtils.removeAccount(service);
+        refreshDrawer();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys/");
+
+        String[] projection = new String[] {
+                CloudContract.COLUMN_ID,
+                CloudContract.COLUMN_CLIENT_ID,
+                CloudContract.COLUMN_CLIENT_SECRET_KEY
+        };
+
+        switch (id) {
+            case REQUEST_CODE_CLOUD_LIST_KEY:
+                Uri uriAppendedPath = uri;
+                switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
+                    case GDRIVE:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 1);
+                        break;
+                    case DROPBOX:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 2);
+                        break;
+                    case BOX:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 3);
+                        break;
+                    case ONEDRIVE:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 4);
+                        break;
+                }
+                return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
+            case REQUEST_CODE_CLOUD_LIST_KEYS:
+                // we need a list of all secret keys
+                Uri uriAll = Uri.withAppendedPath(Uri.parse("content://" +
+                        CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
+                CloudHandler cloudHandler = new CloudHandler(getApplicationContext());
+                try {
+                    List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
+
+                    String ids[] = new String[cloudEntries.size()];
+
+                    for (int i=0; i<cloudEntries.size(); i++) {
+
+                        // we need to get only those cloud details which user wants
+                        switch (cloudEntries.get(i).getServiceType()) {
+                            case GDRIVE:
+                                ids[i] = 1 + "";
+                                break;
+                            case DROPBOX:
+                                ids[i] = 2 + "";
+                                break;
+                            case BOX:
+                                ids[i] = 3 + "";
+                                break;
+                            case ONEDRIVE:
+                                ids[i] = 4 + "";
+                                break;
+                        }
+                    }
+                    return new CursorLoader(this, uriAll, projection, CloudContract.COLUMN_ID, ids, null);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
+                            Toast.LENGTH_LONG).show();
+                }
+            case REQUEST_CODE_CLOUD_LIST_KEY_CLOUD:
+                Uri uriAppendedPathCloud = ContentUris.withAppendedId(uri, 5);
+                return new CursorLoader(this, uriAppendedPathCloud, projection, null, null, null);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
+
+        if (data == null) {
+            Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+            cloudSyncTask.cancel(true);
+        }
+
+        cloudSyncTask = new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+
+
+                CloudHandler cloudHandler = new CloudHandler(MainActivity.this);
+
+                if (data.getCount() > 0 && data.moveToFirst()) {
+                    do {
+
+                        switch (data.getInt(0)) {
+                            case 1:
+                                // DRIVE
+                                try {
+
+                                    CloudEntry cloudEntryGdrive = null;
+                                    CloudEntry savedCloudEntryGdrive;
+
+
+                                    GoogleDrive cloudStorageDrive = new GoogleDrive(getApplicationContext(),
+                                            data.getString(1), "", CLOUD_AUTHENTICATOR_REDIRECT_URI, data.getString(2));
+                                    cloudStorageDrive.useAdvancedAuthentication();
+
+                                    if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageDrive.loadAsString(savedCloudEntryGdrive.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to update the persist string as existing one is been compromised
+
+                                            cloudStorageDrive.login();
+                                            cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.GDRIVE, cloudEntryGdrive);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageDrive.login();
+                                        cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryGdrive);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageDrive);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.GDRIVE);
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.GDRIVE);
+                                    return false;
+                                }
+                                break;
+                            case 2:
+                                // DROPBOX
+                                try {
+
+                                    CloudEntry cloudEntryDropbox = null;
+                                    CloudEntry savedCloudEntryDropbox;
+
+                                    CloudStorage cloudStorageDropbox = new Dropbox(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageDropbox.login();
+                                            cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.DROPBOX, cloudEntryDropbox);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageDropbox.login();
+                                        cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryDropbox);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageDropbox);
+                                } catch (CloudPluginException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.DROPBOX);
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.DROPBOX);
+                                    return false;
+                                }
+                                break;
+                            case 3:
+                                // BOX
+                                try {
+
+                                    CloudEntry cloudEntryBox = null;
+                                    CloudEntry savedCloudEntryBox;
+
+                                    CloudStorage cloudStorageBox = new Box(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageBox.login();
+                                            cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.BOX, cloudEntryBox);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageBox.login();
+                                        cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryBox);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageBox);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.BOX);
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.BOX);
+                                    return false;
+                                }
+                                break;
+                            case 4:
+                                // ONEDRIVE
+                                try {
+
+                                    CloudEntry cloudEntryOnedrive = null;
+                                    CloudEntry savedCloudEntryOnedrive;
+
+                                    CloudStorage cloudStorageOnedrive = new OneDrive(getApplicationContext(),
+                                            data.getString(1), data.getString(2));
+
+                                    if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
+                                        // we already have the entry and saved state, get it
+
+                                        try {
+                                            cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                            // we need to persist data again
+
+                                            cloudStorageOnedrive.login();
+                                            cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
+                                            cloudHandler.updateEntry(OpenMode.ONEDRIVE, cloudEntryOnedrive);
+                                        }
+
+                                    } else {
+
+                                        cloudStorageOnedrive.login();
+                                        cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
+                                        cloudHandler.addEntry(cloudEntryOnedrive);
+                                    }
+
+                                    DataUtils.addAccount(cloudStorageOnedrive);
+                                } catch (CloudPluginException e) {
+
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
+                                    deleteConnection(OpenMode.ONEDRIVE);
+                                    return false;
+                                } catch (AuthenticationException e) {
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.ONEDRIVE);
+                                    return false;
+                                }
+                                break;
+                            case 5:
+                                CloudRail.setAppKey(data.getString(1));
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, MainActivity.this);
+                                    }
+                                });
+                                return false;
+                            default:
+                                Toast.makeText(MainActivity.this, getResources().getString(R.string.cloud_error_failed_restart),
+                                        Toast.LENGTH_LONG).show();
+                                return false;
+                        }
+                    } while (data.moveToNext());
+                }
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean refreshDrawer) {
+                super.onPostExecute(refreshDrawer);
+                if (refreshDrawer)
+                    refreshDrawer();
+            }
+        }.execute();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

@@ -61,6 +61,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
@@ -90,7 +91,7 @@ import java.util.TimerTask;
 public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
-    private File mFile;
+    private BaseFile mFile;
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
@@ -194,7 +195,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             // getting uri from external source
             uri = getIntent().getData();
 
-            mFile = new File(getIntent().getData().getPath());
+            mFile = new BaseFile(getIntent().getData().getPath());
         }
 
         String fileName;
@@ -281,7 +282,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         @Override
                         public void onPositive(MaterialDialog dialog) {
 
-                            saveFile(uri, mFile, mInput.getText().toString());
+                            saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
                             finish();
                         }
 
@@ -441,7 +442,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      * @param uri
      * @param mFile
      */
-    private void load(final Uri uri, final File mFile) {
+    private void load(final Uri uri, final BaseFile mFile) {
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint(R.string.loading);
@@ -531,18 +532,18 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.save:
                 // Make sure EditText is visible before saving!
-                saveFile(uri, mFile, mInput.getText().toString());
+                saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
                 break;
             case R.id.details:
-                if (mFile.canRead()) {
-                    HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
-                    hFile.generateMode(this);
-                    getFutils().showProps(hFile, this, getAppTheme());
+                if (mFile.exists()) {
+                    //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
+                    //hFile.generateMode(this);
+                    getFutils().showProps(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
-                if (mFile.canRead()) {
-                    getFutils().openunknown(mFile, this, false);
+                if (mFile.exists()) {
+                    getFutils().openunknown(new File(mFile.getPath()), this, false);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
@@ -620,17 +621,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     }
 
     /**
-     * Helper method to {@link #load(Uri, File)}
+     * Helper method to {@link #load(Uri, BaseFile)}
      * Tries to find an input stream associated with file/uri
      *
      * @param uri
-     * @param file
+     * @param baseFile
      * @return
      * @throws StreamNotFoundException exception thrown when we couldn't find a stream
      *                                 after all the attempts
      */
-    private InputStream getInputStream(Uri uri, File file) throws StreamNotFoundException {
+    private InputStream getInputStream(Uri uri, BaseFile baseFile) throws StreamNotFoundException {
         InputStream stream = null;
+
+        File file = new File(baseFile.getPath());
 
         if (uri.toString().contains("file://")) {
             // dealing with files

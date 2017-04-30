@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -37,14 +38,21 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CloudEntry;
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Dropbox;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -131,6 +139,11 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
 
                         checkForPath(item.getPath());
                     }
+
+                    if (DataUtils.getAccounts().size() > 0) {
+                        // we have cloud accounts, try see if token is expired or not
+                        CloudUtil.checkToken(item.getPath(), m);
+                    }
                     m.selectItem(position);
                 }
                 // TODO: Implement this method
@@ -143,11 +156,27 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         // not to remove the first bookmark (storage) and permanent bookmarks
                         if (position > m.storage_count && position < values.size() - 7) {
                             EntryItem item = (EntryItem) getItem(position);
+                            String title = item.getTitle();
                             String path = (item).getPath();
                             if (DataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
+
+                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+
+                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                             }
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();

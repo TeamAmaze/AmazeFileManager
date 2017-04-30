@@ -234,8 +234,19 @@ public class CopyService extends Service {
 
                         try {
 
-                            HFile hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
-                                    f1.isDirectory());
+                            HFile hFile;
+                            if (targetPath.contains(getExternalCacheDir().getPath())) {
+                                // the target open mode is not the one we're currently in!
+                                // we're processing the file for cache
+                                hFile = new HFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(),
+                                        f1.isDirectory());
+                            } else {
+
+                                // the target open mode is where we're currently at
+                                hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                        f1.isDirectory());
+                            }
+
                             if (!progressHandler.getCancelled()) {
 
                                 if (!f1.isSmb()

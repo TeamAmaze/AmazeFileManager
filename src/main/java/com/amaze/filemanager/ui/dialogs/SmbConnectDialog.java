@@ -24,28 +24,18 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import jcifs.smb.SmbFile;
 
@@ -53,10 +43,10 @@ import jcifs.smb.SmbFile;
  * Created by arpitkh996 on 17-01-2016.
  */
 public class SmbConnectDialog extends DialogFragment {
+
     private UtilitiesProviderInterface utilsProvider;
 
     private static final String TAG = "SmbConnectDialog";
-
 
     public interface SmbConnectionListener{
 
@@ -88,6 +78,7 @@ public class SmbConnectDialog extends DialogFragment {
          */
         void deleteConnection(String name, String path);
     }
+
     Context context;
     SmbConnectionListener smbConnectionListener;
     String emptyAddress, emptyName,invalidDomain,invalidUsername;
@@ -100,6 +91,7 @@ public class SmbConnectDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         final boolean edit=getArguments().getBoolean("edit",false);
         final String path=getArguments().getString("path");
         final String name=getArguments().getString("name");
@@ -197,20 +189,23 @@ public class SmbConnectDialog extends DialogFragment {
                 else usernameTIL.setError("");
             }
         });
-        int color = Color.parseColor(PreferenceUtils.getAccentString(sharedPreferences));
+        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
         final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
-        setTint(conName,color);
-        setTint(user,color);
-        setTint(pass,color);
-        Futils.setTint(ch,color);
+
+        EditTextColorStateUtil.setTint(conName, accentColor);
+        EditTextColorStateUtil.setTint(user, accentColor);
+        EditTextColorStateUtil.setTint(pass, accentColor);
+
+        Futils.setTint(ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Futils.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
             }
         });
+
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,7 +260,7 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.neutralText(R.string.cancel);
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
-        ba3.positiveColor(color).negativeColor(color).neutralColor(color);
+        ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
         ba3.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -314,7 +309,11 @@ public class SmbConnectDialog extends DialogFragment {
                 if (smbFile == null) return;
                 s = new String[]{conName.getText().toString(), smbFile.getPath()};
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.addConnection(edit, s[0], pass.getText().toString(),
+                    // encrypted path means path with encrypted pass
+                    smbConnectionListener.addConnection(edit, s[0], createSMBPath(new String[]{ipa,
+                                    user.getText().toString().replaceAll(" ", "\\ "),
+                                    pass.getText().toString(),
+                                    domaind}, false).getPath(),
                             s[1], name, path);
                 }
                 dismiss();
@@ -357,6 +356,23 @@ public class SmbConnectDialog extends DialogFragment {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private SmbFile createSMBPath(String[] auth, boolean anonym) {
+        try {
+            String yourPeerIP = auth[0], domain = auth[3];
+
+            String path = "smb://"+(android.text.TextUtils.isEmpty(domain) ? ""
+                    :( URLEncoder.encode(domain + ";","UTF-8")) )+ (anonym ? "" :
+                    (URLEncoder.encode(auth[1], "UTF-8") + ":" + URLEncoder.encode(auth[2], "UTF-8") + "@")) + yourPeerIP + "/";
+            SmbFile smbFile = new SmbFile(path);
+            return smbFile;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static ColorStateList createEditTextColorStateList(int color) {
