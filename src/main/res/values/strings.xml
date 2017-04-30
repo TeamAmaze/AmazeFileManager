@@ -650,5 +650,7 @@
     <string name="cloud_share_copied">Sharable link copied to clipboard</string>
     <string name="copy_low_memory">Running out of memory, please clear some RAM</string>
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
+    <string name="cloud_plugin_not_supported">Cloud plug-in is not supported for Fdroid build.
+        Please download Amaze from Play Store.</string>
 </resources>
 
