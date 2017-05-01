@@ -543,6 +543,7 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="clipboard_path_copy">パスをクリップボードにコピーしました</string>
   <string name="service_timer">経過時間</string>
   <string name="please_wait">お待ちください</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="ftp_path">共有パス</string>
   <string name="error_ftp_path_file">パスはディレクトリではありません</string>
   <string name="change">変更</string>

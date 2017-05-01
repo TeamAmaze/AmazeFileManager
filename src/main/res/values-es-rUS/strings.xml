@@ -557,6 +557,16 @@
   <string name="error_busybox">BusyBox no encontrado. Cerrando el shell interactivo.</string>
   <string name="service_timer">Tiempo transcurrido</string>
   <string name="please_wait">Por favor, espere</string>
+  <string name="cloud_connection">Conexión con la nube</string>
+  <string name="cloud_connection_new">Nueva conexión con la nube</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">Obtener plugin de la nube</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">Dirección de correo electrónico</string>
+  <string name="cloud_email">ID de correo electrónico</string>
   <string name="no_applications">No hay aplicaciones</string>
   <string name="ftp_path">Directorio guardado</string>
   <string name="ftp_path_hint">Ruta a la raíz del directorio para compartir</string>
@@ -611,4 +621,15 @@
   <string name="crypt_fingerprint_authenticate">Tocar sensor para continuar</string>
   <string name="authenticate_password">Introducir contraseña</string>
   <string name="bytes">Bytes</string>
+  <string name="cloud_error_new_account">Error al agregar la nueva cuenta</string>
+  <string name="cloud_error_plugin">No se ha encontrado el plugin de la nube de Amaze. Por favor descárgalo desde el Play Store.</string>
+  <string name="cloud_error_failed_restart">Error al cargar la conexión.
+        Abre otra vez Amaze Cloud.</string>
+  <string name="cloud_remove">¿Desea quitar la conexión con la nube?</string>
+  <string name="cloud_fail_authenticate">Se produjo un error al autenticar</string>
+  <string name="cloud_share_copied">Link compartible copiado al portapapeles</string>
+  <string name="copy_low_memory">Corriendo sin memoria, por favor quita algo de la RAM</string>
+  <string name="cloud_token_lost">Token perdido, por favor vuelve a iniciar sesión</string>
+  <string name="cloud_plugin_not_supported">Plugin de la nube no está soportado por la build de Fdroid.
+        Por favor descarga Amaze desde el Play Store.</string>
 </resources>

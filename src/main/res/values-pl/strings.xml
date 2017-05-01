@@ -548,6 +548,7 @@ smb_instructions
   <string name="error_busybox">Nie znaleziono BusyBox. Zamykanie warstwy interaktywnej.</string>
   <string name="service_timer">Czas trwania</string>
   <string name="please_wait">Proszę czekać</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="change">Zmień</string>
   <string name="unknown_error">Ups, coś poszło nie tak!</string>
   <string name="ftp_path_change_error_invalid">Nieprawidłowa ścieżka</string>

@@ -510,6 +510,7 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="error_busybox">BusyBox tidak ditemukan. Menutup shell interaktif.</string>
   <string name="service_timer">Waktu berlalu</string>
   <string name="please_wait">Mohon tunggu</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">Tidak ada aplikasi</string>
   <string name="ftp_path">Path Dibagikan</string>
   <string name="ftp_path_hint">Path ke root direktori untuk berbagi</string>

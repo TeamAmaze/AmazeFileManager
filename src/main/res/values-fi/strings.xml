@@ -558,6 +558,7 @@
   <string name="error_busybox">Busyboxia ei löydy, suljetaan interaktiivinen shelli.</string>
   <string name="service_timer">Kulunut aika</string>
   <string name="please_wait">Odota</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">Ei sovelluksia</string>
   <string name="ftp_path">Jaettu polku</string>
   <string name="ftp_path_hint">Polku pääkansioon</string>
