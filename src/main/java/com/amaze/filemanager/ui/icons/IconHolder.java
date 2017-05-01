@@ -29,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -104,10 +105,19 @@ public class IconHolder {
             for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
                 final ImageView imageView = entry.getKey();
                 final String fso = entry.getValue();
-                if (Objects.equals(fso, result.fso)) {
-                    imageView.setImageBitmap(result.result);
-                    mRequests.remove(imageView);
-                    break;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (Objects.equals(fso, result.fso)) {
+                        imageView.setImageBitmap(result.result);
+                        mRequests.remove(imageView);
+                        break;
+                    }
+                } else {
+                    if (fso.equals(result.fso)) {
+
+                        imageView.setImageBitmap(result.result);
+                        mRequests.remove(imageView);
+                        break;
+                    }
                 }
             }
         }

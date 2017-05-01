@@ -204,48 +204,61 @@ public class Preffrag extends PreferenceFragment {
             masterPasswordPreference.setEnabled(false);
         }
 
-        // finger print sensor
-        final FingerprintManager fingerprintManager = (FingerprintManager)
-                getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
-        final KeyguardManager keyguardManager = (KeyguardManager)
-                getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
-        CheckBox checkBx = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
+        CheckBox checkBoxFingerprint = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
+        try {
 
-            checkBx.setEnabled(true);
+            // finger print sensor
+            final FingerprintManager fingerprintManager = (FingerprintManager)
+                    getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+
+            final KeyguardManager keyguardManager = (KeyguardManager)
+                    getActivity().getSystemService(Context.KEYGUARD_SERVICE);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
+
+                checkBoxFingerprint.setEnabled(true);
+            }
+
+            checkBoxFingerprint.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    if (ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_no_permission),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            !fingerprintManager.hasEnrolledFingerprints()) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_not_enrolled),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            !keyguardManager.isKeyguardSecure()) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_no_security),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    masterPasswordPreference.setEnabled(false);
+                    return true;
+                }
+            });
+        } catch (NoClassDefFoundError error) {
+            error.printStackTrace();
+
+            // fingerprint manager class not defined in the framework
+            checkBoxFingerprint.setEnabled(false);
         }
 
-        checkBx.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                if (ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_no_permission),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !fingerprintManager.hasEnrolledFingerprints()) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_not_enrolled),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !keyguardManager.isKeyguardSecure()) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_no_security),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                }
-
-                masterPasswordPreference.setEnabled(false);
-                return true;
-            }
-        });
     }
 
     public static void restartPC(final Activity activity) {

@@ -2580,7 +2580,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
-        } else if (intent.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
+        } else if (i.getCategories() != null && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
 
             // we used an external authenticator instead of APIs. Probably for Google Drive
             CloudRail.setAuthenticationResponse(intent);

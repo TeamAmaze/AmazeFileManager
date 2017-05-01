@@ -331,6 +331,7 @@ public class MainActivity extends BaseActivity implements
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
+        // TODO: Create proper SQLite database handler class with calls to database from background thread
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
         history.initializeTable(DataUtils.HIDDEN, 0);
@@ -2719,10 +2720,11 @@ public class MainActivity extends BaseActivity implements
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
-        } else if (intent.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
+        } else if (i.getCategories() != null && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
 
             // we used an external authenticator instead of APIs. Probably for Google Drive
             CloudRail.setAuthenticationResponse(intent);
+
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
