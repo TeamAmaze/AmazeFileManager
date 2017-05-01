@@ -94,6 +94,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     break;
             }
         } else if(preference.getKey().equals(KEY_SHORTCUT_PREF)) {
+            if(getPreferenceScreen().getPreferenceCount() >= findPreference(KEY_SHORTCUT_PREF).getOrder())
+                findPreference(KEY_SHORTCUT_PREF).setOrder(getPreferenceScreen().getPreferenceCount()+10);
+
             loadCreateDialog();
         }
 
