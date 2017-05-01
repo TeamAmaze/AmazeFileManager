@@ -6,7 +6,6 @@ import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Switch;
 
 import com.amaze.filemanager.R;
@@ -23,7 +22,7 @@ public class NamePathSwitchPreference extends Preference {
     private int lastItemClicked = -1;
     private Switch switchView;
     private Boolean shouldEnableSwitch = null;
-    private ImageButton deleteButton;
+    private View.OnClickListener switchListener;
 
     public NamePathSwitchPreference(Context context) {
         super(context);
@@ -45,21 +44,23 @@ public class NamePathSwitchPreference extends Preference {
     @Override
     protected void onBindView(View view) {
         setListener(view, R.id.edit, EDIT);
-        setListener(view, R.id.switch_button, SWITCH);
+        switchListener = setListener(view, R.id.switch_button, SWITCH);
         setListener(view, R.id.delete, DELETE);
 
+        super.onBindView(view);//Keep this before things that need changing what's on screen
+
         switchView = ((Switch) view.findViewById(R.id.switch_button));
-        switchView.setChecked(shouldEnableSwitch != null? shouldEnableSwitch : true);
-
-        deleteButton = ((ImageButton) view.findViewById(R.id.delete));
-
-        super.onBindView(view);
+        if(shouldEnableSwitch != null && !shouldEnableSwitch) {
+            switchView.setChecked(false);
+            switchListener.onClick(switchView);
+        } else switchView.setChecked(true);
     }
 
     public void setChecked(boolean checked) {
-        if(switchView != null)
+        if(switchView != null) {
             switchView.setChecked(checked);
-        else shouldEnableSwitch = checked;
+            switchListener.onClick(switchView);
+        } else shouldEnableSwitch = checked;
     }
 
     public boolean isChecked() {
@@ -70,10 +71,10 @@ public class NamePathSwitchPreference extends Preference {
         return lastItemClicked;
     }
 
-    private void setListener(final View v, @IdRes int id, final int elem) {
+    private View.OnClickListener setListener(final View v, @IdRes int id, final int elem) {
         final NamePathSwitchPreference t = this;
 
-        v.findViewById(id).setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener l = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 lastItemClicked = elem;
@@ -89,7 +90,11 @@ public class NamePathSwitchPreference extends Preference {
                     getOnPreferenceClickListener().onPreferenceClick(t);
                 }
             }
-        });
+        };
+
+        v.findViewById(id).setOnClickListener(l);
+
+        return l;
     }
 
 }
