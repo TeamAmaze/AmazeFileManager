@@ -34,11 +34,13 @@ import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class FoldersPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     public static final String KEY = "name path list";
+    public static final String KEY_SHORTCUT_PREF = "add_shortcut";
 
     private SharedPreferences preferences;
     private PreferencesActivity activity;
     private Map<Preference, Integer> position = new HashMap<>();
     private ArrayList<Trio> currentValue;
+    private Preference.OnPreferenceClickListener onPreferenceClickListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,16 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         currentValue = castStringListToTrioList(TinyDB.getList(preferences, String.class, KEY,
                 getValue()));
 
+        onPreferenceClickListener = this;
+
+        findPreference(KEY_SHORTCUT_PREF).setOnPreferenceClickListener(onPreferenceClickListener);
+
         for (int i = 0; i < currentValue.size(); i++) {
             NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
             p.setTitle(currentValue.get(i).first);
             p.setSummary(currentValue.get(i).second);
             p.setChecked(currentValue.get(i).third);
-            p.setOnPreferenceClickListener(this);
+            p.setOnPreferenceClickListener(onPreferenceClickListener);
 
             position.put(p, i);
             getPreferenceScreen().addPreference(p);
@@ -67,6 +73,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     @Override
     public boolean onPreferenceClick(final Preference preference) {
         if (preferences != null) activity.setChanged();
+
         if (preference instanceof NamePathSwitchPreference) {
             NamePathSwitchPreference p = (NamePathSwitchPreference) preference;
             switch (p.getLastItemClicked()) {
@@ -86,7 +93,10 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     loadDeleteDialog(preference);
                     break;
             }
+        } else if(preference.getKey().equals(KEY_SHORTCUT_PREF)) {
+            loadCreateDialog();
         }
+
         return false;
     }
 
@@ -119,6 +129,53 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         }
 
         return dflt;
+    }
+
+    private void loadCreateDialog() {
+        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+
+        LayoutInflater li = LayoutInflater.from(activity);
+        final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
+        ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
+        ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
+
+        final AppCompatEditText editText1 = ((AppCompatEditText) v.findViewById(R.id.text1)),
+                editText2 = ((AppCompatEditText) v.findViewById(R.id.text2));
+
+        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.create_shortcut)
+                .theme(activity.getAppTheme().getMaterialDialogTheme())
+                .positiveColor(fab_skin)
+                .positiveText(R.string.create)
+                .negativeColor(fab_skin)
+                .negativeText(android.R.string.cancel)
+                .customView(v, false)
+                .build();
+
+        dialog.getActionButton(DialogAction.POSITIVE)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
+                        p.setTitle(editText1.getText());
+                        p.setSummary(editText2.getText());
+                        p.setOnPreferenceClickListener(onPreferenceClickListener);
+
+                        position.put(p, currentValue.size());
+                        getPreferenceScreen().addPreference(p);
+
+                        Trio trio = new Trio(editText1.getText().toString(),
+                                editText2.getText().toString(), true);
+
+                        dataUtils.addBook(new String[] {trio.first, trio.second});
+
+                        currentValue.add(trio);
+                        TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
+                        dialog.dismiss();
+                    }
+                });
+
+        dialog.show();
     }
 
     private void loadEditDialog(final NamePathSwitchPreference p) {
