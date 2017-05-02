@@ -546,7 +546,16 @@
   <string name="error_busybox">Busybox 找不到。關閉互動式 shell。</string>
   <string name="service_timer">已用時間</string>
   <string name="please_wait">請稍候</string>
+  <string name="cloud_connection">雲端連線</string>
+  <string name="cloud_connection_new">新增雲端連線</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google 雲端硬碟</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">取得雲端套件</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">電子信箱</string>
+  <string name="cloud_email">電子信箱 ID</string>
   <string name="no_applications">無任何應用程式</string>
   <string name="ftp_path">分享路徑</string>
   <string name="ftp_path_hint">要分享根目錄的路徑</string>
@@ -602,4 +611,13 @@
   <string name="crypt_fingerprint_authenticate">繼續觸控感應器</string>
   <string name="authenticate_password">請輸入密碼</string>
   <string name="bytes">位元組</string>
+  <string name="cloud_error_new_account">新增帳戶失敗</string>
+  <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
+  <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
+  <string name="cloud_remove">您想要移除此雲端連線嗎？</string>
+  <string name="cloud_fail_authenticate">身份驗證失敗</string>
+  <string name="cloud_share_copied">Sharable 連結已複製到剪貼簿</string>
+  <string name="copy_low_memory">運行記憶體不足，請清除一些背景處理程式</string>
+  <string name="cloud_token_lost">權限遺失，請重新登入</string>
+  <string name="cloud_plugin_not_supported">雲端套件尚不支援 Fdroid。請從 Play 商店中下載  Amaze Cloud。</string>
 </resources>

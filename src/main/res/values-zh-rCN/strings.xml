@@ -516,7 +516,16 @@
   <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
   <string name="please_wait">请稍候</string>
+  <string name="cloud_connection">网盘</string>
+  <string name="cloud_connection_new">添加网盘</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">获取网盘插件</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">电子邮箱地址</string>
+  <string name="cloud_email">电子邮箱帐户</string>
   <string name="no_applications">没有应用程序</string>
   <string name="ftp_path">共享路径</string>
   <string name="ftp_path_hint">共享目录的根路径</string>
@@ -570,4 +579,13 @@
   <string name="crypt_fingerprint_authenticate">请继续触摸传感器</string>
   <string name="authenticate_password">输入密码</string>
   <string name="bytes">字节</string>
+  <string name="cloud_error_new_account">添加账户失败</string>
+  <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件。请从应用商店下载。</string>
+  <string name="cloud_error_failed_restart">无法加载此连接。请再次打开 Amaze Cloud。</string>
+  <string name="cloud_remove">您想要移除此网盘吗？</string>
+  <string name="cloud_fail_authenticate">身份验证失败</string>
+  <string name="cloud_share_copied">Sharable 链接已复制到剪贴板</string>
+  <string name="copy_low_memory">运行内存不足，请清除一些后台程序</string>
+  <string name="cloud_token_lost">登录信息过期，请重新登录</string>
+  <string name="cloud_plugin_not_supported">网盘插件不受 Fdroid 支持。请从应用商店下载 Amaze Cloud。</string>
 </resources>
