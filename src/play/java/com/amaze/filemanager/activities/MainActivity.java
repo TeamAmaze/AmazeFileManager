@@ -1425,7 +1425,7 @@ public class MainActivity extends BaseActivity implements
         } else {
             ArrayList<FoldersPref.Trio> booksPref =
                     FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
-                            FoldersPref.KEY, null));
+                            FoldersPref.KEY, new ArrayList<String>()));
 
             for (FoldersPref.Trio t : booksPref) {
                 if(t.third)

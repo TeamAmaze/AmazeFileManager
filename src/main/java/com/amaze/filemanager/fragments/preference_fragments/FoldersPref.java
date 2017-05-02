@@ -84,8 +84,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     Trio trio = new Trio(p.getTitle().toString(),  p.getSummary().toString(),
                             p.isChecked());
 
-                    dataUtils.getBooks().set(position.get(p), new String[] {trio.first, trio.second});
-
                     currentValue.set(position.get(p), trio);
                     TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
                     break;
@@ -170,8 +168,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         Trio trio = new Trio(editText1.getText().toString(),
                                 editText2.getText().toString(), true);
 
-                        dataUtils.addBook(new String[] {trio.first, trio.second});
-
                         currentValue.add(trio);
                         TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
                         dialog.dismiss();
@@ -242,7 +238,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        dataUtils.removeBook(position.get(p));
                         getPreferenceScreen().removePreference(p);
                         currentValue.remove((int) position.get(p));
                         TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
