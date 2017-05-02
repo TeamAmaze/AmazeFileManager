@@ -1512,7 +1512,9 @@ public class MainActivity extends BaseActivity implements
         if(sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
             ArrayList<String[]> books = dataUtils.getBooks();
             if (books != null && books.size() > 0) {
-                Collections.sort(books, new BookSorter());// TODO: 26/4/2017 optimize sorting (so that it is made only once)
+                if(!sharedPref.contains(FoldersPref.KEY)) {
+                    Collections.sort(books, new BookSorter());
+                }
 
                 for (String[] file : books) {
                     sectionItems.add(new EntryItem(file[0], file[1],
