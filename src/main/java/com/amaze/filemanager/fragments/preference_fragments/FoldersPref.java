@@ -7,9 +7,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,9 +19,11 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -153,6 +157,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .customView(v, false)
                 .build();
 
+        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        disableButtonIfNotPath(editText2, dialog);
+
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -185,8 +192,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final AppCompatEditText editText1 = ((AppCompatEditText) v.findViewById(R.id.text1)),
-                editText2 = ((AppCompatEditText) v.findViewById(R.id.text2));
+        final EditText editText1 = ((EditText) v.findViewById(R.id.text1)),
+                editText2 = ((EditText) v.findViewById(R.id.text2));
         editText1.setText(p.getTitle());
         editText2.setText(p.getSummary());
 
@@ -199,6 +206,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .negativeText(android.R.string.cancel)
                 .customView(v, false)
                 .build();
+
+        disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(new View.OnClickListener() {
@@ -246,6 +255,16 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 });
 
         dialog.show();
+    }
+
+    private void disableButtonIfNotPath(EditText path, final MaterialDialog dialog) {
+        path.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                dialog.getActionButton(DialogAction.POSITIVE)
+                        .setEnabled(new File(s.toString()).exists());// TODO: 2/5/2017 use another system that doesn't create new object
+            }
+        });
     }
 
     /**
