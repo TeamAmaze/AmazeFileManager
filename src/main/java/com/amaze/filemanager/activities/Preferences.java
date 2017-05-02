@@ -49,6 +49,8 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
     int select = 0;
     public int changed = 0;
 
+    private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -83,7 +85,16 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
-        selectItem(0);
+        if (savedInstanceState != null){
+            select = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+        }
+        selectItem(select);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CURRENT_FRAG_OPEN, select);
     }
 
     @Override
