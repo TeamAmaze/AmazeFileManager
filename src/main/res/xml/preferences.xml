@@ -44,6 +44,10 @@
             android:title="@string/showDividers"/>
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
+            android:key="showHeaders"
+            android:title="@string/showHeaders"/>
+        <com.amaze.filemanager.ui.views.CheckBox
+            android:defaultValue="true"
             android:key="intelliHideToolbar"
             android:summary="@string/intellihide_toolbar_summary"
             android:title="@string/intellihide_toolbar_title"/>
@@ -67,7 +71,6 @@
             android:title="@string/hidden"/>
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
-            android:enabled="false"
             android:key="showLastModified"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
