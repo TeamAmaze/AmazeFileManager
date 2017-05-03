@@ -558,7 +558,16 @@
   <string name="error_busybox">Busyboxia ei löydy, suljetaan interaktiivinen shelli.</string>
   <string name="service_timer">Kulunut aika</string>
   <string name="please_wait">Odota</string>
+  <string name="cloud_connection">Pilvi yhteys</string>
+  <string name="cloud_connection_new">Uusi Pilviyhteys</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">Hae pilvi-lisäosa</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">Sähköpostiosoite</string>
+  <string name="cloud_email">Sähköposti ID</string>
   <string name="no_applications">Ei sovelluksia</string>
   <string name="ftp_path">Jaettu polku</string>
   <string name="ftp_path_hint">Polku pääkansioon</string>
@@ -587,6 +596,39 @@
   <string name="contributors_5_summary">Värin muutos välilehdillä liikuttaessa</string>
   <string name="contributors_6_summary">FTP-palvelin</string>
   <string name="contributors_7_summary">Interaktiivinen shell tulille</string>
+  <string name="connection_exists">Yhteys on jo olemassa</string>
+  <string name="crypt_encrypting">Salataan</string>
+  <string name="crypt_decrypting">Puretaan salausta</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Salattu</string>
+  <string name="crypt_decrypted">Purettu</string>
+  <string name="crypt_encrypt">Salaa</string>
+  <string name="crypt_decrypt">Pura salaus</string>
+  <string name="operation_fail_following">Toiminto ei onnistunut seuraaville tiedostoille</string>
+  <string name="crypt_pref_master_password_title">Pääsalasana</string>
+  <string name="crypt_pref_master_password_summary">Aseta pääsalasana, jätä tyhjäksi poistaaksesi.</string>
+  <string name="crypt_pref_fingerprint_title">Sormenjälki</string>
+  <string name="crypt_pref_fingerprint_summary">Käytä sormenjälkeä kirjautuaksesi</string>
+  <string name="crypt_fingerprint_no_permission">Sormenjälki oikeudet puuttuvat</string>
+  <string name="crypt_fingerprint_not_enrolled">Ei sormenjälkeä rekisteröity</string>
+  <string name="crypt_fingerprint_no_security">Ei lukitusnäyttöä asetettu</string>
+  <string name="crypt_warning_key">Huomioi, kun muutat turvallisuuskuviota järjestelmäasetuksista, et voi purkaa tämä sisältöä.</string>
+  <string name="warning_never_show">Älä näytä uudestaan</string>
+  <string name="warning_confirm">Selvä!</string>
+  <string name="crypt_encryption_fail">Salaaminen epäonnistui</string>
+  <string name="crypt_decryption_fail">Salausta ei voitu purkaa</string>
+  <string name="crypt_decryption_fail_password">Väärä salasana!</string>
+  <string name="crypt_fingerprint_authenticate">Paina kosketusanturia jatkaaksesi</string>
+  <string name="authenticate_password">Syötä salasana</string>
   <string name="bytes">Tavua</string>
+  <string name="cloud_error_new_account">Uuden tilin lisääminen epäonnistui</string>
+  <string name="cloud_error_plugin">Amaze laajennusta ei löytynyt, lataa Google Play Storesta.</string>
+  <string name="cloud_error_failed_restart">Yhteys epäonnistui.  Avaa Amaze Cloud kerran.</string>
+  <string name="cloud_remove">Haluatko poisaa pilvi-yhteyden?</string>
+  <string name="cloud_fail_authenticate">Autentikointi epäonnistui</string>
+  <string name="cloud_share_copied">Jaettava linkki kopioitu leikepöydälle</string>
+  <string name="copy_low_memory">Muisti loppumassa, tyhjennä RAM-muisti</string>
+  <string name="cloud_token_lost">Tunnistus menetetty, kirjaudu uudestaan sisään</string>
+  <string name="cloud_plugin_not_supported">Pilvilaajennus ei ole tuettu Fdroid-versiossa.
+        lataa Amaze Google Play Storesta.</string>
 </resources>
