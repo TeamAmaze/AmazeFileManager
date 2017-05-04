@@ -1238,6 +1238,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 loadlist(home, true, OpenMode.FILE);
             }
         } catch (Exception e) {
+
+            e.printStackTrace();
         }
     }
 
