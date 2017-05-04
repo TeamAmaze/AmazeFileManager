@@ -555,6 +555,7 @@
   <string name="error_busybox">BusyBox не знойдзены. Закрыццё інтэрактыўнай абалонкі.</string>
   <string name="service_timer">Прайшло часу</string>
   <string name="please_wait">Калі ласка, пачакайце</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">Няма праграм</string>
   <string name="ftp_path">Агульны шлях</string>
   <string name="ftp_path_hint">Шлях да каранёвага каталогу для агульнага доступу</string>

@@ -524,6 +524,7 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="error_busybox">Busybox non trovato. Chiusura shell interattiva.</string>
   <string name="service_timer">Tempo Trascorso</string>
   <string name="please_wait">Attendere, per favore</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">Nessuna applicazione</string>
   <string name="ftp_path">Percorso condiviso</string>
   <string name="ftp_path_hint">Percorso dell\'origine della directory da condividere</string>

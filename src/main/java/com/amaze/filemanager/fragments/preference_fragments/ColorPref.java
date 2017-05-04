@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private UtilitiesProviderInterface utilsProvider;
+    private MaterialDialog dialog;
 
     SharedPreferences sharedPref;
     com.amaze.filemanager.activities.Preferences preferences;
@@ -78,6 +79,14 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     }
 
     @Override
+    public void onPause() {
+        if (dialog != null){
+            dialog.dismiss();
+        }
+        super.onPause();
+    }
+
+    @Override
     public boolean onPreferenceClick(final Preference preference) {
         if (preferences != null) preferences.changed = 1;
 
@@ -90,7 +99,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             v.setOnItemClickListener(adapter);
 
             int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+            dialog = new MaterialDialog.Builder(getActivity())
                     .positiveText(R.string.cancel)
                     .title(R.string.choose_color)
                     .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())

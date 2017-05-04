@@ -439,6 +439,7 @@
   <string name="error_busybox">Busybox не е намерен. Затваряне на интерактивен шел.</string>
   <string name="service_timer">Изминало време</string>
   <string name="please_wait">Моля, изчакайте</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">Няма приложения</string>
   <string name="ftp_path">Споделен път</string>
   <string name="error_ftp_path_file">Пътят не е директория</string>
