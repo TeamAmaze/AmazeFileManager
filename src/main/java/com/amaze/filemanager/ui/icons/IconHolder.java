@@ -29,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -38,7 +39,12 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,6 +52,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import jcifs.smb.SmbFileInputStream;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * A class that holds icons for a more efficient access.
@@ -87,7 +95,7 @@ public class IconHolder {
             }
         }
 
-        private void processResult(LoadResult result) {
+        private synchronized void processResult(LoadResult result) {
             // Cache the new drawable
             final String filePath =(result.fso);
             mAppIcons.put(filePath, result.result);
@@ -96,10 +104,19 @@ public class IconHolder {
             for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
                 final ImageView imageView = entry.getKey();
                 final String fso = entry.getValue();
-                if (Objects.equals(fso, result.fso)) {
-                    imageView.setImageBitmap(result.result);
-                    mRequests.remove(imageView);
-                    break;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (Objects.equals(fso, result.fso)) {
+                        imageView.setImageBitmap(result.result);
+                        mRequests.remove(imageView);
+                        break;
+                    }
+                } else {
+                    if (fso.equals(result.fso)) {
+
+                        imageView.setImageBitmap(result.result);
+                        mRequests.remove(imageView);
+                        break;
+                    }
                 }
             }
         }
@@ -147,7 +164,7 @@ public class IconHolder {
      * @param defaultIcon Drawable to be used in case no specific one could be found
      * @return Drawable The drawable reference
      */
-    public void loadDrawable(ImageView iconView, final String fso, Drawable defaultIcon) {
+    public void loadDrawable(final ImageView iconView, final String fso, Drawable defaultIcon) {
         if (!mUseThumbs) {
             return;
         }
@@ -158,7 +175,6 @@ public class IconHolder {
             iconView.setImageBitmap(this.mAppIcons.get(filePath));
             return;
         }
-        mRequests.put(iconView, fso);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -169,11 +185,14 @@ public class IconHolder {
                     mWorkerThread.start();
                     mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
                 }
+
+                mRequests.put(iconView, fso);
                 Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
                 msg.sendToTarget();
 
             }
-        }).start();    }
+        }).start();
+    }
 
     /**
      * Cancel loading of a drawable for a certain ImageView.
@@ -235,7 +254,7 @@ public class IconHolder {
             return null;
         }
     }
-        private Bitmap getAppDrawable(String path) throws OutOfMemoryError{
+        private Bitmap getAppDrawable(String path) throws OutOfMemoryError {
             Bitmap bitsat;
             try {
                 PackageManager pm = mContext.getPackageManager();
@@ -257,7 +276,7 @@ public class IconHolder {
         return bitsat;
         }
 
-		private Bitmap loadImage(String path) throws OutOfMemoryError{
+		private Bitmap loadImage(String path) throws OutOfMemoryError {
 			Bitmap bitsat;
 
             try {
@@ -272,7 +291,35 @@ public class IconHolder {
 				options.inJustDecodeBounds = false;
 
 				Bitmap bit;
-                if(path.startsWith("smb:/"))bit= BitmapFactory.decodeStream(new SmbFileInputStream(path));
+                if(path.startsWith("smb:/")) {
+                    bit = BitmapFactory.decodeStream(new SmbFileInputStream(path));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+
+                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageDropbox.getThumbnail(CloudUtil
+                            .stripPath(OpenMode.DROPBOX, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+
+                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageBox.getThumbnail(CloudUtil
+                            .stripPath(OpenMode.BOX, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+
+                    CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageGDrive.getThumbnail(CloudUtil
+                            .stripPath(OpenMode.GDRIVE, path)));
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+
+                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+                    bit = BitmapFactory.decodeStream(cloudStorageOneDrive.getThumbnail(CloudUtil
+                            .stripPath(OpenMode.ONEDRIVE, path)));
+                } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
+                    bit = BitmapFactory.decodeStream(OTGUtil.getDocumentFilesList(path, mContext).get(0).getInputStream(mContext));
+                }
                 else bit= BitmapFactory.decodeFile(path, options);
 
 				bitsat = bit;// decodeFile(path);//.createScaledBitmap(bits,imageViewReference.get().getHeight(),imageViewReference.get().getWidth(),true);

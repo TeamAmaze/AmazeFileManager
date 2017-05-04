@@ -70,6 +70,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.database.Tab;
@@ -89,10 +90,12 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
@@ -374,7 +377,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons();
+        fixIcons(true);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
@@ -401,7 +404,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons();
+        fixIcons(true);
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
@@ -715,8 +718,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
                                 Toast.LENGTH_SHORT).show();
-                    else
-                        utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), Color.parseColor(fabSkin));
+                    else {
+
+                        switch (LIST_ELEMENTS.get(0).getMode()) {
+                            case DROPBOX:
+                            case BOX:
+                            case GDRIVE:
+                            case ONEDRIVE:
+                                utils.shareCloudFile(LIST_ELEMENTS.get(0).getDesc(),
+                                        LIST_ELEMENTS.get(0).getMode(), getContext());
+                                break;
+                            default:
+                                utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), Color.parseColor(fabSkin));
+                                break;
+                        }
+                    }
                     return true;
                 case R.id.openparent:
                     loadlist(new File(LIST_ELEMENTS.get(plist.get(0)).getDesc()).getParent(), false, OpenMode.FILE);
@@ -905,7 +921,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (l.getMode() == OpenMode.SMB) {
                         try {
                             SmbFile smbFile = new SmbFile(l.getDesc());
-                            launch(smbFile, l.getlongSize(), MAIN_ACTIVITY);
+                            launchSMB(smbFile, l.getlongSize(), MAIN_ACTIVITY);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -913,6 +929,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                         utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext(), false),
                                 (MainActivity) getActivity());
+                    } else if (l.getMode() == OpenMode.DROPBOX
+                            || l.getMode() == OpenMode.BOX
+                            || l.getMode() == OpenMode.GDRIVE
+                            || l.getMode() == OpenMode.ONEDRIVE) {
+
+                        Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                        CloudUtil.launchCloud(LIST_ELEMENTS.get(position).generateBaseFile(), openMode, MAIN_ACTIVITY);
                     }
                     else if (MAIN_ACTIVITY.mReturnIntent) {
                         returnIntentResults(new File(l.getDesc()));
@@ -1122,7 +1145,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                            && !path.equals("otg:/")) {
+                            && !path.equals(OTGUtil.PREFIX_OTG + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            && !path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
@@ -1274,13 +1301,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
             return;
         }
 
-        File f = new File(CURRENT_PATH);
+        HFile currentFile = new HFile(openMode, CURRENT_PATH);
         if (!results && !mRetainSearchTask) {
 
             // normal case
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
+
                 if (openMode == OpenMode.SMB) {
                     try {
                         if (!smbPath.equals(CURRENT_PATH)) {
@@ -1290,11 +1318,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
+
                 } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
-                        CURRENT_PATH.equals("otg:/"))
+                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                        )
                     MAIN_ACTIVITY.exit();
-                else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, openMode);
+                else if (utils.canGoBack(getContext(), currentFile)) {
+                    loadlist(currentFile.getParent(getContext()), true, openMode);
                 } else MAIN_ACTIVITY.exit();
             }
         } else if (!results && mRetainSearchTask) {
@@ -1309,7 +1343,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 FragmentManager fm = MAIN_ACTIVITY.getSupportFragmentManager();
 
                 // getting parent path to resume search from there
-                String parentPath = new File(CURRENT_PATH).getParent();
+                String parentPath = new HFile(openMode, CURRENT_PATH).getParent(getActivity());
                 // don't fuckin' remove this line, we need to change
                 // the path back to parent on back press
                 CURRENT_PATH = parentPath;
@@ -1358,12 +1392,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
             loadlist(home, false, OpenMode.FILE);
             return;
         }
-        File f = new File(CURRENT_PATH);
+        HFile currentFile = new HFile(openMode, CURRENT_PATH);
         if (!results) {
             if (selection) {
                 adapter.toggleChecked(false);
             } else {
-                if (openMode == OpenMode.SMB)
+                if (openMode == OpenMode.SMB) {
+
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
@@ -1372,14 +1407,20 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-                else if (CURRENT_PATH.equals("/"))
-                    MAIN_ACTIVITY.exit();
-                else if (utils.canGoBack(f)) {
-                    loadlist(f.getParent(), true, openMode);
-                } else MAIN_ACTIVITY.exit();
+                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
+                            CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            )
+                        MAIN_ACTIVITY.exit();
+                    else if (utils.canGoBack(getContext(), currentFile)) {
+                        loadlist(currentFile.getParent(getContext()), true, openMode);
+                    } else MAIN_ACTIVITY.exit();
             }
         } else {
-            loadlist(f.getPath(), true, openMode);
+            loadlist(currentFile.getPath(), true, openMode);
         }
     }
 
@@ -1413,6 +1454,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
+        fixIcons(false);
     }
 
     @Override
@@ -1426,11 +1468,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
         super.onStop();
     }
 
-    void fixIcons() {
+    void fixIcons(boolean forceReload) {
+        if (LIST_ELEMENTS == null) return;
+        BitmapDrawable iconDrawable;
         for (LayoutElements layoutElements : LIST_ELEMENTS) {
-            BitmapDrawable iconDrawable = layoutElements.isDirectory() ?
-                    folder : Icons.loadMimeIcon(layoutElements.getDesc(), !IS_LIST, res);
-            layoutElements.setImageId(iconDrawable);
+            if (forceReload || layoutElements.getImageId() == null) {
+                iconDrawable = layoutElements.isDirectory() ?
+                        folder : Icons.loadMimeIcon(layoutElements.getDesc(), !IS_LIST, res);
+                layoutElements.setImageId(iconDrawable);
+            }
         }
     }
 
@@ -1598,7 +1644,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void launch(final SmbFile smbFile, final long si, final Activity activity) {
+    public static void launchSMB(final SmbFile smbFile, final long si, final Activity activity) {
         final Streamer s = Streamer.getInstance();
         new Thread() {
             public void run() {

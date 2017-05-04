@@ -516,6 +516,7 @@
   <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
   <string name="please_wait">请稍候</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="no_applications">没有应用程序</string>
   <string name="ftp_path">共享路径</string>
   <string name="ftp_path_hint">共享目录的根路径</string>
@@ -544,5 +545,29 @@
   <string name="contributors_5_summary">滑动按钮时进行颜色过渡</string>
   <string name="contributors_6_summary">FTP 服务器</string>
   <string name="contributors_7_summary">启动交互式 shell</string>
+  <string name="connection_exists">连接已存在</string>
+  <string name="crypt_encrypting">正在加密</string>
+  <string name="crypt_decrypting">正在解密</string>
+  <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">已加密</string>
+  <string name="crypt_decrypted">已解密</string>
+  <string name="crypt_encrypt">加密</string>
+  <string name="crypt_decrypt">解密</string>
+  <string name="operation_fail_following">以下文件操作失败</string>
+  <string name="crypt_pref_master_password_title">主密码</string>
+  <string name="crypt_pref_master_password_summary">为加密操作设置主密码。如果您想要移除密码，请留空。</string>
+  <string name="crypt_pref_fingerprint_title">指纹</string>
+  <string name="crypt_pref_fingerprint_summary">使用指纹进行身份验证</string>
+  <string name="crypt_fingerprint_no_permission">缺少指纹权限</string>
+  <string name="crypt_fingerprint_not_enrolled">没有指纹登记</string>
+  <string name="crypt_fingerprint_no_security">未设置锁屏安全</string>
+  <string name="crypt_warning_key">当您在系统设置中改变安全模式时，您将无法解密此内容。</string>
+  <string name="warning_never_show">不再通知</string>
+  <string name="warning_confirm">确定</string>
+  <string name="crypt_encryption_fail">加密失败</string>
+  <string name="crypt_decryption_fail">解密失败</string>
+  <string name="crypt_decryption_fail_password">密码错误</string>
+  <string name="crypt_fingerprint_authenticate">请继续触摸传感器</string>
+  <string name="authenticate_password">输入密码</string>
   <string name="bytes">字节</string>
 </resources>

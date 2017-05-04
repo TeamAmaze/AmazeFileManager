@@ -29,13 +29,11 @@ import static com.amaze.filemanager.activities.MainActivity.dataUtils;
  * Created by arpitkh996 on 21-01-2016.
  */
 public class RenameBookmark extends DialogFragment {
-    private UtilitiesProviderInterface utilsProvider;
 
     private String title;
     private String path;
     private String user = "";
     private String pass = "";
-    private String fabskin;
     private BookmarkCallback bookmarkCallback;
     private int studiomode = 0;
 
@@ -53,7 +51,6 @@ public class RenameBookmark extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
     }
 
     @Override
@@ -63,12 +60,11 @@ public class RenameBookmark extends DialogFragment {
             bookmarkCallback = (BookmarkCallback) getActivity();
         title = getArguments().getString("title");
         path = getArguments().getString("path");
-        fabskin = getArguments().getString("fabskin");
-
+        String fabskin = getArguments().getString("fabskin");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
 
         studiomode = sp.getInt("studio", 0);
-        if (dataUtils.containsBooks(new String[]{title, path}) != -1 || dataUtils.containsAccounts(new String[]{title, path}) != -1) {
+        if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
             final MaterialDialog materialDialog;
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -79,7 +75,7 @@ public class RenameBookmark extends DialogFragment {
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);
-            builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+            builder.theme(((UtilitiesProviderInterface) getActivity()).getAppTheme().getMaterialDialogTheme());
             builder.autoDismiss(false);
             View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
             builder.customView(v2, true);

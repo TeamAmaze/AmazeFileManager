@@ -48,6 +48,7 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.R.string.select;
 
 public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -60,6 +61,8 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
     private boolean changed = false;
     //The preference fragment currently selected
     private int selectedItem = 0;
+
+    private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +98,16 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
-        selectItem(0);
+        if (savedInstanceState != null){
+            selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+        }
+        selectItem(selectedItem);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CURRENT_FRAG_OPEN, selectedItem);
     }
 
     @Override

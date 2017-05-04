@@ -22,14 +22,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
-    android:versionCode="55"
-    android:versionName="3.1.2 Beta 10">
+    android:versionCode="57"
+    android:versionName="3.1.2 RC3">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.amaze.cloud.permission.ACCESS_PROVIDER" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <uses-sdk
@@ -39,6 +40,7 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+
     <application
         android:name=".utils.AppConfig"
         android:icon="@mipmap/ic_launcher"
@@ -51,7 +53,7 @@
             android:launchMode="singleInstance"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -75,6 +77,13 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
         </activity>
         <activity
@@ -134,6 +143,7 @@
             android:label = "Copying"
             >
         </service>
+
         <service android:name=".services.EncryptService"
             android:label="@string/crypt_encrypting"
             />
@@ -161,6 +171,7 @@
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name="com.amaze.filemanager.ui.notifications.FTPNotification"
             android:exported="true">

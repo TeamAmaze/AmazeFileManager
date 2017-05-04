@@ -34,8 +34,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 55
-        versionName "3.1.2 Beta 10"
+        versionCode 57
+        versionName "3.1.2 RC3"
     }
 
     signingConfigs {
@@ -126,6 +126,7 @@ dependencies {
     //compile 'com.jcraft:jsch:0.1.53'
     compile 'com.android.volley:volley:1.0.0'
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    compile 'com.cloudrail:cloudrail-si-android:2.16.5'
 }
 
 def Properties props = new Properties()

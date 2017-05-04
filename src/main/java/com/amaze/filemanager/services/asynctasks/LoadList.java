@@ -31,19 +31,24 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +94,6 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     boolean grid;
 
     @Override
-    // Actual download method, run in the task thread
     protected ArrayList<LayoutElements> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
         ArrayList<LayoutElements> list = null;
@@ -107,6 +111,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                 ma.smbPath = path;
             } else if (hFile.isOtgFile()) {
                 openmode = OpenMode.OTG;
+            } else if (hFile.isBoxFile()) {
+                openmode = OpenMode.BOX;
+            } else if (hFile.isDropBoxFile()) {
+                openmode = OpenMode.DROPBOX;
+            } else if (hFile.isGoogleDriveFile()) {
+                openmode = OpenMode.GDRIVE;
+            } else if (hFile.isOneDriveFile()) {
+                openmode = OpenMode.ONEDRIVE;
             } else if (hFile.isCustomPath())
                 openmode = OpenMode.CUSTOM;
             else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
@@ -169,6 +181,47 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                 list = addTo(listOtg(path));
                 openmode = OpenMode.OTG;
                 break;
+            case DROPBOX:
+
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+
+                try {
+                    list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                }
+                break;
+            case BOX:
+                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+
+                try {
+                    list = addTo(listCloud(path, cloudStorageBox, OpenMode.BOX));
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                }
+                break;
+            case GDRIVE:
+                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+                try {
+                    list = addTo(listCloud(path, cloudStorageGDrive, OpenMode.GDRIVE));
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                }
+                break;
+            case ONEDRIVE:
+                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+                try {
+                    list = addTo(listCloud(path, cloudStorageOneDrive, OpenMode.ONEDRIVE));
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                }
+                break;
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 try {
@@ -194,14 +247,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return list;
     }
 
-    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> mFile) {
+    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> baseFiles) {
         ArrayList<LayoutElements> a = new ArrayList<>();
-        for (int i = 0; i < mFile.size(); i++) {
-            BaseFile ele = mFile.get(i);
-            File f = new File(ele.getPath());
+        for (int i = 0; i < baseFiles.size(); i++) {
+            BaseFile baseFile = baseFiles.get(i);
+            //File f = new File(ele.getPath());
             String size = "";
-            if (!dataUtils.getHiddenfiles().contains(ele.getPath())) {
-                if (ele.isDirectory()) {
+            if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
+                if (baseFile.isDirectory()) {
                     size = "";
 
                     Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(),
@@ -209,18 +262,18 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
                     LayoutElements layoutElements = utilsProvider.getFutils()
-                            .newElement(f.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
+                            .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
                                     : ma.folder,
-                            f.getPath(), ele.getPermission(), ele.getLink(), size, 0, true, false,
-                            ele.getDate() + "");
-                    layoutElements.setMode(ele.getMode());
+                            baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
+                            baseFile.getDate() + "");
+                    layoutElements.setMode(baseFile.getMode());
                     a.add(layoutElements);
                     ma.folder_count++;
                 } else {
                     long longSize = 0;
                     try {
-                        if (ele.getSize() != -1) {
-                            longSize = ele.getSize();
+                        if (baseFile.getSize() != -1) {
+                            longSize = baseFile.getSize();
                             size = Formatter.formatFileSize(c, longSize);
                         } else {
                             size = "";
@@ -231,9 +284,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                     }
                     try {
                         LayoutElements layoutElements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                f.getPath(), !ma.IS_LIST, ma.res), f.getPath(), ele.getPermission(),
-                                ele.getLink(), size, longSize, false, false, ele.getDate() + "");
-                        layoutElements.setMode(ele.getMode());
+                                baseFile.getPath(), !ma.IS_LIST, ma.res), baseFile.getPath(), baseFile.getPermission(),
+                                baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
+                        layoutElements.setMode(baseFile.getMode());
                         a.add(layoutElements);
                         ma.file_count++;
                     } catch (Exception e) {
@@ -414,13 +467,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
 
     /**
      * Lists files from an OTG device
-     * @param path the path to the directory tree, starts with prefix 'otg:/'
+     * @param path the path to the directory tree, starts with prefix {@link com.amaze.filemanager.utils.OTGUtil#PREFIX_OTG}
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
      */
     ArrayList<BaseFile> listOtg(String path) {
 
-        return RootHelper.getDocumentFilesList(path, c);
+        return OTGUtil.getDocumentFilesList(path, c);
     }
 
     boolean contains(String[] types, String path) {
@@ -428,5 +481,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
             if (path.endsWith(string)) return true;
         }
         return false;
+    }
+
+    private ArrayList<BaseFile> listCloud(String path, CloudStorage cloudStorage, OpenMode openMode)
+            throws CloudPluginException {
+        if (!CloudSheetFragment.isCloudProviderAvailable(c))
+            throw new CloudPluginException();
+
+        return CloudUtil.listFiles(path, cloudStorage, openMode);
     }
 }

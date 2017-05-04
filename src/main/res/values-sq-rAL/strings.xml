@@ -37,6 +37,7 @@
   <string name="version">Versioni</string>
   <string name="color_title">Ngjyra</string>
   <string name="none">Asnjë</string>
+  <string name="password">Fjalëkalimi</string>
   <string name="information">Informacione</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
@@ -47,5 +48,7 @@
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
 </resources>

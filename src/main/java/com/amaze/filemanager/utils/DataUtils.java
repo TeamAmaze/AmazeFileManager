@@ -1,6 +1,12 @@
 package com.amaze.filemanager.utils;
 
+import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.ui.drawer.Item;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.services.Box;
+import com.cloudrail.si.services.Dropbox;
+import com.cloudrail.si.services.GoogleDrive;
+import com.cloudrail.si.services.OneDrive;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +28,9 @@ public class DataUtils {
             listfiles = new ArrayList<>(), history = new ArrayList<>(), storages = new ArrayList<>();
 
     private ArrayList<Item> list = new ArrayList<>();
-    private ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>(),
-            accounts = new ArrayList<>();
+    private ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
+
+    private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
     private DataChangeListener dataChangeListener;
 
@@ -50,12 +57,42 @@ public class DataUtils {
         return contains(a, books);
     }
 
-    public int containsAccounts(String[] a) {
+    /*public int containsAccounts(CloudEntry cloudEntry) {
         return contains(a, accounts);
-    }
+    }*/
 
-    public int containsAccounts(String a) {
-        return contains(a, accounts);
+    /**
+     * Checks whether cloud account of certain type is present or not
+     * @param serviceType the {@link OpenMode} of account to check
+     * @return the index of account, -1 if not found
+     */
+    public synchronized int containsAccounts(OpenMode serviceType) {
+        int i = 0;
+        for (CloudStorage storage : accounts) {
+
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        return i;
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        return i;
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        return i;
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        return i;
+                    break;
+                default:
+                    return -1;
+            }
+            i++;
+        }
+        return -1;
     }
 
     public void clear() {
@@ -99,9 +136,29 @@ public class DataUtils {
             books.remove(i);
     }
 
-    public void removeAcc(int i) {
-        if (accounts.size() > i)
-            accounts.remove(i);
+    public synchronized void removeAccount(OpenMode serviceType) {
+        for (CloudStorage storage : accounts) {
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        accounts.remove(storage);
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        accounts.remove(storage);
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        accounts.remove(storage);
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        accounts.remove(storage);
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 
     public void removeServer(int i) {
@@ -118,8 +175,8 @@ public class DataUtils {
         books.add(i);
     }
 
-    public void addAcc(String[] i) {
-        accounts.add(i);
+    public synchronized void addAccount(CloudStorage storage) {
+        accounts.add(storage);
     }
 
     public void addServer(String[] i) {
@@ -162,21 +219,47 @@ public class DataUtils {
             this.books = books;
     }
 
-    public void setAccounts(ArrayList<String[]> accounts) {
+    public synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
         if (accounts != null)
             this.accounts = accounts;
     }
 
-    public ArrayList<String[]> getServers() {
+    public synchronized ArrayList<String[]> getServers() {
         return servers;
     }
 
-    public ArrayList<String[]> getBooks() {
+    public synchronized ArrayList<String[]> getBooks() {
         return books;
     }
 
-    public ArrayList<String[]> getAccounts() {
+    public synchronized ArrayList<CloudStorage> getAccounts() {
         return accounts;
+    }
+
+    public synchronized CloudStorage getAccount(OpenMode serviceType) {
+        for (CloudStorage storage : accounts) {
+            switch (serviceType) {
+                case BOX:
+                    if (storage instanceof Box)
+                        return storage;
+                    break;
+                case DROPBOX:
+                    if (storage instanceof Dropbox)
+                        return storage;
+                    break;
+                case GDRIVE:
+                    if (storage instanceof GoogleDrive)
+                        return storage;
+                    break;
+                case ONEDRIVE:
+                    if (storage instanceof OneDrive)
+                        return storage;
+                    break;
+                default:
+                    return null;
+            }
+        }
+        return null;
     }
 
     public ArrayList<String> getHiddenfiles() {
@@ -212,7 +295,7 @@ public class DataUtils {
             dataChangeListener.onHistoryCleared();
     }
 
-    public List<String> getStorages() {
+    public synchronized List<String> getStorages() {
         return storages;
     }
 
@@ -224,7 +307,7 @@ public class DataUtils {
         return list;
     }
 
-    public void setList(ArrayList<Item> list) {
+    public synchronized void setList(ArrayList<Item> list) {
         this.list = list;
     }
 
