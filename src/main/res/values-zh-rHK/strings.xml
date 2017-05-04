@@ -82,7 +82,7 @@
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓</string>
   <string name="stopping">正在停止</string>
-  <string name="guide1">歡迎使用 Amaze 檔管理器！</string>
+  <string name="guide1">歡迎使用 Amaze 檔案管理器</string>
   <string name="guide2">觸摸藍條以顯示或隱藏地址欄</string>
   <string name="guide3">長按條目以使用更多選項</string>
   <string name="guide4">例如複製、移動、查看屬性等等</string>
@@ -450,7 +450,7 @@
   <string name="width">寬度</string>
   <string name="height">高度</string>
   <string name="date_modified">修改日期</string>
-  <string name="software">軟體</string>
+  <string name="software">軟件</string>
   <string name="creator">建立者</string>
   <string name="camera_brand">相機品牌</string>
   <string name="camera_model">相機型號</string>
