@@ -32,7 +32,9 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
-    private static HashMap<String, Integer> sMimeIconIds = new HashMap<>();
+
+    // construct a with an approximation of the capacity
+    private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
     private static SparseArray<Bitmap> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
@@ -188,7 +190,8 @@ public class Icons {
                 "application/vnd.stardivision.calc",
                 "application/vnd.sun.xml.calc",
                 "application/vnd.sun.xml.calc.template",
-                "application/x-kspread"
+                "application/x-kspread",
+                "text/comma-separated-values"
         );
 
 // Doc
@@ -206,7 +209,8 @@ public class Icons {
                 "application/vnd.sun.xml.writer.global",
                 "application/vnd.sun.xml.writer.template",
                 "application/x-abiword",
-                "application/x-kword"
+                "application/x-kword",
+                "text/markdown"
         );
 
 // Text
@@ -249,9 +253,7 @@ public class Icons {
     }
 
     public static boolean isEncrypted(String name) {
-        if (name.endsWith(CryptUtil.CRYPT_EXTENSION))
-            return true;
-        else return false;
+        return name.endsWith(CryptUtil.CRYPT_EXTENSION);
     }
 
     public static boolean isAudio(String name) {

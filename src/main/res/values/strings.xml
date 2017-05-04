@@ -652,5 +652,7 @@
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
     <string name="cloud_plugin_not_supported">Cloud plug-in is not supported for Fdroid build.
         Please download Amaze from Play Store.</string>
+    <string name="monofont">Monospace Font</string>
+    <string name="showHeaders">Show Headers</string>
 </resources>
 

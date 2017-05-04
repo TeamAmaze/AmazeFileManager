@@ -536,8 +536,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
             if (mainFrag.SHOW_PERMISSIONS)
                 holder.perm.setText(rowItem.getPermissions());
-            if (mainFrag.SHOW_LAST_MODIFIED)
+            if (mainFrag.SHOW_LAST_MODIFIED) {
                 holder.date.setText(rowItem.getDate());
+            } else {
+                holder.date.setVisibility(View.GONE);
+            }
             String size = rowItem.getSize();
 
             if (size.equals(mainFrag.goback)) {
@@ -648,7 +651,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public long getHeaderId(int i) {
-        if (items.size() == 0) return -1;
+        if (items.size() == 0 || !mainFrag.SHOW_HEADERS) return -1;
         if (i >= 0 && i < items.size())
             if (mainFrag.IS_LIST) {
                 if (i != items.size()) {

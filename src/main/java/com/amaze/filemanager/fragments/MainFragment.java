@@ -131,7 +131,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public OpenMode openMode = OpenMode.FILE;
     public android.support.v7.widget.RecyclerView listView;
 
-    public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS;
+    public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS, SHOW_HEADERS;
 
     /**
      * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
@@ -212,6 +212,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         SHOW_PERMISSIONS = sharedPref.getBoolean("showPermissions", false);
         SHOW_SIZE = sharedPref.getBoolean("showFileSize", false);
         SHOW_DIVIDERS = sharedPref.getBoolean("showDividers", true);
+        SHOW_HEADERS = sharedPref.getBoolean("showHeaders", true);
         GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);
         CIRCULAR_IMAGES = sharedPref.getBoolean("circularimages", true);
         SHOW_LAST_MODIFIED = sharedPref.getBoolean("showLastModified", true);
