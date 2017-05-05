@@ -35,14 +35,14 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.List;
 
-public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElements>> {
+public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElement>> {
 
     UtilitiesProviderInterface utilsProvider;
     AppsList app = this;
@@ -143,12 +143,12 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public Loader<List<LayoutElements>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<LayoutElement>> onCreateLoader(int id, Bundle args) {
         return new AppListLoader(getContext(), sortby, asc);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<LayoutElements>> loader, List<LayoutElements> data) {
+    public void onLoadFinished(Loader<List<LayoutElement>> loader, List<LayoutElement> data) {
         // set new data to adapter
         adapter.setData(data);
 
@@ -163,7 +163,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onLoaderReset(Loader<List<LayoutElements>> loader) {
+    public void onLoaderReset(Loader<List<LayoutElement>> loader) {
         adapter.setData(null);
     }
 }

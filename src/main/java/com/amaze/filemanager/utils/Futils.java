@@ -71,7 +71,6 @@ import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -80,7 +79,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
@@ -660,7 +659,7 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<LayoutElements> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
+    public void deleteFiles(ArrayList<LayoutElement> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
 
@@ -670,7 +669,7 @@ public class Futils {
         StringBuilder dirNames = new StringBuilder();
         StringBuilder fileNames = new StringBuilder();
         for (int i = 0; i < pos.size(); i++) {
-            final LayoutElements elem = a.get(pos.get(i));
+            final LayoutElement elem = a.get(pos.get(i));
             todelete.add(elem.generateBaseFile());
             if (elem.isDirectory()) {
                 dirNames.append("\n")
@@ -697,7 +696,7 @@ public class Futils {
         message.append(b.getResources().getString(R.string.questiondelete))
                 .append("\n\n");
         if (dirCounter == 0 && fileCounter == 1) {
-            final LayoutElements elem = a.get(pos.get(0));
+            final LayoutElement elem = a.get(pos.get(0));
             message.append(elem.getTitle())
                     .append(" (")
                     .append(elem.getSize())
@@ -1404,8 +1403,8 @@ public class Futils {
 
     }
 
-    public LayoutElements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
-        LayoutElements item = new LayoutElements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
+    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
+        LayoutElement item = new LayoutElement(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }
 

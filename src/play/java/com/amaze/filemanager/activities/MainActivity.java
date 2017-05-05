@@ -2976,7 +2976,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
+        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }

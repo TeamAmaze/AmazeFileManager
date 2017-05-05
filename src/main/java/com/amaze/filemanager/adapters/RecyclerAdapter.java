@@ -34,7 +34,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -58,7 +58,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private UtilitiesProviderInterface utilsProvider;
 
     private MainFragment mainFrag;
-    private ArrayList<LayoutElements> items;
+    private ArrayList<LayoutElement> items;
     private Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private SparseBooleanArray myanim = new SparseBooleanArray();
@@ -70,7 +70,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private int offset = 0;
     public boolean stoppedAnimation = false;
 
-    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, ArrayList<LayoutElements> items, Context context) {
+    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, ArrayList<LayoutElement> items, Context context) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.items = items;
@@ -282,7 +282,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.offset += 30;
     }
 
-    public void generate(ArrayList<LayoutElements> arrayList) {
+    public synchronized void generate(ArrayList<LayoutElement> arrayList) {
         offset = 0;
         stoppedAnimation = false;
         notifyDataSetChanged();
@@ -309,7 +309,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             animate(holder);
             myanim.put(p, true);
         }
-        final LayoutElements rowItem = items.get(p);
+        final LayoutElement rowItem = items.get(p);
         if (mainFrag.IS_LIST) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -695,7 +695,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         return TYPE_ITEM;
     }
 
-    private void showPopup(View v, final LayoutElements rowItem, final int position) {
+    private void showPopup(View v, final LayoutElement rowItem, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -761,7 +761,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.delete:
                                 ArrayList<Integer> positions = new ArrayList<>();
                                 positions.add(position);
-                                utilsProvider.getFutils().deleteFiles(mainFrag.LIST_ELEMENTS, mainFrag, positions, utilsProvider.getAppTheme());
+                                utilsProvider.getFutils().deleteFiles(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
                                 utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), mainFrag.getActivity());

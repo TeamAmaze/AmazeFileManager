@@ -47,7 +47,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -59,11 +59,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppsAdapter extends ArrayAdapter<LayoutElements> {
+public class AppsAdapter extends ArrayAdapter<LayoutElement> {
 
     private UtilitiesProviderInterface utilsProvider;
     Context context;
-    List<LayoutElements> items;
+    List<LayoutElement> items;
     public SparseBooleanArray myChecked = new SparseBooleanArray();
     AppsList app;
 
@@ -122,7 +122,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElements> {
         return b;
     }
 
-    public void setData(List<LayoutElements> data) {
+    public void setData(List<LayoutElement> data) {
         clear();
 
         if (data != null) {
@@ -141,7 +141,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElements> {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final LayoutElements rowItem = getItem(position);
+        final LayoutElement rowItem = getItem(position);
 
         View view;
         final int p = position;
@@ -205,7 +205,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElements> {
         }
         return view;
     }
-    void showPopup(View v,final LayoutElements rowItem){
+    void showPopup(View v,final LayoutElement rowItem){
         final Futils utils = utilsProvider.getFutils();
         v.setOnClickListener(new View.OnClickListener() {
             @Override

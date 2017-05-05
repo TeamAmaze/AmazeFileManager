@@ -2,7 +2,6 @@ package com.amaze.filemanager.filesystem;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
@@ -12,17 +11,15 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -942,18 +939,18 @@ public class HFile {
     }
 
     /**
-     * Generates a {@link LayoutElements} adapted compatible element.
+     * Generates a {@link LayoutElement} adapted compatible element.
      * Currently supports only local filesystem
      * @param mainFragment
      * @param utilitiesProvider
      * @return
      */
-    public LayoutElements generateLayoutElement(MainFragment mainFragment, UtilitiesProviderInterface utilitiesProvider) {
+    public LayoutElement generateLayoutElement(MainFragment mainFragment, UtilitiesProviderInterface utilitiesProvider) {
         switch (mode) {
             case FILE:
             case ROOT:
                 File file = new File(path);
-                LayoutElements layoutElement;
+                LayoutElement layoutElement;
                 if (isDirectory()) {
 
                     layoutElement = utilitiesProvider.getFutils()
