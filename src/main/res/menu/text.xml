@@ -37,4 +37,9 @@
     <item
         android:id="@+id/openwith"
         android:title="@string/openwith" />
+    <item
+        android:id="@+id/monofont"
+        android:title="@string/monofont"
+        android:checkable="true"
+        app:showAsAction="never" />
 </menu>

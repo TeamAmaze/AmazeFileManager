@@ -2383,6 +2383,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case CUSTOM:
                 newPath = mainActivityHelper.getIntegralNames(news);
+                break;
             case DROPBOX:
             case BOX:
             case ONEDRIVE:
