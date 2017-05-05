@@ -620,4 +620,6 @@
   <string name="copy_low_memory">運行記憶體不足，請清除一些背景處理程式</string>
   <string name="cloud_token_lost">權限遺失，請重新登入</string>
   <string name="cloud_plugin_not_supported">雲端套件尚不支援 Fdroid。請從 Play 商店中下載  Amaze Cloud。</string>
+  <string name="monofont">等寬字型</string>
+  <string name="showHeaders">顯示標頭</string>
 </resources>

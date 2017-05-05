@@ -588,4 +588,6 @@
   <string name="copy_low_memory">运行内存不足，请清除一些后台程序</string>
   <string name="cloud_token_lost">登录信息过期，请重新登录</string>
   <string name="cloud_plugin_not_supported">网盘插件不受 Fdroid 支持。请从应用商店下载 Amaze Cloud。</string>
+  <string name="monofont">等宽字体</string>
+  <string name="showHeaders">显示页眉</string>
 </resources>

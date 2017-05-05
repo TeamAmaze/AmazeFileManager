@@ -19,10 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">檔管理</string>
+  <string name="app_name">Amaze 檔案管理器</string>
   <string name="drawer_open">打開導航抽屜</string>
   <string name="drawer_close">關閉導航抽屜</string>
-  <string name="books">書簽</string>
+  <string name="books">書籤</string>
   <string name="icon">圖示</string>
   <string name="efn">請輸入檔案名</string>
   <string name="storage">存儲</string>
@@ -30,7 +30,7 @@
   <string name="apps">應用管理</string>
   <string name="ftp">FTP 伺服器</string>
   <string name="bookmanag">書簽管理</string>
-  <string name="setting">應用設置</string>
+  <string name="setting">設定</string>
   <string name="select">選擇專案</string>
   <string name="pressagain">再按一次「返回鍵」退出</string>
   <string name="open">打開</string>
@@ -110,7 +110,7 @@
   <string name="random">隨機皮膚</string>
   <string name="random_summary">每次啟動都顯示隨機主題</string>
   <string name="colorize">多彩圖示</string>
-  <string name="colorize_summary">設置靜態圖示的顏色</string>
+  <string name="colorize_summary">設定靜態圖示的顏色</string>
   <string name="back">後退</string>
   <string name="home">首頁目錄</string>
   <string name="paste">粘貼</string>
@@ -126,7 +126,7 @@
   <string name="selectall">全選</string>
   <string name="delete">刪除</string>
   <string name="setashome">設為為首頁目錄</string>
-  <string name="sethome">設置首頁目錄</string>
+  <string name="sethome">設定首頁目錄</string>
   <string name="foldercolor">檔夾顏色</string>
   <string name="imagegallery">圖庫</string>
   <string name="fileexplorer">檔管理器</string>
@@ -191,7 +191,7 @@
   <string name="Extracting_fles">正在提取檔</string>
   <string name="items">個專案</string>
   <string name="item">項目</string>
-  <string name="set">應用設置</string>
+  <string name="set">設定</string>
   <string name="enablerootmde">啟用 Root 模式</string>
   <string name="goback">返回上一級</string>
   <string name="foldercreated">檔夾已創建</string>
@@ -204,8 +204,8 @@
   <string name="atroot">已進入 Root 模式</string>
   <string name="listview">列表模式</string>
   <string name="gridview">網格模式</string>
-  <string name="setlistview">設置列表模式</string>
-  <string name="setgridview">設置網格模式</string>
+  <string name="setlistview">設定清單視圖</string>
+  <string name="setgridview">設定網格視圖</string>
   <string name="permission">許可權</string>
   <string name="hide">排除</string>
   <string name="exit">退出應用</string>
@@ -241,7 +241,7 @@
   <string name="typeDesc">類型（降序）</string>
   <string name="rootdirectory">根目錄</string>
   <string name="new_string">新建</string>
-  <string name="setringtone">設置為鈴聲</string>
+  <string name="setringtone">設定為鈴聲</string>
   <string name="copy_path">複製路徑</string>
   <string name="addshortcut">創建快捷方式</string>
   <string name="unsavedchanges">未保存修改</string>
@@ -306,7 +306,7 @@
   <string name="tables">表格</string>
   <string name="database">資料庫</string>
   <string name="colourednavigation">導航欄變色</string>
-  <string name="colourednavigationsum">設置導航欄是否跟隨皮膚顏色變色</string>
+  <string name="colourednavigationsum">設定導覽列是否跟隨皮膚變色</string>
   <string name="sd_card_grant_next">sd_card_grant_next</string>
   <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">FAB 外觀</string>
@@ -350,7 +350,7 @@
   <string name="extstorage">外部儲存空間</string>
   <string name="folders">資料夾</string>
   <string name="videos">影片</string>
-  <string name="apks">Apks</string>
+  <string name="apks">安裝包</string>
   <string name="documents">文件</string>
   <string name="images">圖像</string>
   <string name="clear">清空</string>
@@ -583,4 +583,6 @@
   <string name="copy_low_memory">運行記憶體不足，請清除一些背景處理程式</string>
   <string name="cloud_token_lost">權限遺失，請重新登入</string>
   <string name="cloud_plugin_not_supported">雲端套件尚不支援 Fdroid。請從 Play 商店中下載  Amaze Cloud。</string>
+  <string name="monofont">等寬字型</string>
+  <string name="showHeaders">顯示標頭</string>
 </resources>

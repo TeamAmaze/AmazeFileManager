@@ -556,7 +556,16 @@ tartışmalarının parçası olun</string>
   <string name="error_busybox">Busybox bulunamadı. Etkileşimli kabuk kapatılıyor.</string>
   <string name="service_timer">Geçen süre</string>
   <string name="please_wait">Lütfen bekleyin</string>
+  <string name="cloud_connection">Bulut bağlantısı</string>
+  <string name="cloud_connection_new">Yeni bulut bağlantısı</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Kutu</string>
+  <string name="cloud_get">Bulut eklentisi ekle</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">E-mail adresi</string>
+  <string name="cloud_email">E-mail ID</string>
   <string name="no_applications">Uygulama yok</string>
   <string name="ftp_path">Paylaşılan Yol</string>
   <string name="ftp_path_hint">Paylaşılacak dizinin kök yolu</string>
@@ -610,4 +619,5 @@ Kaydırma sırasında araç çubuğunu otomatik olarak gizle</string>
   <string name="crypt_fingerprint_authenticate">Devam etmek için sensöre dokunun</string>
   <string name="authenticate_password">Şifreyi girin</string>
   <string name="bytes">Byte </string>
+  <string name="cloud_fail_authenticate">Kimlik doğrulaması başarısız oldu</string>
 </resources>
