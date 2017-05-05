@@ -409,7 +409,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listApks() {
+    private ArrayList<BaseFile> listApks() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
@@ -431,7 +431,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listRecent() {
+    private ArrayList<BaseFile> listRecent() {
         final HistoryManager history = new HistoryManager(c, "Table2");
         final ArrayList<String> paths = history.readTable(DataUtils.HISTORY);
         history.end();
@@ -447,7 +447,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listDocs() {
+    private ArrayList<BaseFile> listDocs() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
         Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
@@ -475,7 +475,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
      */
-    ArrayList<BaseFile> listOtg(String path) {
+    private ArrayList<BaseFile> listOtg(String path) {
 
         return OTGUtil.getDocumentFilesList(path, c);
     }

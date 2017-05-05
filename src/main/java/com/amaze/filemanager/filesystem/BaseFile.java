@@ -3,6 +3,7 @@ package com.amaze.filemanager.filesystem;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amaze.filemanager.ui.LayoutElements;
 import com.amaze.filemanager.utils.OpenMode;
 
 /**
@@ -131,5 +132,4 @@ public class BaseFile extends HFile implements Parcelable {
         dest.writeByte((byte) (isDirectory ? 1 : 0));
 
     }
-
 }

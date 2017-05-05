@@ -206,7 +206,7 @@ public class RootHelper {
         return baseFile;
     }
 
-    private static String parseFilePermission(File f) {
+    public static String parseFilePermission(File f) {
         String per = "";
         if (f.canRead()) {
             per = per + "r";

@@ -40,6 +40,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.FileObserver;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
@@ -179,6 +180,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private View actionModeView;
     private FastScroller fastScroller;
     private Bitmap mFolderBitmap;
+    private CustomFileObserver customFileObserver;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -832,7 +834,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateList();
+
+            // load the list on a load broadcast
+
+            switch (openMode) {
+                case ROOT:
+                case FILE:
+                    // local file system don't need an explicit load, we've set an observer to
+                    // take actions on creation/moving/deletion/modification of file on current path
+                    break;
+                default:
+                    updateList();
+                    break;
+            }
         }
     };
 
@@ -1138,7 +1152,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
      * @param results is the list of elements a result from search
      * @param grid whether to set grid view or list view
      */
-    public void createViews(ArrayList<LayoutElements> bitmap, boolean back, String path, OpenMode
+    public void createViews(ArrayList<LayoutElements> bitmap, boolean back, String path, final OpenMode
             openMode, boolean results, boolean grid) {
         try {
             if (bitmap != null) {
@@ -1229,6 +1243,34 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         }
                     });
                     if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            switch (openMode) {
+                                case ROOT:
+                                case FILE:
+                                    // watch the current directory
+                                    File file = new File(CURRENT_PATH);
+
+                                    if (file.isDirectory() && file.canRead()) {
+
+                                        if (customFileObserver != null) {
+                                            // already a watcher instantiated, first it should be stopped
+                                            customFileObserver.stopWatching();
+                                        }
+
+                                        customFileObserver = new CustomFileObserver(CURRENT_PATH);
+                                        customFileObserver.startWatching();
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }).start();
+
                     //MAIN_ACTIVITY.invalidateFab(openMode);
                 } catch (Exception e) {
                 }
@@ -1455,6 +1497,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
+
         fixIcons(false);
     }
 
@@ -1467,6 +1510,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onStop() {
         super.onStop();
+
+        if (customFileObserver != null)
+            customFileObserver.stopWatching();
     }
 
     void fixIcons(boolean forceReload) {
@@ -1689,5 +1735,65 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    /**
+     * Inner class which monitors any change in local filesystem and updates the adapter
+     * Makes use of inotify in Linux
+     */
+    class CustomFileObserver extends FileObserver {
+
+        public CustomFileObserver(String path) {
+            super(path);
+        }
+
+        @Override
+        public void onEvent(int event, String path) {
+
+            switch (event) {
+                case CREATE:
+                case MOVED_TO:
+                    HFile fileCreated = new HFile(openMode, CURRENT_PATH + "/" + path);
+                    LIST_ELEMENTS.add(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
+                    Log.d(getClass().getSimpleName(), "ADDED: " + CURRENT_PATH + "/" + path);
+                    break;
+                case DELETE:
+                case MOVED_FROM:
+                    for (int i = 0; i<LIST_ELEMENTS.size(); i++) {
+                        File currentFile = new File(LIST_ELEMENTS.get(i).getDesc());
+                        if (currentFile.getName().equals(path)) {
+                            LIST_ELEMENTS.remove(i);
+                            break;
+                        }
+                    }
+                    Log.d(getClass().getSimpleName(), "REMOVED: " + CURRENT_PATH + "/" + path);
+                    break;
+                case DELETE_SELF:
+                case MOVE_SELF:
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            goBack();
+                        }
+                    });
+                    return;
+                case ATTRIB:
+                case MODIFY:
+                    // just generate adapter list without making any change to it's content
+                    break;
+                default:
+                    return;
+            }
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (adapter != null)
+                        adapter.generate(LIST_ELEMENTS);
+                }
+            });
+        }
     }
 }

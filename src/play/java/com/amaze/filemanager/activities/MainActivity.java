@@ -1875,10 +1875,11 @@ public class MainActivity extends BaseActivity implements
 
             // After confirmation, update stored value of folder.
             // Persist access permissions.
-            final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
             switch (operation) {
                 case DataUtils.DELETE://deletion
                     new DeleteTask(null, mainActivity).execute((oparrayList));
