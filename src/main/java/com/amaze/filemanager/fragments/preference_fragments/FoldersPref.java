@@ -19,6 +19,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -207,6 +208,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .customView(v, false)
                 .build();
 
+        dialog.getActionButton(DialogAction.POSITIVE)
+                .setEnabled(canShortcutTo(editText2.getText().toString()));
+
         disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
@@ -262,9 +266,23 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(new File(s.toString()).exists());// TODO: 2/5/2017 use another system that doesn't create new object
+                        .setEnabled(canShortcutTo(s.toString()));
             }
         });
+    }
+
+    private boolean canShortcutTo(String dir) {
+        File f = new File(dir);
+        boolean showIfHidden = preferences.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
+                isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
+                showIfRoot = preferences.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false),
+                isRoot = !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");// TODO: 5/5/2017 hardcoding root might lead to problems down the line
+
+        return f.exists() && f.isDirectory()
+                && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))
+                && (!isRoot || showIfRoot);
+
+        // TODO: 2/5/2017 use another system that doesn't create new object
     }
 
     /**
