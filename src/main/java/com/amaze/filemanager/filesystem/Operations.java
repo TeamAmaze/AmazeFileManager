@@ -8,14 +8,12 @@ import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +22,8 @@ import java.net.MalformedURLException;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by arpitkh996 on 13-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
@@ -123,7 +123,7 @@ public class Operations {
                     } else errorCallBack.done(file, false);
                     return null;
                 } else if (file.isDropBoxFile()) {
-                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                     try {
                         cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, file.getPath()));
                         errorCallBack.done(file, true);
@@ -132,7 +132,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isBoxFile()) {
-                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
                     try {
                         cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, file.getPath()));
                         errorCallBack.done(file, true);
@@ -141,7 +141,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isOneDriveFile()) {
-                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
                     try {
                         cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, file.getPath()));
                         errorCallBack.done(file, true);
@@ -150,7 +150,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isGoogleDriveFile()) {
-                    CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                    CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
                     try {
                         cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()));
                         errorCallBack.done(file, true);
@@ -217,7 +217,7 @@ public class Operations {
                     errorCallBack.done(file, file.exists());
                     return null;
                 } else if (file.isDropBoxFile()) {
-                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                     try {
                         byte[] tempBytes = new byte[0];
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
@@ -229,7 +229,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isBoxFile()) {
-                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
                     try {
                         byte[] tempBytes = new byte[0];
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
@@ -241,7 +241,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isOneDriveFile()) {
-                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
                     try {
                         byte[] tempBytes = new byte[0];
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
@@ -253,7 +253,7 @@ public class Operations {
                         errorCallBack.done(file, false);
                     }
                 } else if (file.isGoogleDriveFile()) {
-                    CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                    CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
                     try {
                         byte[] tempBytes = new byte[0];
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
@@ -348,7 +348,7 @@ public class Operations {
                     }
                     return null;
                 } else if (oldFile.isDropBoxFile()) {
-                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                     try {
                         cloudStorageDropbox.move(CloudUtil.stripPath(OpenMode.DROPBOX, oldFile.getPath()),
                                 CloudUtil.stripPath(OpenMode.DROPBOX, newFile.getPath()));
@@ -358,7 +358,7 @@ public class Operations {
                         errorCallBack.done(newFile, false);
                     }
                 } else if (oldFile.isBoxFile()) {
-                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
                     try {
                         cloudStorageBox.move(CloudUtil.stripPath(OpenMode.BOX, oldFile.getPath()),
                                 CloudUtil.stripPath(OpenMode.BOX, newFile.getPath()));
@@ -368,7 +368,7 @@ public class Operations {
                         errorCallBack.done(newFile, false);
                     }
                 } else if (oldFile.isOneDriveFile()) {
-                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
                     try {
                         cloudStorageOneDrive.move(CloudUtil.stripPath(OpenMode.ONEDRIVE, oldFile.getPath()),
                                 CloudUtil.stripPath(OpenMode.ONEDRIVE, newFile.getPath()));
@@ -378,7 +378,7 @@ public class Operations {
                         errorCallBack.done(newFile, false);
                     }
                 } else if (oldFile.isGoogleDriveFile()) {
-                    CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                    CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
                     try {
                         cloudStorageGdrive.move(CloudUtil.stripPath(OpenMode.GDRIVE, oldFile.getPath()),
                                 CloudUtil.stripPath(OpenMode.GDRIVE, newFile.getPath()));

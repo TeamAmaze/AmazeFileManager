@@ -99,7 +99,7 @@
     <string name="no">Tidak</string>
     <string name="confirm">Konfirm</string>
     <string name="deleting">Menghapus</string>
-    <string name="questiondelete">Apakah Anda benar-benar ingin menghapus berkas ini?</string>
+    <string name="questiondeletefolders">Apakah Anda benar-benar ingin menghapus berkas ini?</string>
     <string name="questionset">Apakah Anda ingin menetapkan jalur saat ini sebagai beranda untuk tab ini?</string>
     <string name="viewmode">Mode Tampilan</string>
     <string name="uimode">Mode UI</string>

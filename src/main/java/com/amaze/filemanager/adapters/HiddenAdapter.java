@@ -18,7 +18,6 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -98,7 +97,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                         a.add(baseFile);
                         new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));
                     }
-                    DataUtils.removeHiddenFile(items.get(position).getPath());
+                    MainActivity.dataUtils.removeHiddenFile(items.get(position).getPath());
                     items.remove(items.get(position));
                     notifyDataSetChanged();
                 }

@@ -97,7 +97,7 @@
   <string name="no">Non</string>
   <string name="confirm">Confirmar</string>
   <string name="deleting">Desaniciando</string>
-  <string name="questiondelete">¿De xuru que quies desaniciar los ficheros de darréu?</string>
+  <string name="questiondeletefolders">¿De xuru que quies desaniciar los ficheros de darréu?</string>
   <string name="questionset">¿De xuru que quies afitar el camín actual como l\'aniciu pa esta llingüeta?</string>
   <string name="viewmode">Mou de vista</string>
   <string name="uimode">Mou d\'IU</string>
