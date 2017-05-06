@@ -1334,7 +1334,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         scrolls.put(CURRENT_PATH, b);
     }
 
-    public synchronized void goBack() {
+    public void goBack() {
         if (openMode == OpenMode.CUSTOM) {
             loadlist(home, false, OpenMode.FILE);
             return;

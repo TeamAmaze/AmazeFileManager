@@ -1460,25 +1460,25 @@ public class Futils {
                 return true;
             }
         });
+
         a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                int which = dialog.getSelectedIndex();
-                m.sharedPref.edit().putString("sortby", "" + which).commit();
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
-
             }
+        });
 
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                int which = 4 + dialog.getSelectedIndex();
-                m.sharedPref.edit().putString("sortby", "" + which).commit();
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -1502,27 +1502,28 @@ public class Futils {
         });
         a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                int which = dialog.getSelectedIndex();
-                m.Sp.edit().putString("sortbyApps", "" + which).commit();
-                m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
-                dialog.dismiss();
-            }
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-            @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                int which = dialog.getSelectedIndex() + 3;
-                m.Sp.edit().putString("sortbyApps", "" + which).commit();
+                m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
                 m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });
+
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
+                m.getSortModes();
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
+                dialog.dismiss();
+            }
+        });
+
         a.title(R.string.sortby);
         a.build().show();
     }

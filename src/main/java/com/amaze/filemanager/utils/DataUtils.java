@@ -206,7 +206,7 @@ public class DataUtils {
             DataUtils.servers = servers;
     }
 
-    public static void setBooks(ArrayList<String[]> books) {
+    public static synchronized void setBooks(ArrayList<String[]> books) {
         if (books != null)
             DataUtils.books = books;
     }
@@ -290,7 +290,7 @@ public class DataUtils {
         return storages;
     }
 
-    public static void setStorages(List<String> storages) {
+    public static synchronized void setStorages(List<String> storages) {
         DataUtils.storages = storages;
     }
 

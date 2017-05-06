@@ -206,7 +206,7 @@ public class MainActivity extends BaseActivity implements
     public Toolbar toolbar;
     public int skinStatusBar;
 
-    public int storage_count = 0; // number of storage available (internal/external/otg etc)
+    public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
 
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
@@ -408,7 +408,7 @@ public class MainActivity extends BaseActivity implements
         } catch (Exception e) {
 
         }
-        updateDrawer();
+        refreshDrawer();
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
         if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -738,81 +738,6 @@ public class MainActivity extends BaseActivity implements
                 }
             }, 2000);
         }
-    }
-
-    public void updateDrawer() {
-        ArrayList<Item> sectionItems = new ArrayList<>();
-        List<String> storageDirectories = getStorageDirectories();
-        ArrayList<String[]> books = new ArrayList<>();
-        ArrayList<String[]> servers = new ArrayList<>();
-
-        storage_count = 0;
-        for (String file : storageDirectories) {
-            File f = new File(file);
-            String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                name = getResources().getString(R.string.storage);
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
-            } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
-                name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
-            } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
-                sectionItems.add(new EntryItem(name, file, icon1));
-            }
-        }
-        DataUtils.setStorages(storageDirectories);
-        sectionItems.add(new SectionItem());
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.SMB))
-                servers.add(file);
-            DataUtils.setServers(servers);
-            if (servers.size() > 0) {
-                Collections.sort(servers, new BookSorter());
-                for (String[] file : servers)
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this,
-                            R.drawable.ic_settings_remote_white_48dp)));
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-            books.add(file);
-        }
-        DataUtils.setBooks(books);
-        if (books.size() > 0) {
-            Collections.sort(books, new BookSorter());
-            for (String[] file : books)
-                sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this, R.drawable
-                        .folder_fab)));
-            sectionItems.add(new SectionItem());
-        }
-
-        sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-        sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
-        DataUtils.setList(sectionItems);
-        adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
-        mDrawerList.setAdapter(adapter);
     }
 
     public void updateDrawer(String path) {
@@ -1427,10 +1352,10 @@ public class MainActivity extends BaseActivity implements
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                 sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                updateDrawer();
+                refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
-                updateDrawer();
+                refreshDrawer();
                 goToMain("");
             }
         }
@@ -1544,12 +1469,13 @@ public class MainActivity extends BaseActivity implements
             @Override
             protected ArrayList<Item> doInBackground(Void... params) {
 
-                List<String> val = DataUtils.getStorages();
-                if (val == null)
-                    val = getStorageDirectories();
-                final ArrayList<Item> items = new ArrayList<>();
+                ArrayList<Item> sectionItems = new ArrayList<>();
+                List<String> storageDirectories = getStorageDirectories();
+                ArrayList<String[]> books = new ArrayList<>();
+                ArrayList<String[]> servers = new ArrayList<>();
+
                 storage_count = 0;
-                for (String file : val) {
+                for (String file : storageDirectories) {
                     File f = new File(file);
                     String name;
                     Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
@@ -1566,17 +1492,24 @@ public class MainActivity extends BaseActivity implements
                     } else name = f.getName();
                     if (!f.isDirectory() || f.canExecute()) {
                         storage_count++;
-                        items.add(new EntryItem(name, file, icon1));
+                        sectionItems.add(new EntryItem(name, file, icon1));
                     }
                 }
-                items.add(new SectionItem());
-                ArrayList<String[]> Servers = DataUtils.getServers();
-                if (Servers != null && Servers.size() > 0) {
-                    for (String[] file : Servers) {
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_settings_remote_white_48dp)));
+                DataUtils.setStorages(storageDirectories);
+                sectionItems.add(new SectionItem());
+                try {
+                    for (String[] file : grid.readTableSecondary(DataUtils.SMB))
+                        servers.add(file);
+                    DataUtils.setServers(servers);
+                    if (servers.size() > 0) {
+                        Collections.sort(servers, new BookSorter());
+                        for (String[] file : servers)
+                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
+                                    R.drawable.ic_settings_remote_white_48dp)));
+                        sectionItems.add(new SectionItem());
                     }
-
-                    items.add(new SectionItem());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
@@ -1589,7 +1522,7 @@ public class MainActivity extends BaseActivity implements
 
                             try {
 
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
@@ -1600,7 +1533,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
@@ -1613,7 +1546,7 @@ public class MainActivity extends BaseActivity implements
 
                             try {
 
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
@@ -1624,7 +1557,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
@@ -1636,7 +1569,7 @@ public class MainActivity extends BaseActivity implements
                         } else if (cloudStorage instanceof OneDrive) {
 
                             try {
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
@@ -1647,7 +1580,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
@@ -1659,7 +1592,7 @@ public class MainActivity extends BaseActivity implements
                         } else if (cloudStorage instanceof GoogleDrive) {
 
                             try {
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
@@ -1670,7 +1603,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
@@ -1684,27 +1617,37 @@ public class MainActivity extends BaseActivity implements
                     Collections.sort(accountAuthenticationList, new BookSorter());
 
                     if (accountAuthenticationList.size() != 0)
-                        items.add(new SectionItem());
+                        sectionItems.add(new SectionItem());
                 }
 
-                ArrayList<String[]> books = DataUtils.getBooks();
-                if (books != null && books.size() > 0) {
-                    Collections.sort(books, new BookSorter());
-                    for (String[] file : books) {
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable
-                                .folder_fab)));
-                    }
-                    items.add(new SectionItem());
+                for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+                    books.add(file);
                 }
-                items.add(new EntryItem(getResources().getString(R.string.quick), "5", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
-                items.add(new EntryItem(getResources().getString(R.string.recent), "6", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
-                items.add(new EntryItem(getResources().getString(R.string.images), "0", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
-                items.add(new EntryItem(getResources().getString(R.string.videos), "1", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
-                items.add(new EntryItem(getResources().getString(R.string.audio), "2", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
-                items.add(new EntryItem(getResources().getString(R.string.documents), "3", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
-                items.add(new EntryItem(getResources().getString(R.string.apks), "4", ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
-                DataUtils.setList(items);
-                return items;
+                DataUtils.setBooks(books);
+                if (books.size() > 0) {
+                    Collections.sort(books, new BookSorter());
+                    for (String[] file : books)
+                        sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable
+                                .folder_fab)));
+                    sectionItems.add(new SectionItem());
+                }
+
+                sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+                sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+                DataUtils.setList(sectionItems);
+                return sectionItems;
             }
 
             @Override
@@ -2812,7 +2755,7 @@ public class MainActivity extends BaseActivity implements
 
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                updateDrawer();
+                refreshDrawer();
                 TabFragment tabFragment = getFragment();
                 boolean b = sharedPref.getBoolean("needtosethome", true);
                 //reset home and current paths according to new storages

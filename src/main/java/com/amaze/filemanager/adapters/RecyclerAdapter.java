@@ -282,7 +282,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.offset += 30;
     }
 
-    public synchronized void generate(ArrayList<LayoutElement> arrayList) {
+    public void generate(ArrayList<LayoutElement> arrayList) {
         offset = 0;
         stoppedAnimation = false;
         notifyDataSetChanged();
@@ -755,7 +755,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 return true;
                             case R.id.book:
                                 DataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
-                                mainFrag.MAIN_ACTIVITY.updateDrawer();
+                                mainFrag.MAIN_ACTIVITY.refreshDrawer();
                                 Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.delete:
