@@ -76,8 +76,8 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -110,8 +110,6 @@ import javax.crypto.NoSuchPaddingException;
 import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class Futils {
 
@@ -213,7 +211,7 @@ public class Futils {
 
     public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
         long length = 0;
-        CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+        CloudStorage cloudStorage = DataUtils.getAccount(openMode);
         for (CloudMetaData metaData : cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
 
             if (metaData.getFolder()) {
@@ -373,7 +371,7 @@ public class Futils {
             @Override
             protected String doInBackground(String... params) {
                 String shareFilePath = params[0];
-                CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+                CloudStorage cloudStorage = DataUtils.getAccount(openMode);
                 return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
             }
 
@@ -693,7 +691,7 @@ public class Futils {
 
         String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
         String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
-      
+
         StringBuilder message = new StringBuilder();
         message.append(b.getResources().getString(R.string.questiondelete))
                 .append("\n\n");
@@ -1098,7 +1096,7 @@ public class Futils {
                 return new long[]{-1,-1,-1};
             }
         } else if (hFile.isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
             CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
                     hFile.getPath()));
 
@@ -1107,7 +1105,7 @@ public class Futils {
                     folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
             };
         } else if (hFile.isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
             CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
                     hFile.getPath()));
 
@@ -1116,7 +1114,7 @@ public class Futils {
                     folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
             };
         } else if (hFile.isGoogleDriveFile()) {
-            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+            CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
             CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
                     hFile.getPath()));
@@ -1126,7 +1124,7 @@ public class Futils {
                     folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
             };
         } else if (hFile.isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+            CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
             CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
                     hFile.getPath()));
@@ -1530,7 +1528,7 @@ public class Futils {
         a.build().show();
     }
 
-    public void showHistoryDialog(final DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
+    public void showHistoryDialog(final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1540,14 +1538,13 @@ public class Futils {
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dataUtils.clearHistory();
+                DataUtils.clearHistory();
             }
         });
         a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHistory()), null, true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
         a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
@@ -1556,15 +1553,14 @@ public class Futils {
 
     }
 
-    public void showHiddenDialog(DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
+    public void showHiddenDialog(final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHiddenfiles()), null, false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();

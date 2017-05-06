@@ -22,8 +22,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.PreferencesActivity;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
@@ -33,26 +34,29 @@ import java.util.List;
  * Created by Arpit on 21-06-2015.
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+    private UtilitiesProviderInterface utilsProvider;
     private MaterialDialog dialog;
 
     SharedPreferences sharedPref;
-    PreferencesActivity activity;
+    com.amaze.filemanager.activities.Preferences preferences;
+    BaseActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        activity = (BaseActivity) getActivity();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.color_prefs);
-
-        activity = (PreferencesActivity) getActivity();
+        preferences = (com.amaze.filemanager.activities.Preferences) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         final CheckBox checkBoxPreference = (CheckBox) findPreference("random_checkbox");
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (activity != null) activity.setChanged();
+                if (preferences != null) preferences.changed = 1;
                 Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
                 return true;
             }
@@ -61,7 +65,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (activity != null) activity.setChanged();
+                if (preferences != null) preferences.changed = 1;
                 return true;
             }
         });
@@ -84,7 +88,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
-        if (activity != null) activity.setChanged();
+        if (preferences != null) preferences.changed = 1;
 
         final ColorUsage usage = ColorUsage.fromString(preference.getKey());
         if (usage != null) {
@@ -98,7 +102,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             dialog = new MaterialDialog.Builder(getActivity())
                     .positiveText(R.string.cancel)
                     .title(R.string.choose_color)
-                    .theme(activity.getAppTheme().getMaterialDialogTheme())
+                    .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
                     .autoDismiss(true)
                     .positiveColor(fab_skin)
                     .neutralColor(fab_skin)

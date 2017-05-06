@@ -99,7 +99,7 @@
   <string name="no">Не</string>
   <string name="confirm">Пацвердзіць</string>
   <string name="deleting">Выдаленне</string>
-  <string name="questiondeletefolders">Вы ўпэўненыя, што хочаце выдаліць выбраныя файлы?</string>
+  <string name="questiondelete">Вы ўпэўненыя, што хочаце выдаліць выбраныя файлы?</string>
   <string name="questionset">Вы хочаце ўсталяваць бягучы шлях як хатні для гэтай укладкі?</string>
   <string name="viewmode">Рэжым прагляду</string>
   <string name="uimode">Рэжым інтэрфейсу</string>

@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -18,30 +19,25 @@ import java.util.List;
 //Central data being used across activity,fragments and classes
 public class DataUtils {
 
-    public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
-            RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+    public static ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
+            listfiles = new ArrayList<>(), history = new ArrayList<>();
+    public static List<String> storages = new ArrayList<>();
     public static final String DRIVE = "drive", SMB = "smb", BOOKS = "books",
             HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
+    public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
+            RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+    public static ArrayList<Item> list = new ArrayList<>();
+    public static ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
 
-    private ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
-            listfiles = new ArrayList<>(), history = new ArrayList<>(), storages = new ArrayList<>();
+    private static ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
-    private ArrayList<Item> list = new ArrayList<>();
-    private ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
+    static DataChangeListener dataChangeListener;
 
-    private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
-
-    private DataChangeListener dataChangeListener;
-
-    public DataUtils() {
-
-    }
-
-    public int containsServer(String[] a) {
+    public static int containsServer(String[] a) {
         return contains(a, servers);
     }
 
-    public int containsServer(String path) {
+    public static int containsServer(String path) {
         if (servers == null) return -1;
         int i = 0;
         for (String[] x : servers) {
@@ -51,12 +47,11 @@ public class DataUtils {
         }
         return -1;
     }
-
-    public int containsBooks(String[] a) {
+    public static int containsBooks(String[] a) {
         return contains(a, books);
     }
 
-    /*public int containsAccounts(CloudEntry cloudEntry) {
+    /*public static int containsAccounts(CloudEntry cloudEntry) {
         return contains(a, accounts);
     }*/
 
@@ -65,8 +60,9 @@ public class DataUtils {
      * @param serviceType the {@link OpenMode} of account to check
      * @return the index of account, -1 if not found
      */
-    public synchronized int containsAccounts(OpenMode serviceType) {
+    public static synchronized int containsAccounts(OpenMode serviceType) {
         int i = 0;
+
         for (CloudStorage storage : accounts) {
 
             switch (serviceType) {
@@ -94,7 +90,7 @@ public class DataUtils {
         return -1;
     }
 
-    public void clear() {
+    public static void clear() {
         hiddenfiles = new ArrayList<>();
         gridfiles = new ArrayList<>();
         listfiles = new ArrayList<>();
@@ -105,11 +101,11 @@ public class DataUtils {
         accounts = new ArrayList<>();
     }
 
-    public void registerOnDataChangedListener(DataChangeListener l) {
-        dataChangeListener = l;
+    public static void registerOnDataChangedListener(DataChangeListener dataChangeListener) {
+        DataUtils.dataChangeListener = dataChangeListener;
     }
 
-    int contains(String a, ArrayList<String[]> b) {
+    static int contains(String a, ArrayList<String[]> b) {
         int i = 0;
         for (String[] x : b) {
             if (x[1].equals(a)) return i;
@@ -119,7 +115,7 @@ public class DataUtils {
         return -1;
     }
 
-    int contains(String[] a, ArrayList<String[]> b) {
+    static int contains(String[] a, ArrayList<String[]> b) {
         if (b == null) return -1;
         int i = 0;
         for (String[] x : b) {
@@ -130,12 +126,13 @@ public class DataUtils {
         return -1;
     }
 
-    public void removeBook(int i) {
+    public static void removeBook(int i) {
         if (books.size() > i)
             books.remove(i);
     }
 
-    public synchronized void removeAccount(OpenMode serviceType) {
+    public static synchronized void removeAccount(OpenMode serviceType) {
+
         for (CloudStorage storage : accounts) {
             switch (serviceType) {
                 case BOX:
@@ -160,83 +157,77 @@ public class DataUtils {
         }
     }
 
-    public void removeServer(int i) {
+    public static void removeServer(int i) {
         if (servers.size() > i)
             servers.remove(i);
     }
 
-    public void addBook(String[] i) {
+    public static void addBook(String[] i) {
         books.add(i);
     }
 
-    public void addBook(String[] i, boolean refreshdrawer) {
+    public static void addBook(String[] i, boolean refreshdrawer) {
         if (refreshdrawer && dataChangeListener != null) dataChangeListener.onBookAdded(i, true);
         books.add(i);
     }
 
-    public synchronized void addAccount(CloudStorage storage) {
+    public static synchronized void addAccount(CloudStorage storage) {
         accounts.add(storage);
     }
 
-    public void addServer(String[] i) {
+    public static void addServer(String[] i) {
         servers.add(i);
     }
 
-    public void addHiddenFile(String i) {
+    public static void addHiddenFile(String i) {
         hiddenfiles.add(i);
         if (dataChangeListener != null)
             dataChangeListener.onHiddenFileAdded(i);
     }
 
-    public void removeHiddenFile(String i) {
+    public static void removeHiddenFile(String i) {
         hiddenfiles.remove(i);
         if (dataChangeListener != null)
             dataChangeListener.onHiddenFileRemoved(i);
     }
 
-    public ArrayList<String> getHistory() {
-        return history;
-    }
-
-    public void addHistoryFile(String i) {
+    public static void addHistoryFile(String i) {
         history.add(i);
         if (dataChangeListener != null)
             dataChangeListener.onHistoryAdded(i);
     }
 
-    public void sortBook() {
+    public static void sortBook() {
         Collections.sort(books, new BookSorter());
     }
 
-    public void setServers(ArrayList<String[]> servers) {
+    public static void setServers(ArrayList<String[]> servers) {
         if (servers != null)
-            this.servers = servers;
+            DataUtils.servers = servers;
     }
 
-    public synchronized void setBooks(ArrayList<String[]> books) {
+    public static synchronized void setBooks(ArrayList<String[]> books) {
         if (books != null)
-            this.books = books;
+            DataUtils.books = books;
     }
 
-    public synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
+    public static synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
         if (accounts != null)
-            this.accounts = accounts;
+            DataUtils.accounts = accounts;
     }
 
-    public synchronized ArrayList<String[]> getServers() {
+    public static synchronized ArrayList<String[]> getServers() {
         return servers;
     }
 
-    public synchronized ArrayList<String[]> getBooks() {
-        return books;
-    }
-
-    public synchronized ArrayList<CloudStorage> getAccounts() {
+    public static synchronized ArrayList<CloudStorage> getAccounts() {
         return accounts;
     }
 
-    public synchronized CloudStorage getAccount(OpenMode serviceType) {
+    public static synchronized CloudStorage getAccount(OpenMode serviceType) {
+
         for (CloudStorage storage : accounts) {
+
             switch (serviceType) {
                 case BOX:
                     if (storage instanceof Box)
@@ -261,66 +252,62 @@ public class DataUtils {
         return null;
     }
 
-    public ArrayList<String> getHiddenfiles() {
+    public static synchronized ArrayList<String[]> getBooks() {
+        return books;
+    }
+
+    public static ArrayList<String> getHiddenfiles() {
         return hiddenfiles;
     }
 
-    public void setHiddenfiles(ArrayList<String> hiddenfiles) {
+    public static void setHiddenfiles(ArrayList<String> hiddenfiles) {
         if (hiddenfiles != null)
-            this.hiddenfiles = hiddenfiles;
+            DataUtils.hiddenfiles = hiddenfiles;
     }
 
-    public ArrayList<String> getGridFiles() {
-        return gridfiles;
-    }
 
-    public void setGridfiles(ArrayList<String> gridfiles) {
+    public static void setGridfiles(ArrayList<String> gridfiles) {
         if (gridfiles != null)
-            this.gridfiles = gridfiles;
+            DataUtils.gridfiles = gridfiles;
     }
 
-    public ArrayList<String> getListfiles() {
+    public static ArrayList<String> getListfiles() {
         return listfiles;
     }
 
-    public void setListfiles(ArrayList<String> listfiles) {
+    public static void setListfiles(ArrayList<String> listfiles) {
         if (listfiles != null)
-            this.listfiles = listfiles;
+            DataUtils.listfiles = listfiles;
     }
 
-    public void clearHistory() {
+    public static void clearHistory() {
         history = new ArrayList<>();
         if (dataChangeListener != null)
             dataChangeListener.onHistoryCleared();
     }
 
-    public synchronized List<String> getStorages() {
+    public static synchronized List<String> getStorages() {
         return storages;
     }
 
-    public synchronized void setStorages(ArrayList<String> storages) {
-        this.storages = storages;
+    public static synchronized void setStorages(List<String> storages) {
+        DataUtils.storages = storages;
     }
 
-    public ArrayList<Item> getList() {
+    public static ArrayList<Item> getList() {
         return list;
     }
 
-    public synchronized void setList(ArrayList<Item> list) {
-        this.list = list;
+    public static synchronized void setList(ArrayList<Item> list) {
+        DataUtils.list = list;
     }
 
     //Callbacks to do original changes in database (and ui if required)
     public interface DataChangeListener {
         void onHiddenFileAdded(String path);
-
         void onHiddenFileRemoved(String path);
-
         void onHistoryAdded(String path);
-
         void onBookAdded(String path[], boolean refreshdrawer);
-
         void onHistoryCleared();
     }
-
 }
