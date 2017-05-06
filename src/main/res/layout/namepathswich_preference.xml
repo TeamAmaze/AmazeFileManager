@@ -14,6 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
+        android:minHeight="24dp"
+        android:minWidth="36dp"
         app:srcCompat="@drawable/disableable_ic_edit_black_24dp"/>
 
     <Switch
@@ -21,10 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingLeft="4dip"
-        android:paddingStart="4dip"
-        android:paddingRight="4dip"
-        android:paddingEnd="4dip"/>
+        />
 
     <ImageButton
         android:id="@+id/delete"
@@ -32,6 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
+        android:minHeight="24dp"
+        android:minWidth="36dp"
         app:srcCompat="@drawable/ic_delete_forever_black_24dp"/>
 </LinearLayout>
 
