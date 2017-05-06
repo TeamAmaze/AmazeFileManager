@@ -99,7 +99,7 @@
   <string name="no">Нет</string>
   <string name="confirm">Подтвердите</string>
   <string name="deleting">Удаление...</string>
-  <string name="questiondelete">Вы уверены, что хотите удалить выбранные файлы?</string>
+  <string name="questiondeletefolders">Вы уверены, что хотите удалить выбранные файлы?</string>
   <string name="questionset">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
   <string name="viewmode">Режим просмотра</string>
   <string name="uimode">Режим интерфейса</string>

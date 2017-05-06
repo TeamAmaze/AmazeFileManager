@@ -99,7 +99,7 @@
     <string name="no">Nej</string>
     <string name="confirm">Bekräfta</string>
     <string name="deleting">Tar bort</string>
-    <string name="questiondelete">Vill du verkligen ta bort dessa filer?</string>
+    <string name="questiondeletefolders">Vill du verkligen ta bort dessa filer?</string>
     <string name="questionset">Vill du ange sökvägen som hem för denna flik?</string>
     <string name="viewmode">Visningsläge</string>
     <string name="uimode">UI-läge</string>

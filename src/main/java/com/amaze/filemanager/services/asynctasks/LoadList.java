@@ -61,8 +61,9 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
+public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
     private UtilitiesProviderInterface utilsProvider;
     private String path;
     boolean back;
@@ -181,7 +182,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 break;
             case DROPBOX:
 
-                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
 
                 try {
                     list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
@@ -191,7 +192,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 }
                 break;
             case BOX:
-                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
 
                 try {
                     list = addTo(listCloud(path, cloudStorageBox, OpenMode.BOX));
@@ -201,7 +202,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 }
                 break;
             case GDRIVE:
-                CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
 
                 try {
                     list = addTo(listCloud(path, cloudStorageGDrive, OpenMode.GDRIVE));
@@ -211,7 +212,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 }
                 break;
             case ONEDRIVE:
-                CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
 
                 try {
                     list = addTo(listCloud(path, cloudStorageOneDrive, OpenMode.ONEDRIVE));
@@ -251,7 +252,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
             BaseFile baseFile = baseFiles.get(i);
             //File f = new File(ele.getPath());
             String size = "";
-            if (!DataUtils.hiddenfiles.contains(baseFile.getPath())) {
+            if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
                 if (baseFile.isDirectory()) {
                     size = "";
 

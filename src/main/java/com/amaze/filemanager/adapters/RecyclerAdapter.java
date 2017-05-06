@@ -31,6 +31,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -40,7 +41,6 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.CryptUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -754,7 +754,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 mainFrag.MAIN_ACTIVITY.mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                                 return true;
                             case R.id.book:
-                                DataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
+                                MainActivity.dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
                                 mainFrag.MAIN_ACTIVITY.refreshDrawer();
                                 Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
