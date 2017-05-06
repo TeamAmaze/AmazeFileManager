@@ -14,6 +14,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,8 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by vishal on 26/10/16.
@@ -80,25 +79,25 @@ public class GenericCopyUtil {
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isDropBoxFile()) {
 
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
                 bufferedInputStream = new BufferedInputStream(cloudStorageDropbox
                         .download(CloudUtil.stripPath(OpenMode.DROPBOX,
                         mSourceFile.getPath())));
             } else if (mSourceFile.isBoxFile()) {
 
-                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
                 bufferedInputStream = new BufferedInputStream(cloudStorageBox
                         .download(CloudUtil.stripPath(OpenMode.BOX,
                                 mSourceFile.getPath())));
             } else if (mSourceFile.isGoogleDriveFile()) {
 
-                CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
                 bufferedInputStream = new BufferedInputStream(cloudStorageGdrive
                         .download(CloudUtil.stripPath(OpenMode.GDRIVE,
                                 mSourceFile.getPath())));
             } else if (mSourceFile.isOneDriveFile()) {
 
-                CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
                 bufferedInputStream = new BufferedInputStream(cloudStorageOnedrive
                         .download(CloudUtil.stripPath(OpenMode.ONEDRIVE,
                                 mSourceFile.getPath())));
@@ -145,7 +144,7 @@ public class GenericCopyUtil {
                 bufferedOutputStream = new BufferedOutputStream(mTargetFile.getOutputStream(mContext), DEFAULT_BUFFER_SIZE);
             } else if (mTargetFile.isDropBoxFile()) {
                 // API doesn't support output stream, we'll upload the file directly
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
 
                 if (mSourceFile.isDropBoxFile()) {
                     // we're in the same provider, use api method
@@ -159,7 +158,7 @@ public class GenericCopyUtil {
                 }
             } else if (mTargetFile.isBoxFile()) {
                 // API doesn't support output stream, we'll upload the file directly
-                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
 
                 if (mSourceFile.isBoxFile()) {
                     // we're in the same provider, use api method
@@ -174,7 +173,7 @@ public class GenericCopyUtil {
                 }
             } else if (mTargetFile.isGoogleDriveFile()) {
                 // API doesn't support output stream, we'll upload the file directly
-                CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                CloudStorage cloudStorageGdrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
 
                 if (mSourceFile.isGoogleDriveFile()) {
@@ -190,7 +189,7 @@ public class GenericCopyUtil {
                 }
             } else if (mTargetFile.isOneDriveFile()) {
                 // API doesn't support output stream, we'll upload the file directly
-                CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                CloudStorage cloudStorageOnedrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
                 if (mSourceFile.isOneDriveFile()) {
                     // we're in the same provider, use api method

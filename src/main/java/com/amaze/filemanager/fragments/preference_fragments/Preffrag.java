@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -44,34 +43,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.util.ArrayList;
+public class Preffrag extends PreferenceFragment {
 
-import static com.amaze.filemanager.R.string.feedback;
-import static com.amaze.filemanager.fragments.preference_fragments.FoldersPref.castStringListToTrioList;
-
-public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-
-    private static final String PREFERENCE_KEY_ABOUT = "about";
-    private static final String[] PREFERENCE_KEYS =
-            {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
-                    "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
-                    "sidebar_folders", "sidebar_quickaccess"};
-
-
-    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
-    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "show_sidebar_quickaccesses";
-
-    public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
-
-    public static final String PREFERENCE_ROOTMODE = "rootmode";
+    private static final CharSequence PREFERENCE_KEY_ABOUT = "about";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -84,8 +64,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
     public static final String ENCRYPT_PASSWORD_MASTER = "master";
 
     private UtilitiesProviderInterface utilsProvider;
-    private SharedPreferences sharedPref;
-    private CheckBox gplus;
+    SharedPreferences sharedPref;
+    CheckBox gplus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,12 +78,116 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
-            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
-        }
+        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final String[] sort = getResources().getStringArray(R.array.columns);
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+                builder.title(R.string.gridcolumnno);
+                int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
+                current = current == -1 ? 0 : current;
+                if (current != 0) current = current - 1;
+                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        sharedPref.edit().putString("columns", "" + (which != 0 ? sort[which] : "" + -1)).commit();
+                        dialog.dismiss();
+                        return true;
+                    }
+                });
+                builder.build().show();
+                return true;
+            }
+        });
+
+        findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String[] sort = getResources().getStringArray(R.array.theme);
+                int current = Integer.parseInt(sharedPref.getString("theme", "0"));
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+//              builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        utilsProvider.getThemeManager()
+                                .setAppTheme(AppTheme.fromIndex(which))
+                                .save();
+
+                        Log.d("theme", AppTheme.fromIndex(which).name());
+
+                        dialog.dismiss();
+                        restartPC(getActivity());
+                        return true;
+                    }
+                });
+                builder.title(R.string.theme);
+                builder.build().show();
+                return true;
+            }
+        });
+        findPreference("colors").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(1);
+                return true;
+            }
+        });
+
+        /*final CheckBx rootmode = (CheckBx) findPreference("rootmode");
+        rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                boolean b = sharedPref.getBoolean("rootmode", false);
+                if (b) {
+                    if (MainActivity.shellInteractive.isRunning()) {
+                        rootmode.setChecked(true);
+                    
+                    } else {  rootmode.setChecked(false);
+				
+                        Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    rootmode.setChecked(false);
+                    
+                }
+                return false;
+            }
+        });*/
+
+        Preference preferenceFeedback = findPreference("feedback");
+        preferenceFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "vishalmeham2@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+                startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feedback)));
+                return false;
+            }
+        });
+
+        Preference aboutPreference = findPreference(PREFERENCE_KEY_ABOUT);
+        aboutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(getActivity(), AboutActivity.class));
+                return false;
+            }
+        });
 
         gplus = (CheckBox) findPreference("plus_pic");
-
+        gplus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if(gplus.isChecked()){
+                    boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
+                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
+                }
+                return false;
+            }
+        });
         if (BuildConfig.IS_VERSION_FDROID)
             gplus.setEnabled(false);
 
@@ -115,9 +199,11 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             masterPasswordPreference.setEnabled(false);
         }
 
-        if (sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (preferences.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
             masterPasswordPreference.setEnabled(false);
         }
+
 
         CheckBox checkBoxFingerprint = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
 
@@ -172,115 +258,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             checkBoxFingerprint.setEnabled(false);
         }
 
-    }
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-        final String[] sort;
-        MaterialDialog.Builder builder;
-
-        switch (preference.getKey()) {
-            case "columns":
-                sort = getResources().getStringArray(R.array.columns);
-                builder = new MaterialDialog.Builder(getActivity());
-                builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-                builder.title(R.string.gridcolumnno);
-                int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
-                current = current == -1 ? 0 : current;
-                if (current != 0) current = current - 1;
-                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("columns", "" + (which != 0 ? sort[which] : "" + -1)).commit();
-                        dialog.dismiss();
-                        return true;
-                    }
-                });
-                builder.build().show();
-                return true;
-            case "theme":
-                sort = getResources().getStringArray(R.array.theme);
-                current = Integer.parseInt(sharedPref.getString("theme", "0"));
-                builder = new MaterialDialog.Builder(getActivity());
-                //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        utilsProvider.getThemeManager()
-                                .setAppTheme(AppTheme.fromIndex(which))
-                                .save();
-
-                        Log.d("theme", AppTheme.fromIndex(which).name());
-
-                        dialog.dismiss();
-                        restartPC(getActivity());
-                        return true;
-                    }
-                });
-                builder.title(R.string.theme);
-                builder.build().show();
-                return true;
-            case "sidebar_folders_enable":
-                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS,
-                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)).apply();
-                return true;
-            case "sidebar_quickaccess_enable":
-                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
-                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
-                return true;
-            case PREFERENCE_SHOW_HIDDENFILES:
-                setEnabledShortcuts();
-                return false;
-            case PREFERENCE_ROOTMODE:
-                setEnabledShortcuts();
-
-                /*
-                boolean b = sharedPref.getBoolean("rootmode", false);
-                if (b) {
-                    if (MainActivity.shellInteractive.isRunning()) {
-                        rootmode.setChecked(true);
-
-                    } else {  rootmode.setChecked(false);
-
-                        Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    rootmode.setChecked(false);
-
-                }
-                */
-                return false;
-            case "feedback":
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "vishalmeham2@gmail.com", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-                startActivity(Intent.createChooser(emailIntent, getResources().getString(feedback)));
-                return false;
-            case PREFERENCE_KEY_ABOUT:
-                startActivity(new Intent(getActivity(), AboutActivity.class));
-                return false;
-            case "plus_pic":
-                if(gplus.isChecked()){
-                    boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
-                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
-                }
-                return false;
-            /*FROM HERE BE FRAGMENTS*/
-            case "colors":
-                ((PreferencesActivity) getActivity())
-                        .selectItem(PreferencesActivity.COLORS_PREFERENCE);
-                return true;
-            case "sidebar_folders":
-                ((PreferencesActivity) getActivity())
-                        .selectItem(PreferencesActivity.FOLDERS_PREFERENCE);
-                return true;
-            case "sidebar_quickaccess":
-                ((PreferencesActivity) getActivity())
-                        .selectItem(PreferencesActivity.QUICKACCESS_PREFERENCE);
-                return true;
-        }
-
-        return false;
     }
 
     public static void restartPC(final Activity activity) {
@@ -298,32 +276,4 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
         if(!a)gplus.setChecked(false);
     }
-
-    /**
-     * Dynamically enables autodisabled shortcuts, and disables inaccessible shortcuts when user
-     * changes root access and hidden files visibility preferences.
-     */
-    private void setEnabledShortcuts() {
-        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(
-                TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null));
-
-        if(currentValue == null) return;
-
-        for(int i = 0; i < currentValue.size(); i++) {
-            if(FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
-                    && currentValue.get(i).autodisabled) {
-                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
-                        currentValue.get(i).directory, FoldersPref.Shortcut.TRUE);
-                currentValue.set(i, shortcut);
-            } else if (!FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
-                    && currentValue.get(i).enabled) {
-                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
-                        currentValue.get(i).directory, FoldersPref.Shortcut.AUTOFALSE);
-                currentValue.set(i, shortcut);
-            }
-        }
-
-        TinyDB.putList(sharedPref, FoldersPref.KEY, FoldersPref.castTrioListToStringList(currentValue));
-    }
-
 }

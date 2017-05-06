@@ -99,7 +99,7 @@
   <string name="no">Ne</string>
   <string name="confirm">Potvrdit</string>
   <string name="deleting">Odstraňování</string>
-  <string name="questiondeletefolders">Opravdu chcete odstranit následující soubory?</string>
+  <string name="questiondelete">Opravdu chcete odstranit následující soubory?</string>
   <string name="questionset">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
   <string name="viewmode">Režim zobrazení</string>
   <string name="uimode">Režim uživatelského rozhraní</string>
