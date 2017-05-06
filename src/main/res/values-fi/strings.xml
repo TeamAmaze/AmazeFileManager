@@ -631,4 +631,6 @@
   <string name="cloud_token_lost">Tunnistus menetetty, kirjaudu uudestaan sisään</string>
   <string name="cloud_plugin_not_supported">Pilvilaajennus ei ole tuettu Fdroid-versiossa.
         lataa Amaze Google Play Storesta.</string>
+  <string name="monofont">Monospace fontti</string>
+  <string name="showHeaders">Näytä ylätunniste</string>
 </resources>

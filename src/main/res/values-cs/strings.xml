@@ -615,4 +615,6 @@
   <string name="copy_low_memory">Nedostatek paměti, prosím vyčistěte RAM</string>
   <string name="cloud_token_lost">Token byl ztracen, prosím znovu se přihlaste</string>
   <string name="cloud_plugin_not_supported">Cloud plug-in není podporována pro sestavení Fdroid.         Stáhněte si Amaze z Obchodu Play.</string>
+  <string name="monofont">Monospace Font</string>
+  <string name="showHeaders">Zobrazit záhlaví</string>
 </resources>
