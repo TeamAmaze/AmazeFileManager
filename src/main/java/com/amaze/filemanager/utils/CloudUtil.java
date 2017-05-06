@@ -23,8 +23,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * Created by vishal on 19/4/17.
  *
@@ -172,7 +170,7 @@ public class CloudUtil {
                 if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
                     // dropbox account
                     serviceType = OpenMode.DROPBOX;
-                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
 
                     try {
                         cloudStorageDropbox.getUserLogin();
@@ -184,7 +182,7 @@ public class CloudUtil {
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
                     serviceType = OpenMode.ONEDRIVE;
-                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
 
                     try {
                         cloudStorageOneDrive.getUserLogin();
@@ -196,7 +194,7 @@ public class CloudUtil {
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
                     serviceType = OpenMode.BOX;
-                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
 
                     try {
                         cloudStorageBox.getUserLogin();
@@ -208,7 +206,7 @@ public class CloudUtil {
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
 
                     serviceType = OpenMode.GDRIVE;
-                    CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                    CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
 
                     try {
                         cloudStorageGDrive.getUserLogin();

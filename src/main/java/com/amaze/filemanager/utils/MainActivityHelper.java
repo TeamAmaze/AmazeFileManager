@@ -91,7 +91,7 @@ public class MainActivityHelper {
                     Toast.makeText(mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        MainActivity.dataUtils.getStorages().add(a);
+                        DataUtils.storages.add(a);
                         mainActivity.refreshDrawer();
                     } else {
                         mainActivity.refreshDrawer();

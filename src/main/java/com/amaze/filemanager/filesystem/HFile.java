@@ -14,6 +14,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -33,8 +34,6 @@ import java.util.ArrayList;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by Arpit on 07-07-2015.
@@ -231,19 +230,19 @@ public class HFile {
                 s = RootHelper.getDocumentFile(path, context, false).length();
                 break;
             case DROPBOX:
-                s = dataUtils.getAccount(OpenMode.DROPBOX)
+                s = DataUtils.getAccount(OpenMode.DROPBOX)
                         .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getSize();
                 break;
             case BOX:
-                s = dataUtils.getAccount(OpenMode.BOX)
+                s = DataUtils.getAccount(OpenMode.BOX)
                         .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getSize();
                 break;
             case ONEDRIVE:
-                s = dataUtils.getAccount(OpenMode.ONEDRIVE)
+                s = DataUtils.getAccount(OpenMode.ONEDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getSize();
                 break;
             case GDRIVE:
-                s = dataUtils.getAccount(OpenMode.GDRIVE)
+                s = DataUtils.getAccount(OpenMode.GDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
                 break;
             default:
@@ -470,19 +469,19 @@ public class HFile {
                 isDirectory = RootHelper.getDocumentFile(path, context, false).isDirectory();
                 break;
             case DROPBOX:
-                isDirectory = dataUtils.getAccount(OpenMode.DROPBOX)
+                isDirectory = DataUtils.getAccount(OpenMode.DROPBOX)
                         .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getFolder();
                 break;
             case BOX:
-                isDirectory = dataUtils.getAccount(OpenMode.BOX)
+                isDirectory = DataUtils.getAccount(OpenMode.BOX)
                         .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getFolder();
                 break;
             case GDRIVE:
-                isDirectory = dataUtils.getAccount(OpenMode.GDRIVE)
+                isDirectory = DataUtils.getAccount(OpenMode.GDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getFolder();
                 break;
             case ONEDRIVE:
-                isDirectory = dataUtils.getAccount(OpenMode.ONEDRIVE)
+                isDirectory = DataUtils.getAccount(OpenMode.ONEDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getFolder();
                 break;
             default:
@@ -556,7 +555,7 @@ public class HFile {
             case GDRIVE:
             case ONEDRIVE:
                 size = Futils.folderSizeCloud(mode,
-                        dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
+                        DataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
                 break;
             default:
                 return 0l;
@@ -655,7 +654,7 @@ public class HFile {
             case DROPBOX:
                 try {
 
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -665,7 +664,7 @@ public class HFile {
             case BOX:
                 try {
 
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
                     arrayList = new ArrayList<>();
@@ -674,7 +673,7 @@ public class HFile {
             case GDRIVE:
                 try {
 
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -684,7 +683,7 @@ public class HFile {
             case ONEDRIVE:
                 try {
 
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
+                    arrayList = CloudUtil.listFiles(path, DataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -763,20 +762,20 @@ public class HFile {
                 }
                 break;
             case DROPBOX:
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
                 Log.d(getClass().getSimpleName(), CloudUtil.stripPath(OpenMode.DROPBOX, path));
                 inputStream = cloudStorageDropbox.download(CloudUtil.stripPath(OpenMode.DROPBOX, path));
                 break;
             case BOX:
-                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
                 inputStream = cloudStorageBox.download(CloudUtil.stripPath(OpenMode.BOX, path));
                 break;
             case GDRIVE:
-                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
                 inputStream = cloudStorageGDrive.download(CloudUtil.stripPath(OpenMode.GDRIVE, path));
                 break;
             case ONEDRIVE:
-                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
                 inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
                 break;
             default:
@@ -835,16 +834,16 @@ public class HFile {
                 exists = false;
             }
         } else if (isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
             exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
         } else if (isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
             exists = cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
         } else if (isGoogleDriveFile()) {
-            CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+            CloudStorage cloudStorageGoogleDrive = DataUtils.getAccount(OpenMode.GDRIVE);
             exists = cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
         } else if (isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+            CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
             exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
         } else if (isLocal()) {
             exists = new File(path).exists();
