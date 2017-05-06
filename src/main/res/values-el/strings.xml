@@ -99,7 +99,7 @@
   <string name="no">Όχι</string>
   <string name="confirm">Επιβεβαίωση</string>
   <string name="deleting">Διαγραφή</string>
-  <string name="questiondelete">Θέλετε πραγματικά να διαγράψετε τα αρχεία;</string>
+  <string name="questiondeletefolders">Θέλετε πραγματικά να διαγράψετε τα αρχεία;</string>
   <string name="questionset">Θέλετε να ορίσετε την τρέχουσα διαδρομή ως \"αρχική\" για αυτή την καρτέλα;</string>
   <string name="viewmode">Τρόπος απεικόνισης</string>
   <string name="uimode">Κατάσταση διεπαφής χρήστη</string>

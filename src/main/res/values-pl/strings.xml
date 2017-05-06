@@ -99,7 +99,7 @@
   <string name="no">Nie</string>
   <string name="confirm">Potwierdź</string>
   <string name="deleting">Usuwanie</string>
-  <string name="questiondelete">Czy usunąć następujące pliki?</string>
+  <string name="questiondeletefolders">Czy usunąć następujące pliki?</string>
   <string name="questionset">Czy ustawić aktualną ścieżkę jako główną dla tej karty?</string>
   <string name="viewmode">Tryb widoku</string>
   <string name="uimode">Tryb interfejsu</string>
