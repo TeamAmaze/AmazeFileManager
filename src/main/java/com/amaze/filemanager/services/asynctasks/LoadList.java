@@ -38,7 +38,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
@@ -63,8 +63,7 @@ import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
-public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements>> {
-
+public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
     private UtilitiesProviderInterface utilsProvider;
     private String path;
     boolean back;
@@ -94,9 +93,9 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     boolean grid;
 
     @Override
-    protected ArrayList<LayoutElements> doInBackground(String... params) {
+    protected ArrayList<LayoutElement> doInBackground(String... params) {
         // params comes from the execute() call: params[0] is the url.
-        ArrayList<LayoutElements> list = null;
+        ArrayList<LayoutElement> list = null;
         path = params[0];
         grid = ma.checkforpath(path);
         ma.folder_count = 0;
@@ -247,8 +246,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return list;
     }
 
-    private ArrayList<LayoutElements> addTo(ArrayList<BaseFile> baseFiles) {
-        ArrayList<LayoutElements> a = new ArrayList<>();
+    private ArrayList<LayoutElement> addTo(ArrayList<BaseFile> baseFiles) {
+        ArrayList<LayoutElement> a = new ArrayList<>();
         for (int i = 0; i < baseFiles.size(); i++) {
             BaseFile baseFile = baseFiles.get(i);
             //File f = new File(ele.getPath());
@@ -261,13 +260,13 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                             R.drawable.ic_folder_lock_white_36dp);
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
-                    LayoutElements layoutElements = utilsProvider.getFutils()
+                    LayoutElement layoutElement = utilsProvider.getFutils()
                             .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
                                     : ma.folder,
                             baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
                             baseFile.getDate() + "");
-                    layoutElements.setMode(baseFile.getMode());
-                    a.add(layoutElements);
+                    layoutElement.setMode(baseFile.getMode());
+                    a.add(layoutElement);
                     ma.folder_count++;
                 } else {
                     long longSize = 0;
@@ -283,11 +282,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
                         //e.printStackTrace();
                     }
                     try {
-                        LayoutElements layoutElements = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
+                        LayoutElement layoutElement = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
                                 baseFile.getPath(), !ma.IS_LIST, ma.res), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
-                        layoutElements.setMode(baseFile.getMode());
-                        a.add(layoutElements);
+                        layoutElement.setMode(baseFile.getMode());
+                        a.add(layoutElement);
                         ma.file_count++;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -299,7 +298,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
     }
 
     @Override
-    protected void onPostExecute(ArrayList<LayoutElements> list) {
+    protected void onPostExecute(ArrayList<LayoutElement> list) {
         if (isCancelled()) {
             list = null;
         }
@@ -405,7 +404,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listApks() {
+    private ArrayList<BaseFile> listApks() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
@@ -427,7 +426,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listRecent() {
+    private ArrayList<BaseFile> listRecent() {
         final HistoryManager history = new HistoryManager(c, "Table2");
         final ArrayList<String> paths = history.readTable(DataUtils.HISTORY);
         history.end();
@@ -443,7 +442,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
         return songs;
     }
 
-    ArrayList<BaseFile> listDocs() {
+    private ArrayList<BaseFile> listDocs() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
         Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
@@ -471,7 +470,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElements
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
      */
-    ArrayList<BaseFile> listOtg(String path) {
+    private ArrayList<BaseFile> listOtg(String path) {
 
         return OTGUtil.getDocumentFilesList(path, c);
     }

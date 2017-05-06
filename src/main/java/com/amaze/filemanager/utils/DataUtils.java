@@ -214,7 +214,7 @@ public class DataUtils {
             this.servers = servers;
     }
 
-    public void setBooks(ArrayList<String[]> books) {
+    public void synchronized setBooks(ArrayList<String[]> books) {
         if (books != null)
             this.books = books;
     }
@@ -299,7 +299,7 @@ public class DataUtils {
         return storages;
     }
 
-    public void setStorages(ArrayList<String> storages) {
+    public void synchronized setStorages(ArrayList<String> storages) {
         this.storages = storages;
     }
 

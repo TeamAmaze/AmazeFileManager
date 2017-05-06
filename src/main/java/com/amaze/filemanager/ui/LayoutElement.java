@@ -30,11 +30,11 @@ import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.Calendar;
 
-public class LayoutElements implements Parcelable {
+public class LayoutElement implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    public LayoutElements(Parcel im) {
+    public LayoutElement(Parcel im) {
         title = im.readString();
         desc = im.readString();
         permissions = im.readString();
@@ -87,8 +87,8 @@ public class LayoutElements implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElements(BitmapDrawable imageId, String title, String desc, String permissions,
-                          String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
+    public LayoutElement(BitmapDrawable imageId, String title, String desc, String permissions,
+                         String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -104,14 +104,14 @@ public class LayoutElements implements Parcelable {
         }
     }
 
-    public static final Parcelable.Creator<LayoutElements> CREATOR =
-            new Parcelable.Creator<LayoutElements>() {
-                public LayoutElements createFromParcel(Parcel in) {
-                    return new LayoutElements(in);
+    public static final Parcelable.Creator<LayoutElement> CREATOR =
+            new Parcelable.Creator<LayoutElement>() {
+                public LayoutElement createFromParcel(Parcel in) {
+                    return new LayoutElement(in);
                 }
 
-                public LayoutElements[] newArray(int size) {
-                    return new LayoutElements[size];
+                public LayoutElement[] newArray(int size) {
+                    return new LayoutElement[size];
                 }
             };
 

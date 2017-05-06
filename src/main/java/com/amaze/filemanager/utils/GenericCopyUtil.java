@@ -163,7 +163,6 @@ public class GenericCopyUtil {
 
                 if (mSourceFile.isBoxFile()) {
                     // we're in the same provider, use api method
-                    bufferedInputStream.close();
                     cloudStorageBox.copy(CloudUtil.stripPath(OpenMode.BOX, mSourceFile.getPath()),
                             CloudUtil.stripPath(OpenMode.BOX, mTargetFile.getPath()));
                     return;
@@ -177,9 +176,9 @@ public class GenericCopyUtil {
                 // API doesn't support output stream, we'll upload the file directly
                 CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
 
+
                 if (mSourceFile.isGoogleDriveFile()) {
                     // we're in the same provider, use api method
-                    bufferedInputStream.close();
                     cloudStorageGdrive.copy(CloudUtil.stripPath(OpenMode.GDRIVE, mSourceFile.getPath()),
                             CloudUtil.stripPath(OpenMode.GDRIVE, mTargetFile.getPath()));
                     return;
@@ -195,7 +194,6 @@ public class GenericCopyUtil {
 
                 if (mSourceFile.isOneDriveFile()) {
                     // we're in the same provider, use api method
-                    bufferedInputStream.close();
                     cloudStorageOnedrive.copy(CloudUtil.stripPath(OpenMode.ONEDRIVE, mSourceFile.getPath()),
                             CloudUtil.stripPath(OpenMode.ONEDRIVE, mTargetFile.getPath()));
                     return;

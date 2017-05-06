@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity implements
     public Toolbar toolbar;
     public int skinStatusBar;
 
-    public int storage_count = 0; // number of storage available (internal/external/otg etc)
+    public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
 
     public FloatingActionMenu floatingActionButton;
     public LinearLayout pathbar;
@@ -415,7 +415,7 @@ public class MainActivity extends BaseActivity implements
         } catch (Exception e) {
 
         }
-        updateDrawer();
+        refreshDrawer();
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
         if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -1318,10 +1318,10 @@ public class MainActivity extends BaseActivity implements
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                 sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                updateDrawer();
+                refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
-                updateDrawer();
+                refreshDrawer();
                 goToMain("");
             }
         }
@@ -1426,126 +1426,18 @@ public class MainActivity extends BaseActivity implements
 
         return null;
     }
-
-    public void updateDrawer() {
-        ArrayList<Item> sectionItems = new ArrayList<>();
-        ArrayList<String> storageDirectories = getStorageDirectories();
-        ArrayList<String[]> books = new ArrayList<>();
-        ArrayList<String[]> servers = new ArrayList<>();
-
-        storage_count = 0;
-        for (String file : storageDirectories) {
-            File f = new File(file);
-            String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                name = getResources().getString(R.string.storage);
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
-            } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
-                name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
-            } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
-                sectionItems.add(new EntryItem(name, file, icon1));
-            }
-        }
-        dataUtils.setStorages(storageDirectories);
-        sectionItems.add(new SectionItem());
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.SMB))
-                servers.add(file);
-            dataUtils.setServers(servers);
-            if (servers.size() > 0) {
-                Collections.sort(servers, new BookSorter());
-                for (String[] file : servers)
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this,
-                            R.drawable.ic_settings_remote_white_48dp)));
-                sectionItems.add(new SectionItem());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        if(!sharedPref.contains(FoldersPref.KEY)) {
-            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-                books.add(file);
-            }
-        } else {
-            ArrayList<FoldersPref.Shortcut> booksPref =
-                    FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
-                            FoldersPref.KEY, new ArrayList<String>()));
-
-            for (FoldersPref.Shortcut t : booksPref) {
-                if(t.enabled)
-                    books.add(new String[] {t.name, t.directory});
-            }
-        }
-        dataUtils.setBooks(books);
-
-        loadBooksAndMarkers(sectionItems);
-
-        dataUtils.setList(sectionItems);
-        adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
-        mDrawerList.setAdapter(adapter);
-    }
-
-    public void updateDrawer(String path) {
-        new AsyncTask<String, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(String... strings) {
-                String path = strings[0];
-                int k = 0, i = 0;
-                String entryItemPathOld = "";
-                for (Item item : dataUtils.getList()) {
-                    if (!item.isSection()) {
-
-                        String entryItemPath = ((EntryItem) item).getPath();
-
-                        if (path.contains(((EntryItem) item).getPath())) {
-
-                            if (entryItemPath.length() > entryItemPathOld.length()) {
-
-
-                                // we don't need to match with the quick search drawer items
-                                // whether current entry item path is bigger than the older one found,
-                                // for eg. when we have /storage and /storage/Movies as entry items
-                                // we would choose to highlight /storage/Movies in drawer adapter
-                                k = i;
-
-                                entryItemPathOld = entryItemPath;
-                            }
-                        }
-                    }
-                    i++;
-                }
-                return k;
-            }
-
-            @Override
-            public void onPostExecute(Integer integers) {
-                if (adapter != null)
-                    adapter.toggleChecked(integers);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-
-    }
-
+    
     public void refreshDrawer() {
         new AsyncTask<Void, Void, ArrayList<Item>>() {
             @Override
             protected ArrayList<Item> doInBackground(Void... params) {
-                List<String> val = dataUtils.getStorages();
-                if (val == null)
-                    val = getStorageDirectories();
-                final ArrayList<Item> items = new ArrayList<>();
+
+                ArrayList<Item> sectionItems = new ArrayList<>();
+                List<String> storageDirectories = getStorageDirectories();
+                ArrayList<String[]> books = new ArrayList<>();
+                ArrayList<String[]> servers = new ArrayList<>();
                 storage_count = 0;
-                for (String file : val) {
+                for (String file : storageDirectories) {
                     File f = new File(file);
                     String name;
                     Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
@@ -1562,17 +1454,24 @@ public class MainActivity extends BaseActivity implements
                     } else name = f.getName();
                     if (!f.isDirectory() || f.canExecute()) {
                         storage_count++;
-                        items.add(new EntryItem(name, file, icon1));
+                        sectionItems.add(new EntryItem(name, file, icon1));
                     }
                 }
-                items.add(new SectionItem());
-                ArrayList<String[]> Servers = dataUtils.getServers();
-                if (Servers != null && Servers.size() > 0) {
-                    for (String[] file : Servers) {
-                        items.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_settings_remote_white_48dp)));
+                DataUtils.setStorages(storageDirectories);
+                sectionItems.add(new SectionItem());
+                try {
+                    for (String[] file : grid.readTableSecondary(DataUtils.SMB))
+                        servers.add(file);
+                    DataUtils.setServers(servers);
+                    if (servers.size() > 0) {
+                        Collections.sort(servers, new BookSorter());
+                        for (String[] file : servers)
+                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
+                                    R.drawable.ic_settings_remote_white_48dp)));
+                        sectionItems.add(new SectionItem());
                     }
-
-                    items.add(new SectionItem());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
@@ -1585,7 +1484,7 @@ public class MainActivity extends BaseActivity implements
 
                             try {
 
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
@@ -1596,7 +1495,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
@@ -1609,7 +1508,7 @@ public class MainActivity extends BaseActivity implements
 
                             try {
 
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
@@ -1620,7 +1519,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
@@ -1632,7 +1531,7 @@ public class MainActivity extends BaseActivity implements
                         } else if (cloudStorage instanceof OneDrive) {
 
                             try {
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
@@ -1643,7 +1542,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
@@ -1655,7 +1554,7 @@ public class MainActivity extends BaseActivity implements
                         } else if (cloudStorage instanceof GoogleDrive) {
 
                             try {
-                                items.add(new EntryItem(cloudStorage.getUserName(),
+                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
@@ -1666,7 +1565,7 @@ public class MainActivity extends BaseActivity implements
                             } catch (Exception e) {
                                 e.printStackTrace();
 
-                                items.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
@@ -1680,11 +1579,69 @@ public class MainActivity extends BaseActivity implements
                     Collections.sort(accountAuthenticationList, new BookSorter());
 
                     if (accountAuthenticationList.size() != 0)
-                        items.add(new SectionItem());
+                        sectionItems.add(new SectionItem());
                 }
 
-                loadBooksAndMarkers(items);
-                dataUtils.setList(items);
+                if(!sharedPref.contains(FoldersPref.KEY)) {
+                    for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+                        books.add(file);
+                    }
+                } else {
+                    ArrayList<FoldersPref.Shortcut> booksPref =
+                            FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
+                                    FoldersPref.KEY, new ArrayList<String>()));
+
+                    for (FoldersPref.Shortcut t : booksPref) {
+                        if(t.enabled) {
+                            books.add(new String[] {t.name, t.directory});
+                        }
+                    }
+                }
+                dataUtils.setBooks(books);
+               if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+                    if (books.size() > 0) {
+                        if (!sharedPref.contains(FoldersPref.KEY)) {
+                            Collections.sort(books, new BookSorter());
+                        }
+
+                        for (String[] file : books) {
+                            sectionItems.add(new EntryItem(file[0], file[1],
+                                    ContextCompat.getDrawable(this, R.drawable.folder_fab)));
+                        }
+                        sectionItems.add(new SectionItem());
+                    }
+                }
+
+                Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
+                        QuickAccessPref.DEFAULT);
+
+                if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+                    if (quickAccessPref[0])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                                ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+                    if (quickAccessPref[1])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                                ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
+                    if (quickAccessPref[2])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                                ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+                    if (quickAccessPref[3])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                                ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+                    if (quickAccessPref[4])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                                ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+                    if (quickAccessPref[5])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                                ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+                    if (quickAccessPref[6])
+                        sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+                } else {
+                    sectionItems.remove(items.size() - 1); //Deletes last divider
+                }
+                
+                dataUtils.setList(sectionItems);
                 return items;
             }
 
@@ -1695,51 +1652,6 @@ public class MainActivity extends BaseActivity implements
                 mDrawerList.setAdapter(adapter);
             }
         }.execute();
-    }
-    private void loadBooksAndMarkers(ArrayList<Item> items) {
-        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-            ArrayList<String[]> books = dataUtils.getBooks();
-            if (books.size() > 0) {
-                if (!sharedPref.contains(FoldersPref.KEY)) {
-                    Collections.sort(books, new BookSorter());
-                }
-
-                for (String[] file : books) {
-                    items.add(new EntryItem(file[0], file[1],
-                            ContextCompat.getDrawable(this, R.drawable.folder_fab)));
-                }
-                items.add(new SectionItem());
-            }
-        }
-
-        Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
-                QuickAccessPref.DEFAULT);
-
-        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
-            if (quickAccessPref[0])
-                items.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
-            if (quickAccessPref[1])
-                items.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
-            if (quickAccessPref[2])
-                items.add(new EntryItem(getResources().getString(R.string.images), "0",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
-            if (quickAccessPref[3])
-                items.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
-            if (quickAccessPref[4])
-                items.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
-            if (quickAccessPref[5])
-                items.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
-            if (quickAccessPref[6])
-                items.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
-        } else {
-            items.remove(items.size() - 1); //Deletes last divider
-        }
     }
 
     @Override
@@ -1901,10 +1813,11 @@ public class MainActivity extends BaseActivity implements
 
             // After confirmation, update stored value of folder.
             // Persist access permissions.
-            final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
             switch (operation) {
                 case DataUtils.DELETE://deletion
                     new DeleteTask(null, mainActivity).execute((oparrayList));
@@ -2408,6 +2321,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case CUSTOM:
                 newPath = mainActivityHelper.getIntegralNames(news);
+                break;
             case DROPBOX:
             case BOX:
             case ONEDRIVE:
@@ -2835,7 +2749,7 @@ public class MainActivity extends BaseActivity implements
 
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                updateDrawer();
+                refreshDrawer();
                 TabFragment tabFragment = getFragment();
                 boolean b = sharedPref.getBoolean("needtosethome", true);
                 //reset home and current paths according to new storages
@@ -2999,7 +2913,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.LIST_ELEMENTS, false, mainFragment.CURRENT_PATH,
+        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.CURRENT_PATH,
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }

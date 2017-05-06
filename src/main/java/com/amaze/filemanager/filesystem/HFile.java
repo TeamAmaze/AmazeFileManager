@@ -10,12 +10,16 @@ import android.util.Log;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -935,4 +939,36 @@ public class HFile {
         return !exists();
     }
 
+    /**
+     * Generates a {@link LayoutElement} adapted compatible element.
+     * Currently supports only local filesystem
+     * @param mainFragment
+     * @param utilitiesProvider
+     * @return
+     */
+    public LayoutElement generateLayoutElement(MainFragment mainFragment, UtilitiesProviderInterface utilitiesProvider) {
+        switch (mode) {
+            case FILE:
+            case ROOT:
+                File file = new File(path);
+                LayoutElement layoutElement;
+                if (isDirectory()) {
+
+                    layoutElement = utilitiesProvider.getFutils()
+                            .newElement(mainFragment.folder,
+                                    path, RootHelper.parseFilePermission(file),
+                                    "", folderSize() + "", 0, true, false,
+                                    file.lastModified() + "");
+                } else {
+                    layoutElement = utilitiesProvider.getFutils().newElement(Icons.loadMimeIcon(
+                            file.getPath(), !mainFragment.IS_LIST, mainFragment.res),
+                            file.getPath(), RootHelper.parseFilePermission(file),
+                            file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");
+                }
+                layoutElement.setMode(mode);
+                return layoutElement;
+            default:
+                return null;
+        }
+    }
 }

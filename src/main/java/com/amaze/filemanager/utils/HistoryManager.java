@@ -171,7 +171,7 @@ public class HistoryManager {
         }
         return false;
     }
-    public ArrayList<String[]> readTableSecondary(String table) {
+    public synchronized ArrayList<String[]> readTableSecondary(String table) {
         Cursor c = db.rawQuery("SELECT * FROM " + table, null);
         c.moveToLast();
         ArrayList<String[]> paths = new ArrayList<>();

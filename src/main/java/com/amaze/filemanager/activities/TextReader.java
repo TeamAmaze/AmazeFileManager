@@ -28,6 +28,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -95,6 +96,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
+    private Typeface mInputTypefaceDefault, mInputTypefaceMono;
     private android.support.v7.widget.Toolbar toolbar;
     //ArrayList<StringBuilder> texts;
     //static final int maxlength = 200;
@@ -122,6 +124,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     private static final String KEY_MODIFIED_TEXT = "modified";
     private static final String KEY_INDEX = "index";
     private static final String KEY_ORIGINAL_TEXT = "original";
+    private static final String KEY_MONOFONT = "monofont";
 
     private RelativeLayout searchViewLayout;
 
@@ -249,12 +252,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         }
 
+        mInputTypefaceDefault = mInput.getTypeface();
+        mInputTypefaceMono = Typeface.MONOSPACE;
+
         if (savedInstanceState != null) {
 
             mOriginal = savedInstanceState.getString(KEY_ORIGINAL_TEXT);
             int index = savedInstanceState.getInt(KEY_INDEX);
             mInput.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
             mInput.setScrollY(index);
+            if (savedInstanceState.getBoolean(KEY_MONOFONT)) mInput.setTypeface(mInputTypefaceMono);
         } else {
 
             load(uri, mFile);
@@ -267,6 +274,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
         outState.putInt(KEY_INDEX, mInput.getScrollY());
         outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
+        outState.putBoolean(KEY_MONOFONT, mInput.getTypeface().equals(mInputTypefaceMono));
     }
 
     private void checkUnsavedChanges() {
@@ -514,13 +522,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
-        menu.findItem(R.id.find).setVisible(true);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.save).setVisible(mModified);
+        menu.findItem(R.id.monofont).setChecked(mInput.getTypeface().equals(mInputTypefaceMono));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -549,6 +557,10 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             case R.id.find:
                 if (searchViewLayout.isShown()) hideSearchView();
                 else revealSearchView();
+                break;
+            case R.id.monofont:
+                item.setChecked(!item.isChecked());
+                mInput.setTypeface(item.isChecked() ? mInputTypefaceMono : mInputTypefaceDefault);
                 break;
             default:
                 return false;
