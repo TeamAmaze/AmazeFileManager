@@ -1,6 +1,5 @@
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -214,7 +213,7 @@ public class DataUtils {
             this.servers = servers;
     }
 
-    public void synchronized setBooks(ArrayList<String[]> books) {
+    public synchronized void setBooks(ArrayList<String[]> books) {
         if (books != null)
             this.books = books;
     }
@@ -299,7 +298,7 @@ public class DataUtils {
         return storages;
     }
 
-    public void synchronized setStorages(ArrayList<String> storages) {
+    public synchronized void setStorages(ArrayList<String> storages) {
         this.storages = storages;
     }
 

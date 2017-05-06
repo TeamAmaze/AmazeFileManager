@@ -747,6 +747,47 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    public void updateDrawer(String path) {
+        new AsyncTask<String, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(String... strings) {
+                String path = strings[0];
+                int k = 0, i = 0;
+                String entryItemPathOld = "";
+                for (Item item : dataUtils.getList()) {
+                    if (!item.isSection()) {
+
+                        String entryItemPath = ((EntryItem) item).getPath();
+
+                        if (path.contains(((EntryItem) item).getPath())) {
+
+                            if (entryItemPath.length() > entryItemPathOld.length()) {
+
+
+                                // we don't need to match with the quick search drawer items
+                                // whether current entry item path is bigger than the older one found,
+                                // for eg. when we have /storage and /storage/Movies as entry items
+                                // we would choose to highlight /storage/Movies in drawer adapter
+                                k = i;
+
+                                entryItemPathOld = entryItemPath;
+                            }
+                        }
+                    }
+                    i++;
+                }
+                return k;
+            }
+
+            @Override
+            public void onPostExecute(Integer integers) {
+                if (adapter != null)
+                    adapter.toggleChecked(integers);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
+
+    }
+
     public void goToMain(String path) {
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //title.setText(R.string.app_name);
@@ -1431,9 +1472,8 @@ public class MainActivity extends BaseActivity implements
         new AsyncTask<Void, Void, ArrayList<Item>>() {
             @Override
             protected ArrayList<Item> doInBackground(Void... params) {
-
                 ArrayList<Item> sectionItems = new ArrayList<>();
-                List<String> storageDirectories = getStorageDirectories();
+                ArrayList<String> storageDirectories = getStorageDirectories();
                 ArrayList<String[]> books = new ArrayList<>();
                 ArrayList<String[]> servers = new ArrayList<>();
                 storage_count = 0;
@@ -1457,12 +1497,12 @@ public class MainActivity extends BaseActivity implements
                         sectionItems.add(new EntryItem(name, file, icon1));
                     }
                 }
-                DataUtils.setStorages(storageDirectories);
+                dataUtils.setStorages(storageDirectories);
                 sectionItems.add(new SectionItem());
                 try {
                     for (String[] file : grid.readTableSecondary(DataUtils.SMB))
                         servers.add(file);
-                    DataUtils.setServers(servers);
+                    dataUtils.setServers(servers);
                     if (servers.size() > 0) {
                         Collections.sort(servers, new BookSorter());
                         for (String[] file : servers)
@@ -1488,7 +1528,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                 });
@@ -1499,7 +1539,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                 });
@@ -1512,7 +1552,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                 });
@@ -1523,7 +1563,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                 });
@@ -1535,7 +1575,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                 });
@@ -1546,7 +1586,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                 });
@@ -1558,7 +1598,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                 });
@@ -1569,7 +1609,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[] {
+                                accountAuthenticationList.add(new String[]{
                                         CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                 });
@@ -1582,7 +1622,7 @@ public class MainActivity extends BaseActivity implements
                         sectionItems.add(new SectionItem());
                 }
 
-                if(!sharedPref.contains(FoldersPref.KEY)) {
+                if (!sharedPref.contains(FoldersPref.KEY)) {
                     for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
                         books.add(file);
                     }
@@ -1592,13 +1632,13 @@ public class MainActivity extends BaseActivity implements
                                     FoldersPref.KEY, new ArrayList<String>()));
 
                     for (FoldersPref.Shortcut t : booksPref) {
-                        if(t.enabled) {
-                            books.add(new String[] {t.name, t.directory});
+                        if (t.enabled) {
+                            books.add(new String[]{t.name, t.directory});
                         }
                     }
                 }
                 dataUtils.setBooks(books);
-               if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+                if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
                     if (books.size() > 0) {
                         if (!sharedPref.contains(FoldersPref.KEY)) {
                             Collections.sort(books, new BookSorter());
@@ -1606,7 +1646,7 @@ public class MainActivity extends BaseActivity implements
 
                         for (String[] file : books) {
                             sectionItems.add(new EntryItem(file[0], file[1],
-                                    ContextCompat.getDrawable(this, R.drawable.folder_fab)));
+                                    ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
                         }
                         sectionItems.add(new SectionItem());
                     }
@@ -1618,31 +1658,31 @@ public class MainActivity extends BaseActivity implements
                 if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
                     if (quickAccessPref[0])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                                ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
                     if (quickAccessPref[1])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                                ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
                     if (quickAccessPref[2])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                                ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
                     if (quickAccessPref[3])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                                ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
                     if (quickAccessPref[4])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                                ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
                     if (quickAccessPref[5])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                                ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
                     if (quickAccessPref[6])
                         sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
                 } else {
-                    sectionItems.remove(items.size() - 1); //Deletes last divider
+                    sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
                 }
-                
+
                 dataUtils.setList(sectionItems);
-                return items;
+                return sectionItems;
             }
 
             @Override
