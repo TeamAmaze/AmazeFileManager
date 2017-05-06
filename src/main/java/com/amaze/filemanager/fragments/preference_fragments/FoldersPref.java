@@ -1,5 +1,6 @@
 package com.amaze.filemanager.fragments.preference_fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -12,10 +13,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference;
 import com.amaze.filemanager.utils.BookSorter;
@@ -41,22 +44,30 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     public static final String KEY = "name path list";
     public static final String KEY_SHORTCUT_PREF = "add_shortcut";
 
-    private SharedPreferences preferences;
+    private SharedPreferences sharedPrefs;
     private PreferencesActivity activity;
     private Map<Preference, Integer> position = new HashMap<>();
-    private ArrayList<Trio> currentValue;
+    private ArrayList<Shortcut> currentValue;
     private Preference.OnPreferenceClickListener onPreferenceClickListener;
+    private String numbPreferenceListener = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (PreferencesActivity) getActivity();
 
+        //If dataUtils is null then there's no simple way to restore it,
+        //except letting MainActivity deal with it
+        if(dataUtils == null) {
+            Intent i = new Intent(getActivity(), MainActivity.class);
+            startActivity(i);
+        }
+
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.folders_prefs);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        currentValue = castStringListToTrioList(TinyDB.getList(preferences, String.class, KEY,
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        currentValue = castStringListToTrioList(TinyDB.getList(sharedPrefs, String.class, KEY,
                 getValue()));
 
         onPreferenceClickListener = this;
@@ -65,9 +76,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         for (int i = 0; i < currentValue.size(); i++) {
             NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
-            p.setTitle(currentValue.get(i).first);
-            p.setSummary(currentValue.get(i).second);
-            p.setChecked(currentValue.get(i).third);
+            p.setTitle(currentValue.get(i).name);
+            p.setSummary(currentValue.get(i).directory);
+            p.setChecked(currentValue.get(i).enabled);
             p.setOnPreferenceClickListener(onPreferenceClickListener);
 
             position.put(p, i);
@@ -77,7 +88,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
-        if (preferences != null) activity.setChanged();
+        if (sharedPrefs != null) activity.setChanged();
 
         if (preference instanceof NamePathSwitchPreference) {
             NamePathSwitchPreference p = (NamePathSwitchPreference) preference;
@@ -86,11 +97,50 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     loadEditDialog((NamePathSwitchPreference) preference);
                     break;
                 case NamePathSwitchPreference.SWITCH:
-                    Trio trio = new Trio(p.getTitle().toString(),  p.getSummary().toString(),
-                            p.isChecked());
+                    if(numbPreferenceListener != null
+                            && numbPreferenceListener.equals(p.toString())) {
+                        numbPreferenceListener = null;
+                        return false;
+                    }
 
-                    currentValue.set(position.get(p), trio);
-                    TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
+                    Shortcut currentShortcut = currentValue.get(position.get(p));
+
+                    if(currentShortcut.autodisabled) {
+                        if(isRoot(currentShortcut.directory)) {
+                            boolean showIfRoot = sharedPrefs.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false);
+
+                            if(!showIfRoot) {
+                                Toast.makeText(getActivity(), R.string.rootfailure, Toast.LENGTH_SHORT).show();
+                                numbPreferenceListener = p.toString();
+                                p.setChecked(false);
+                            } else {
+                                currentShortcut = new Shortcut(p.getTitle().toString(),
+                                        p.getSummary().toString(), Shortcut.FALSE);
+                            }
+                        } else if(isHidden(currentShortcut.directory)) {
+                            boolean showIfHidden = sharedPrefs.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false);
+
+                            if(!showIfHidden) {
+                                Toast.makeText(getActivity(), R.string.hiddenfailure, Toast.LENGTH_SHORT).show();
+                                numbPreferenceListener = p.toString();
+                                p.setChecked(false);
+                            } else {
+                                currentShortcut = new Shortcut(p.getTitle().toString(),
+                                        p.getSummary().toString(), Shortcut.FALSE);
+                            }
+                        } else {
+                            currentShortcut = new Shortcut(p.getTitle().toString(),
+                                    p.getSummary().toString(), Shortcut.FALSE);
+                        }
+                    }
+
+                    if(!currentShortcut.autodisabled) {
+                        Shortcut shortcut = new Shortcut(p.getTitle().toString(), p.getSummary().toString(),
+                                p.isChecked() ? Shortcut.TRUE : Shortcut.FALSE);
+
+                        currentValue.set(position.get(p), shortcut);
+                        TinyDB.putList(sharedPrefs, KEY, castTrioListToStringList(currentValue));
+                    }
                     break;
                 case NamePathSwitchPreference.DELETE:
                     loadDeleteDialog(preference);
@@ -106,20 +156,43 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         return false;
     }
 
-    public static ArrayList<Trio> castStringListToTrioList(ArrayList<String> arrayList) {
-        ArrayList<Trio> newList = new ArrayList<>(arrayList.size());
+    public static ArrayList<Shortcut> castStringListToTrioList(ArrayList<String> arrayList) {
+        ArrayList<Shortcut> newList = new ArrayList<>(arrayList.size());
         for(String s : arrayList) {
-            newList.add(new Trio(s));
+            newList.add(new Shortcut(s));
         }
         return newList;
     }
 
-    protected ArrayList<String> castTrioListToStringList(ArrayList<Trio> arrayList) {
+    protected static ArrayList<String> castTrioListToStringList(ArrayList<Shortcut> arrayList) {
         ArrayList<String> newList = new ArrayList<>(arrayList.size());
-        for(Trio s : arrayList) {
+        for(Shortcut s : arrayList) {
             newList.add(s.toRestorableString());
         }
         return newList;
+    }
+
+    public static boolean canShortcutTo(String dir, SharedPreferences pref) {
+        File f = new File(dir);
+        boolean showIfHidden = pref.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
+                isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
+                showIfRoot = pref.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false);
+
+        return f.exists() && f.isDirectory()
+                && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))
+                && (!isRoot(dir) || showIfRoot);
+
+        // TODO: 2/5/2017 use another system that doesn't create new object
+    }
+
+    private static boolean isRoot(String dir) {// TODO: 5/5/2017 hardcoding root might lead to problems down the line
+        return !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");
+    }
+
+    private static boolean isHidden(String dir) {
+        // TODO: 2/5/2017 use another system that doesn't create new object
+        File f = new File(dir);
+        return f.isHidden();
     }
 
     private ArrayList<String> getValue() {
@@ -130,7 +203,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             Collections.sort(books, new BookSorter());
 
             for (String[] file : books) {
-                dflt.add(new Trio(file[0], file[1], true).toRestorableString());
+                dflt.add(new Shortcut(file[0], file[1], Shortcut.TRUE).toRestorableString());
             }
         }
 
@@ -173,11 +246,11 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         position.put(p, currentValue.size());
                         getPreferenceScreen().addPreference(p);
 
-                        Trio trio = new Trio(editText1.getText().toString(),
-                                editText2.getText().toString(), true);
+                        Shortcut shortcut = new Shortcut(editText1.getText().toString(),
+                                editText2.getText().toString(), Shortcut.TRUE);
 
-                        currentValue.add(trio);
-                        TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
+                        currentValue.add(shortcut);
+                        TinyDB.putList(sharedPrefs, KEY, castTrioListToStringList(currentValue));
                         dialog.dismiss();
                     }
                 });
@@ -209,7 +282,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setEnabled(canShortcutTo(editText2.getText().toString()));
+                .setEnabled(canShortcutTo(editText2.getText().toString(), sharedPrefs));
 
         disableButtonIfNotPath(editText2, dialog);
 
@@ -220,14 +293,14 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         p.setTitle(editText1.getText());
                         p.setSummary(editText2.getText());
 
-                        Trio trio = new Trio(editText1.getText().toString(),
+                        Shortcut shortcut = new Shortcut(editText1.getText().toString(),
                                 editText2.getText().toString(),
-                                p.isChecked());
+                                p.isChecked()?Shortcut.TRUE:Shortcut.FALSE);
 
-                        dataUtils.getBooks().set(position.get(p), new String[] {trio.first, trio.second});
+                        dataUtils.getBooks().set(position.get(p), new String[] {shortcut.name, shortcut.directory});
 
-                        currentValue.set(position.get(p), trio);
-                        TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
+                        currentValue.set(position.get(p), shortcut);
+                        TinyDB.putList(sharedPrefs, KEY, castTrioListToStringList(currentValue));
                         dialog.dismiss();
                     }
                 });
@@ -253,7 +326,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                     public void onClick(View view) {
                         getPreferenceScreen().removePreference(p);
                         currentValue.remove((int) position.get(p));
-                        TinyDB.putList(preferences, KEY, castTrioListToStringList(currentValue));
+                        TinyDB.putList(sharedPrefs, KEY, castTrioListToStringList(currentValue));
                         dialog.dismiss();
                     }
                 });
@@ -266,60 +339,54 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(canShortcutTo(s.toString()));
+                        .setEnabled(canShortcutTo(s.toString(), sharedPrefs));
             }
         });
-    }
-
-    private boolean canShortcutTo(String dir) {
-        File f = new File(dir);
-        boolean showIfHidden = preferences.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
-                isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
-                showIfRoot = preferences.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false),
-                isRoot = !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");// TODO: 5/5/2017 hardcoding root might lead to problems down the line
-
-        return f.exists() && f.isDirectory()
-                && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))
-                && (!isRoot || showIfRoot);
-
-        // TODO: 2/5/2017 use another system that doesn't create new object
     }
 
     /**
      * Contains 2 Strings and a boolean
      */
-    public static class Trio {
+    public static class Shortcut {
         /**
          * For explanation check TinyDB.DIVIDER
          */
         static final String DIVIDER = "‚‗‗‚";
 
-        static final String TRUE = "T", FALSE = "F";
+        /**
+         * AUTOFALSE is set when a value has been changed to false not by the user but by changing
+         * a setting that doesn't allow access to the folder anymore. MUST NOT let user change from
+         * AUTOFALSE to TRUE or FALSE.
+         */
+        public static final String TRUE = "T", FALSE = "F", AUTOFALSE = "AF";
 
-        public final String first;
-        public final String second;
-        public final boolean third;
+        public final String name;
+        public final String directory;
+        public final boolean enabled;
+        public final boolean autodisabled;
 
-        Trio(String first, String second, boolean third) {
-            this.first = first;
-            this.second = second;
-            this.third = third;
+        Shortcut(String name, String directory, String enabled) {
+            this.name = name;
+            this.directory = directory;
+            this.enabled = enabled.equals(TRUE);
+            this.autodisabled = enabled.equals(AUTOFALSE);
         }
 
-        Trio(String divided) {
+        Shortcut(String divided) {
             String[] div = TextUtils.split(divided, DIVIDER);
 
-            this.first = div[0];
-            this.second = div[1];
-            this.third = div[2].equals(TRUE);
+            this.name = div[0];
+            this.directory = div[1];
+            this.enabled = div[2].equals(TRUE);
+            this.autodisabled = div[2].equals(AUTOFALSE);
         }
 
         String toRestorableString() {
-            return first + DIVIDER + second + DIVIDER + (third? TRUE:FALSE);
+            return name + DIVIDER + directory + DIVIDER + (enabled ? TRUE:(autodisabled? AUTOFALSE:FALSE));
         }
 
         public String toString() {
-            return "(" + first + ", " + second + ", " + third + ")";
+            return "(" + name + ", " + directory + ", " + enabled + (autodisabled? "[AUTODISABLED]":"") + ")";
         }
     }
 

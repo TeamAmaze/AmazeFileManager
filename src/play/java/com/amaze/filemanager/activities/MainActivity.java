@@ -171,11 +171,9 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -1479,13 +1477,13 @@ public class MainActivity extends BaseActivity implements
                 books.add(file);
             }
         } else {
-            ArrayList<FoldersPref.Trio> booksPref =
+            ArrayList<FoldersPref.Shortcut> booksPref =
                     FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
                             FoldersPref.KEY, new ArrayList<String>()));
 
-            for (FoldersPref.Trio t : booksPref) {
-                if(t.third)
-                    books.add(new String[] {t.first, t.second});
+            for (FoldersPref.Shortcut t : booksPref) {
+                if(t.enabled)
+                    books.add(new String[] {t.name, t.directory});
             }
         }
         dataUtils.setBooks(books);

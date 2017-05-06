@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -43,27 +44,34 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.util.ArrayList;
+
 import static com.amaze.filemanager.R.string.feedback;
+import static com.amaze.filemanager.fragments.preference_fragments.FoldersPref.castStringListToTrioList;
 
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     private static final String PREFERENCE_KEY_ABOUT = "about";
     private static final String[] PREFERENCE_KEYS =
             {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
-                    /*"rootmode",*/"feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
+                    "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
                     "sidebar_folders", "sidebar_quickaccess"};
 
 
     public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
     public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "show_sidebar_quickaccesses";
+
+    public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
+
+    public static final String PREFERENCE_ROOTMODE = "rootmode";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -220,9 +228,14 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
                         !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
                 return true;
-            /*
-            case "rootmode":
-                              boolean b = sharedPref.getBoolean("rootmode", false);
+            case PREFERENCE_SHOW_HIDDENFILES:
+                setEnabledShortcuts();
+                return false;
+            case PREFERENCE_ROOTMODE:
+                setEnabledShortcuts();
+
+                /*
+                boolean b = sharedPref.getBoolean("rootmode", false);
                 if (b) {
                     if (MainActivity.shellInteractive.isRunning()) {
                         rootmode.setChecked(true);
@@ -235,8 +248,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     rootmode.setChecked(false);
 
                 }
+                */
                 return false;
-            */
             case "feedback":
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
@@ -285,4 +298,32 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
         if(!a)gplus.setChecked(false);
     }
+
+    /**
+     * Dynamically enables autodisabled shortcuts, and disables inaccessible shortcuts when user
+     * changes root access and hidden files visibility preferences.
+     */
+    private void setEnabledShortcuts() {
+        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(
+                TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null));
+
+        if(currentValue == null) return;
+
+        for(int i = 0; i < currentValue.size(); i++) {
+            if(FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
+                    && currentValue.get(i).autodisabled) {
+                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
+                        currentValue.get(i).directory, FoldersPref.Shortcut.TRUE);
+                currentValue.set(i, shortcut);
+            } else if (!FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
+                    && currentValue.get(i).enabled) {
+                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
+                        currentValue.get(i).directory, FoldersPref.Shortcut.AUTOFALSE);
+                currentValue.set(i, shortcut);
+            }
+        }
+
+        TinyDB.putList(sharedPref, FoldersPref.KEY, FoldersPref.castTrioListToStringList(currentValue));
+    }
+
 }

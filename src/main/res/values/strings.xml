@@ -126,6 +126,7 @@
     <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
     <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
+    <string name="hiddenfailure">Can\'t access hidden files</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome">Set As Home</string>
