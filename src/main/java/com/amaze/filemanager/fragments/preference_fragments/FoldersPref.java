@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.ui.views.preference.NamePathSwitchPreference;
+import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
@@ -72,7 +72,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         findPreference(KEY_SHORTCUT_PREF).setOnPreferenceClickListener(this);
 
         for (int i = 0; i < currentValue.size(); i++) {
-            NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
+            PathSwitchPreference p = new PathSwitchPreference(getActivity());
             p.setTitle(currentValue.get(i).name);
             p.setSummary(currentValue.get(i).directory);
             p.setChecked(currentValue.get(i).enabled);
@@ -87,13 +87,13 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     public boolean onPreferenceClick(final Preference preference) {
         if (sharedPrefs != null) activity.setChanged();
 
-        if (preference instanceof NamePathSwitchPreference) {
-            NamePathSwitchPreference p = (NamePathSwitchPreference) preference;
+        if (preference instanceof PathSwitchPreference) {
+            PathSwitchPreference p = (PathSwitchPreference) preference;
             switch (p.getLastItemClicked()) {
-                case NamePathSwitchPreference.EDIT:
-                    loadEditDialog((NamePathSwitchPreference) preference);
+                case PathSwitchPreference.EDIT:
+                    loadEditDialog((PathSwitchPreference) preference);
                     break;
-                case NamePathSwitchPreference.SWITCH:
+                case PathSwitchPreference.SWITCH:
                     if(numbPreferenceListener != null
                             && numbPreferenceListener.equals(p.toString())) {
                         numbPreferenceListener = null;
@@ -139,7 +139,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         TinyDB.putList(sharedPrefs, KEY, castTrioListToStringList(currentValue));
                     }
                     break;
-                case NamePathSwitchPreference.DELETE:
+                case PathSwitchPreference.DELETE:
                     loadDeleteDialog(preference);
                     break;
             }
@@ -229,7 +229,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
-        
+
         disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
 
@@ -237,7 +237,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
+                        PathSwitchPreference p = new PathSwitchPreference(getActivity());
                         p.setTitle(editText1.getText());
                         p.setSummary(editText2.getText());
                         p.setOnPreferenceClickListener(FoldersPref.this);
@@ -257,7 +257,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         dialog.show();
     }
 
-    private void loadEditDialog(final NamePathSwitchPreference p) {
+    private void loadEditDialog(final PathSwitchPreference p) {
         int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         LayoutInflater li = LayoutInflater.from(activity);

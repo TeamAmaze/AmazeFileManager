@@ -15,7 +15,7 @@ import com.amaze.filemanager.R;
  *         on 17/4/2017, at 22:22.
  */
 
-public class NamePathSwitchPreference extends Preference {
+public class PathSwitchPreference extends Preference {
 
     public static final int EDIT = 0, SWITCH = 1, DELETE = 2;
 
@@ -24,15 +24,15 @@ public class NamePathSwitchPreference extends Preference {
     private Boolean shouldEnableSwitch = null;
     private View.OnClickListener switchListener;
 
-    public NamePathSwitchPreference(Context context) {
+    public PathSwitchPreference(Context context) {
         super(context);
     }
 
-    public NamePathSwitchPreference(Context context, AttributeSet attrs) {
+    public PathSwitchPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NamePathSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
+    public PathSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -72,7 +72,7 @@ public class NamePathSwitchPreference extends Preference {
     }
 
     private View.OnClickListener setListener(final View v, @IdRes int id, final int elem) {
-        final NamePathSwitchPreference t = this;
+        final PathSwitchPreference t = this;
 
         View.OnClickListener l = new View.OnClickListener() {
             @Override

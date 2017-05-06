@@ -196,7 +196,7 @@ public class MainActivity extends BaseActivity implements
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
 
-    /*Global variable for transpassing data. MUST be set null if cleared*/
+    /*Global variable for storing data. MUST be set null if cleared*/
     public static DataUtils dataUtils = null;
 
     public DrawerLayout mDrawerLayout;
@@ -327,9 +327,10 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initialisePreferences();
         initializeInteractiveShell();
+
         dataUtils = new DataUtils();
         dataUtils.registerOnDataChangedListener(this);
-        dataUtils.registerOnDataChangedListener(this);
+
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
@@ -342,6 +343,7 @@ public class MainActivity extends BaseActivity implements
         history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
         history.initializeTable(DataUtils.HIDDEN, 0);
+
         grid = new HistoryManager(this, "listgridmodes");
         grid.initializeTable(DataUtils.LIST, 0);
         grid.initializeTable(DataUtils.GRID, 0);
@@ -355,6 +357,7 @@ public class MainActivity extends BaseActivity implements
         dataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         dataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
         dataUtils.setListfiles(grid.readTable(DataUtils.LIST));
+
         // initialize g+ api client as per preferences
         if (sharedPref.getBoolean("plus_pic", false)) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -1387,7 +1390,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        // TODO: 6/5/2017 Android may choose to not call this method before destruction
+        // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
         closeInteractiveShell();
 
         if (grid != null)
@@ -1528,7 +1532,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                 });
@@ -1539,7 +1543,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         CloudHandler.CLOUD_NAME_DROPBOX,
                                         CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                                 });
@@ -1552,7 +1556,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                 });
@@ -1563,7 +1567,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         CloudHandler.CLOUD_NAME_BOX,
                                         CloudHandler.CLOUD_PREFIX_BOX + "/",
                                 });
@@ -1575,7 +1579,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                 });
@@ -1586,7 +1590,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         CloudHandler.CLOUD_NAME_ONE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                                 });
@@ -1598,7 +1602,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         cloudStorage.getUserName(),
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                 });
@@ -1609,7 +1613,7 @@ public class MainActivity extends BaseActivity implements
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                         ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
 
-                                accountAuthenticationList.add(new String[]{
+                                accountAuthenticationList.add(new String[] {
                                         CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                                         CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                                 });
