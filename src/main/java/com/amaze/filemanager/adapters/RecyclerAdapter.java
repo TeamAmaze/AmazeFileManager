@@ -857,9 +857,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
                 if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
-                if (x.endsWith(CryptUtil.CRYPT_EXTENSION) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                if (x.endsWith(CryptUtil.CRYPT_EXTENSION) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
                 popupMenu.show();
             }

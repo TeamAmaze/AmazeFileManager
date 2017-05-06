@@ -43,6 +43,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
@@ -201,7 +202,7 @@ public class CryptUtil {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesDecrypt(inputStream, outputStream);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 rsaDecrypt(context, inputStream, outputStream);
             }
         }
@@ -264,7 +265,7 @@ public class CryptUtil {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesEncrypt(inputStream, outputStream);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 rsaEncrypt(context, inputStream, outputStream);
             }
         }
@@ -463,7 +464,7 @@ public class CryptUtil {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void rsaEncrypt(Context context, BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
@@ -473,7 +474,8 @@ public class CryptUtil {
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
 
-        cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+        cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int count;
@@ -494,7 +496,7 @@ public class CryptUtil {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void rsaDecrypt(Context context, BufferedInputStream inputStream,
                                    BufferedOutputStream outputStream) throws NoSuchPaddingException,
             NoSuchAlgorithmException, NoSuchProviderException, CertificateException,
@@ -504,7 +506,8 @@ public class CryptUtil {
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
 
-        cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey());
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
         CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
 
         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -525,7 +528,7 @@ public class CryptUtil {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String rsaEncryptPassword(Context context, String password) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
@@ -535,12 +538,13 @@ public class CryptUtil {
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
 
-        cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+        cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
 
         return Base64.encodeToString(cipher.doFinal(password.getBytes()), Base64.DEFAULT);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String rsaDecryptPassword(Context context, String cipherText) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
@@ -549,7 +553,8 @@ public class CryptUtil {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
-        cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey());
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
         byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT));
 
         return decryptedBytes.toString();
@@ -569,7 +574,7 @@ public class CryptUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             return CryptUtil.aesEncryptPassword(plainText);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
             return CryptUtil.rsaEncryptPassword(context, plainText);
         } else return plainText;
@@ -589,7 +594,7 @@ public class CryptUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             return CryptUtil.aesDecryptPassword(cipherText);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
             return CryptUtil.rsaDecryptPassword(context, cipherText);
         } else return cipherText;
@@ -623,7 +628,7 @@ public class CryptUtil {
             cipher = Cipher.getInstance(ALGO_AES);
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             cipher = Cipher.getInstance(ALGO_AES, "BC");
             RSAKeygen keygen = new RSAKeygen(context);
 
@@ -639,7 +644,7 @@ public class CryptUtil {
 
         private Context context;
 
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         RSAKeygen(Context context) {
 
             this.context = context;
@@ -682,7 +687,7 @@ public class CryptUtil {
          * @throws NoSuchProviderException
          * @throws InvalidAlgorithmParameterException
          */
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         private void generateKeyPair(Context context) throws KeyStoreException,
                 CertificateException, NoSuchAlgorithmException, IOException, NoSuchProviderException,
                 InvalidAlgorithmParameterException {
@@ -696,7 +701,7 @@ public class CryptUtil {
                 Calendar end = Calendar.getInstance();
                 end.add(Calendar.YEAR, 30);
 
-                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGO_RSA, KEY_STORE_ANDROID);
+                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", KEY_STORE_ANDROID);
 
                 KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
                         .setAlias(KEY_ALIAS_AMAZE)
@@ -774,7 +779,7 @@ public class CryptUtil {
          * @throws BadPaddingException
          * @throws IllegalBlockSizeException
          */
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         public Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException, IOException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
