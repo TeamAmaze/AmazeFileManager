@@ -48,7 +48,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     private PreferencesActivity activity;
     private Map<Preference, Integer> position = new HashMap<>();
     private ArrayList<Shortcut> currentValue;
-    private Preference.OnPreferenceClickListener onPreferenceClickListener;
     private String numbPreferenceListener = null;
 
     @Override
@@ -70,16 +69,14 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         currentValue = castStringListToTrioList(TinyDB.getList(sharedPrefs, String.class, KEY,
                 getValue()));
 
-        onPreferenceClickListener = this;
-
-        findPreference(KEY_SHORTCUT_PREF).setOnPreferenceClickListener(onPreferenceClickListener);
+        findPreference(KEY_SHORTCUT_PREF).setOnPreferenceClickListener(this);
 
         for (int i = 0; i < currentValue.size(); i++) {
             NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
             p.setTitle(currentValue.get(i).name);
             p.setSummary(currentValue.get(i).directory);
             p.setChecked(currentValue.get(i).enabled);
-            p.setOnPreferenceClickListener(onPreferenceClickListener);
+            p.setOnPreferenceClickListener(this);
 
             position.put(p, i);
             getPreferenceScreen().addPreference(p);
@@ -232,6 +229,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+        
+        disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
@@ -241,7 +240,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         NamePathSwitchPreference p = new NamePathSwitchPreference(getActivity());
                         p.setTitle(editText1.getText());
                         p.setSummary(editText2.getText());
-                        p.setOnPreferenceClickListener(onPreferenceClickListener);
+                        p.setOnPreferenceClickListener(FoldersPref.this);
 
                         position.put(p, currentValue.size());
                         getPreferenceScreen().addPreference(p);
@@ -284,6 +283,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setEnabled(canShortcutTo(editText2.getText().toString(), sharedPrefs));
 
+        disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
@@ -340,6 +340,15 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
                         .setEnabled(canShortcutTo(s.toString(), sharedPrefs));
+            }
+        });
+    }
+
+    private void disableButtonIfTitleEmpty(final EditText title, final MaterialDialog dialog) {
+        title.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(title.length() > 0);
             }
         });
     }
