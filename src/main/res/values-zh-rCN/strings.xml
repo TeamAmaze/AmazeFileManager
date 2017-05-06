@@ -99,7 +99,7 @@
   <string name="no">否</string>
   <string name="confirm">确认</string>
   <string name="deleting">正在删除</string>
-  <string name="questiondelete">您确定要删除这些文件吗？</string>
+  <string name="questiondeletefolders">您确定要删除这些文件吗？</string>
   <string name="questionset">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
   <string name="viewmode">视图模式</string>
   <string name="uimode">界面模式</string>

@@ -98,7 +98,7 @@
   <string name="no">아니오</string>
   <string name="confirm">확인</string>
   <string name="deleting">삭제하는 중입니다</string>
-  <string name="questiondelete">다음의 파일을 정말로 삭제하시겠습니까?</string>
+  <string name="questiondeletefolders">다음의 파일을 정말로 삭제하시겠습니까?</string>
   <string name="viewmode">보기 형식</string>
   <string name="uimode">UI</string>
   <string name="directorysort">디렉토리 정렬</string>

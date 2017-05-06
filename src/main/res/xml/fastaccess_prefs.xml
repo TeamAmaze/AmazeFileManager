@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="fastaccess"
+        android:title="Fast access"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="recent"
+        android:title="Recent"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="image"
+        android:title="Image"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="video"
+        android:title="Movie"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="audio"
+        android:title="Audio"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="documents"
+        android:title="Documents"/>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="apks"
+        android:title="APKs"/>
+</PreferenceScreen>
