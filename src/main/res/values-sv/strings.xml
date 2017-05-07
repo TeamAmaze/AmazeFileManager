@@ -84,7 +84,7 @@
   <string name="no">Nej</string>
   <string name="confirm">Bekräfta</string>
   <string name="deleting">Tar bort</string>
-  <string name="questiondeletefolders">Vill du verkligen ta bort följande filer?</string>
+  <string name="questiondelete">Vill du verkligen ta bort följande filer?</string>
   <string name="viewmode">Visningsläge</string>
   <string name="uimode">UI-läge</string>
   <string name="sortby">Sortera på</string>
