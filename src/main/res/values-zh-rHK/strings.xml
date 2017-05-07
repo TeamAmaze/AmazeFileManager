@@ -46,7 +46,7 @@
   <string name="cancel">取消</string>
   <string name="create">新建</string>
   <string name="success">成功</string>
-  <string name="filenotexists">檔不存在</string>
+  <string name="filenotexists">檔案不存在</string>
   <string name="loading">正在載入&#8230;</string>
   <string name="file_empty">檔案是空的</string>
   <string name="error">錯誤</string>
@@ -75,10 +75,10 @@
   <string name="add">添加</string>
   <string name="tab">標籤</string>
   <string name="file">檔</string>
-  <string name="folder">檔夾</string>
+  <string name="folder">資料夾</string>
   <string name="title_files">檔案</string>
   <string name="title_dirs">目錄</string>
-  <string name="newfolder">新檔夾</string>
+  <string name="newfolder">新資料夾</string>
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓</string>
   <string name="stopping">正在停止</string>
@@ -99,7 +99,7 @@
   <string name="no">否</string>
   <string name="confirm">確認</string>
   <string name="deleting">正在刪除</string>
-  <string name="questiondelete">您確定要刪除以下檔嗎？</string>
+  <string name="questiondelete">確定要刪除以下檔案嗎？</string>
   <string name="questionset">您要將此頁籤的目前路徑設為首頁嗎？</string>
   <string name="viewmode">視圖模式</string>
   <string name="uimode">介面模式</string>
@@ -127,9 +127,9 @@
   <string name="delete">刪除</string>
   <string name="setashome">設為為首頁目錄</string>
   <string name="sethome">設定首頁目錄</string>
-  <string name="foldercolor">檔夾顏色</string>
+  <string name="foldercolor">資料夾顏色</string>
   <string name="imagegallery">圖庫</string>
-  <string name="fileexplorer">檔管理器</string>
+  <string name="fileexplorer">檔案管理器</string>
   <string name="changegallerypath">選擇圖庫目錄</string>
   <string name="usedefaultgallerypath">使用默認圖庫目錄</string>
   <!-- New -->
@@ -161,7 +161,7 @@
   <string name="blue_grey">藍灰</string>
   <string name="supersu">超級授權</string>
   <!--DirectorySortMode-->
-  <string name="foldersOnTop">檔夾顯示在頂部</string>
+  <string name="foldersOnTop">資料夾顯示在頂部</string>
   <string name="filesOnTop">檔夾顯示在底部</string>
   <string name="noneOnTop">檔與檔夾混合顯示</string>
   <!--SortBy-->
@@ -299,7 +299,7 @@
   <string name="image">圖像</string>
   <string name="contributors">捐贈人員</string>
   <string name="savepaths">記住路徑</string>
-  <string name="savepathsummary">當您開啟 Amaze 檔管理器時，每個標籤將會顯示您上次訪問的目錄</string>
+  <string name="savepathsummary">當你開啟 Amaze 檔案管理器時，每個分頁將顯示你上次訪問的目錄</string>
   <string name="select_intent">選擇</string>
   <string name="md5copied">MD5 碼已複製到剪切板</string>
   <string name="generating">正在生成…</string>
@@ -310,7 +310,7 @@
   <string name="sd_card_grant_next">sd_card_grant_next</string>
   <string name="sd_card_grant_first">sd_card_grant_first</string>
   <string name="fab_skin">FAB 外觀</string>
-  <string name="gplus_pic_title">與 G+ 簽到</string>
+  <string name="gplus_pic_title">以 G+ 登入</string>
   <string name="gplus_pic_summary">在清單中顯示 G+ 封面圖片</string>
   <string name="icon_credits">圖形由 &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">顏色</string>
@@ -326,12 +326,12 @@
   <string name="hide_toolbar">隱藏工具列</string>
   <string name="hide_appbar">隱藏整個應用程式列</string>
   <string name="choose_color">選擇顏色</string>
-  <string name="g_plus_community_title">加入 G + 社群</string>
+  <string name="g_plus_community_title">加入 G+ 社群</string>
   <string name="hide_mode_nothing">應用程式列保持不變</string>
   <string name="hide_mode_toolbar">工具列隱藏在捲軸上</string>
   <string name="hide_mode_app_bar">應用程式列隱藏在捲軸上</string>
   <string name="no_cover_photo">沒有封面照片</string>
-  <string name="files">文檔</string>
+  <string name="files">檔案</string>
   <string name="directories">目錄</string>
   <string name="textreader">文字閱讀器</string>
   <string name="databasereader">資料庫讀取器</string>
@@ -365,7 +365,7 @@
   <string name="doit">執行吧！</string>
   <string name="wanthelp"><u>需要幫助嗎？</u></string>
   <string name="quick">快速存取</string>
-  <string name="recent">最近文檔</string>
+  <string name="recent">最近檔案</string>
   <string name="edit">編輯</string>
   <string name="find">尋找頁面</string>
   <string name="grant">授予</string>
@@ -425,7 +425,7 @@
 <html><body><center>\n<h1>如何存取共用 windows 資料夾上的 android (smb)</h1>\n</center> \n <ol>\n <li>\n <b>啟用檔案共用</b> \n <br/> 開啟控制台，點選選擇家用群組和共用選項下網路和網際網怒，並按一下更改進階共用設定。啟用檔案和印表機共用功能 \n</li> <br/> <li/> <b>其他檔案共用設定</b> <br/> 您可能還想配置其他例如進階共用設定這裡 \n，您可以啟用存取您無需密碼的檔案，如果您相信在您的本地網路上的所有裝置。一旦啟用了檔案和印表機共用，則可以開啟檔案資源管理器或 Windows 檔案總管中，按右鍵您想要共用的資料夾並選擇屬性。\n 按一下共用按鈕，使此資料夾可在 \n 網路。 <li><li/> <br/> <b>確保兩個裝置都在相同的 Wi-Fi</b> <br/> \n 此功能使檔可用在本地網路上，因此您的 PC 和行動裝置必須具有相同的本地網路上。您無法無法訪問共用的 Windows 資料夾透過網際網路或您的智慧手機連線至其行動數據時 — — 已連線至 Wi-Fi。</li><li>\n <br/><b>尋找 IP 位址</b> \n <br/> 開啟命令提示字元。輸入 ipconfig，然後按 enter 鍵。尋找根據您為您的路由器的 IP 位址的網路介面卡的預設閘道。尋找 "IPv4 Address" 相同的配接器部分，以查找您的電腦的 IP 位址下。</li> <li/> <br/>\n <b>在 smb 對話方塊中輸入詳細資訊</b> \n <br/> \n</ol> \n</body> \n</html>    </string>
   <string name="share_limit">無法分享超過 100 個檔案</string>
   <string name="otg_access">選擇 OTG 裝置的根目錄。</string>
-  <string name="no_profile_pic">沒有 G+ 的個人資料圖片</string>
+  <string name="no_profile_pic">沒有 G+ 個人資料圖片</string>
   <string name="opening">正在開始...</string>
   <string name="information">資訊</string>
   <!-- reference to file accessed date -->
