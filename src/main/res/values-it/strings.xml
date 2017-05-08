@@ -105,7 +105,7 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="no">No</string>
   <string name="confirm">Conferma</string>
   <string name="deleting">Eliminazione</string>
-  <string name="questiondeletefolders">Vuoi davvero eliminare i seguenti file?</string>
+  <string name="questiondelete">Vuoi davvero eliminare i seguenti file?</string>
   <string name="questionset">Vuoi impostare il percorso corrente come home per questa scheda?</string>
   <string name="viewmode">Modalità visualizzazione</string>
   <string name="uimode">Modalità interfaccia utente</string>

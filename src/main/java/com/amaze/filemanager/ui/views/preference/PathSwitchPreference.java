@@ -52,7 +52,6 @@ public class PathSwitchPreference extends Preference {
         switchView = ((Switch) view.findViewById(R.id.switch_button));
         if(shouldEnableSwitch != null && !shouldEnableSwitch) {
             switchView.setChecked(false);
-            switchListener.onClick(switchView);
         } else switchView.setChecked(true);
     }
 

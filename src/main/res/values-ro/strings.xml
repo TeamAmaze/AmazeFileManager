@@ -94,7 +94,7 @@
   <string name="no">Nu</string>
   <string name="confirm">Confirmaţi</string>
   <string name="deleting">Ştergere</string>
-  <string name="questiondeletefolders">Doriţi să ștergeți următoarele fișiere?</string>
+  <string name="questiondelete">Doriţi să ștergeți următoarele fișiere?</string>
   <string name="questionset">Doriţi să setați calea actuală ca Dosar Acasă pentru această filă?</string>
   <string name="viewmode">Mod vizualizare</string>
   <string name="uimode">Mod UI</string>

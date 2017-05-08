@@ -95,7 +95,7 @@
   <string name="no">Não</string>
   <string name="confirm">Confirmação</string>
   <string name="deleting">A apagar</string>
-  <string name="questiondeletefolders">Deseja mesmo apagar estes ficheiros?</string>
+  <string name="questiondelete">Deseja mesmo apagar estes ficheiros?</string>
   <string name="questionset">Deseja definir o caminho atual como padrão deste separador?</string>
   <string name="viewmode">Modo de visualização</string>
   <string name="uimode">Interface</string>

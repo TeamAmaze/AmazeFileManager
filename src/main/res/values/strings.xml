@@ -102,7 +102,7 @@
     <string name="no">No</string>
     <string name="confirm">Confirm</string>
     <string name="deleting">Deleting</string>
-    <string name="questiondeletefolders">Do you really want to delete following files?</string>
+    <string name="questiondelete">Do you really want to delete following files?</string>
     <string name="questionset">Do you want to set current path as home for this tab?</string>
     <string name="viewmode">View Mode</string>
     <string name="uimode">UI Mode</string>
