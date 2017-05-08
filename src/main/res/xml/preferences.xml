@@ -141,20 +141,9 @@
 
     <PreferenceCategory android:title="@string/miscellaneous">
 
-        <PreferenceScreen
-            android:title="@string/advanced_search"
-            >
-            <com.amaze.filemanager.ui.views.CheckBox
-                android:key="regex"
-                android:summary="@string/regular_expression_summary"
-                android:title="@string/regular_expression"
-                />
-            <com.amaze.filemanager.ui.views.CheckBox
-                android:key="matches"
-                android:summary="@string/match_content_summary"
-                android:title="@string/match_content"
-                />
-        </PreferenceScreen>
+        <Preference
+            android:key="advancedsearch"
+            android:title="@string/advanced_search"/>
 
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"

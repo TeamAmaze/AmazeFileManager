@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.preference_fragments.AdvancedSearchPref;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
@@ -48,7 +49,6 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.R.string.select;
 
 public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -57,6 +57,7 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
     public static final int COLORS_PREFERENCE = 1;
     public static final int FOLDERS_PREFERENCE = 2;
     public static final int QUICKACCESS_PREFERENCE = 3;
+    public static final int ADVANCEDSEARCH_PREFERENCE = 4;
 
     private boolean changed = false;
     //The preference fragment currently selected
@@ -187,6 +188,9 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
                 break;
             case QUICKACCESS_PREFERENCE:
                 loadPrefFragment(new QuickAccessPref(), R.string.sidebarquickaccess_title);
+                break;
+            case ADVANCEDSEARCH_PREFERENCE:
+                loadPrefFragment(new AdvancedSearchPref(), R.string.advanced_search);
                 break;
         }
     }
