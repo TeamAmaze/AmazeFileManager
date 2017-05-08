@@ -98,7 +98,7 @@
   <string name="no">Không</string>
   <string name="confirm">Xác nhận</string>
   <string name="deleting">Đang xóa</string>
-  <string name="questiondelete">Bạn có thực sự muốn xóa các tập tin sau đây?</string>
+  <string name="questiondeletefolders">Bạn có thực sự muốn xóa các tập tin sau đây?</string>
   <string name="questionset">Bạn có muốn thiết lập đường dẫn hiện tại như nhà cho thẻ này?</string>
   <string name="viewmode">Chế độ xem</string>
   <string name="uimode">Chế độ UI</string>

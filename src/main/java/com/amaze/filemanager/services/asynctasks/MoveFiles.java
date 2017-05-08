@@ -29,7 +29,6 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
@@ -42,6 +41,8 @@ import java.util.ArrayList;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
@@ -109,7 +110,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                 for (int i=0; i<paths.size(); i++) {
                     for (BaseFile baseFile : files.get(i)) {
 
-                        CloudStorage cloudStorage = DataUtils.getAccount(mode);
+                        CloudStorage cloudStorage = dataUtils.getAccount(mode);
                         String targetPath = paths.get(i) + "/" + baseFile.getName();
                         if (baseFile.getMode() == mode) {
                             // source and target both in same filesystem, use API method

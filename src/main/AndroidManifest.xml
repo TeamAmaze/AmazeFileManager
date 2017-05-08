@@ -89,7 +89,7 @@
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"
-            android:name=".activities.Preferences"
+            android:name=".activities.PreferencesActivity"
             android:theme="@style/appCompatLight">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
