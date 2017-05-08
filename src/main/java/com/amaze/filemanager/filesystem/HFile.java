@@ -5,12 +5,22 @@ import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.Logger;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +33,8 @@ import java.util.ArrayList;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by Arpit on 07-07-2015.
@@ -50,10 +62,18 @@ public class HFile {
     public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
-        } else if (path.startsWith("otg:/")) {
+        } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
             mode = OpenMode.CUSTOM;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+            mode = OpenMode.BOX;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+            mode = OpenMode.ONEDRIVE;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+            mode = OpenMode.GDRIVE;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+            mode = OpenMode.DROPBOX;
         } else {
             if (context == null) {
                 mode = OpenMode.FILE;
@@ -102,6 +122,22 @@ public class HFile {
 
     public boolean isOtgFile() {
         return mode == OpenMode.OTG;
+    }
+
+    public boolean isBoxFile() {
+        return mode == OpenMode.BOX;
+    }
+
+    public boolean isDropBoxFile() {
+        return mode == OpenMode.DROPBOX;
+    }
+
+    public boolean isOneDriveFile() {
+        return mode == OpenMode.ONEDRIVE;
+    }
+
+    public boolean isGoogleDriveFile() {
+        return mode == OpenMode.GDRIVE;
     }
 
     File getFile() {
@@ -194,6 +230,22 @@ public class HFile {
             case OTG:
                 s = RootHelper.getDocumentFile(path, context, false).length();
                 break;
+            case DROPBOX:
+                s = dataUtils.getAccount(OpenMode.DROPBOX)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getSize();
+                break;
+            case BOX:
+                s = dataUtils.getAccount(OpenMode.BOX)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getSize();
+                break;
+            case ONEDRIVE:
+                s = dataUtils.getAccount(OpenMode.ONEDRIVE)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getSize();
+                break;
+            case GDRIVE:
+                s = dataUtils.getAccount(OpenMode.GDRIVE)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
+                break;
             default:
                 break;
         }
@@ -204,6 +256,10 @@ public class HFile {
         return path;
     }
 
+    /**
+     * @deprecated use {@link #getName(Context)}
+     * @return
+     */
     public String getName() {
         String name = null;
         switch (mode) {
@@ -322,10 +378,6 @@ public class HFile {
                 parentPath = new File(path).getParent();
                 break;
             case OTG:
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
-                        context, false);
-                parentPath =  documentSourceFile.getParentFile().getName();
-                break;
             default:
                 StringBuilder builder = new StringBuilder(path);
                 StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
@@ -417,6 +469,22 @@ public class HFile {
             case OTG:
                 isDirectory = RootHelper.getDocumentFile(path, context, false).isDirectory();
                 break;
+            case DROPBOX:
+                isDirectory = dataUtils.getAccount(OpenMode.DROPBOX)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getFolder();
+                break;
+            case BOX:
+                isDirectory = dataUtils.getAccount(OpenMode.BOX)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getFolder();
+                break;
+            case GDRIVE:
+                isDirectory = dataUtils.getAccount(OpenMode.GDRIVE)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getFolder();
+                break;
+            case ONEDRIVE:
+                isDirectory = dataUtils.getAccount(OpenMode.ONEDRIVE)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getFolder();
+                break;
             default:
                 isDirectory = new File(path).isDirectory();
                 break;
@@ -482,6 +550,13 @@ public class HFile {
                 break;
             case OTG:
                 size = Futils.folderSize(path, context);
+                break;
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+                size = Futils.folderSizeCloud(mode,
+                        dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
                 break;
             default:
                 return 0l;
@@ -575,7 +650,46 @@ public class HFile {
                 }
                 break;
             case OTG:
-                arrayList = RootHelper.getDocumentFilesList(path, context);
+                arrayList = OTGUtil.getDocumentFilesList(path, context);
+                break;
+            case DROPBOX:
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
+                break;
+            case BOX:
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                    arrayList = new ArrayList<>();
+                }
+                break;
+            case GDRIVE:
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
+                break;
+            case ONEDRIVE:
+                try {
+
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+
+                    arrayList = new ArrayList<>();
+                }
                 break;
             default:
                 try {
@@ -648,6 +762,23 @@ public class HFile {
                     inputStream = null;
                 }
                 break;
+            case DROPBOX:
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                Log.d(getClass().getSimpleName(), CloudUtil.stripPath(OpenMode.DROPBOX, path));
+                inputStream = cloudStorageDropbox.download(CloudUtil.stripPath(OpenMode.DROPBOX, path));
+                break;
+            case BOX:
+                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                inputStream = cloudStorageBox.download(CloudUtil.stripPath(OpenMode.BOX, path));
+                break;
+            case GDRIVE:
+                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                inputStream = cloudStorageGDrive.download(CloudUtil.stripPath(OpenMode.GDRIVE, path));
+                break;
+            case ONEDRIVE:
+                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
+                break;
             default:
                 try {
                     inputStream = new FileInputStream(path);
@@ -703,6 +834,18 @@ public class HFile {
             } catch (SmbException e) {
                 exists = false;
             }
+        } else if (isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
+        } else if (isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            exists = cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
+        } else if (isGoogleDriveFile()) {
+            CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+            exists = cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
+        } else if (isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+            exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
         } else if (isLocal()) {
             exists = new File(path).exists();
         } else if (isRoot()) {
@@ -738,7 +881,8 @@ public class HFile {
     public boolean isSimpleFile() {
         return !isSmb() && !isOtgFile() && !isCustomPath()
                 && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
-                !new File(path).isDirectory();
+                !new File(path).isDirectory() && !isOneDriveFile() && !isGoogleDriveFile()
+                && !isDropBoxFile() && !isBoxFile();
     }
 
     public boolean setLastModified(long date) {
@@ -795,4 +939,36 @@ public class HFile {
         return !exists();
     }
 
+    /**
+     * Generates a {@link LayoutElement} adapted compatible element.
+     * Currently supports only local filesystem
+     * @param mainFragment
+     * @param utilitiesProvider
+     * @return
+     */
+    public LayoutElement generateLayoutElement(MainFragment mainFragment, UtilitiesProviderInterface utilitiesProvider) {
+        switch (mode) {
+            case FILE:
+            case ROOT:
+                File file = new File(path);
+                LayoutElement layoutElement;
+                if (isDirectory()) {
+
+                    layoutElement = utilitiesProvider.getFutils()
+                            .newElement(mainFragment.folder,
+                                    path, RootHelper.parseFilePermission(file),
+                                    "", folderSize() + "", 0, true, false,
+                                    file.lastModified() + "");
+                } else {
+                    layoutElement = utilitiesProvider.getFutils().newElement(Icons.loadMimeIcon(
+                            file.getPath(), !mainFragment.IS_LIST, mainFragment.res),
+                            file.getPath(), RootHelper.parseFilePermission(file),
+                            file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");
+                }
+                layoutElement.setMode(mode);
+                return layoutElement;
+            default:
+                return null;
+        }
+    }
 }

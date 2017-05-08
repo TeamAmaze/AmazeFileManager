@@ -28,6 +28,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -61,6 +62,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
@@ -90,10 +92,11 @@ import java.util.TimerTask;
 public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
-    private File mFile;
+    private BaseFile mFile;
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
+    private Typeface mInputTypefaceDefault, mInputTypefaceMono;
     private android.support.v7.widget.Toolbar toolbar;
     //ArrayList<StringBuilder> texts;
     //static final int maxlength = 200;
@@ -121,6 +124,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     private static final String KEY_MODIFIED_TEXT = "modified";
     private static final String KEY_INDEX = "index";
     private static final String KEY_ORIGINAL_TEXT = "original";
+    private static final String KEY_MONOFONT = "monofont";
 
     private RelativeLayout searchViewLayout;
 
@@ -194,7 +198,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
             // getting uri from external source
             uri = getIntent().getData();
 
-            mFile = new File(getIntent().getData().getPath());
+            mFile = new BaseFile(getIntent().getData().getPath());
         }
 
         String fileName;
@@ -248,12 +252,16 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         }
 
+        mInputTypefaceDefault = mInput.getTypeface();
+        mInputTypefaceMono = Typeface.MONOSPACE;
+
         if (savedInstanceState != null) {
 
             mOriginal = savedInstanceState.getString(KEY_ORIGINAL_TEXT);
             int index = savedInstanceState.getInt(KEY_INDEX);
             mInput.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
             mInput.setScrollY(index);
+            if (savedInstanceState.getBoolean(KEY_MONOFONT)) mInput.setTypeface(mInputTypefaceMono);
         } else {
 
             load(uri, mFile);
@@ -266,6 +274,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
         outState.putInt(KEY_INDEX, mInput.getScrollY());
         outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
+        outState.putBoolean(KEY_MONOFONT, mInput.getTypeface().equals(mInputTypefaceMono));
     }
 
     private void checkUnsavedChanges() {
@@ -281,7 +290,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                         @Override
                         public void onPositive(MaterialDialog dialog) {
 
-                            saveFile(uri, mFile, mInput.getText().toString());
+                            saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
                             finish();
                         }
 
@@ -441,7 +450,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
      * @param uri
      * @param mFile
      */
-    private void load(final Uri uri, final File mFile) {
+    private void load(final Uri uri, final BaseFile mFile) {
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint(R.string.loading);
@@ -513,13 +522,13 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.text, menu);
-        menu.findItem(R.id.find).setVisible(true);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.save).setVisible(mModified);
+        menu.findItem(R.id.monofont).setChecked(mInput.getTypeface().equals(mInputTypefaceMono));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -531,23 +540,27 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.save:
                 // Make sure EditText is visible before saving!
-                saveFile(uri, mFile, mInput.getText().toString());
+                saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
                 break;
             case R.id.details:
-                if (mFile.canRead()) {
-                    HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
-                    hFile.generateMode(this);
-                    getFutils().showProps(hFile, this, getAppTheme());
+                if (mFile.exists()) {
+                    //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
+                    //hFile.generateMode(this);
+                    getFutils().showProps(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
-                if (mFile.canRead()) {
-                    getFutils().openunknown(mFile, this, false);
+                if (mFile.exists()) {
+                    getFutils().openunknown(new File(mFile.getPath()), this, false);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
                 if (searchViewLayout.isShown()) hideSearchView();
                 else revealSearchView();
+                break;
+            case R.id.monofont:
+                item.setChecked(!item.isChecked());
+                mInput.setTypeface(item.isChecked() ? mInputTypefaceMono : mInputTypefaceDefault);
                 break;
             default:
                 return false;
@@ -620,17 +633,19 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
     }
 
     /**
-     * Helper method to {@link #load(Uri, File)}
+     * Helper method to {@link #load(Uri, BaseFile)}
      * Tries to find an input stream associated with file/uri
      *
      * @param uri
-     * @param file
+     * @param baseFile
      * @return
      * @throws StreamNotFoundException exception thrown when we couldn't find a stream
      *                                 after all the attempts
      */
-    private InputStream getInputStream(Uri uri, File file) throws StreamNotFoundException {
+    private InputStream getInputStream(Uri uri, BaseFile baseFile) throws StreamNotFoundException {
         InputStream stream = null;
+
+        File file = new File(baseFile.getPath());
 
         if (uri.toString().contains("file://")) {
             // dealing with files

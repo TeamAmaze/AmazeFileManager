@@ -44,10 +44,34 @@
             android:title="@string/showDividers"/>
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
+            android:key="showHeaders"
+            android:title="@string/showHeaders"/>
+        <com.amaze.filemanager.ui.views.CheckBox
+            android:defaultValue="true"
             android:key="intelliHideToolbar"
             android:summary="@string/intellihide_toolbar_summary"
             android:title="@string/intellihide_toolbar_title"/>
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="SideBar">
+        <com.amaze.filemanager.ui.views.CheckBox
+            android:defaultValue="true"
+            android:key="sidebar_folders_enable"
+            android:title="@string/showfolders_pref_title"/>
+        <Preference
+            android:dependency="sidebar_folders_enable"
+            android:key="sidebar_folders"
+            android:title="@string/showfolders_pref"/>
+
+        <com.amaze.filemanager.ui.views.CheckBox
+            android:defaultValue="true"
+            android:key="sidebar_quickaccess_enable"
+            android:title="@string/showquickaccess_pref_title"/>
+        <Preference
+            android:dependency="sidebar_quickaccess_enable"
+            android:key="sidebar_quickaccess"
+            android:title="@string/showquickaccess_pref"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
@@ -67,7 +91,6 @@
             android:title="@string/hidden"/>
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="true"
-            android:enabled="false"
             android:key="showLastModified"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
@@ -118,20 +141,9 @@
 
     <PreferenceCategory android:title="@string/miscellaneous">
 
-        <PreferenceScreen
-            android:title="@string/advanced_search"
-            >
-            <com.amaze.filemanager.ui.views.CheckBox
-                android:key="regex"
-                android:summary="@string/regular_expression_summary"
-                android:title="@string/regular_expression"
-                />
-            <com.amaze.filemanager.ui.views.CheckBox
-                android:key="matches"
-                android:summary="@string/match_content_summary"
-                android:title="@string/match_content"
-                />
-        </PreferenceScreen>
+        <Preference
+            android:key="advancedsearch"
+            android:title="@string/advanced_search"/>
 
         <com.amaze.filemanager.ui.views.CheckBox
             android:defaultValue="false"

@@ -12,7 +12,6 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -25,7 +24,9 @@ public class BaseActivity extends BasicActivity {
     public SharedPreferences sharedPref;
 
     // Accent and Primary hex color string respectively
-    @Deprecated
+    /**
+     * @deprecated use {@link #getColorPreference()#getColor(int)} and {@link ColorUsage#ACCENT}
+     */
     public static String accentSkin;
     public static boolean rootMode;
     boolean checkStorage = true;
@@ -56,7 +57,6 @@ public class BaseActivity extends BasicActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DataUtils.clear();
     }
     public boolean checkStoragePermission() {
 

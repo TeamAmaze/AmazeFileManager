@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -39,21 +40,38 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-public class Preffrag extends PreferenceFragment {
+import java.util.ArrayList;
 
-    private static final CharSequence PREFERENCE_KEY_ABOUT = "about";
+import static com.amaze.filemanager.R.string.feedback;
+import static com.amaze.filemanager.fragments.preference_fragments.FoldersPref.castStringListToTrioList;
+
+public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+
+    private static final String PREFERENCE_KEY_ABOUT = "about";
+    private static final String[] PREFERENCE_KEYS =
+            {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
+                    "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
+                    "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
+
+
+    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
+    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "show_sidebar_quickaccesses";
+
+    public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
+
+    public static final String PREFERENCE_ROOTMODE = "rootmode";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -66,8 +84,8 @@ public class Preffrag extends PreferenceFragment {
     public static final String ENCRYPT_PASSWORD_MASTER = "master";
 
     private UtilitiesProviderInterface utilsProvider;
-    SharedPreferences sharedPref;
-    CheckBox gplus;
+    private SharedPreferences sharedPref;
+    private CheckBox gplus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,11 +98,91 @@ public class Preffrag extends PreferenceFragment {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        findPreference("columns").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                final String[] sort = getResources().getStringArray(R.array.columns);
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
+            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
+        }
+
+        gplus = (CheckBox) findPreference("plus_pic");
+
+        if (BuildConfig.IS_VERSION_FDROID)
+            gplus.setEnabled(false);
+
+        // crypt master password
+        final EditTextPreference masterPasswordPreference = (EditTextPreference) findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            // encryption feature not available
+            masterPasswordPreference.setEnabled(false);
+        }
+
+        if (sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
+            masterPasswordPreference.setEnabled(false);
+        }
+
+        CheckBox checkBoxFingerprint = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
+
+        try {
+
+            // finger print sensor
+            final FingerprintManager fingerprintManager = (FingerprintManager)
+                    getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+
+            final KeyguardManager keyguardManager = (KeyguardManager)
+                    getActivity().getSystemService(Context.KEYGUARD_SERVICE);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
+
+                checkBoxFingerprint.setEnabled(true);
+            }
+
+            checkBoxFingerprint.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+                    if (ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_no_permission),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            !fingerprintManager.hasEnrolledFingerprints()) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_not_enrolled),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            !keyguardManager.isKeyguardSecure()) {
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.crypt_fingerprint_no_security),
+                                Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+
+                    masterPasswordPreference.setEnabled(false);
+                    return true;
+                }
+            });
+        } catch (NoClassDefFoundError error) {
+            error.printStackTrace();
+
+            // fingerprint manager class not defined in the framework
+            checkBoxFingerprint.setEnabled(false);
+        }
+
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        final String[] sort;
+        MaterialDialog.Builder builder;
+
+        switch (preference.getKey()) {
+            case "columns":
+                sort = getResources().getStringArray(R.array.columns);
+                builder = new MaterialDialog.Builder(getActivity());
                 builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.gridcolumnno);
                 int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
@@ -100,16 +198,11 @@ public class Preffrag extends PreferenceFragment {
                 });
                 builder.build().show();
                 return true;
-            }
-        });
-
-        findPreference("theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String[] sort = getResources().getStringArray(R.array.theme);
-                int current = Integer.parseInt(sharedPref.getString("theme", "0"));
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-//              builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+            case "theme":
+                sort = getResources().getStringArray(R.array.theme);
+                current = Integer.parseInt(sharedPref.getString("theme", "0"));
+                builder = new MaterialDialog.Builder(getActivity());
+                //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -127,127 +220,71 @@ public class Preffrag extends PreferenceFragment {
                 builder.title(R.string.theme);
                 builder.build().show();
                 return true;
-            }
-        });
-        findPreference("colors").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                ((com.amaze.filemanager.activities.Preferences) getActivity()).selectItem(1);
+            case "sidebar_folders_enable":
+                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS,
+                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)).apply();
                 return true;
-            }
-        });
+            case "sidebar_quickaccess_enable":
+                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
+                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
+                return true;
+            case PREFERENCE_SHOW_HIDDENFILES:
+                setEnabledShortcuts();
+                return false;
+            case PREFERENCE_ROOTMODE:
+                setEnabledShortcuts();
 
-        /*final CheckBx rootmode = (CheckBx) findPreference("rootmode");
-        rootmode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+                /*
                 boolean b = sharedPref.getBoolean("rootmode", false);
                 if (b) {
                     if (MainActivity.shellInteractive.isRunning()) {
                         rootmode.setChecked(true);
-                    
+
                     } else {  rootmode.setChecked(false);
-				
+
                         Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     rootmode.setChecked(false);
-                    
-                }
-                return false;
-            }
-        });*/
 
-        Preference preferenceFeedback = findPreference("feedback");
-        preferenceFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+                }
+                */
+                return false;
+            case "feedback":
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-                startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feedback)));
+                startActivity(Intent.createChooser(emailIntent, getResources().getString(feedback)));
                 return false;
-            }
-        });
-
-        Preference aboutPreference = findPreference(PREFERENCE_KEY_ABOUT);
-        aboutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
+            case PREFERENCE_KEY_ABOUT:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
                 return false;
-            }
-        });
-
-        gplus = (CheckBox) findPreference("plus_pic");
-        gplus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (gplus.isChecked()) {
-                    boolean b = checkGplusPermission();
-                    if (!b) requestGplusPermission();
+            case "plus_pic":
+                if(gplus.isChecked()){
+                    boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
+                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
                 }
                 return false;
-            }
-        });
-        if (BuildConfig.IS_VERSION_FDROID)
-            gplus.setEnabled(false);
-
-        // crypt master password
-        final EditTextPreference masterPasswordPreference = (EditTextPreference) findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            // encryption feature not available
-            masterPasswordPreference.setEnabled(false);
-        }
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (preferences.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
-            masterPasswordPreference.setEnabled(false);
-        }
-
-        // finger print sensor
-        final FingerprintManager fingerprintManager = (FingerprintManager)
-                getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
-        final KeyguardManager keyguardManager = (KeyguardManager)
-                getActivity().getSystemService(Context.KEYGUARD_SERVICE);
-
-        CheckBox checkBx = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
-
-            checkBx.setEnabled(true);
-        }
-
-        checkBx.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                if (ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_no_permission),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !fingerprintManager.hasEnrolledFingerprints()) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_not_enrolled),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !keyguardManager.isKeyguardSecure()) {
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.crypt_fingerprint_no_security),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                }
-
-                masterPasswordPreference.setEnabled(false);
+            /*FROM HERE BE FRAGMENTS*/
+            case "colors":
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.COLORS_PREFERENCE);
                 return true;
-            }
-        });
+            case "sidebar_folders":
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.FOLDERS_PREFERENCE);
+                return true;
+            case "sidebar_quickaccess":
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.QUICKACCESS_PREFERENCE);
+                return true;
+            case "advancedsearch":
+                ((PreferencesActivity) getActivity())
+                        .selectItem(PreferencesActivity.ADVANCEDSEARCH_PREFERENCE);
+                return true;
+        }
+
+        return false;
     }
 
     public static void restartPC(final Activity activity) {
@@ -261,52 +298,36 @@ public class Preffrag extends PreferenceFragment {
         activity.startActivity(activity.getIntent());
     }
 
-    public void invalidateGplus() {
-        boolean a = checkGplusPermission();
-        if (!a) gplus.setChecked(false);
+    public void invalidateGplus(){
+        boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
+        if(!a)gplus.setChecked(false);
     }
 
-    public boolean checkGplusPermission() {
-        // Verify that all required contact permissions have been granted.
-        return ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.GET_ACCOUNTS)
-                        == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
-                        == PackageManager.PERMISSION_GRANTED;
-    }
+    /**
+     * Dynamically enables autodisabled shortcuts, and disables inaccessible shortcuts when user
+     * changes root access and hidden files visibility preferences.
+     */
+    private void setEnabledShortcuts() {
+        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(
+                TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null));
 
-    private void requestGplusPermission() {
-        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.INTERNET};
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.INTERNET)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
+        if(currentValue == null) return;
 
-            String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog = Futils.showBasicDialog(getActivity(), fab_skin, utilsProvider.getAppTheme(), new String[]{getResources().getString(R.string.grantgplus), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat
-                            .requestPermissions(getActivity(), PERMISSIONS, 66);
-                    materialDialog.dismiss();
-                }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().finish();
-                }
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat
-                    .requestPermissions(getActivity(), PERMISSIONS, 66);
+        for(int i = 0; i < currentValue.size(); i++) {
+            if(FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
+                    && currentValue.get(i).autodisabled) {
+                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
+                        currentValue.get(i).directory, FoldersPref.Shortcut.TRUE);
+                currentValue.set(i, shortcut);
+            } else if (!FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
+                    && currentValue.get(i).enabled) {
+                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
+                        currentValue.get(i).directory, FoldersPref.Shortcut.AUTOFALSE);
+                currentValue.set(i, shortcut);
+            }
         }
+
+        TinyDB.putList(sharedPref, FoldersPref.KEY, FoldersPref.castTrioListToStringList(currentValue));
     }
+
 }

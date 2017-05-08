@@ -45,6 +45,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
@@ -234,8 +235,19 @@ public class CopyService extends Service {
 
                         try {
 
-                            HFile hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
-                                    f1.isDirectory());
+                            HFile hFile;
+                            if (targetPath.contains(getExternalCacheDir().getPath())) {
+                                // the target open mode is not the one we're currently in!
+                                // we're processing the file for cache
+                                hFile = new HFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(),
+                                        f1.isDirectory());
+                            } else {
+
+                                // the target open mode is where we're currently at
+                                hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                        f1.isDirectory());
+                            }
+
                             if (!progressHandler.getCancelled()) {
 
                                 if (!f1.isSmb()

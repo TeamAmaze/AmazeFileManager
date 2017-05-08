@@ -39,7 +39,9 @@ public class SubnetScanner extends Thread {
         void searchFinished();
     }
 
-    private class Task implements Callable<Computer> {
+
+
+    class Task implements Callable<Computer> {
         String addr;
 
         public Task(String str) {
@@ -63,7 +65,7 @@ public class SubnetScanner extends Thread {
         configure();
     }
 
-    private static void configure() {
+    public static void configure() {
         Config.setProperty("jcifs.resolveOrder", "BCAST");
         Config.setProperty("jcifs.smb.client.responseTimeout", "30000");
         Config.setProperty("jcifs.netbios.retryTimeout", "5000");
@@ -151,9 +153,9 @@ public class SubnetScanner extends Thread {
                         SmbFile[] listFiles = smbFile.listFiles();
                         for (SmbFile smbFile2 : listFiles) {
                             SmbFile[] listFiles2 = smbFile2.listFiles();
-                            for (SmbFile aListFiles2 : listFiles2) {
+                            for (int i2 = 0; i2 < listFiles2.length; i2++) {
                                 try {
-                                    String substring = aListFiles2.getName().substring(0, aListFiles2.getName().length() - 1);
+                                    String substring = listFiles2[i2].getName().substring(0, listFiles2[i2].getName().length() - 1);
                                     UniAddress byName = UniAddress.getByName(substring);
                                     if (byName != null) {
                                         SubnetScanner.this.onFound(new Computer(substring, byName.getHostAddress()));
@@ -171,7 +173,7 @@ public class SubnetScanner extends Thread {
         this.bdThread.start();
     }
 
-    private void onFound(Computer computer) {
+    void onFound(Computer computer) {
         this.mResults.add(computer);
         synchronized (this.mLock) {
             if (this.observer != null) {

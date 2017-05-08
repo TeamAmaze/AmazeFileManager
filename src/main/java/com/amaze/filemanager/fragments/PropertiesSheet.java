@@ -48,7 +48,7 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        rootView = View.inflate(getContext(), R.layout.properties_sheet, null);
+        rootView = View.inflate(getContext(), R.layout.fragment_sheet_properties, null);
         dialog.setContentView(rootView);
 
         mBundle = getArguments();

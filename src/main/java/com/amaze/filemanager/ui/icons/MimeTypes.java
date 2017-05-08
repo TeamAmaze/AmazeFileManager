@@ -48,7 +48,8 @@ public final class MimeTypes {
 
     public static final String ALL_MIME_TYPES = "*/*";
 
-    private static final HashMap<String, String> MIME_TYPES = new HashMap<>();
+    // construct a with an approximation of the capacity
+    private static final HashMap<String, String> MIME_TYPES = new HashMap<>(1 + (int)(66 / 0.75));
 
     static {
 
@@ -57,6 +58,9 @@ public final class MimeTypes {
          * ================= MIME TYPES ====================
 		 */
         MIME_TYPES.put("asm", "text/x-asm");
+        MIME_TYPES.put("json", "application/json");
+        MIME_TYPES.put("js", "application/javascript");
+
         MIME_TYPES.put("def", "text/plain");
         MIME_TYPES.put("in", "text/plain");
         MIME_TYPES.put("rc", "text/plain");
@@ -66,6 +70,8 @@ public final class MimeTypes {
         MIME_TYPES.put("prop", "text/plain");
         MIME_TYPES.put("properties", "text/plain");
         MIME_TYPES.put("rc", "text/plain");
+        MIME_TYPES.put("ini", "text/plain");
+        MIME_TYPES.put("md", "text/markdown");
 
         MIME_TYPES.put("epub", "application/epub+zip");
         MIME_TYPES.put("ibooks", "application/x-ibooks+zip");
@@ -141,7 +147,7 @@ public final class MimeTypes {
             return null;
         }
 
-        String type = "*/*";
+        String type = ALL_MIME_TYPES;
         final String extension = getExtension(file.getName());
 
         // mapping extension to system mime types
@@ -154,7 +160,7 @@ public final class MimeTypes {
                 type = MIME_TYPES.get(extensionLowerCase);
             }
         }
-        if(type==null)type="*/*";
+        if(type == null) type = ALL_MIME_TYPES;
         return type;
     }
 

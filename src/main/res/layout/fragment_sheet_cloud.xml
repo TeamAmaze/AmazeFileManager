@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/material_generic"
+        android:paddingRight="@dimen/material_generic"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_title"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:text="@string/cloud_connection_new"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_smb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_remote_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/smb_con"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_dropbox"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_dropbox_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_dropbox"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_box"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_box_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_box"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_google_drive"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_google_drive_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_drive"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_onedrive"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_onedrive_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_onedrive"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_get_cloud"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="visible"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                android:src="@drawable/ic_onedrive_grey600_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_get"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

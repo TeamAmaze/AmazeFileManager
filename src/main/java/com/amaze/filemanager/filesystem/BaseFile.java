@@ -131,5 +131,4 @@ public class BaseFile extends HFile implements Parcelable {
         dest.writeByte((byte) (isDirectory ? 1 : 0));
 
     }
-
 }

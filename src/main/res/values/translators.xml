@@ -42,10 +42,10 @@
 	<string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
     <string name="japanese_translation_summary" translatable="false">Naofumi Fukue</string>
     <string name="tamil_translation_summary" translatable="false">Kuralarasi for StarsSoft</string>
-    <string name="app_version" translatable="false">v3.1.2 Beta 10</string>
+    <string name="app_version" translatable="false">v3.1.2 RC3</string>
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
-    <string name="github" translatable="false">Github</string>
+    <string name="github" translatable="false">GitHub</string>
     <string name="googleplus" translatable="false">Google+</string>
 
     <string name="contributor_1_title" translatable="false">Team MoKee</string>

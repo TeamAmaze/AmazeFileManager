@@ -126,6 +126,7 @@
     <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
     <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
+    <string name="hiddenfailure">Can\'t access hidden files</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome">Set As Home</string>
@@ -572,6 +573,18 @@
     <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
+
+    <string name="cloud_connection">Cloud Connection</string>
+    <string name="cloud_connection_new">New Cloud Connection</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Get Cloud plugin</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+    <string name="cloud_error_email">E-mail address</string>
+    <string name="cloud_email">E-mail ID</string>
+
     <string name="no_applications">No applications</string>
     <string name="ftp_path">Shared Path</string>
     <string name="ftp_path_hint">Path to the root of directory to share</string>
@@ -629,5 +642,29 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
     <string name="bytes">Bytes</string>
-</resources>
 
+    <string name="sidebarfolders_title">Sidebar shortcuts</string>
+    <string name="sidebarquickaccess_title">Sidebar quick access</string>
+    <string name="showfolders_pref_title">Show shortcuts</string>
+    <string name="showfolders_pref">Shortcuts</string>
+    <string name="showquickaccess_pref_title">Show quick accesses</string>
+    <string name="showquickaccess_pref">Quick acceses</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="edit_shortcut">Edit shortcut</string>
+    <string name="directory">Directory</string>
+    <string name="questiondelete_shortcut">Delete shortcut?</string>
+
+    <string name="cloud_error_new_account">Failed to add new account</string>
+    <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
+    <string name="cloud_error_failed_restart">Failed to load the connection.
+        Please open Amaze Cloud once.</string>
+    <string name="cloud_remove">Do you want to remove the cloud connection?</string>
+    <string name="cloud_fail_authenticate">Failed to authenticate</string>
+    <string name="cloud_share_copied">Sharable link copied to clipboard</string>
+    <string name="copy_low_memory">Running out of memory, please clear some RAM</string>
+    <string name="cloud_token_lost">Token lost, please sign-in again</string>
+    <string name="cloud_plugin_not_supported">Cloud plug-in is not supported for Fdroid build.
+        Please download Amaze from Play Store.</string>
+    <string name="monofont">Monospace Font</string>
+    <string name="showHeaders">Show Headers</string>
+</resources>

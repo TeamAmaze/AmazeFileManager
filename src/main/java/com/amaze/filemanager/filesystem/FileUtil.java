@@ -17,8 +17,11 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.RootUtils;
 
 import java.io.File;
@@ -800,7 +803,15 @@ public abstract class FileUtil {
      */
     public static int checkFolder(final String f,Context context) {
         if(f==null)return 0;
-        if(f.startsWith("smb://") || f.startsWith("otg:")) return 1;
+        if(f.startsWith("smb://")
+                || f.startsWith(OTGUtil.PREFIX_OTG)
+                || f.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
+                || f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)
+                || f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)
+                || f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)
+                )
+            return 1;
+
         File folder=new File(f);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && FileUtil.isOnExtSdCard(folder, context)) {
             if (!folder.exists() || !folder.isDirectory()) {

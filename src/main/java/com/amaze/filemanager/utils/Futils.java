@@ -40,6 +40,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -53,6 +54,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.format.Formatter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -74,14 +76,16 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
-import com.amaze.filemanager.ui.LayoutElements;
+import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,6 +110,8 @@ import javax.crypto.NoSuchPaddingException;
 import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class Futils {
 
@@ -205,6 +211,21 @@ public class Futils {
         return length;
     }
 
+    public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
+        long length = 0;
+        CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+        for (CloudMetaData metaData : cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
+
+            if (metaData.getFolder()) {
+                length += folderSizeCloud(openMode, metaData);
+            } else {
+                length += metaData.getSize();
+            }
+        }
+
+        return length;
+    }
+
     /**
      * Helper method to get size of an otg folder
      * @param path
@@ -213,7 +234,7 @@ public class Futils {
      */
     public static long folderSize(String path, Context context) {
         long length = 0L;
-        for (BaseFile baseFile : RootHelper.getDocumentFilesList(path, context)) {
+        for (BaseFile baseFile : OTGUtil.getDocumentFilesList(path, context)) {
             if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
             else length += baseFile.length();
 
@@ -344,6 +365,27 @@ public class Futils {
 
     public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
         shareFiles(a,c, AppTheme.fromIndex(theme), fab_skin);
+    }
+
+    public void shareCloudFile(String path, final OpenMode openMode, final Context context) {
+        new AsyncTask<String, Void, String>() {
+
+            @Override
+            protected String doInBackground(String... params) {
+                String shareFilePath = params[0];
+                CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+                return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                Futils.copyToClipboard(context, s);
+                Toast.makeText(context,
+                        context.getResources().getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
+            }
+        }.execute(path);
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
@@ -619,46 +661,77 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<LayoutElements> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
+    public void deleteFiles(ArrayList<LayoutElement> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
         final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
         c.title(b.getResources().getString(R.string.confirm));
+
         int fileCounter = 0, dirCounter = 0;
+        long longSizeTotal = 0;
         final ArrayList<BaseFile> todelete = new ArrayList<>();
         StringBuilder dirNames = new StringBuilder();
         StringBuilder fileNames = new StringBuilder();
         for (int i = 0; i < pos.size(); i++) {
-            todelete.add(a.get(pos.get(i)).generateBaseFile());
-            if(a.get(pos.get(i)).isDirectory())
+            final LayoutElement elem = a.get(pos.get(i));
+            todelete.add(elem.generateBaseFile());
+            if (elem.isDirectory()) {
                 dirNames.append("\n")
                         .append(++dirCounter)
                         .append(". ")
-                        .append(a.get(pos.get(i)).getTitle());
-            else
+                        .append(elem.getTitle());
+                // TODO: Get folder size ?
+            } else {
                 fileNames.append("\n")
                         .append(++fileCounter)
                         .append(". ")
-                        .append(a.get(pos.get(i)).getTitle())
+                        .append(elem.getTitle())
                         .append(" (")
-                        .append(a.get(pos.get(i)).getSize())
+                        .append(elem.getSize())
                         .append(")");
+                longSizeTotal += elem.getlongSize();
+            }
         }
 
         String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
         String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
+      
+        StringBuilder message = new StringBuilder();
+        message.append(b.getResources().getString(R.string.questiondelete))
+                .append("\n\n");
+        if (dirCounter == 0 && fileCounter == 1) {
+            final LayoutElement elem = a.get(pos.get(0));
+            message.append(elem.getTitle())
+                    .append(" (")
+                    .append(elem.getSize())
+                    .append(")");
+        } else if (fileCounter == 0) {
+            message.append(titleDirs)
+                    .append(":")
+                    .append(dirNames);
+        } else if(dirCounter == 0) {
+            message.append(titleFiles)
+                    .append(":")
+                    .append(fileNames);
+        } else {
+            message.append(titleDirs)
+                    .append(":")
+                    .append(dirNames)
+                    .append("\n\n")
+                    .append(titleFiles)
+                    .append(":")
+                    .append(fileNames);
+        }
 
-        if(fileNames.length() == 0)
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
-                    titleDirs + "---" + dirNames);
-        else if(dirNames.length() == 0)
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
-                    titleFiles + "---" + fileNames);
-        else
-            c.content(b.getResources().getString(R.string.questiondelete) + "\n\n" + "---" +
-                    titleDirs + "---" + dirNames + "\n\n" + "---" +
-                    titleFiles + "---" + fileNames);
+        if (fileCounter + dirCounter > 1 && longSizeTotal > 0) {
+            message.append("\n\n")
+                    .append(b.getResources().getString(R.string.total))
+                    .append(" ")
+                    .append(Formatter.formatFileSize(b.getContext(), longSizeTotal));
+        }
+
+        c.content(message.toString());
         c.theme(appTheme.getMaterialDialogTheme());
-        c.negativeText(b.getResources().getString(R.string.no));
-        c.positiveText(b.getResources().getString(R.string.yes));
+        c.negativeText(b.getResources().getString(R.string.cancel).toUpperCase());
+        c.positiveText(b.getResources().getString(R.string.delete).toUpperCase());
         c.positiveColor(Color.parseColor(b.fabSkin));
         c.negativeColor(Color.parseColor(b.fabSkin));
         c.callback(new MaterialDialog.ButtonCallback() {
@@ -677,12 +750,27 @@ public class Futils {
         c.build().show();
     }
 
-    public boolean canGoBack(File f) {
-        try {
-            f.getParentFile().listFiles();
-            return true;
-        } catch (NullPointerException e) {
-            return false;
+    /**
+     * Method determines if there is something to go back to
+     * @param currentFile
+     * @param context
+     * @return
+     */
+    public boolean canGoBack(Context context, HFile currentFile) {
+
+        // we're on main thread and can't list the cloud files
+        switch (currentFile.getMode()) {
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+            case OTG:
+                return true;
+            default:
+                HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
+                ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
+                if (parentFiles == null) return false;
+                else return true;
         }
     }
 
@@ -765,7 +853,7 @@ public class Futils {
         a.customView(v, true);
         //a.neutralText(R.string.ok);
         a.positiveText(c.getResources().getString(R.string.ok));
-        a.neutralColor(Color.parseColor(fabskin));
+        a.positiveColor(Color.parseColor(fabskin));
         MaterialDialog materialDialog=a.build();
         materialDialog.show();
         /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
@@ -774,6 +862,51 @@ public class Futils {
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
         new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
                 c.MAIN_ACTIVITY, v).execute(hFile.getPath());
+    }
+
+    public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        String fabskin = PreferenceUtils.getAccentString(sp);
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+
+        switch (openMode) {
+            case DROPBOX:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_dropbox));
+                break;
+            case BOX:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_box));
+                break;
+            case GDRIVE:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_drive));
+                break;
+            case ONEDRIVE:
+                builder.title(mainActivity.getResources().getString(R.string.cloud_onedrive));
+                break;
+        }
+
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.content(mainActivity.getResources().getString(R.string.cloud_remove));
+
+        builder.positiveText(mainActivity.getResources().getString(R.string.yes));
+        builder.positiveColor(Color.parseColor(fabskin));
+        builder.negativeText(mainActivity.getResources().getString(R.string.no));
+        builder.negativeColor(Color.parseColor(fabskin));
+
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                mainActivity.deleteConnection(openMode);
+            }
+        });
+
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public void showEncryptWarningDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
@@ -894,6 +1027,7 @@ public class Futils {
         Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
         cancelButton.setTextColor(Color.parseColor(main.fabSkin));
         builder.customView(rootView, true);
+        builder.canceledOnTouchOutside(false);
 
         builder.theme(appTheme.getMaterialDialogTheme());
 
@@ -953,21 +1087,58 @@ public class Futils {
         builder.show();
     }
 
-    public static long[] getSpaces(HFile hFile){
-        if(!hFile.isSmb() && hFile.isDirectory()){
+    public static long[] getSpaces(HFile hFile) {
+        if(!hFile.isSmb() && hFile.isDirectory() && (hFile.isSimpleFile() || hFile.isRoot())) {
             try {
                 File file=new File(hFile.getPath());
-                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(),folderSize
+                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(), folderSize
                         (new File(hFile.getPath()))};
                 return ints;
             } catch (Exception e) {
                 return new long[]{-1,-1,-1};
             }
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
+                    hFile.getPath()));
+
+            return new long[] {cloudStorageDropbox.getAllocation().getTotal(),
+                    (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
+                    folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
+            };
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
+                    hFile.getPath()));
+
+            return new long[] {cloudStorageBox.getAllocation().getTotal(),
+                    (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
+                    folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
+            };
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
+                    hFile.getPath()));
+
+            return new long[] {cloudStorageGDrive.getAllocation().getTotal(),
+                    (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
+                    folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
+            };
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                    hFile.getPath()));
+            return new long[] {cloudStorageOneDrive.getAllocation().getTotal(),
+                    (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
+                    folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
+            };
         }
         return new long[]{-1,-1,-1};
     }
 
-    public void showProps(final HFile f, final BaseActivity c, AppTheme appTheme) {
+    public void showProps(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
         String date = null;
         try {
             date = getdate(f.lastModified());
@@ -988,8 +1159,8 @@ public class Futils {
                 .title(c.getResources().getString(R.string.properties))
                 .theme(appTheme.getMaterialDialogTheme())
                 .customView(v, true)
-                .neutralText(R.string.ok)
-                .neutralColor(Color.parseColor(fabskin))
+                .positiveText(R.string.ok)
+                .positiveColor(Color.parseColor(fabskin))
                 .build();
         materialDialog.show();
         new GenerateMD5Task(materialDialog, (f), name, parent, items, date, c, v).execute(f.getPath());
@@ -1234,8 +1405,8 @@ public class Futils {
 
     }
 
-    public LayoutElements newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
-        LayoutElements item = new LayoutElements(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
+    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
+        LayoutElement item = new LayoutElement(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
         return item;
     }
 
@@ -1291,25 +1462,25 @@ public class Futils {
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+
+        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                int which = dialog.getSelectedIndex();
-                m.sharedPref.edit().putString("sortby", "" + which).commit();
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
-
             }
+        });
 
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                int which = 4 + dialog.getSelectedIndex();
-                m.sharedPref.edit().putString("sortby", "" + which).commit();
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -1331,34 +1502,35 @@ public class Futils {
                 return true;
             }
         });
-        a.positiveText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.negativeText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.callback(new MaterialDialog.ButtonCallback() {
+        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog dialog) {
-                super.onPositive(dialog);
-                int which = dialog.getSelectedIndex();
-                m.Sp.edit().putString("sortbyApps", "" + which).commit();
-                m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
-                dialog.dismiss();
-            }
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-            @Override
-            public void onNegative(MaterialDialog dialog) {
-                super.onNegative(dialog);
-                int which = dialog.getSelectedIndex() + 3;
-                m.Sp.edit().putString("sortbyApps", "" + which).commit();
+                m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
                 m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });
+
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
+                m.getSortModes();
+                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
+                dialog.dismiss();
+            }
+        });
+
         a.title(R.string.sortby);
         a.build().show();
     }
 
-    public void showHistoryDialog(final MainFragment m, AppTheme appTheme) {
+    public void showHistoryDialog(final DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
@@ -1368,13 +1540,14 @@ public class Futils {
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                DataUtils.clearHistory();
+                dataUtils.clearHistory();
             }
         });
         a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.history),null,true);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
+                toHFileArray(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
@@ -1383,14 +1556,15 @@ public class Futils {
 
     }
 
-    public void showHiddenDialog(final MainFragment m, AppTheme appTheme) {
+    public void showHiddenDialog(DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(),m, this, R.layout.bookmarkrow, toHFileArray(DataUtils.getHiddenfiles()),null,false);
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
+                toHFileArray(dataUtils.getHiddenfiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();
