@@ -126,6 +126,7 @@
     <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
     <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
+    <string name="hiddenfailure">Can\'t access hidden files</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome">Set As Home</string>
@@ -641,6 +642,18 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
     <string name="bytes">Bytes</string>
+
+    <string name="sidebarfolders_title">Sidebar shortcuts</string>
+    <string name="sidebarquickaccess_title">Sidebar quick access</string>
+    <string name="showfolders_pref_title">Show shortcuts</string>
+    <string name="showfolders_pref">Shortcuts</string>
+    <string name="showquickaccess_pref_title">Show quick accesses</string>
+    <string name="showquickaccess_pref">Quick acceses</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="edit_shortcut">Edit shortcut</string>
+    <string name="directory">Directory</string>
+    <string name="questiondelete_shortcut">Delete shortcut?</string>
+
     <string name="cloud_error_new_account">Failed to add new account</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
@@ -655,4 +668,3 @@
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Show Headers</string>
 </resources>
-

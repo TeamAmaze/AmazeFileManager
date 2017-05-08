@@ -91,4 +91,7 @@
 
     <color name="white_translucent">#80ffffff</color>
 
+
+    <color name="disabled_button">#BDBDBD</color>
+
 </resources>

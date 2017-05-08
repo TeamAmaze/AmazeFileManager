@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -38,25 +37,22 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.database.CloudEntry;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.services.Dropbox;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
@@ -135,12 +131,12 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 public void onClick(View p1) {
                     EntryItem item = (EntryItem) getItem(position);
 
-                    if (DataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
+                    if (dataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
 
                         checkForPath(item.getPath());
                     }
 
-                    if (DataUtils.getAccounts().size() > 0) {
+                    if (dataUtils.getAccounts().size() > 0) {
                         // we have cloud accounts, try see if token is expired or not
                         CloudUtil.checkToken(item.getPath(), m);
                     }
@@ -158,7 +154,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                             EntryItem item = (EntryItem) getItem(position);
                             String title = item.getTitle();
                             String path = (item).getPath();
-                            if (DataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
+                            if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);

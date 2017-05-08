@@ -39,11 +39,8 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -55,6 +52,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import jcifs.smb.SmbFileInputStream;
+
+import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * A class that holds icons for a more efficient access.
@@ -296,25 +295,25 @@ public class IconHolder {
                     bit = BitmapFactory.decodeStream(new SmbFileInputStream(path));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
-                    CloudStorage cloudStorageDropbox = DataUtils.getAccount(OpenMode.DROPBOX);
+                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
 
                     bit = BitmapFactory.decodeStream(cloudStorageDropbox.getThumbnail(CloudUtil
                             .stripPath(OpenMode.DROPBOX, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
-                    CloudStorage cloudStorageBox = DataUtils.getAccount(OpenMode.BOX);
+                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
 
                     bit = BitmapFactory.decodeStream(cloudStorageBox.getThumbnail(CloudUtil
                             .stripPath(OpenMode.BOX, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
 
-                    CloudStorage cloudStorageGDrive = DataUtils.getAccount(OpenMode.GDRIVE);
+                    CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
 
                     bit = BitmapFactory.decodeStream(cloudStorageGDrive.getThumbnail(CloudUtil
                             .stripPath(OpenMode.GDRIVE, path)));
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
-                    CloudStorage cloudStorageOneDrive = DataUtils.getAccount(OpenMode.ONEDRIVE);
+                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
 
                     bit = BitmapFactory.decodeStream(cloudStorageOneDrive.getThumbnail(CloudUtil
                             .stripPath(OpenMode.ONEDRIVE, path)));
