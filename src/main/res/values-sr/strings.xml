@@ -97,7 +97,7 @@
   <string name="no">Не</string>
   <string name="confirm">Потврда</string>
   <string name="deleting">Бришем</string>
-  <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
+  <string name="questiondeletefolders">Желите ли заиста да обришете следеће ставке?</string>
   <string name="questionset">Желите ли да поставите текућу путању као почетну за овај језичак?</string>
   <string name="viewmode">Режим приказа</string>
   <string name="uimode">Режим сучеља</string>

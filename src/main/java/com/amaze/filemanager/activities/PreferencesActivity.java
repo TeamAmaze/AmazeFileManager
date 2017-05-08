@@ -26,8 +26,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -38,16 +40,27 @@ import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.R.string.select;
 
-public class Preferences extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
-    int select = 0;
-    public int changed = 0;
+public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+
+    //Start is the first activity you see
+    public static final int START_PREFERENCE = 0;
+    public static final int COLORS_PREFERENCE = 1;
+    public static final int FOLDERS_PREFERENCE = 2;
+    public static final int QUICKACCESS_PREFERENCE = 3;
+
+    private boolean changed = false;
+    //The preference fragment currently selected
+    private int selectedItem = 0;
 
     private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
 
@@ -86,25 +99,25 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
 
         }
         if (savedInstanceState != null){
-            select = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+            selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
         }
-        selectItem(select);
+        selectItem(selectedItem);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_FRAG_OPEN, select);
+        outState.putInt(KEY_CURRENT_FRAG_OPEN, selectedItem);
     }
 
     @Override
     public void onBackPressed() {
-        if (select == 1 && changed == 1)
+        if (selectedItem != START_PREFERENCE && changed)
             restartPC(this);
-        else if (select == 1 || select == 2) {
-            selectItem(0);
+        else if (selectedItem != START_PREFERENCE) {
+            selectItem(START_PREFERENCE);
         } else {
-            Intent in = new Intent(Preferences.this, MainActivity.class);
+            Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
             in.setAction(Intent.ACTION_MAIN);
             in.setAction(Intent.CATEGORY_LAUNCHER);
             this.startActivity(in);
@@ -117,12 +130,12 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         switch (item.getItemId()) {
             case android.R.id.home:
                 // Navigate "up" the demo structure to the launchpad activity.
-                if (select == 1 && changed == 1)
+                if (selectedItem != START_PREFERENCE && changed)
                     restartPC(this);
-                else if (select == 1) {
-                    selectItem(0);
+                else if (selectedItem != START_PREFERENCE) {
+                    selectItem(START_PREFERENCE);
                 } else {
-                    Intent in = new Intent(Preferences.this, MainActivity.class);
+                    Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
                     in.setAction(Intent.ACTION_MAIN);
                     in.setAction(Intent.CATEGORY_LAUNCHER);
 
@@ -139,6 +152,10 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
         return true;
     }
 
+    public void setChanged() {
+        changed = true;
+    }
+
     public void restartPC(final Activity activity) {
         if (activity == null)
             return;
@@ -152,22 +169,24 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
 
     Preffrag p;
 
+    /**
+     * When a Preference (that requires an independent fragment) is selected this is called.
+     * @param i the Preference in question
+     */
     public void selectItem(int i) {
+        selectedItem = i;
         switch (i) {
-            case 0:
-                p = new Preffrag();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.prefsfragment, p);
-                transaction.commit();
-                select = 0;
-                getSupportActionBar().setTitle(R.string.setting);
+            case START_PREFERENCE:
+                loadPrefFragment(new Preffrag(), R.string.setting);
                 break;
-            case 1:
-                FragmentTransaction transaction1 = getFragmentManager().beginTransaction();
-                transaction1.replace(R.id.prefsfragment, new ColorPref());
-                transaction1.commit();
-                select = 1;
-                getSupportActionBar().setTitle(R.string.color_title);
+            case COLORS_PREFERENCE:
+                loadPrefFragment(new ColorPref(), R.string.color_title);
+                break;
+            case FOLDERS_PREFERENCE:
+                loadPrefFragment(new FoldersPref(), R.string.sidebarfolders_title);
+                break;
+            case QUICKACCESS_PREFERENCE:
+                loadPrefFragment(new QuickAccessPref(), R.string.sidebarquickaccess_title);
                 break;
         }
     }
@@ -179,5 +198,12 @@ public class Preferences extends BaseActivity implements ActivityCompat.OnReques
             p.invalidateGplus();
         }
 
+    }
+
+    private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {
+        FragmentTransaction t = getFragmentManager().beginTransaction();
+        t.replace(R.id.prefsfragment, fragment);
+        t.commit();
+        getSupportActionBar().setTitle(titleBarName);
     }
 }
