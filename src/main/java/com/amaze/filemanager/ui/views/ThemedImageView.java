@@ -1,12 +1,12 @@
 package com.amaze.filemanager.ui.views;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.content.ContextWrapper;
+import android.graphics.Color;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -29,13 +29,26 @@ public class ThemedImageView extends android.support.v7.widget.AppCompatImageVie
     public ThemedImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        // Load attributes
-        TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.ImageView, defStyleAttr, 0);
+        BasicActivity a = (BasicActivity) getActivity();
 
         // dark preference found
-        if (((MainActivity) context).getAppTheme().equals(AppTheme.DARK))
-            setImageDrawable(array.getDrawable(R.styleable.ImageView_src_dark));
+        if (a != null && a.getAppTheme().equals(AppTheme.DARK)) {
+            setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        } else if (a == null) {
+            throw new IllegalStateException("Could not get activity! Can't show correct icon color!");
+        }
 
-        array.recycle();
     }
+
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
+    }
+
 }
