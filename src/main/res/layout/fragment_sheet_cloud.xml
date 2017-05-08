@@ -41,7 +41,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_remote_grey600_24dp"
-                app:src_dark="@drawable/ic_remote_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -66,7 +65,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_dropbox_grey600_24dp"
-                app:src_dark="@drawable/ic_dropbox_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -91,7 +89,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_box_grey600_24dp"
-                app:src_dark="@drawable/ic_box_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -116,7 +113,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_google_drive_grey600_24dp"
-                app:src_dark="@drawable/ic_google_drive_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -141,7 +137,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_onedrive_grey600_24dp"
-                app:src_dark="@drawable/ic_onedrive_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -166,7 +161,6 @@
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
                 android:src="@drawable/ic_onedrive_grey600_24dp"
-                app:src_dark="@drawable/ic_onedrive_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
