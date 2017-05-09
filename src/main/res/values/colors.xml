@@ -40,6 +40,7 @@
     <color name="grid_background_light">#f2f2f2</color>
     <color name="black_trans">#14000000</color>
     <color name="theme_dark_card">#0E141A</color>
+    <color name="item_light_theme">#FF424242</color>
 
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>
