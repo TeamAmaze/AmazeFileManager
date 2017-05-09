@@ -909,12 +909,43 @@ public class HFile {
             }
         } else if (isOtgFile()) {
             if (!exists(context)) {
-                DocumentFile parentDirectory = RootHelper.getDocumentFile(getParent(), context, false);
+                DocumentFile parentDirectory = RootHelper.getDocumentFile(getParent(context), context, false);
                 if (parentDirectory.isDirectory()) {
-                    parentDirectory.createDirectory(getName());
+                    parentDirectory.createDirectory(getName(context));
                 }
             }
-
+        } else if (isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            try {
+                cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        } else if (isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            try {
+                cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        } else if (isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+            try {
+                cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        } else if (isGoogleDriveFile()) {
+            CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
+            try {
+                cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
         } else
             FileUtil.mkdir(new File(path), context);
     }
