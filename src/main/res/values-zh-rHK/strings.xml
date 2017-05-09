@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">如果您想修改系統檔請啟用此選項</string>
   <string name="mountsystem">掛載 System 分區為可讀寫</string>
   <string name="rootfailure">未獲取 Root 訪問許可權</string>
+  <string name="hiddenfailure">無法存取隱藏檔案</string>
   <string name="selectall">全選</string>
   <string name="delete">刪除</string>
   <string name="setashome">設為為首頁目錄</string>
@@ -297,7 +298,7 @@
   <string name="video">視頻</string>
   <string name="other">其他</string>
   <string name="image">圖像</string>
-  <string name="contributors">捐贈人員</string>
+  <string name="contributors">貢獻者</string>
   <string name="savepaths">記住路徑</string>
   <string name="savepathsummary">當你開啟 Amaze 檔案管理器時，每個分頁將顯示你上次訪問的目錄</string>
   <string name="select_intent">選擇</string>
@@ -574,6 +575,16 @@
   <string name="crypt_fingerprint_authenticate">繼續觸控感應器</string>
   <string name="authenticate_password">請輸入密碼</string>
   <string name="bytes">位元組</string>
+  <string name="sidebarfolders_title">側欄捷徑</string>
+  <string name="sidebarquickaccess_title">側欄快速存取</string>
+  <string name="showfolders_pref_title">顯示捷徑</string>
+  <string name="showfolders_pref">捷徑</string>
+  <string name="showquickaccess_pref_title">顯示快速存取</string>
+  <string name="showquickaccess_pref">快速存取</string>
+  <string name="create_shortcut">建立捷徑</string>
+  <string name="edit_shortcut">編輯捷徑</string>
+  <string name="directory">目錄</string>
+  <string name="questiondelete_shortcut">刪除捷徑？</string>
   <string name="cloud_error_new_account">新增帳戶失敗</string>
   <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
   <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>

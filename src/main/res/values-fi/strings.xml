@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Ota tämä käyttöön jos haluat muokata järjestelmätiedostoja</string>
   <string name="mountsystem">Kiinnitä järjestelmäkansiot kirjoitettaviksi</string>
   <string name="rootfailure">Pääkäyttäjän oikeuksia ei myönnetä</string>
+  <string name="hiddenfailure">Ei pääsyä piilotiedostoihin</string>
   <string name="selectall">Valitse kaikki</string>
   <string name="delete">Poista</string>
   <string name="setashome">Aseta kotisivuksi</string>
@@ -621,6 +622,16 @@
   <string name="crypt_fingerprint_authenticate">Paina kosketusanturia jatkaaksesi</string>
   <string name="authenticate_password">Syötä salasana</string>
   <string name="bytes">Tavua</string>
+  <string name="sidebarfolders_title">Sivupalkin pikanäppäimet</string>
+  <string name="sidebarquickaccess_title">Sivupalkin nopeavaus</string>
+  <string name="showfolders_pref_title">Näytä pikanäppäimet</string>
+  <string name="showfolders_pref">Pikavalinnat</string>
+  <string name="showquickaccess_pref_title">Hallitse pikakäyttöä</string>
+  <string name="showquickaccess_pref">Pikavalikko</string>
+  <string name="create_shortcut">Luo pikakuvake</string>
+  <string name="edit_shortcut">Muokkaa pikakuvaketta</string>
+  <string name="directory">Hakemisto</string>
+  <string name="questiondelete_shortcut">Poista pikavalinta</string>
   <string name="cloud_error_new_account">Uuden tilin lisääminen epäonnistui</string>
   <string name="cloud_error_plugin">Amaze laajennusta ei löytynyt, lataa Google Play Storesta.</string>
   <string name="cloud_error_failed_restart">Yhteys epäonnistui.  Avaa Amaze Cloud kerran.</string>
