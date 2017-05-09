@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.util.LruCache;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
@@ -74,11 +78,12 @@ public class TabFragment extends android.support.v4.app.Fragment
     private String startColor, endColor;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment,
+                container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
         mToolBarContainer = getActivity().findViewById(R.id.lin);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             indicator = (Indicator) getActivity().findViewById(R.id.indicator);
         } else {
@@ -130,7 +135,6 @@ public class TabFragment extends android.support.v4.app.Fragment
                     addTab(tabHandler.findTab(2), 2, "");
                 }
             }
-
             mViewPager.setAdapter(mSectionsPagerAdapter);
 
             try {
@@ -199,16 +203,19 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (tabHandler == null)
             tabHandler = new TabHandler(getActivity());
         int i = 1;
-        ArrayList<String> items = new ArrayList<>();
-
+        ArrayList<String> items = new ArrayList<String>();
+        String lastPath = AppConfig.getCache().get(MainActivity.LAST_PATH_CACHE);
+        String notNullLastPath = lastPath != null ? lastPath : "";
         // Getting old path from database before clearing
 
         tabHandler.clear();
         for (Fragment fragment : fragments) {
             if (fragment.getClass().getName().contains("Main")) {
-                MainFragment m = (MainFragment) fragment;
+                Main m = (Main) fragment;
                 items.add(parsePathForName(m.CURRENT_PATH, m.openMode));
-                if (i - 1 == MainActivity.currentTab && i == pos) {
+
+                if (i - 1 == MainActivity.currentTab && i == pos &&
+                        !notNullLastPath.equals(m.CURRENT_PATH)) {
                     mainActivity.updatePath(m.CURRENT_PATH, m.results, m.openMode, m
                             .folder_count, m.file_count);
                     mainActivity.updateDrawer(m.CURRENT_PATH);
@@ -248,6 +255,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         super.onSaveInstanceState(outState);
         try {
             int i = 0;
+
             if (sharedPrefs != null)
                 sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
             if (fragments != null && fragments.size() != 0) {
@@ -273,11 +281,14 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         colorDrawable.setColor(color);
 
-        if (mainActivity.mainFragment != null & !mainActivity.mainFragment.selection) {
-            // we do not want to update toolbar colors when action mode is activated
-            // during the config change
-            mainActivity.updateViews(colorDrawable);
-        }
+        // NullPointerException: Attempt to read from field
+        // 'boolean com.amaze.filemanager.fragments.Main.selection'
+        //on a null object reference
+            if (mainActivity.mainFragment != null && !mainActivity.mainFragment.selection) {
+                // we do not want to update toolbar colors when action mode is activated
+                // during the config change
+                mainActivity.updateViews(colorDrawable);
+            }
     }
 
     @Override
@@ -321,6 +332,8 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         @Override
         public int getItemPosition(Object object) {
+
+            int index = fragments.indexOf(object);
             int index = fragments.indexOf((Fragment) object);
             if (index == -1)
                 return POSITION_NONE;

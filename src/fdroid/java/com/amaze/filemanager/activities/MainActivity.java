@@ -187,6 +187,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
+    public static final String LAST_PATH_CACHE = "LAST_PATH";
+    public Integer select;
 
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -611,11 +613,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     /**
      * Method finds whether a USB device is connected or not
+     *
      * @return true if device is connected
      */
     private boolean isUsbDeviceConnected() {
         UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-        if (usbManager.getDeviceList().size()!=0) {
+        if (usbManager.getDeviceList().size() != 0) {
             // we need to set this every time as there is no way to know that whether USB device was
             // disconnected after closing the app and another one was connected
             // in that case the uri will obviously change
@@ -1737,8 +1740,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             // Persist access permissions.
             final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+          
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
-            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
             switch (operation) {
                 case DataUtils.DELETE://deletion
                     new DeleteTask(null, mainActivity).execute((oparrayList));
@@ -2192,10 +2197,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         });
 
-        FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
-        fabNewFolder.setColorNormal(folderskin);
-        fabNewFolder.setColorPressed(fabskinpressed);
-        fabNewFolder.setOnClickListener(new View.OnClickListener() {
+
+        final FloatingActionButton[] subFloatingActionButton = new FloatingActionButton[4];
+
+        subFloatingActionButton[0] = (FloatingActionButton) findViewById(R.id.menu_item);
+        subFloatingActionButton[0].setColorNormal(folderskin);
+        subFloatingActionButton[0].setColorPressed(fabskinpressed);
+        subFloatingActionButton[0].setOnClickListener(new View.OnClickListener() {
+          
             @Override
             public void onClick(View view) {
 
@@ -2204,10 +2213,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 floatingActionButton.close(true);
             }
         });
-        FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
-        fabNewFile.setColorNormal(folderskin);
-        fabNewFile.setColorPressed(fabskinpressed);
-        fabNewFile.setOnClickListener(new View.OnClickListener() {
+
+        subFloatingActionButton[1] = (FloatingActionButton) findViewById(R.id.menu_item1);
+        subFloatingActionButton[1].setColorNormal(folderskin);
+        subFloatingActionButton[1].setColorPressed(fabskinpressed);
+        subFloatingActionButton[1].setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(MainActivityHelper.NEW_FILE);
@@ -2215,22 +2226,51 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 floatingActionButton.close(true);
             }
         });
-        final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
-        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+
+        subFloatingActionButton[2] = (FloatingActionButton) findViewById(R.id.menu_item2);
+        subFloatingActionButton[2].setColorNormal(folderskin);
+        subFloatingActionButton[2].setColorPressed(fabskinpressed);
+        subFloatingActionButton[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
-                //utils.revealShow(fabBgView, false);
+                mainActivityHelper.add(2);
+                utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
             }
         });
+        subFloatingActionButton[3] = (FloatingActionButton) findViewById(R.id.menu_item3);
+        subFloatingActionButton[3].setColorNormal(folderskin);
+        subFloatingActionButton[3].setColorPressed(fabskinpressed);
+        subFloatingActionButton[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivityHelper.add(3);
+                utils.revealShow(fabBgView, false);
+                floatingActionButton.close(true);
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PackageManager pm = getPackageManager();
+                boolean app_installed;
+                try {
+                    pm.getPackageInfo("com.amaze.filemanager.driveplugin", PackageManager.GET_ACTIVITIES);
+                    app_installed = true;
+                } catch (PackageManager.NameNotFoundException e) {
+                    app_installed = false;
+                }
+                final FloatingActionButton subFloatingFour = subFloatingActionButton[3];
+                if (!app_installed) subFloatingFour.setVisibility(View.GONE);
+            }
+        }).run();
     }
 
     public void updatePath(@NonNull final String news, boolean results, OpenMode openmode,
                            int folder_count, int file_count) {
 
+        setLastCurrentPath(news);
         if (news.length() == 0) return;
 
         switch (openmode) {
@@ -2357,45 +2397,40 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (oldPath.isEmpty()) {
-            // case when app starts
-            // FIXME: COUNTER is incremented twice on app startup
-            COUNTER++;
-            if (COUNTER == 2) {
-                animPath.setAnimation(slideIn);
-                animPath.setText(newPath);
-                animPath.animate().setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
-                        animPath.setVisibility(View.VISIBLE);
-                        bapath.setText("");
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scroll1.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
-                    }
+            animPath.setAnimation(slideIn);
+            animPath.setText(newPath);
+            animPath.animate().setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    animPath.setVisibility(View.VISIBLE);
+                    bapath.setText("");
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll1.fullScroll(View.FOCUS_RIGHT);
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                animPath.setVisibility(View.GONE);
-                                bapath.setText(newPath);
-                            }
-                        }, PATH_ANIM_END_DELAY);
-                    }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            animPath.setVisibility(View.GONE);
+                            bapath.setText(newPath);
+                        }
+                    }, PATH_ANIM_END_DELAY);
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        super.onAnimationCancel(animation);
-                        //onAnimationEnd(animation);
-                    }
-                }).setStartDelay(PATH_ANIM_START_DELAY).start();
-            }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    //onAnimationEnd(animation);
+                }
+            }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else {
             // completely different path
             // first slide out of old path followed by slide in of new path
@@ -2523,11 +2558,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     public void renameBookmark(final String title, final String path) {
-
-        if (DataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, Color.parseColor(BaseActivity.accentSkin));
-            if (renameBookmark != null)
+        if (DataUtils.containsBooks(new String[]{title, path}) != -1 || DataUtils.containsAccounts(new String[]{title, path}) != -1) {
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+            if (renameBookmark != null) {
                 renameBookmark.show(getFragmentManager(), "renamedialog");
+            }
         }
     }
 
@@ -2838,6 +2873,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
+
+
+    private void setLastCurrentPath(@NonNull String currentPath) {
+        if (mainFragment != null) AppConfig.getCache().put(LAST_PATH_CACHE, currentPath);
 
     @Override
     public void addConnection(OpenMode service) {
@@ -3163,7 +3202,5 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 }

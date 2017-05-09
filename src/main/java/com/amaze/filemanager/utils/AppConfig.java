@@ -2,8 +2,10 @@ package com.amaze.filemanager.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -26,7 +28,7 @@ public class AppConfig extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Handler mApplicationHandler = new Handler();
-
+    private static LruCache<String, String> cache= new LruCache<>(100);
     private static AppConfig mInstance;
 
     public UtilitiesProviderInterface getUtilsProvider() {
@@ -117,5 +119,15 @@ public class AppConfig extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+
+    public static LruCache<String, String> getCache() {
+        return cache;
+    }
+
+    @Override
+    public void onTerminate() {
+        cache.evictAll();
+        super.onTerminate();
     }
 }
