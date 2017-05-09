@@ -543,7 +543,16 @@
   <string name="error_busybox">Busybox nebol nájdený. Zatváranie interaktívneho shellu.</string>
   <string name="service_timer">Uplynutý čas</string>
   <string name="please_wait">Prosím čakajte</string>
+  <string name="cloud_connection">Cloudové pripojenie</string>
+  <string name="cloud_connection_new">Nové cloudové pripojenie</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">Získať Cloud plugin</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">E-mailová adresa</string>
+  <string name="cloud_email">E-mailové ID</string>
   <string name="no_applications">Žiadne aplikácie</string>
   <string name="ftp_path">Zdieľaná cesta</string>
   <string name="ftp_path_hint">Cesta do koreňového adresára na zdieľanie</string>
@@ -597,4 +606,13 @@
   <string name="crypt_fingerprint_authenticate">Pre pokračovanie sa dotknite sa senzora</string>
   <string name="authenticate_password">Zadajte heslo</string>
   <string name="bytes">Bajtov</string>
+  <string name="cloud_error_new_account">Nepodarilo sa pridať nové konto</string>
+  <string name="cloud_error_plugin">Amaze Cloud plugin nebol nájdený. Stiahnite si ho prosím z obchodu Play.</string>
+  <string name="cloud_error_failed_restart">Spojenie sa nepodarilo nadviazať.  Prosím najprv otvorte Amaze Cloud.</string>
+  <string name="cloud_remove">Chcete odstrániť pripojenie na cloud?</string>
+  <string name="cloud_fail_authenticate">Overenie zlyhalo</string>
+  <string name="cloud_share_copied">Zdieľaný odkaz bol skopírovaný do schránky</string>
+  <string name="copy_low_memory">Nedostatok pamäte, prosím vyčistite RAM</string>
+  <string name="cloud_token_lost">Token bol stratený, prihláste sa prosím znovu</string>
+  <string name="cloud_plugin_not_supported">Zásuvný modul Cloud nepodporuje vydanie Fdroid. Stiahnite si prosím Amaze z obchodu Play.</string>
 </resources>

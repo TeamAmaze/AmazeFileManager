@@ -632,4 +632,6 @@
   <string name="cloud_token_lost">Token perdido, por favor vuelve a iniciar sesión</string>
   <string name="cloud_plugin_not_supported">Plugin de la nube no está soportado por la build de Fdroid.
         Por favor descarga Amaze desde el Play Store.</string>
+  <string name="monofont">Fuente monoespacio</string>
+  <string name="showHeaders">Mostrar cabeceras</string>
 </resources>

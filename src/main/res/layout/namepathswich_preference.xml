@@ -8,7 +8,7 @@
               android:paddingLeft="16dip"
               android:paddingStart="16dip">
 
-    <ImageButton
+    <com.amaze.filemanager.ui.views.ThemedImageButton
         android:id="@+id/edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_gravity="center"
         />
 
-    <ImageButton
+    <com.amaze.filemanager.ui.views.ThemedImageButton
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
