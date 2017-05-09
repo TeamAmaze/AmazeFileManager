@@ -1261,7 +1261,9 @@ public class MainActivity extends BaseActivity implements
         super.onPause();
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
-        unbindService(mEncryptServiceConnection);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            unbindService(mEncryptServiceConnection);
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
@@ -1302,7 +1304,7 @@ public class MainActivity extends BaseActivity implements
             registerReceiver(mOtgReceiver, otgFilter);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // let's register encryption service to know when we've decrypted
             Intent encryptIntent = new Intent(this, EncryptService.class);
             bindService(encryptIntent, mEncryptServiceConnection, 0);
