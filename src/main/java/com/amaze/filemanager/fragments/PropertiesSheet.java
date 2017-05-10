@@ -71,9 +71,9 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mFileLocationTextView = (TextView) rootView.findViewById(R.id.text_view_file_location);
         mFileLocationTextView.setText(mFile.getPath());
         mFileAccessedTextView = (TextView) rootView.findViewById(R.id.text_view_file_accessed);
-        mFileAccessedTextView.setText(Futils.getdate(mFile.getDate()));
+        mFileAccessedTextView.setText(Futils.getDate(mFile.getDate()));
         mFileModifiedTextView = (TextView) rootView.findViewById(R.id.text_view_file_modified);
-        mFileModifiedTextView.setText(Futils.getdate(mFile.getDate()));
+        mFileModifiedTextView.setText(Futils.getDate(mFile.getDate()));
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) ((View) rootView.getParent()).getLayoutParams();
 

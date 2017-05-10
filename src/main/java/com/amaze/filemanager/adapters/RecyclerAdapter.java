@@ -34,7 +34,6 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -705,7 +704,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(),
+                                utilsProvider.getFutils().showPropertiesDialog((rowItem).generateBaseFile(),
                                         rowItem.getPermissions(), mainFrag,
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
                                 /*PropertiesSheet propertiesSheet = new PropertiesSheet();

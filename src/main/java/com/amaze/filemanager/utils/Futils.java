@@ -774,19 +774,19 @@ public class Futils {
         }
     }
 
-    public String getdate(File f) {
+    public String getDate(File f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f.lastModified());
     }
 
-    public static String getdate(long f) {
+    public static String getDate(long f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f);
     }
 
-    public static String getdate(long f, String year) {
+    public static String getDate(long f, String year) {
         String date = sSDF.format(f);
         if(date.substring(date.length()-4,date.length()).equals(year))
             date=date.substring(0,date.length()-6);
@@ -817,51 +817,61 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final MainFragment c, boolean root, AppTheme appTheme) {
-        long last=hFile.getDate();
-        String date = getdate(last);
-        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
-        name = hFile.getName();
-        parent = hFile.getReadablePath(hFile.getParent(c.getContext()));
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
-        String fabskin = PreferenceUtils.getAccentString(sp);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
-        a.title(c.getResources().getString( R.string.properties));
-        a.theme(appTheme.getMaterialDialogTheme());
-        View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
-        AppCompatButton appCompatButton=(AppCompatButton)v.findViewById(R.id.appX);
+    public void showPropertiesDialog(final BaseFile baseFile, final String permissions,
+                                     final MainFragment mainFragment, boolean isRoot,
+                                     AppTheme appTheme) {
+        long last = baseFile.getDate();
+        String date = getDate(last),
+                items = mainFragment.getResources().getString(R.string.calculating), size = mainFragment.getResources().getString(R.string.calculating),
+                name  = baseFile.getName(),
+                parent = baseFile.getReadablePath(baseFile.getParent(mainFragment.getContext()));
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mainFragment.getActivity());
+        String fabskin = PreferenceUtils.getAccentString(sharedPrefs);
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mainFragment.getActivity());
+        builder.title(mainFragment.getResources().getString(R.string.properties));
+        builder.theme(appTheme.getMaterialDialogTheme());
+
+        View v = mainFragment.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog, null);
+        AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.appX);
         appCompatButton.setAllCaps(true);
-        final View permtabl=v.findViewById(R.id.permtable);
-        final View but=v.findViewById(R.id.set);
-        if(root && perm.length()>6) {
+
+        final View permissionsTable = v.findViewById(R.id.permtable);
+        final View button = v.findViewById(R.id.set);
+        if (isRoot && permissions.length() > 6) {
             appCompatButton.setVisibility(View.VISIBLE);
             appCompatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (permtabl.getVisibility() == View.GONE) {
-                        permtabl.setVisibility(View.VISIBLE);
-                        but.setVisibility(View.VISIBLE);
-                        setPermissionsDialog(permtabl, but, hFile, perm, c);
+                    if (permissionsTable.getVisibility() == View.GONE) {
+                        permissionsTable.setVisibility(View.VISIBLE);
+                        button.setVisibility(View.VISIBLE);
+                        setPermissionsDialog(permissionsTable, button, baseFile, permissions, mainFragment);
                     } else {
-                        but.setVisibility(View.GONE);
-                        permtabl.setVisibility(View.GONE);
+                        button.setVisibility(View.GONE);
+                        permissionsTable.setVisibility(View.GONE);
 
                     }
                 }
             });
         }
-        a.customView(v, true);
-        //a.neutralText(R.string.ok);
-        a.positiveText(c.getResources().getString(R.string.ok));
-        a.positiveColor(Color.parseColor(fabskin));
-        MaterialDialog materialDialog=a.build();
+        builder.customView(v, true);
+        builder.positiveText(mainFragment.getResources().getString(R.string.ok));
+        builder.positiveColor(Color.parseColor(fabskin));
+
+        MaterialDialog materialDialog = builder.build();
         materialDialog.show();
-        /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
+
+        /*
+        View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
-        new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
-                c.MAIN_ACTIVITY, v).execute(hFile.getPath());
+        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);
+        */
+
+        new GenerateMD5Task(materialDialog, baseFile, name, parent, items, date,
+                mainFragment.MAIN_ACTIVITY, v).execute(baseFile.getPath());
     }
 
     public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
@@ -1138,10 +1148,10 @@ public class Futils {
         return new long[]{-1,-1,-1};
     }
 
-    public void showProps(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
+    public void showPropertiesDialog(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
         String date = null;
         try {
-            date = getdate(f.lastModified());
+            date = getDate(f.lastModified());
         } catch (MalformedURLException | SmbException e) {
             e.printStackTrace();
         }
@@ -1572,30 +1582,33 @@ public class Futils {
         x.show();
 
     }
+
     public boolean isAtleastKitkat(){
         return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
     }
-    public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final MainFragment mainFrag) {
-        final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-        String perm=f;
-        if(perm.length()<6){
+
+    public void setPermissionsDialog(final View v, View but, final HFile file,
+                                     final String f, final MainFragment mainFrag) {
+        final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
+        final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
+        final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
+        final CheckBox writeown = (CheckBox) v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup = (CheckBox) v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother = (CheckBox) v.findViewById(R.id.cwriteother);
+        final CheckBox exeown = (CheckBox) v.findViewById(R.id.cexeown);
+        final CheckBox exegroup = (CheckBox) v.findViewById(R.id.cexegroup);
+        final CheckBox exeother = (CheckBox) v.findViewById(R.id.cexeother);
+        String perm = f;
+        if (perm.length() < 6) {
             v.setVisibility(View.GONE);
             but.setVisibility(View.GONE);
-            Toast.makeText(mainFrag.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainFrag.getActivity(), R.string.not_allowed, Toast.LENGTH_SHORT).show();
             return;
         }
-        ArrayList<Boolean[]> arrayList=parse(perm);
-        Boolean[] read=arrayList.get(0);
-        Boolean[] write=arrayList.get(1);
-        final Boolean[] exe=arrayList.get(2);
+        ArrayList<Boolean[]> arrayList = parse(perm);
+        Boolean[] read = arrayList.get(0);
+        Boolean[] write = arrayList.get(1);
+        final Boolean[] exe = arrayList.get(2);
         readown.setChecked(read[0]);
         readgroup.setChecked(read[1]);
         readother.setChecked(read[2]);
@@ -1629,13 +1642,13 @@ public class Futils {
 
                 String command = "chmod " + finalValue + " " + file.getPath();
                 if (file.isDirectory())
-                    command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
+                    command = "chmod -R " + finalValue + " \"" + file.getPath() + "\"";
 
                 try {
                     RootHelper.runShellCommand(command, new Shell.OnCommandResultListener() {
                         @Override
                         public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            if (exitCode<0) {
+                            if (exitCode < 0) {
                                 Toast.makeText(mainFrag.getActivity(), mainFrag.getString(R.string.operationunsuccesful),
                                         Toast.LENGTH_LONG).show();
                             } else {
