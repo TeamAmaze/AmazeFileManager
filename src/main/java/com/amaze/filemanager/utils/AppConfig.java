@@ -2,7 +2,9 @@ package com.amaze.filemanager.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -26,6 +28,8 @@ public class AppConfig extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Handler mApplicationHandler = new Handler();
+    private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
+    private static Handler sBackgroundHandler;
 
     private static AppConfig mInstance;
 
@@ -40,9 +44,67 @@ public class AppConfig extends Application {
 
         utilsProvider = new UtilitiesProvider(this);
 
+        sBackgroundHandlerThread.start();
+        sBackgroundHandler = new Handler(sBackgroundHandlerThread.getLooper());
+
         // disabling file exposure method check for api n+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        sBackgroundHandlerThread.quit();
+    }
+
+    /**
+     * Post a runnable to handler. Use this in case we don't have any restriction to execute after
+     * this runnable is executed, and {@link #runInBackground(CustomAsyncCallbacks)} in case we need
+     * to execute something after execution in background
+     * @param runnable
+     */
+    public static void runInBackground(Runnable runnable) {
+        synchronized (sBackgroundHandler) {
+            sBackgroundHandler.post(runnable);
+        }
+    }
+
+    /**
+     * A compact AsyncTask which runs which executes whatever is passed by callbacks.
+     * Supports any class that extends an object as param array, and result too.
+     * @param customAsyncCallbacks
+     */
+    public static void runInBackground(final CustomAsyncCallbacks customAsyncCallbacks) {
+
+        synchronized (customAsyncCallbacks) {
+
+            new AsyncTask<Object, Void, Object>() {
+
+                @Override
+                protected Void doInBackground(Object... params) {
+                    return customAsyncCallbacks.doInBackground();
+                }
+
+                @Override
+                protected void onPostExecute(Object aVoid) {
+                    super.onPostExecute(aVoid);
+                    customAsyncCallbacks.onPostExecute(aVoid);
+                }
+            }.execute(customAsyncCallbacks.params());
+        }
+    }
+
+    /**
+     * Interface providing callbacks utilized by {@link #runInBackground(CustomAsyncCallbacks)}
+     */
+    public interface CustomAsyncCallbacks {
+
+        <E extends Object> E doInBackground();
+
+        Void onPostExecute(Object result);
+
+        <T extends Object> T[] params();
     }
 
     /**
