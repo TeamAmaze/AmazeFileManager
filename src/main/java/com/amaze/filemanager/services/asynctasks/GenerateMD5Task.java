@@ -12,7 +12,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.ui.CircleAnimation;
 import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.Futils;
@@ -77,12 +76,12 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         mLocationTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_location);
         mLocationTitle.setTextColor(accentColor);
 
-        mNameLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_name);
-        mLocationLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_location);
-        mSizeLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_size);
-        mDateLinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_date);
-        mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_md5);
-        mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.linear_layout_properties_dialog_sha256);
+        mNameLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_name);
+        mLocationLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_location);
+        mSizeLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_size);
+        mDateLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_date);
+        mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_md5);
+        mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_sha256);
 
         if (!f.isDirectory()) {
             textView.findViewById(R.id.divider).setVisibility(View.GONE);
