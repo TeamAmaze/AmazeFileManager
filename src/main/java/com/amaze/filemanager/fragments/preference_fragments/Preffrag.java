@@ -308,10 +308,10 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
      * changes root access and hidden files visibility preferences.
      */
     private void setEnabledShortcuts() {
-        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(
-                TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null));
+        ArrayList<String> predigestedPref = TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null);
+        if(predigestedPref == null) return;
 
-        if(currentValue == null) return;
+        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(predigestedPref);
 
         for(int i = 0; i < currentValue.size(); i++) {
             if(FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
