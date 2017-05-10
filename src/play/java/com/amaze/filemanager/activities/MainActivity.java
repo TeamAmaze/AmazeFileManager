@@ -477,7 +477,6 @@ public class MainActivity extends BaseActivity implements
             oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
             operation = savedInstanceState.getInt("operation");
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
-            adapter.toggleChecked(selectedStorage);
             //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
         }
 
@@ -1696,6 +1695,7 @@ public class MainActivity extends BaseActivity implements
                 super.onPostExecute(items);
                 adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, items, MainActivity.this, sharedPref);
                 mDrawerList.setAdapter(adapter);
+                adapter.toggleChecked(selectedStorage);
             }
         }.execute();
     }
