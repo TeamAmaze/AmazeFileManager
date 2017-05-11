@@ -16,7 +16,7 @@
         android:background="@android:color/transparent"
         android:minHeight="24dp"
         android:minWidth="36dp"
-        app:srcCompat="@drawable/disableable_ic_edit_black_24dp"/>
+        app:srcCompat="@drawable/disableable_ic_edit_24dp"/>
 
     <Switch
         android:id="@+id/switch_button"
