@@ -19,76 +19,173 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
+  <string name="drawer_open">Odpri predal za krmarjenje</string>
   <string name="books">Zaznamki</string>
+  <string name="icon">ikona</string>
+  <string name="efn">Vnesite ime datoteke</string>
   <string name="storage">Mesto za shranjevanje</string>
+  <string name="gallery">Galerija</string>
+  <string name="apps">Upravljalec aplikacij</string>
+  <string name="ftp">FTP strežnik</string>
   <string name="setting">Nastavitve</string>
+  <string name="open">Odpri</string>
+  <string name="play">Trgovina play</string>
+  <string name="properties">Lastnosti</string>
+  <string name="addbook">Dodaj zaznamek</string>
+  <string name="delbook">Izbriši zaznamek</string>
   <string name="cancel">PREKLIČI</string>
+  <string name="loading">Nalaganje&#8230;</string>
+  <string name="file_empty">Datoteka je prezna</string>
+  <string name="error">Napaka</string>
   <string name="save">Shrani</string>
+  <string name="fileexist">Datoteka z istim imenom že obstaja </string>
+  <string name="enterfile">Vnesite ime datoteke</string>
+  <string name="name">Ime</string>
+  <string name="date">Datum</string>
   <string name="location">Lokacija</string>
+  <string name="copying">Kopiranje</string>
+  <string name="add">Dodaj</string>
   <string name="title_files">Datoteke</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
+  <string name="extract">Razširi</string>
   <string name="yes">Da</string>
   <string name="no">Ne</string>
   <string name="confirm">Potrdi</string>
+  <string name="uimode">UI način</string>
+  <string name="sortby">Razvrsti po</string>
+  <string name="theme">Teme</string>
   <string name="back">Nazaj</string>
   <string name="home">Doma</string>
+  <string name="paste">Prilepi</string>
   <string name="close">Zapri</string>
   <string name="history">Zgodovina</string>
   <string name="refresh">Osveži</string>
+  <string name="copy">Kopiraj</string>
+  <string name="rootfailure">Skrbniški dostop ni odobren</string>
+  <string name="selectall">Izberi vse</string>
   <string name="delete">Izbriši</string>
+  <string name="fileexplorer">Raziskovalec datotek</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
+  <string name="simple">Preprost UI</string>
   <!-- Theme -->
+  <string name="daytime">Dnevni čas</string>
   <!--Skin-->
   <string name="red">Rdeča</string>
+  <string name="pink">Roza</string>
+  <string name="purple">Vijolična</string>
+  <string name="indigo">Indigo</string>
   <string name="blue">Modra</string>
+  <string name="light_blue">Svetlomodra</string>
   <string name="cyan">Cijan</string>
   <string name="green">Zelena</string>
+  <string name="orange">Oranžna</string>
+  <string name="brown">Rjava</string>
+  <string name="black">Črna</string>
+  <string name="blue_grey">Modro siva</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <!--SortBy-->
+  <string name="sortName">Ime</string>
   <string name="sortSize">Velikost</string>
   <!--ListMode-->
   <!--Folder-->
   <string name="Yellow">Rumena</string>
   <string name="skip">Preskoči</string>
   <string name="done">Opravljeno</string>
+  <string name="listview">Seznamski pogled</string>
+  <string name="gridview">Mrežni pogled</string>
+  <string name="hide">Skrij</string>
   <string name="exit">Izhod</string>
+  <string name="enternewname">Vnesite novo ime</string>
+  <string name="randomDialog">Naključno</string>
+  <string name="authors">Avtorji</string>
   <string name="changelog">Zadnje spremembe</string>
   <string name="ok">V redu</string>
+  <string name="general">Splošno</string>
+  <string name="thumbSummary">Prikaži sličice aplikacij in slik</string>
+  <string name="thumb">Prikaži sličice</string>
+  <string name="hidden">Prikaži skrite datoteke in mape</string>
+  <string name="lastModifiedSummary">Prikaži datum in čas, kdaj je bila datoteka spremenjena zadnjič</string>
+  <string name="lastModifiedPref">Pokaži zadnje spremembe</string>
+  <string name="sizePrefSummary">Pokaži velikosti datotek in število elementov v mapah</string>
+  <string name="sizePref">Pokaži velikosti</string>
+  <string name="miscellaneous">Razno</string>
   <string name="version">Različica</string>
   <string name="new_string">Novo</string>
+  <string name="view">Prikaz</string>
   <string name="install">Namesti</string>
   <string name="archive">Arhiv</string>
   <string name="details">Podrobnosti</string>
+  <string name="korean_translation_title">Korejsko</string>
+  <string name="greek_translation_title">Grško</string>
+  <string name="dutch_translation_title">Nizozemsko</string>
+  <string name="romanian_translation_title">Romunsko</string>
+  <string name="vietnamese_translation_title">Vietnamsko</string>
+  <string name="japanese_translation_title">Japonsko</string>
+  <string name="brazilian_portuguese_translation_title">Brazilsko Portugalsko</string>
+  <string name="tamil_translation_title">Tamilsko</string>
+  <string name="zip_viewer">Zip pregledovalnik</string>
+  <string name="unin_system_apk">To je sistemska aplikacija, brisanje le te lahko prevede do nestabilnosti sistema. \nNadeljujem?</string>
   <string name="warning">Opozorilo</string>
   <string name="donate">Prispevaj</string>
+  <string name="openas">Odpri kot</string>
   <string name="text">Besedilo</string>
+  <string name="audio">Zvok</string>
+  <string name="video">Video posnetki</string>
   <string name="other">Drugo</string>
+  <string name="image">Slike</string>
+  <string name="contributors">Sodelavci</string>
+  <string name="select_intent">Izberi</string>
+  <string name="md5copied">MD5 je kopirano v odložišče</string>
   <string name="color_title">Barva</string>
+  <string name="hide_mode_title">Skriti način</string>
   <string name="none">Brez</string>
+  <string name="choose_color">Izberite barvo</string>
   <string name="files">Datoteke</string>
   <string name="password">Geslo</string>
   <string name="bluetooth">Bluetooth</string>
   <string name="images">Slike</string>
   <string name="clear">Počisti</string>
+  <string name="md5">MD5</string>
+  <string name="md5_2">Kopiraj md5</string>
+  <string name="total">Skupaj: </string>
   <string name="defualt">Privzeto</string>
   <string name="recent">Nedavne datoteke</string>
   <string name="edit">Uredi</string>
   <string name="path">Pot</string>
+  <string name="cut">Izreži</string>
+  <string name="search">Iskanje</string>
   <string name="start_ftp">Začni</string>
+  <string name="stop_ftp">Ustavi</string>
+  <string name="ftp_notif_stop_server">STOP</string>
+  <string name="paypal_copy_message">PayPal id kopiran v odložišče</string>
+  <string name="searchingdevices">Iskanje naprav</string>
   <string name="information">Podatki</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <string name="title">Naslov</string>
+  <string name="artist">Izvajalec</string>
+  <string name="album">Album</string>
+  <string name="year">Leto</string>
   <string name="duration">Trajanje</string>
+  <string name="comment">Komentar</string>
   <!-- reference to audio/video file -->
+  <string name="codec">Kodek</string>
+  <string name="channels">Kanali</string>
+  <string name="bitrate">Bitna hitrost</string>
+  <string name="dimensions">Dimenzije</string>
+  <string name="frame_rate">Hitrost sličic</string>
   <string name="width">Širina</string>
   <string name="height">Višina</string>
+  <string name="creator">Avtor</string>
   <string name="exposure_time">Čas osvetlitve</string>
   <string name="focal_length">Goriščna razdalja</string>
   <string name="document">Dokument</string>
+  <string name="author">Avtor</string>
   <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
@@ -97,5 +194,6 @@
   <string name="permission_other">Drugo</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_6_summary">FTP strežnik</string>
   <!-- references to 'Some files weren't successfully %s -->
 </resources>

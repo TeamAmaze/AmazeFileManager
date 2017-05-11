@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Уключыце гэтую опцыю, калі хочаце рэдагаваць сістэмныя файлы</string>
   <string name="mountsystem">Мантаваць сістэмныя тэчкі з правам на запіс</string>
   <string name="rootfailure">Root доступ не прадастаўлены</string>
+  <string name="hiddenfailure">Не ўдаецца атрымаць доступ да схаваных файлаў</string>
   <string name="selectall">Выбраць усё</string>
   <string name="delete">Выдаліць</string>
   <string name="setashome">Зрабіць хатняй тэчкай</string>
@@ -561,6 +562,7 @@
   <string name="cloud_drive">Google Дыск</string>
   <string name="cloud_onedrive">OneDrive</string>
   <string name="cloud_box">Box</string>
+  <string name="cloud_get">Атрымаць плагін Воблака</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">E-mail адрас</string>
   <string name="cloud_email">E-mail ID</string>
@@ -617,9 +619,26 @@
   <string name="crypt_fingerprint_authenticate">Краніцеся сэнсара для працягу</string>
   <string name="authenticate_password">Увядзіце пароль</string>
   <string name="bytes">Байты</string>
+  <string name="sidebarfolders_title">Бакавая панэль цэтлікаў</string>
+  <string name="sidebarquickaccess_title">Бакавая панэль хуткага доступу</string>
+  <string name="showfolders_pref_title">Паказаць цэтлікі</string>
+  <string name="showfolders_pref">Цэтлікі</string>
+  <string name="showquickaccess_pref_title">Паказаць хуткія доступы</string>
+  <string name="showquickaccess_pref">Хуткі доступ</string>
+  <string name="create_shortcut">Стварыць цэтлік</string>
+  <string name="edit_shortcut">Змяніць цэтлік</string>
+  <string name="directory">Каталог</string>
+  <string name="questiondelete_shortcut">Выдаліць цэтлік?</string>
   <string name="cloud_error_new_account">Не атрымалася дадаць новы акаўнт</string>
   <string name="cloud_error_plugin">Плагіна Amaze Воблака не знойдзена. Вы можаце спампаваць яго з Play Store.</string>
   <string name="cloud_error_failed_restart">Памылка загрузкі злучэння.
         Amaze Воблака зноў адкрываецца.</string>
+  <string name="cloud_remove">Вы хочаце выдаліць падлучэння да Воблака?</string>
   <string name="cloud_fail_authenticate">Нельга праверыць ідэнтычнасць</string>
+  <string name="cloud_share_copied">Гэта спасылкі скапіявана ў буфер абмену</string>
+  <string name="copy_low_memory">Не хапае памяці, калі ласка вызваліце ​​аператыўную памяць</string>
+  <string name="cloud_token_lost">Token страчаны, калі ласка аўтарызуйцеся зноў</string>
+  <string name="cloud_plugin_not_supported">Плагін воблака не падтрымлівае Fdroid білд. Калі ласка, спампуйце з Play Store.</string>
+  <string name="monofont">Монашырынны шрыфт</string>
+  <string name="showHeaders">Паказаць загалоўкі</string>
 </resources>
