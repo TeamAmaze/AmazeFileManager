@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/size"
+                android:text="@string/size_capitalized"
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView

@@ -828,7 +828,7 @@ public class Futils {
 
         long last = baseFile.getDate();
         String date = getDate(last),
-                items = mainFragment.getResources().getString(R.string.calculating), size = mainFragment.getResources().getString(R.string.calculating),
+                items = mainFragment.getResources().getString(R.string.calculating),
                 name  = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(mainFragment.getContext()));
 
@@ -852,14 +852,10 @@ public class Futils {
                 chart.setDescription(null);
                 chart.setNoDataText(c.getString(R.string.loading));
 
-                Typeface face = Typeface.create("sans-serif-medium", Typeface.NORMAL);
-
                 chart.getLegend().setEnabled(true);
-                chart.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
-                chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-                chart.getLegend().setOrientation(Legend.LegendOrientation.VERTICAL);
-                chart.getLegend().setForm(Legend.LegendForm.SQUARE);
-                chart.getLegend().setTypeface(face);
+                chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
+                chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+                chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
                 chart.animateY(1000);
                 chart.invalidate();

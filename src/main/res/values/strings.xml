@@ -69,7 +69,8 @@
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="location">Location</string>
-    <string name="size">Size of Folder:\t</string>
+    <string name="size_capitalized">Size of folder</string>
+    <string name="size">size of folder</string>
     <string name="totalitems">Total Items</string>
     <string name="enterzipname">Enter Zip Name</string>
     <string name="noappfound">No App found to open this file</string>
@@ -205,8 +206,8 @@
     <string name="nofiles">No Files</string>
     <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
     <string name="pathcopied">Path copied to clipboard</string>
-    <string name="used">Used By Others:\t</string>
-    <string name="free">Free Space:\t</string>
+    <string name="used">used by others</string>
+    <string name="free">free space</string>
     <string name="atroot">You are at the root</string>
     <string name="listview">List View</string>
     <string name="gridview">Grid View</string>
