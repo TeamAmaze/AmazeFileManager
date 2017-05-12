@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -82,9 +83,9 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.services.asynctasks.CountFolderItems;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
-import com.amaze.filemanager.services.asynctasks.CountFolderItems;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -110,6 +111,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -836,7 +839,7 @@ public class Futils {
     private void showPropertiesDialog(final BaseFile baseFile, final String permissions,
                                                     BasicActivity basic, boolean isRoot, AppTheme appTheme,
                                                     boolean showPermissions) {
-        final ArrayList<AsyncTask> tasksToDieWithDialog = new ArrayList<>();
+        final ExecutorService executor = Executors.newFixedThreadPool(3);
         final Context c = basic.getApplicationContext();
         int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
         long last = baseFile.getDate();
@@ -924,12 +927,10 @@ public class Futils {
         }
 
         CountFolderItems countFolderItems = new CountFolderItems(c, itemsText, baseFile);
-        countFolderItems.execute();
-        tasksToDieWithDialog.add(countFolderItems);
+        countFolderItems.executeOnExecutor(executor);
 
         GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
-        hashGen.execute();
-        tasksToDieWithDialog.add(hashGen);
+        hashGen.executeOnExecutor(executor);
 
         /*Chart creation and data loading*/ {
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
@@ -948,8 +949,7 @@ public class Futils {
             chart.invalidate();
 
             LoadFolderSpaceData loadFolderSpaceData =  new LoadFolderSpaceData(c, chart, baseFile);
-            loadFolderSpaceData.execute();
-            tasksToDieWithDialog.add(loadFolderSpaceData);
+            loadFolderSpaceData.executeOnExecutor(executor);
         }
 
         if(showPermissions) {
@@ -981,12 +981,10 @@ public class Futils {
         builder.customView(v, true);
         builder.positiveText(basic.getResources().getString(R.string.ok));
         builder.positiveColor(Color.parseColor(fabskin));
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+        builder.dismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                for (AsyncTask task : tasksToDieWithDialog) {
-                    task.cancel(true);
-                }
+            public void onDismiss(DialogInterface dialog) {
+                executor.shutdown();
             }
         });
 
