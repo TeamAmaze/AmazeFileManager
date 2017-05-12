@@ -946,7 +946,6 @@ public class Futils {
             tasksToDieWithDialog.add(loadFolderSpaceData);
         }
 
-        /*Permissions*/
         if(showPermissions) {
             final MainFragment main = ((MainActivity) basic).mainFragment;
             AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);

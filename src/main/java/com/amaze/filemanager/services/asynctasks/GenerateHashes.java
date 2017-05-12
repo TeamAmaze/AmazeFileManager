@@ -77,7 +77,7 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
     @Override
     protected void onPostExecute(final String[] hashes) {
         super.onPostExecute(hashes);
-        if (!f.isDirectory()) {
+        if (!f.isDirectory() && f.getSize() != 0) {
             md5HashText.setText(hashes[0]);
             sha256Text.setText(hashes[1]);
 
