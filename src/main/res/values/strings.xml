@@ -69,7 +69,7 @@
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="location">Location</string>
-    <string name="size_capitalized">Size of folder</string>
+    <string name="size_capitalized">Size</string>
     <string name="size">size of folder</string>
     <string name="totalitems">Total Items</string>
     <string name="enterzipname">Enter Zip Name</string>

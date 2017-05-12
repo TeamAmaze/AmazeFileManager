@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:minHeight="100dp"
@@ -21,7 +21,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_name"
+                android:id="@+id/title_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -46,7 +46,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_location"
+                android:id="@+id/title_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -70,7 +70,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_size"
+                android:id="@+id/title_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -94,7 +94,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_date"
+                android:id="@+id/title_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -119,7 +119,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_md5"
+                android:id="@+id/title_md5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -143,7 +143,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_sha256"
+                android:id="@+id/title_sha256"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"

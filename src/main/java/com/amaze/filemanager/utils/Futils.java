@@ -84,6 +84,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
+import com.amaze.filemanager.services.asynctasks.CountFolderItems;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -852,78 +853,83 @@ public class Futils {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = basic.getLayoutInflater().inflate(R.layout.properties_dialog, null);
+        TextView itemsText = (TextView) v.findViewById(R.id.t7);
 
-        TextView md5TextView = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_md5);
-        md5TextView.setTextColor(accentColor);
+        /*View setup*/ {
+            TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
+            mNameTitle.setTextColor(accentColor);
 
-        TextView sha256TextView = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_sha256);
-        sha256TextView.setTextColor(accentColor);
+            TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
+            mDateTitle.setTextColor(accentColor);
 
-        TextView mNameTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_name);
-        mNameTitle.setTextColor(accentColor);
+            TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
+            mSizeTitle.setTextColor(accentColor);
 
-        TextView mDateTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_date);
-        mDateTitle.setTextColor(accentColor);
+            TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
+            mLocationTitle.setTextColor(accentColor);
 
-        TextView mSizeTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_size);
-        mSizeTitle.setTextColor(accentColor);
+            TextView md5Title = (TextView) v.findViewById(R.id.title_md5);
+            md5Title.setTextColor(accentColor);
 
-        TextView mLocationTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_location);
-        mLocationTitle.setTextColor(accentColor);
+            TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
+            sha256Title.setTextColor(accentColor);
 
-        ((TextView) v.findViewById(R.id.t5)).setText(name);
-        ((TextView) v.findViewById(R.id.t6)).setText(parent);
-        ((TextView) v.findViewById(R.id.t7)).setText(items);
-        ((TextView) v.findViewById(R.id.t8)).setText(date);
+            ((TextView) v.findViewById(R.id.t5)).setText(name);
+            ((TextView) v.findViewById(R.id.t6)).setText(parent);
+            itemsText.setText(items);
+            ((TextView) v.findViewById(R.id.t8)).setText(date);
 
-        LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
-        LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
-        LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
-        LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+            LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
+            LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
+            LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
+            LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
 
-        // setting click listeners for long press
-        mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Futils.copyToClipboard(c, name);
-                Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Futils.copyToClipboard(c, parent);
-                Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Futils.copyToClipboard(c, items);
-                Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Futils.copyToClipboard(c, date);
-                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        /*Hashes*/ {
-            GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
-            hashGen.execute();
-            tasksToDieWithDialog.add(hashGen);
+            // setting click listeners for long press
+            mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, name);
+                    Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, parent);
+                    Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, items);
+                    Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, date);
+                    Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         }
+
+        CountFolderItems countFolderItems = new CountFolderItems(c, itemsText, baseFile);
+        countFolderItems.execute();
+        tasksToDieWithDialog.add(countFolderItems);
+
+        GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
+        hashGen.execute();
+        tasksToDieWithDialog.add(hashGen);
 
         /*Chart creation and data loading*/ {
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
