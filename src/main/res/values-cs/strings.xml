@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Povolte, pokud chcete upravovat systémové soubory</string>
   <string name="mountsystem">Připojit systémové složky jako zapisovatelné</string>
   <string name="rootfailure">Root přístup nebyl udělen</string>
+  <string name="hiddenfailure">Nelze získat přístup ke skrytým souborům</string>
   <string name="selectall">Vybrat Vše</string>
   <string name="delete">Smazat</string>
   <string name="setashome">Nastavit jako domácí</string>
@@ -606,6 +607,16 @@
   <string name="crypt_fingerprint_authenticate">Stiskněte senzor pro pokračování</string>
   <string name="authenticate_password">Zadejte heslo</string>
   <string name="bytes">Bajtů</string>
+  <string name="sidebarfolders_title">Zkratky postranního panelu</string>
+  <string name="sidebarquickaccess_title">Rychlý přístup k postrannímu panelu</string>
+  <string name="showfolders_pref_title">Zobrazit zkratky</string>
+  <string name="showfolders_pref">Zkratky</string>
+  <string name="showquickaccess_pref_title">Zobrazit Rychlý přístup</string>
+  <string name="showquickaccess_pref">Rychlý přístup</string>
+  <string name="create_shortcut">Vytvořit zástupce</string>
+  <string name="edit_shortcut">Upravit zástupce</string>
+  <string name="directory">Adresář</string>
+  <string name="questiondelete_shortcut">Odstranit zástupce?</string>
   <string name="cloud_error_new_account">Nepodařilo se přidat nový účet</string>
   <string name="cloud_error_plugin">Amaze Cloud plugin nebyl nalezen. Stáhněte si ho z Obchodu Play.</string>
   <string name="cloud_error_failed_restart">Nepodařilo se načíst připojení.         Prosím, otevřete jednou Amaze Cloud.</string>

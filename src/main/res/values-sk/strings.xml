@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Zapnite, ak chcete upravovať systémové súbory</string>
   <string name="mountsystem">Pripojiť systémové priečinky ako zapisovateľné</string>
   <string name="rootfailure">Root prístup nebol udelený</string>
+  <string name="hiddenfailure">Nemožno získať prístup na skryté súbory</string>
   <string name="selectall">Vybrať všetko</string>
   <string name="delete">Vymazať</string>
   <string name="setashome">Nastaviť ako domovský</string>
@@ -606,6 +607,16 @@
   <string name="crypt_fingerprint_authenticate">Pre pokračovanie sa dotknite sa senzora</string>
   <string name="authenticate_password">Zadajte heslo</string>
   <string name="bytes">Bajtov</string>
+  <string name="sidebarfolders_title">Skratky bočného panela</string>
+  <string name="sidebarquickaccess_title">Rýchly prístup k bočnému panelu</string>
+  <string name="showfolders_pref_title">Zobraziť odkazy</string>
+  <string name="showfolders_pref">Odkazy</string>
+  <string name="showquickaccess_pref_title">Zobraziť Rýchly prístup</string>
+  <string name="showquickaccess_pref">Rýchly prístup</string>
+  <string name="create_shortcut">Vytvoriť odkaz</string>
+  <string name="edit_shortcut">Upraviť odkaz</string>
+  <string name="directory">Adresár</string>
+  <string name="questiondelete_shortcut">Odstrániť odkaz?</string>
   <string name="cloud_error_new_account">Nepodarilo sa pridať nové konto</string>
   <string name="cloud_error_plugin">Amaze Cloud plugin nebol nájdený. Stiahnite si ho prosím z obchodu Play.</string>
   <string name="cloud_error_failed_restart">Spojenie sa nepodarilo nadviazať.  Prosím najprv otvorte Amaze Cloud.</string>
@@ -615,4 +626,6 @@
   <string name="copy_low_memory">Nedostatok pamäte, prosím vyčistite RAM</string>
   <string name="cloud_token_lost">Token bol stratený, prihláste sa prosím znovu</string>
   <string name="cloud_plugin_not_supported">Zásuvný modul Cloud nepodporuje vydanie Fdroid. Stiahnite si prosím Amaze z obchodu Play.</string>
+  <string name="monofont">Písmo Monospace</string>
+  <string name="showHeaders">Zobraziť záhlavie</string>
 </resources>
