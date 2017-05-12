@@ -2,7 +2,6 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,18 +22,16 @@ import java.security.NoSuchAlgorithmException;
  */
 public class GenerateHashes extends AsyncTask<Void, String, String[]> {
 
-    private BaseFile f;
-    private Context c;
-    private TextView itemCountText;
+    private BaseFile file;
+    private Context context;
     private TextView md5HashText;
     private TextView sha256Text;
     private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
 
     public GenerateHashes(BaseFile f, final Context c, final View view) {
-        this.c = c;
-        this.f = f;
+        this.context = c;
+        this.file = f;
 
-        itemCountText = (TextView) view.findViewById(R.id.t7);
         md5HashText = (TextView) view.findViewById(R.id.t9);
         sha256Text = (TextView) view.findViewById(R.id.t10);
 
@@ -43,27 +40,12 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
     }
 
     @Override
-    public void onProgressUpdate(String... items) {
-        itemCountText.setText(items[0]);
-    }
-
-    @Override
     protected String[] doInBackground(Void... params) {
-        String items;
-
-        if (f.isDirectory(c)) {
-            int x = f.listFiles(c, false).size();
-            items = x + " " + c.getResources().getString(x == 0 ? R.string.item : R.string.items);
-        } else {
-            items = Formatter.formatFileSize(c, f.length(c)) + (" (" + f.length(c) + " "
-                    + c.getResources().getString(R.string.bytes).toLowerCase() + ")");
-        }
-        publishProgress(items);
-        String md5 = c.getString(R.string.error);
-        String sha256 = c.getString(R.string.error);
+        String md5 = context.getString(R.string.error);
+        String sha256 = context.getString(R.string.error);
 
         try {
-            if (!f.isDirectory(c)) {
+            if (!file.isDirectory(context)) {
                 md5 = getMD5Checksum();
                 sha256 = getSHA256Checksum();
             }
@@ -77,7 +59,7 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
     @Override
     protected void onPostExecute(final String[] hashes) {
         super.onPostExecute(hashes);
-        if (!f.isDirectory() && f.getSize() != 0) {
+        if (!file.isDirectory() && file.getSize() != 0) {
             md5HashText.setText(hashes[0]);
             sha256Text.setText(hashes[1]);
 
@@ -85,9 +67,9 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    Futils.copyToClipboard(c, hashes[0]);
-                    Toast.makeText(c, c.getResources().getString(R.string.md5).toUpperCase() + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    Futils.copyToClipboard(context, hashes[0]);
+                    Toast.makeText(context, context.getResources().getString(R.string.md5).toUpperCase() + " " +
+                            context.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
                 }
             });
@@ -95,9 +77,9 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    Futils.copyToClipboard(c, hashes[1]);
-                    Toast.makeText(c, c.getResources().getString(R.string.hash_sha256) + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    Futils.copyToClipboard(context, hashes[1]);
+                    Toast.makeText(context, context.getResources().getString(R.string.hash_sha256) + " " +
+                            context.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
                 }
             });
@@ -123,7 +105,7 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
         int length;
-        InputStream inputStream = f.getInputStream(c);
+        InputStream inputStream = file.getInputStream(context);
         while ((length = inputStream.read(input)) != -1) {
             if (length > 0)
                 messageDigest.update(input, 0, length);
@@ -144,7 +126,7 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
     }
 
     private byte[] createChecksum() throws Exception {
-        InputStream fis = f.getInputStream(c);
+        InputStream fis = file.getInputStream(context);
 
         byte[] buffer = new byte[8192];
         MessageDigest complete = MessageDigest.getInstance("MD5");
