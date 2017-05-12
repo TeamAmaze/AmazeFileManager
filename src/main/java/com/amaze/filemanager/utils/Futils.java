@@ -841,27 +841,24 @@ public class Futils {
 
         View v = mainFragment.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog, null);
 
-        /*Chart creation and data loading*/ {
+        /*Chart creation and data loading*/
+        {
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
 
-            if(!baseFile.isDirectory()) {
-                chart.setVisibility(View.GONE);
-            } else {
-                chart.setTouchEnabled(false);
-                chart.setDrawEntryLabels(false);
-                chart.setDescription(null);
-                chart.setNoDataText(c.getString(R.string.loading));
+            chart.setTouchEnabled(false);
+            chart.setDrawEntryLabels(false);
+            chart.setDescription(null);
+            chart.setNoDataText(c.getString(R.string.loading));
 
-                chart.getLegend().setEnabled(true);
-                chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
-                chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-                chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            chart.getLegend().setEnabled(true);
+            chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
+            chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
-                chart.animateY(1000);
-                chart.invalidate();
+            chart.animateY(1000);
+            chart.invalidate();
 
-                (new LoadFolderSpaceData(c, chart, baseFile)).execute();
-            }
+            (new LoadFolderSpaceData(c, chart, baseFile)).execute();
         }
 
         AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.appX);

@@ -94,7 +94,6 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Void, Pair<String, List
             context = c;
         }
 
-
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex,
                                         ViewPortHandler viewPortHandler) {
