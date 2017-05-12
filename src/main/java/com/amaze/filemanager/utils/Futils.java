@@ -1128,15 +1128,8 @@ public class Futils {
     }
 
     public static long[] getSpaces(HFile hFile) {
-        if (!hFile.isSmb() && hFile.isDirectory()) { //&& (hFile.isSimpleFile() || hFile.isRoot())) {
-            try {
-                File file = new File(hFile.getPath());
-                long[] ints = new long[]{file.getTotalSpace(), file.getFreeSpace(),
-                        folderSize(new File(hFile.getPath()))};
-                return ints;
-            } catch (Exception e) {
-                return new long[]{-1, -1, -1};
-            }
+        if(hFile.isSmb()) {
+            return new long[]{-1, -1, -1};
         } else if (hFile.isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
             CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
@@ -1174,9 +1167,18 @@ public class Futils {
                     (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
             };
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                File file = new File(hFile.getPath());
+                return new long[]{file.getTotalSpace(), file.getFreeSpace(),
+                        folderSize(new File(hFile.getPath()))};
+            } catch (Exception e) {
+                return new long[]{-1, -1, -1};
+            }
+        } else {
+            return new long[]{-1, -1, -1};
         }
-
-        return new long[]{-1, -1, -1};
     }
 
     public void showPropertiesDialog(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
