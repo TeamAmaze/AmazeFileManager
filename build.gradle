@@ -129,6 +129,8 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
     compile 'com.cloudrail:cloudrail-si-android:2.17.0'
+
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 }
 
 def Properties props = new Properties()

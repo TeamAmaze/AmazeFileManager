@@ -35,6 +35,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
@@ -54,8 +55,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.text.format.Formatter;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -79,6 +80,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
+import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -86,6 +88,8 @@ import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 
 import java.io.File;
 import java.io.IOException;
@@ -820,6 +824,8 @@ public class Futils {
     public void showPropertiesDialog(final BaseFile baseFile, final String permissions,
                                      final MainFragment mainFragment, boolean isRoot,
                                      AppTheme appTheme) {
+        Context c = mainFragment.getActivity().getApplicationContext();
+
         long last = baseFile.getDate();
         String date = getDate(last),
                 items = mainFragment.getResources().getString(R.string.calculating), size = mainFragment.getResources().getString(R.string.calculating),
@@ -834,6 +840,34 @@ public class Futils {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = mainFragment.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog, null);
+
+        /*Chart creation and data loading*/ {
+            PieChart chart = (PieChart) v.findViewById(R.id.chart);
+
+            if(!baseFile.isDirectory()) {
+                chart.setVisibility(View.GONE);
+            } else {
+                chart.setTouchEnabled(false);
+                chart.setDrawEntryLabels(false);
+                chart.setDescription(null);
+                chart.setNoDataText(c.getString(R.string.loading));
+
+                Typeface face = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+
+                chart.getLegend().setEnabled(true);
+                chart.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
+                chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+                chart.getLegend().setOrientation(Legend.LegendOrientation.VERTICAL);
+                chart.getLegend().setForm(Legend.LegendForm.SQUARE);
+                chart.getLegend().setTypeface(face);
+
+                chart.animateY(1000);
+                chart.invalidate();
+
+                (new LoadFolderSpaceData(c, chart, baseFile)).execute();
+            }
+        }
+
         AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.appX);
         appCompatButton.setAllCaps(true);
 
@@ -1098,21 +1132,21 @@ public class Futils {
     }
 
     public static long[] getSpaces(HFile hFile) {
-        if(!hFile.isSmb() && hFile.isDirectory() && (hFile.isSimpleFile() || hFile.isRoot())) {
+        if (!hFile.isSmb() && hFile.isDirectory()) { //&& (hFile.isSimpleFile() || hFile.isRoot())) {
             try {
-                File file=new File(hFile.getPath());
-                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(), folderSize
-                        (new File(hFile.getPath()))};
+                File file = new File(hFile.getPath());
+                long[] ints = new long[]{file.getTotalSpace(), file.getFreeSpace(),
+                        folderSize(new File(hFile.getPath()))};
                 return ints;
             } catch (Exception e) {
-                return new long[]{-1,-1,-1};
+                return new long[]{-1, -1, -1};
             }
         } else if (hFile.isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
             CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageDropbox.getAllocation().getTotal(),
+            return new long[]{cloudStorageDropbox.getAllocation().getTotal(),
                     (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
             };
@@ -1121,7 +1155,7 @@ public class Futils {
             CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageBox.getAllocation().getTotal(),
+            return new long[]{cloudStorageBox.getAllocation().getTotal(),
                     (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
             };
@@ -1131,7 +1165,7 @@ public class Futils {
             CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageGDrive.getAllocation().getTotal(),
+            return new long[]{cloudStorageGDrive.getAllocation().getTotal(),
                     (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
             };
@@ -1140,12 +1174,13 @@ public class Futils {
 
             CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
                     hFile.getPath()));
-            return new long[] {cloudStorageOneDrive.getAllocation().getTotal(),
+            return new long[]{cloudStorageOneDrive.getAllocation().getTotal(),
                     (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
             };
         }
-        return new long[]{-1,-1,-1};
+
+        return new long[]{-1, -1, -1};
     }
 
     public void showPropertiesDialog(final BaseFile f, final BaseActivity c, AppTheme appTheme) {

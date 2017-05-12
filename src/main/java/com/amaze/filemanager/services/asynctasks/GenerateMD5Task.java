@@ -12,8 +12,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.ui.CircleAnimation;
-import com.amaze.filemanager.ui.views.SizeDrawable;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -28,52 +26,43 @@ import java.security.NoSuchAlgorithmException;
  */
 public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
 
-    private MaterialDialog a;
+    private MaterialDialog dialog;
     private String name, parent, items, date;
     private BaseFile f;
     private BaseActivity c;
-    private SizeDrawable sizeDrawable;
     private GenerateMD5Task g = this;
-    private TextView t5, t6, t7, t8, t9, t10;
-    private TextView mNameTitle, mLocationTitle, mDateTitle, mSizeTitle;
-    private TextView md5TextView, sha256TextView;
+    private TextView nameText, dirText, itemCountText, creationDateText, md5HashText, sha256Text;
     private LinearLayout mNameLinearLayout, mSizeLinearLayout, mLocationLinearLayout, mDateLinearLayout;
     private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
-    private int accentColor;
 
-    public GenerateMD5Task(MaterialDialog a, BaseFile f, String name, String parent,
+    public GenerateMD5Task(MaterialDialog dialog, BaseFile f, String name, String parent,
                            String items, String date, final BaseActivity c, final View textView) {
-        this.a = a;
+        this.dialog = dialog;
         this.c = c;
         this.f = f;
         this.name = name;
         this.parent = parent;
         this.items = items;
         this.date = date;
-        this.sizeDrawable = (SizeDrawable) textView.findViewById(R.id.sizedrawable);
-        final TextView t1 = (TextView) textView.findViewById(R.id.t1);
-        final TextView t2 = (TextView) textView.findViewById(R.id.t2);
-        final TextView t3 = (TextView) textView.findViewById(R.id.t3);
-        final TextView t4 = (TextView) textView.findViewById(R.id.t4);
-        t5 = (TextView) textView.findViewById(R.id.t5);
-        t6 = (TextView) textView.findViewById(R.id.t6);
-        t7 = (TextView) textView.findViewById(R.id.t7);
-        t8 = (TextView) textView.findViewById(R.id.t8);
-        t9 = (TextView) textView.findViewById(R.id.t9);
-        t10 = (TextView) textView.findViewById(R.id.t10);
+        nameText = (TextView) textView.findViewById(R.id.t5);
+        dirText = (TextView) textView.findViewById(R.id.t6);
+        itemCountText = (TextView) textView.findViewById(R.id.t7);
+        creationDateText = (TextView) textView.findViewById(R.id.t8);
+        md5HashText = (TextView) textView.findViewById(R.id.t9);
+        sha256Text = (TextView) textView.findViewById(R.id.t10);
 
-        accentColor = c.getColorPreference().getColor(ColorUsage.ACCENT);
-        md5TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_md5);
+        int accentColor = c.getColorPreference().getColor(ColorUsage.ACCENT);
+        TextView md5TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_md5);
         md5TextView.setTextColor(accentColor);
-        sha256TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_sha256);
+        TextView sha256TextView = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_sha256);
         sha256TextView.setTextColor(accentColor);
-        mNameTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_name);
+        TextView mNameTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_name);
         mNameTitle.setTextColor(accentColor);
-        mDateTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_date);
+        TextView mDateTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_date);
         mDateTitle.setTextColor(accentColor);
-        mSizeTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_size);
+        TextView mSizeTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_size);
         mSizeTitle.setTextColor(accentColor);
-        mLocationTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_location);
+        TextView mLocationTitle = (TextView) textView.findViewById(R.id.text_view_properties_dialog_title_location);
         mLocationTitle.setTextColor(accentColor);
 
         mNameLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_name);
@@ -82,58 +71,23 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
         mDateLinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_date);
         mMD5LinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_md5);
         mSHA256LinearLayout = (LinearLayout) textView.findViewById(R.id.properties_dialog_sha256);
-
-        if (!f.isDirectory()) {
-            textView.findViewById(R.id.divider).setVisibility(View.GONE);
-            textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
-        } else {
-            md5TextView.setVisibility(View.GONE);
-            sha256TextView.setVisibility(View.GONE);
-
-            new AsyncTask<Void, Void, long[]>() {
-                @Override
-                protected long[] doInBackground(Void... voids) {
-                    return Futils.getSpaces(g.f);
-                }
-
-                @Override
-                protected void onPostExecute(long[] longs) {
-                    super.onPostExecute(longs);
-                    if (longs[0] != -1 && longs[0] != 0) {
-                        float r1 = (longs[0] - longs[1]) * 360 / longs[0];
-                        float r2 = (longs[2]) * 360 / longs[0];
-                        t1.setText(Formatter.formatFileSize(c, longs[0]));
-                        t2.setText(Formatter.formatFileSize(c, longs[1]));
-                        t3.setText(Formatter.formatFileSize(c, longs[0] - longs[1] - longs[2]));
-                        t4.setText(Formatter.formatFileSize(c, longs[2]));
-
-                        CircleAnimation animation = new CircleAnimation(g.sizeDrawable, r1, r2);
-                        animation.setDuration(Math.round(r1 * 5));
-                        g.sizeDrawable.startAnimation(animation);
-                    } else {
-                        textView.findViewById(R.id.divider).setVisibility(View.GONE);
-                        textView.findViewById(R.id.dirprops).setVisibility(View.GONE);
-                    }
-                }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
     }
 
     @Override
     public void onProgressUpdate(String... ab) {
-        if (a != null && a.isShowing()) {
-            t7.setText(items);
+        if (dialog != null && dialog.isShowing()) {
+            itemCountText.setText(items);
         }
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        t5.setText(name);
-        t6.setText(parent);
-        t7.setText(items);
-        t8.setText(date);
-        a.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+        nameText.setText(name);
+        dirText.setText(parent);
+        itemCountText.setText(items);
+        creationDateText.setText(date);
+        dialog.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
 
         // setting click listeners for long press
         mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -207,19 +161,19 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
     }
 
     @Override
-    protected void onPostExecute(final String[] aVoid) {
-        super.onPostExecute(aVoid);
-        if (a.isShowing()) {
+    protected void onPostExecute(final String[] hashes) {
+        super.onPostExecute(hashes);
+        if (dialog.isShowing()) {
 
             if (!f.isDirectory()) {
-                t9.setText(aVoid[0]);
-                t10.setText(aVoid[1]);
+                md5HashText.setText(hashes[0]);
+                sha256Text.setText(hashes[1]);
 
                 mMD5LinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
 
-                        Futils.copyToClipboard(c, aVoid[0]);
+                        Futils.copyToClipboard(c, hashes[0]);
                         Toast.makeText(c, c.getResources().getString(R.string.md5).toUpperCase() + " " +
                                 c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                         return false;
@@ -229,15 +183,15 @@ public class GenerateMD5Task extends AsyncTask<String, String, String[]> {
                     @Override
                     public boolean onLongClick(View v) {
 
-                        Futils.copyToClipboard(c, aVoid[1]);
+                        Futils.copyToClipboard(c, hashes[1]);
                         Toast.makeText(c, c.getResources().getString(R.string.hash_sha256) + " " +
                                 c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                         return false;
                     }
                 });
             } else {
-                t9.setVisibility(View.GONE);
-                t10.setVisibility(View.GONE);
+                mMD5LinearLayout.setVisibility(View.GONE);
+                mSHA256LinearLayout.setVisibility(View.GONE);
             }
         }
     }
