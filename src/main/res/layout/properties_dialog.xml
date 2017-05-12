@@ -168,7 +168,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/permission"
-        android:id="@+id/appX"
+        android:id="@+id/permissionsButton"
         android:visibility="gone"/>
 
     <include

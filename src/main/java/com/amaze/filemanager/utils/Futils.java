@@ -61,6 +61,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -68,6 +70,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
@@ -79,11 +82,12 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
+import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -93,7 +97,6 @@ import com.github.mikephil.charting.components.Legend;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
@@ -112,7 +115,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
@@ -821,28 +823,109 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showPropertiesDialog(final BaseFile baseFile, final String permissions,
-                                     final MainFragment mainFragment, boolean isRoot,
-                                     AppTheme appTheme) {
-        Context c = mainFragment.getActivity().getApplicationContext();
+    public void showPropertiesDialogWithPreference(BaseFile baseFile, final String permissions,
+                                                   BasicActivity basic, boolean isRoot, AppTheme appTheme) {
+        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true);
+    }
 
+    public void showPropertiesDialogWithoutPreference(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+        showPropertiesDialog(f, null, activity, false, appTheme, false);
+    }
+
+    private void showPropertiesDialog(final BaseFile baseFile, final String permissions,
+                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme,
+                                                    boolean showPermissions) {
+        final ArrayList<AsyncTask> tasksToDieWithDialog = new ArrayList<>();
+        final Context c = basic.getApplicationContext();
+        int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
         long last = baseFile.getDate();
-        String date = getDate(last),
-                items = mainFragment.getResources().getString(R.string.calculating),
+        final String date = getDate(last),
+                items = basic.getResources().getString(R.string.calculating),
                 name  = baseFile.getName(),
-                parent = baseFile.getReadablePath(baseFile.getParent(mainFragment.getContext()));
+                parent = baseFile.getReadablePath(baseFile.getParent(c));
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mainFragment.getActivity());
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
         String fabskin = PreferenceUtils.getAccentString(sharedPrefs);
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(mainFragment.getActivity());
-        builder.title(mainFragment.getResources().getString(R.string.properties));
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(basic);
+        builder.title(basic.getResources().getString(R.string.properties));
         builder.theme(appTheme.getMaterialDialogTheme());
 
-        View v = mainFragment.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog, null);
+        View v = basic.getLayoutInflater().inflate(R.layout.properties_dialog, null);
 
-        /*Chart creation and data loading*/
-        {
+        TextView md5TextView = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_md5);
+        md5TextView.setTextColor(accentColor);
+
+        TextView sha256TextView = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_sha256);
+        sha256TextView.setTextColor(accentColor);
+
+        TextView mNameTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_name);
+        mNameTitle.setTextColor(accentColor);
+
+        TextView mDateTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_date);
+        mDateTitle.setTextColor(accentColor);
+
+        TextView mSizeTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_size);
+        mSizeTitle.setTextColor(accentColor);
+
+        TextView mLocationTitle = (TextView) v.findViewById(R.id.text_view_properties_dialog_title_location);
+        mLocationTitle.setTextColor(accentColor);
+
+        ((TextView) v.findViewById(R.id.t5)).setText(name);
+        ((TextView) v.findViewById(R.id.t6)).setText(parent);
+        ((TextView) v.findViewById(R.id.t7)).setText(items);
+        ((TextView) v.findViewById(R.id.t8)).setText(date);
+
+        LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
+        LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
+        LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
+        LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+
+        // setting click listeners for long press
+        mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, name);
+                Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, parent);
+                Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, items);
+                Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, date);
+                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        /*Hashes*/ {
+            GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
+            hashGen.execute();
+            tasksToDieWithDialog.add(hashGen);
+        }
+
+        /*Chart creation and data loading*/ {
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
 
             chart.setTouchEnabled(false);
@@ -858,37 +941,53 @@ public class Futils {
             chart.animateY(1000);
             chart.invalidate();
 
-            (new LoadFolderSpaceData(c, chart, baseFile)).execute();
+            LoadFolderSpaceData loadFolderSpaceData =  new LoadFolderSpaceData(c, chart, baseFile);
+            loadFolderSpaceData.execute();
+            tasksToDieWithDialog.add(loadFolderSpaceData);
         }
 
-        AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.appX);
-        appCompatButton.setAllCaps(true);
+        /*Permissions*/
+        if(showPermissions) {
+            final MainFragment main = ((MainActivity) basic).mainFragment;
+            AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
+            appCompatButton.setAllCaps(true);
 
-        final View permissionsTable = v.findViewById(R.id.permtable);
-        final View button = v.findViewById(R.id.set);
-        if (isRoot && permissions.length() > 6) {
-            appCompatButton.setVisibility(View.VISIBLE);
-            appCompatButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (permissionsTable.getVisibility() == View.GONE) {
-                        permissionsTable.setVisibility(View.VISIBLE);
-                        button.setVisibility(View.VISIBLE);
-                        setPermissionsDialog(permissionsTable, button, baseFile, permissions, mainFragment);
-                    } else {
-                        button.setVisibility(View.GONE);
-                        permissionsTable.setVisibility(View.GONE);
-
+            final View permissionsTable = v.findViewById(R.id.permtable);
+            final View button = v.findViewById(R.id.set);
+            if (isRoot && permissions.length() > 6) {
+                appCompatButton.setVisibility(View.VISIBLE);
+                appCompatButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (permissionsTable.getVisibility() == View.GONE) {
+                            permissionsTable.setVisibility(View.VISIBLE);
+                            button.setVisibility(View.VISIBLE);
+                            setPermissionsDialog(permissionsTable, button, baseFile, permissions, c,
+                                    main);
+                        } else {
+                            button.setVisibility(View.GONE);
+                            permissionsTable.setVisibility(View.GONE);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
+
         builder.customView(v, true);
-        builder.positiveText(mainFragment.getResources().getString(R.string.ok));
+        builder.positiveText(basic.getResources().getString(R.string.ok));
         builder.positiveColor(Color.parseColor(fabskin));
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                for (AsyncTask task : tasksToDieWithDialog) {
+                    task.cancel(true);
+                }
+            }
+        });
 
         MaterialDialog materialDialog = builder.build();
         materialDialog.show();
+        materialDialog.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
 
         /*
         View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
@@ -896,9 +995,6 @@ public class Futils {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);
         */
-
-        new GenerateMD5Task(materialDialog, baseFile, name, parent, items, date,
-                mainFragment.MAIN_ACTIVITY, v).execute(baseFile.getPath());
     }
 
     public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
@@ -1176,34 +1272,6 @@ public class Futils {
         } else {
             return new long[]{-1, -1, -1};
         }
-    }
-
-    public void showPropertiesDialog(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
-        String date = null;
-        try {
-            date = getDate(f.lastModified());
-        } catch (MalformedURLException | SmbException e) {
-            e.printStackTrace();
-        }
-
-        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
-        name = f.getName();
-        parent = f.getReadablePath(f.getParent());
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getAccentString(sp);
-
-        View v = c.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        v.findViewById(R.id.appX).setVisibility(View.GONE);
-
-        MaterialDialog materialDialog = new MaterialDialog.Builder(c)
-                .title(c.getResources().getString(R.string.properties))
-                .theme(appTheme.getMaterialDialogTheme())
-                .customView(v, true)
-                .positiveText(R.string.ok)
-                .positiveColor(Color.parseColor(fabskin))
-                .build();
-        materialDialog.show();
-        new GenerateMD5Task(materialDialog, (f), name, parent, items, date, c, v).execute(f.getPath());
     }
 
     public static boolean copyToClipboard(Context context, String text) {
@@ -1618,7 +1686,7 @@ public class Futils {
     }
 
     public void setPermissionsDialog(final View v, View but, final HFile file,
-                                     final String f, final MainFragment mainFrag) {
+                                     final String f, final Context context, final MainFragment mainFrag) {
         final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
         final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
         final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
@@ -1632,7 +1700,7 @@ public class Futils {
         if (perm.length() < 6) {
             v.setVisibility(View.GONE);
             but.setVisibility(View.GONE);
-            Toast.makeText(mainFrag.getActivity(), R.string.not_allowed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.not_allowed, Toast.LENGTH_SHORT).show();
             return;
         }
         ArrayList<Boolean[]> arrayList = parse(perm);
@@ -1679,17 +1747,17 @@ public class Futils {
                         @Override
                         public void onCommandResult(int commandCode, int exitCode, List<String> output) {
                             if (exitCode < 0) {
-                                Toast.makeText(mainFrag.getActivity(), mainFrag.getString(R.string.operationunsuccesful),
+                                Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
                                         Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(mainFrag.getActivity(),
+                                Toast.makeText(context,
                                         mainFrag.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
                     mainFrag.updateList();
                 } catch (RootNotPermittedException e1) {
-                    Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.rootfailure),
+                    Toast.makeText(context, mainFrag.getResources().getString(R.string.rootfailure),
                             Toast.LENGTH_LONG).show();
                     e1.printStackTrace();
                 }

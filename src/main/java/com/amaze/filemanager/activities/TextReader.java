@@ -544,7 +544,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 if (mFile.exists()) {
                     //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
                     //hFile.generateMode(this);
-                    getFutils().showPropertiesDialog(mFile, this, getAppTheme());
+                    getFutils().showPropertiesDialogWithoutPreference(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
