@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Aktifkan ini jika anda ingin mengedit file sistem</string>
   <string name="mountsystem">Mount folder system sebagai dapat ditulisi</string>
   <string name="rootfailure">Akses root tidak diberikan</string>
+  <string name="hiddenfailure">Tidak dapat mengakses berkas tersembunyi</string>
   <string name="selectall">Pilih semua</string>
   <string name="delete">Hapus</string>
   <string name="setashome">Atur sebagai beranda</string>
@@ -574,6 +575,16 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="crypt_fingerprint_authenticate">Sentuh sensor untuk melanjutkan</string>
   <string name="authenticate_password">Masukkan sandi</string>
   <string name="bytes">Bytes</string>
+  <string name="sidebarfolders_title">Pintasan sidebar</string>
+  <string name="sidebarquickaccess_title">Akses cepat sidebar</string>
+  <string name="showfolders_pref_title">Lihat pintasan</string>
+  <string name="showfolders_pref">Pintasan</string>
+  <string name="showquickaccess_pref_title">Tampilkan akses cepat</string>
+  <string name="showquickaccess_pref">Akses cepat</string>
+  <string name="create_shortcut">Buat pintasan</string>
+  <string name="edit_shortcut">Sunting pintasan</string>
+  <string name="directory">Direktori</string>
+  <string name="questiondelete_shortcut">Hapus pintasan ini?</string>
   <string name="cloud_error_new_account">Gagal menambahkan akun baru</string>
   <string name="cloud_error_plugin">Plugin Amaze Cloud tidak ditemukan. Silahkan unduh dari Play Store.</string>
   <string name="cloud_error_failed_restart">Gagal memuat sambungan.
@@ -585,4 +596,6 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="cloud_token_lost">Token hilang, silakan masuk lagi</string>
   <string name="cloud_plugin_not_supported">Plug-in cloud tidak didukung untuk membangun Fdroid.
         Silahkan unduh Amaze dari Play Store.</string>
+  <string name="monofont">Monospace Font</string>
+  <string name="showHeaders">Tampilkan Tajuk</string>
 </resources>

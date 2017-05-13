@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Activez ceci si vous souhaitez modifier des Fichiers système</string>
   <string name="mountsystem">Monter les dossiers système pour accès en écriture</string>
   <string name="rootfailure">Accès root refusé</string>
+  <string name="hiddenfailure">Impossible d’accéder à des fichiers cachés</string>
   <string name="selectall">Tout sélectionner</string>
   <string name="delete">Supprimer</string>
   <string name="setashome"> Définit comme Dossier d\'accueil</string>
@@ -540,10 +541,14 @@
   <string name="error_busybox">BusyBox introuvable. Le script shell est arrêté.</string>
   <string name="service_timer">Temps écoulé</string>
   <string name="please_wait">Veuillez patienter</string>
+  <string name="cloud_connection">Connexion Cloud</string>
+  <string name="cloud_connection_new">Nouvelle connexion Cloud</string>
   <string name="cloud_dropbox">Dropbox</string>
   <string name="cloud_drive">Google Drive</string>
   <string name="cloud_onedrive">OneDrive</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">Adresse e-mail</string>
+  <string name="cloud_email">ID e-mail</string>
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
   <string name="change">Modifier</string>
@@ -587,7 +592,15 @@
   <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
   <string name="bytes">Octets</string>
+  <string name="showfolders_pref_title">Afficher les raccourcis</string>
+  <string name="showfolders_pref">Raccourcis</string>
+  <string name="showquickaccess_pref">Accès rapide</string>
+  <string name="create_shortcut">Créer un raccourci</string>
+  <string name="edit_shortcut">Modifier le raccourci</string>
+  <string name="directory">Répertoires</string>
   <string name="questiondelete_shortcut">Supprimer le raccourci?</string>
+  <string name="cloud_error_new_account">Impossible d\'ajouter un nouveau compte</string>
+  <string name="cloud_remove">Voulez-vous supprimer la connexion Cloud ?</string>
   <string name="cloud_fail_authenticate">Échec de l\'authentification</string>
   <string name="copy_low_memory">Mémoire insuffisant, Veuillez libérer de la RAM</string>
 </resources>
