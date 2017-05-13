@@ -586,6 +586,7 @@
   <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
   <string name="bytes">Octets</string>
+  <string name="questiondelete_shortcut">Supprimer le raccourci?</string>
   <string name="cloud_fail_authenticate">Échec de l\'authentification</string>
   <string name="copy_low_memory">Mémoire insuffisant, Veuillez libérer de la RAM</string>
 </resources>

@@ -123,6 +123,7 @@
   <string name="mountsystemsummary">Habilite esta opción si desea editar archivos de sistema</string>
   <string name="mountsystem">Montar carpetas del sistema para escritura</string>
   <string name="rootfailure">Acceso de Superusuario no concedido</string>
+  <string name="hiddenfailure">No se puede acceder a los archivos ocultos</string>
   <string name="selectall">Seleccionar todo</string>
   <string name="delete">Eliminar</string>
   <string name="setashome"> Establecer como carpeta principal</string>
@@ -621,6 +622,16 @@
   <string name="crypt_fingerprint_authenticate">Tocar sensor para continuar</string>
   <string name="authenticate_password">Introducir contraseña</string>
   <string name="bytes">Bytes</string>
+  <string name="sidebarfolders_title">Barra lateral de accesos directos</string>
+  <string name="sidebarquickaccess_title">Barra lateral de accesos rápidos</string>
+  <string name="showfolders_pref_title">Mostrar accesos directos</string>
+  <string name="showfolders_pref">Accesos directos</string>
+  <string name="showquickaccess_pref_title">Mostrar accesos rápidos</string>
+  <string name="showquickaccess_pref">Accesos rápidos</string>
+  <string name="create_shortcut">Crear acceso directo</string>
+  <string name="edit_shortcut">Editar acceso directo</string>
+  <string name="directory">Directorio</string>
+  <string name="questiondelete_shortcut">¿Eliminar acceso directo?</string>
   <string name="cloud_error_new_account">Error al agregar la nueva cuenta</string>
   <string name="cloud_error_plugin">No se ha encontrado el plugin de la nube de Amaze. Por favor descárgalo desde el Play Store.</string>
   <string name="cloud_error_failed_restart">Error al cargar la conexión.
