@@ -33,9 +33,9 @@ public class SearchAsyncHelper extends Fragment {
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
-        void onPreExecute();
-        void onPostExecute();
-        void onProgressUpdate(BaseFile val);
+        void onPreExecute(String query);
+        void onPostExecute(String query);
+        void onProgressUpdate(BaseFile val,String query);
         void onCancelled();
     }
 
@@ -80,7 +80,7 @@ public class SearchAsyncHelper extends Fragment {
              */
             if (mCallbacks!=null) {
 
-                mCallbacks.onPreExecute();
+                mCallbacks.onPreExecute(mInput);
             }
         }
 
@@ -111,7 +111,7 @@ public class SearchAsyncHelper extends Fragment {
         @Override
         public void onPostExecute(Void c){
             if (mCallbacks!=null) {
-                mCallbacks.onPostExecute();
+                mCallbacks.onPostExecute(mInput);
             }
         }
 
@@ -123,7 +123,7 @@ public class SearchAsyncHelper extends Fragment {
         @Override
         public void onProgressUpdate(BaseFile... val) {
             if (!isCancelled() && mCallbacks!=null) {
-                mCallbacks.onProgressUpdate(val[0]);
+                mCallbacks.onProgressUpdate(val[0],mInput);
             }
         }
 
