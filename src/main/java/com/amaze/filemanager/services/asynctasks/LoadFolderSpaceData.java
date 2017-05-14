@@ -76,11 +76,13 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Void, Pair<String, List
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setSliceSpace(5f);
+        set.setValueLinePart2Length(1.05f);
+        set.setSelectionShift(0f);
 
         PieData pieData = new PieData(set);
         pieData.setValueFormatter(new SizeFormatter(context));
 
-        chart.setCenterText(new SpannableString(context.getString(R.string.total) + data.first));
+        chart.setCenterText(new SpannableString(context.getString(R.string.total) + "\n" + data.first));
         chart.setData(pieData);
         chart.notifyDataSetChanged();
         chart.invalidate();

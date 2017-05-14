@@ -939,6 +939,7 @@ public class Futils {
             chart.setDrawEntryLabels(false);
             chart.setDescription(null);
             chart.setNoDataText(c.getString(R.string.loading));
+            chart.setRotationAngle(0f);
 
             chart.getLegend().setEnabled(true);
             chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
