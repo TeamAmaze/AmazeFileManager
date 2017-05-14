@@ -66,7 +66,6 @@
   <string name="name">Nom: </string>
   <string name="date">Date: </string>
   <string name="location">Lieu</string>
-  <string name="size">Taille: </string>
   <string name="totalitems">Total éléments: </string>
   <string name="enterzipname">Entrer le nom du ZIP</string>
   <string name="noappfound">Aucun applications trouvées pour ouvrir ce fichier</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Aucun fichier</string>
   <string name="tapnhold">Appuyer et maintenir sur un fichier ou dossier pour plus d\'options</string>
   <string name="pathcopied">Répertorie copié dans le presse-papier</string>
-  <string name="used">Utilisé :  </string>
-  <string name="free">Libre :  </string>
   <string name="atroot">Vous êtes à la racine</string>
   <string name="listview">Vue Liste</string>
   <string name="gridview">Vue Grille</string>

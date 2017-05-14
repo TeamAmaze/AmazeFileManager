@@ -66,7 +66,6 @@
   <string name="name">名前</string>
   <string name="date">日付</string>
   <string name="location">場所</string>
-  <string name="size">フォルダーのサイズ</string>
   <string name="totalitems">合計アイテム数</string>
   <string name="enterzipname">Zip 名を入力</string>
   <string name="noappfound">このファイルを開くアプリが見つかりません</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">ファイルがありません</string>
   <string name="tapnhold">ファイルまたはフォルダーを長押しすると追加のオプション</string>
   <string name="pathcopied">パスをクリップボードにコピーしました</string>
-  <string name="used">他で使用されています:  </string>
-  <string name="free">空きスペース:  </string>
   <string name="atroot">ルートです</string>
   <string name="listview">リスト表示</string>
   <string name="gridview">グリッド表示</string>

@@ -68,7 +68,6 @@
     <string name="name">பெயர்</string>
     <string name="date">தேதி</string>
     <string name="location">இடம்</string>
-    <string name="size">கோப்புறையின் அளவ</string>
     <string name="totalitems">மொத்த உருப்படிகள்:</string>
     <string name="enterzipname">ஜிப்  பெயரை உள்ளீடவும்</string>
     <string name="noappfound">இந்த கோப்பினை திறக்கக்கூடிய நிரல் இல்லை</string>
@@ -201,8 +200,6 @@
     <string name="nofiles">கோப்புகள் இல்லை</string>
     <string name="tapnhold">மேலும் பல விருப்பங்களுக்கு கோப்பு அல்லது கோப்புறையை தொடர்ந்து தொடவும்</string>
     <string name="pathcopied">பாதை பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
-    <string name="used">மற்றவர்களால் பயன்படுத்தப்பட்டது:</string>
-    <string name="free">காலி இடம்:</string>
     <string name="atroot">நீங்கள் ரூட்டில் உள்ளீர்கள்</string>
     <string name="listview">பட்டியல் பார்வை</string>
     <string name="gridview">கட்ட பார்வை</string>

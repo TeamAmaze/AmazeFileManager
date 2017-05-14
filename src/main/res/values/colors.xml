@@ -43,6 +43,11 @@
 	<!--GRAY 700 used for icons instead of black-->
     <color name="item_light_theme">#FF616161</color>
 
+    <!--Colors for preference dialog pie chart-->
+    <color name="piechart_red">#FFEF5350</color>
+    <color name="piechart_green">#FF4CAF50</color>
+    <color name="piechart_blue">#FF2196F3</color>
+
     <!-- primary color palatte -->
     <color name="primary_red">#F44336</color>
     <color name="primary_pink">#e91e63</color>

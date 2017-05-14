@@ -510,7 +510,7 @@ public class HFile {
                 }
                 break;
             case FILE:
-                size = Futils.folderSize(new File(path));
+                size = Futils.folderSize(new File(path), null);
                 break;
             case ROOT:
                 BaseFile baseFile = generateBaseFileFromParent();
@@ -542,7 +542,7 @@ public class HFile {
                 }
                 break;
             case FILE:
-                size = Futils.folderSize(new File(path));
+                size = Futils.folderSize(new File(path), null);
                 break;
             case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();

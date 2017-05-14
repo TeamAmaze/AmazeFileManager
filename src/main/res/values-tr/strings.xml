@@ -66,7 +66,6 @@
   <string name="name">Ad:</string>
   <string name="date">Tarih:</string>
   <string name="location">Bulunan:</string>
-  <string name="size">Boyut:</string>
   <string name="totalitems">Toplam öğeler:</string>
   <string name="enterzipname">Zip adını gir</string>
   <string name="noappfound">Bu uygulamayı açmak için uygulama bulanamadı</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Dosya yok</string>
   <string name="tapnhold">Daha fazla seçenek için dosya veya klasörün üzerine basılı tutun</string>
   <string name="pathcopied">Yol panoya kopyalandı</string>
-  <string name="used">Kullanılan :</string>
-  <string name="free">Boş :</string>
   <string name="atroot">Root izni var</string>
   <string name="listview">Liste görünümü</string>
   <string name="gridview">Izgara görünümü</string>

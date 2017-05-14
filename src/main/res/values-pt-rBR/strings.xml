@@ -66,7 +66,6 @@
   <string name="name">Nome: </string>
   <string name="date">Data: </string>
   <string name="location">Local: </string>
-  <string name="size">Tamanho da pasta: </string>
   <string name="totalitems">Total de items: </string>
   <string name="enterzipname">Insira o nome do Zip</string>
   <string name="noappfound">Nenhum aplicativo encontrado para abrir este arquivo</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Nenhum arquivo</string>
   <string name="tapnhold">Toque longo num arquivo ou pasta para mais opções</string>
   <string name="pathcopied">Caminho copiado para a área de transferência</string>
-  <string name="used">Usado por outros:  </string>
-  <string name="free">Espaço livre:  </string>
   <string name="atroot">Você está na raiz</string>
   <string name="listview">Exibição em lista</string>
   <string name="gridview">Exibição em grade</string>

@@ -62,7 +62,6 @@
   <string name="name">Nume: </string>
   <string name="date">Dată: </string>
   <string name="location">Locaţie: </string>
-  <string name="size">Dimensiune dosar: </string>
   <string name="totalitems">Elemente: </string>
   <string name="enterzipname">Introduceţi numele fişierului Zip</string>
   <string name="noappfound">Nu s-a găsit nicio aplicaţie pentru a deschide acest fișier</string>
@@ -184,8 +183,6 @@
   <string name="nofiles">Niciun fişier</string>
   <string name="tapnhold">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
   <string name="pathcopied">Cale copiată în clipboard</string>
-  <string name="used">Utilizate de alții: </string>
-  <string name="free">Spaţiu disponibil: </string>
   <string name="atroot">Sunteți în root</string>
   <string name="listview">Listă</string>
   <string name="gridview">Grilă</string>

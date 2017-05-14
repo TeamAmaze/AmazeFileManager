@@ -123,8 +123,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="location">সংরক্ষণস্হল: </string>
 
-    <string name="size">ফোল্ডারের আকার: </string>
-
     <string name="totalitems">সর্বমোট আইটেম: </string>
 
     <string name="enterzipname">জিপের নামটি দিন</string>
@@ -387,9 +385,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="pathcopied">Path copied to clipboard</string>
 
-    <string name="used">Used By Others: </string>
 
-    <string name="free">Free Space: </string>
+
 
     <string name="atroot">You are at the root</string>
 
@@ -544,9 +541,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="dutch_translation_title">Dutch</string>
 
     <string name="romanian_translation_title">Romanian</string>
-
-
-
 
     <string name="zip_viewer">Zip Viewer</string>
 

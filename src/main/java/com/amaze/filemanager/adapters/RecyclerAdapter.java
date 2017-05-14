@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
@@ -34,7 +35,6 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -705,8 +705,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showProps((rowItem).generateBaseFile(),
-                                        rowItem.getPermissions(), mainFrag,
+                                utilsProvider.getFutils().showPropertiesDialogWithPreference((rowItem).generateBaseFile(),
+                                        rowItem.getPermissions(), (BasicActivity) mainFrag.getActivity(),
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
                                 /*PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
