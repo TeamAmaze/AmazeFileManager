@@ -946,13 +946,14 @@ public class Futils {
         hashGen.executeOnExecutor(executor);
 
         /*Chart creation and data loading*/ {
+            boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
 
             chart.setTouchEnabled(false);
             chart.setDrawEntryLabels(false);
             chart.setDescription(null);
             chart.setNoDataText(c.getString(loading));
-            chart.setRotationAngle(0f);
+            chart.setRotationAngle(!isRightToLeft? 0f:180f);
 
             chart.getLegend().setEnabled(true);
             chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
