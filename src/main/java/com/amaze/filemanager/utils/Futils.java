@@ -49,7 +49,6 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
@@ -964,7 +963,7 @@ public class Futils {
 
             if(forStorage) {
                 final String[] LEGENDS = new String[]{c.getString(R.string.used), c.getString(R.string.free)};
-                final int[] COLORS = {getColor(c, R.color.piechart_red), getColor(c, R.color.piechart_green)};
+                final int[] COLORS = {Utils.getColor(c, R.color.piechart_red), Utils.getColor(c, R.color.piechart_green)};
 
                 long totalSpace = getTotalSpace(baseFile),
                         freeSpace = getFreeSpace(baseFile),
@@ -2006,14 +2005,6 @@ public class Futils {
         arrayList.add(write);
         arrayList.add(execute);
         return arrayList;
-    }
-
-    public static int getColor(Context c, @ColorRes int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return c.getColor(color);
-        } else {
-            return c.getResources().getColor(color);
-        }
     }
 
     public static class SizeFormatter implements IValueFormatter {
