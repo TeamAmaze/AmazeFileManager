@@ -19,7 +19,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.amaze.filemanager.utils.Futils.getColor;
+import static com.amaze.filemanager.utils.Utils.getColor;
 
 /**
  * Loads data for chart in Futils.showPropertiesDialog()
