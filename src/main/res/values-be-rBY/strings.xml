@@ -66,7 +66,6 @@
   <string name="name">Імя</string>
   <string name="date">Дата</string>
   <string name="location">Месцазнаходжанне</string>
-  <string name="size">Памер тэчкі</string>
   <string name="totalitems">Усяго элементаў</string>
   <string name="enterzipname">Увядзіце імя zip-архіва</string>
   <string name="noappfound">Няма праграм для адкрыцця гэтага файла</string>
@@ -200,8 +199,6 @@
   <string name="nofiles">Няма файлаў</string>
   <string name="tapnhold">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="pathcopied">Шлях скапіяваны ў буфер абмену</string>
-  <string name="used">Выкарыстоўваецца:  </string>
-  <string name="free">Вольна:  </string>
   <string name="atroot">Вы знаходзіцеся ў каранёвай дырэкторыі</string>
   <string name="listview">Спіс</string>
   <string name="gridview">Сетка</string>

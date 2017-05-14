@@ -66,7 +66,6 @@
   <string name="name">Nama</string>
   <string name="date">Tanggal</string>
   <string name="location">Lokasi</string>
-  <string name="size">Ukuran Folder</string>
   <string name="totalitems">Total item</string>
   <string name="enterzipname">Masukkan nama Zip</string>
   <string name="noappfound">Tidak ada aplikasi untuk membuka file ini</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Tidak ada berkas</string>
   <string name="tapnhold">Ketuk dan tahan pada Berkas atau Folder untuk opsi lebih lanjut</string>
   <string name="pathcopied">Path disalin ke clipboard</string>
-  <string name="used">Digunakan oleh lainnya:  </string>
-  <string name="free">Ruang bebas:  </string>
   <string name="atroot">Anda berada di root</string>
   <string name="listview">Tampilan daftar</string>
   <string name="gridview">Gaya tampilan</string>

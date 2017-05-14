@@ -65,7 +65,6 @@
   <string name="name">Pavadinimas: </string>
   <string name="date">Data: </string>
   <string name="location">Vieta: </string>
-  <string name="size">Dydis aplankale: </string>
   <string name="totalitems">Iš viso elementų: </string>
   <string name="enterzipname">Įvesti Zip Pavadinimą</string>
   <string name="noappfound">Nerasta programėlė, kuri atidarytų šią bylą</string>
@@ -194,8 +193,6 @@
   <string name="nofiles">Nėra bylų</string>
   <string name="tapnhold">Paliesti ir laikyti failą ar aplankalą dėl daugiau parinkčių</string>
   <string name="pathcopied">Kelias nukopijuotas į iškarpinę</string>
-  <string name="used">Naudojama kitų:  </string>
-  <string name="free">Laisva vieta:  </string>
   <string name="atroot">Jūs esate root vietose</string>
   <string name="listview">Sąrašo peržiūra</string>
   <string name="gridview">Tinklelio peržiūra</string>

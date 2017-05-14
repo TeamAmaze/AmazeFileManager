@@ -65,7 +65,6 @@
   <string name="name">نام:</string>
   <string name="date">تاریخ:</string>
   <string name="location">مکان:</string>
-  <string name="size">حجم فولدر:</string>
   <string name="totalitems">کل آیتم ها</string>
   <string name="enterzipname">نام فایل زیپ را وارد کنید</string>
   <string name="noappfound">هیچ برنامه ای برای باز کردن این فایل پیدا نشد</string>
@@ -195,8 +194,6 @@
   <string name="nofiles">هیچ فایلی</string>
   <string name="tapnhold">روی فایل یا پوشه انگشت خود را نگه دارید تا اطلاعات بیشتری را ببینید</string>
   <string name="pathcopied">مسیر به کلیپبورد کپی شد</string>
-  <string name="used">توسط دیگران استفاده شده:</string>
-  <string name="free">فضای ازاد:</string>
   <string name="atroot">شما در روت هستید</string>
   <string name="listview">نمای لیست</string>
   <string name="gridview">نمای کاشی</string>

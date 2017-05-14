@@ -68,7 +68,6 @@
     <string name="name">Namn</string>
     <string name="date">Datum</string>
     <string name="location">Plats</string>
-    <string name="size">Katalogstorlek</string>
     <string name="totalitems">Totalt antal Objekt</string>
     <string name="enterzipname">Ange Zip-namn</string>
     <string name="noappfound">Ingen App hittades att öppna filen med</string>
@@ -201,8 +200,6 @@
     <string name="nofiles">Inga filer</string>
     <string name="tapnhold">Peka och håll på någon fil för mer valmöjligheter</string>
     <string name="pathcopied">Sökvägen kopierades till utklipp</string>
-    <string name="used">Används Av Andra:</string>
-    <string name="free">Ledigt Utrymme:</string>
     <string name="atroot">Du är vid roten</string>
     <string name="listview">Listvy</string>
     <string name="gridview">Rutnätsvy</string>

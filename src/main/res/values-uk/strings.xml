@@ -66,7 +66,6 @@
   <string name="name">Ім\'я: </string>
   <string name="date">Дата: </string>
   <string name="location">Розташований в: </string>
-  <string name="size">Розмір: </string>
   <string name="totalitems">Всього елементів: </string>
   <string name="enterzipname">Введіть ім\'я zip архіву</string>
   <string name="noappfound">Немає додатків для відкриття цього файлу</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Немає файлів</string>
   <string name="tapnhold">Натисніть та утримуйте файл або теку для додаткових опцій</string>
   <string name="pathcopied">Шлях скопійований в буфер обміну</string>
-  <string name="used">Використовується:</string>
-  <string name="free">Вільно:</string>
   <string name="atroot">Ви знаходитесь в корені</string>
   <string name="listview">Список</string>
   <string name="gridview">Сітка</string>

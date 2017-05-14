@@ -66,7 +66,6 @@
   <string name="name">Název</string>
   <string name="date">Datum</string>
   <string name="location">Místo</string>
-  <string name="size">Velikost složky</string>
   <string name="totalitems">Celkový počet položek</string>
   <string name="enterzipname">Zadejte název ZIP souboru</string>
   <string name="noappfound">K otevření toho souboru nebyla nalezena žádná aplikace</string>
@@ -200,8 +199,6 @@
   <string name="nofiles">Žádné soubory</string>
   <string name="tapnhold">Klepněte a podržte soubor nebo složku pro zobrazení více možností</string>
   <string name="pathcopied">Cesta byla zkopírována do schránky</string>
-  <string name="used">Jiní používají:  </string>
-  <string name="free">Volné Místo:  </string>
   <string name="atroot">Nacházíte se v kořenovém adresáři</string>
   <string name="listview">Zobrazení seznamu</string>
   <string name="gridview">Zobrazení mřížky</string>

@@ -65,7 +65,6 @@
   <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Allugamientu</string>
-  <string name="size">Tamañu de carpeta</string>
   <string name="totalitems">Elementos totales</string>
   <string name="enterzipname">Introduz el nome\'l ZIP</string>
   <string name="noappfound">Nun s\'alcontró aplicación dala p\'abrir esti ficheru</string>
@@ -196,8 +195,6 @@
   <string name="nofiles">Nun hai ficheros</string>
   <string name="tapnhold">Calca y ten primío nun ficheru o carpeta pa más opciones</string>
   <string name="pathcopied">El camín copióse al cartafueyu</string>
-  <string name="used">Úsase por otros:</string>
-  <string name="free">Espaciu llibre:</string>
   <string name="atroot">Tas nel raigañu</string>
   <string name="listview">Vista de llistáu</string>
   <string name="gridview">Vista de rexáu</string>

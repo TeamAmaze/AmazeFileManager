@@ -66,7 +66,6 @@
   <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Percorso</string>
-  <string name="size">Dimensioni cartella</string>
   <string name="totalitems">Elementi totali</string>
   <string name="enterzipname">Inserisci nome file ZIP</string>
   <string name="noappfound">Nessuna app trovata per aprire questo file</string>
@@ -207,8 +206,6 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
 Tieni premuto un file od una cartella per altre opzioni
 </string>
   <string name="pathcopied">Percorso copiato</string>
-  <string name="used">In uso:</string>
-  <string name="free">Spazio libero:</string>
   <string name="atroot">Sei alla root</string>
   <string name="listview">Visualizzazione lista</string>
   <string name="gridview">Visualizzazione griglia</string>
