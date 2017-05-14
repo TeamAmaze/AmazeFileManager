@@ -19,6 +19,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.amaze.filemanager.utils.Futils.getColor;
+
 /**
  * Loads data for chart in Futils.showPropertiesDialog()
  *
@@ -28,7 +30,7 @@ import java.util.List;
 
 public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List<PieEntry>>> {
 
-    private static final int[] COLORS = {0xFFEF5350, 0xFF2196F3, 0xFF4CAF50};
+    private static int[] COLORS;
     private static String[] LEGENDS;
 
     private Context context;
@@ -39,8 +41,9 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
         context = c;
         this.chart = chart;
         file = f;
-        LEGENDS = new String[]{context.getResources().getString(R.string.size),
-                context.getString(R.string.used), context.getString(R.string.free)};
+        LEGENDS = new String[]{context.getResources().getString(R.string.size), context.getString(R.string.used), context.getString(R.string.free)};
+        COLORS = new int[]{getColor(c, R.color.piechart_red), getColor(c, R.color.piechart_blue),
+                getColor(c, R.color.piechart_green)};
     }
 
     @Override
