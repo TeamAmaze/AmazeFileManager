@@ -778,7 +778,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     MAIN_ACTIVITY.COPY_PATH = null;
                     ArrayList<BaseFile> copie = new ArrayList<>();
                     for (int i3 = 0; i3 < plist.size(); i3++) {
-                        copie.add(getLayoutElement(i3).generateBaseFile());
+                        copie.add(getLayoutElement(plist.get(i3)).generateBaseFile());
                     }
                     MAIN_ACTIVITY.MOVE_PATH = copie;
                     MAIN_ACTIVITY.supportInvalidateOptionsMenu();
