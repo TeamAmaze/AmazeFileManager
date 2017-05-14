@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Emmanuel
+ * Loads data for chart in Futils.showPropertiesDialog()
+ *
+ * @author Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *         on 12/5/2017, at 00:07.
  */
 

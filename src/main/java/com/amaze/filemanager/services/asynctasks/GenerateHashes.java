@@ -18,7 +18,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by Vishal on 05-02-2015.
+ * Generates hashes from files (MD5 and SHA256)
+ *
+ * Created by Vishal on 05-02-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 public class GenerateHashes extends AsyncTask<Void, String, String[]> {
 
