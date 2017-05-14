@@ -1,16 +1,19 @@
 package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.text.SpannableString;
 import android.text.format.Formatter;
 import android.view.View;
 
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -34,14 +37,16 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
     private static String[] LEGENDS;
 
     private Context context;
+    private AppTheme appTheme;
     private PieChart chart;
     private BaseFile file;
 
-    public LoadFolderSpaceData(Context c, PieChart chart, BaseFile f) {
+    public LoadFolderSpaceData(Context c, AppTheme appTheme, PieChart chart, BaseFile f) {
         context = c;
+        this.appTheme = appTheme;
         this.chart = chart;
         file = f;
-        LEGENDS = new String[]{context.getString(R.string.size), context.getString(R.string.used), context.getString(R.string.free)};
+        LEGENDS = new String[]{context.getString(R.string.size), context.getString(R.string.used_by_others), context.getString(R.string.free)};
         COLORS = new int[]{getColor(c, R.color.piechart_red), getColor(c, R.color.piechart_blue),
                 getColor(c, R.color.piechart_green)};
     }
@@ -109,16 +114,20 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
     }
 
     private void updateChart(String totalSpace, List<PieEntry> entries) {
+        boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
+
         PieDataSet set = new PieDataSet(entries, null);
         set.setColors(COLORS);
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         set.setSliceSpace(5f);
+        set.setAutomaticallyDisableSliceSpacing(true);
         set.setValueLinePart2Length(1.05f);
         set.setSelectionShift(0f);
 
         PieData pieData = new PieData(set);
         pieData.setValueFormatter(new Futils.SizeFormatter(context));
+        pieData.setValueTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
 
         chart.setCenterText(new SpannableString(context.getString(R.string.total) + "\n" + totalSpace));
         chart.setData(pieData);

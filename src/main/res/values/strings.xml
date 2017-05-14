@@ -206,7 +206,8 @@
     <string name="nofiles">No Files</string>
     <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
     <string name="pathcopied">Path copied to clipboard</string>
-    <string name="used">used by others</string>
+    <string name="used">used space</string>
+    <string name="used_by_others">used by others</string>
     <string name="free">free space</string>
     <string name="atroot">You are at the root</string>
     <string name="listview">List View</string>
