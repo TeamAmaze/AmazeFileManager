@@ -41,7 +41,7 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
         context = c;
         this.chart = chart;
         file = f;
-        LEGENDS = new String[]{context.getResources().getString(R.string.size), context.getString(R.string.used), context.getString(R.string.free)};
+        LEGENDS = new String[]{context.getString(R.string.size), context.getString(R.string.used), context.getString(R.string.free)};
         COLORS = new int[]{getColor(c, R.color.piechart_red), getColor(c, R.color.piechart_blue),
                 getColor(c, R.color.piechart_green)};
     }
