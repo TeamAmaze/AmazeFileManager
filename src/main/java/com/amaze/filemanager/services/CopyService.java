@@ -39,13 +39,17 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
@@ -147,6 +151,8 @@ public class CopyService extends Service {
         ArrayList<BaseFile> sourceFiles;
         boolean move;
         Copy copy;
+        private String targetPath;
+        private OpenMode openMode;
 
         protected Integer doInBackground(Bundle... p1) {
 
@@ -182,11 +188,11 @@ public class CopyService extends Service {
             intent1.setCompleted(false);
             putDataPackage(intent1);
 
-            String targetPath = p1[0].getString(TAG_COPY_TARGET);
+            targetPath = p1[0].getString(TAG_COPY_TARGET);
             move = p1[0].getBoolean(TAG_COPY_MOVE);
+            openMode = OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE));
             copy = new Copy();
-            copy.execute(sourceFiles, targetPath, move,
-                    OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE)));
+            copy.execute(sourceFiles, targetPath, move, openMode);
             return id;
         }
 
@@ -198,9 +204,66 @@ public class CopyService extends Service {
             // stopping watcher if not yet finished
             watcherUtil.stopWatch();
             generateNotification(copy.failedFOps, move);
+
+            // adding/updating new encrypted db entry if any encrypted file was copied/moved
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+
+                    for (BaseFile sourceFile : sourceFiles) {
+                        findAndReplaceEncryptedEntry(sourceFile);
+                    }
+                }
+            });
+
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
             stopSelf();
+        }
+
+        /**
+         * Iterates through every file to find an encrypted file and update/add a new entry about it's
+         * metadata in the database
+         * @param sourceFile the file which is to be iterated
+         */
+        private void findAndReplaceEncryptedEntry(BaseFile sourceFile) {
+
+            if (sourceFile.isDirectory()) {
+
+                for (BaseFile file : sourceFile.listFiles(getApplicationContext(), BaseActivity.rootMode)) {
+                    // iterating each file inside source files which were copied to find instance of
+                    // any copied / moved encrypted file
+
+                    findAndReplaceEncryptedEntry(file);
+
+                }
+            } else {
+
+                if (sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                    try {
+
+                        CryptHandler cryptHandler = new CryptHandler(getApplicationContext());
+                        EncryptedEntry oldEntry = cryptHandler.findEntry(sourceFile.getPath());
+                        EncryptedEntry newEntry = new EncryptedEntry();
+
+                        newEntry.setPassword(oldEntry.getPassword());
+                        newEntry.setPath(targetPath + "/" + sourceFile.getName());
+
+                        if (move) {
+
+                            // file was been moved, update the existing entry
+                            newEntry.setId(oldEntry.getId());
+                            cryptHandler.updateEntry(oldEntry, newEntry);
+                        } else {
+                            // file was copied, create a new entry with same data
+                            cryptHandler.addEntry(newEntry);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // couldn't change the entry, leave it alone
+                    }
+                }
+            }
         }
 
         class Copy {
