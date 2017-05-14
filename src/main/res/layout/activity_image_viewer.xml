@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_image_viewer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    tools:context="com.amaze.filemanager.activities.ImageViewer">
+<com.amaze.filemanager.ui.views.AspectRatioImageView
+    custom:dominantMeasurement="width"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/image"/>
+</RelativeLayout>

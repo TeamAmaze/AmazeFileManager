@@ -56,6 +56,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.format.Formatter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -68,6 +69,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.DbViewer;
+import com.amaze.filemanager.activities.ImageViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
@@ -1265,7 +1267,12 @@ public class Futils {
                 }.start();
             } else
                 m.startActivity(intent);
-        } else {
+        }else if(Icons.isPicture(f.getPath())) {
+            Intent intent = new Intent(m, ImageViewer.class);
+            intent.putExtra("path",f.getPath());
+            m.startActivity(intent);
+        }
+        else {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
