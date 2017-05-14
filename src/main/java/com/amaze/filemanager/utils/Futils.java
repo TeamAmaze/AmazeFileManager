@@ -836,12 +836,12 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showPropertiesDialogWithPreference(BaseFile baseFile, final String permissions,
-                                                   BasicActivity basic, boolean isRoot, AppTheme appTheme) {
+    public void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
+                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
     }
 
-    public void showPropertiesDialogWithoutPreference(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+    public void showPropertiesDialogWithoutPermissions(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
     public void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {

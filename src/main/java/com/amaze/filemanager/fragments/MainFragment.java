@@ -668,7 +668,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case R.id.about:
                     LayoutElement x;
                     x = getLayoutElement((plist.get(0)));
-                    utils.showPropertiesDialogWithPreference((x).generateBaseFile(), x.getPermissions(),
+                    utils.showPropertiesDialogWithPermissions((x).generateBaseFile(), x.getPermissions(),
                             (BasicActivity) getActivity(), BaseActivity.rootMode,
                             utilsProvider.getAppTheme());
                     /*PropertiesSheet propertiesSheet = new PropertiesSheet();
