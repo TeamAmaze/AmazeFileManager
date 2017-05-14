@@ -56,6 +56,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
@@ -96,6 +97,12 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,6 +128,7 @@ import javax.crypto.NoSuchPaddingException;
 import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbFile;
 
+import static com.amaze.filemanager.R.string.loading;
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class Futils {
@@ -188,16 +196,17 @@ public class Futils {
         return dialog;
     }
 
-
-    public static long folderSize(File directory) {
+    public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
         try {
             for (File file:directory.listFiles()) {
-
                 if (file.isFile())
                     length += file.length();
                 else
-                    length += folderSize(file);
+                    length += folderSize(file, updateState);
+
+                if(updateState != null)
+                    updateState.onUpdate(length);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -829,16 +838,19 @@ public class Futils {
 
     public void showPropertiesDialogWithPreference(BaseFile baseFile, final String permissions,
                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme) {
-        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true);
+        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
     }
 
     public void showPropertiesDialogWithoutPreference(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
-        showPropertiesDialog(f, null, activity, false, appTheme, false);
+        showPropertiesDialog(f, null, activity, false, appTheme, false, false);
+    }
+    public void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+        showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
 
     private void showPropertiesDialog(final BaseFile baseFile, final String permissions,
                                                     BasicActivity basic, boolean isRoot, AppTheme appTheme,
-                                                    boolean showPermissions) {
+                                                    boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
         final Context c = basic.getApplicationContext();
         int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
@@ -938,7 +950,7 @@ public class Futils {
             chart.setTouchEnabled(false);
             chart.setDrawEntryLabels(false);
             chart.setDescription(null);
-            chart.setNoDataText(c.getString(R.string.loading));
+            chart.setNoDataText(c.getString(loading));
             chart.setRotationAngle(0f);
 
             chart.getLegend().setEnabled(true);
@@ -947,13 +959,44 @@ public class Futils {
             chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
             chart.animateY(1000);
-            chart.invalidate();
 
-            LoadFolderSpaceData loadFolderSpaceData =  new LoadFolderSpaceData(c, chart, baseFile);
-            loadFolderSpaceData.executeOnExecutor(executor);
+            if(forStorage) {
+                final String[] LEGENDS = new String[]{c.getResources().getString(R.string.used),
+                        c.getString(R.string.free)};
+                final int[] COLORS = {0xFFEF5350, 0xFF4CAF50};
+
+                long totalSpace = getTotalSpace(baseFile),
+                        freeSpace = getFreeSpace(baseFile),
+                        usedSpace = totalSpace - freeSpace;
+
+                List<PieEntry> entries = new ArrayList<>();
+                entries.add(new PieEntry(usedSpace, LEGENDS[0]));
+                entries.add(new PieEntry(freeSpace, LEGENDS[1]));
+
+                PieDataSet set = new PieDataSet(entries, null);
+                set.setColors(COLORS);
+                set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                set.setSliceSpace(5f);
+                set.setValueLinePart2Length(1.05f);
+                set.setSelectionShift(0f);
+
+                PieData pieData = new PieData(set);
+                pieData.setValueFormatter(new SizeFormatter(c));
+
+                String totalSpaceFormatted = Formatter.formatFileSize(c, totalSpace);
+
+                chart.setCenterText(new SpannableString(c.getString(R.string.total) + "\n" + totalSpaceFormatted));
+                chart.setData(pieData);
+            } else {
+                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, chart, baseFile);
+                loadFolderSpaceData.executeOnExecutor(executor);
+            }
+
+            chart.invalidate();
         }
 
-        if(showPermissions) {
+        if(!forStorage && showPermissions) {
             final MainFragment main = ((MainActivity) basic).mainFragment;
             AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
             appCompatButton.setAllCaps(true);
@@ -1224,7 +1267,7 @@ public class Futils {
         builder.show();
     }
 
-    public static long[] getSpaces(HFile hFile) {
+    public static long[] getSpaces(HFile hFile, final OnProgressUpdate<Long[]> updateState) {
         if(hFile.isSmb()) {
             return new long[]{-1, -1, -1};
         } else if (hFile.isDropBoxFile()) {
@@ -1268,13 +1311,94 @@ public class Futils {
                 && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
             try {
                 File file = new File(hFile.getPath());
-                return new long[]{file.getTotalSpace(), file.getFreeSpace(),
-                        folderSize(new File(hFile.getPath()))};
+                final long totalSpace = file.getTotalSpace(),
+                        freeSpace = file.getFreeSpace(),
+                        folderSize = folderSize(new File(hFile.getPath()),
+                                new OnProgressUpdate<Long>() {
+                                    @Override
+                                    public void onUpdate(Long data) {
+                                        if(updateState != null)
+                                            updateState.onUpdate(new Long[] {totalSpace, freeSpace, data});
+                                    }
+                                });
+
+                return new long[] {totalSpace, freeSpace, folderSize};
             } catch (Exception e) {
                 return new long[]{-1, -1, -1};
             }
         } else {
             return new long[]{-1, -1, -1};
+        }
+    }
+
+    public static long getFreeSpace(HFile hFile) {
+        if (hFile.isSmb()) {
+            return -1;
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
+                    hFile.getPath()));
+
+            return (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed());
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
+                    hFile.getPath()));
+
+            return (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed());
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
+                    hFile.getPath()));
+
+            return (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed());
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                    hFile.getPath()));
+            return (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed());
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                return new File(hFile.getPath()).getFreeSpace();
+            } catch (Exception e) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+    public static long getTotalSpace(HFile hFile) {
+        if(hFile.isSmb()) {
+            return -1;
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+
+            return cloudStorageDropbox.getAllocation().getTotal();
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+
+            return cloudStorageBox.getAllocation().getTotal();
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+            return cloudStorageGDrive.getAllocation().getTotal();
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            return cloudStorageOneDrive.getAllocation().getTotal();
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                return new File(hFile.getPath()).getTotalSpace();
+            } catch (Exception e) {
+                return -1;
+            }
+        } else {
+            return -1;
         }
     }
 
@@ -1882,4 +2006,23 @@ public class Futils {
         arrayList.add(execute);
         return arrayList;
     }
+
+    public static class SizeFormatter implements IValueFormatter {
+
+        private Context context;
+
+        public SizeFormatter(Context c) {
+            context = c;
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+                                        ViewPortHandler viewPortHandler) {
+            String prefix = entry.getData() != null && entry.getData() instanceof String?
+                    (String) entry.getData():"";
+
+            return prefix + Formatter.formatFileSize(context, (long) value);
+        }
+    }
+
 }
