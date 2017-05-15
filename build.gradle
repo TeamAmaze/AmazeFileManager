@@ -90,7 +90,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.android.support:design:25.1.0'
     compile 'com.github.junrar:junrar:0.7'

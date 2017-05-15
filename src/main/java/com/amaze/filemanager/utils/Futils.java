@@ -584,7 +584,8 @@ public class Futils {
                         intent.setDataAndType(uri, "text/*");
                         break;
                     case 1:
-                        intent.setDataAndType(uri, "image/*");
+                        intent = new Intent(c,ImageViewer.class);
+                        intent.putExtra("path",f.getPath());
                         break;
                     case 2:
                         intent.setDataAndType(uri, "video/*");
@@ -632,7 +633,8 @@ public class Futils {
                         intent.setDataAndType(f.getUri(), "text/*");
                         break;
                     case 1:
-                        intent.setDataAndType(f.getUri(), "image/*");
+                        intent = new Intent(c,ImageViewer.class);
+                        intent.putExtra("path",f.getUri().getPath());
                         break;
                     case 2:
                         intent.setDataAndType(f.getUri(), "video/*");

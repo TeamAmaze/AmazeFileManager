@@ -2,12 +2,13 @@ package com.amaze.filemanager.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.AspectRatioImageView;
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 public class ImageViewer extends BaseActivity {
     @Override
@@ -20,7 +21,8 @@ public class ImageViewer extends BaseActivity {
         Intent intent = getIntent();
         if(intent!=null){
             String path=intent.getStringExtra("path");
-            Glide.with(this).load(path).into(imageView);
+            Log.d("path",path);
+            Picasso.with(this).load("file://"+path).fit().into(imageView);
         }
     }
 }
