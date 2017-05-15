@@ -74,6 +74,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.DbViewer;
+import com.amaze.filemanager.activities.ImageViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
@@ -601,7 +602,8 @@ public class Futils {
                         intent.setDataAndType(uri, "text/*");
                         break;
                     case 1:
-                        intent.setDataAndType(uri, "image/*");
+                        intent = new Intent(c,ImageViewer.class);
+                        intent.putExtra("path",f.getPath());
                         break;
                     case 2:
                         intent.setDataAndType(uri, "video/*");
@@ -649,7 +651,8 @@ public class Futils {
                         intent.setDataAndType(f.getUri(), "text/*");
                         break;
                     case 1:
-                        intent.setDataAndType(f.getUri(), "image/*");
+                        intent = new Intent(c,ImageViewer.class);
+                        intent.putExtra("path",f.getUri().getPath());
                         break;
                     case 2:
                         intent.setDataAndType(f.getUri(), "video/*");
@@ -1501,7 +1504,12 @@ public class Futils {
                 }.start();
             } else
                 m.startActivity(intent);
-        } else {
+        }else if(Icons.isPicture(f.getPath())) {
+            Intent intent = new Intent(m, ImageViewer.class);
+            intent.putExtra("path",f.getPath());
+            m.startActivity(intent);
+        }
+        else {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
