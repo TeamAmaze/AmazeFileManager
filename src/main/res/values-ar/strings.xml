@@ -61,7 +61,6 @@
   <string name="name">الإسم:</string>
   <string name="date">تاريخ:</string>
   <string name="location">يوجد في:</string>
-  <string name="size">الحجم:</string>
   <string name="totalitems">العناصر الكلية:</string>
   <string name="enterzipname">أدخل إسم الملف المضغوط</string>
   <string name="noappfound">لم يتم إيجاد تطبيق لفتح هذا الملف</string>
@@ -188,8 +187,6 @@
   <string name="nofiles">لا توجد ملفات</string>
   <string name="tapnhold">اضغط مطولًا على الملف أو المجلد لإظهار المزيد من الخيارات</string>
   <string name="pathcopied">تم نسخ المسار إلى الحافظة</string>
-  <string name="used">مُستخدم :</string>
-  <string name="free">فارغ :</string>
   <string name="atroot">أنت بداخل الجذر</string>
   <string name="listview">عرض قائمة</string>
   <string name="gridview">عرض شبكي</string>

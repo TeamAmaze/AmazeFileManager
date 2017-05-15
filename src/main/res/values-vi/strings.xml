@@ -65,7 +65,6 @@
   <string name="name">Tên: </string>
   <string name="date">Ngày: </string>
   <string name="location">Vị trí: </string>
-  <string name="size">Kích thước thư mục: </string>
   <string name="totalitems">Tất cả các mục: </string>
   <string name="enterzipname">Nhập tên Zip</string>
   <string name="noappfound">Không tìm thấy ứng dụng để mở tệp</string>
@@ -183,8 +182,6 @@
   <string name="nofiles">Không có tệp</string>
   <string name="tapnhold">Chạm và giữ vào một tệp tin hoặc thư mục để có thêm lựa chọn</string>
   <string name="pathcopied">Đường dẫn đã được sao chép đến clipboard</string>
-  <string name="used">Đã được dùng bởi:  </string>
-  <string name="free">Không gian trống:  </string>
   <string name="atroot">Bạn đang ở chế độ root</string>
   <string name="listview">Chế độ xem danh sách</string>
   <string name="gridview">Chế độ xem lưới</string>

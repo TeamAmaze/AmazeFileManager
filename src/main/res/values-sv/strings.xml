@@ -59,7 +59,6 @@
   <string name="name">Namn</string>
   <string name="date">Datum</string>
   <string name="location">Plats</string>
-  <string name="size">Storlek på mapp</string>
   <string name="noappfound">Ingen app hittades för att öppna denna fil</string>
   <string name="copying">Kopierar</string>
   <string name="moving">Flyttar</string>
@@ -163,8 +162,6 @@
   <string name="newfile">Ny fil</string>
   <string name="nofiles">Inga filer</string>
   <string name="pathcopied">Sökväg kopierad till urklipp</string>
-  <string name="used">Används av andra:  </string>
-  <string name="free">Ledigt utrymme:  </string>
   <string name="atroot">Du är vid roten</string>
   <string name="listview">Listvy</string>
   <string name="gridview">Rutnätsvy</string>

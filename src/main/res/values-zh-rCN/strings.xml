@@ -66,7 +66,6 @@
   <string name="name">名称</string>
   <string name="date">时间戳</string>
   <string name="location">路径</string>
-  <string name="size">大小</string>
   <string name="totalitems">文件数</string>
   <string name="enterzipname">请输入 ZIP 文件名</string>
   <string name="noappfound">无法找到可以打开此文件的应用</string>
@@ -200,8 +199,6 @@
   <string name="nofiles">没有文件</string>
   <string name="tapnhold">长按文件或文件夹以显示更多选项</string>
   <string name="pathcopied">路径已复制到剪贴板</string>
-  <string name="used">已用：</string>
-  <string name="free">剩余：</string>
   <string name="atroot">已进入 Root 模式</string>
   <string name="listview">列表视图</string>
   <string name="gridview">网格视图</string>

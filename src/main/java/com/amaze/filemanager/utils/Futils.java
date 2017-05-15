@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -35,6 +36,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
@@ -54,12 +56,15 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.text.format.Formatter;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -67,6 +72,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
@@ -78,18 +84,28 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.asynctasks.GenerateMD5Task;
+import com.amaze.filemanager.services.asynctasks.CountFolderItems;
+import com.amaze.filemanager.services.asynctasks.GenerateHashes;
+import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
@@ -102,15 +118,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static com.amaze.filemanager.R.string.loading;
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class Futils {
@@ -178,16 +196,17 @@ public class Futils {
         return dialog;
     }
 
-
-    public static long folderSize(File directory) {
+    public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
         try {
             for (File file:directory.listFiles()) {
-
                 if (file.isFile())
                     length += file.length();
                 else
-                    length += folderSize(file);
+                    length += folderSize(file, updateState);
+
+                if(updateState != null)
+                    updateState.onUpdate(length);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -774,19 +793,19 @@ public class Futils {
         }
     }
 
-    public String getdate(File f) {
+    public String getDate(File f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f.lastModified());
     }
 
-    public static String getdate(long f) {
+    public static String getDate(long f) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
         return sdf.format(f);
     }
 
-    public static String getdate(long f, String year) {
+    public static String getDate(long f, String year) {
         String date = sSDF.format(f);
         if(date.substring(date.length()-4,date.length()).equals(year))
             date=date.substring(0,date.length()-6);
@@ -817,51 +836,212 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showProps(final BaseFile hFile, final String perm, final MainFragment c, boolean root, AppTheme appTheme) {
-        long last=hFile.getDate();
-        String date = getdate(last);
-        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
-        name = hFile.getName();
-        parent = hFile.getReadablePath(hFile.getParent(c.getContext()));
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c.getActivity());
-        String fabskin = PreferenceUtils.getAccentString(sp);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c.getActivity());
-        a.title(c.getResources().getString( R.string.properties));
-        a.theme(appTheme.getMaterialDialogTheme());
-        View v=c.getActivity().getLayoutInflater().inflate(R.layout.properties_dialog,null);
-        AppCompatButton appCompatButton=(AppCompatButton)v.findViewById(R.id.appX);
-        appCompatButton.setAllCaps(true);
-        final View permtabl=v.findViewById(R.id.permtable);
-        final View but=v.findViewById(R.id.set);
-        if(root && perm.length()>6) {
-            appCompatButton.setVisibility(View.VISIBLE);
-            appCompatButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (permtabl.getVisibility() == View.GONE) {
-                        permtabl.setVisibility(View.VISIBLE);
-                        but.setVisibility(View.VISIBLE);
-                        setPermissionsDialog(permtabl, but, hFile, perm, c);
-                    } else {
-                        but.setVisibility(View.GONE);
-                        permtabl.setVisibility(View.GONE);
+    public void showPropertiesDialogWithPreference(BaseFile baseFile, final String permissions,
+                                                   BasicActivity basic, boolean isRoot, AppTheme appTheme) {
+        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
+    }
 
-                    }
+    public void showPropertiesDialogWithoutPreference(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+        showPropertiesDialog(f, null, activity, false, appTheme, false, false);
+    }
+    public void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+        showPropertiesDialog(f, null, activity, false, appTheme, false, true);
+    }
+
+    private void showPropertiesDialog(final BaseFile baseFile, final String permissions,
+                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme,
+                                                    boolean showPermissions, boolean forStorage) {
+        final ExecutorService executor = Executors.newFixedThreadPool(3);
+        final Context c = basic.getApplicationContext();
+        int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
+        long last = baseFile.getDate();
+        final String date = getDate(last),
+                items = basic.getResources().getString(R.string.calculating),
+                name  = baseFile.getName(),
+                parent = baseFile.getReadablePath(baseFile.getParent(c));
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
+        String fabskin = PreferenceUtils.getAccentString(sharedPrefs);
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(basic);
+        builder.title(basic.getResources().getString(R.string.properties));
+        builder.theme(appTheme.getMaterialDialogTheme());
+
+        View v = basic.getLayoutInflater().inflate(R.layout.properties_dialog, null);
+        TextView itemsText = (TextView) v.findViewById(R.id.t7);
+
+        /*View setup*/ {
+            TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
+            mNameTitle.setTextColor(accentColor);
+
+            TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
+            mDateTitle.setTextColor(accentColor);
+
+            TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
+            mSizeTitle.setTextColor(accentColor);
+
+            TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
+            mLocationTitle.setTextColor(accentColor);
+
+            TextView md5Title = (TextView) v.findViewById(R.id.title_md5);
+            md5Title.setTextColor(accentColor);
+
+            TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
+            sha256Title.setTextColor(accentColor);
+
+            ((TextView) v.findViewById(R.id.t5)).setText(name);
+            ((TextView) v.findViewById(R.id.t6)).setText(parent);
+            itemsText.setText(items);
+            ((TextView) v.findViewById(R.id.t8)).setText(date);
+
+            LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
+            LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
+            LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
+            LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+
+            // setting click listeners for long press
+            mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, name);
+                    Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, parent);
+                    Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, items);
+                    Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Futils.copyToClipboard(c, date);
+                    Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                    return false;
                 }
             });
         }
-        a.customView(v, true);
-        //a.neutralText(R.string.ok);
-        a.positiveText(c.getResources().getString(R.string.ok));
-        a.positiveColor(Color.parseColor(fabskin));
-        MaterialDialog materialDialog=a.build();
+
+        CountFolderItems countFolderItems = new CountFolderItems(c, itemsText, baseFile);
+        countFolderItems.executeOnExecutor(executor);
+
+        GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
+        hashGen.executeOnExecutor(executor);
+
+        /*Chart creation and data loading*/ {
+            boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
+            PieChart chart = (PieChart) v.findViewById(R.id.chart);
+
+            chart.setTouchEnabled(false);
+            chart.setDrawEntryLabels(false);
+            chart.setDescription(null);
+            chart.setNoDataText(c.getString(loading));
+            chart.setRotationAngle(!isRightToLeft? 0f:180f);
+
+            chart.getLegend().setEnabled(true);
+            chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
+            chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+
+            chart.animateY(1000);
+
+            if(forStorage) {
+                final String[] LEGENDS = new String[]{c.getString(R.string.used), c.getString(R.string.free)};
+                final int[] COLORS = {Utils.getColor(c, R.color.piechart_red), Utils.getColor(c, R.color.piechart_green)};
+
+                long totalSpace = getTotalSpace(baseFile),
+                        freeSpace = getFreeSpace(baseFile),
+                        usedSpace = totalSpace - freeSpace;
+
+                List<PieEntry> entries = new ArrayList<>();
+                entries.add(new PieEntry(usedSpace, LEGENDS[0]));
+                entries.add(new PieEntry(freeSpace, LEGENDS[1]));
+
+                PieDataSet set = new PieDataSet(entries, null);
+                set.setColors(COLORS);
+                set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+                set.setSliceSpace(5f);
+                set.setValueLinePart2Length(1.05f);
+                set.setSelectionShift(0f);
+
+                PieData pieData = new PieData(set);
+                pieData.setValueFormatter(new SizeFormatter(c));
+
+                String totalSpaceFormatted = Formatter.formatFileSize(c, totalSpace);
+
+                chart.setCenterText(new SpannableString(c.getString(R.string.total) + "\n" + totalSpaceFormatted));
+                chart.setData(pieData);
+            } else {
+                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, chart, baseFile);
+                loadFolderSpaceData.executeOnExecutor(executor);
+            }
+
+            chart.invalidate();
+        }
+
+        if(!forStorage && showPermissions) {
+            final MainFragment main = ((MainActivity) basic).mainFragment;
+            AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
+            appCompatButton.setAllCaps(true);
+
+            final View permissionsTable = v.findViewById(R.id.permtable);
+            final View button = v.findViewById(R.id.set);
+            if (isRoot && permissions.length() > 6) {
+                appCompatButton.setVisibility(View.VISIBLE);
+                appCompatButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (permissionsTable.getVisibility() == View.GONE) {
+                            permissionsTable.setVisibility(View.VISIBLE);
+                            button.setVisibility(View.VISIBLE);
+                            setPermissionsDialog(permissionsTable, button, baseFile, permissions, c,
+                                    main);
+                        } else {
+                            button.setVisibility(View.GONE);
+                            permissionsTable.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        }
+
+        builder.customView(v, true);
+        builder.positiveText(basic.getResources().getString(R.string.ok));
+        builder.positiveColor(Color.parseColor(fabskin));
+        builder.dismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                executor.shutdown();
+            }
+        });
+
+        MaterialDialog materialDialog = builder.build();
         materialDialog.show();
-        /*View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
+        materialDialog.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+
+        /*
+        View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);*/
-        new GenerateMD5Task(materialDialog, hFile, name, parent, items, date,
-                c.MAIN_ACTIVITY, v).execute(hFile.getPath());
+        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);
+        */
     }
 
     public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
@@ -1087,22 +1267,15 @@ public class Futils {
         builder.show();
     }
 
-    public static long[] getSpaces(HFile hFile) {
-        if(!hFile.isSmb() && hFile.isDirectory() && (hFile.isSimpleFile() || hFile.isRoot())) {
-            try {
-                File file=new File(hFile.getPath());
-                long[] ints=new long[]{file.getTotalSpace(), file.getFreeSpace(), folderSize
-                        (new File(hFile.getPath()))};
-                return ints;
-            } catch (Exception e) {
-                return new long[]{-1,-1,-1};
-            }
+    public static long[] getSpaces(HFile hFile, final OnProgressUpdate<Long[]> updateState) {
+        if(hFile.isSmb()) {
+            return new long[]{-1, -1, -1};
         } else if (hFile.isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
             CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageDropbox.getAllocation().getTotal(),
+            return new long[]{cloudStorageDropbox.getAllocation().getTotal(),
                     (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
             };
@@ -1111,7 +1284,7 @@ public class Futils {
             CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageBox.getAllocation().getTotal(),
+            return new long[]{cloudStorageBox.getAllocation().getTotal(),
                     (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
             };
@@ -1121,7 +1294,7 @@ public class Futils {
             CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
                     hFile.getPath()));
 
-            return new long[] {cloudStorageGDrive.getAllocation().getTotal(),
+            return new long[]{cloudStorageGDrive.getAllocation().getTotal(),
                     (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
             };
@@ -1130,40 +1303,103 @@ public class Futils {
 
             CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
                     hFile.getPath()));
-            return new long[] {cloudStorageOneDrive.getAllocation().getTotal(),
+            return new long[]{cloudStorageOneDrive.getAllocation().getTotal(),
                     (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
                     folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
             };
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                File file = new File(hFile.getPath());
+                final long totalSpace = file.getTotalSpace(),
+                        freeSpace = file.getFreeSpace(),
+                        folderSize = folderSize(new File(hFile.getPath()),
+                                new OnProgressUpdate<Long>() {
+                                    @Override
+                                    public void onUpdate(Long data) {
+                                        if(updateState != null)
+                                            updateState.onUpdate(new Long[] {totalSpace, freeSpace, data});
+                                    }
+                                });
+
+                return new long[] {totalSpace, freeSpace, folderSize};
+            } catch (Exception e) {
+                return new long[]{-1, -1, -1};
+            }
+        } else {
+            return new long[]{-1, -1, -1};
         }
-        return new long[]{-1,-1,-1};
     }
 
-    public void showProps(final BaseFile f, final BaseActivity c, AppTheme appTheme) {
-        String date = null;
-        try {
-            date = getdate(f.lastModified());
-        } catch (MalformedURLException | SmbException e) {
-            e.printStackTrace();
+    public static long getFreeSpace(HFile hFile) {
+        if (hFile.isSmb()) {
+            return -1;
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
+                    hFile.getPath()));
+
+            return (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed());
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
+                    hFile.getPath()));
+
+            return (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed());
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
+                    hFile.getPath()));
+
+            return (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed());
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
+                    hFile.getPath()));
+            return (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed());
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                return new File(hFile.getPath()).getFreeSpace();
+            } catch (Exception e) {
+                return -1;
+            }
+        } else {
+            return -1;
         }
+    }
 
-        String items = c.getResources().getString(R.string.calculating), size = c.getResources().getString(R.string.calculating), name, parent;
-        name = f.getName();
-        parent = f.getReadablePath(f.getParent());
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getAccentString(sp);
+    public static long getTotalSpace(HFile hFile) {
+        if(hFile.isSmb()) {
+            return -1;
+        } else if (hFile.isDropBoxFile()) {
+            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
 
-        View v = c.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        v.findViewById(R.id.appX).setVisibility(View.GONE);
+            return cloudStorageDropbox.getAllocation().getTotal();
+        } else if (hFile.isBoxFile()) {
+            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
 
-        MaterialDialog materialDialog = new MaterialDialog.Builder(c)
-                .title(c.getResources().getString(R.string.properties))
-                .theme(appTheme.getMaterialDialogTheme())
-                .customView(v, true)
-                .positiveText(R.string.ok)
-                .positiveColor(Color.parseColor(fabskin))
-                .build();
-        materialDialog.show();
-        new GenerateMD5Task(materialDialog, (f), name, parent, items, date, c, v).execute(f.getPath());
+            return cloudStorageBox.getAllocation().getTotal();
+        } else if (hFile.isGoogleDriveFile()) {
+            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+
+            return cloudStorageGDrive.getAllocation().getTotal();
+        } else if (hFile.isOneDriveFile()) {
+            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+
+            return cloudStorageOneDrive.getAllocation().getTotal();
+        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
+                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
+            try {
+                return new File(hFile.getPath()).getTotalSpace();
+            } catch (Exception e) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
     }
 
     public static boolean copyToClipboard(Context context, String text) {
@@ -1572,30 +1808,33 @@ public class Futils {
         x.show();
 
     }
+
     public boolean isAtleastKitkat(){
         return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
     }
-    public void setPermissionsDialog(final View v,View but,final HFile file, final String f, final MainFragment mainFrag) {
-        final CheckBox readown=(CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup=(CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother=(CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown=(CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup=(CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother=(CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown=(CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup=(CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother=(CheckBox) v.findViewById(R.id.cexeother);
-        String perm=f;
-        if(perm.length()<6){
+
+    public void setPermissionsDialog(final View v, View but, final HFile file,
+                                     final String f, final Context context, final MainFragment mainFrag) {
+        final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
+        final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
+        final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
+        final CheckBox writeown = (CheckBox) v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup = (CheckBox) v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother = (CheckBox) v.findViewById(R.id.cwriteother);
+        final CheckBox exeown = (CheckBox) v.findViewById(R.id.cexeown);
+        final CheckBox exegroup = (CheckBox) v.findViewById(R.id.cexegroup);
+        final CheckBox exeother = (CheckBox) v.findViewById(R.id.cexeother);
+        String perm = f;
+        if (perm.length() < 6) {
             v.setVisibility(View.GONE);
             but.setVisibility(View.GONE);
-            Toast.makeText(mainFrag.getActivity(),R.string.not_allowed,Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.not_allowed, Toast.LENGTH_SHORT).show();
             return;
         }
-        ArrayList<Boolean[]> arrayList=parse(perm);
-        Boolean[] read=arrayList.get(0);
-        Boolean[] write=arrayList.get(1);
-        final Boolean[] exe=arrayList.get(2);
+        ArrayList<Boolean[]> arrayList = parse(perm);
+        Boolean[] read = arrayList.get(0);
+        Boolean[] write = arrayList.get(1);
+        final Boolean[] exe = arrayList.get(2);
         readown.setChecked(read[0]);
         readgroup.setChecked(read[1]);
         readother.setChecked(read[2]);
@@ -1629,24 +1868,24 @@ public class Futils {
 
                 String command = "chmod " + finalValue + " " + file.getPath();
                 if (file.isDirectory())
-                    command = "chmod -R " + finalValue + " \"" + file.getPath()+"\"";
+                    command = "chmod -R " + finalValue + " \"" + file.getPath() + "\"";
 
                 try {
                     RootHelper.runShellCommand(command, new Shell.OnCommandResultListener() {
                         @Override
                         public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            if (exitCode<0) {
-                                Toast.makeText(mainFrag.getActivity(), mainFrag.getString(R.string.operationunsuccesful),
+                            if (exitCode < 0) {
+                                Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
                                         Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(mainFrag.getActivity(),
+                                Toast.makeText(context,
                                         mainFrag.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
                     mainFrag.updateList();
                 } catch (RootNotPermittedException e1) {
-                    Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.rootfailure),
+                    Toast.makeText(context, mainFrag.getResources().getString(R.string.rootfailure),
                             Toast.LENGTH_LONG).show();
                     e1.printStackTrace();
                 }
@@ -1767,4 +2006,23 @@ public class Futils {
         arrayList.add(execute);
         return arrayList;
     }
+
+    public static class SizeFormatter implements IValueFormatter {
+
+        private Context context;
+
+        public SizeFormatter(Context c) {
+            context = c;
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+                                        ViewPortHandler viewPortHandler) {
+            String prefix = entry.getData() != null && entry.getData() instanceof String?
+                    (String) entry.getData():"";
+
+            return prefix + Formatter.formatFileSize(context, (long) value);
+        }
+    }
+
 }

@@ -66,7 +66,6 @@
   <string name="name">Nazwa</string>
   <string name="date">Data</string>
   <string name="location">Lokalizacja</string>
-  <string name="size">Rozmiar katalogu</string>
   <string name="totalitems">Elementy (łącznie)</string>
   <string name="enterzipname">Wpisz nazwę archiwum</string>
   <string name="noappfound">Nie odnaleziono aplikacji potrzebnej do otworzenia tego pliku</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Brak plików</string>
   <string name="tapnhold">Dotknij i przytrzymaj plik lub katalog, aby wyświetlić więcej opcji</string>
   <string name="pathcopied">Skopiowano ścieżkę</string>
-  <string name="used">Użyte przez innych:  </string>
-  <string name="free">Wolne:  </string>
   <string name="atroot">Jesteś w katalogu głównym</string>
   <string name="listview">Widok listy</string>
   <string name="gridview">Widok siatki</string>

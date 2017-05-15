@@ -68,7 +68,6 @@
     <string name="name">Izena: </string>
     <string name="date">Data: </string>
     <string name="location">Hemen dago: </string>
-    <string name="size">Neurria: </string>
     <string name="totalitems">Elementuak guztira: </string>
     <string name="enterzipname">Zip fitxategiaren izena sartu</string>
     <string name="noappfound">Fitxategi hau irekitzeko aplikaziorik ez da aurkitu</string>
@@ -200,8 +199,6 @@
     <string name="nofiles">Fitxategirik ez</string>
     <string name="tapnhold">Ukitu eta mantendu edozein fitxategi edo karpeta aukera gehiago ikusteko</string>
     <string name="pathcopied">Bidea arbelera kopiatu da</string>
-    <string name="used">Erabilita :  </string>
-    <string name="free">Libre :  </string>
     <string name="atroot">Erroan zaude</string>
     <string name="listview">Zerrenda ikuspegia</string>
     <string name="gridview">Sareta ikuspegia</string>

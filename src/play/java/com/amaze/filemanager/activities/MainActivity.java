@@ -417,7 +417,14 @@ public class MainActivity extends BaseActivity implements
             }
         } catch (Exception e) {
 
+            e.printStackTrace();
         }
+
+        if (savedInstanceState != null) {
+
+            selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
+        }
+
         refreshDrawer();
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -478,6 +485,7 @@ public class MainActivity extends BaseActivity implements
             operation = savedInstanceState.getInt("operation");
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
             //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
+            adapter.toggleChecked(selectedStorage);
         }
 
         if (getAppTheme().equals(AppTheme.DARK)) {
@@ -1474,230 +1482,167 @@ public class MainActivity extends BaseActivity implements
     }
     
     public void refreshDrawer() {
-        new AsyncTask<Void, Void, ArrayList<Item>>() {
-            @Override
-            protected ArrayList<Item> doInBackground(Void... params) {
-                ArrayList<Item> sectionItems = new ArrayList<>();
-                ArrayList<String> storageDirectories = getStorageDirectories();
-                ArrayList<String[]> books = new ArrayList<>();
-                ArrayList<String[]> servers = new ArrayList<>();
-                storage_count = 0;
-                for (String file : storageDirectories) {
-                    File f = new File(file);
-                    String name;
-                    Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
-                    if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                        name = getResources().getString(R.string.storage);
-                    } else if ("/storage/sdcard1".equals(file)) {
-                        name = getResources().getString(R.string.extstorage);
-                    } else if ("/".equals(file)) {
-                        name = getResources().getString(R.string.rootdirectory);
-                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
-                    } else if (file.contains(OTGUtil.PREFIX_OTG)) {
-                        name = "OTG";
-                        icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
-                    } else name = f.getName();
-                    if (!f.isDirectory() || f.canExecute()) {
-                        storage_count++;
-                        sectionItems.add(new EntryItem(name, file, icon1));
-                    }
-                }
-                dataUtils.setStorages(storageDirectories);
+
+        ArrayList<Item> sectionItems = new ArrayList<>();
+        ArrayList<String> storageDirectories = getStorageDirectories();
+        ArrayList<String[]> books = new ArrayList<>();
+        ArrayList<String[]> servers = new ArrayList<>();
+        storage_count = 0;
+        for (String file : storageDirectories) {
+            File f = new File(file);
+            String name;
+            Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
+                name = getResources().getString(R.string.storage);
+            } else if ("/storage/sdcard1".equals(file)) {
+                name = getResources().getString(R.string.extstorage);
+            } else if ("/".equals(file)) {
+                name = getResources().getString(R.string.rootdirectory);
+                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
+            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
+                name = "OTG";
+                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
+            } else name = f.getName();
+            if (!f.isDirectory() || f.canExecute()) {
+                storage_count++;
+                sectionItems.add(new EntryItem(name, file, icon1));
+            }
+        }
+        dataUtils.setStorages(storageDirectories);
+        sectionItems.add(new SectionItem());
+        try {
+            for (String[] file : grid.readTableSecondary(DataUtils.SMB))
+                servers.add(file);
+            dataUtils.setServers(servers);
+            if (servers.size() > 0) {
+                Collections.sort(servers, new BookSorter());
+                for (String[] file : servers)
+                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
+                            R.drawable.ic_settings_remote_white_48dp)));
                 sectionItems.add(new SectionItem());
-                try {
-                    for (String[] file : grid.readTableSecondary(DataUtils.SMB))
-                        servers.add(file);
-                    dataUtils.setServers(servers);
-                    if (servers.size() > 0) {
-                        Collections.sort(servers, new BookSorter());
-                        for (String[] file : servers)
-                            sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
-                                    R.drawable.ic_settings_remote_white_48dp)));
-                        sectionItems.add(new SectionItem());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
+
+        if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
+
+            for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+
+                if (cloudStorage instanceof Dropbox) {
+
+                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
+                            CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+
+                    accountAuthenticationList.add(new String[] {
+                            CloudHandler.CLOUD_NAME_DROPBOX,
+                            CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                    });
+                } else if (cloudStorage instanceof Box) {
+
+                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
+                            CloudHandler.CLOUD_PREFIX_BOX + "/",
+                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+
+                    accountAuthenticationList.add(new String[] {
+                            CloudHandler.CLOUD_NAME_BOX,
+                            CloudHandler.CLOUD_PREFIX_BOX + "/",
+                    });
+                } else if (cloudStorage instanceof OneDrive) {
+
+                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+
+                    accountAuthenticationList.add(new String[] {
+                            CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                    });
+                } else if (cloudStorage instanceof GoogleDrive) {
+
+                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                            CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+
+                    accountAuthenticationList.add(new String[] {
+                            CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                            CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                    });
                 }
+            }
+            Collections.sort(accountAuthenticationList, new BookSorter());
 
-                ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
+            if (accountAuthenticationList.size() != 0)
+                sectionItems.add(new SectionItem());
+        }
 
-                if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
+        if (!sharedPref.contains(FoldersPref.KEY)) {
+            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
+                books.add(file);
+            }
+        } else {
+            ArrayList<FoldersPref.Shortcut> booksPref =
+                    FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
+                            FoldersPref.KEY, new ArrayList<String>()));
 
-                    for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
-
-                        if (cloudStorage instanceof Dropbox) {
-
-                            try {
-
-                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-
-                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
-                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        CloudHandler.CLOUD_NAME_DROPBOX,
-                                        CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                                });
-                            }
-                        } else if (cloudStorage instanceof Box) {
-
-                            try {
-
-                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-
-                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
-                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        CloudHandler.CLOUD_NAME_BOX,
-                                        CloudHandler.CLOUD_PREFIX_BOX + "/",
-                                });
-                            }
-                        } else if (cloudStorage instanceof OneDrive) {
-
-                            try {
-                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-
-                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
-                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        CloudHandler.CLOUD_NAME_ONE_DRIVE,
-                                        CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                                });
-                            }
-                        } else if (cloudStorage instanceof GoogleDrive) {
-
-                            try {
-                                sectionItems.add(new EntryItem(cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        cloudStorage.getUserName(),
-                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-
-                                sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
-
-                                accountAuthenticationList.add(new String[] {
-                                        CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-                                        CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                                });
-                            }
-                        }
-                    }
-                    Collections.sort(accountAuthenticationList, new BookSorter());
-
-                    if (accountAuthenticationList.size() != 0)
-                        sectionItems.add(new SectionItem());
+            for (FoldersPref.Shortcut t : booksPref) {
+                if (t.enabled) {
+                    books.add(new String[]{t.name, t.directory});
                 }
-
+            }
+        }
+        dataUtils.setBooks(books);
+        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+            if (books.size() > 0) {
                 if (!sharedPref.contains(FoldersPref.KEY)) {
-                    for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-                        books.add(file);
-                    }
-                } else {
-                    ArrayList<FoldersPref.Shortcut> booksPref =
-                            FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
-                                    FoldersPref.KEY, new ArrayList<String>()));
-
-                    for (FoldersPref.Shortcut t : booksPref) {
-                        if (t.enabled) {
-                            books.add(new String[]{t.name, t.directory});
-                        }
-                    }
-                }
-                dataUtils.setBooks(books);
-                if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-                    if (books.size() > 0) {
-                        if (!sharedPref.contains(FoldersPref.KEY)) {
-                            Collections.sort(books, new BookSorter());
-                        }
-
-                        for (String[] file : books) {
-                            sectionItems.add(new EntryItem(file[0], file[1],
-                                    ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
-                        }
-                        sectionItems.add(new SectionItem());
-                    }
+                    Collections.sort(books, new BookSorter());
                 }
 
-                Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
-                        QuickAccessPref.DEFAULT);
-
-                if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
-                    if (quickAccessPref[0])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
-                    if (quickAccessPref[1])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
-                    if (quickAccessPref[2])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
-                    if (quickAccessPref[3])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
-                    if (quickAccessPref[4])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
-                    if (quickAccessPref[5])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
-                    if (quickAccessPref[6])
-                        sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
-                } else {
-                    sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
+                for (String[] file : books) {
+                    sectionItems.add(new EntryItem(file[0], file[1],
+                            ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
                 }
-
-                dataUtils.setList(sectionItems);
-                return sectionItems;
+                sectionItems.add(new SectionItem());
             }
+        }
 
-            @Override
-            protected void onPostExecute(ArrayList<Item> items) {
-                super.onPostExecute(items);
-                adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, items, MainActivity.this, sharedPref);
-                mDrawerList.setAdapter(adapter);
-                adapter.toggleChecked(selectedStorage);
-            }
-        }.execute();
+        Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
+                QuickAccessPref.DEFAULT);
+
+        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+            if (quickAccessPref[0])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+            if (quickAccessPref[1])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+            if (quickAccessPref[2])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+            if (quickAccessPref[3])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+            if (quickAccessPref[4])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+            if (quickAccessPref[5])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+            if (quickAccessPref[6])
+                sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+        } else {
+            sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
+        }
+
+        dataUtils.setList(sectionItems);
+
+        adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, sectionItems,
+                MainActivity.this, sharedPref);
+        mDrawerList.setAdapter(adapter);
     }
 
     @Override

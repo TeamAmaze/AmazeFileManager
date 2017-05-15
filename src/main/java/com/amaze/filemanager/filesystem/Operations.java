@@ -91,7 +91,7 @@ public class Operations {
             protected Void doInBackground(Void... params) {
                 // checking whether filename is valid or a recursive call possible
                 if (MainActivityHelper.isNewDirectoryRecursive(file) ||
-                        !Operations.isFileNameValid(file.getName())) {
+                        !Operations.isFileNameValid(file.getName(context))) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
@@ -118,7 +118,7 @@ public class Operations {
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
-                        parentDirectory.createDirectory(file.getName());
+                        parentDirectory.createDirectory(file.getName(context));
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
                     return null;
@@ -172,7 +172,7 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             try {
 
-                                RootUtils.mkDir(file.getParent(), file.getName());
+                                RootUtils.mkDir(file.getParent(context), file.getName(context));
                             } catch (RootNotPermittedException e) {
                                 Logger.log(e, file.getPath(), context);
                             }
@@ -197,7 +197,7 @@ public class Operations {
             @Override
             protected Void doInBackground(Void... params) {
                 // check whether filename is valid or not
-                if (!Operations.isFileNameValid(file.getName())) {
+                if (!Operations.isFileNameValid(file.getName(context))) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
@@ -272,8 +272,8 @@ public class Operations {
 
                     DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
-                        parentDirectory.createFile(file.getName().substring(file.getName().lastIndexOf(".")),
-                                file.getName());
+                        parentDirectory.createFile(file.getName(context).substring(file.getName().lastIndexOf(".")),
+                                file.getName(context));
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
                     return null;
@@ -320,7 +320,7 @@ public class Operations {
             protected Void doInBackground(Void... params) {
                 // check whether file names for new file are valid or recursion occurs
                 if (MainActivityHelper.isNewDirectoryRecursive(newFile) ||
-                        !Operations.isFileNameValid(newFile.getName())) {
+                        !Operations.isFileNameValid(newFile.getName(context))) {
                     errorCallBack.invalidName(newFile);
                     return null;
                 }
@@ -394,7 +394,7 @@ public class Operations {
                         errorCallBack.exists(newFile);
                         return null;
                     }
-                    errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName()));
+                    errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
                     return null;
                 } else {
 

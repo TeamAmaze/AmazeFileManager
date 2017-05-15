@@ -24,11 +24,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
@@ -137,8 +142,11 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     @Override
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
-            if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0)))
-                    mainFrag.updateList();
+            if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0))) {
+                // mainFrag.updateList();
+                Intent intent = new Intent("loadlist");
+                context.sendBroadcast(intent);
+            }
 
             for (int i = 0; i < paths.size(); i++) {
                 for (BaseFile f : files.get(i)) {
@@ -146,6 +154,33 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                     Futils.scanFile(paths.get(i) + "/" + f.getName(), context);
                 }
             }
+
+            // updating encrypted db entry if any encrypted file was moved
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i=0; i<paths.size(); i++) {
+                        for (BaseFile file : files.get(i)) {
+                            if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                                try {
+
+                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
+                                    EncryptedEntry newEntry = new EncryptedEntry();
+                                    newEntry.setId(oldEntry.getId());
+                                    newEntry.setPassword(oldEntry.getPassword());
+                                    newEntry.setPath(paths.get(i) + "/" + file.getName());
+                                    cryptHandler.updateEntry(oldEntry, newEntry);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    // couldn't change the entry, leave it alone
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
         } else {
             for (int i = 0; i < paths.size(); i++) {
                 Intent intent = new Intent(context, CopyService.class);
