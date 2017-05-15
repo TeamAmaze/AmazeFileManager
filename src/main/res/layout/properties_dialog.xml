@@ -99,8 +99,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/date"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:textSize="@dimen/material_generic_title"/>
 
             <TextView
                 android:id="@+id/t8"
