@@ -54,7 +54,7 @@
     <string name="file_empty">File is empty</string>
     <string name="error">Error</string>
     <string name="cantlistfiles">Can\'t list files without root</string>
-    <string name="searchresults">Search Results</string>
+    <string name="searchresults">Search Results of </string>
     <string name="itemsselected">Items Selected</string>
     <string name="newhomedirectory">New Home Directory</string>
     <string name="rename">Rename</string>

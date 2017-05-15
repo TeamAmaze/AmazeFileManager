@@ -1644,9 +1644,16 @@ public class MainFragment extends android.support.v4.app.Fragment {
         getActivity().sendBroadcast(addIntent);
     }
 
+    // This method is used to implement the modification for the pre Searching
+    public void onSearchPreExecute(String query){
+        pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
+        mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searching)+" "+query);
+    }
+
+
     // adds search results based on result boolean. If false, the adapter is initialised with initial
     // values, if true, new values are added to the adapter.
-    public void addSearchResult(BaseFile a) {
+    public void addSearchResult(BaseFile a,String query) {
         if (listView != null) {
 
             // initially clearing the array for new result set
@@ -1661,7 +1668,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             if (!results) {
                 createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
                 pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
-                mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searching));
+                mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searching)+" "+query);
                 results = true;
             } else {
                 adapter.addItem();
@@ -1670,7 +1677,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public void onSearchCompleted() {
+    public void onSearchCompleted(final String query) {
         if (!results) {
             // no results were found
             getLayoutElements().clear();
@@ -1686,7 +1693,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             public void onPostExecute(Void c) {
                 createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);
                 pathname.setText(MAIN_ACTIVITY.getString(R.string.empty));
-                mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searchresults));
+                mFullPath.setText(MAIN_ACTIVITY.getString(R.string.searchresults)+" "+query);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

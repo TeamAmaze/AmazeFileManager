@@ -2887,19 +2887,20 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void onPreExecute() {
+    public void onPreExecute(String query) {
         mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+        mainFragment.onSearchPreExecute(query);
     }
 
     @Override
-    public void onPostExecute() {
-        mainFragment.onSearchCompleted();
+    public void onPostExecute(String query) {
+        mainFragment.onSearchCompleted(query);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void onProgressUpdate(BaseFile val) {
-        mainFragment.addSearchResult(val);
+    public void onProgressUpdate(BaseFile val , String query) {
+        mainFragment.addSearchResult(val,query);
     }
 
     @Override
