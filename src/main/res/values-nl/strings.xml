@@ -66,7 +66,6 @@
   <string name="name">Naam: </string>
   <string name="date">Datum: </string>
   <string name="location">Locatie: </string>
-  <string name="size">Grootte: </string>
   <string name="totalitems">Totale items: </string>
   <string name="enterzipname">Zip-naam invoeren</string>
   <string name="noappfound">Geen app gevonden om dit bestand te openen</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Geen bestanden</string>
   <string name="tapnhold">Druk en houd een bestand of map ingedrukt voor meer opties</string>
   <string name="pathcopied">Pad gekopieerd naar klembord</string>
-  <string name="used">Gebruikt: </string>
-  <string name="free">Vrij: </string>
   <string name="atroot">Je bent in de bovenste map</string>
   <string name="listview">Lijstweergave</string>
   <string name="gridview">Roosterweergave</string>

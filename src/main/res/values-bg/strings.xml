@@ -64,7 +64,6 @@
   <string name="name">Име</string>
   <string name="date">Дата</string>
   <string name="location">Местоположение</string>
-  <string name="size">Размера на папка</string>
   <string name="totalitems">Общо елементи</string>
   <string name="noappfound">Не е намерено приложение за този тип файлове</string>
   <string name="copying">Копиране</string>
@@ -180,8 +179,6 @@
   <string name="nofiles">Няма файлове</string>
   <string name="tapnhold">Докоснете и задръжте върху файл или папка за повече опции</string>
   <string name="pathcopied">Пътят е копиран в клипборда</string>
-  <string name="used">Използван от други:  </string>
-  <string name="free">Свободно пространство:  </string>
   <string name="atroot">Вие сте в основата</string>
   <string name="listview">Списъчен изглед</string>
   <string name="gridview">Табличен изглед</string>

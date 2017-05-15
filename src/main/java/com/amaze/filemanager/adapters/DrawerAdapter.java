@@ -177,7 +177,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();
                             if (!path.equals("/"))
-                                utilsProvider.getFutils().showProps(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
+                                utilsProvider.getFutils().showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
                         }
 
                     // return true to denote no further processing

@@ -64,11 +64,9 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.MapEntry;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -546,7 +544,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 if (mFile.exists()) {
                     //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
                     //hFile.generateMode(this);
-                    getFutils().showProps(mFile, this, getAppTheme());
+                    getFutils().showPropertiesDialogWithoutPreference(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:

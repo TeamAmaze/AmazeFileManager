@@ -66,7 +66,6 @@
   <string name="name">Όνομα: </string>
   <string name="date">Ημερομηνία: </string>
   <string name="location">Βρίσκεται σε: </string>
-  <string name="size">Μέγεθος: </string>
   <string name="totalitems">Συνολικά αντικείμενα: </string>
   <string name="enterzipname">Εισάγετε το όνομα του Zip</string>
   <string name="noappfound">Δε βρέθηκε εφαρμογή για το άνοιγμα αυτού του αρχείου</string>
@@ -199,8 +198,6 @@
   <string name="nofiles">Δεν υπάρχουν αρχεία</string>
   <string name="tapnhold">Αγγίξτε παρατεταμένα ένα αρχείο ή φάκελο για περισσότερες επιλογές</string>
   <string name="pathcopied">Η διαδρομή αντιγράφτηκε</string>
-  <string name="used">Χρησιμοποιούνται:  </string>
-  <string name="free">Ελεύθερα:  </string>
   <string name="atroot">Είστε στον root</string>
   <string name="listview">Εμφάνιση σε λίστα</string>
   <string name="gridview">Εμφάνιση σε πλέγμα</string>

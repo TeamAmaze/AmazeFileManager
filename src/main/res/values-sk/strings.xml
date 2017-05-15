@@ -66,7 +66,6 @@
   <string name="name">Meno</string>
   <string name="date">Dátum</string>
   <string name="location">Miesto</string>
-  <string name="size">Veľkosť priečinka</string>
   <string name="totalitems">Celkový počet položiek</string>
   <string name="enterzipname">Zadajte meno súboru ZIP</string>
   <string name="noappfound">Nenašla sa aplikácia na otvorenie tohto typu súboru</string>
@@ -200,8 +199,6 @@
   <string name="nofiles">Žiadne súbory</string>
   <string name="tapnhold">Dlho podržte na súbore alebo priečinku pre viac možností</string>
   <string name="pathcopied">Cesta bola skopírovaná do schránky</string>
-  <string name="used">Iní používajú:  </string>
-  <string name="free">Voľné miesto:</string>
   <string name="atroot">Nachádzate sa v koreňovo adresári</string>
   <string name="listview">Zobrazenie zoznamu</string>
   <string name="gridview">Zobrazenie v mriežke</string>

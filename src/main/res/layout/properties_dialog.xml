@@ -5,104 +5,100 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:minHeight="100dp"
-        android:paddingTop="5dp">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_name"
+            android:id="@+id/properties_dialog_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:background="?selectableItemBackground"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_name"
+                android:id="@+id/title_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:text="@string/name"
+                android:textSize="@dimen/material_generic_title"/>
 
             <TextView
                 android:id="@+id/t5"
-                android:text="@string/calculating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/material_generic_title_summary"
-                />
+                android:text="@string/calculating"
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_location"
+            android:id="@+id/properties_dialog_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/material_generic_medium"
+            android:layout_marginBottom="5dp"
+
             android:background="?selectableItemBackground"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_location"
+                android:id="@+id/title_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/location"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:text="@string/location"
+                android:textSize="@dimen/material_generic_title"/>
+
             <TextView
                 android:id="@+id/t6"
-                android:text="@string/calculating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/material_generic_title_summary"
-                />
+                android:text="@string/calculating"
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_size"
+            android:id="@+id/properties_dialog_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/material_generic_medium"
+            android:layout_marginBottom="5dp"
             android:background="?selectableItemBackground"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_size"
+                android:id="@+id/title_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/size"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:text="@string/size_capitalized"
+                android:textSize="@dimen/material_generic_title"/>
 
             <TextView
                 android:id="@+id/t7"
-                android:text="@string/calculating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/material_generic_title_summary"
-                />
+                android:text="@string/calculating"
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_date"
+            android:id="@+id/properties_dialog_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/material_generic_medium"
+            android:layout_marginBottom="5dp"
             android:background="?selectableItemBackground"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_date"
+                android:id="@+id/title_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date"
                 android:fontFamily="sans-serif-medium"
+                android:text="@string/date"
                 android:textSize="@dimen/material_generic_title"
                 />
 
@@ -111,220 +107,74 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
-                android:textSize="@dimen/material_generic_title_summary"
-                />
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_md5"
-            android:layout_height="wrap_content"
+            android:id="@+id/properties_dialog_md5"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/material_generic_medium"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:background="?selectableItemBackground"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_md5"
+                android:id="@+id/title_md5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/md5"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:text="@string/md5"
+                android:textSize="@dimen/material_generic_title"/>
 
             <TextView
                 android:id="@+id/t9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/material_generic_title_summary"
-                android:text="@string/calculating"/>
+                android:text="@string/calculating"
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linear_layout_properties_dialog_sha256"
-            android:layout_height="wrap_content"
+            android:id="@+id/properties_dialog_sha256"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/material_generic_medium"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:background="?selectableItemBackground"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_properties_dialog_title_sha256"
+                android:id="@+id/title_sha256"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hash_sha256"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="@dimen/material_generic_title"
-                />
+                android:text="@string/hash_sha256"
+                android:textSize="@dimen/material_generic_title"/>
 
             <TextView
                 android:id="@+id/t10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/material_generic_title_summary"
-                android:text="@string/calculating"/>
+                android:text="@string/calculating"
+                android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:layout_height="9dp"
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:id="@+id/divider"
-        android:background="@android:color/transparent"
-        android:src="@color/divider"
-        android:paddingTop="8dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:id="@+id/dirprops"
-        android:orientation="horizontal">
-        <com.amaze.filemanager.ui.views.SizeDrawable
-            android:id="@+id/sizedrawable"
-            android:layout_width="40dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent"/>
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:layout_height="match_parent"
-            android:minHeight="100dp">
-            <TableRow>
-                <ImageButton
-                    android:src="@android:color/transparent"
-                    android:layout_width="30dp"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:minWidth="10dp"
-                    android:padding="5dp"
-                    android:layout_height="30dp"
-                    />
-                <TextView
-                    android:text="@string/total"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-
-                <TextView
-                    android:id="@+id/t1"
-                    android:text="@string/calculating"
-                    android:padding="3dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    />
-
-            </TableRow>
-            <TableRow>
-                <ImageButton
-                    android:src="#4CAF50"
-                    android:layout_width="30dp"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:minWidth="10dp"
-                    android:padding="5dp"
-                    android:layout_height="30dp"
-                    />
-                <TextView
-                    android:text="@string/free"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"
-                    />
-
-                <TextView
-                    android:id="@+id/t2"
-                    android:text="@string/calculating"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="3dp"
-                    />
-
-            </TableRow>
-            <TableRow>
-
-                <ImageButton
-                    android:src="#E53930"
-                    android:layout_width="30dp"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:minWidth="10dp"
-                    android:padding="5dp"
-                    android:layout_height="30dp"
-                    />
-                <TextView
-                    android:text="@string/used"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-
-                <TextView
-                    android:id="@+id/t3"
-                    android:text="@string/calculating"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="3dp"
-                    />
-
-            </TableRow>
-            <TableRow>
-
-                <ImageView
-                    android:src="#0D47A1"
-                    android:layout_width="30dp"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:minWidth="10dp"
-                    android:padding="5dp"
-                    android:layout_height="30dp"
-                    />
-                <TextView
-                    android:text="@string/size"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-
-                <TextView
-                    android:id="@+id/t4"
-                    android:text="@string/calculating"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:padding="3dp"
-                    />
-
-            </TableRow>
-        </TableLayout>
-
-    </LinearLayout>
+        android:layout_height="150dp" />
 
     <android.support.v7.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/permission"
-        android:id="@+id/appX"
-        android:visibility="gone"
-        />
+        android:id="@+id/permissionsButton"
+        android:visibility="gone"/>
 
     <include
         android:id="@+id/permtable"
         android:visibility="gone"
-        layout="@layout/permissiontable"></include>
+        layout="@layout/permissiontable"/>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/set"
         android:layout_width="match_parent"
