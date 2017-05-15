@@ -60,7 +60,7 @@
   <string name="name">Ime</string>
   <string name="date">Datum</string>
   <string name="location">Lokacija</string>
-  <string name="size">Velikost mape</string>
+  <string name="size_capitalized">Velikost</string>
   <string name="totalitems">Skupno število elementov</string>
   <string name="copying">Kopiranje</string>
   <string name="add">Dodaj</string>
@@ -191,7 +191,6 @@
   <string name="clear">Počisti</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Kopiraj md5</string>
-  <string name="total">Skupaj: </string>
   <string name="defualt">Privzeto</string>
   <string name="recent">Nedavne datoteke</string>
   <string name="edit">Uredi</string>

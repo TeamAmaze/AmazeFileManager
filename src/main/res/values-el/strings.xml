@@ -66,6 +66,7 @@
   <string name="name">Όνομα: </string>
   <string name="date">Ημερομηνία: </string>
   <string name="location">Βρίσκεται σε: </string>
+  <string name="size_capitalized">Μέγεθος</string>
   <string name="totalitems">Συνολικά αντικείμενα: </string>
   <string name="enterzipname">Εισάγετε το όνομα του Zip</string>
   <string name="noappfound">Δε βρέθηκε εφαρμογή για το άνοιγμα αυτού του αρχείου</string>
@@ -353,7 +354,6 @@
   <string name="clear">Καθαρισμός</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Αντιγραφή md5</string>
-  <string name="total">Σύνολο: </string>
   <string name="calculating"> υπολογισμός </string>
   <string name="sort">Ταξινόμηση</string>
   <string name="ascending">Αύξουσα</string>

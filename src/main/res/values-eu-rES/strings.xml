@@ -20,6 +20,7 @@
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="storage">Biltegiratzea</string>
+  <string name="size_capitalized">Tamaina</string>
   <string name="home">Etxean</string>
   <!-- New -->
   <!-- Array -->

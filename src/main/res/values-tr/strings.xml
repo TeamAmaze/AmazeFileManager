@@ -66,6 +66,7 @@
   <string name="name">Ad:</string>
   <string name="date">Tarih:</string>
   <string name="location">Bulunan:</string>
+  <string name="size_capitalized">Boyut</string>
   <string name="totalitems">Toplam öğeler:</string>
   <string name="enterzipname">Zip adını gir</string>
   <string name="noappfound">Bu uygulamayı açmak için uygulama bulanamadı</string>
@@ -354,7 +355,6 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="clear">Temizle</string>
   <string name="md5">md5:</string>
   <string name="md5_2">md5 kopyala</string>
-  <string name="total">Toplam:</string>
   <string name="calculating">hesaplanıyor</string>
   <string name="sort">Sırala</string>
   <string name="ascending">Artan</string>

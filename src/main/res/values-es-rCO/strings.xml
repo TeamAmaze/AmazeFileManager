@@ -66,6 +66,7 @@
   <string name="name">Nombre </string>
   <string name="date">Fecha: </string>
   <string name="location">Ubicación</string>
+  <string name="size_capitalized">Tamaño</string>
   <string name="totalitems">Número de elementos: </string>
   <string name="enterzipname">Introducir nombre del Zip</string>
   <string name="noappfound">No se encontró una aplicación para abrir este archivo</string>
@@ -351,7 +352,6 @@
   <string name="clear">Limpiar</string>
   <string name="md5">MD5:</string>
   <string name="md5_2">Copiar MD5</string>
-  <string name="total">Total:</string>
   <string name="calculating">calculando</string>
   <string name="sort">Ordenar</string>
   <string name="ascending">Ascendente</string>

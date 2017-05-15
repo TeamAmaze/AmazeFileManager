@@ -64,6 +64,7 @@
   <string name="name">Име</string>
   <string name="date">Дата</string>
   <string name="location">Местоположение</string>
+  <string name="size_capitalized">Размер</string>
   <string name="totalitems">Общо елементи</string>
   <string name="noappfound">Не е намерено приложение за този тип файлове</string>
   <string name="copying">Копиране</string>
@@ -301,7 +302,6 @@
   <string name="clear">Изчисти</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Копиране на md5</string>
-  <string name="total">Общо: </string>
   <string name="calculating"> изчисляване </string>
   <string name="sort">Сортирай</string>
   <string name="ascending">Възходящо</string>

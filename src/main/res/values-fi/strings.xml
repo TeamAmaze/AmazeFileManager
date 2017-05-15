@@ -66,6 +66,7 @@
   <string name="name">Nimi</string>
   <string name="date">pvm</string>
   <string name="location">Sijainti</string>
+  <string name="size_capitalized">Koko</string>
   <string name="totalitems">Kohteiden määrä</string>
   <string name="enterzipname">Kirjoita tiedostonimi</string>
   <string name="noappfound">Ei löydetty sovellusta jolla tämän tiedostotyypin voisi avata</string>
@@ -354,7 +355,6 @@
   <string name="clear">Tyhjennä</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Kopioi MD5</string>
-  <string name="total">Yhteensä:</string>
   <string name="calculating">lasketaan</string>
   <string name="sort">Lajittele</string>
   <string name="ascending">Nouseva</string>

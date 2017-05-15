@@ -66,6 +66,7 @@
   <string name="name">Name</string>
   <string name="date">Datum</string>
   <string name="location">Standort</string>
+  <string name="size_capitalized">Größe</string>
   <string name="totalitems">Objekte insgesamt</string>
   <string name="enterzipname">Zip-Namen eingeben</string>
   <string name="noappfound">Keine App zum öffnen dieser Datei gefunden</string>
@@ -353,7 +354,6 @@
   <string name="clear">Löschen</string>
   <string name="md5">MD5:</string>
   <string name="md5_2">MD5 kopieren</string>
-  <string name="total">Gesamt:</string>
   <string name="calculating">Berechne</string>
   <string name="sort">Sortieren</string>
   <string name="ascending">Aufsteigend</string>

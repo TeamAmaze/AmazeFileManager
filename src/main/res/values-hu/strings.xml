@@ -66,6 +66,7 @@
   <string name="name">Név</string>
   <string name="date">Dátum</string>
   <string name="location">Hely</string>
+  <string name="size_capitalized">Méret</string>
   <string name="totalitems">Összes elem</string>
   <string name="enterzipname">Adja meg a zip nevét</string>
   <string name="noappfound">Nincs megfelelő alkalmazás a fájl megnyitására</string>
@@ -355,7 +356,6 @@ Folytatja?</string>
   <string name="clear">Törlés</string>
   <string name="md5">md5: </string>
   <string name="md5_2">md5 másolása</string>
-  <string name="total">Összes:</string>
   <string name="calculating">kiszámítás</string>
   <string name="sort">Rendezés</string>
   <string name="ascending">Növekvő</string>

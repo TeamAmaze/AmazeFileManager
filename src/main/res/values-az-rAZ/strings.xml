@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">LƏĞV ET</string>
   <string name="save">Yadda saxla</string>
+  <string name="size_capitalized">Ölçü</string>
   <string name="share">Paylaşın</string>
   <string name="confirm">Təsdiqlə</string>
   <string name="home">Ev</string>

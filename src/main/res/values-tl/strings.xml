@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">KANSELAHIN</string>
   <string name="save">I-save</string>
+  <string name="size_capitalized">Laki</string>
   <string name="share">Ibahagi</string>
   <string name="confirm">Kumpirmahin</string>
   <string name="delete">Tanggalin</string>

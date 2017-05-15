@@ -65,6 +65,7 @@
   <string name="name">Pavadinimas: </string>
   <string name="date">Data: </string>
   <string name="location">Vieta: </string>
+  <string name="size_capitalized">Dydis</string>
   <string name="totalitems">Iš viso elementų: </string>
   <string name="enterzipname">Įvesti Zip Pavadinimą</string>
   <string name="noappfound">Nerasta programėlė, kuri atidarytų šią bylą</string>

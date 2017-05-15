@@ -66,6 +66,7 @@
   <string name="name">Nama</string>
   <string name="date">Tanggal</string>
   <string name="location">Lokasi</string>
+  <string name="size_capitalized">Ukuran</string>
   <string name="totalitems">Total item</string>
   <string name="enterzipname">Masukkan nama Zip</string>
   <string name="noappfound">Tidak ada aplikasi untuk membuka file ini</string>
@@ -354,7 +355,6 @@
   <string name="clear">Bersihkan</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Menyalin md5</string>
-  <string name="total">Jumlah: </string>
   <string name="calculating"> menghitung </string>
   <string name="sort">Urutkan</string>
   <string name="ascending">Menaik</string>

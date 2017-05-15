@@ -62,6 +62,7 @@
   <string name="name">Nume: </string>
   <string name="date">Dată: </string>
   <string name="location">Locaţie: </string>
+  <string name="size_capitalized">Dimensiune</string>
   <string name="totalitems">Elemente: </string>
   <string name="enterzipname">Introduceţi numele fişierului Zip</string>
   <string name="noappfound">Nu s-a găsit nicio aplicaţie pentru a deschide acest fișier</string>

@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">បោះ​បង់</string>
   <string name="save">រក្សាទុក</string>
+  <string name="size_capitalized">ទំហំ</string>
   <string name="share">ចែក​រំលែក</string>
   <string name="confirm">បញ្ជាក់</string>
   <string name="delete">លុប</string>

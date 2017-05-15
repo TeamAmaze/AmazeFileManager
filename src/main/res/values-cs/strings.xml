@@ -66,6 +66,7 @@
   <string name="name">Název</string>
   <string name="date">Datum</string>
   <string name="location">Místo</string>
+  <string name="size_capitalized">Rozměry</string>
   <string name="totalitems">Celkový počet položek</string>
   <string name="enterzipname">Zadejte název ZIP souboru</string>
   <string name="noappfound">K otevření toho souboru nebyla nalezena žádná aplikace</string>
@@ -354,7 +355,6 @@
   <string name="clear">Smazat vše</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Kopírovat md5</string>
-  <string name="total">Celkem: </string>
   <string name="calculating"> měřím </string>
   <string name="sort">Řazení</string>
   <string name="ascending">Vzestupně</string>

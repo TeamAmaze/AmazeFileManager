@@ -65,6 +65,7 @@
   <string name="name">نام:</string>
   <string name="date">تاریخ:</string>
   <string name="location">مکان:</string>
+  <string name="size_capitalized">اندازه</string>
   <string name="totalitems">کل آیتم ها</string>
   <string name="enterzipname">نام فایل زیپ را وارد کنید</string>
   <string name="noappfound">هیچ برنامه ای برای باز کردن این فایل پیدا نشد</string>
@@ -341,7 +342,6 @@
   <string name="images">تصاویر</string>
   <string name="clear">پاک کردن</string>
   <string name="md5_2">کپی md5</string>
-  <string name="total">کل: </string>
   <string name="calculating"> در حال برآورد کردن </string>
   <string name="sort">مرتب کردن</string>
   <string name="ascending">صعودی</string>

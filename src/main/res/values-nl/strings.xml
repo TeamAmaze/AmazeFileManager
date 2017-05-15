@@ -66,6 +66,7 @@
   <string name="name">Naam: </string>
   <string name="date">Datum: </string>
   <string name="location">Locatie: </string>
+  <string name="size_capitalized">Grootte</string>
   <string name="totalitems">Totale items: </string>
   <string name="enterzipname">Zip-naam invoeren</string>
   <string name="noappfound">Geen app gevonden om dit bestand te openen</string>
@@ -353,7 +354,6 @@
   <string name="clear">Wissen</string>
   <string name="md5">md5-hash: </string>
   <string name="md5_2">Md5-hash kopiëren</string>
-  <string name="total">Totaal: </string>
   <string name="calculating"> berekenen </string>
   <string name="sort">Sorteren</string>
   <string name="ascending">Oplopend</string>

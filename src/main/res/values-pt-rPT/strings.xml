@@ -63,6 +63,7 @@
   <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Localização</string>
+  <string name="size_capitalized">Tamanho</string>
   <string name="totalitems">Total de itens</string>
   <string name="enterzipname">Digite o nome do .zip</string>
   <string name="noappfound">Não existem aplicações para abrir este ficheiro</string>

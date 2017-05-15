@@ -66,6 +66,7 @@
   <string name="name">Імя</string>
   <string name="date">Дата</string>
   <string name="location">Месцазнаходжанне</string>
+  <string name="size_capitalized">Памер</string>
   <string name="totalitems">Усяго элементаў</string>
   <string name="enterzipname">Увядзіце імя zip-архіва</string>
   <string name="noappfound">Няма праграм для адкрыцця гэтага файла</string>
@@ -354,7 +355,6 @@
   <string name="clear">Ачысціць</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Капіяваць md5</string>
-  <string name="total">Усяго: </string>
   <string name="calculating"> вылічэнне </string>
   <string name="sort">Сартаваць</string>
   <string name="ascending">Па ўзрастанні</string>

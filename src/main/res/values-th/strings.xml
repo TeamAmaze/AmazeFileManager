@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">ยกเลิก</string>
   <string name="save">บันทึก</string>
+  <string name="size_capitalized">ขนาด</string>
   <string name="share">แบ่งปัน</string>
   <string name="confirm">ยืนยัน</string>
   <string name="delete">ลบ</string>

@@ -59,6 +59,7 @@
   <string name="name">Namn</string>
   <string name="date">Datum</string>
   <string name="location">Plats</string>
+  <string name="size_capitalized">Storlek</string>
   <string name="noappfound">Ingen app hittades för att öppna denna fil</string>
   <string name="copying">Kopierar</string>
   <string name="moving">Flyttar</string>
@@ -278,7 +279,6 @@
   <string name="clear">Rensa</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Kopiera md5</string>
-  <string name="total">Totalt: </string>
   <string name="calculating"> beräknar </string>
   <string name="sort">Sortera</string>
   <string name="ascending">Stigande</string>

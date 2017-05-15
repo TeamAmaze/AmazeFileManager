@@ -66,6 +66,7 @@
   <string name="name">Meno</string>
   <string name="date">Dátum</string>
   <string name="location">Miesto</string>
+  <string name="size_capitalized">Veľkosť</string>
   <string name="totalitems">Celkový počet položiek</string>
   <string name="enterzipname">Zadajte meno súboru ZIP</string>
   <string name="noappfound">Nenašla sa aplikácia na otvorenie tohto typu súboru</string>
@@ -354,7 +355,6 @@
   <string name="clear">Vymazať</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Kopírovať md5</string>
-  <string name="total">Spolu:</string>
   <string name="calculating"> výpočet </string>
   <string name="sort">Zoradiť</string>
   <string name="ascending">Vzostupne</string>

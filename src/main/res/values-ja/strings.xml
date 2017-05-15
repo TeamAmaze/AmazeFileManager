@@ -66,6 +66,7 @@
   <string name="name">名前</string>
   <string name="date">日付</string>
   <string name="location">場所</string>
+  <string name="size_capitalized">サイズ</string>
   <string name="totalitems">合計アイテム数</string>
   <string name="enterzipname">Zip 名を入力</string>
   <string name="noappfound">このファイルを開くアプリが見つかりません</string>
@@ -353,7 +354,6 @@
   <string name="clear">クリア</string>
   <string name="md5">MD5</string>
   <string name="md5_2">md5 をコピー</string>
-  <string name="total">合計: </string>
   <string name="calculating">計算中</string>
   <string name="sort">並び替え</string>
   <string name="ascending">昇順</string>

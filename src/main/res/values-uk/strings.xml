@@ -66,6 +66,7 @@
   <string name="name">Ім\'я: </string>
   <string name="date">Дата: </string>
   <string name="location">Розташований в: </string>
+  <string name="size_capitalized">Розмір</string>
   <string name="totalitems">Всього елементів: </string>
   <string name="enterzipname">Введіть ім\'я zip архіву</string>
   <string name="noappfound">Немає додатків для відкриття цього файлу</string>
@@ -354,7 +355,6 @@
   <string name="clear">Очистити</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Копіювати md5</string>
-  <string name="total">Загалом: </string>
   <string name="calculating">обчислюю </string>
   <string name="sort">Сортувати</string>
   <string name="ascending">За зростанням</string>

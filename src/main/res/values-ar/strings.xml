@@ -61,6 +61,7 @@
   <string name="name">الإسم:</string>
   <string name="date">تاريخ:</string>
   <string name="location">يوجد في:</string>
+  <string name="size_capitalized">الحجم</string>
   <string name="totalitems">العناصر الكلية:</string>
   <string name="enterzipname">أدخل إسم الملف المضغوط</string>
   <string name="noappfound">لم يتم إيجاد تطبيق لفتح هذا الملف</string>

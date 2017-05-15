@@ -65,6 +65,7 @@
   <string name="name">Име: </string>
   <string name="date">Датум: </string>
   <string name="location">Локација: </string>
+  <string name="size_capitalized">Величина</string>
   <string name="totalitems">Укупно ставки: </string>
   <string name="enterzipname">Унесите име архиве</string>
   <string name="noappfound">Нема апликације за отварање овог фајла</string>
@@ -347,7 +348,6 @@
   <string name="clear">Очисти</string>
   <string name="md5">мд5: </string>
   <string name="md5_2">Копирај мд5</string>
-  <string name="total">Укупно: </string>
   <string name="calculating"> израчунавам </string>
   <string name="sort">Ређање</string>
   <string name="ascending">Растуће</string>

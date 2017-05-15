@@ -65,6 +65,7 @@
   <string name="name">이름: </string>
   <string name="date">생성일: </string>
   <string name="location">경로: </string>
+  <string name="size_capitalized">크기</string>
   <string name="totalitems">항목 개수: </string>
   <string name="enterzipname">압축 파일의 이름을 입력해 주세요</string>
   <string name="noappfound">이 파일을 열 수 있는 애플리케이션을 찾지 못 했습니다</string>

@@ -66,6 +66,7 @@
   <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Percorso</string>
+  <string name="size_capitalized">Dimensioni</string>
   <string name="totalitems">Elementi totali</string>
   <string name="enterzipname">Inserisci nome file ZIP</string>
   <string name="noappfound">Nessuna app trovata per aprire questo file</string>
@@ -363,7 +364,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="clear">Pulisci</string>
   <string name="md5">md5:</string>
   <string name="md5_2">Copia md5</string>
-  <string name="total">Totale:</string>
   <string name="calculating">calcolo in corso</string>
   <string name="sort">Ordina</string>
   <string name="ascending">Crescente</string>
