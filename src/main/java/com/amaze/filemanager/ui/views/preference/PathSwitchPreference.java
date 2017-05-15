@@ -3,7 +3,6 @@ package com.amaze.filemanager.ui.views.preference;
 import android.content.Context;
 import android.preference.Preference;
 import android.support.annotation.IdRes;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
@@ -21,21 +20,18 @@ public class PathSwitchPreference extends Preference {
 
     private int lastItemClicked = -1;
     private Switch switchView;
-    private Boolean shouldEnableSwitch = null;
     private View.OnClickListener switchListener;
+    /**
+     * shouldEnable is the same thing as enabled, but is used before super.onBindView(view) has been called
+     * enabled is the current state of this Preference (check this.updateSwitch())
+     */
+    private boolean shouldEnable = true, enabled = true;
 
     public PathSwitchPreference(Context context) {
         super(context);
     }
 
-    public PathSwitchPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public PathSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
+    @Override
     protected View onCreateView(ViewGroup parent) {
         setWidgetLayoutResource(R.layout.namepathswich_preference);
         return super.onCreateView(parent);
@@ -49,21 +45,21 @@ public class PathSwitchPreference extends Preference {
 
         super.onBindView(view);//Keep this before things that need changing what's on screen
 
-        switchView = ((Switch) view.findViewById(R.id.switch_button));
-        if(shouldEnableSwitch != null && !shouldEnableSwitch) {
-            switchView.setChecked(false);
-        } else switchView.setChecked(true);
+        switchView = (Switch) view.findViewById(R.id.switch_button);
+
+        switchView.setChecked(shouldEnable);
+        updateSwitch(view);
     }
 
     public void setChecked(boolean checked) {
         if(switchView != null) {
             switchView.setChecked(checked);
             switchListener.onClick(switchView);
-        } else shouldEnableSwitch = checked;
+        } else shouldEnable = checked;
     }
 
     public boolean isChecked() {
-        return switchView.isChecked();
+        return enabled;
     }
 
     public int getLastItemClicked() {
@@ -78,14 +74,11 @@ public class PathSwitchPreference extends Preference {
             public void onClick(View view) {
                 lastItemClicked = elem;
 
-                Switch s = (Switch) v.findViewById(R.id.switch_button);
                 if(lastItemClicked == SWITCH) {
-                    v.findViewById(android.R.id.title).setEnabled(s.isChecked());
-                    v.findViewById(android.R.id.summary).setEnabled(s.isChecked());
-                    v.findViewById(R.id.edit).setEnabled(s.isChecked());
+                    updateSwitch(v);
                 }
 
-                if(s.isChecked() || lastItemClicked != EDIT) {
+                if(enabled || lastItemClicked != EDIT) {
                     getOnPreferenceClickListener().onPreferenceClick(t);
                 }
             }
@@ -94,6 +87,20 @@ public class PathSwitchPreference extends Preference {
         v.findViewById(id).setOnClickListener(l);
 
         return l;
+    }
+    
+    /**
+     * Updates this Preference's state to coincide with the switch's state
+     * (after the switch has changed state)
+     * @param v the view witch contains the switch
+     */
+    private void updateSwitch(View v) {
+        Switch s = (Switch) v.findViewById(R.id.switch_button);
+        enabled = s.isChecked();
+
+        v.findViewById(android.R.id.title).setEnabled(enabled);
+        v.findViewById(android.R.id.summary).setEnabled(enabled);
+        v.findViewById(R.id.edit).setEnabled(enabled);
     }
 
 }
