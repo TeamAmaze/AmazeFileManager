@@ -51,7 +51,6 @@
   <string name="file_empty">Το αρχείο είναι κενό</string>
   <string name="error">Σφάλμα</string>
   <string name="cantlistfiles">Αδύνατη η εμφάνιση αρχείων χωρίς root</string>
-  <string name="searchresults">Αποτελέσματα αναζήτησης</string>
   <string name="itemsselected">Αντικείμενα επιλέχθηκαν</string>
   <string name="newhomedirectory">Νέος αρχικός φάκελος εισόδου</string>
   <string name="rename">Μετονομασία</string>

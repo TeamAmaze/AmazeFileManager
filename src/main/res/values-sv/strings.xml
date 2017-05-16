@@ -48,7 +48,6 @@
   <string name="file_empty">Fil är tom</string>
   <string name="error">Fel</string>
   <string name="cantlistfiles">Kan inte lista filer utan root</string>
-  <string name="searchresults">Sökresultat</string>
   <string name="newhomedirectory">Ny hem-mapp</string>
   <string name="rename">Byt namn</string>
   <string name="save">Spara</string>

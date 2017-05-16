@@ -51,7 +51,6 @@
   <string name="file_empty">Súbor je prázdny</string>
   <string name="error">Chyba</string>
   <string name="cantlistfiles">Nie je možné listovať súbormi bez root oprávnenia</string>
-  <string name="searchresults">Výsledky vyhľadávania</string>
   <string name="itemsselected">Vybraté položky</string>
   <string name="newhomedirectory">Nový domovský adresár</string>
   <string name="rename">Premenovať</string>

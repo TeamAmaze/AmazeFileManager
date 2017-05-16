@@ -50,7 +50,6 @@
   <string name="file_empty">파일이 비어있습니다</string>
   <string name="error">오류</string>
   <string name="cantlistfiles">파일 목록을 보려면 루트 권한이 필요합니다</string>
-  <string name="searchresults">검색 결과</string>
   <string name="itemsselected">항목이 선택되었습니다</string>
   <string name="newhomedirectory">새로운 홈 디렉토리</string>
   <string name="rename">이름 변경</string>

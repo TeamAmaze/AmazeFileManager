@@ -51,7 +51,6 @@
   <string name="file_empty">El fichero está vacío</string>
   <string name="error">Error</string>
   <string name="cantlistfiles">No se puede enumerar los archivos sin root</string>
-  <string name="searchresults">Resultados de la búsqueda</string>
   <string name="itemsselected">Elementos seleccionados</string>
   <string name="newhomedirectory">Nuevo directorio principal</string>
   <string name="rename">Renombrar</string>

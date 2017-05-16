@@ -51,7 +51,6 @@
   <string name="file_empty">Bestand is leeg</string>
   <string name="error">Fout</string>
   <string name="cantlistfiles">Kan geen bestandenlijst maken zonder root-toegang</string>
-  <string name="searchresults">Zoekresultaten</string>
   <string name="itemsselected">Geselecteerde items</string>
   <string name="newhomedirectory">Nieuwe persoonlijke map</string>
   <string name="rename">Naam wijzigen</string>

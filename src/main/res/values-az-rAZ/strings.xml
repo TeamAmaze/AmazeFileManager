@@ -50,6 +50,7 @@
   <string name="none">Heç biri</string>
   <string name="password">Şifrə</string>
   <string name="defualt">Susmaya görə</string>
+  <string name="edit">Dəyiş</string>
   <string name="path">Cığır</string>
   <string name="information">Məlumat</string>
   <!-- reference to file accessed date -->

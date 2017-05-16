@@ -50,7 +50,6 @@
   <string name="file_empty">Byla yra tuščia</string>
   <string name="error">Klaida</string>
   <string name="cantlistfiles">Negali rodyti root bylų be root teisių</string>
-  <string name="searchresults">Paieškos rezultatai</string>
   <string name="itemsselected">Pasirinkta elementų</string>
   <string name="newhomedirectory">Nauja namų direktorija</string>
   <string name="rename">Pervardinti</string>

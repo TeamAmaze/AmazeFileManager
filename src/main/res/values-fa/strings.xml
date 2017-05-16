@@ -50,7 +50,6 @@
   <string name="file_empty">فایل خالی است</string>
   <string name="error">مشکل</string>
   <string name="cantlistfiles">بدون روت بودن نمی توان فایل ها را لیست کرد</string>
-  <string name="searchresults">نتیجه جستجو</string>
   <string name="itemsselected">آیتم ها انتخاب شدند</string>
   <string name="newhomedirectory">پوشه جدید خانه</string>
   <string name="rename">تغییر نام</string>

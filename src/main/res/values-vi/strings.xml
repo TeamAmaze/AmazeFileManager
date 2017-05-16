@@ -50,7 +50,6 @@
   <string name="file_empty">Tệp rỗng</string>
   <string name="error">Lỗi</string>
   <string name="cantlistfiles">Không thể liệt kê tệp tin mà không root</string>
-  <string name="searchresults">Kết quả tìm kiếm</string>
   <string name="itemsselected">Các mục đã chọn</string>
   <string name="newhomedirectory">Tạo danh mục nhà mới</string>
   <string name="rename">Đổi tên</string>

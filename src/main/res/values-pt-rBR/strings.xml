@@ -51,7 +51,6 @@
   <string name="file_empty">O arquivo está vazio</string>
   <string name="error">Erro</string>
   <string name="cantlistfiles">Não é possível listar arquivos sem root</string>
-  <string name="searchresults">Resultados da pesquisa</string>
   <string name="itemsselected">Itens selecionados</string>
   <string name="newhomedirectory">Nova pasta Início</string>
   <string name="rename">Renomear</string>

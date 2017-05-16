@@ -46,7 +46,6 @@
   <string name="filenotexists">الملف غير موجود</string>
   <string name="error">خطأ</string>
   <string name="cantlistfiles">لا يمكن سرد الملفات بدون صلاحيات الجذر</string>
-  <string name="searchresults">نتائج البحث</string>
   <string name="itemsselected">تم تحديد العناصر</string>
   <string name="newhomedirectory">دليل أساسي جديد</string>
   <string name="rename">إعادة تسمية</string>

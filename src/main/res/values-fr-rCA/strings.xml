@@ -51,7 +51,6 @@
   <string name="file_empty">Le fichier est vide</string>
   <string name="error">Erreur</string>
   <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
-  <string name="searchresults">Résultats de la recherche</string>
   <string name="itemsselected">Éléments sélectionnés</string>
   <string name="newhomedirectory">Nouveau répertoire d\'accueil</string>
   <string name="rename">Renommer</string>

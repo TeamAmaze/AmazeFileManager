@@ -47,7 +47,6 @@
   <string name="file_empty">Fişier gol</string>
   <string name="error">Eroare</string>
   <string name="cantlistfiles">Nu se pot lista fișierele fără acces root</string>
-  <string name="searchresults">Rezultatele căutării</string>
   <string name="itemsselected">Elemente selectate</string>
   <string name="newhomedirectory">Dosar Acasă nou</string>
   <string name="rename">Redenumiţi</string>

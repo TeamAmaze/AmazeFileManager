@@ -51,7 +51,6 @@
   <string name="file_empty">Dosya boş</string>
   <string name="error">Hata</string>
   <string name="cantlistfiles">Root olmadan dosyalar listelenemez</string>
-  <string name="searchresults">Arama sonuçları</string>
   <string name="itemsselected">Öğeler seçildi</string>
   <string name="newhomedirectory">Yeni ana dizin</string>
   <string name="rename">Yeniden adlandır</string>

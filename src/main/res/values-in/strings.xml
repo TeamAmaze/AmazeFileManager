@@ -51,7 +51,6 @@
   <string name="file_empty">Berkas ini kosong</string>
   <string name="error">Kesalahan</string>
   <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
-  <string name="searchresults">Hasil Pencarian</string>
   <string name="itemsselected">Item Dipilih</string>
   <string name="newhomedirectory">Direktori baru Laman Depan</string>
   <string name="rename">Ganti nama</string>

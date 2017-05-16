@@ -51,7 +51,6 @@
   <string name="file_empty">Файл пуст</string>
   <string name="error">Ошибка</string>
   <string name="cantlistfiles">Не можете выполнить без рут прав</string>
-  <string name="searchresults">Результаты поиска</string>
   <string name="itemsselected">Выбранные элементы</string>
   <string name="newhomedirectory">Новый домашний каталог</string>
   <string name="rename">Переименовать</string>

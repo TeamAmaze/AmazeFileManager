@@ -51,7 +51,6 @@
   <string name="file_empty">Il file è vuoto</string>
   <string name="error">Errore</string>
   <string name="cantlistfiles">Non è possibile elencare i file senza il percorso root</string>
-  <string name="searchresults">Risultati ricerca</string>
   <string name="itemsselected">Elementi selezionati</string>
   <string name="newhomedirectory">Nuova home directory</string>
   <string name="rename">Rinomina</string>

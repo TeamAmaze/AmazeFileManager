@@ -51,7 +51,6 @@
   <string name="file_empty">A fájl üres</string>
   <string name="error">Hiba</string>
   <string name="cantlistfiles">Nem listázhatja ki a fájlokat root jogosultság nélkül</string>
-  <string name="searchresults">Keresési eredmények</string>
   <string name="itemsselected">elem kiválasztva</string>
   <string name="newhomedirectory">Új kezdőkönyvtár</string>
   <string name="rename">Átnevezés</string>

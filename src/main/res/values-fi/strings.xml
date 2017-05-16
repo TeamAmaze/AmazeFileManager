@@ -51,7 +51,6 @@
   <string name="file_empty">Tiedosto on tyhjä</string>
   <string name="error">Virhe</string>
   <string name="cantlistfiles">Ei voida listata tiedostoja ilman Root-oikeutta</string>
-  <string name="searchresults">Hakutulokset</string>
   <string name="itemsselected">Kohdetta valittu</string>
   <string name="newhomedirectory">Uusi kotihakemisto</string>
   <string name="rename">Nimeä uudelleen</string>

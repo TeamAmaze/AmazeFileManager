@@ -50,7 +50,6 @@
   <string name="file_empty">Фајл је празан</string>
   <string name="error">Грешка</string>
   <string name="cantlistfiles">Не могу да излистам фајлове без кореног приступа</string>
-  <string name="searchresults">Резултати претраге</string>
   <string name="itemsselected">ставки изабрано</string>
   <string name="newhomedirectory">Нова почетна фасцикла</string>
   <string name="rename">Преименуј</string>

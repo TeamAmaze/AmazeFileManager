@@ -51,7 +51,6 @@
   <string name="file_empty">Plik jest pusty</string>
   <string name="error">Błąd</string>
   <string name="cantlistfiles">Nie można wyświetlić plików bez uprawnień roota</string>
-  <string name="searchresults">Wyniki wyszukiwania</string>
   <string name="itemsselected">Wybrane elementy</string>
   <string name="newhomedirectory">Nowy katalog wewnętrzny</string>
   <string name="rename">Zmień nazwę</string>
