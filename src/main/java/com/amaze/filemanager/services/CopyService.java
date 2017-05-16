@@ -193,6 +193,14 @@ public class CopyService extends Service {
             openMode = OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE));
             copy = new Copy();
             copy.execute(sourceFiles, targetPath, move, openMode);
+
+            if (copy.failedFOps.size() == 0) {
+
+                // adding/updating new encrypted db entry if any encrypted file was copied/moved
+                for (BaseFile sourceFile : sourceFiles) {
+                    findAndReplaceEncryptedEntry(sourceFile);
+                }
+            }
             return id;
         }
 
@@ -204,17 +212,6 @@ public class CopyService extends Service {
             // stopping watcher if not yet finished
             watcherUtil.stopWatch();
             generateNotification(copy.failedFOps, move);
-
-            // adding/updating new encrypted db entry if any encrypted file was copied/moved
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    for (BaseFile sourceFile : sourceFiles) {
-                        findAndReplaceEncryptedEntry(sourceFile);
-                    }
-                }
-            });
 
             Intent intent = new Intent("loadlist");
             sendBroadcast(intent);
@@ -228,7 +225,8 @@ public class CopyService extends Service {
          */
         private void findAndReplaceEncryptedEntry(BaseFile sourceFile) {
 
-            if (sourceFile.isDirectory()) {
+            // even directories can end with CRYPT_EXTENSION
+            if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
 
                 for (BaseFile file : sourceFile.listFiles(getApplicationContext(), BaseActivity.rootMode)) {
                     // iterating each file inside source files which were copied to find instance of

@@ -92,6 +92,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.FileListSorter;
@@ -1154,7 +1155,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
      */
     public void createViews(ArrayList<LayoutElement> bitmap, boolean back, String path, final OpenMode
             openMode, boolean results, boolean grid) {
-        try {
+
+        synchronized (bitmap) {
             if (bitmap != null) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
@@ -1196,92 +1198,86 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (openMode != OpenMode.CUSTOM)
                     dataUtils.addHistoryFile(path);
                 //mSwipeRefreshLayout.setRefreshing(false);
-                try {
-                    listView.setAdapter(adapter);
-                    if (!addheader) {
-                        listView.removeItemDecoration(headersDecor);
-                        listView.removeItemDecoration(dividerItemDecoration);
-                        addheader = true;
-                    }
-                    if (addheader && IS_LIST) {
-                        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
-                        listView.addItemDecoration(dividerItemDecoration);
-                        headersDecor = new StickyRecyclerHeadersDecoration(adapter);
-                        listView.addItemDecoration(headersDecor);
-                        addheader = false;
-                    }
-                    if (!results) this.results = false;
-                    CURRENT_PATH = path;
-                    if (back) {
-                        if (scrolls.containsKey(CURRENT_PATH)) {
-                            Bundle b = scrolls.get(CURRENT_PATH);
-                            if (IS_LIST)
-                                mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                            else
-                                mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                        }
-                    }
-                    //floatingActionButton.show();
-                    MAIN_ACTIVITY.updatePaths(no);
-                    listView.stopScroll();
-                    fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
-                    mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-                        @Override
-                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                            fastScroller.updateHandlePosition(verticalOffset, 112);
-                            //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
-                            //      fastScroller.updateHandlePosition();
-                        }
-                    });
-                    fastScroller.registerOnTouchListener(new FastScroller.onTouchListener() {
-                        @Override
-                        public void onTouch() {
-                            if (stopAnims && adapter != null) {
-                                stopAnimation();
-                                stopAnims = false;
-                            }
-                        }
-                    });
-                    if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            switch (openMode) {
-                                case ROOT:
-                                case FILE:
-                                    // watch the current directory
-                                    File file = new File(CURRENT_PATH);
-
-                                    if (file.isDirectory() && file.canRead()) {
-
-                                        if (customFileObserver != null) {
-                                            // already a watcher instantiated, first it should be stopped
-                                            customFileObserver.stopWatching();
-                                        }
-
-                                        customFileObserver = new CustomFileObserver(CURRENT_PATH);
-                                        customFileObserver.startWatching();
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }).start();
-
-                    //MAIN_ACTIVITY.invalidateFab(openMode);
-                } catch (Exception e) {
+                listView.setAdapter(adapter);
+                if (!addheader) {
+                    listView.removeItemDecoration(headersDecor);
+                    listView.removeItemDecoration(dividerItemDecoration);
+                    addheader = true;
                 }
+                if (addheader && IS_LIST) {
+                    dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
+                    listView.addItemDecoration(dividerItemDecoration);
+                    headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                    listView.addItemDecoration(headersDecor);
+                    addheader = false;
+                }
+                if (!results) this.results = false;
+                CURRENT_PATH = path;
+                if (back) {
+                    if (scrolls.containsKey(CURRENT_PATH)) {
+                        Bundle b = scrolls.get(CURRENT_PATH);
+                        if (IS_LIST)
+                            mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                        else
+                            mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                    }
+                }
+                //floatingActionButton.show();
+                MAIN_ACTIVITY.updatePaths(no);
+                listView.stopScroll();
+                fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
+                mToolbarContainer.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        fastScroller.updateHandlePosition(verticalOffset, 112);
+                        //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
+                        //      fastScroller.updateHandlePosition();
+                    }
+                });
+                fastScroller.registerOnTouchListener(new FastScroller.onTouchListener() {
+                    @Override
+                    public void onTouch() {
+                        if (stopAnims && adapter != null) {
+                            stopAnimation();
+                            stopAnims = false;
+                        }
+                    }
+                });
+                if (buttons.getVisibility() == View.VISIBLE) MAIN_ACTIVITY.bbar(this);
+
+                AppConfig.runInBackground(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (openMode) {
+                            case ROOT:
+                            case FILE:
+                                // watch the current directory
+                                File file = new File(CURRENT_PATH);
+
+                                if (file.isDirectory() && file.canRead()) {
+
+                                    if (customFileObserver != null) {
+                                        // already a watcher instantiated, first it should be stopped
+                                        customFileObserver.stopWatching();
+                                    }
+
+                                    customFileObserver = new CustomFileObserver(CURRENT_PATH);
+                                    customFileObserver.startWatching();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+
+                //MAIN_ACTIVITY.invalidateFab(openMode);
             } else {
                 // list loading cancelled
                 // TODO: Add support for cancelling list loading
                 loadlist(home, true, OpenMode.FILE);
             }
-        } catch (Exception e) {
-
-            e.printStackTrace();
         }
     }
 
@@ -1518,11 +1514,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
     void fixIcons(boolean forceReload) {
         if (getLayoutElements() == null) return;
         BitmapDrawable iconDrawable;
-        for (LayoutElement layoutElement : getLayoutElements()) {
-            if (forceReload || layoutElement.getImageId() == null) {
-                iconDrawable = layoutElement.isDirectory() ?
-                        folder : Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
-                layoutElement.setImageId(iconDrawable);
+
+        synchronized (getLayoutElements()) {
+
+            for (LayoutElement layoutElement : getLayoutElements()) {
+                if (forceReload || layoutElement.getImageId() == null) {
+                    iconDrawable = layoutElement.isDirectory() ?
+                            folder : Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
+                    layoutElement.setImageId(iconDrawable);
+                }
             }
         }
     }
@@ -1774,7 +1774,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
         @Override
         public void onEvent(int event, String path) {
 
-            synchronized (this) {
+            synchronized (getLayoutElements()) {
+
                 switch (event) {
                     case CREATE:
                     case MOVED_TO:
@@ -1815,8 +1816,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
 
-                        if (adapter != null)
-                            adapter.generate(getLayoutElements());
+                        if (listView.getVisibility() == View.VISIBLE)
+
+                            if (getLayoutElements().size() == 0) {
+
+                                // no item left in list, recreate views
+                                createViews(getLayoutElements(), true, CURRENT_PATH, openMode, results, !IS_LIST);
+                            } else {
+
+                                // we already have some elements in list view, invalidate the adapter
+                                adapter.generate(getLayoutElements());
+                            }
+                        else {
+                            // there was no list view, means the directory was empty
+                            loadlist(CURRENT_PATH, true, openMode);
+                        }
                     }
                 });
             }

@@ -283,13 +283,17 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public void generate(ArrayList<LayoutElement> arrayList) {
-        offset = 0;
-        stoppedAnimation = false;
-        notifyDataSetChanged();
-        items = arrayList;
-        for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, false);
-            myanim.put(i, false);
+
+        synchronized (arrayList) {
+
+            offset = 0;
+            stoppedAnimation = false;
+            notifyDataSetChanged();
+            items = arrayList;
+            for (int i = 0; i < items.size(); i++) {
+                myChecked.put(i, false);
+                myanim.put(i, false);
+            }
         }
     }
 
