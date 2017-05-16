@@ -836,12 +836,12 @@ public class Futils {
         return inSampleSize;
     }
 
-    public void showPropertiesDialogWithPreference(BaseFile baseFile, final String permissions,
-                                                   BasicActivity basic, boolean isRoot, AppTheme appTheme) {
+    public void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
+                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
     }
 
-    public void showPropertiesDialogWithoutPreference(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+    public void showPropertiesDialogWithoutPermissions(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
     public void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
@@ -946,6 +946,7 @@ public class Futils {
 
         /*Chart creation and data loading*/ {
             boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
+            boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
             PieChart chart = (PieChart) v.findViewById(R.id.chart);
 
             chart.setTouchEnabled(false);
@@ -953,6 +954,8 @@ public class Futils {
             chart.setDescription(null);
             chart.setNoDataText(c.getString(loading));
             chart.setRotationAngle(!isRightToLeft? 0f:180f);
+            chart.setHoleColor(Color.TRANSPARENT);
+            chart.setCenterTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
 
             chart.getLegend().setEnabled(true);
             chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
@@ -978,18 +981,20 @@ public class Futils {
                 set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
                 set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
                 set.setSliceSpace(5f);
+                set.setAutomaticallyDisableSliceSpacing(true);
                 set.setValueLinePart2Length(1.05f);
                 set.setSelectionShift(0f);
 
                 PieData pieData = new PieData(set);
                 pieData.setValueFormatter(new SizeFormatter(c));
+                pieData.setValueTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
 
                 String totalSpaceFormatted = Formatter.formatFileSize(c, totalSpace);
 
                 chart.setCenterText(new SpannableString(c.getString(R.string.total) + "\n" + totalSpaceFormatted));
                 chart.setData(pieData);
             } else {
-                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, chart, baseFile);
+                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, appTheme, chart, baseFile);
                 loadFolderSpaceData.executeOnExecutor(executor);
             }
 
