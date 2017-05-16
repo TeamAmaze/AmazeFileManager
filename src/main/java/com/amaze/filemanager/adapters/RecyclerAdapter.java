@@ -705,7 +705,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showPropertiesDialogWithPreference((rowItem).generateBaseFile(),
+                                utilsProvider.getFutils().showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                                         rowItem.getPermissions(), (BasicActivity) mainFrag.getActivity(),
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
                                 /*PropertiesSheet propertiesSheet = new PropertiesSheet();
