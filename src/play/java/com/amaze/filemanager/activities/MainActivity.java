@@ -150,6 +150,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -1943,7 +1944,7 @@ public class MainActivity extends BaseActivity implements
                 } else {
                     Button b = new Button(this);
                     b.setText(rnames.get(index));
-                    b.setTextColor(getResources().getColor(android.R.color.white));
+                    b.setTextColor(Utils.getColor(this, android.R.color.white));
                     b.setTextSize(13);
                     b.setLayoutParams(params);
                     b.setBackgroundResource(0);
@@ -2061,7 +2062,7 @@ public class MainActivity extends BaseActivity implements
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -2111,7 +2112,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             settingsButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsButton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2126,7 +2127,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             appButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appButton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
-            ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         appButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2146,7 +2147,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
-            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         ftpButton.setOnClickListener(new View.OnClickListener() {
 
@@ -2212,7 +2213,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-        //    searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
+        //    searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
         //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 

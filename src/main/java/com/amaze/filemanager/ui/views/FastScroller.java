@@ -70,7 +70,7 @@ public class FastScroller extends FrameLayout {
         this.handle = (ImageView) findViewById(R.id.scroll_handle);
         this.bar = findViewById(R.id.scroll_bar);
         this.handle.setEnabled(true);
-        setPressedHandleColor(getResources().getColor(R.color.accent_blue));
+        setPressedHandleColor(Utils.getColor(getContext(), R.color.accent_blue));
         setUpBarBackground();
         setVisibility(VISIBLE);
     }

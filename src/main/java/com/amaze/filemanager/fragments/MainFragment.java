@@ -103,6 +103,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -388,7 +389,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
             // will always be grid, set alternate white background
-            listView.setBackgroundColor(getResources().getColor(R.color.grid_background_light));
+            listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
         }
 
         if (mLayoutManagerGrid == null)
@@ -1112,7 +1113,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
         else {
-            nofilesview.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
         }
     }

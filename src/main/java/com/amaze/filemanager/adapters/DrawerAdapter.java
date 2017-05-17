@@ -46,6 +46,7 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -198,10 +199,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     imageView.setColorFilter(Color.parseColor("#666666"));
-                    txtTitle.setTextColor(m.getResources().getColor(android.R.color.black));
+                    txtTitle.setTextColor(Utils.getColor(m, android.R.color.black));
                 } else {
                     imageView.setColorFilter(Color.WHITE);
-                    txtTitle.setTextColor(m.getResources().getColor(android.R.color.white));
+                    txtTitle.setTextColor(Utils.getColor(m, android.R.color.white));
                 }
             }
 

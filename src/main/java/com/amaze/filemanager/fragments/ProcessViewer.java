@@ -51,6 +51,7 @@ import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.LineChart;
@@ -116,7 +117,7 @@ public class ProcessViewer extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
 
             mCancelButton.setImageResource(R.drawable.ic_action_cancel);
-            mCardView.setCardBackgroundColor(getResources().getColor(R.color.cardView_foreground));
+            mCardView.setCardBackgroundColor(Utils.getColor(getContext(), R.color.cardView_foreground));
             mCardView.setCardElevation(0f);
         }
 
@@ -491,7 +492,7 @@ public class ProcessViewer extends Fragment {
                 mProgressBytesText.setText("");
                 mProgressFileNameText.setText("");
 
-                mProgressTypeText.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                mProgressTypeText.setTextColor(Utils.getColor(getContext(), android.R.color.holo_red_light));
             }
         });
     }
@@ -555,7 +556,7 @@ public class ProcessViewer extends Fragment {
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisLeft.setAxisLineColor(Color.TRANSPARENT);
         yAxisLeft.setTypeface(Typeface.DEFAULT_BOLD);
-        yAxisLeft.setGridColor(getResources().getColor(R.color.white_translucent));
+        yAxisLeft.setGridColor(Utils.getColor(getContext(), R.color.white_translucent));
 
         xAxis.setAxisMaximum(Futils.readableFileSizeFloat(totalBytes));
         xAxis.setAxisMinimum(0.0f);

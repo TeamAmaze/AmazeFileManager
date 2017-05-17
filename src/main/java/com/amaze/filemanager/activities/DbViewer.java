@@ -43,6 +43,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -77,7 +78,7 @@ public class DbViewer extends BaseActivity {
 
         if (getAppTheme().equals(AppTheme.DARK)) {
             setTheme(R.style.appCompatDark);
-            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
         }
         setContentView(R.layout.activity_db_viewer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
