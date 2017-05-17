@@ -33,7 +33,7 @@ public class PathSwitchPreference extends Preference {
 
     @Override
     protected View onCreateView(ViewGroup parent) {
-        setWidgetLayoutResource(R.layout.namepathswich_preference);
+        setWidgetLayoutResource(R.layout.namepathswitch_preference);
         return super.onCreateView(parent);
     }
 
