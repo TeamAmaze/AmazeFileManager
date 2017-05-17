@@ -11,6 +11,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -126,7 +127,7 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
         set.setSelectionShift(0f);
 
         PieData pieData = new PieData(set);
-        pieData.setValueFormatter(new Futils.SizeFormatter(context));
+        pieData.setValueFormatter(new GeneralDialogCreation.SizeFormatter(context));
         pieData.setValueTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
 
         chart.setCenterText(new SpannableString(context.getString(R.string.total) + "\n" + totalSpace));

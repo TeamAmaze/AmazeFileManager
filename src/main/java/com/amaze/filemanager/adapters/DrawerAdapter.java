@@ -41,6 +41,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.CloudUtil;
@@ -160,24 +161,24 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                                 m.showSMBDialog(item.getTitle(), path, true);
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
-                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
+                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
 
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
 
-                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
+                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
 
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
-                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
+                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
 
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
-                                utilsProvider.getFutils().showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
+                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                             }
                         } else if (position < m.storage_count) {
                             String path = ((EntryItem) getItem(position)).getPath();
                             if (!path.equals("/"))
-                                utilsProvider.getFutils().showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
+                                GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
                         }
 
                     // return true to denote no further processing

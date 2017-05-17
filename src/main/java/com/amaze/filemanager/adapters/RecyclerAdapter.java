@@ -36,6 +36,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -709,7 +710,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.about:
-                                utilsProvider.getFutils().showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
+                                GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                                         rowItem.getPermissions(), (BasicActivity) mainFrag.getActivity(),
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
                                 /*PropertiesSheet propertiesSheet = new PropertiesSheet();
@@ -765,7 +766,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             case R.id.delete:
                                 ArrayList<Integer> positions = new ArrayList<>();
                                 positions.add(position);
-                                utilsProvider.getFutils().deleteFiles(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
+                                GeneralDialogCreation.deleteFilesDialog(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
                                 utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
@@ -813,7 +814,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                                     Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                         } else {
                                             // let's ask a password from user
-                                            utilsProvider.getFutils().showEncryptAuthenticateDialog(encryptIntent,
+                                            GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
                                                     mainFrag, utilsProvider.getAppTheme(),
                                                     encryptButtonCallbackInterfaceAuthenticate);
                                         }
@@ -838,7 +839,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                     }
                                 } else {
 
-                                    utilsProvider.getFutils().showEncryptWarningDialog(encryptIntent,
+                                   GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
                                             mainFrag, utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
                                 }
                                 return true;

@@ -85,6 +85,7 @@ import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -669,7 +670,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case R.id.about:
                     LayoutElement x;
                     x = getLayoutElement((plist.get(0)));
-                    utils.showPropertiesDialogWithPermissions((x).generateBaseFile(), x.getPermissions(),
+                    GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(), x.getPermissions(),
                             (BasicActivity) getActivity(), BaseActivity.rootMode,
                             utilsProvider.getAppTheme());
                     /*PropertiesSheet propertiesSheet = new PropertiesSheet();
@@ -711,7 +712,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }
                     return true;*/
                 case R.id.delete:
-                    utils.deleteFiles(getLayoutElements(), ma, plist, utilsProvider.getAppTheme());
+                    GeneralDialogCreation.deleteFilesDialog(getLayoutElements(), ma, plist, utilsProvider.getAppTheme());
                     return true;
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<>();
@@ -793,7 +794,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     for (int i4 = 0; i4 < plist.size(); i4++) {
                         copies1.add(getLayoutElement(i4).generateBaseFile());
                     }
-                    utils.showCompressDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
+                    GeneralDialogCreation.showCompressDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
                     mode.finish();
                     return true;
                 case R.id.openwith:
@@ -1014,7 +1015,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        utilsProvider.getFutils().showDecryptFingerprintDialog(decryptIntent,
+                        GeneralDialogCreation.showDecryptFingerprintDialog(decryptIntent,
                                 main, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
                     } else throw new Exception();
                 } catch (Exception e) {
@@ -1026,14 +1027,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 }
                 break;
             case Preffrag.ENCRYPT_PASSWORD_MASTER:
-                utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                GeneralDialogCreation.showDecryptDialog(decryptIntent,
                         main, utilsProvider.getAppTheme(),
                         preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                 Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
                         decryptButtonCallbackInterface);
                 break;
             default:
-                utilsProvider.getFutils().showDecryptDialog(decryptIntent,
+                GeneralDialogCreation.showDecryptDialog(decryptIntent,
                         main, utilsProvider.getAppTheme(),
                         encryptedEntry.getPassword(),
                         decryptButtonCallbackInterface);

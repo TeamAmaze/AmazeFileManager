@@ -127,6 +127,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -1033,7 +1034,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    utils.showHistoryDialog(dataUtils, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1042,7 +1043,7 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog dialog = Futils.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
+                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1061,11 +1062,11 @@ public class MainActivity extends BaseActivity implements
             case R.id.sort:
                 Fragment fragment = getDFragment();
                 if (fragment.getClass().getName().contains("AppsList"))
-                    utils.showSortDialog((AppsList) fragment, getAppTheme());
+                    GeneralDialogCreation.showSortDialog((AppsList) fragment, getAppTheme());
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    utils.showSortDialog(ma, getAppTheme());
+                    GeneralDialogCreation.showSortDialog(ma, getAppTheme());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1090,7 +1091,7 @@ public class MainActivity extends BaseActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                utils.showHiddenDialog(dataUtils, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {

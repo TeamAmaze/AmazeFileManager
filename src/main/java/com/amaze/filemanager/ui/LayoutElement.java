@@ -25,8 +25,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 
 import java.util.Calendar;
 
