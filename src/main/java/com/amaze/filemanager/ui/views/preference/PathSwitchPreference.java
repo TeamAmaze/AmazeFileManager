@@ -3,6 +3,7 @@ package com.amaze.filemanager.ui.views.preference;
 import android.content.Context;
 import android.preference.Preference;
 import android.support.annotation.IdRes;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
@@ -33,7 +34,8 @@ public class PathSwitchPreference extends Preference {
 
     @Override
     protected View onCreateView(ViewGroup parent) {
-        setWidgetLayoutResource(R.layout.namepathswich_preference);
+        setWidgetLayoutResource(R.layout.namepathswitch_preference);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);//selector in srcCompat isn't supported without this
         return super.onCreateView(parent);
     }
 
