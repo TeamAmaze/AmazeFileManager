@@ -76,7 +76,7 @@ public class FastScroller extends FrameLayout {
     }
 
     private void setHandlePosition1(float relativePos) {
-        handle.setY(Utils.getValueInRange(
+        handle.setY(Utils.clamp(
                 0, getHeightMinusPadding() - handle.getHeight(), relativePos * (getHeightMinusPadding() - handle.getHeight()))
         );
 
@@ -138,7 +138,7 @@ public class FastScroller extends FrameLayout {
     private void setRecyclerViewPosition(float relativePos) {
         if (recyclerView != null) {
             int itemCount = recyclerView.getAdapter().getItemCount();
-            int targetPos = (int) Utils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
+            int targetPos = (int) Utils.clamp(0, itemCount - 1, (int) (relativePos * (float) itemCount));
             recyclerView.smoothScrollToPosition(targetPos);
         }
     }

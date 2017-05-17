@@ -26,23 +26,19 @@ import java.text.SimpleDateFormat;
 
 public class Utils {
 
-    private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
+    private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
+    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
+    ;
 
     //methods for fastscroller
-    /**
-     * TODO
-     * @param min
-     * @param max
-     * @param value
-     * @return
-     */
-    public static float getValueInRange(float min, float max, float value) {
+    public static float clamp(float min, float max, float value) {
         float minimum = Math.max(min, value);
         return Math.min(minimum, max);
     }
 
     /**
      * TODO
+     *
      * @param view
      * @return
      */
@@ -50,19 +46,17 @@ public class Utils {
         int[] location = new int[2];
         location[0] = 0;
         location[1] = (int) view.getY();
-        ((View)view.getParent()).getLocationInWindow(location);
+        ((View) view.getParent()).getLocationInWindow(location);
         return location[1];
     }
 
     public static void setTint(CheckBox box, int color) {
-        if(Build.VERSION.SDK_INT>=21)return;
+        if (Build.VERSION.SDK_INT >= 21) return;
         ColorStateList sl = new ColorStateList(new int[][]{
                 new int[]{-android.R.attr.state_checked},
                 new int[]{android.R.attr.state_checked}
-        }, new int[]{
-                Color.parseColor("#666666"),
-                color
-        });
+        }, new int[]{Color.parseColor("#666666"), color});
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             box.setButtonTintList(sl);
         } else {
@@ -72,48 +66,30 @@ public class Utils {
         }
     }
 
-    /**
-     * TODO
-     * @param f
-     * @return
-     */
     public String getDate(File f) {
         return getDate(f.lastModified());
     }
 
-    /**
-     * TODO
-     * @param f
-     * @return
-     */
     public static String getDate(long f) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return sdf.format(f);
+        return DATE_WITH_MINUTES.format(f);
     }
 
-
-    /**
-     * TODO
-     * @param f
-     * @param year
-     * @return
-     */
     public static String getDate(long f, String year) {
-        String date = sSDF.format(f);
-        if(date.substring(date.length()-4,date.length()).equals(year))
-            date=date.substring(0,date.length()-6);
+        String date = DATE_NO_MINUTES.format(f);
+        if (date.substring(date.length() - 4, date.length()).equals(year))
+            date = date.substring(0, date.length() - 6);
         return date;
     }
 
     /**
      * TODO
+     *
      * @param options
      * @param reqWidth
      * @param reqHeight
      * @return
      */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth,
-                                            int reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -127,8 +103,7 @@ public class Utils {
             // Calculate the largest inSampleSize value that is a power of 2 and
             // keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
+            while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
             }
         }
@@ -136,14 +111,14 @@ public class Utils {
         return inSampleSize;
     }
 
-    public boolean isAtleastKitkat(){
+    public boolean isAtleastKitkat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
      * Gets color
      *
-     * @param c Context
+     * @param c     Context
      * @param color the resource id for the color
      * @return the color
      */
