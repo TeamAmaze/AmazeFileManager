@@ -201,7 +201,8 @@
   <string name="nofiles">没有文件</string>
   <string name="tapnhold">长按文件或文件夹以显示更多选项</string>
   <string name="pathcopied">路径已复制到剪贴板</string>
-  <string name="used">已使用</string>
+  <string name="used">已用空间</string>
+  <string name="used_by_others">已被其他人使用</string>
   <string name="free">剩余空间</string>
   <string name="atroot">已进入 Root 模式</string>
   <string name="listview">列表视图</string>

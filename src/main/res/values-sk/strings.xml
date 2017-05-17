@@ -51,6 +51,7 @@
   <string name="file_empty">Súbor je prázdny</string>
   <string name="error">Chyba</string>
   <string name="cantlistfiles">Nie je možné listovať súbormi bez root oprávnenia</string>
+  <string name="searchresults">Výsledky vyhľadávania</string>
   <string name="itemsselected">Vybraté položky</string>
   <string name="newhomedirectory">Nový domovský adresár</string>
   <string name="rename">Premenovať</string>
@@ -66,6 +67,7 @@
   <string name="date">Dátum</string>
   <string name="location">Miesto</string>
   <string name="size_capitalized">Veľkosť</string>
+  <string name="size">veľkosť priečinka</string>
   <string name="totalitems">Celkový počet položiek</string>
   <string name="enterzipname">Zadajte meno súboru ZIP</string>
   <string name="noappfound">Nenašla sa aplikácia na otvorenie tohto typu súboru</string>
@@ -199,6 +201,9 @@
   <string name="nofiles">Žiadne súbory</string>
   <string name="tapnhold">Dlho podržte na súbore alebo priečinku pre viac možností</string>
   <string name="pathcopied">Cesta bola skopírovaná do schránky</string>
+  <string name="used">využité miesto</string>
+  <string name="used_by_others">používajú iné</string>
+  <string name="free">voľné miesto</string>
   <string name="atroot">Nachádzate sa v koreňovo adresári</string>
   <string name="listview">Zobrazenie zoznamu</string>
   <string name="gridview">Zobrazenie v mriežke</string>
@@ -354,6 +359,7 @@
   <string name="clear">Vymazať</string>
   <string name="md5">MD5</string>
   <string name="md5_2">Kopírovať md5</string>
+  <string name="total">Celkovo:</string>
   <string name="calculating"> výpočet </string>
   <string name="sort">Zoradiť</string>
   <string name="ascending">Vzostupne</string>
