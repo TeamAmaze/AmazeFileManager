@@ -32,13 +32,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -51,8 +49,6 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -133,26 +129,12 @@ import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class Futils {
 
-    private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
     public static final int READ = 4;
     public static final int WRITE = 2;
     public static final int EXECUTE = 1;
     private Toast studioCount;
 
     public Futils() {
-    }
-    //methods for fastscroller
-    public static float getViewRawY(View view) {
-        int[] location = new int[2];
-        location[0] = 0;
-        location[1] = (int) view.getY();
-        ((View)view.getParent()).getLocationInWindow(location);
-        return location[1];
-    }
-
-    public static float getValueInRange(float min, float max, float value) {
-        float minimum = Math.max(min, value);
-        return Math.min(minimum, max);
     }
 
     public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
@@ -261,24 +243,6 @@ public class Futils {
         return length;
     }
 
-    public static void setTint(CheckBox box, int color) {
-        if(Build.VERSION.SDK_INT>=21)return;
-        ColorStateList sl = new ColorStateList(new int[][]{
-                new int[]{-android.R.attr.state_checked},
-                new int[]{android.R.attr.state_checked}
-        }, new int[]{
-                Color.parseColor("#666666"),
-                color
-        });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            box.setButtonTintList(sl);
-        } else {
-            Drawable drawable = DrawableCompat.wrap(ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material));
-            DrawableCompat.setTintList(drawable, sl);
-            box.setButtonDrawable(drawable);
-        }
-    }
-
     public static void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
@@ -297,7 +261,6 @@ public class Futils {
     }
 
     public void crossfade(View buttons,final View pathbar) {
-
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
         buttons.setAlpha(0f);
@@ -322,10 +285,9 @@ public class Futils {
         // Animate the loading view to 0% opacity. After the animation ends,
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
-
     }
-    public void revealShow(final View view, boolean reveal) {
 
+    public void revealShow(final View view, boolean reveal) {
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
             animator.setDuration(300); //ms
@@ -347,15 +309,10 @@ public class Futils {
                 }
             });
             animator.start();
-
         }
-
     }
 
-
     public void crossfadeInverse(final View buttons,final View pathbar) {
-
-
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
@@ -437,17 +394,6 @@ public class Futils {
             return 0;
         float digitGroups = (float) (size / (1024*1024));
         return digitGroups;
-    }
-
-    private boolean isSelfDefault(File f, Context c){
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
-        String s="";
-        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
-
-        return s.equals("com.amaze.filemanager") || rii == null;
     }
 
     public void openunknown(File f, Context c, boolean forcechooser) {
@@ -776,7 +722,6 @@ public class Futils {
      * @return
      */
     public boolean canGoBack(Context context, HFile currentFile) {
-
         // we're on main thread and can't list the cloud files
         switch (currentFile.getMode()) {
             case DROPBOX:
@@ -793,27 +738,8 @@ public class Futils {
         }
     }
 
-    public String getDate(File f) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return sdf.format(f.lastModified());
-    }
-
-    public static String getDate(long f) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return sdf.format(f);
-    }
-
-    public static String getDate(long f, String year) {
-        String date = sSDF.format(f);
-        if(date.substring(date.length()-4,date.length()).equals(year))
-            date=date.substring(0,date.length()-6);
-        return date;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth,
+                                            int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -855,7 +781,7 @@ public class Futils {
         final Context c = basic.getApplicationContext();
         int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
         long last = baseFile.getDate();
-        final String date = getDate(last),
+        final String date = Utils.getDate(last),
                 items = basic.getResources().getString(R.string.calculating),
                 name  = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
@@ -1197,11 +1123,13 @@ public class Futils {
         builder.show();
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void showDecryptFingerprintDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
                                              final RecyclerAdapter.DecryptButtonCallbackInterface
-                                                     decryptButtonCallbackInterface) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+                                                     decryptButtonCallbackInterface)
+            throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
+            UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
         builder.title(main.getResources().getString(R.string.crypt_decrypt));
@@ -1516,6 +1444,17 @@ public class Futils {
         }
     }
 
+    private boolean isSelfDefault(File f, Context c){
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
+        String s="";
+        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
+
+        return s.equals("com.amaze.filemanager") || rii == null;
+    }
+
     public void openFile(final DocumentFile f, final MainActivity m) {
         //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
         try {
@@ -1646,9 +1585,11 @@ public class Futils {
 
     }
 
-    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
-        LayoutElement item = new LayoutElement(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
-        return item;
+    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
+                                    String size, long longSize, boolean directorybool, boolean b,
+                                    String date) {
+        return new LayoutElement(i, new File(d).getName(), d, permissions, symlink,
+                size, longSize, b, date, directorybool);
     }
 
     public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
@@ -1812,10 +1753,6 @@ public class Futils {
         adapter.updateDialog(x);
         x.show();
 
-    }
-
-    public boolean isAtleastKitkat(){
-        return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
     }
 
     public void setPermissionsDialog(final View v, View but, final HFile file,

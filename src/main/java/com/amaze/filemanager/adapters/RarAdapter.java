@@ -30,9 +30,9 @@ import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
@@ -314,7 +314,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, zipViewer.res));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (zipViewer.showLastModified)
-                holder.date.setText(Futils.getDate(rowItem.getTime(), zipViewer.year));
+                holder.date.setText(Utils.getDate(rowItem.getTime(), zipViewer.year));
             if (rowItem.isDirectory()) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));

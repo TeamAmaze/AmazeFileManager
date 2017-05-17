@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Utils;
 
 public class FastScroller extends FrameLayout {
     private View bar;
@@ -76,7 +76,7 @@ public class FastScroller extends FrameLayout {
     }
 
     private void setHandlePosition1(float relativePos) {
-        handle.setY(Futils.getValueInRange(
+        handle.setY(Utils.getValueInRange(
                 0, getHeightMinusPadding() - handle.getHeight(), relativePos * (getHeightMinusPadding() - handle.getHeight()))
         );
 
@@ -138,13 +138,13 @@ public class FastScroller extends FrameLayout {
     private void setRecyclerViewPosition(float relativePos) {
         if (recyclerView != null) {
             int itemCount = recyclerView.getAdapter().getItemCount();
-            int targetPos = (int) Futils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
+            int targetPos = (int) Utils.getValueInRange(0, itemCount - 1, (int) (relativePos * (float) itemCount));
             recyclerView.smoothScrollToPosition(targetPos);
         }
     }
 
     private float getRelativeTouchPosition(MotionEvent event) {
-        float yInParent = event.getRawY() - Futils.getViewRawY(handle);
+        float yInParent = event.getRawY() - Utils.getViewRawY(handle);
         return yInParent / (getHeightMinusPadding() - handle.getHeight());
 
     }

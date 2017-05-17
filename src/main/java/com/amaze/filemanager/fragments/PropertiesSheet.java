@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;
 
@@ -71,9 +72,9 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mFileLocationTextView = (TextView) rootView.findViewById(R.id.text_view_file_location);
         mFileLocationTextView.setText(mFile.getPath());
         mFileAccessedTextView = (TextView) rootView.findViewById(R.id.text_view_file_accessed);
-        mFileAccessedTextView.setText(Futils.getDate(mFile.getDate()));
+        mFileAccessedTextView.setText(Utils.getDate(mFile.getDate()));
         mFileModifiedTextView = (TextView) rootView.findViewById(R.id.text_view_file_modified);
-        mFileModifiedTextView.setText(Futils.getDate(mFile.getDate()));
+        mFileModifiedTextView.setText(Utils.getDate(mFile.getDate()));
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) ((View) rootView.getParent()).getLayoutParams();
 
