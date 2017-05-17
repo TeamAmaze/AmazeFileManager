@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">Цуцлах</string>
   <string name="save">Хадгалах</string>
+  <string name="size_capitalized">Хэмжээ</string>
   <string name="share">Хуваалцах</string>
   <string name="confirm">Бататгах</string>
   <string name="delete">Устгах</string>

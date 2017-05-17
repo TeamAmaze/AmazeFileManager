@@ -20,6 +20,7 @@
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="setting">Settings</string>
+  <string name="size_capitalized">আকার</string>
   <string name="about">About</string>
   <string name="yes">হ্যাঁ</string>
   <string name="no">না</string>

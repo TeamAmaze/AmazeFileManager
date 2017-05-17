@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">ይቅር</string>
   <string name="save">አስቀምጥ</string>
+  <string name="size_capitalized">መጠን</string>
   <string name="share">አጋራ</string>
   <string name="confirm">አረጋግጥ</string>
   <string name="delete">ሰርዝ</string>

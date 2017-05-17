@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">रद्द गर्नुहोस्</string>
   <string name="save">बचत गर्नुहोस्</string>
+  <string name="size_capitalized">आकार</string>
   <string name="share">साझेदारी गर्नुहोस्</string>
   <string name="confirm">निश्चित गर्नुहोस्</string>
   <string name="delete">मेट्नुहोस्</string>

@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">KHANSELA</string>
   <string name="save">Londoloza</string>
+  <string name="size_capitalized">Usayizi</string>
   <string name="share">Yabelana</string>
   <string name="confirm">Qinisekisa</string>
   <string name="delete">Susa</string>

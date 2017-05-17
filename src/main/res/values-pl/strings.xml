@@ -51,7 +51,6 @@
   <string name="file_empty">Plik jest pusty</string>
   <string name="error">Błąd</string>
   <string name="cantlistfiles">Nie można wyświetlić plików bez uprawnień roota</string>
-  <string name="searchresults">Wyniki wyszukiwania</string>
   <string name="itemsselected">Wybrane elementy</string>
   <string name="newhomedirectory">Nowy katalog wewnętrzny</string>
   <string name="rename">Zmień nazwę</string>
@@ -66,6 +65,7 @@
   <string name="name">Nazwa</string>
   <string name="date">Data</string>
   <string name="location">Lokalizacja</string>
+  <string name="size_capitalized">Wymiary</string>
   <string name="totalitems">Elementy (łącznie)</string>
   <string name="enterzipname">Wpisz nazwę archiwum</string>
   <string name="noappfound">Nie odnaleziono aplikacji potrzebnej do otworzenia tego pliku</string>
@@ -353,7 +353,6 @@
   <string name="clear">Wyczyść</string>
   <string name="md5">MD5: </string>
   <string name="md5_2">Skopiuj MD5</string>
-  <string name="total">Łącznie: </string>
   <string name="calculating"> obliczanie </string>
   <string name="sort">Sortowanie</string>
   <string name="ascending">Rosnąco</string>

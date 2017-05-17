@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">ATCELT</string>
   <string name="save">Saglabāt</string>
+  <string name="size_capitalized">Izmēri</string>
   <string name="share">Dalies</string>
   <string name="confirm">Apstiprināt</string>
   <string name="delete">Dzēst</string>

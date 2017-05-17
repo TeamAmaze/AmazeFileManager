@@ -51,7 +51,6 @@
   <string name="file_empty">Le fichier est vide</string>
   <string name="error">Erreur</string>
   <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
-  <string name="searchresults">Résultats de la recherche</string>
   <string name="itemsselected">Éléments sélectionnés</string>
   <string name="newhomedirectory">Nouveau répertoire d\'accueil</string>
   <string name="rename">Renommer</string>
@@ -66,6 +65,7 @@
   <string name="name">Nom: </string>
   <string name="date">Date: </string>
   <string name="location">Stocké dans: </string>
+  <string name="size_capitalized">Dimensions</string>
   <string name="totalitems">Total des éléments:</string>
   <string name="enterzipname">Entrer le nom du ZIP</string>
   <string name="noappfound">Aucune application n\'a été trouvée pour ouvrir ce fichier</string>
@@ -354,7 +354,6 @@
   <string name="clear">Effacer</string>
   <string name="md5">md5 : </string>
   <string name="md5_2">Copier md5</string>
-  <string name="total">Total : </string>
   <string name="calculating"> calcul en cours </string>
   <string name="sort">Trier</string>
   <string name="ascending">Croissant</string>

@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">ຍົກເລີກ</string>
   <string name="save">ບັນທຶກ</string>
+  <string name="size_capitalized">ຂະໜາດ</string>
   <string name="share">ແບ່ງປັນ</string>
   <string name="confirm">ຢືນຢັນ</string>
   <string name="delete">ລຶບ</string>

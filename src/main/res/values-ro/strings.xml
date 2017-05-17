@@ -47,7 +47,6 @@
   <string name="file_empty">Fişier gol</string>
   <string name="error">Eroare</string>
   <string name="cantlistfiles">Nu se pot lista fișierele fără acces root</string>
-  <string name="searchresults">Rezultatele căutării</string>
   <string name="itemsselected">Elemente selectate</string>
   <string name="newhomedirectory">Dosar Acasă nou</string>
   <string name="rename">Redenumiţi</string>
@@ -62,6 +61,7 @@
   <string name="name">Nume: </string>
   <string name="date">Dată: </string>
   <string name="location">Locaţie: </string>
+  <string name="size_capitalized">Dimensiune</string>
   <string name="totalitems">Elemente: </string>
   <string name="enterzipname">Introduceţi numele fişierului Zip</string>
   <string name="noappfound">Nu s-a găsit nicio aplicaţie pentru a deschide acest fișier</string>

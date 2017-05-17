@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="cancel">Չեղարկել</string>
   <string name="save">Պահել</string>
+  <string name="size_capitalized">Չափը</string>
   <string name="share">Կիսվել</string>
   <string name="confirm">Հաստատել</string>
   <string name="delete">Ջնջել</string>

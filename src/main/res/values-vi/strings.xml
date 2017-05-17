@@ -50,7 +50,6 @@
   <string name="file_empty">Tệp rỗng</string>
   <string name="error">Lỗi</string>
   <string name="cantlistfiles">Không thể liệt kê tệp tin mà không root</string>
-  <string name="searchresults">Kết quả tìm kiếm</string>
   <string name="itemsselected">Các mục đã chọn</string>
   <string name="newhomedirectory">Tạo danh mục nhà mới</string>
   <string name="rename">Đổi tên</string>
@@ -65,6 +64,7 @@
   <string name="name">Tên: </string>
   <string name="date">Ngày: </string>
   <string name="location">Vị trí: </string>
+  <string name="size_capitalized">Kích thước</string>
   <string name="totalitems">Tất cả các mục: </string>
   <string name="enterzipname">Nhập tên Zip</string>
   <string name="noappfound">Không tìm thấy ứng dụng để mở tệp</string>
@@ -337,7 +337,6 @@
   <string name="clear">Xóa</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Sao chép md5</string>
-  <string name="total">Tổng cộng: </string>
   <string name="calculating"> đang tính toán </string>
   <string name="sort">Sắp xếp</string>
   <string name="ascending">Tăng dần</string>

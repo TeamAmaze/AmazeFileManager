@@ -50,7 +50,6 @@
   <string name="file_empty">Фајл је празан</string>
   <string name="error">Грешка</string>
   <string name="cantlistfiles">Не могу да излистам фајлове без кореног приступа</string>
-  <string name="searchresults">Резултати претраге</string>
   <string name="itemsselected">ставки изабрано</string>
   <string name="newhomedirectory">Нова почетна фасцикла</string>
   <string name="rename">Преименуј</string>
@@ -65,6 +64,7 @@
   <string name="name">Име: </string>
   <string name="date">Датум: </string>
   <string name="location">Локација: </string>
+  <string name="size_capitalized">Величина</string>
   <string name="totalitems">Укупно ставки: </string>
   <string name="enterzipname">Унесите име архиве</string>
   <string name="noappfound">Нема апликације за отварање овог фајла</string>
@@ -347,7 +347,6 @@
   <string name="clear">Очисти</string>
   <string name="md5">мд5: </string>
   <string name="md5_2">Копирај мд5</string>
-  <string name="total">Укупно: </string>
   <string name="calculating"> израчунавам </string>
   <string name="sort">Ређање</string>
   <string name="ascending">Растуће</string>

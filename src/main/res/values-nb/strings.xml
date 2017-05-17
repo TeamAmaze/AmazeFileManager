@@ -22,6 +22,7 @@
   <string name="storage">Lagring</string>
   <string name="cancel">Avbryt</string>
   <string name="save">Lagre</string>
+  <string name="size_capitalized">Størrelse</string>
   <string name="share">Del</string>
   <string name="yes">Ja</string>
   <string name="no">Nei</string>

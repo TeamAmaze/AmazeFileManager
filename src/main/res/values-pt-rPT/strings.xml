@@ -48,7 +48,6 @@
   <string name="file_empty">O ficheiro está vazio</string>
   <string name="error">Erro</string>
   <string name="cantlistfiles">Não é possível listar ficheiros sem root</string>
-  <string name="searchresults">Resultados da pesquisa</string>
   <string name="itemsselected">Itens selecionados</string>
   <string name="newhomedirectory">Nova pasta pessoal</string>
   <string name="rename">Renomear</string>
@@ -63,6 +62,7 @@
   <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Localização</string>
+  <string name="size_capitalized">Tamanho</string>
   <string name="totalitems">Total de itens</string>
   <string name="enterzipname">Digite o nome do .zip</string>
   <string name="noappfound">Não existem aplicações para abrir este ficheiro</string>
