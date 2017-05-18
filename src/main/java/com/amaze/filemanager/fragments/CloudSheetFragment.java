@@ -10,13 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -46,9 +46,9 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         dialog.setContentView(rootView);
 
         if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.DARK)) {
-            rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
         } else {
-            rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
         }
 
         mSmbLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_smb);

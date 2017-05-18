@@ -40,6 +40,7 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
@@ -141,7 +142,7 @@ public class MainActivityHelper {
     }
 
     private void mk(@StringRes int newText, final OnClickMaterialListener l) {
-        final MaterialDialog materialDialog = utils.showNameDialog(mainActivity,
+        final MaterialDialog materialDialog = GeneralDialogCreation.showNameDialog(mainActivity,
                 new String[]{mainActivity.getResources().getString(R.string.entername),
                         "",
                         mainActivity.getResources().getString(newText),
@@ -696,7 +697,7 @@ public class MainActivityHelper {
             // For example, if the request has been denied previously.
 
             String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog = Futils.showBasicDialog(activity, fab_skin,
+            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(activity, fab_skin,
                     ((UtilitiesProviderInterface) activity).getAppTheme(),
                     new String[] {
                             activity.getResources().getString(R.string.grantgplus),

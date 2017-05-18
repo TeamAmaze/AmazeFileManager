@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.utils;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -27,19 +26,12 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.hardware.fingerprint.FingerprintManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -49,151 +41,47 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.provider.DocumentFile;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.HiddenAdapter;
-import com.amaze.filemanager.adapters.RecyclerAdapter;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.asynctasks.CountFolderItems;
-import com.amaze.filemanager.services.asynctasks.GenerateHashes;
-import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import eu.chainfire.libsuperuser.Shell;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.R.string.loading;
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
+/**
+ * Functions that deal with files
+ */
 public class Futils {
 
-    private static final SimpleDateFormat sSDF = new SimpleDateFormat("MMM dd, yyyy");
     public static final int READ = 4;
     public static final int WRITE = 2;
     public static final int EXECUTE = 1;
     private Toast studioCount;
 
     public Futils() {
-    }
-    //methods for fastscroller
-    public static float getViewRawY(View view) {
-        int[] location = new int[2];
-        location[0] = 0;
-        location[1] = (int) view.getY();
-        ((View)view.getParent()).getLocationInWindow(location);
-        return location[1];
-    }
-
-    public static float getValueInRange(float min, float max, float value) {
-        float minimum = Math.max(min, value);
-        return Math.min(minimum, max);
-    }
-
-    public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m)
-                .content(texts[0])
-                .widgetColor(Color.parseColor(fabskin))
-                .theme(appTheme.getMaterialDialogTheme())
-                .title(texts[1])
-                .positiveText(texts[2])
-                .positiveColor(Color.parseColor(fabskin))
-                .negativeText(texts[3])
-                .negativeColor(Color.parseColor(fabskin));
-        if (texts[4] != (null)) {
-            a.neutralText(texts[4])
-             .neutralColor(Color.parseColor(fabskin));
-        }
-        return a.build();
-    }
-
-    public MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false, new
-                MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-
-                    }
-                });
-        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
-
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(texts[2]);
-        a.positiveText(texts[3]);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.neutralText(texts[4]);
-        if (texts[5] != (null)) {
-            a.negativeText(texts[5]);
-            a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        }
-        MaterialDialog dialog = a.build();
-        return dialog;
     }
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
@@ -261,24 +149,6 @@ public class Futils {
         return length;
     }
 
-    public static void setTint(CheckBox box, int color) {
-        if(Build.VERSION.SDK_INT>=21)return;
-        ColorStateList sl = new ColorStateList(new int[][]{
-                new int[]{-android.R.attr.state_checked},
-                new int[]{android.R.attr.state_checked}
-        }, new int[]{
-                Color.parseColor("#666666"),
-                color
-        });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            box.setButtonTintList(sl);
-        } else {
-            Drawable drawable = DrawableCompat.wrap(ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material));
-            DrawableCompat.setTintList(drawable, sl);
-            box.setButtonDrawable(drawable);
-        }
-    }
-
     public static void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
@@ -297,7 +167,6 @@ public class Futils {
     }
 
     public void crossfade(View buttons,final View pathbar) {
-
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
         buttons.setAlpha(0f);
@@ -322,10 +191,9 @@ public class Futils {
         // Animate the loading view to 0% opacity. After the animation ends,
         // set its visibility to GONE as an optimization step (it won't
         // participate in layout passes, etc.)
-
     }
-    public void revealShow(final View view, boolean reveal) {
 
+    public void revealShow(final View view, boolean reveal) {
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
             animator.setDuration(300); //ms
@@ -347,15 +215,10 @@ public class Futils {
                 }
             });
             animator.start();
-
         }
-
     }
 
-
     public void crossfadeInverse(final View buttons,final View pathbar) {
-
-
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
@@ -439,18 +302,7 @@ public class Futils {
         return digitGroups;
     }
 
-    private boolean isSelfDefault(File f, Context c){
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
-        String s="";
-        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
-
-        return s.equals("com.amaze.filemanager") || rii == null;
-    }
-
-    public void openunknown(File f, Context c, boolean forcechooser) {
+    public static void openunknown(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
 
@@ -584,7 +436,7 @@ public class Futils {
         return null;
     }
 
-    public void openWith(final File f,final Context c) {
+    public static void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
         String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
@@ -680,95 +532,6 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<LayoutElement> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
-        final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
-        c.title(b.getResources().getString(R.string.confirm));
-
-        int fileCounter = 0, dirCounter = 0;
-        long longSizeTotal = 0;
-        final ArrayList<BaseFile> todelete = new ArrayList<>();
-        StringBuilder dirNames = new StringBuilder();
-        StringBuilder fileNames = new StringBuilder();
-        for (int i = 0; i < pos.size(); i++) {
-            final LayoutElement elem = a.get(pos.get(i));
-            todelete.add(elem.generateBaseFile());
-            if (elem.isDirectory()) {
-                dirNames.append("\n")
-                        .append(++dirCounter)
-                        .append(". ")
-                        .append(elem.getTitle());
-                // TODO: Get folder size ?
-            } else {
-                fileNames.append("\n")
-                        .append(++fileCounter)
-                        .append(". ")
-                        .append(elem.getTitle())
-                        .append(" (")
-                        .append(elem.getSize())
-                        .append(")");
-                longSizeTotal += elem.getlongSize();
-            }
-        }
-
-        String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
-        String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
-      
-        StringBuilder message = new StringBuilder();
-        message.append(b.getResources().getString(R.string.questiondelete))
-                .append("\n\n");
-        if (dirCounter == 0 && fileCounter == 1) {
-            final LayoutElement elem = a.get(pos.get(0));
-            message.append(elem.getTitle())
-                    .append(" (")
-                    .append(elem.getSize())
-                    .append(")");
-        } else if (fileCounter == 0) {
-            message.append(titleDirs)
-                    .append(":")
-                    .append(dirNames);
-        } else if(dirCounter == 0) {
-            message.append(titleFiles)
-                    .append(":")
-                    .append(fileNames);
-        } else {
-            message.append(titleDirs)
-                    .append(":")
-                    .append(dirNames)
-                    .append("\n\n")
-                    .append(titleFiles)
-                    .append(":")
-                    .append(fileNames);
-        }
-
-        if (fileCounter + dirCounter > 1 && longSizeTotal > 0) {
-            message.append("\n\n")
-                    .append(b.getResources().getString(R.string.total))
-                    .append(" ")
-                    .append(Formatter.formatFileSize(b.getContext(), longSizeTotal));
-        }
-
-        c.content(message.toString());
-        c.theme(appTheme.getMaterialDialogTheme());
-        c.negativeText(b.getResources().getString(R.string.cancel).toUpperCase());
-        c.positiveText(b.getResources().getString(R.string.delete).toUpperCase());
-        c.positiveColor(Color.parseColor(b.fabSkin));
-        c.negativeColor(Color.parseColor(b.fabSkin));
-        c.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), b.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
-                b.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(todelete);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-                //materialDialog.cancel();
-            }
-        });
-        c.build().show();
-    }
-
     /**
      * Method determines if there is something to go back to
      * @param currentFile
@@ -776,7 +539,6 @@ public class Futils {
      * @return
      */
     public boolean canGoBack(Context context, HFile currentFile) {
-
         // we're on main thread and can't list the cloud files
         switch (currentFile.getMode()) {
             case DROPBOX:
@@ -791,485 +553,6 @@ public class Futils {
                 if (parentFiles == null) return false;
                 else return true;
         }
-    }
-
-    public String getDate(File f) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return sdf.format(f.lastModified());
-    }
-
-    public static String getDate(long f) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-        return sdf.format(f);
-    }
-
-    public static String getDate(long f, String year) {
-        String date = sSDF.format(f);
-        if(date.substring(date.length()-4,date.length()).equals(year))
-            date=date.substring(0,date.length()-6);
-        return date;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and
-            // keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
-                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme) {
-        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
-    }
-
-    public void showPropertiesDialogWithoutPermissions(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
-        showPropertiesDialog(f, null, activity, false, appTheme, false, false);
-    }
-    public void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
-        showPropertiesDialog(f, null, activity, false, appTheme, false, true);
-    }
-
-    private void showPropertiesDialog(final BaseFile baseFile, final String permissions,
-                                                    BasicActivity basic, boolean isRoot, AppTheme appTheme,
-                                                    boolean showPermissions, boolean forStorage) {
-        final ExecutorService executor = Executors.newFixedThreadPool(3);
-        final Context c = basic.getApplicationContext();
-        int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
-        long last = baseFile.getDate();
-        final String date = getDate(last),
-                items = basic.getResources().getString(R.string.calculating),
-                name  = baseFile.getName(),
-                parent = baseFile.getReadablePath(baseFile.getParent(c));
-
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getAccentString(sharedPrefs);
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(basic);
-        builder.title(basic.getResources().getString(R.string.properties));
-        builder.theme(appTheme.getMaterialDialogTheme());
-
-        View v = basic.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        TextView itemsText = (TextView) v.findViewById(R.id.t7);
-
-        /*View setup*/ {
-            TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
-            mNameTitle.setTextColor(accentColor);
-
-            TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
-            mDateTitle.setTextColor(accentColor);
-
-            TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
-            mSizeTitle.setTextColor(accentColor);
-
-            TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
-            mLocationTitle.setTextColor(accentColor);
-
-            TextView md5Title = (TextView) v.findViewById(R.id.title_md5);
-            md5Title.setTextColor(accentColor);
-
-            TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
-            sha256Title.setTextColor(accentColor);
-
-            ((TextView) v.findViewById(R.id.t5)).setText(name);
-            ((TextView) v.findViewById(R.id.t6)).setText(parent);
-            itemsText.setText(items);
-            ((TextView) v.findViewById(R.id.t8)).setText(date);
-
-            LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
-            LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
-            LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
-            LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
-
-            // setting click listeners for long press
-            mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, name);
-                    Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            });
-            mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, parent);
-                    Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            });
-            mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, items);
-                    Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            });
-            mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, date);
-                    Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
-                            c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            });
-        }
-
-        CountFolderItems countFolderItems = new CountFolderItems(c, itemsText, baseFile);
-        countFolderItems.executeOnExecutor(executor);
-
-        GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
-        hashGen.executeOnExecutor(executor);
-
-        /*Chart creation and data loading*/ {
-            boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
-            boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
-            PieChart chart = (PieChart) v.findViewById(R.id.chart);
-
-            chart.setTouchEnabled(false);
-            chart.setDrawEntryLabels(false);
-            chart.setDescription(null);
-            chart.setNoDataText(c.getString(loading));
-            chart.setRotationAngle(!isRightToLeft? 0f:180f);
-            chart.setHoleColor(Color.TRANSPARENT);
-            chart.setCenterTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
-
-            chart.getLegend().setEnabled(true);
-            chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
-            chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-            chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-
-            chart.animateY(1000);
-
-            if(forStorage) {
-                final String[] LEGENDS = new String[]{c.getString(R.string.used), c.getString(R.string.free)};
-                final int[] COLORS = {Utils.getColor(c, R.color.piechart_red), Utils.getColor(c, R.color.piechart_green)};
-
-                long totalSpace = getTotalSpace(baseFile),
-                        freeSpace = getFreeSpace(baseFile),
-                        usedSpace = totalSpace - freeSpace;
-
-                List<PieEntry> entries = new ArrayList<>();
-                entries.add(new PieEntry(usedSpace, LEGENDS[0]));
-                entries.add(new PieEntry(freeSpace, LEGENDS[1]));
-
-                PieDataSet set = new PieDataSet(entries, null);
-                set.setColors(COLORS);
-                set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-                set.setSliceSpace(5f);
-                set.setAutomaticallyDisableSliceSpacing(true);
-                set.setValueLinePart2Length(1.05f);
-                set.setSelectionShift(0f);
-
-                PieData pieData = new PieData(set);
-                pieData.setValueFormatter(new SizeFormatter(c));
-                pieData.setValueTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
-
-                String totalSpaceFormatted = Formatter.formatFileSize(c, totalSpace);
-
-                chart.setCenterText(new SpannableString(c.getString(R.string.total) + "\n" + totalSpaceFormatted));
-                chart.setData(pieData);
-            } else {
-                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, appTheme, chart, baseFile);
-                loadFolderSpaceData.executeOnExecutor(executor);
-            }
-
-            chart.invalidate();
-        }
-
-        if(!forStorage && showPermissions) {
-            final MainFragment main = ((MainActivity) basic).mainFragment;
-            AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
-            appCompatButton.setAllCaps(true);
-
-            final View permissionsTable = v.findViewById(R.id.permtable);
-            final View button = v.findViewById(R.id.set);
-            if (isRoot && permissions.length() > 6) {
-                appCompatButton.setVisibility(View.VISIBLE);
-                appCompatButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (permissionsTable.getVisibility() == View.GONE) {
-                            permissionsTable.setVisibility(View.VISIBLE);
-                            button.setVisibility(View.VISIBLE);
-                            setPermissionsDialog(permissionsTable, button, baseFile, permissions, c,
-                                    main);
-                        } else {
-                            button.setVisibility(View.GONE);
-                            permissionsTable.setVisibility(View.GONE);
-                        }
-                    }
-                });
-            }
-        }
-
-        builder.customView(v, true);
-        builder.positiveText(basic.getResources().getString(R.string.ok));
-        builder.positiveColor(Color.parseColor(fabskin));
-        builder.dismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                executor.shutdown();
-            }
-        });
-
-        MaterialDialog materialDialog = builder.build();
-        materialDialog.show();
-        materialDialog.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-
-        /*
-        View bottomSheet = c.findViewById(R.id.design_bottom_sheet);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        bottomSheetBehavior.setPeekHeight(BottomSheetBehavior.STATE_DRAGGING);
-        */
-    }
-
-    public void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-        String fabskin = PreferenceUtils.getAccentString(sp);
-        final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-
-        switch (openMode) {
-            case DROPBOX:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_dropbox));
-                break;
-            case BOX:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_box));
-                break;
-            case GDRIVE:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_drive));
-                break;
-            case ONEDRIVE:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_onedrive));
-                break;
-        }
-
-        builder.theme(appTheme.getMaterialDialogTheme());
-        builder.content(mainActivity.getResources().getString(R.string.cloud_remove));
-
-        builder.positiveText(mainActivity.getResources().getString(R.string.yes));
-        builder.positiveColor(Color.parseColor(fabskin));
-        builder.negativeText(mainActivity.getResources().getString(R.string.no));
-        builder.negativeColor(Color.parseColor(fabskin));
-
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                mainActivity.deleteConnection(openMode);
-            }
-        });
-
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    public void showEncryptWarningDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
-                                         final RecyclerAdapter.EncryptButtonCallbackInterface
-                                                 encryptButtonCallbackInterface) {
-
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
-
-        final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.warning));
-        builder.content(main.getResources().getString(R.string.crypt_warning_key));
-        builder.theme(appTheme.getMaterialDialogTheme());
-        builder.negativeText(main.getResources().getString(R.string.warning_never_show));
-        builder.positiveText(main.getResources().getString(R.string.warning_confirm));
-        builder.positiveColor(Color.parseColor(main.fabSkin));
-
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                try {
-                    encryptButtonCallbackInterface.onButtonPressed(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(main.getActivity(),
-                            main.getResources().getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                preferences.edit().putBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
-                try {
-                    encryptButtonCallbackInterface.onButtonPressed(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(main.getActivity(),
-                            main.getResources().getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        builder.show();
-    }
-
-    public void showEncryptAuthenticateDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
-                                              final RecyclerAdapter.EncryptButtonCallbackInterface
-                                                      encryptButtonCallbackInterface) {
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.crypt_encrypt));
-
-        View rootView = View.inflate(main.getActivity(), R.layout.dialog_encrypt_authenticate, null);
-
-        final AppCompatEditText passwordEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
-        final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
-
-        builder.customView(rootView, true);
-
-        builder.positiveText(main.getResources().getString(R.string.ok));
-        builder.negativeText(main.getResources().getString(R.string.cancel));
-        builder.theme(appTheme.getMaterialDialogTheme());
-        builder.positiveColor(Color.parseColor(main.fabSkin));
-        builder.negativeColor(Color.parseColor(main.fabSkin));
-
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                if (TextUtils.isEmpty(passwordEditText.getText()) ||
-                        TextUtils.isEmpty(passwordConfirmEditText.getText())) {
-                    dialog.cancel();
-                    return;
-                }
-
-                try {
-                    encryptButtonCallbackInterface.onButtonPressed(intent,
-                            passwordEditText.getText().toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(main.getActivity(),
-                            main.getResources().getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        builder.show();
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showDecryptFingerprintDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
-                                             final RecyclerAdapter.DecryptButtonCallbackInterface
-                                                     decryptButtonCallbackInterface) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.crypt_decrypt));
-
-        View rootView = View.inflate(main.getActivity(),
-                R.layout.dialog_decrypt_fingerprint_authentication, null);
-
-        Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
-        cancelButton.setTextColor(Color.parseColor(main.fabSkin));
-        builder.customView(rootView, true);
-        builder.canceledOnTouchOutside(false);
-
-        builder.theme(appTheme.getMaterialDialogTheme());
-
-        final MaterialDialog dialog = builder.show();
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        FingerprintManager manager = (FingerprintManager) main.getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
-        FingerprintManager.CryptoObject object = new
-                FingerprintManager.CryptoObject(CryptUtil.initCipher(main.getContext()));
-
-        FingerprintHandler handler = new FingerprintHandler(main.getActivity(), intent, dialog,
-                decryptButtonCallbackInterface);
-        handler.authenticate(manager, object);
-    }
-
-    public void showDecryptDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
-                                  final String password,
-                                  final RecyclerAdapter.DecryptButtonCallbackInterface
-                                          decryptButtonCallbackInterface) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.crypt_decrypt));
-
-        builder.input(main.getResources().getString(R.string.authenticate_password), "", false,
-                new MaterialDialog.InputCallback() {
-            @Override
-            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-            }
-        });
-
-        builder.theme(appTheme.getMaterialDialogTheme());
-        builder.positiveText(main.getResources().getString(R.string.ok));
-        builder.negativeText(main.getResources().getString(R.string.cancel));
-        builder.positiveColor(Color.parseColor(main.fabSkin));
-        builder.negativeColor(Color.parseColor(main.fabSkin));
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                EditText editText = dialog.getInputEditText();
-
-                if (editText.getText().toString().equals(password))
-                    decryptButtonCallbackInterface.confirm(intent);
-                else decryptButtonCallbackInterface.failed();
-            }
-        });
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
     }
 
     public static long[] getSpaces(HFile hFile, final OnProgressUpdate<Long[]> updateState) {
@@ -1468,9 +751,9 @@ public class Futils {
                 f.getName().toLowerCase().endsWith(".rar")||
                 f.getName().toLowerCase().endsWith(".tar") ||
                 f.getName().toLowerCase().endsWith(".tar.gz")) {
-            showArchiveDialog(f, m);
+            GeneralDialogCreation.showArchiveDialog(f, m);
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
-            showPackageDialog(f, m);
+            GeneralDialogCreation.showPackageDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
@@ -1514,6 +797,17 @@ public class Futils {
                 openWith(f, m);
             }
         }
+    }
+
+    private boolean isSelfDefault(File f, Context c){
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
+        String s="";
+        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
+
+        return s.equals("com.amaze.filemanager") || rii == null;
     }
 
     public void openFile(final DocumentFile f, final MainActivity m) {
@@ -1579,79 +873,14 @@ public class Futils {
         }*/
     }
 
-    public static void showSMBHelpDialog(Context m,String acc){
-        MaterialDialog.Builder b=new MaterialDialog.Builder(m);
-        b.content(m.getText(R.string.smb_instructions));
-        b.positiveText(R.string.doit);
-        b.positiveColor(Color.parseColor(acc));
-        b.build().show();
+    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
+                                    String size, long longSize, boolean directorybool, boolean b,
+                                    String date) {
+        return new LayoutElement(i, new File(d).getName(), d, permissions, symlink,
+                size, longSize, b, date, directorybool);
     }
 
-    public void showPackageDialog(final File f, final MainActivity m) {
-        MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
-        mat.title(R.string.packageinstaller).content(R.string.pitext)
-           .positiveText(R.string.install)
-           .negativeText(R.string.view)
-           .neutralText(R.string.cancel)
-           .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-           .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-           .neutralColor(Color.parseColor(BaseActivity.accentSkin))
-           .callback(new MaterialDialog.ButtonCallback() {
-               @Override
-               public void onPositive(MaterialDialog materialDialog) {
-                   openunknown(f, m, false);
-               }
-
-               @Override
-               public void onNegative(MaterialDialog materialDialog) {
-                   m.openZip(f.getPath());
-               }
-           })
-           .theme(m.getAppTheme().getMaterialDialogTheme())
-           .build()
-           .show();
-    }
-
-    public void showArchiveDialog(final File f, final MainActivity m) {
-        MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
-        mat.title(R.string.archive)
-                .content(R.string.archtext)
-                .positiveText(R.string.extract)
-                .negativeText(R.string.view)
-                .neutralText(R.string.cancel)
-                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        m. mainActivityHelper.extractFile(f);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-                        //m.addZipViewTab(f.getPath());
-                        if (f.getName().toLowerCase().endsWith(".rar"))
-                            m.openRar(Uri.fromFile(f).toString());
-                        else
-                            m.openZip(Uri.fromFile(f).toString());
-                    }
-                });
-        if (m.getAppTheme().equals(AppTheme.DARK)) mat.theme(Theme.DARK);
-        MaterialDialog b = mat.build();
-
-        if (!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))
-            b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
-        b.show();
-
-    }
-
-    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink, String size, long longSize, boolean directorybool, boolean b, String date) {
-        LayoutElement item = new LayoutElement(i, new File(d).getName(), d,permissions,symlink,size,longSize,b,date,directorybool);
-        return item;
-    }
-
-    public ArrayList<HFile> toHFileArray(ArrayList<String> a) {
+    public static ArrayList<HFile> toHFileArray(ArrayList<String> a) {
         ArrayList<HFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
             HFile hFile=new HFile(OpenMode.UNKNOWN,a.get(i));
@@ -1659,244 +888,6 @@ public class Futils {
             b.add(hFile);
         }
         return b;
-    }
-
-    public void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, new
-                MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
-
-                    }
-                });
-        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(m.getResources().getString(R.string.enterzipname));
-        a.positiveText(R.string.create);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
-                if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                    Toast.makeText(m, "File should have a name", Toast.LENGTH_SHORT).show();
-                else {
-                    String name = current + "/" + materialDialog.getInputEditText().getText().toString();
-                    m.mainActivityHelper.compressFiles(new File(name), b);
-                }
-            }
-        });
-        a.negativeText(m.getResources().getString(R.string.cancel));
-        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.build().show();
-    }
-
-    public void showSortDialog(final MainFragment m, AppTheme appTheme) {
-        String[] sort = m.getResources().getStringArray(R.array.sortby);
-        int current = Integer.parseInt(m.sharedPref.getString("sortby", "0"));
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
-            @Override
-            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-                return true;
-            }
-        });
-
-        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
-                m.getSortModes();
-                m.updateList();
-                dialog.dismiss();
-            }
-        });
-
-        a.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
-                m.getSortModes();
-                m.updateList();
-                dialog.dismiss();
-            }
-        });
-        a.title(R.string.sortby);
-        a.build().show();
-    }
-
-    public void showSortDialog(final AppsList m, AppTheme appTheme) {
-        String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
-        int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.items(sort).itemsCallbackSingleChoice(current > 2 ? current - 3 : current, new MaterialDialog.ListCallbackSingleChoice() {
-            @Override
-            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-                return true;
-            }
-        });
-        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
-                m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
-                dialog.dismiss();
-            }
-        });
-
-        a.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
-                m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
-                dialog.dismiss();
-            }
-        });
-
-        a.title(R.string.sortby);
-        a.build().show();
-    }
-
-    public void showHistoryDialog(final DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.negativeText(R.string.clear);
-        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        a.title(R.string.history);
-        a.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dataUtils.clearHistory();
-            }
-        });
-        a.theme(appTheme.getMaterialDialogTheme());
-
-        a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHistory()), null, true);
-        a.adapter(adapter, null);
-
-        MaterialDialog x= a.build();
-        adapter.updateDialog(x);
-        x.show();
-
-    }
-
-    public void showHiddenDialog(DataUtils dataUtils, final MainFragment m, AppTheme appTheme) {
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.title(R.string.hiddenfiles);
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, this, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHiddenfiles()), null, false);
-        a.adapter(adapter, null);
-        a.dividerColor(Color.GRAY);
-        MaterialDialog x= a.build();
-        adapter.updateDialog(x);
-        x.show();
-
-    }
-
-    public boolean isAtleastKitkat(){
-        return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
-    }
-
-    public void setPermissionsDialog(final View v, View but, final HFile file,
-                                     final String f, final Context context, final MainFragment mainFrag) {
-        final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown = (CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup = (CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother = (CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown = (CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup = (CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother = (CheckBox) v.findViewById(R.id.cexeother);
-        String perm = f;
-        if (perm.length() < 6) {
-            v.setVisibility(View.GONE);
-            but.setVisibility(View.GONE);
-            Toast.makeText(context, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        ArrayList<Boolean[]> arrayList = parse(perm);
-        Boolean[] read = arrayList.get(0);
-        Boolean[] write = arrayList.get(1);
-        final Boolean[] exe = arrayList.get(2);
-        readown.setChecked(read[0]);
-        readgroup.setChecked(read[1]);
-        readother.setChecked(read[2]);
-        writeown.setChecked(write[0]);
-        writegroup.setChecked(write[1]);
-        writeother.setChecked(write[2]);
-        exeown.setChecked(exe[0]);
-        exegroup.setChecked(exe[1]);
-        exeother.setChecked(exe[2]);
-        but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int a = 0, b = 0, c = 0;
-                if (readown.isChecked()) a = 4;
-                if (writeown.isChecked()) b = 2;
-                if (exeown.isChecked()) c = 1;
-                int owner = a + b + c;
-                int d = 0;
-                int e = 0;
-                int f = 0;
-                if (readgroup.isChecked()) d = 4;
-                if (writegroup.isChecked()) e = 2;
-                if (exegroup.isChecked()) f = 1;
-                int group = d + e + f;
-                int g = 0, h = 0, i = 0;
-                if (readother.isChecked()) g = 4;
-                if (writeother.isChecked()) h = 2;
-                if (exeother.isChecked()) i = 1;
-                int other = g + h + i;
-                String finalValue = owner + "" + group + "" + other;
-
-                String command = "chmod " + finalValue + " " + file.getPath();
-                if (file.isDirectory())
-                    command = "chmod -R " + finalValue + " \"" + file.getPath() + "\"";
-
-                try {
-                    RootHelper.runShellCommand(command, new Shell.OnCommandResultListener() {
-                        @Override
-                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            if (exitCode < 0) {
-                                Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
-                                        Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context,
-                                        mainFrag.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    mainFrag.updateList();
-                } catch (RootNotPermittedException e1) {
-                    Toast.makeText(context, mainFrag.getResources().getString(R.string.rootfailure),
-                            Toast.LENGTH_LONG).show();
-                    e1.printStackTrace();
-                }
-
-            }
-        });
     }
 
     /**
@@ -1962,12 +953,12 @@ public class Futils {
         return  -1;
     }
 
-    public ArrayList<Boolean[]> parse(String permLine) {
+    public static ArrayList<Boolean[]> parse(String permLine) {
         ArrayList<Boolean[]> arrayList= new ArrayList<>();
         Boolean[] read=new Boolean[]{false,false,false};
         Boolean[] write=new Boolean[]{false,false,false};
         Boolean[] execute=new Boolean[]{false,false,false};
-        int owner = 0;
+        int owner = 0;// TODO: 17/5/2017 many variables are unused
         if (permLine.charAt(1) == 'r') {
             owner += READ;
             read[0]=true;
@@ -2010,24 +1001,6 @@ public class Futils {
         arrayList.add(write);
         arrayList.add(execute);
         return arrayList;
-    }
-
-    public static class SizeFormatter implements IValueFormatter {
-
-        private Context context;
-
-        public SizeFormatter(Context c) {
-            context = c;
-        }
-
-        @Override
-        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
-                                        ViewPortHandler viewPortHandler) {
-            String prefix = entry.getData() != null && entry.getData() instanceof String?
-                    (String) entry.getData():"";
-
-            return prefix + Formatter.formatFileSize(context, (long) value);
-        }
     }
 
 }

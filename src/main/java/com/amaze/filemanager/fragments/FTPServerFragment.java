@@ -35,6 +35,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.services.ftpservice.FTPService;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -90,25 +91,25 @@ public class FTPServerFragment extends Fragment {
                 "<font color='" + accentColor + "'>"
                 + getResources().getString(R.string.ftp_status_running) + "</font></b>");
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                "<font color='" + getResources().getColor(android.R.color.holo_red_light) + "'>"
+                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
 
         spannedStatusNotRunning = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 getResources().getString(R.string.ftp_status_not_running) + "</b>");
         spannedStatusSecure = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                "<font color='" + getResources().getColor(android.R.color.holo_green_light) + "'>"
+                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_green_light) + "'>"
                 + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>");
 
         updateStatus();
 
         //light theme
         if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
-            startDividerView.setBackgroundColor(getResources().getColor(R.color.divider));
-            statusDividerView.setBackgroundColor(getResources().getColor(R.color.divider));
+            startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
+            statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
         } else {
             //dark
-            startDividerView.setBackgroundColor(getResources().getColor(R.color.divider_dark_card));
-            statusDividerView.setBackgroundColor(getResources().getColor(R.color.divider_dark_card));
+            startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
+            statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
         }
 
         ftpBtn.setOnClickListener(new View.OnClickListener() {

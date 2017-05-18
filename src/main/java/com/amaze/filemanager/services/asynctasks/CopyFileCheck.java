@@ -21,10 +21,10 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -169,7 +169,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-        Futils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
+        Utils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));
         dialogBuilder.positiveText(R.string.skip);
