@@ -66,7 +66,7 @@
   <string name="name">Název</string>
   <string name="date">Datum</string>
   <string name="location">Místo</string>
-  <string name="size_capitalized">Rozměry</string>
+  <string name="size_capitalized">Velikost</string>
   <string name="size">velikost složky</string>
   <string name="totalitems">Celkový počet položek</string>
   <string name="enterzipname">Zadejte název ZIP souboru</string>
