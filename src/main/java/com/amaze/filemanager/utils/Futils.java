@@ -756,17 +756,11 @@ public class Futils {
         dialogBuilder.positiveText(mainFragment.getResources().getString(R.string.delete).toUpperCase());
         dialogBuilder.positiveColor(Color.parseColor(mainFragment.fabSkin));
         dialogBuilder.negativeColor(Color.parseColor(mainFragment.fabSkin));
-        dialogBuilder.callback(new MaterialDialog.ButtonCallback() {
+        dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog materialDialog) {
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
                 mainFragment.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(itemsToDelete);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-                //materialDialog.cancel();
             }
         });
         dialogBuilder.build().show();
