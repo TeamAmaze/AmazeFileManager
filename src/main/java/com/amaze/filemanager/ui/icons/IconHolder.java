@@ -41,9 +41,9 @@ import android.widget.ImageView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.HashMap;
@@ -285,7 +285,7 @@ public class IconHolder {
 				options.inJustDecodeBounds = true;
 				Bitmap b = BitmapFactory.decodeFile(path, options);
 				
-				options.inSampleSize = Futils.calculateInSampleSize(options, px, px);
+				options.inSampleSize = Utils.calculateInSampleSize(options, px, px);
 
 				// Decode bitmap with inSampleSize set
 				options.inJustDecodeBounds = false;

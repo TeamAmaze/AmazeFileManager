@@ -127,6 +127,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
@@ -149,6 +150,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -1033,7 +1035,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    utils.showHistoryDialog(dataUtils, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1042,7 +1044,7 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog dialog = Futils.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
+                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1061,11 +1063,11 @@ public class MainActivity extends BaseActivity implements
             case R.id.sort:
                 Fragment fragment = getDFragment();
                 if (fragment.getClass().getName().contains("AppsList"))
-                    utils.showSortDialog((AppsList) fragment, getAppTheme());
+                    GeneralDialogCreation.showSortDialog((AppsList) fragment, getAppTheme());
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    utils.showSortDialog(ma, getAppTheme());
+                    GeneralDialogCreation.showSortDialog(ma, getAppTheme());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1090,7 +1092,7 @@ public class MainActivity extends BaseActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                utils.showHiddenDialog(dataUtils, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme());
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
@@ -1942,7 +1944,7 @@ public class MainActivity extends BaseActivity implements
                 } else {
                     Button b = new Button(this);
                     b.setText(rnames.get(index));
-                    b.setTextColor(getResources().getColor(android.R.color.white));
+                    b.setTextColor(Utils.getColor(this, android.R.color.white));
                     b.setTextSize(13);
                     b.setLayoutParams(params);
                     b.setBackgroundResource(0);
@@ -2060,7 +2062,7 @@ public class MainActivity extends BaseActivity implements
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -2110,7 +2112,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             settingsButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsButton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2125,7 +2127,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             appButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appButton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
-            ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         appButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2145,7 +2147,7 @@ public class MainActivity extends BaseActivity implements
         if (getAppTheme().equals(AppTheme.DARK)) {
             ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
-            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(Utils.getColor(this, android.R.color.white));
         }
         ftpButton.setOnClickListener(new View.OnClickListener() {
 
@@ -2211,7 +2213,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
 
-        //    searchViewEditText.setTextColor(getResources().getColor(android.R.color.black));
+        //    searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
         //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 

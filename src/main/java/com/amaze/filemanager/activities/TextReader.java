@@ -65,10 +65,12 @@ import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -139,7 +141,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (getAppTheme().equals(AppTheme.DARK))
-            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
 
         setContentView(R.layout.search);
         searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
@@ -244,7 +246,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
         mInput.addTextChangedListener(this);
         try {
             if (getAppTheme().equals(AppTheme.DARK))
-                mInput.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+                mInput.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
 
@@ -544,7 +546,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 if (mFile.exists()) {
                     //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
                     //hFile.generateMode(this);
-                    getFutils().showPropertiesDialogWithoutPermissions(mFile, this, getAppTheme());
+                    GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openwith:
@@ -837,7 +839,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources().getColor(R.color.search_text_highlight)),
+                    mInput.getText().setSpan(new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
@@ -862,7 +864,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
-                    mInput.getText().setSpan(new BackgroundColorSpan(getResources().getColor(R.color.search_text_highlight)),
+                    mInput.getText().setSpan(new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 

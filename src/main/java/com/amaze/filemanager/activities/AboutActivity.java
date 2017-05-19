@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.Random;
@@ -136,8 +137,8 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
             @Override
             public void onGenerated(Palette palette) {
 
-                int mutedColor = palette.getMutedColor(getResources().getColor(R.color.primary_blue));
-                int darkMutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.primary_blue));
+                int mutedColor = palette.getMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
+                int darkMutedColor = palette.getDarkMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
                 mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
                 mCollapsingToolbarLayout.setStatusBarScrimColor(darkMutedColor);
             }
@@ -192,7 +193,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private void switchIcons() {
         if (getAppTheme().equals(AppTheme.DARK)) {
             // dark theme
-            mAuthorsDivider.setBackgroundColor(getResources().getColor(R.color.divider_dark_card));
+            mAuthorsDivider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
         }
     }
 

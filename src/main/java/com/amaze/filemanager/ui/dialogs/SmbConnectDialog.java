@@ -25,9 +25,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
@@ -198,11 +198,11 @@ public class SmbConnectDialog extends DialogFragment {
         EditTextColorStateUtil.setTint(user, accentColor);
         EditTextColorStateUtil.setTint(pass, accentColor);
 
-        Futils.setTint(ch, accentColor);
+        Utils.setTint(ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Futils.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
+                GeneralDialogCreation.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
             }
         });
 
