@@ -680,84 +680,87 @@ public class Futils {
         }
     }
 
-    public void deleteFiles(ArrayList<LayoutElement> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
-        final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
-        c.title(b.getResources().getString(R.string.confirm));
+    public void deleteFiles(ArrayList<LayoutElement> layoutElements, final MainFragment mainFragment, List<Integer> positions, AppTheme appTheme) {
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mainFragment.getActivity());
+        dialogBuilder.title(mainFragment.getResources().getString(R.string.confirm));
 
-        int fileCounter = 0, dirCounter = 0;
+        int counterDirectories = 0;
+        int counterFiles = 0;
         long longSizeTotal = 0;
-        final ArrayList<BaseFile> todelete = new ArrayList<>();
-        StringBuilder dirNames = new StringBuilder();
-        StringBuilder fileNames = new StringBuilder();
-        for (int i = 0; i < pos.size(); i++) {
-            final LayoutElement elem = a.get(pos.get(i));
-            todelete.add(elem.generateBaseFile());
-            if (elem.isDirectory()) {
-                dirNames.append("\n")
-                        .append(++dirCounter)
+        final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
+        StringBuilder listDirectories = new StringBuilder();
+        StringBuilder listFiles = new StringBuilder();
+
+        for (int i = 0; i < positions.size(); i++) {
+            final LayoutElement layoutElement = layoutElements.get(positions.get(i));
+            itemsToDelete.add(layoutElement.generateBaseFile());
+
+            if (layoutElement.isDirectory()) {
+                listDirectories.append("\n")
+                        .append(++counterDirectories)
                         .append(". ")
-                        .append(elem.getTitle());
+                        .append(layoutElement.getTitle());
                 // TODO: Get folder size ?
             } else {
-                fileNames.append("\n")
-                        .append(++fileCounter)
+                listFiles.append("\n")
+                        .append(++counterFiles)
                         .append(". ")
-                        .append(elem.getTitle())
+                        .append(layoutElement.getTitle())
                         .append(" (")
-                        .append(elem.getSize())
+                        .append(layoutElement.getSize())
                         .append(")");
-                longSizeTotal += elem.getlongSize();
+                longSizeTotal += layoutElement.getlongSize();
             }
         }
 
-        String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
-        String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
-      
+        String titleDirectories = mainFragment.getResources().getString(R.string.title_dirs).toUpperCase();
+        String titleFiles = mainFragment.getResources().getString(R.string.title_files).toUpperCase();
+
         StringBuilder message = new StringBuilder();
-        message.append(b.getResources().getString(R.string.questiondelete))
-                .append("\n\n");
-        if (dirCounter == 0 && fileCounter == 1) {
-            final LayoutElement elem = a.get(pos.get(0));
-            message.append(elem.getTitle())
+        message.append(mainFragment.getResources().getString(R.string.questiondelete)).append("\n\n");
+
+        if (counterDirectories == 0 && counterFiles == 1) {
+            final LayoutElement layoutElement = layoutElements.get(positions.get(0));
+            message.append(layoutElement.getTitle())
                     .append(" (")
-                    .append(elem.getSize())
+                    .append(layoutElement.getSize())
                     .append(")");
-        } else if (fileCounter == 0) {
-            message.append(titleDirs)
+        } else if (counterFiles == 0) {
+            message.append(titleDirectories)
                     .append(":")
-                    .append(dirNames);
-        } else if(dirCounter == 0) {
+                    .append(listDirectories);
+        } else if (counterDirectories == 0) {
             message.append(titleFiles)
                     .append(":")
-                    .append(fileNames);
+                    .append(listFiles);
         } else {
-            message.append(titleDirs)
+            message.append(titleDirectories)
                     .append(":")
-                    .append(dirNames)
+                    .append(listDirectories)
                     .append("\n\n")
                     .append(titleFiles)
                     .append(":")
-                    .append(fileNames);
+                    .append(listFiles);
         }
 
-        if (fileCounter + dirCounter > 1 && longSizeTotal > 0) {
+        if (counterFiles + counterDirectories > 1 && longSizeTotal > 0) {
             message.append("\n\n")
-                    .append(b.getResources().getString(R.string.total))
+                    .append(mainFragment.getResources().getString(R.string.total))
                     .append(" ")
-                    .append(Formatter.formatFileSize(b.getContext(), longSizeTotal));
+                    .append(Formatter.formatFileSize(mainFragment.getContext(), longSizeTotal));
         }
 
-        c.content(message.toString());
-        c.theme(appTheme.getMaterialDialogTheme());
-        c.negativeText(b.getResources().getString(R.string.cancel).toUpperCase());
-        c.positiveText(b.getResources().getString(R.string.delete).toUpperCase());
-        c.positiveColor(Color.parseColor(b.fabSkin));
-        c.negativeColor(Color.parseColor(b.fabSkin));
-        c.callback(new MaterialDialog.ButtonCallback() {
+        dialogBuilder.content(message.toString());
+        dialogBuilder.theme(appTheme.getMaterialDialogTheme());
+        dialogBuilder.negativeText(mainFragment.getResources().getString(R.string.cancel).toUpperCase());
+        dialogBuilder.positiveText(mainFragment.getResources().getString(R.string.delete).toUpperCase());
+        dialogBuilder.positiveColor(Color.parseColor(mainFragment.fabSkin));
+        dialogBuilder.negativeColor(Color.parseColor(mainFragment.fabSkin));
+        dialogBuilder.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), b.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
-                b.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(todelete);
+                Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+                mainFragment.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(itemsToDelete);
             }
 
             @Override
@@ -766,7 +769,7 @@ public class Futils {
                 //materialDialog.cancel();
             }
         });
-        c.build().show();
+        dialogBuilder.build().show();
     }
 
     /**
