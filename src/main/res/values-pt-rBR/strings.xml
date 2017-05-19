@@ -75,8 +75,8 @@
   <string name="tab">Aba</string>
   <string name="file">Arquivo</string>
   <string name="folder">Pasta</string>
-  <string name="title_files">Arquivos</string>
-  <string name="title_dirs">Diretórios</string>
+  <string name="dialog_delete_category_files">Arquivos</string>
+  <string name="dialog_delete_category_directories">Diretórios</string>
   <string name="newfolder">Nova pasta</string>
   <string name="entername">Insira o nome</string>
   <string name="extracting">Extraindo</string>
@@ -96,9 +96,9 @@
   <string name="compress">Compactar</string>
   <string name="yes">Sim</string>
   <string name="no">Não</string>
-  <string name="confirm">Confirmar</string>
+  <string name="dialog_delete_title">Confirmar</string>
   <string name="deleting">Excluindo</string>
-  <string name="questiondelete">Deseja excluir este(s) arquivo(s)?</string>
+  <string name="dialog_delete_disclaimer">Deseja excluir este(s) arquivo(s)?</string>
   <string name="questionset">Deseja definir o caminho atual como pasta inicial desta aba?</string>
   <string name="viewmode">Modo de exibição</string>
   <string name="uimode">Modo de interface</string>

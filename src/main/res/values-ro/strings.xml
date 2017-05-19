@@ -71,7 +71,7 @@
   <string name="tab">Filă</string>
   <string name="file">Fişier</string>
   <string name="folder">Dosar</string>
-  <string name="title_dirs">Dosare</string>
+  <string name="dialog_delete_category_directories">Dosare</string>
   <string name="newfolder">Dosar nou</string>
   <string name="entername">Introduceţi numele</string>
   <string name="extracting">Extragere</string>
@@ -91,9 +91,9 @@
   <string name="compress">Arhivaţi</string>
   <string name="yes">Da</string>
   <string name="no">Nu</string>
-  <string name="confirm">Confirmaţi</string>
+  <string name="dialog_delete_title">Confirmaţi</string>
   <string name="deleting">Ştergere</string>
-  <string name="questiondelete">Doriţi să ștergeți următoarele fișiere?</string>
+  <string name="dialog_delete_disclaimer">Doriţi să ștergeți următoarele fișiere?</string>
   <string name="questionset">Doriţi să setați calea actuală ca Dosar Acasă pentru această filă?</string>
   <string name="viewmode">Mod vizualizare</string>
   <string name="uimode">Mod UI</string>

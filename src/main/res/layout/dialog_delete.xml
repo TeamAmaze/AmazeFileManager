@@ -10,7 +10,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/questiondelete"
+        android:text="@string/dialog_delete_disclaimer"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="@dimen/dialog_list" >
     </TextView>
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
-        android:text="@string/title_dirs"
+        android:text="@string/dialog_delete_category_directories"
         android:textAllCaps="true"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/dialog_category"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
-        android:text="@string/title_files"
+        android:text="@string/dialog_delete_category_files"
         android:textAllCaps="true"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/dialog_category"

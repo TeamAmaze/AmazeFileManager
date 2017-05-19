@@ -96,9 +96,9 @@
     <string name="compress">நெருக்கி அழுத்திவை</string>
     <string name="yes">ஆம்</string>
     <string name="no">இல்லை</string>
-    <string name="confirm">உறுதி செய்தல்</string>
+    <string name="dialog_delete_title">உறுதி செய்தல்</string>
     <string name="deleting">அழிக்கிறது</string>
-    <string name="questiondelete">நீங்கள் பின்வரும் கோப்புகளை அழிக்க விரும்புகிறீர்களா?</string>
+    <string name="dialog_delete_disclaimer">நீங்கள் பின்வரும் கோப்புகளை அழிக்க விரும்புகிறீர்களா?</string>
     <string name="questionset">நீங்கள் இந்த தாவலுக்கு தற்போதைய பாதையை முகப்பாக அமைக்கவேண்டுமா?</string>
     <string name="viewmode">பார்வை முறை</string>
     <string name="uimode">இடைமுக முறை</string>

@@ -63,13 +63,13 @@
   <string name="totalitems">Skupno število elementov</string>
   <string name="copying">Kopiranje</string>
   <string name="add">Dodaj</string>
-  <string name="title_files">Datoteke</string>
+  <string name="dialog_delete_category_files">Datoteke</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
   <string name="extract">Razširi</string>
   <string name="yes">Da</string>
   <string name="no">Ne</string>
-  <string name="confirm">Potrdi</string>
+  <string name="dialog_delete_title">Potrdi</string>
   <string name="uimode">UI način</string>
   <string name="sortby">Razvrsti po</string>
   <string name="theme">Teme</string>

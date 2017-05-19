@@ -23,7 +23,7 @@
   <string name="save">Salvesta</string>
   <string name="size_capitalized">Suurus</string>
   <string name="share">Jaga</string>
-  <string name="confirm">Kinnitamine</string>
+  <string name="dialog_delete_title">Kinnitamine</string>
   <string name="home">Kodu</string>
   <string name="delete">Kustuta</string>
   <!-- New -->

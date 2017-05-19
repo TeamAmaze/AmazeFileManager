@@ -23,7 +23,7 @@
   <string name="save">រក្សាទុក</string>
   <string name="size_capitalized">ទំហំ</string>
   <string name="share">ចែក​រំលែក</string>
-  <string name="confirm">បញ្ជាក់</string>
+  <string name="dialog_delete_title">បញ្ជាក់</string>
   <string name="delete">លុប</string>
   <!-- New -->
   <!-- Array -->

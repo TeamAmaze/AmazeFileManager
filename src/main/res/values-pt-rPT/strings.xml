@@ -72,7 +72,7 @@
   <string name="tab">Separador</string>
   <string name="file">Ficheiro</string>
   <string name="folder">Pasta</string>
-  <string name="title_dirs">Diretórios</string>
+  <string name="dialog_delete_category_directories">Diretórios</string>
   <string name="newfolder">Nova pasta</string>
   <string name="entername">Digite o nome</string>
   <string name="extracting">A extrair</string>
@@ -92,9 +92,9 @@
   <string name="compress">Comprimir</string>
   <string name="yes">Sim</string>
   <string name="no">Não</string>
-  <string name="confirm">Confirmação</string>
+  <string name="dialog_delete_title">Confirmação</string>
   <string name="deleting">A apagar</string>
-  <string name="questiondelete">Deseja mesmo apagar estes ficheiros?</string>
+  <string name="dialog_delete_disclaimer">Deseja mesmo apagar estes ficheiros?</string>
   <string name="questionset">Deseja definir o caminho atual como padrão deste separador?</string>
   <string name="viewmode">Modo de visualização</string>
   <string name="uimode">Interface</string>

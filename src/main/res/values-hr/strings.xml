@@ -23,7 +23,7 @@
   <string name="save">Spremi</string>
   <string name="size_capitalized">Veličina</string>
   <string name="share">Podijeli</string>
-  <string name="confirm">Potvrdi</string>
+  <string name="dialog_delete_title">Potvrdi</string>
   <string name="delete">Izbriši</string>
   <!-- New -->
   <!-- Array -->

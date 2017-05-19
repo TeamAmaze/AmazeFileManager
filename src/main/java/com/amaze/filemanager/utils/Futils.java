@@ -724,7 +724,7 @@ public class Futils {
 
         // Build dialog with custom view layout and accent color.
         MaterialDialog dialog = new MaterialDialog.Builder(mainFragment.getActivity())
-                .title(mainFragment.getResources().getString(R.string.confirm))
+                .title(mainFragment.getResources().getString(R.string.dialog_delete_title))
                 .customView(R.layout.dialog_delete, true)
                 .theme(appTheme.getMaterialDialogTheme())
                 .negativeText(mainFragment.getResources().getString(R.string.cancel).toUpperCase())

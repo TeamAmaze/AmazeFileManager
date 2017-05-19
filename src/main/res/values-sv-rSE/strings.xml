@@ -96,9 +96,9 @@
     <string name="compress">Packa</string>
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
-    <string name="confirm">Bekräfta</string>
+    <string name="dialog_delete_title">Bekräfta</string>
     <string name="deleting">Tar bort</string>
-    <string name="questiondelete">Vill du verkligen ta bort dessa filer?</string>
+    <string name="dialog_delete_disclaimer">Vill du verkligen ta bort dessa filer?</string>
     <string name="questionset">Vill du ange sökvägen som hem för denna flik?</string>
     <string name="viewmode">Visningsläge</string>
     <string name="uimode">UI-läge</string>

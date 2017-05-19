@@ -66,8 +66,8 @@
   <string name="tab">Flik</string>
   <string name="file">Fil</string>
   <string name="folder">Mapp</string>
-  <string name="title_files">Filer</string>
-  <string name="title_dirs">Kataloger</string>
+  <string name="dialog_delete_category_files">Filer</string>
+  <string name="dialog_delete_category_directories">Kataloger</string>
   <string name="newfolder">Ny mapp</string>
   <string name="entername">Ange namn</string>
   <string name="extracting">Extraherar</string>
@@ -81,9 +81,9 @@
   <string name="compress">Komprimera</string>
   <string name="yes">Ja</string>
   <string name="no">Nej</string>
-  <string name="confirm">Bekräfta</string>
+  <string name="dialog_delete_title">Bekräfta</string>
   <string name="deleting">Tar bort</string>
-  <string name="questiondelete">Vill du verkligen ta bort följande filer?</string>
+  <string name="dialog_delete_disclaimer">Vill du verkligen ta bort följande filer?</string>
   <string name="viewmode">Visningsläge</string>
   <string name="uimode">UI-läge</string>
   <string name="sortby">Sortera på</string>

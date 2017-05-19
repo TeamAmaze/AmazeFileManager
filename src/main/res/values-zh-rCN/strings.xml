@@ -77,8 +77,8 @@
   <string name="tab">标签</string>
   <string name="file">文件</string>
   <string name="folder">文件夹</string>
-  <string name="title_files">文件</string>
-  <string name="title_dirs">目录</string>
+  <string name="dialog_delete_category_files">文件</string>
+  <string name="dialog_delete_category_directories">目录</string>
   <string name="newfolder">新文件夹</string>
   <string name="entername">请输入名称</string>
   <string name="extracting">正在解压</string>
@@ -98,9 +98,9 @@
   <string name="compress">压缩</string>
   <string name="yes">是</string>
   <string name="no">否</string>
-  <string name="confirm">确认</string>
+  <string name="dialog_delete_title">确认</string>
   <string name="deleting">正在删除</string>
-  <string name="questiondelete">您确定要删除这些文件吗？</string>
+  <string name="dialog_delete_disclaimer">您确定要删除这些文件吗？</string>
   <string name="questionset">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
   <string name="viewmode">视图模式</string>
   <string name="uimode">界面模式</string>
