@@ -51,6 +51,7 @@
   <string name="file_empty">Le fichier est vide</string>
   <string name="error">Erreur</string>
   <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
+  <string name="searchresults">Rechercher les résultats de </string>
   <string name="itemsselected">Éléments sélectionnés</string>
   <string name="newhomedirectory">Nouveau répertoire d\'accueil</string>
   <string name="rename">Renommer</string>
@@ -66,6 +67,7 @@
   <string name="date">Date: </string>
   <string name="location">Lieu</string>
   <string name="size_capitalized">Taille</string>
+  <string name="size">taille du dossier</string>
   <string name="totalitems">Total éléments: </string>
   <string name="enterzipname">Entrer le nom du ZIP</string>
   <string name="noappfound">Aucun applications trouvées pour ouvrir ce fichier</string>
@@ -199,6 +201,9 @@
   <string name="nofiles">Aucun fichier</string>
   <string name="tapnhold">Appuyer et maintenir sur un fichier ou dossier pour plus d\'options</string>
   <string name="pathcopied">Répertorie copié dans le presse-papier</string>
+  <string name="used">l\'espace utilisé</string>
+  <string name="used_by_others">utilisées par des tiers</string>
+  <string name="free">espace libre</string>
   <string name="atroot">Vous êtes à la racine</string>
   <string name="listview">Vue Liste</string>
   <string name="gridview">Vue Grille</string>
@@ -355,6 +360,7 @@
   <string name="clear">Supprimer</string>
   <string name="md5">md5 : </string>
   <string name="md5_2">Copier md5</string>
+  <string name="total">Total :</string>
   <string name="calculating"> calcul en-cours </string>
   <string name="sort">Trier</string>
   <string name="ascending">Croissant</string>
@@ -542,11 +548,13 @@
   <string name="cloud_dropbox">Dropbox</string>
   <string name="cloud_drive">Google Drive</string>
   <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Boîte</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">Adresse e-mail</string>
   <string name="cloud_email">ID e-mail</string>
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
+  <string name="ftp_path_hint">Chemin d’accès à la racine du répertoire à partager</string>
   <string name="change">Modifier</string>
   <string name="unknown_error">Oups, une erreur c\'est produite!</string>
   <string name="ftp_path_change_error_invalid">Chemin invalide</string>
@@ -565,6 +573,8 @@
   <string name="properties_copied_clipboard">copié dans le presse-papier</string>
   <string name="contributors_1_summary">Traduction</string>
   <string name="contributors_2_summary">Icône et bannières</string>
+  <string name="contributors_3_summary">Moteur de thème</string>
+  <string name="contributors_4_summary">Ombre derrière FAB</string>
   <string name="contributors_6_summary">Serveur FTP</string>
   <string name="connection_exists">Connexion déjà existante</string>
   <string name="crypt_encrypting">Chiffrement</string>
@@ -576,10 +586,13 @@
   <string name="crypt_decrypt">Déchiffrer</string>
   <string name="operation_fail_following">L\'opération a échoué pour les fichiers suivants</string>
   <string name="crypt_pref_master_password_title">Mot de passe principal</string>
+  <string name="crypt_pref_master_password_summary">Définir un mot de passe principal pour le chiffrement.         Laissez vide pour supprimer.</string>
   <string name="crypt_pref_fingerprint_title">Empreinte digitale</string>
   <string name="crypt_pref_fingerprint_summary">Utiliser l\'empreinte digitale pour authentifier le chiffrement</string>
+  <string name="crypt_fingerprint_no_permission">Autorisations d’empreintes digitales manquantes</string>
   <string name="crypt_fingerprint_not_enrolled">Aucune empreinte digitale inscrite</string>
   <string name="crypt_fingerprint_no_security">Aucune sécurité de l\'écran de verrouillage trouvée</string>
+  <string name="crypt_warning_key">Sachez, lorsque vous modifiez votre modèle de sécurité du panneau de configuration, vous ne serez pas en mesure de déchiffrer ce contenu.</string>
   <string name="warning_never_show">Ne plus afficher</string>
   <string name="warning_confirm">Ok !</string>
   <string name="crypt_encryption_fail">Échec du chiffrement</string>
@@ -588,15 +601,22 @@
   <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
   <string name="bytes">Octets</string>
+  <string name="sidebarfolders_title">Raccourcis de la barre latérale</string>
   <string name="showfolders_pref_title">Afficher les raccourcis</string>
   <string name="showfolders_pref">Raccourcis</string>
+  <string name="showquickaccess_pref_title">Afficher l\'accès rapide</string>
   <string name="showquickaccess_pref">Accès rapide</string>
   <string name="create_shortcut">Créer un raccourci</string>
   <string name="edit_shortcut">Modifier le raccourci</string>
   <string name="directory">Répertoires</string>
   <string name="questiondelete_shortcut">Supprimer le raccourci?</string>
   <string name="cloud_error_new_account">Impossible d\'ajouter un nouveau compte</string>
+  <string name="cloud_error_failed_restart">Échec de chargement de la connexion.         S’il vous plaît ouvrez Amaze Cloud une fois.</string>
   <string name="cloud_remove">Voulez-vous supprimer la connexion Cloud ?</string>
   <string name="cloud_fail_authenticate">Échec de l\'authentification</string>
+  <string name="cloud_share_copied">Lien partageable copiée dans le presse-papiers</string>
   <string name="copy_low_memory">Mémoire insuffisant, Veuillez libérer de la RAM</string>
+  <string name="cloud_token_lost">Identification perdu, s’il vous plaît connectez-vous à nouveau</string>
+  <string name="cloud_plugin_not_supported">Cloud plug-in n’est pas pris en charge pour Fdroid build.         S’il vous plaît télécharger Amaze sur Play Store.</string>
+  <string name="showHeaders">Afficher les en-têtes</string>
 </resources>
