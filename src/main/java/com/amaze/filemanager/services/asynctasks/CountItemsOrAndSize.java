@@ -13,13 +13,13 @@ import com.amaze.filemanager.filesystem.BaseFile;
  *         on 12/5/2017, at 19:40.
  */
 
-public class CountFolderItems extends AsyncTask<Void, Void, String> {
+public class CountItemsOrAndSize extends AsyncTask<Void, Void, String> {
 
     private Context context;
     private TextView itemsText;
     private BaseFile file;
 
-    public CountFolderItems(Context c, TextView itemsText, BaseFile f) {
+    public CountItemsOrAndSize(Context c, TextView itemsText, BaseFile f) {
         this.context = c;
         this.itemsText = itemsText;
         file = f;
@@ -27,14 +27,17 @@ public class CountFolderItems extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void[] params) {
-        String items;
+        String items = "";
+        long fileLength = file.length(context);
 
         if (file.isDirectory(context)) {
             int x = file.listFiles(context, false).size();
-            items = x + " " + context.getResources().getString(x == 0 ? R.string.item : R.string.items);
+            items = x + " " + context.getResources().getQuantityString(R.plurals.items, x) + "; "
+                    + Formatter.formatFileSize(context, fileLength);
         } else {
-            items = Formatter.formatFileSize(context, file.length(context)) + (" (" + file.length(context) + " "
-                    + context.getResources().getString(R.string.bytes).toLowerCase() + ")");
+            items = Formatter.formatFileSize(context, fileLength) + (" (" + fileLength + " "
+                    + context.getResources().getQuantityString(R.plurals.bytes, (int) fileLength) //truncation is insignificant
+                    + ")");
         }
 
         return items;

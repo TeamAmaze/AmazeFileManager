@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="items">
+        <item quantity="zero">No items</item>
+        <item quantity="one">item</item>
+        <item quantity="other">items</item>
+    </plurals>
+    <plurals name="bytes">
+        <item quantity="one">byte</item>
+        <item quantity="other">bytes</item>
+    </plurals>
+</resources>
