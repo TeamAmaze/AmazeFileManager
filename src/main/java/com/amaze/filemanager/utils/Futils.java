@@ -686,8 +686,8 @@ public class Futils {
         int counterFiles = 0;
         long sizeTotal = 0;
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
-        StringBuilder builderDirectories = new StringBuilder();
-        StringBuilder builderFiles = new StringBuilder();
+        StringBuilder directories = new StringBuilder();
+        StringBuilder files = new StringBuilder();
 
         // Parse items to delete.
         for (int i = 0; i < positions.size(); i++) {
@@ -698,10 +698,10 @@ public class Futils {
             if (layoutElement.isDirectory()) {
                 // Don't add newline between title and list.
                 if (counterDirectories != 0) {
-                    builderDirectories.append("\n");
+                    directories.append("\n");
                 }
 
-                builderDirectories.append(++counterDirectories)
+                directories.append(++counterDirectories)
                         .append(". ")
                         .append(layoutElement.getTitle());
                 // TODO: Get directory size.
@@ -709,10 +709,10 @@ public class Futils {
             } else {
                 // Don't add newline between title and list.
                 if (counterFiles != 0) {
-                    builderFiles.append("\n");
+                    files.append("\n");
                 }
 
-                builderFiles.append(++counterFiles)
+                files.append(++counterFiles)
                         .append(". ")
                         .append(layoutElement.getTitle())
                         .append(" (")
@@ -761,32 +761,32 @@ public class Futils {
             // Remove list number when only one file.
             if (counterFiles == 1) {
                 final LayoutElement layoutElement = layoutElements.get(positions.get(0));
-                builderFiles = new StringBuilder()
+                files = new StringBuilder()
                         .append(layoutElement.getTitle())
                         .append(" (")
                         .append(layoutElement.getSize())
                         .append(")");
             }
 
-            listFiles.setText(builderFiles);
+            listFiles.setText(files);
         // Hide category and list for files when zero.
         } else if (counterFiles == 0) {
             // Remove list number when only one directory.
             if (counterDirectories == 1) {
                 final LayoutElement layoutElement = layoutElements.get(positions.get(0));
-                builderDirectories = new StringBuilder()
+                directories = new StringBuilder()
                         .append(layoutElement.getTitle());
                 // TODO: Get directory size.
             }
 
-            listDirectories.setText(builderDirectories);
+            listDirectories.setText(directories);
 
             categoryFiles.setVisibility(View.GONE);
             listFiles.setVisibility(View.GONE);
         // Show category and list for directories and files when not zero.
         } else {
-            listDirectories.setText(builderDirectories);
-            listFiles.setText(builderFiles);
+            listDirectories.setText(directories);
+            listFiles.setText(files);
         }
 
         // Show total size with at least one directory or file and size is not zero.
