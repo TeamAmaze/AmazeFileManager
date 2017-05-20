@@ -66,6 +66,7 @@
   <string name="date">Дата</string>
   <string name="location">Расположение</string>
   <string name="size_capitalized">Размер</string>
+  <string name="size">размер папки</string>
   <string name="totalitems">Всего элементов</string>
   <string name="enterzipname">Введите имя zip-архива</string>
   <string name="noappfound">Нет приложений для открытия этого файла</string>
@@ -198,6 +199,8 @@
   <string name="nofiles">Нет файлов</string>
   <string name="tapnhold">Нажмите и удерживайте файл или папку для больше вариантов</string>
   <string name="pathcopied">Путь скопирован в буфер обмена</string>
+  <string name="used">используемое пространство</string>
+  <string name="free">свободное пространство</string>
   <string name="atroot">Вы находитесь в корне</string>
   <string name="listview">Список</string>
   <string name="gridview">Сетка</string>
@@ -354,6 +357,7 @@
   <string name="clear">Очистить</string>
   <string name="md5">md5:</string>
   <string name="md5_2">Скопировать md5</string>
+  <string name="total">Итого:</string>
   <string name="calculating">вычисление</string>
   <string name="sort">Сортировка</string>
   <string name="ascending">По возрастанию</string>
@@ -605,8 +609,11 @@
   <string name="crypt_fingerprint_authenticate">Коснитесь сенсора для продолжения</string>
   <string name="authenticate_password">Введите пароль</string>
   <string name="bytes">Байты</string>
+  <string name="sidebarfolders_title">Быстрые клавиши на боковой панели</string>
+  <string name="sidebarquickaccess_title">Боковая панель быстрого доступа</string>
   <string name="showfolders_pref_title">Показать ярлыки</string>
   <string name="showfolders_pref">Ярлыки</string>
+  <string name="showquickaccess_pref_title">Показать быстрый доступ</string>
   <string name="showquickaccess_pref">Быстрый доступ</string>
   <string name="create_shortcut">Создать ярлык</string>
   <string name="edit_shortcut">Редактировать ярлык</string>

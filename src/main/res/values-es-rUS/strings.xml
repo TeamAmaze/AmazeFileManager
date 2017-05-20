@@ -51,6 +51,7 @@
   <string name="file_empty">El fichero está vacío</string>
   <string name="error">Error</string>
   <string name="cantlistfiles">No se puede enumerar los archivos sin root</string>
+  <string name="searchresults">Resultados de búsqueda </string>
   <string name="itemsselected">Elementos seleccionados</string>
   <string name="newhomedirectory">Nuevo directorio principal</string>
   <string name="rename">Renombrar</string>
@@ -200,6 +201,8 @@
   <string name="nofiles">No hay archivos</string>
   <string name="tapnhold">Mantenga pulsado un archivo o carpeta para más opciones</string>
   <string name="pathcopied">Ruta copiada al portapapeles</string>
+  <string name="used">espacio utilizado</string>
+  <string name="used_by_others">utilizado por otros</string>
   <string name="free">espacio libre</string>
   <string name="atroot">Estás en la raíz</string>
   <string name="listview">Vista de lista</string>
