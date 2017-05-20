@@ -25,8 +25,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 
 import java.util.Calendar;
 
@@ -100,7 +100,7 @@ public class LayoutElement implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = Futils.getDate(this.date, CURRENT_YEAR);
+            this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
         }
     }
 

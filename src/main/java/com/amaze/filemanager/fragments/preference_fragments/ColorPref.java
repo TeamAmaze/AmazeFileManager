@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.CheckBox;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
@@ -149,7 +150,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         @ColorInt
         private int getColor(@ColorRes int colorRes) {
-            return getResources().getColor(colorRes);
+            return Utils.getColor(getContext(), colorRes);
         }
 
         @ColorRes

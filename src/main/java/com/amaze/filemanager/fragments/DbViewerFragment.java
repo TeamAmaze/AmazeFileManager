@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.services.asynctasks.DbViewerTask;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -52,8 +53,8 @@ public class DbViewerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (dbViewer.getAppTheme().equals(AppTheme.DARK)) {
-            relativeLayout.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
-            webView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            relativeLayout.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+            webView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
         } else {
             relativeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
             webView.setBackgroundColor(Color.parseColor("#ffffff"));
