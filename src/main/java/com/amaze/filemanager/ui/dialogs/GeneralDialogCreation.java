@@ -162,7 +162,7 @@ public class GeneralDialogCreation {
                 directories.append(++counterDirectories)
                         .append(". ")
                         .append(layoutElement.getTitle());
-                // TODO: Get directory size.
+                sizeTotal += layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
             // Build list of files to delete.
             } else {
                 // Don't add newline between title and list.
@@ -233,7 +233,6 @@ public class GeneralDialogCreation {
             if (counterDirectories == 1) {
                 final LayoutElement layoutElement = layoutElements.get(positions.get(0));
                 directories = new StringBuilder().append(layoutElement.getTitle());
-                // TODO: Get directory size.
             }
 
             listDirectories.setText(directories);
