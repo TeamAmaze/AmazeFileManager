@@ -159,10 +159,15 @@ public class GeneralDialogCreation {
                     directories.append("\n");
                 }
 
+                long sizeDirectory = layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
+
                 directories.append(++counterDirectories)
                         .append(". ")
-                        .append(layoutElement.getTitle());
-                sizeTotal += layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
+                        .append(layoutElement.getTitle())
+                        .append(" (")
+                        .append(Formatter.formatFileSize(mainFragment.getContext(), sizeDirectory))
+                        .append(")");
+                sizeTotal += sizeDirectory;
             // Build list of files to delete.
             } else {
                 // Don't add newline between title and list.
@@ -232,7 +237,14 @@ public class GeneralDialogCreation {
             // Remove list number when only one directory.
             if (counterDirectories == 1) {
                 final LayoutElement layoutElement = layoutElements.get(positions.get(0));
-                directories = new StringBuilder().append(layoutElement.getTitle());
+                directories = new StringBuilder()
+                        .append(layoutElement.getTitle())
+                        .append(" (")
+                        .append(Formatter.formatFileSize(
+                                mainFragment.getContext(),
+                                layoutElement.generateBaseFile().folderSize(mainFragment.getContext()))
+                        )
+                        .append(")");
             }
 
             listDirectories.setText(directories);
