@@ -154,7 +154,7 @@ public class GeneralDialogCreation {
 
             // Build list of directories to delete.
             if (layoutElement.isDirectory()) {
-                // Don't add newline between title and list.
+                // Don't add newline between category and list.
                 if (counterDirectories != 0) {
                     directories.append("\n");
                 }
@@ -170,7 +170,7 @@ public class GeneralDialogCreation {
                 sizeTotal += sizeDirectory;
             // Build list of files to delete.
             } else {
-                // Don't add newline between title and list.
+                // Don't add newline between category and list.
                 if (counterFiles != 0) {
                     files.append("\n");
                 }
