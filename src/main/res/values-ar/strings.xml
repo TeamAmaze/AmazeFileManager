@@ -19,6 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="app_name">Amaze</string>
   <string name="drawer_open">فتح نافذة التنقل</string>
   <string name="drawer_close">إغلاق نافذة التنقل</string>
   <string name="books">الملفضلات</string>
@@ -70,6 +71,7 @@
   <string name="tab">الضغط</string>
   <string name="file">ملف</string>
   <string name="folder">مجلد</string>
+  <string name="title_files">الملفات</string>
   <string name="newfolder">مجلد جديد</string>
   <string name="entername">ادخل الإسم</string>
   <string name="extracting">جاري الإستخراج</string>
@@ -270,8 +272,12 @@
   <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
   <string name="color_title">اللون</string>
   <string name="none">لا شيء</string>
+  <string name="files">الملفات</string>
   <string name="password">كلمة المرور</string>
+  <string name="images">الصّور</string>
   <string name="defualt">الإفتراضي</string>
+  <string name="recent">الملفات الأخيرة</string>
+  <string name="edit">تعديل</string>
   <string name="path">المسار</string>
   <string name="cut">قص</string>
   <string name="search">بحث</string>
@@ -291,6 +297,7 @@
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="tap_and_hold_tips">اضغط مطولًا على الملف أو المجلد لإظهار المزيد من الخيارات</string>
+  <string name="permission_read">اقرأ</string>
   <string name="permission_other">آخرى</string>
   <string name="clipboard_path_copy">تم نسخ المسار إلى الحافظة</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
