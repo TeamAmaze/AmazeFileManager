@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -47,8 +46,6 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.utils.AppConfig;
-import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Futils;
@@ -58,7 +55,6 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -128,21 +124,6 @@ public class CopyService extends Service {
         return START_STICKY;
     }
 
-    /**
-     * Helper method to calculate source files size
-     * @param files
-     * @param context
-     * @return
-     */
-    long getTotalBytes(ArrayList<BaseFile> files, Context context) {
-        long totalBytes = 0;
-        for (BaseFile file : files) {
-            if (file.isDirectory()) totalBytes += file.folderSize(context);
-            else totalBytes += file.length(context);
-        }
-        return totalBytes;
-    }
-
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
     }
@@ -161,7 +142,7 @@ public class CopyService extends Service {
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalSize = getTotalBytes(sourceFiles, c);
+            totalSize = Futils.getTotalBytes(sourceFiles, c);
             totalSourceFiles = sourceFiles.size();
             progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 

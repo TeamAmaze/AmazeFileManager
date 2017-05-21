@@ -39,6 +39,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.GenericCopyUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -116,18 +117,6 @@ public class ZipTask extends Service {
         return START_STICKY;
     }
 
-    private long getTotalBytes(ArrayList<BaseFile> baseFiles, Context context) {
-        long totalBytes = 0L;
-        for (BaseFile f1 : baseFiles) {
-            if (f1.isDirectory(context)) {
-                totalBytes += f1.folderSize(context);
-            } else {
-                totalBytes += f1.length(context);
-            }
-        }
-        return totalBytes;
-    }
-
     public class LocalBinder extends Binder {
         public ZipTask getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -169,7 +158,7 @@ public class ZipTask extends Service {
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalBytes = getTotalBytes(baseFiles, c);
+            totalBytes = Futils.getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
             progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
                 @Override

@@ -135,18 +135,28 @@ public class Futils {
 
     /**
      * Helper method to get size of an otg folder
-     * @param path
-     * @param context
-     * @return
      */
     public static long folderSize(String path, Context context) {
-        long length = 0L;
-        for (BaseFile baseFile : OTGUtil.getDocumentFilesList(path, context)) {
-            if (baseFile.isDirectory()) length += folderSize(baseFile.getPath(), context);
-            else length += baseFile.length();
+        return getTotalBytes(OTGUtil.getDocumentFilesList(path, context), context);
+    }
 
+    /**
+     * Helper method to calculate source files size
+     */
+    public static long getTotalBytes(ArrayList<BaseFile> files, Context context) {
+        long totalBytes = 0L;
+        for (BaseFile file : files) {
+            totalBytes += getBaseFileSize(file, context);
         }
-        return length;
+        return totalBytes;
+    }
+
+    private static long getBaseFileSize(BaseFile baseFile, Context context) {
+        if (baseFile.isDirectory(context)) {
+            return baseFile.folderSize(context);
+        } else {
+            return baseFile.length(context);
+        }
     }
 
     public static void scanFile(String path, Context c) {
