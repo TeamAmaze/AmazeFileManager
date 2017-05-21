@@ -186,8 +186,6 @@
   <string name="copying_fles">파일을 복사하는 중입니다</string>
   <string name="done">완료되었습니다</string>
   <string name="Extracting_fles">파일의 압축을 해제하는 중입니다</string>
-  <string name="items">항목</string>
-  <string name="item">아이템</string>
   <string name="set">설정</string>
   <string name="enablerootmde">루트 모드 활성화</string>
   <string name="goback">뒤로가기</string>
