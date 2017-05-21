@@ -149,6 +149,22 @@ public class Futils {
         return length;
     }
 
+    /**
+     * Helper method to calculate source files size
+     */
+    public static long getTotalBytes(ArrayList<BaseFile> files, Context context) {
+        long totalBytes = 0L;
+        for (BaseFile f1 : files) {
+            if (f1.isDirectory(context)) {
+                totalBytes += f1.folderSize(context);
+            } else {
+                totalBytes += f1.length(context);
+            }
+        }
+        return totalBytes;
+    }
+
+
     public static void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= 19) {
