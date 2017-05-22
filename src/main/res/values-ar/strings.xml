@@ -89,9 +89,9 @@
   <string name="compress">ضغط</string>
   <string name="yes">نعم</string>
   <string name="no">لا</string>
-  <string name="confirm">تأكيد</string>
+  <string name="dialog_delete_title">تأكيد</string>
   <string name="deleting">جاري الحذف</string>
-  <string name="questiondelete">هل تريد حقًا حذف الملفات التالية ؟</string>
+  <string name="dialog_delete_disclaimer">هل تريد حقًا حذف الملفات التالية ؟</string>
   <string name="viewmode">نمط العرض</string>
   <string name="uimode">نمط واجهة المستخدم</string>
   <string name="sortby">ترتيب حسب</string>

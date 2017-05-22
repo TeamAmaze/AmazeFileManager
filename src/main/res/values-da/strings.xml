@@ -30,7 +30,7 @@
   <string name="about">Om</string>
   <string name="yes">Ja</string>
   <string name="no">Nej</string>
-  <string name="confirm">Bekræft</string>
+  <string name="dialog_delete_title">Bekræft</string>
   <string name="home">Hjemme</string>
   <string name="close">Luk</string>
   <string name="history">Historik</string>

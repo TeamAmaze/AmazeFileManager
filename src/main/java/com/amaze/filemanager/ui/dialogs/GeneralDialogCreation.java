@@ -138,93 +138,138 @@ public class GeneralDialogCreation {
         return dialog;
     }
 
-    public static void deleteFilesDialog(ArrayList<LayoutElement> a, final MainFragment b, List<Integer> pos, AppTheme appTheme) {
-        final MaterialDialog.Builder c = new MaterialDialog.Builder(b.getActivity());
-        c.title(b.getResources().getString(R.string.confirm));
+    @SuppressWarnings("ConstantConditions")
+    public static void deleteFilesDialog(ArrayList<LayoutElement> layoutElements, final MainFragment mainFragment, List<Integer> positions, AppTheme appTheme) {
+        int counterDirectories = 0;
+        int counterFiles = 0;
+        long sizeTotal = 0;
+        final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
+        StringBuilder directories = new StringBuilder();
+        StringBuilder files = new StringBuilder();
 
-        int fileCounter = 0, dirCounter = 0;
-        long longSizeTotal = 0;
-        final ArrayList<BaseFile> todelete = new ArrayList<>();
-        StringBuilder dirNames = new StringBuilder();
-        StringBuilder fileNames = new StringBuilder();
-        for (int i = 0; i < pos.size(); i++) {
-            final LayoutElement elem = a.get(pos.get(i));
-            todelete.add(elem.generateBaseFile());
-            if (elem.isDirectory()) {
-                dirNames.append("\n")
-                        .append(++dirCounter)
+        // Parse items to delete.
+        for (int i = 0; i < positions.size(); i++) {
+            final LayoutElement layoutElement = layoutElements.get(positions.get(i));
+            itemsToDelete.add(layoutElement.generateBaseFile());
+
+            // Build list of directories to delete.
+            if (layoutElement.isDirectory()) {
+                // Don't add newline between category and list.
+                if (counterDirectories != 0) {
+                    directories.append("\n");
+                }
+
+                long sizeDirectory = layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
+
+                directories.append(++counterDirectories)
                         .append(". ")
-                        .append(elem.getTitle());
-                // TODO: Get folder size ?
-            } else {
-                fileNames.append("\n")
-                        .append(++fileCounter)
-                        .append(". ")
-                        .append(elem.getTitle())
+                        .append(layoutElement.getTitle())
                         .append(" (")
-                        .append(elem.getSize())
+                        .append(Formatter.formatFileSize(mainFragment.getContext(), sizeDirectory))
                         .append(")");
-                longSizeTotal += elem.getlongSize();
+                sizeTotal += sizeDirectory;
+            // Build list of files to delete.
+            } else {
+                // Don't add newline between category and list.
+                if (counterFiles != 0) {
+                    files.append("\n");
+                }
+
+                files.append(++counterFiles)
+                        .append(". ")
+                        .append(layoutElement.getTitle())
+                        .append(" (")
+                        .append(layoutElement.getSize())
+                        .append(")");
+                sizeTotal += layoutElement.getlongSize();
             }
         }
 
-        String titleFiles = b.getResources().getString(R.string.title_files).toUpperCase();
-        String titleDirs = b.getResources().getString(R.string.title_dirs).toUpperCase();
+        // Build dialog with custom view layout and accent color.
+        MaterialDialog dialog = new MaterialDialog.Builder(mainFragment.getActivity())
+                .title(mainFragment.getResources().getString(R.string.dialog_delete_title))
+                .customView(R.layout.dialog_delete, true)
+                .theme(appTheme.getMaterialDialogTheme())
+                .negativeText(mainFragment.getResources().getString(R.string.cancel).toUpperCase())
+                .positiveText(mainFragment.getResources().getString(R.string.delete).toUpperCase())
+                .positiveColor(Color.parseColor(mainFragment.fabSkin))
+                .negativeColor(Color.parseColor(mainFragment.fabSkin))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+                        mainFragment.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(itemsToDelete);
+                    }
+                })
+                .build();
 
-        StringBuilder message = new StringBuilder();
-        message.append(b.getResources().getString(R.string.questiondelete))
-                .append("\n\n");
-        if (dirCounter == 0 && fileCounter == 1) {
-            final LayoutElement elem = a.get(pos.get(0));
-            message.append(elem.getTitle())
-                    .append(" (")
-                    .append(elem.getSize())
-                    .append(")");
-        } else if (fileCounter == 0) {
-            message.append(titleDirs)
-                    .append(":")
-                    .append(dirNames);
-        } else if(dirCounter == 0) {
-            message.append(titleFiles)
-                    .append(":")
-                    .append(fileNames);
+        // Get views from custom layout to set text values.
+        TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
+        TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
+        TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
+        TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
+        TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+
+        // Set category text color for Jelly Bean (API 16) and later.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            categoryDirectories.setTextColor(Color.parseColor(mainFragment.fabSkin));
+            categoryFiles.setTextColor(Color.parseColor(mainFragment.fabSkin));
+        }
+
+        // Hide category and list for directories when zero.
+        if (counterDirectories == 0) {
+            categoryDirectories.setVisibility(View.GONE);
+            listDirectories.setVisibility(View.GONE);
+
+            // Remove list number when only one file.
+            if (counterFiles == 1) {
+                final LayoutElement layoutElement = layoutElements.get(positions.get(0));
+                files = new StringBuilder()
+                        .append(layoutElement.getTitle())
+                        .append(" (")
+                        .append(layoutElement.getSize())
+                        .append(")");
+            }
+
+            listFiles.setText(files);
+        // Hide category and list for files when zero.
+        } else if (counterFiles == 0) {
+            // Remove list number when only one directory.
+            if (counterDirectories == 1) {
+                final LayoutElement layoutElement = layoutElements.get(positions.get(0));
+                directories = new StringBuilder()
+                        .append(layoutElement.getTitle())
+                        .append(" (")
+                        .append(Formatter.formatFileSize(
+                                mainFragment.getContext(),
+                                layoutElement.generateBaseFile().folderSize(mainFragment.getContext()))
+                        )
+                        .append(")");
+            }
+
+            listDirectories.setText(directories);
+
+            categoryFiles.setVisibility(View.GONE);
+            listFiles.setVisibility(View.GONE);
+        // Show category and list for directories and files when not zero.
         } else {
-            message.append(titleDirs)
-                    .append(":")
-                    .append(dirNames)
-                    .append("\n\n")
-                    .append(titleFiles)
-                    .append(":")
-                    .append(fileNames);
+            listDirectories.setText(directories);
+            listFiles.setText(files);
         }
 
-        if (fileCounter + dirCounter > 1 && longSizeTotal > 0) {
-            message.append("\n\n")
-                    .append(b.getResources().getString(R.string.total))
+        // Show total size with at least one directory or file and size is not zero.
+        if (counterFiles + counterDirectories > 1 && sizeTotal > 0) {
+            StringBuilder builderTotal = new StringBuilder()
+                    .append(mainFragment.getResources().getString(R.string.total))
                     .append(" ")
-                    .append(Formatter.formatFileSize(b.getContext(), longSizeTotal));
+                    .append(Formatter.formatFileSize(mainFragment.getContext(), sizeTotal));
+            total.setText(builderTotal);
+        } else {
+            total.setVisibility(View.GONE);
         }
 
-        c.content(message.toString());
-        c.theme(appTheme.getMaterialDialogTheme());
-        c.negativeText(b.getResources().getString(R.string.cancel).toUpperCase());
-        c.positiveText(b.getResources().getString(R.string.delete).toUpperCase());
-        c.positiveColor(Color.parseColor(b.fabSkin));
-        c.negativeColor(Color.parseColor(b.fabSkin));
-        c.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                Toast.makeText(b.getActivity(), b.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
-                b.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(todelete);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-                //materialDialog.cancel();
-            }
-        });
-        c.build().show();
+        // Show dialog on screen.
+        dialog.show();
     }
 
     public static void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,

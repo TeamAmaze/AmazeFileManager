@@ -77,8 +77,8 @@
   <string name="tab">標籤</string>
   <string name="file">檔案</string>
   <string name="folder">資料夾</string>
-  <string name="title_files">檔案</string>
-  <string name="title_dirs">目錄</string>
+  <string name="dialog_delete_category_files">檔案</string>
+  <string name="dialog_delete_category_directories">目錄</string>
   <string name="newfolder">新資料夾</string>
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓</string>
@@ -98,9 +98,9 @@
   <string name="compress">壓縮</string>
   <string name="yes">是</string>
   <string name="no">否</string>
-  <string name="confirm">確認</string>
+  <string name="dialog_delete_title">確認</string>
   <string name="deleting">正在刪除</string>
-  <string name="questiondelete">確定要刪除以下檔案嗎？</string>
+  <string name="dialog_delete_disclaimer">確定要刪除以下檔案嗎？</string>
   <string name="questionset">您要將此頁籤的目前路徑設為首頁嗎？</string>
   <string name="viewmode">視圖模式</string>
   <string name="uimode">介面模式</string>

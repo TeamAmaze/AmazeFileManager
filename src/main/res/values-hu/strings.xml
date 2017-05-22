@@ -75,8 +75,8 @@
   <string name="tab">Lap</string>
   <string name="file">Fájl</string>
   <string name="folder">Mappa</string>
-  <string name="title_files">Fájlok</string>
-  <string name="title_dirs">Könyvtárak</string>
+  <string name="dialog_delete_category_files">Fájlok</string>
+  <string name="dialog_delete_category_directories">Könyvtárak</string>
   <string name="newfolder">Új mappa</string>
   <string name="entername">Adja meg a nevet</string>
   <string name="extracting">Kicsomagolás</string>
@@ -96,9 +96,9 @@
   <string name="compress">Tömörítés</string>
   <string name="yes">Igen</string>
   <string name="no">Nem</string>
-  <string name="confirm">Megerősítés</string>
+  <string name="dialog_delete_title">Megerősítés</string>
   <string name="deleting">Törlés</string>
-  <string name="questiondelete">Valóban törölni szeretné a következő fájlokat?</string>
+  <string name="dialog_delete_disclaimer">Valóban törölni szeretné a következő fájlokat?</string>
   <string name="questionset">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
   <string name="viewmode">Megjelenítési mód</string>
   <string name="uimode">Kezelőfelület mód</string>

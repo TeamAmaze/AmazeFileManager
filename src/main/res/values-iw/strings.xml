@@ -28,7 +28,7 @@
   <string name="about">אודות</string>
   <string name="yes">כן</string>
   <string name="no">לא</string>
-  <string name="confirm">אשר</string>
+  <string name="dialog_delete_title">אשר</string>
   <string name="home">בית</string>
   <string name="close">סגור</string>
   <string name="history">היסטוריה</string>

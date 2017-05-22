@@ -24,7 +24,7 @@
   <string name="about">About</string>
   <string name="yes">হ্যাঁ</string>
   <string name="no">না</string>
-  <string name="confirm">নিশ্চিত করুন</string>
+  <string name="dialog_delete_title">নিশ্চিত করুন</string>
   <string name="history">ইতিহাস</string>
   <string name="refresh">রিফ্রেশ</string>
   <!-- New -->

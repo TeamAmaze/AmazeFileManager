@@ -75,8 +75,8 @@
   <string name="tab">Välilehti</string>
   <string name="file">Tiedosto</string>
   <string name="folder">Kansio</string>
-  <string name="title_files">Tiedostot</string>
-  <string name="title_dirs">Hakemistot</string>
+  <string name="dialog_delete_category_files">Tiedostot</string>
+  <string name="dialog_delete_category_directories">Hakemistot</string>
   <string name="newfolder">Uusi kansio</string>
   <string name="entername">Anna nimi</string>
   <string name="extracting">Puretaan</string>
@@ -96,9 +96,9 @@
   <string name="compress">Pakkaa</string>
   <string name="yes">Kyllä</string>
   <string name="no">Ei</string>
-  <string name="confirm">Vahvista</string>
+  <string name="dialog_delete_title">Vahvista</string>
   <string name="deleting">Poistetaan</string>
-  <string name="questiondelete">Haluatko varmasti poistaa nämä tiedostot?</string>
+  <string name="dialog_delete_disclaimer">Haluatko varmasti poistaa nämä tiedostot?</string>
   <string name="questionset">Haluatko asettaa nykyisen polun kodiksi tässä välilehdessä?</string>
   <string name="viewmode">Näyttötila</string>
   <string name="uimode">Käyttöliittymätila</string>

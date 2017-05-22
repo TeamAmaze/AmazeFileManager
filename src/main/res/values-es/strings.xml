@@ -75,8 +75,8 @@
   <string name="tab">Pestaña</string>
   <string name="file">Archivo</string>
   <string name="folder">Carpeta</string>
-  <string name="title_files">Archivos</string>
-  <string name="title_dirs">Directorios</string>
+  <string name="dialog_delete_category_files">Archivos</string>
+  <string name="dialog_delete_category_directories">Directorios</string>
   <string name="newfolder">Nueva Carpeta</string>
   <string name="entername">Introducir nombre</string>
   <string name="extracting">Extrayendo</string>
@@ -96,9 +96,9 @@
   <string name="compress">Comprimir</string>
   <string name="yes">Sí</string>
   <string name="no">no</string>
-  <string name="confirm">Confirmar</string>
+  <string name="dialog_delete_title">Confirmar</string>
   <string name="deleting">Eliminando</string>
-  <string name="questiondelete">¿De verdad quiere eliminar los siguientes archivos?</string>
+  <string name="dialog_delete_disclaimer">¿De verdad quiere eliminar los siguientes archivos?</string>
   <string name="questionset">¿Quieres establecer la ruta actual como base para esta pestaña?</string>
   <string name="viewmode">Modo de visualización</string>
   <string name="uimode">Modo de UI</string>

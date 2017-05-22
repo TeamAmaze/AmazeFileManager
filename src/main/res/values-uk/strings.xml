@@ -75,8 +75,8 @@
   <string name="tab">Вкладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тека</string>
-  <string name="title_files">Файли</string>
-  <string name="title_dirs">Папки</string>
+  <string name="dialog_delete_category_files">Файли</string>
+  <string name="dialog_delete_category_directories">Папки</string>
   <string name="newfolder">Нова тека</string>
   <string name="entername">Введіть ім\'я</string>
   <string name="extracting">Розпаковування...</string>
@@ -96,9 +96,9 @@
   <string name="compress">Архівувати</string>
   <string name="yes">Так</string>
   <string name="no">Немає</string>
-  <string name="confirm">Підтвердіть</string>
+  <string name="dialog_delete_title">Підтвердіть</string>
   <string name="deleting">Видалення...</string>
-  <string name="questiondelete">Ви впевнені, що хочете вилучити вибрані файли?</string>
+  <string name="dialog_delete_disclaimer">Ви впевнені, що хочете вилучити вибрані файли?</string>
   <string name="questionset">Бажаєте встановити поточний шлях як домашній для цієї вкладки?</string>
   <string name="viewmode">Режим перегляду</string>
   <string name="uimode">Режим інтерфейсу</string>

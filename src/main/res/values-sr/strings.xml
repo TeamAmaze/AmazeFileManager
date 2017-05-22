@@ -74,7 +74,7 @@
   <string name="tab">Језичак</string>
   <string name="file">Фајл</string>
   <string name="folder">Фасцикла</string>
-  <string name="title_dirs">Фасцикле</string>
+  <string name="dialog_delete_category_directories">Фасцикле</string>
   <string name="newfolder">Нова фасцикла</string>
   <string name="entername">Унесите назив</string>
   <string name="extracting">Распакујем</string>
@@ -94,9 +94,9 @@
   <string name="compress">Компресуј</string>
   <string name="yes">Да</string>
   <string name="no">Не</string>
-  <string name="confirm">Потврда</string>
+  <string name="dialog_delete_title">Потврда</string>
   <string name="deleting">Бришем</string>
-  <string name="questiondelete">Желите ли заиста да обришете следеће ставке?</string>
+  <string name="dialog_delete_disclaimer">Желите ли заиста да обришете следеће ставке?</string>
   <string name="questionset">Желите ли да поставите текућу путању као почетну за овај језичак?</string>
   <string name="viewmode">Режим приказа</string>
   <string name="uimode">Режим сучеља</string>

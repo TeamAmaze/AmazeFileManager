@@ -72,8 +72,8 @@
   <string name="tab">Раздел</string>
   <string name="file">Файл</string>
   <string name="folder">Папка</string>
-  <string name="title_files">Файлове</string>
-  <string name="title_dirs">Директории</string>
+  <string name="dialog_delete_category_files">Файлове</string>
+  <string name="dialog_delete_category_directories">Директории</string>
   <string name="newfolder">Нова папка</string>
   <string name="entername">Въведете име</string>
   <string name="extracting">Извличане</string>
@@ -92,9 +92,9 @@
   <string name="compress">Компресирай</string>
   <string name="yes">Да</string>
   <string name="no">Не</string>
-  <string name="confirm">Потвърждаване</string>
+  <string name="dialog_delete_title">Потвърждаване</string>
   <string name="deleting">Изтриване</string>
-  <string name="questiondelete">Наистина ли искате да изтриете следните файлове?</string>
+  <string name="dialog_delete_disclaimer">Наистина ли искате да изтриете следните файлове?</string>
   <string name="questionset">Искате ли да зададете текущия път като домашен за този раздел?</string>
   <string name="viewmode">Режим на преглед</string>
   <string name="sortby">Подреждане по</string>

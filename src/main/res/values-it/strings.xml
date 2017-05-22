@@ -75,8 +75,8 @@
   <string name="tab">Scheda</string>
   <string name="file">File</string>
   <string name="folder">Cartella</string>
-  <string name="title_files">File</string>
-  <string name="title_dirs">Cartelle</string>
+  <string name="dialog_delete_category_files">File</string>
+  <string name="dialog_delete_category_directories">Cartelle</string>
   <string name="newfolder">Nuova cartella</string>
   <string name="entername">Inserisci nome</string>
   <string name="extracting">Estrazione</string>
@@ -102,9 +102,9 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="compress">Comprimi</string>
   <string name="yes">Sì</string>
   <string name="no">No</string>
-  <string name="confirm">Conferma</string>
+  <string name="dialog_delete_title">Conferma</string>
   <string name="deleting">Eliminazione</string>
-  <string name="questiondelete">Vuoi davvero eliminare i seguenti file?</string>
+  <string name="dialog_delete_disclaimer">Vuoi davvero eliminare i seguenti file?</string>
   <string name="questionset">Vuoi impostare il percorso corrente come home per questa scheda?</string>
   <string name="viewmode">Modalità visualizzazione</string>
   <string name="uimode">Modalità interfaccia utente</string>

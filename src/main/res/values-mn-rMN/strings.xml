@@ -23,7 +23,7 @@
   <string name="save">Хадгалах</string>
   <string name="size_capitalized">Хэмжээ</string>
   <string name="share">Хуваалцах</string>
-  <string name="confirm">Бататгах</string>
+  <string name="dialog_delete_title">Бататгах</string>
   <string name="delete">Устгах</string>
   <!-- New -->
   <!-- Array -->

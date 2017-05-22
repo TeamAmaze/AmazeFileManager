@@ -96,9 +96,9 @@
     <string name="compress">Konprimitu</string>
     <string name="yes">Bai</string>
     <string name="no">Ez</string>
-    <string name="confirm">Berretsi</string>
+    <string name="dialog_delete_title">Berretsi</string>
     <string name="deleting">Ezabatzen</string>
-    <string name="questiondelete">Hurrengo fitxategiak benetan ezabatu nahi dituzu?</string>
+    <string name="dialog_delete_disclaimer">Hurrengo fitxategiak benetan ezabatu nahi dituzu?</string>
     <string name="viewmode">Ikuspegi modua</string>
     <string name="uimode">UI modua</string>
     <string name="directorysort">Direktorioa sailkatzeko modua</string>

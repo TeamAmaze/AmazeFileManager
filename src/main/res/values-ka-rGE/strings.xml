@@ -23,7 +23,7 @@
   <string name="save">შენახვა</string>
   <string name="size_capitalized">ზომა</string>
   <string name="share">გაზიარება</string>
-  <string name="confirm">დადასტურება</string>
+  <string name="dialog_delete_title">დადასტურება</string>
   <string name="delete">წაშლა</string>
   <!-- New -->
   <!-- Array -->
