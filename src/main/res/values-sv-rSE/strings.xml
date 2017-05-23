@@ -190,6 +190,8 @@
     <string name="copying_fles">Kopierar Filer</string>
     <string name="done">Klart</string>
     <string name="Extracting_fles">Packar upp Filer</string>
+    <string name="items">Objekt</string>
+    <string name="item">Objekt</string>
     <string name="set">Ange</string>
     <string name="enablerootmde">Starta Rootläge</string>
     <string name="goback">Gå Tillbaka</string>

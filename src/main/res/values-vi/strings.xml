@@ -172,6 +172,8 @@
   <string name="copying_fles">Đang sao chép tệp</string>
   <string name="done">Hoàn tất</string>
   <string name="Extracting_fles">Đang giải nén tệp</string>
+  <string name="items">Các mục</string>
+  <string name="item">Mục</string>
   <string name="set">Đặt</string>
   <string name="enablerootmde">Kích hoạt chế độ Root</string>
   <string name="goback">Quay lại</string>

@@ -189,6 +189,8 @@
   <string name="copying_fles">Kopioidaan tiedostoja</string>
   <string name="done">Valmis</string>
   <string name="Extracting_fles">Puretaan tiedostoja</string>
+  <string name="items">Kohteet</string>
+  <string name="item">Kohde</string>
   <string name="set">Aseta</string>
   <string name="enablerootmde">Ota Root-tila käyttöön</string>
   <string name="goback">Mene takaisin</string>

@@ -191,6 +191,8 @@
   <string name="copying_fles">正在複製檔案</string>
   <string name="done">完成</string>
   <string name="Extracting_fles">正在解壓縮檔案</string>
+  <string name="items">個項目</string>
+  <string name="item">項目</string>
   <string name="set">設定</string>
   <string name="enablerootmde">啟用 Root 模式</string>
   <string name="goback">返回上一層</string>

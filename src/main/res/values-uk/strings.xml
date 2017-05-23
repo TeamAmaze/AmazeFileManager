@@ -188,6 +188,8 @@
   <string name="copying_fles">Копіювання файлів</string>
   <string name="done">Закінчено</string>
   <string name="Extracting_fles">Розпаковування файлів</string>
+  <string name="items">Елементи</string>
+  <string name="item">Елемент</string>
   <string name="set">Встановити</string>
   <string name="enablerootmde">Включити режим рут прав</string>
   <string name="goback">Повернутися</string>

@@ -191,6 +191,8 @@
   <string name="copying_fles">Kopírovanie súborov</string>
   <string name="done">Hotovo</string>
   <string name="Extracting_fles">Rozbaľovanie súborov</string>
+  <string name="items">Položky</string>
+  <string name="item">Položka</string>
   <string name="set">Nastaviť</string>
   <string name="enablerootmde">Povoliť Root režim</string>
   <string name="goback">Späť</string>

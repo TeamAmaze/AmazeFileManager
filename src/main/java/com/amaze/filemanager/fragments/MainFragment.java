@@ -161,6 +161,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     private IconUtils icons;
     private View footerView;
+    private String itemsstring;
     private TabHandler tabHandler;
     private LinearLayoutManager mLayoutManager;
     private GridLayoutManager mLayoutManagerGrid;
@@ -284,6 +285,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         res = getResources();
         pathname = (TextView) getActivity().findViewById(R.id.pathname);
         mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
+        itemsstring = res.getString(R.string.items);
         apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab==1 ? skinTwoColor : skin_color);
 
