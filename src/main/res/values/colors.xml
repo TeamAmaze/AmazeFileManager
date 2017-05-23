@@ -89,16 +89,23 @@
     <color name="accent_super_su">#004d40</color>
 
     <!-- colors used for files -->
-    <color name="c1">#757575</color>
-    <color name="c2">#f06292</color>
-    <color name="c3">#9575cd</color>
-    <color name="c4">#da4336</color>
-    <color name="c5">#00bfa5</color>
-    <color name="c6">#e06055</color>
-    <color name="c7">#f9a825</color>
-    <color name="c8">#a4c439</color>
-    <color name="c9">#9e9e9e</color>
+    <color name="goback_item">#757575</color>
+    <color name="video_item">#f06292</color>
+    <color name="audio_item">#9575cd</color>
+    <color name="pdf_item">#da4336</color>
+    <color name="code_item">#00bfa5</color>
+    <color name="text_item">#e06055</color>
+    <color name="archive_item">#f9a825</color>
+    <color name="apk_item">#a4c439</color>
+    <color name="generic_item">#9e9e9e</color>
     <color name="grey">#ff666666</color>
+
+
+    <color name="item_background">#9f757575</color>
+    <color name="icon_background_dark">#303030</color>
+
+    <color name="text_light">#8A000000</color>
+    <color name="text_dark">#B3ffffff</color>
 
     <!-- indicator -->
     <color name="page_indicator_dark">#80333333</color>

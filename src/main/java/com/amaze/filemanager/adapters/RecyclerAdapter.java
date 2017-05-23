@@ -63,11 +63,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private ArrayList<LayoutElement> items;
     private Context context;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    private SparseBooleanArray myanim = new SparseBooleanArray();
+    private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
     private int rowHeight;
     private int grey_color;
-    private int c1, c2, c3, c4, c5, c6, c7, c8, c9;
+    private int goBackColor, videoColor, audioColor, pdfColor, codeColor, textColor, archiveColor, apkColor, genericColor;
 
     private int offset = 0;
     public boolean stoppedAnimation = false;
@@ -79,20 +79,19 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.context = context;
         for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
-            myanim.put(i, false);
+            animation.put(i, false);
         }
-        mInflater = (LayoutInflater) context
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        c1 = Utils.getColor(context, R.color.c1);
-        c2 = Utils.getColor(context, R.color.c2);
-        c3 = Utils.getColor(context, R.color.c3);
-        c4 = Utils.getColor(context, R.color.c4);
-        c5 = Utils.getColor(context, R.color.c5);
-        c6 = Utils.getColor(context, R.color.c6);
-        c7 = Utils.getColor(context, R.color.c7);
-        c8 = Utils.getColor(context, R.color.c8);
-        c9 = Utils.getColor(context, R.color.c9);
-        rowHeight = Utils.dpToPx(100, context);
+        mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        goBackColor = Utils.getColor(context, R.color.goback_item);
+        videoColor = Utils.getColor(context, R.color.video_item);
+        audioColor = Utils.getColor(context, R.color.audio_item);
+        pdfColor = Utils.getColor(context, R.color.pdf_item);
+        codeColor = Utils.getColor(context, R.color.code_item);
+        textColor = Utils.getColor(context, R.color.text_item);
+        archiveColor = Utils.getColor(context, R.color.archive_item);
+        apkColor = Utils.getColor(context, R.color.apk_item);
+        genericColor = Utils.getColor(context, R.color.generic_item);
+        rowHeight = Utils.dpToPx(100, context);// TODO: 23/5/2017 don't hardcode pixel measurements
         grey_color = Utils.getColor(context, R.color.grey);
     }
 
@@ -293,7 +292,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             items = arrayList;
             for (int i = 0; i < items.size(); i++) {
                 myChecked.put(i, false);
-                myanim.put(i, false);
+                animation.put(i, false);
             }
         }
     }
@@ -310,9 +309,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 return;
             }
         }
-        if (!this.stoppedAnimation && !myanim.get(p)) {
+        if (!this.stoppedAnimation && !animation.get(p)) {
             animate(holder);
-            myanim.put(p, true);
+            animation.put(p, true);
         }
         final LayoutElement rowItem = items.get(p);
         if (mainFrag.IS_LIST) {
@@ -504,7 +503,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.pictureIcon.setVisibility(View.GONE);
                     holder.genericIcon.setVisibility(View.VISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
-                    gradientDrawable.setColor(c1);
+                    gradientDrawable.setColor(goBackColor);
                 }
                 holder.rl.setSelected(true);
                 //holder.genericText.setText("");
@@ -516,28 +515,28 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
                     else if (Icons.isVideo(rowItem.getDesc()) || Icons.isPicture(rowItem
                             .getDesc()))
-                        gradientDrawable.setColor(c2);
+                        gradientDrawable.setColor(videoColor);
                     else if (Icons.isAudio(rowItem.getDesc()))
-                        gradientDrawable.setColor(c3);
+                        gradientDrawable.setColor(audioColor);
                     else if (Icons.isPdf(rowItem.getDesc()))
-                        gradientDrawable.setColor(c4);
+                        gradientDrawable.setColor(pdfColor);
                     else if (Icons.isCode(rowItem.getDesc()))
-                        gradientDrawable.setColor(c5);
+                        gradientDrawable.setColor(codeColor);
                     else if (Icons.isText(rowItem.getDesc()))
-                        gradientDrawable.setColor(c6);
+                        gradientDrawable.setColor(textColor);
                     else if (Icons.isArchive(rowItem.getDesc()))
-                        gradientDrawable.setColor(c7);
+                        gradientDrawable.setColor(archiveColor);
                     else if (Icons.isApk(rowItem.getDesc()))
-                        gradientDrawable.setColor(c8);
+                        gradientDrawable.setColor(apkColor);
                     else if (Icons.isGeneric(rowItem.getDesc())) {
-                        gradientDrawable.setColor(c9);
+                        gradientDrawable.setColor(genericColor);
                     } else {
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
                     }
                 } else gradientDrawable.setColor((mainFrag.icon_skin_color));
 
                 if (rowItem.getSize().equals(mainFrag.goback))
-                    gradientDrawable.setColor(c1);
+                    gradientDrawable.setColor(goBackColor);
             }
             if (mainFrag.SHOW_PERMISSIONS)
                 holder.perm.setText(rowItem.getPermissions());
@@ -601,38 +600,38 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (rowItem.isDirectory())
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
             else if (Icons.isVideo(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c2);
+                holder.genericIcon.setColorFilter(videoColor);
             else if (Icons.isAudio(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c3);
+                holder.genericIcon.setColorFilter(audioColor);
             else if (Icons.isPdf(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c4);
+                holder.genericIcon.setColorFilter(pdfColor);
             else if (Icons.isCode(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c5);
+                holder.genericIcon.setColorFilter(codeColor);
             else if (Icons.isText(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c6);
+                holder.genericIcon.setColorFilter(textColor);
             else if (Icons.isArchive(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c7);
+                holder.genericIcon.setColorFilter(archiveColor);
             else if (Icons.isGeneric(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c9);
+                holder.genericIcon.setColorFilter(genericColor);
             else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
                 holder.genericIcon.setColorFilter(null);
             else holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
             if (rowItem.getSize().equals(mainFrag.goback))
-                holder.genericIcon.setColorFilter(c1);
+                holder.genericIcon.setColorFilter(goBackColor);
 
             if (checked) {
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
                 //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
                 holder.checkImageViewGrid.setVisibility(View.VISIBLE);
-                holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
+                holder.rl.setBackgroundColor(Utils.getColor(context, R.color.item_background));
             } else {
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                     holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                 else {
                     holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
-                    holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#303030"));
+                    holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Utils.getColor(context, R.color.icon_background_dark));
                 }
             }
 
@@ -675,8 +674,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
-            holder.headerText.setTextColor(Color.parseColor("#8A000000"));
-        else holder.headerText.setTextColor(Color.parseColor("#B3ffffff"));
+            holder.headerText.setTextColor(Utils.getColor(context, R.color.text_light));
+        else holder.headerText.setTextColor(Utils.getColor(context, R.color.text_dark));
         return holder;
     }
 
