@@ -77,8 +77,6 @@
   <string name="tab">Закладка</string>
   <string name="file">Файл</string>
   <string name="folder">Тэчка</string>
-  <string name="dialog_delete_category_files">ФАЙЛЫ</string>
-  <string name="dialog_delete_category_directories">ТЭЧКІ</string>
   <string name="newfolder">Новая тэчка</string>
   <string name="entername">Увядзіце назву</string>
   <string name="extracting">Выманне</string>
@@ -98,9 +96,11 @@
   <string name="compress">Сціснуць</string>
   <string name="yes">Так</string>
   <string name="no">Не</string>
+  <string name="dialog_delete_category_directories">ТЭЧКІ</string>
+  <string name="dialog_delete_category_files">ФАЙЛЫ</string>
+  <string name="dialog_delete_disclaimer">Вы ўпэўненыя, што хочаце выдаліць выбраныя файлы?</string>
   <string name="dialog_delete_title">Пацвердзіць</string>
   <string name="deleting">Выдаленне</string>
-  <string name="dialog_delete_disclaimer">Вы ўпэўненыя, што хочаце выдаліць выбраныя файлы?</string>
   <string name="questionset">Вы хочаце ўсталяваць бягучы шлях як хатні для гэтай укладкі?</string>
   <string name="viewmode">Рэжым прагляду</string>
   <string name="uimode">Рэжым інтэрфейсу</string>

@@ -74,7 +74,6 @@
   <string name="tab">تب</string>
   <string name="file">فایل</string>
   <string name="folder">پوشه</string>
-  <string name="dialog_delete_category_directories">پوشه ها</string>
   <string name="newfolder">پوشه جدید</string>
   <string name="entername">نام را وارد کنید</string>
   <string name="extracting">در حال بیرون آمدن از فشرده</string>
@@ -94,9 +93,10 @@
   <string name="compress">فشرده کردن</string>
   <string name="yes">بله</string>
   <string name="no">خیر</string>
+  <string name="dialog_delete_category_directories">پوشه ها</string>
+  <string name="dialog_delete_disclaimer">واقعا میخواهید این فایل ها را حذف کنید</string>
   <string name="dialog_delete_title">تایید</string>
   <string name="deleting">حذف</string>
-  <string name="dialog_delete_disclaimer">واقعا میخواهید این فایل ها را حذف کنید</string>
   <string name="questionset">آیا می خواهید این مسیر را به عنوان مسیر خانه برای این تب تنظیم کنید</string>
   <string name="viewmode">حالت نمایش</string>
   <string name="uimode">حالت گرافیکی</string>

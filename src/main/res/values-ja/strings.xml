@@ -75,8 +75,6 @@
   <string name="tab">タブ</string>
   <string name="file">ファイル</string>
   <string name="folder">フォルダー</string>
-  <string name="dialog_delete_category_files">ファイル</string>
-  <string name="dialog_delete_category_directories">ディレクトリー</string>
   <string name="newfolder">新しいフォルダー</string>
   <string name="entername">名前を入力</string>
   <string name="extracting">抽出中</string>
@@ -96,9 +94,11 @@
   <string name="compress">圧縮</string>
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
+  <string name="dialog_delete_category_directories">ディレクトリー</string>
+  <string name="dialog_delete_category_files">ファイル</string>
+  <string name="dialog_delete_disclaimer">次のファイルを削除してもよろしいですか?</string>
   <string name="dialog_delete_title">確認</string>
   <string name="deleting">削除中</string>
-  <string name="dialog_delete_disclaimer">次のファイルを削除してもよろしいですか?</string>
   <string name="questionset">現在のパスをこのタブのホームとして設定しますか?</string>
   <string name="viewmode">表示モード</string>
   <string name="uimode">UI モード</string>

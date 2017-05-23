@@ -73,7 +73,6 @@
   <string name="tab">Llingüeta</string>
   <string name="file">Ficheru</string>
   <string name="folder">Carpeta</string>
-  <string name="dialog_delete_category_directories">Diretorios</string>
   <string name="newfolder">Carpeta nueva</string>
   <string name="entername">Introduz el nome</string>
   <string name="extracting">Estrayendo</string>
@@ -93,9 +92,10 @@
   <string name="compress">Comprimir</string>
   <string name="yes">Sí</string>
   <string name="no">Non</string>
+  <string name="dialog_delete_category_directories">Diretorios</string>
+  <string name="dialog_delete_disclaimer">¿De xuru que quies desaniciar los ficheros de darréu?</string>
   <string name="dialog_delete_title">Confirmar</string>
   <string name="deleting">Desaniciando</string>
-  <string name="dialog_delete_disclaimer">¿De xuru que quies desaniciar los ficheros de darréu?</string>
   <string name="questionset">¿De xuru que quies afitar el camín actual como l\'aniciu pa esta llingüeta?</string>
   <string name="viewmode">Mou de vista</string>
   <string name="uimode">Mou d\'IU</string>

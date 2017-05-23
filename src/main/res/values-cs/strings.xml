@@ -77,8 +77,6 @@
   <string name="tab">Karta</string>
   <string name="file">Soubor</string>
   <string name="folder">Složka</string>
-  <string name="dialog_delete_category_files">SOUBORY</string>
-  <string name="dialog_delete_category_directories">ADRESÁŘE</string>
   <string name="newfolder">Nová složka</string>
   <string name="entername">Zadejte název</string>
   <string name="extracting">Probíhá extrahování</string>
@@ -98,9 +96,11 @@
   <string name="compress">Komprimovat</string>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
+  <string name="dialog_delete_category_directories">Adresáře</string>
+  <string name="dialog_delete_category_files">Soubory</string>
+  <string name="dialog_delete_disclaimer">Opravdu chcete odstranit následující soubory?</string>
   <string name="dialog_delete_title">Potvrdit</string>
   <string name="deleting">Odstraňování</string>
-  <string name="dialog_delete_disclaimer">Opravdu chcete odstranit následující soubory?</string>
   <string name="questionset">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
   <string name="viewmode">Režim zobrazení</string>
   <string name="uimode">Režim uživatelského rozhraní</string>
