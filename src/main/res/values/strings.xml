@@ -672,6 +672,6 @@
 	<string name="item">item</string>
 	<string name="items">items</string>
 	
-	<string name="byte">byte</string>
+	<string name="byte_singular">byte</string>
 	<string name="bytes">bytes</string>
 </resources>
