@@ -43,6 +43,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -82,17 +83,17 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
         mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        c1 = Color.parseColor("#757575");
-        c2 = Color.parseColor("#f06292");
-        c3 = Color.parseColor("#9575cd");
-        c4 = Color.parseColor("#da4336");
-        c5 = Color.parseColor("#00bfa5");
-        c6 = Color.parseColor("#e06055");
-        c7 = Color.parseColor("#f9a825");
-        c8 = Color.parseColor("#a4c439");
-        c9 = Color.parseColor("#9e9e9e");
-        rowHeight = mainFrag.dpToPx(100);
-        grey_color = Color.parseColor("#ff666666");
+        c1 = Utils.getColor(context, R.color.c1);
+        c2 = Utils.getColor(context, R.color.c2);
+        c3 = Utils.getColor(context, R.color.c3);
+        c4 = Utils.getColor(context, R.color.c4);
+        c5 = Utils.getColor(context, R.color.c5);
+        c6 = Utils.getColor(context, R.color.c6);
+        c7 = Utils.getColor(context, R.color.c7);
+        c8 = Utils.getColor(context, R.color.c8);
+        c9 = Utils.getColor(context, R.color.c9);
+        rowHeight = Utils.dpToPx(100, context);
+        grey_color = Utils.getColor(context, R.color.grey);
     }
 
     public void addItem() {
@@ -259,8 +260,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         View v;
         if (mainFrag.IS_LIST) v = mInflater.inflate(R.layout.rowlayout, parent, false);
         else v = mInflater.inflate(R.layout.griditem, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -675,18 +675,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
-            holder.ext.setTextColor(Color.parseColor("#8A000000"));
-        else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));
+            holder.headerText.setTextColor(Color.parseColor("#8A000000"));
+        else holder.headerText.setTextColor(Color.parseColor("#B3ffffff"));
         return holder;
-    }
-
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView ext;
-
-        HeaderViewHolder(View view) {
-            super(view);
-            ext = (TextView) view.findViewById(R.id.headertext);
-        }
     }
 
     private static final int TYPE_HEADER = 0;
@@ -928,8 +919,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (i != getItemCount() - 1) {
             HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            if (items.get(i).isDirectory()) holder.ext.setText(R.string.directories);
-            else holder.ext.setText(R.string.files);
+            if (items.get(i).isDirectory()) holder.headerText.setText(R.string.directories);
+            else holder.headerText.setText(R.string.files);
         }
     }
 
@@ -937,4 +928,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public int getItemCount() {
         return mainFrag.IS_LIST ? items.size() + 1 : items.size();
     }
+
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView headerText;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            headerText = (TextView) view.findViewById(R.id.headertext);
+        }
+    }
+
 }

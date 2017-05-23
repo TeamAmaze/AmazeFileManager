@@ -51,7 +51,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.format.Formatter;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -173,7 +172,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private TextView pathname, mFullPath;
     private boolean stopAnims = true;
     private View nofilesview;
-    private DisplayMetrics displayMetrics;
     private HFile f;
     private Streamer s;
 
@@ -300,12 +298,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         return rootView;
     }
 
-    public int dpToPx(int dp) {
-        if (displayMetrics == null) displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -355,7 +347,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             public void onGlobalLayout() {
                 if ((columns == 0 || columns == -1)) {
                     int screen_width = listView.getWidth();
-                    int dptopx = dpToPx(115);
+                    int dptopx = Utils.dpToPx(115, getContext());
                     columns = screen_width / dptopx;
                     if (columns == 0 || columns == -1) columns = 3;
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -28,7 +29,6 @@ public class Utils {
 
     private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
     private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-    ;
 
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
@@ -128,6 +128,11 @@ public class Utils {
         } else {
             return c.getResources().getColor(color);
         }
+    }
+
+    public static int dpToPx(int dp, Context c) {
+        DisplayMetrics displayMetrics = c.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
 }
