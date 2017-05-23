@@ -74,8 +74,6 @@
   <string name="tab">탭</string>
   <string name="file">파일</string>
   <string name="folder">폴더</string>
-  <string name="dialog_delete_category_files">파일</string>
-  <string name="dialog_delete_category_directories">폴더</string>
   <string name="newfolder">새 폴더</string>
   <string name="entername">이름을 입력해 주세요</string>
   <string name="extracting">압축을 해제하는 중입니다</string>
@@ -95,9 +93,11 @@
   <string name="compress">압축</string>
   <string name="yes">예</string>
   <string name="no">아니오</string>
+  <string name="dialog_delete_category_directories">폴더</string>
+  <string name="dialog_delete_category_files">파일</string>
+  <string name="dialog_delete_disclaimer">다음의 파일을 정말로 삭제하시겠습니까?</string>
   <string name="dialog_delete_title">확인</string>
   <string name="deleting">삭제하는 중입니다</string>
-  <string name="dialog_delete_disclaimer">다음의 파일을 정말로 삭제하시겠습니까?</string>
   <string name="viewmode">보기 형식</string>
   <string name="uimode">UI</string>
   <string name="directorysort">디렉토리 정렬</string>

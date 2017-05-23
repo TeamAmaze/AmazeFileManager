@@ -74,8 +74,6 @@
   <string name="tab">Thẻ</string>
   <string name="file">Tệp</string>
   <string name="folder">Thư mục</string>
-  <string name="dialog_delete_category_files">Tập tin</string>
-  <string name="dialog_delete_category_directories">Thư mục</string>
   <string name="newfolder">Thư mục mới</string>
   <string name="entername">Nhập tên</string>
   <string name="extracting">Đang giải nén</string>
@@ -95,9 +93,11 @@
   <string name="compress">Nén</string>
   <string name="yes">Có</string>
   <string name="no">Không</string>
+  <string name="dialog_delete_category_directories">Thư mục</string>
+  <string name="dialog_delete_category_files">Tập tin</string>
+  <string name="dialog_delete_disclaimer">Bạn có thực sự muốn xóa các tập tin sau đây?</string>
   <string name="dialog_delete_title">Xác nhận</string>
   <string name="deleting">Đang xóa</string>
-  <string name="dialog_delete_disclaimer">Bạn có thực sự muốn xóa các tập tin sau đây?</string>
   <string name="questionset">Bạn có muốn thiết lập đường dẫn hiện tại như nhà cho thẻ này?</string>
   <string name="viewmode">Chế độ xem</string>
   <string name="uimode">Chế độ UI</string>
