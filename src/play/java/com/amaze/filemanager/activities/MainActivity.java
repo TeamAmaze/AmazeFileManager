@@ -1342,7 +1342,7 @@ public class MainActivity extends BaseActivity implements
                 if (mainFragment != null) {
                     switch (mainFragment.openMode) {
                         case OTG:
-                            getFutils().openFile(RootHelper.getDocumentFile(encryptBaseFile.getPath(),
+                            getFutils().openFile(OTGUtil.getDocumentFile(encryptBaseFile.getPath(),
                                     MainActivity.this, false), MainActivity.this);
                             break;
                         case SMB:

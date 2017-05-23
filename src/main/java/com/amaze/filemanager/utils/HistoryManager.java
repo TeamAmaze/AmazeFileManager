@@ -185,6 +185,7 @@ public class HistoryManager {
                                 c.getString(c.getColumnIndex("PATH"))
                 });
             } catch (Exception e) {
+                e.printStackTrace();
             }
         } while (c.moveToPrevious());
 

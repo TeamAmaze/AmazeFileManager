@@ -10,6 +10,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -113,10 +114,10 @@ public class Operations {
                 } else if (file.isOtgFile()) {
 
                     // first check whether new directory already exists
-                    DocumentFile directoryToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
+                    DocumentFile directoryToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
                     if (directoryToCreate != null) errorCallBack.exists(file);
 
-                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
+                    DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
                         parentDirectory.createDirectory(file.getName(context));
                         errorCallBack.done(file, true);
@@ -267,10 +268,10 @@ public class Operations {
                 } else if (file.isOtgFile()) {
 
                     // first check whether new file already exists
-                    DocumentFile fileToCreate = RootHelper.getDocumentFile(file.getPath(), context, false);
+                    DocumentFile fileToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
                     if (fileToCreate != null) errorCallBack.exists(file);
 
-                    DocumentFile parentDirectory = RootHelper.getDocumentFile(file.getParent(), context, false);
+                    DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
                         parentDirectory.createFile(file.getName(context).substring(file.getName().lastIndexOf(".")),
                                 file.getName(context));
@@ -388,8 +389,8 @@ public class Operations {
                         errorCallBack.done(newFile, false);
                     }
                 } else if (oldFile.isOtgFile()) {
-                    DocumentFile oldDocumentFile = RootHelper.getDocumentFile(oldFile.getPath(), context, false);
-                    DocumentFile newDocumentFile = RootHelper.getDocumentFile(newFile.getPath(), context, false);
+                    DocumentFile oldDocumentFile = OTGUtil.getDocumentFile(oldFile.getPath(), context, false);
+                    DocumentFile newDocumentFile = OTGUtil.getDocumentFile(newFile.getPath(), context, false);
                     if (newDocumentFile != null) {
                         errorCallBack.exists(newFile);
                         return null;

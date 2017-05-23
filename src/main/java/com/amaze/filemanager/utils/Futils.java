@@ -549,8 +549,9 @@ public class Futils {
      * @return
      */
     public boolean canGoBack(Context context, HFile currentFile) {
-        // we're on main thread and can't list the cloud files
         switch (currentFile.getMode()) {
+
+            // we're on main thread and can't list the cloud files
             case DROPBOX:
             case BOX:
             case GDRIVE:
@@ -565,8 +566,11 @@ public class Futils {
         }
     }
 
-    public static long[] getSpaces(HFile hFile, final OnProgressUpdate<Long[]> updateState) {
-        if(hFile.isSmb()) {
+    public static long[] getSpaces(HFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
+        /*if(hFile.isSmb()) {
+            if (hFile.isDirectory(context)) {
+
+            }
             return new long[]{-1, -1, -1};
         } else if (hFile.isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -620,84 +624,38 @@ public class Futils {
                                     }
                                 });
 
+                final long totalSpace = hFile.length(context);
+                final long freeSpace = hFile.getUsableSpace();
+                long folderSize = 0l;
+
+                if (hFile.isDirectory(context)) {
+                    folderSize = folderSize(new File(hFile.getPath()),
+                            new OnProgressUpdate<Long>() {
+                                @Override
+                                public void onUpdate(Long data) {
+                                    if(updateState != null)
+                                        updateState.onUpdate(new Long[] {totalSpace, freeSpace, data});
+                                }
+                    });
+                }
                 return new long[] {totalSpace, freeSpace, folderSize};
             } catch (Exception e) {
                 return new long[]{-1, -1, -1};
             }
         } else {
             return new long[]{-1, -1, -1};
-        }
-    }
+        }*/
 
-    public static long getFreeSpace(HFile hFile) {
-        if (hFile.isSmb()) {
-            return -1;
-        } else if (hFile.isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
-                    hFile.getPath()));
+        long totalSpace = hFile.getTotal(context);
+        long freeSpace = hFile.getUsableSpace();
+        long fileSize = 0l;
 
-            return (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed());
-        } else if (hFile.isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
-                    hFile.getPath()));
-
-            return (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed());
-        } else if (hFile.isGoogleDriveFile()) {
-            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-
-            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
-                    hFile.getPath()));
-
-            return (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed());
-        } else if (hFile.isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-
-            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
-                    hFile.getPath()));
-            return (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed());
-        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
-                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
-            try {
-                return new File(hFile.getPath()).getFreeSpace();
-            } catch (Exception e) {
-                return -1;
-            }
+        if (hFile.isDirectory(context)) {
+            fileSize = hFile.folderSize(context);
         } else {
-            return -1;
+            fileSize = hFile.length(context);
         }
-    }
-
-    public static long getTotalSpace(HFile hFile) {
-        if(hFile.isSmb()) {
-            return -1;
-        } else if (hFile.isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-
-            return cloudStorageDropbox.getAllocation().getTotal();
-        } else if (hFile.isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-
-            return cloudStorageBox.getAllocation().getTotal();
-        } else if (hFile.isGoogleDriveFile()) {
-            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-
-            return cloudStorageGDrive.getAllocation().getTotal();
-        } else if (hFile.isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-
-            return cloudStorageOneDrive.getAllocation().getTotal();
-        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
-                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
-            try {
-                return new File(hFile.getPath()).getTotalSpace();
-            } catch (Exception e) {
-                return -1;
-            }
-        } else {
-            return -1;
-        }
+        return new long[] {totalSpace, freeSpace, fileSize};
     }
 
     public static boolean copyToClipboard(Context context, String text) {

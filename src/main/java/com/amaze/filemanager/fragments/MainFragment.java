@@ -943,7 +943,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         }
                     } else if (l.getMode() == OpenMode.OTG) {
 
-                        utils.openFile(RootHelper.getDocumentFile(l.getDesc(), getContext(), false),
+                        utils.openFile(OTGUtil.getDocumentFile(l.getDesc(), getContext(), false),
                                 (MainActivity) getActivity());
                     } else if (l.getMode() == OpenMode.DROPBOX
                             || l.getMode() == OpenMode.BOX

@@ -331,7 +331,7 @@ public abstract class FileUtil {
                 }
                 break;
             case OTG:
-                DocumentFile documentFile = RootHelper.getDocumentFile(file.getPath(), context, true);
+                DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true);
                 isSuccessful = documentFile != null;
                 break;
             case FILE:

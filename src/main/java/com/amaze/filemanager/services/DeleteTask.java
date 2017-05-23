@@ -38,6 +38,7 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -76,7 +77,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         if (files.get(0).isOtgFile()) {
             for (BaseFile a : files) {
 
-                DocumentFile documentFile = RootHelper.getDocumentFile(a.getPath(), cd, false);
+                DocumentFile documentFile = OTGUtil.getDocumentFile(a.getPath(), cd, false);
                  b = documentFile.delete();
             }
         } else if (files.get(0).isDropBoxFile()) {

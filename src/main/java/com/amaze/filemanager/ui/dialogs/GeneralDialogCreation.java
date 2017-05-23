@@ -84,8 +84,6 @@ import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
-import static com.amaze.filemanager.utils.Futils.getFreeSpace;
-import static com.amaze.filemanager.utils.Futils.getTotalSpace;
 import static com.amaze.filemanager.utils.Futils.toHFileArray;
 
 /**
@@ -404,8 +402,8 @@ public class GeneralDialogCreation {
                 final String[] LEGENDS = new String[]{c.getString(R.string.used), c.getString(R.string.free)};
                 final int[] COLORS = {Utils.getColor(c, R.color.piechart_red), Utils.getColor(c, R.color.piechart_green)};
 
-                long totalSpace = getTotalSpace(baseFile),
-                        freeSpace = getFreeSpace(baseFile),
+                long totalSpace = baseFile.getTotal(c),
+                        freeSpace = baseFile.getUsableSpace(),
                         usedSpace = totalSpace - freeSpace;
 
                 List<PieEntry> entries = new ArrayList<>();

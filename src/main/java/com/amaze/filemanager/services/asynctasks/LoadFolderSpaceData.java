@@ -54,7 +54,7 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
 
     @Override
     protected Pair<String, List<PieEntry>> doInBackground(Void... params) {
-        long[] dataArray = Futils.getSpaces(file, new OnProgressUpdate<Long[]>() {
+        long[] dataArray = Futils.getSpaces(file, context, new OnProgressUpdate<Long[]>() {
             @Override
             public void onUpdate(Long[] data) {
                 publishProgress(data);
