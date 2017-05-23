@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="items">
-        <item quantity="zero">No items</item>
-        <item quantity="one">item</item>
-        <item quantity="other">items</item>
+        <item quantity="zero">@string/noitems</item>
+        <item quantity="one">@string/item</item>
+        <item quantity="other">@string/items</item>
     </plurals>
     <plurals name="bytes">
-        <item quantity="one">byte</item>
-        <item quantity="other">bytes</item>
+        <item quantity="one">@string/byte</item>
+        <item quantity="other">@string/bytes</item>
     </plurals>
 </resources>
