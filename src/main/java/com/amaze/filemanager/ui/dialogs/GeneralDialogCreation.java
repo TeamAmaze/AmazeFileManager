@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -46,6 +47,7 @@ import com.amaze.filemanager.services.asynctasks.CountFolderItems;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
@@ -137,51 +139,9 @@ public class GeneralDialogCreation {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static void deleteFilesDialog(ArrayList<LayoutElement> layoutElements, final MainFragment mainFragment, List<Integer> positions, AppTheme appTheme) {
-        int counterDirectories = 0;
-        int counterFiles = 0;
-        long sizeTotal = 0;
+    public static void deleteFilesDialog(final ArrayList<LayoutElement> layoutElements, final MainFragment mainFragment, final List<Integer> positions, AppTheme appTheme) {
+
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
-        StringBuilder directories = new StringBuilder();
-        StringBuilder files = new StringBuilder();
-
-        // Parse items to delete.
-        for (int i = 0; i < positions.size(); i++) {
-            final LayoutElement layoutElement = layoutElements.get(positions.get(i));
-            itemsToDelete.add(layoutElement.generateBaseFile());
-
-            // Build list of directories to delete.
-            if (layoutElement.isDirectory()) {
-                // Don't add newline between category and list.
-                if (counterDirectories != 0) {
-                    directories.append("\n");
-                }
-
-                long sizeDirectory = layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
-
-                directories.append(++counterDirectories)
-                        .append(". ")
-                        .append(layoutElement.getTitle())
-                        .append(" (")
-                        .append(Formatter.formatFileSize(mainFragment.getContext(), sizeDirectory))
-                        .append(")");
-                sizeTotal += sizeDirectory;
-            // Build list of files to delete.
-            } else {
-                // Don't add newline between category and list.
-                if (counterFiles != 0) {
-                    files.append("\n");
-                }
-
-                files.append(++counterFiles)
-                        .append(". ")
-                        .append(layoutElement.getTitle())
-                        .append(" (")
-                        .append(layoutElement.getSize())
-                        .append(")");
-                sizeTotal += layoutElement.getlongSize();
-            }
-        }
 
         // Build dialog with custom view layout and accent color.
         MaterialDialog dialog = new MaterialDialog.Builder(mainFragment.getActivity())
@@ -202,68 +162,152 @@ public class GeneralDialogCreation {
                 .build();
 
         // Get views from custom layout to set text values.
-        TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
-        TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
-        TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
-        TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
-        TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+        final TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
+        final TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
+        final TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
+        final TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
+        final TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+
+        // Parse items to delete.
+
+        new AsyncTask<Void, Object, Void>() {
+
+            long sizeTotal = 0;
+            StringBuilder files = new StringBuilder();
+            StringBuilder directories = new StringBuilder();
+            int counterDirectories = 0;
+            int counterFiles = 0;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                listFiles.setText(mainFragment.getResources().getString(R.string.loading));
+                listDirectories.setText(mainFragment.getResources().getString(R.string.loading));
+                total.setText(mainFragment.getResources().getString(R.string.loading));
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                for (int i = 0; i < positions.size(); i++) {
+                    final LayoutElement layoutElement = layoutElements.get(positions.get(i));
+                    itemsToDelete.add(layoutElement.generateBaseFile());
+
+                    // Build list of directories to delete.
+                    if (layoutElement.isDirectory()) {
+                        // Don't add newline between category and list.
+                        if (counterDirectories != 0) {
+                            directories.append("\n");
+                        }
+
+                        long sizeDirectory = layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
+
+                        directories.append(++counterDirectories)
+                                .append(". ")
+                                .append(layoutElement.getTitle())
+                                .append(" (")
+                                .append(Formatter.formatFileSize(mainFragment.getContext(), sizeDirectory))
+                                .append(")");
+                        sizeTotal += sizeDirectory;
+                        // Build list of files to delete.
+                    } else {
+                        // Don't add newline between category and list.
+                        if (counterFiles != 0) {
+                            files.append("\n");
+                        }
+
+                        files.append(++counterFiles)
+                                .append(". ")
+                                .append(layoutElement.getTitle())
+                                .append(" (")
+                                .append(layoutElement.getSize())
+                                .append(")");
+                        sizeTotal += layoutElement.getlongSize();
+                    }
+
+                    publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Object... result) {
+                super.onProgressUpdate(result);
+
+                int tempCounterFiles = (int) result[1];
+                int tempCounterDirectories = (int) result[2];
+                long tempSizeTotal = (long) result[0];
+                StringBuilder tempFilesStringBuilder = (StringBuilder) result[3];
+                StringBuilder tempDirectoriesStringBuilder = (StringBuilder) result[4];
+
+                updateViews(tempSizeTotal, tempFilesStringBuilder, tempDirectoriesStringBuilder,
+                        tempCounterFiles, tempCounterDirectories);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                updateViews(sizeTotal, files, directories, counterFiles, counterDirectories);
+            }
+
+            private void updateViews(long tempSizeTotal, StringBuilder filesStringBuilder,
+                                     StringBuilder directoriesStringBuilder, int... values) {
+
+                int tempCounterFiles = values[0];
+                int tempCounterDirectories = values[1];
+
+                // Hide category and list for directories when zero.
+                if (tempCounterDirectories == 0) {
+
+                    if (tempCounterDirectories == 0) {
+
+                        categoryDirectories.setVisibility(View.GONE);
+                        listDirectories.setVisibility(View.GONE);
+                    }
+                    // Hide category and list for files when zero.
+                }
+
+                if (tempCounterFiles == 0) {
+
+
+                    categoryFiles.setVisibility(View.GONE);
+                    listFiles.setVisibility(View.GONE);
+                }
+
+                if (tempCounterDirectories != 0 || tempCounterFiles !=0) {
+                    listDirectories.setText(directoriesStringBuilder);
+                    if (listDirectories.getVisibility() != View.VISIBLE && tempCounterDirectories != 0)
+                        listDirectories.setVisibility(View.VISIBLE);
+                    listFiles.setText(filesStringBuilder);
+                    if (listFiles.getVisibility() != View.VISIBLE && tempCounterFiles != 0)
+                        listFiles.setVisibility(View.VISIBLE);
+
+                    if (categoryDirectories.getVisibility() != View.VISIBLE && tempCounterDirectories != 0)
+                        categoryDirectories.setVisibility(View.VISIBLE);
+                    if (categoryFiles.getVisibility() != View.VISIBLE && tempCounterFiles != 0)
+                        categoryFiles.setVisibility(View.VISIBLE);
+                }
+
+                // Show total size with at least one directory or file and size is not zero.
+                if (tempCounterFiles + tempCounterDirectories > 1 && tempSizeTotal > 0) {
+                    StringBuilder builderTotal = new StringBuilder()
+                            .append(mainFragment.getResources().getString(R.string.total))
+                            .append(" ")
+                            .append(Formatter.formatFileSize(mainFragment.getContext(), tempSizeTotal));
+                    total.setText(builderTotal);
+                    if (total.getVisibility() != View.VISIBLE)
+                        total.setVisibility(View.VISIBLE);
+                } else {
+                    total.setVisibility(View.GONE);
+                }
+            }
+        }.execute();
 
         // Set category text color for Jelly Bean (API 16) and later.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             categoryDirectories.setTextColor(Color.parseColor(mainFragment.fabSkin));
             categoryFiles.setTextColor(Color.parseColor(mainFragment.fabSkin));
-        }
-
-        // Hide category and list for directories when zero.
-        if (counterDirectories == 0) {
-            categoryDirectories.setVisibility(View.GONE);
-            listDirectories.setVisibility(View.GONE);
-
-            // Remove list number when only one file.
-            if (counterFiles == 1) {
-                final LayoutElement layoutElement = layoutElements.get(positions.get(0));
-                files = new StringBuilder()
-                        .append(layoutElement.getTitle())
-                        .append(" (")
-                        .append(layoutElement.getSize())
-                        .append(")");
-            }
-
-            listFiles.setText(files);
-        // Hide category and list for files when zero.
-        } else if (counterFiles == 0) {
-            // Remove list number when only one directory.
-            if (counterDirectories == 1) {
-                final LayoutElement layoutElement = layoutElements.get(positions.get(0));
-                directories = new StringBuilder()
-                        .append(layoutElement.getTitle())
-                        .append(" (")
-                        .append(Formatter.formatFileSize(
-                                mainFragment.getContext(),
-                                layoutElement.generateBaseFile().folderSize(mainFragment.getContext()))
-                        )
-                        .append(")");
-            }
-
-            listDirectories.setText(directories);
-
-            categoryFiles.setVisibility(View.GONE);
-            listFiles.setVisibility(View.GONE);
-        // Show category and list for directories and files when not zero.
-        } else {
-            listDirectories.setText(directories);
-            listFiles.setText(files);
-        }
-
-        // Show total size with at least one directory or file and size is not zero.
-        if (counterFiles + counterDirectories > 1 && sizeTotal > 0) {
-            StringBuilder builderTotal = new StringBuilder()
-                    .append(mainFragment.getResources().getString(R.string.total))
-                    .append(" ")
-                    .append(Formatter.formatFileSize(mainFragment.getContext(), sizeTotal));
-            total.setText(builderTotal);
-        } else {
-            total.setVisibility(View.GONE);
         }
 
         // Show dialog on screen.

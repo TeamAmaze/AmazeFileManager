@@ -79,7 +79,19 @@ public class AppConfig extends Application {
 
         synchronized (customAsyncCallbacks) {
 
-            new AsyncTask<Object, Void, Object>() {
+            new AsyncTask<Object, Object, Object>() {
+
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    customAsyncCallbacks.onPreExecute();
+                }
+
+                @Override
+                protected void onProgressUpdate(Object... values) {
+                    super.onProgressUpdate(values);
+                    customAsyncCallbacks.publishResult(values);
+                }
 
                 @Override
                 protected Void doInBackground(Object... params) {
@@ -103,6 +115,10 @@ public class AppConfig extends Application {
         <E extends Object> E doInBackground();
 
         Void onPostExecute(Object result);
+
+        Void onPreExecute();
+
+        Void publishResult(Object... result);
 
         <T extends Object> T[] params();
     }

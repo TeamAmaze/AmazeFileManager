@@ -567,6 +567,10 @@ public class HFile {
     }
 
 
+    /**
+     * Gets usable i.e. free space of a device
+     * @return
+     */
     public long getUsableSpace() {
         long size = 0L;
         switch (mode) {
@@ -593,18 +597,23 @@ public class HFile {
                 size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
                 break;
             case OTG:
-                // TODO: Get free space from OTG
+                // TODO: Get free space from OTG when {@link DocumentFile} API adds support
                 break;
 
         }
         return size;
     }
 
+    /**
+     * Gets total size of the disk
+     * @param context
+     * @return
+     */
     public long getTotal(Context context) {
         long size = 0l;
         switch (mode) {
             case SMB:
-                // TODO: Helper method to find total storage space of SMB
+                // TODO: Find total storage space of SMB when JCIFS adds support
                 try {
                     size = new SmbFile(path).getDiskFreeSpace();
                 } catch (SmbException e) {
@@ -625,7 +634,7 @@ public class HFile {
                 size = spaceAllocation.getTotal();
                 break;
             case OTG:
-                // TODO: Helper method to find total storage space of OTG
+                // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
                 DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
                 documentFile.length();
                 break;
