@@ -395,6 +395,7 @@ public class GeneralDialogCreation {
             chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
             chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
             chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            chart.getLegend().setTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
 
             chart.animateY(1000);
 
