@@ -75,8 +75,6 @@
   <string name="tab">Tabblad</string>
   <string name="file">Bestand</string>
   <string name="folder">Map</string>
-  <string name="dialog_delete_category_files">Bestanden</string>
-  <string name="dialog_delete_category_directories">Mappen</string>
   <string name="newfolder">Nieuwe map</string>
   <string name="entername">Naam invoeren</string>
   <string name="extracting">Uitpakken</string>
@@ -96,9 +94,11 @@
   <string name="compress">Comprimeren</string>
   <string name="yes">Ja</string>
   <string name="no">Nee</string>
+  <string name="dialog_delete_category_directories">Mappen</string>
+  <string name="dialog_delete_category_files">Bestanden</string>
+  <string name="dialog_delete_disclaimer">Weet je zeker dat je de volgende bestanden wilt verwijderen?</string>
   <string name="dialog_delete_title">Bevestigen</string>
   <string name="deleting">Verwijderen</string>
-  <string name="dialog_delete_disclaimer">Weet je zeker dat je de volgende bestanden wilt verwijderen?</string>
   <string name="questionset">Wilt u het huidige pad instellen als standaard voor dit tabblad?</string>
   <string name="viewmode">Weergavemodus</string>
   <string name="uimode">UI-modus</string>

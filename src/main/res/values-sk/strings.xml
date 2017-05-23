@@ -77,8 +77,6 @@
   <string name="tab">Karta</string>
   <string name="file">Súbor</string>
   <string name="folder">Priečinok</string>
-  <string name="dialog_delete_category_files">Súbory</string>
-  <string name="dialog_delete_category_directories">Adresáre</string>
   <string name="newfolder">Nový priečinok</string>
   <string name="entername">Zadajte názov</string>
   <string name="extracting">Rozbaľovanie</string>
@@ -98,9 +96,11 @@
   <string name="compress">Komprimovať</string>
   <string name="yes">Áno</string>
   <string name="no">Nie</string>
-  <string name="dialog_delete_title">Potvrdiť</string>
+  <string name="dialog_delete_category_directories">Adresáre</string>
+  <string name="dialog_delete_category_files">Súbory</string>
+  <string name="dialog_delete_disclaimer">Vymazaním nižšie uvedených položiek ich natrvalo odstránite zo zariadenia a nebude ich možné obnoviť.</string>
+  <string name="dialog_delete_title">Odstrániť položky natrvalo?</string>
   <string name="deleting">Odstraňovanie</string>
-  <string name="dialog_delete_disclaimer">Naozaj chcete odstrániť nasledujúce súbory?</string>
   <string name="questionset">Chcete nastaviť aktuálnu cestu ako domácu pre túto kartu?</string>
   <string name="viewmode">Režim zobrazenia</string>
   <string name="uimode">Režim používateľského rozhrania</string>

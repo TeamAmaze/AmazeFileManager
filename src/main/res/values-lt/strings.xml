@@ -93,9 +93,9 @@
   <string name="compress">Suspausti</string>
   <string name="yes">Taip</string>
   <string name="no">Ne</string>
+  <string name="dialog_delete_disclaimer">Ar Jūs tikrai norite ištrinti šias bylas?</string>
   <string name="dialog_delete_title">Patvirtinti</string>
   <string name="deleting">Ištrinama</string>
-  <string name="dialog_delete_disclaimer">Ar Jūs tikrai norite ištrinti šias bylas?</string>
   <string name="questionset">Ar Jūs norite nustatyti dabartinį kelią kaip namų šiai kortelei?</string>
   <string name="viewmode">Peržiūros rėžimas</string>
   <string name="uimode">Vartotojo sąsajos rėžimas</string>

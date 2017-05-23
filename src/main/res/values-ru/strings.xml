@@ -76,8 +76,6 @@
   <string name="tab">Вкладка</string>
   <string name="file">Файл</string>
   <string name="folder">Папка</string>
-  <string name="dialog_delete_category_files">ФАЙЛЫ</string>
-  <string name="dialog_delete_category_directories">ПАПКИ</string>
   <string name="newfolder">Новая папка</string>
   <string name="entername">Введите имя</string>
   <string name="extracting">Извлечение...</string>
@@ -97,9 +95,11 @@
   <string name="compress">Архивировать</string>
   <string name="yes">Да</string>
   <string name="no">Нет</string>
+  <string name="dialog_delete_category_directories">ПАПКИ</string>
+  <string name="dialog_delete_category_files">ФАЙЛЫ</string>
+  <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы?</string>
   <string name="dialog_delete_title">Подтвердите</string>
   <string name="deleting">Удаление...</string>
-  <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы?</string>
   <string name="questionset">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
   <string name="viewmode">Режим просмотра</string>
   <string name="uimode">Режим интерфейса</string>

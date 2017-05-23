@@ -75,8 +75,6 @@
   <string name="tab">Karta</string>
   <string name="file">Plik</string>
   <string name="folder">Katalog</string>
-  <string name="dialog_delete_category_files">Pliki</string>
-  <string name="dialog_delete_category_directories">Katalogi</string>
   <string name="newfolder">Nowy katalog</string>
   <string name="entername">Wprowadź nazwę</string>
   <string name="extracting">Rozpakowywanie</string>
@@ -96,9 +94,11 @@
   <string name="compress">Skompresuj</string>
   <string name="yes">Tak</string>
   <string name="no">Nie</string>
+  <string name="dialog_delete_category_directories">Katalogi</string>
+  <string name="dialog_delete_category_files">Pliki</string>
+  <string name="dialog_delete_disclaimer">Czy usunąć następujące pliki?</string>
   <string name="dialog_delete_title">Potwierdź</string>
   <string name="deleting">Usuwanie</string>
-  <string name="dialog_delete_disclaimer">Czy usunąć następujące pliki?</string>
   <string name="questionset">Czy ustawić aktualną ścieżkę jako główną dla tej karty?</string>
   <string name="viewmode">Tryb widoku</string>
   <string name="uimode">Tryb interfejsu</string>

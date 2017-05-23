@@ -74,7 +74,6 @@
   <string name="tab">الضغط</string>
   <string name="file">ملف</string>
   <string name="folder">مجلد</string>
-  <string name="title_files">الملفات</string>
   <string name="newfolder">مجلد جديد</string>
   <string name="entername">ادخل الإسم</string>
   <string name="extracting">جاري الإستخراج</string>
@@ -94,9 +93,10 @@
   <string name="compress">ضغط</string>
   <string name="yes">نعم</string>
   <string name="no">لا</string>
+  <string name="dialog_delete_category_files">الملفات</string>
+  <string name="dialog_delete_disclaimer">هل تريد حقًا حذف الملفات التالية ؟</string>
   <string name="dialog_delete_title">تأكيد</string>
   <string name="deleting">جاري الحذف</string>
-  <string name="dialog_delete_disclaimer">هل تريد حقًا حذف الملفات التالية ؟</string>
   <string name="viewmode">نمط العرض</string>
   <string name="uimode">نمط واجهة المستخدم</string>
   <string name="sortby">ترتيب حسب</string>

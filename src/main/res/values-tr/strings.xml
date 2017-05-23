@@ -75,8 +75,6 @@
   <string name="tab">Sekme</string>
   <string name="file">Dosya</string>
   <string name="folder">Klasör</string>
-  <string name="dialog_delete_category_files">Dosyalar</string>
-  <string name="dialog_delete_category_directories">Dizinler</string>
   <string name="newfolder">Yeni klasör</string>
   <string name="entername">Ad gir</string>
   <string name="extracting">Ayıklanıyor</string>
@@ -96,9 +94,11 @@
   <string name="compress">Sıkıştırma</string>
   <string name="yes">Evet</string>
   <string name="no">Hayır</string>
+  <string name="dialog_delete_category_directories">Dizinler</string>
+  <string name="dialog_delete_category_files">Dosyalar</string>
+  <string name="dialog_delete_disclaimer">Aşağıdaki dosyaları silmek istediğinize emin misiniz?</string>
   <string name="dialog_delete_title">Onayla</string>
   <string name="deleting">Siliniyor</string>
-  <string name="dialog_delete_disclaimer">Aşağıdaki dosyaları silmek istediğinize emin misiniz?</string>
   <string name="questionset">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
   <string name="viewmode">Görünüm modu</string>
   <string name="uimode">Arayüz modu</string>

@@ -77,8 +77,6 @@
   <string name="tab">Onglet</string>
   <string name="file">Fichier</string>
   <string name="folder">Dossier</string>
-  <string name="dialog_delete_category_files">Fichiers</string>
-  <string name="dialog_delete_category_directories">Répertoires</string>
   <string name="newfolder">Nouveau dossier</string>
   <string name="entername">Entrer le nom</string>
   <string name="extracting">Extraction</string>
@@ -98,9 +96,11 @@
   <string name="compress">Compresser</string>
   <string name="yes">Oui</string>
   <string name="no">Non</string>
+  <string name="dialog_delete_category_directories">Répertoires</string>
+  <string name="dialog_delete_category_files">Fichiers</string>
+  <string name="dialog_delete_disclaimer">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
   <string name="dialog_delete_title">Confirmer</string>
   <string name="deleting">Suppression</string>
-  <string name="dialog_delete_disclaimer">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
   <string name="questionset">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
   <string name="viewmode">Mode d\'affichage</string>
   <string name="uimode">Mode d\'interface utilisateur</string>
