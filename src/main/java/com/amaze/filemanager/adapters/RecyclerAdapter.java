@@ -52,10 +52,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by Arpit on 11-04-2015.
+ * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+
+    private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
+            GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
 
     private UtilitiesProviderInterface utilsProvider;
 
@@ -325,9 +328,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.checkImageView.setBackground(new CircleGradientDrawable(mainFrag.fabSkin,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
-            } else
+            } else {
                 holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(mainFrag.fabSkin,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
+            }
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
@@ -344,11 +348,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             });
 
             int filetype = -1;
-            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
-            else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
-            else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
-            else if (Icons.isEncrypted(rowItem.getDesc()) && !rowItem.isDirectory()) filetype = 4;
-            else if (Icons.isGeneric(rowItem.getDesc())) filetype = 3;
+            String desc = rowItem.getDesc();
+            if (Icons.isPicture((desc.toLowerCase()))) filetype = PICTURE_FILETYPE;
+            else if (Icons.isApk((desc))) filetype = APK_FILETYPE;
+            else if (Icons.isVideo(desc)) filetype = VIDEO_FILETYPE;
+            else if (Icons.isEncrypted(desc) && !rowItem.isDirectory()) filetype = ENCRYPTED_FILETYPE;
+            else if (Icons.isGeneric(desc)) filetype = GENERIC_FILETYPE;
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
@@ -404,92 +409,93 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             // setting icons for various cases
             // apkIcon holder refers to square/non-circular drawable
             // pictureIcon is circular drawable
-            if (filetype == 0) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
+            switch (filetype) {
+                case PICTURE_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
 
-                    if (mainFrag.CIRCULAR_IMAGES) {
-                        holder.apkIcon.setVisibility(View.GONE);
-                        holder.pictureIcon.setVisibility(View.VISIBLE);
-                        holder.pictureIcon.setImageDrawable(mainFrag.DARK_IMAGE);
-                        mainFrag.ic.cancelLoad(holder.pictureIcon);
-                        mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
-                    } else {
+                        if (mainFrag.CIRCULAR_IMAGES) {
+                            holder.apkIcon.setVisibility(View.GONE);
+                            holder.pictureIcon.setVisibility(View.VISIBLE);
+                            holder.pictureIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                            mainFrag.ic.cancelLoad(holder.pictureIcon);
+                            mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                        } else {
+                            holder.apkIcon.setVisibility(View.VISIBLE);
+                            holder.apkIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                            mainFrag.ic.cancelLoad(holder.apkIcon);
+                            mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                        }
+                    }
+                    break;
+                case APK_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
+                        holder.pictureIcon.setVisibility(View.GONE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
-                        holder.apkIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                        holder.apkIcon.setImageDrawable(mainFrag.apk);
                         mainFrag.ic.cancelLoad(holder.apkIcon);
                         mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
-                }
-            } else if (filetype == 1) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
-                    holder.pictureIcon.setVisibility(View.GONE);
-                    holder.apkIcon.setVisibility(View.VISIBLE);
-                    holder.apkIcon.setImageDrawable(mainFrag.apk);
-                    mainFrag.ic.cancelLoad(holder.apkIcon);
-                    mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
-                }
-
-            } else if (filetype == 2) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
-                    if (mainFrag.CIRCULAR_IMAGES) {
-                        holder.pictureIcon.setVisibility(View.VISIBLE);
-                        holder.pictureIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                        mainFrag.ic.cancelLoad(holder.pictureIcon);
-                        mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
-                    } else {
-                        holder.apkIcon.setVisibility(View.VISIBLE);
-                        holder.apkIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                        mainFrag.ic.cancelLoad(holder.apkIcon);
-                        mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                    break;
+                case VIDEO_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
+                        if (mainFrag.CIRCULAR_IMAGES) {
+                            holder.pictureIcon.setVisibility(View.VISIBLE);
+                            holder.pictureIcon.setImageDrawable(mainFrag.DARK_VIDEO);
+                            mainFrag.ic.cancelLoad(holder.pictureIcon);
+                            mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                        } else {
+                            holder.apkIcon.setVisibility(View.VISIBLE);
+                            holder.apkIcon.setImageDrawable(mainFrag.DARK_VIDEO);
+                            mainFrag.ic.cancelLoad(holder.apkIcon);
+                            mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                        }
                     }
-                }
-            } else if (filetype == 3) {
+                    break;
+                case GENERIC_FILETYPE:
+                    // if the file type is any unknown variable
+                    String ext = !rowItem.isDirectory()
+                            ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                    if (ext != null && ext.trim().length() != 0) {
+                        holder.genericText.setText(ext);
+                        holder.genericIcon.setImageDrawable(null);
+                        //holder.genericIcon.setVisibility(View.INVISIBLE);
+                    } else {
 
-                // if the file type is any unknown variable
-                String ext = !rowItem.isDirectory()
-                        ? MimeTypes.getExtension(rowItem.getTitle()) : null;
-                if (ext != null && ext.trim().length() != 0) {
-                    holder.genericText.setText(ext);
-                    holder.genericIcon.setImageDrawable(null);
-                    //holder.genericIcon.setVisibility(View.INVISIBLE);
-                } else {
-
-                    // we could not find the extension, set a generic file type icon
-                    // probably a directory
-                    holder.genericIcon.setVisibility(View.VISIBLE);
-                }
-                holder.pictureIcon.setVisibility(View.GONE);
-                holder.apkIcon.setVisibility(View.GONE);
-
-            } else if (filetype == 4) {
-
-                Bitmap lockBitmap = BitmapFactory.decodeResource(mainFrag.getResources(),
-                        R.drawable.ic_file_lock_white_36dp);
-                BitmapDrawable lockBitmapDrawable = new BitmapDrawable(mainFrag.getResources(), lockBitmap);
-
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.VISIBLE);
+                        // we could not find the extension, set a generic file type icon
+                        // probably a directory
+                        holder.genericIcon.setVisibility(View.VISIBLE);
+                    }
                     holder.pictureIcon.setVisibility(View.GONE);
                     holder.apkIcon.setVisibility(View.GONE);
-                    holder.genericIcon.setImageDrawable(lockBitmapDrawable);
-                    //main.ic.cancelLoad(holder.apkIcon);
-                    //main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
-                }
-            } else {
-                holder.pictureIcon.setVisibility(View.GONE);
-                holder.apkIcon.setVisibility(View.GONE);
-                holder.genericIcon.setVisibility(View.VISIBLE);
+                    break;
+                case ENCRYPTED_FILETYPE:
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(mainFrag.getResources(),
+                            R.drawable.ic_file_lock_white_36dp);
+                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(mainFrag.getResources(), lockBitmap);
+
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.VISIBLE);
+                        holder.pictureIcon.setVisibility(View.GONE);
+                        holder.apkIcon.setVisibility(View.GONE);
+                        holder.genericIcon.setImageDrawable(lockBitmapDrawable);
+                        //main.ic.cancelLoad(holder.apkIcon);
+                        //main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                    }
+                    break;
+                default:
+                    holder.pictureIcon.setVisibility(View.GONE);
+                    holder.apkIcon.setVisibility(View.GONE);
+                    holder.genericIcon.setVisibility(View.VISIBLE);
+                    break;
             }
 
-            Boolean checked = myChecked.get(p);
+            boolean checked = myChecked.get(p);
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
-
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
             }
             holder.rl.setSelected(false);
