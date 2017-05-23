@@ -42,7 +42,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.asynctasks.CountFolderItems;
+import com.amaze.filemanager.services.asynctasks.CountItemsOrAndSize;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -374,8 +374,8 @@ public class GeneralDialogCreation {
             });
         }
 
-        CountFolderItems countFolderItems = new CountFolderItems(c, itemsText, baseFile);
-        countFolderItems.executeOnExecutor(executor);
+        CountItemsOrAndSize countItemsOrAndSize = new CountItemsOrAndSize(c, itemsText, baseFile);
+        countItemsOrAndSize.executeOnExecutor(executor);
 
         GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
         hashGen.executeOnExecutor(executor);

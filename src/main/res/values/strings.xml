@@ -196,8 +196,6 @@
     <string name="copying_fles">Copying Files</string>
     <string name="done">Done</string>
     <string name="Extracting_fles">Extracting Files</string>
-    <string name="items">Items</string>
-    <string name="item">Item</string>
     <string name="set">Set</string>
     <string name="enablerootmde">Enable Root Mode</string>
     <string name="goback">Go Back</string>
@@ -643,7 +641,6 @@
     <string name="crypt_decryption_fail_password">Wrong password!</string>
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
-    <string name="bytes">Bytes</string>
 
     <string name="sidebarfolders_title">Sidebar shortcuts</string>
     <string name="sidebarquickaccess_title">Sidebar quick access</string>
@@ -669,4 +666,12 @@
         Please download Amaze from Play Store.</string>
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Show Headers</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="noitems">No items</string>
+	<string name="item">item</string>
+	<string name="items">items</string>
+	
+	<string name="byte_singular">byte</string>
+	<string name="bytes">bytes</string>
 </resources>

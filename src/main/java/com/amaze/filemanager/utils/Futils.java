@@ -102,6 +102,10 @@ public class Futils {
         return length;
     }
 
+    public static long folderSize(HFile directory, OnProgressUpdate<Long> updateState) {
+        return folderSize(new File(directory.getPath()), updateState);
+    }
+
     public static long folderSize(SmbFile directory) {
         long length = 0;
         try {
@@ -611,7 +615,7 @@ public class Futils {
                 File file = new File(hFile.getPath());
                 final long totalSpace = file.getTotalSpace(),
                         freeSpace = file.getFreeSpace(),
-                        folderSize = folderSize(new File(hFile.getPath()),
+                        folderSize = folderSize(hFile,
                                 new OnProgressUpdate<Long>() {
                                     @Override
                                     public void onUpdate(Long data) {
