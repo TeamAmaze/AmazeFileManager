@@ -194,11 +194,11 @@ public class SmbConnectDialog extends DialogFragment {
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
 
-        EditTextColorStateUtil.setTint(conName, accentColor);
-        EditTextColorStateUtil.setTint(user, accentColor);
-        EditTextColorStateUtil.setTint(pass, accentColor);
+        EditTextColorStateUtil.setTint(context, conName, accentColor);
+        EditTextColorStateUtil.setTint(context, user, accentColor);
+        EditTextColorStateUtil.setTint(context, pass, accentColor);
 
-        Utils.setTint(getContext(), ch, accentColor);
+        Utils.setTint(context, ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
