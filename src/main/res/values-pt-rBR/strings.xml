@@ -188,8 +188,6 @@
   <string name="copying_fles">Copiando arquivos</string>
   <string name="done">Concluído</string>
   <string name="Extracting_fles">Extraindo arquivos</string>
-  <string name="items">Itens</string>
-  <string name="item">Item</string>
   <string name="set">Definir</string>
   <string name="enablerootmde">Ative o modo Root</string>
   <string name="goback">Voltar</string>
@@ -572,5 +570,8 @@ Abra o prompt de comando. Digite \'ipconfig\' e pressione Enter. Procure Gateway
   <string name="contributors_6_summary">Servidor FTP</string>
   <string name="contributors_7_summary">Disparar um shell interativo</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Item</string>
+  <string name="items">Itens</string>
   <string name="bytes">Bytes</string>
 </resources>

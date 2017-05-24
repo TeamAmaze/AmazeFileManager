@@ -191,8 +191,6 @@
   <string name="copying_fles">Copie des fichiers</string>
   <string name="done">Vu</string>
   <string name="Extracting_fles">Extraction des fichiers</string>
-  <string name="items">Éléments</string>
-  <string name="item">Élément</string>
   <string name="set">Défini</string>
   <string name="enablerootmde">Activer le Mode ROOT</string>
   <string name="goback">Retour</string>
@@ -600,7 +598,6 @@
   <string name="crypt_decryption_fail_password">Mot de passe incorrect !</string>
   <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
-  <string name="bytes">Octets</string>
   <string name="sidebarfolders_title">Raccourcis de la barre latérale</string>
   <string name="showfolders_pref_title">Afficher les raccourcis</string>
   <string name="showfolders_pref">Raccourcis</string>
@@ -619,4 +616,8 @@
   <string name="cloud_token_lost">Identification perdu, s’il vous plaît connectez-vous à nouveau</string>
   <string name="cloud_plugin_not_supported">Cloud plug-in n’est pas pris en charge pour Fdroid build.         S’il vous plaît télécharger Amaze sur Play Store.</string>
   <string name="showHeaders">Afficher les en-têtes</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Élément</string>
+  <string name="items">Éléments</string>
+  <string name="bytes">Octets</string>
 </resources>

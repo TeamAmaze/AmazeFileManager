@@ -172,8 +172,6 @@
   <string name="copying_fles">Đang sao chép tệp</string>
   <string name="done">Hoàn tất</string>
   <string name="Extracting_fles">Đang giải nén tệp</string>
-  <string name="items">Các mục</string>
-  <string name="item">Mục</string>
   <string name="set">Đặt</string>
   <string name="enablerootmde">Kích hoạt chế độ Root</string>
   <string name="goback">Quay lại</string>
@@ -490,4 +488,7 @@
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">Máy chủ FTP</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Mục</string>
+  <string name="items">Các mục</string>
 </resources>

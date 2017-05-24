@@ -98,8 +98,8 @@
   <string name="no">否</string>
   <string name="dialog_delete_category_directories">目錄</string>
   <string name="dialog_delete_category_files">檔案</string>
-  <string name="dialog_delete_disclaimer">您確定要刪除以下檔案嗎？</string>
-  <string name="dialog_delete_title">確認</string>
+  <string name="dialog_delete_disclaimer">刪除以下項目將永久將其從裝置中刪除，並且無法恢復。</string>
+  <string name="dialog_delete_title">永久刪除項目？</string>
   <string name="deleting">正在刪除</string>
   <string name="questionset">您要將此頁籤的目前路徑設為首頁嗎？</string>
   <string name="viewmode">檢視模式</string>
@@ -191,8 +191,6 @@
   <string name="copying_fles">正在複製檔案</string>
   <string name="done">完成</string>
   <string name="Extracting_fles">正在解壓縮檔案</string>
-  <string name="items">個項目</string>
-  <string name="item">項目</string>
   <string name="set">設定</string>
   <string name="enablerootmde">啟用 Root 模式</string>
   <string name="goback">返回上一層</string>
@@ -613,7 +611,6 @@
   <string name="crypt_decryption_fail_password">密碼錯誤 ！</string>
   <string name="crypt_fingerprint_authenticate">繼續觸控感應器</string>
   <string name="authenticate_password">請輸入密碼</string>
-  <string name="bytes">位元組</string>
   <string name="sidebarfolders_title">側欄捷徑</string>
   <string name="sidebarquickaccess_title">側欄快速存取</string>
   <string name="showfolders_pref_title">顯示捷徑</string>
@@ -635,4 +632,8 @@
   <string name="cloud_plugin_not_supported">雲端套件尚不支援 Fdroid。請從 Play 商店中下載  Amaze Cloud。</string>
   <string name="monofont">等寬字型</string>
   <string name="showHeaders">顯示標頭</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">項目</string>
+  <string name="items">個項目</string>
+  <string name="bytes">位元組</string>
 </resources>

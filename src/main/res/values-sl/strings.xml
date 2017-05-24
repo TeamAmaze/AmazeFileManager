@@ -60,9 +60,15 @@
   <string name="date">Datum</string>
   <string name="location">Lokacija</string>
   <string name="size_capitalized">Velikost</string>
+  <string name="size">velikost mape</string>
   <string name="totalitems">Skupno število elementov</string>
   <string name="copying">Kopiranje</string>
+  <string name="moving">Premikam</string>
   <string name="add">Dodaj</string>
+  <string name="tab">Zavihek</string>
+  <string name="file">Datoteka</string>
+  <string name="folder">Mapa</string>
+  <string name="newfolder">Nova mapa</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
   <string name="extract">Razširi</string>
@@ -87,6 +93,7 @@
   <string name="selectall">Izberi vse</string>
   <string name="delete">Izbriši</string>
   <string name="foldercolor">Barva mape</string>
+  <string name="imagegallery">Galerija slik</string>
   <string name="fileexplorer">Raziskovalec datotek</string>
   <!-- New -->
   <!-- Array -->
@@ -261,4 +268,5 @@
   <string name="contributors_6_summary">FTP strežnik</string>
   <!-- references to 'Some files weren't successfully %s -->
   <string name="warning_confirm">Razumem!</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 </resources>

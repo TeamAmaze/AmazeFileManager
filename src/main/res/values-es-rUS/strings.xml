@@ -98,8 +98,8 @@
   <string name="no">No</string>
   <string name="dialog_delete_category_directories">Directorios</string>
   <string name="dialog_delete_category_files">Archivos</string>
-  <string name="dialog_delete_disclaimer">¿De verdad quiere eliminar los siguientes archivos?</string>
-  <string name="dialog_delete_title">Confirmar</string>
+  <string name="dialog_delete_disclaimer">Al eliminar los siguientes elementos serán permanentemente removidos del dispositivo y no pueden ser recuperados.</string>
+  <string name="dialog_delete_title">¿Eliminar elementos permanentemente?</string>
   <string name="deleting">Eliminando</string>
   <string name="questionset">¿Quieres establecer la ruta actual como base para esta pestaña?</string>
   <string name="viewmode">Modo de visualización</string>
@@ -191,8 +191,6 @@
   <string name="copying_fles">Copiando archivos</string>
   <string name="done">Hecho</string>
   <string name="Extracting_fles">Extrayendo archivos</string>
-  <string name="items">Elementos</string>
-  <string name="item">Elemento</string>
   <string name="set">Ajustar</string>
   <string name="enablerootmde">Activar modo Root</string>
   <string name="goback">Regresar</string>
@@ -623,7 +621,6 @@
   <string name="crypt_decryption_fail_password">¡Contraseña incorrecta!</string>
   <string name="crypt_fingerprint_authenticate">Tocar sensor para continuar</string>
   <string name="authenticate_password">Introducir contraseña</string>
-  <string name="bytes">Bytes</string>
   <string name="sidebarfolders_title">Barra lateral de accesos directos</string>
   <string name="sidebarquickaccess_title">Barra lateral de accesos rápidos</string>
   <string name="showfolders_pref_title">Mostrar accesos directos</string>
@@ -647,4 +644,8 @@
         Por favor descarga Amaze desde el Play Store.</string>
   <string name="monofont">Fuente monoespacio</string>
   <string name="showHeaders">Mostrar cabeceras</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Elemento</string>
+  <string name="items">Elementos</string>
+  <string name="bytes">Bytes</string>
 </resources>

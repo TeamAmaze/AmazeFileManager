@@ -191,8 +191,6 @@
   <string name="copying_fles">Kopíruji soubory</string>
   <string name="done">Hotovo</string>
   <string name="Extracting_fles">Rozbaluji soubory</string>
-  <string name="items">Položky</string>
-  <string name="item">Položka</string>
   <string name="set">Nastavit</string>
   <string name="enablerootmde">Povolit režim s rootem</string>
   <string name="goback">Zpět</string>
@@ -608,7 +606,6 @@
   <string name="crypt_decryption_fail_password">Špatné heslo!</string>
   <string name="crypt_fingerprint_authenticate">Stiskněte senzor pro pokračování</string>
   <string name="authenticate_password">Zadejte heslo</string>
-  <string name="bytes">Bajtů</string>
   <string name="sidebarfolders_title">Zkratky postranního panelu</string>
   <string name="sidebarquickaccess_title">Rychlý přístup k postrannímu panelu</string>
   <string name="showfolders_pref_title">Zobrazit zkratky</string>
@@ -630,4 +627,8 @@
   <string name="cloud_plugin_not_supported">Cloud plug-in není podporována pro sestavení Fdroid.         Stáhněte si Amaze z Obchodu Play.</string>
   <string name="monofont">Monospace Font</string>
   <string name="showHeaders">Zobrazit záhlaví</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Položka</string>
+  <string name="items">Položky</string>
+  <string name="bytes">Bajtů</string>
 </resources>

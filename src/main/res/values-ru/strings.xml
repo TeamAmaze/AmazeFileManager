@@ -189,8 +189,6 @@
   <string name="copying_fles">Копирование файлов</string>
   <string name="done">Готово</string>
   <string name="Extracting_fles">Извлечение файлов</string>
-  <string name="items">Элементы</string>
-  <string name="item">Элемент</string>
   <string name="set">Установить</string>
   <string name="enablerootmde">Включите режим рут прав</string>
   <string name="goback">Вернуться</string>
@@ -608,7 +606,6 @@
   <string name="crypt_decryption_fail_password">Неверный пароль!</string>
   <string name="crypt_fingerprint_authenticate">Коснитесь сенсора для продолжения</string>
   <string name="authenticate_password">Введите пароль</string>
-  <string name="bytes">Байты</string>
   <string name="sidebarfolders_title">Быстрые клавиши на боковой панели</string>
   <string name="sidebarquickaccess_title">Боковая панель быстрого доступа</string>
   <string name="showfolders_pref_title">Показать ярлыки</string>
@@ -619,4 +616,8 @@
   <string name="edit_shortcut">Редактировать ярлык</string>
   <string name="directory">Директория</string>
   <string name="questiondelete_shortcut">Удалить ярлык?</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Элемент</string>
+  <string name="items">Элементы</string>
+  <string name="bytes">Байты</string>
 </resources>

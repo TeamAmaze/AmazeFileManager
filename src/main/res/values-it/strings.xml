@@ -194,8 +194,6 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="copying_fles">Copia file in corso</string>
   <string name="done">Fatto</string>
   <string name="Extracting_fles">Estrazione file in corso</string>
-  <string name="items">Elementi</string>
-  <string name="item">Elemento</string>
   <string name="set">Imposta</string>
   <string name="enablerootmde">Abilità modalità root</string>
   <string name="goback">Indietro</string>
@@ -561,5 +559,8 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="crypt_decryption_fail_password">Password errata!</string>
   <string name="crypt_fingerprint_authenticate">Tocca il sensore per continuare</string>
   <string name="authenticate_password">Inserisci la password</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Elemento</string>
+  <string name="items">Elementi</string>
   <string name="bytes">Bytes</string>
 </resources>

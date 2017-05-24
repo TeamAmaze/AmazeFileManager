@@ -191,8 +191,6 @@
   <string name="copying_fles">正在复制文件</string>
   <string name="done">完成</string>
   <string name="Extracting_fles">正在提取文件</string>
-  <string name="items">个项目</string>
-  <string name="item">项目</string>
   <string name="set">应用</string>
   <string name="enablerootmde">启用 Root 模式</string>
   <string name="goback">返回上一级</string>
@@ -581,7 +579,6 @@
   <string name="crypt_decryption_fail_password">密码错误</string>
   <string name="crypt_fingerprint_authenticate">请继续触摸传感器</string>
   <string name="authenticate_password">输入密码</string>
-  <string name="bytes">字节</string>
   <string name="sidebarfolders_title">侧边栏快捷方式</string>
   <string name="sidebarquickaccess_title">侧边栏快速访问</string>
   <string name="showfolders_pref_title">显示快捷方式</string>
@@ -603,4 +600,8 @@
   <string name="cloud_plugin_not_supported">网盘插件不受 Fdroid 支持。请从应用商店下载 Amaze Cloud。</string>
   <string name="monofont">等宽字体</string>
   <string name="showHeaders">显示页眉</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">项目</string>
+  <string name="items">个项目</string>
+  <string name="bytes">字节</string>
 </resources>
