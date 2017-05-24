@@ -60,6 +60,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
             GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
 
+    private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
+
+    private static final long FILE = 'F', DIRECTORY = 'D';
+
+    private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
+            GENERIC = 6, APK = 7, PICTURE = 8;
+
     private UtilitiesProviderInterface utilsProvider;
 
     private MainFragment mainFrag;
@@ -517,27 +524,39 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.checkImageView.setVisibility(View.INVISIBLE);
                 GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
                 if (mainFrag.COLORISE_ICONS) {
-                    if (rowItem.isDirectory())
+                    if (rowItem.isDirectory()) {
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
-                    else if (Icons.isVideo(rowItem.getDesc()) || Icons.isPicture(rowItem
-                            .getDesc()))
-                        gradientDrawable.setColor(videoColor);
-                    else if (Icons.isAudio(rowItem.getDesc()))
-                        gradientDrawable.setColor(audioColor);
-                    else if (Icons.isPdf(rowItem.getDesc()))
-                        gradientDrawable.setColor(pdfColor);
-                    else if (Icons.isCode(rowItem.getDesc()))
-                        gradientDrawable.setColor(codeColor);
-                    else if (Icons.isText(rowItem.getDesc()))
-                        gradientDrawable.setColor(textColor);
-                    else if (Icons.isArchive(rowItem.getDesc()))
-                        gradientDrawable.setColor(archiveColor);
-                    else if (Icons.isApk(rowItem.getDesc()))
-                        gradientDrawable.setColor(apkColor);
-                    else if (Icons.isGeneric(rowItem.getDesc())) {
-                        gradientDrawable.setColor(genericColor);
                     } else {
-                        gradientDrawable.setColor(mainFrag.icon_skin_color);
+                        switch (analiseDescription(rowItem.getDesc())) {
+                            case VIDEO:
+                            case PICTURE:
+                                gradientDrawable.setColor(videoColor);
+                                break;
+                            case AUDIO:
+                                gradientDrawable.setColor(audioColor);
+                                break;
+                            case PDF:
+                                gradientDrawable.setColor(pdfColor);
+                                break;
+                            case CODE:
+                                gradientDrawable.setColor(codeColor);
+                                break;
+                            case TEXT:
+                                gradientDrawable.setColor(textColor);
+                                break;
+                            case ARCHIVE:
+                                gradientDrawable.setColor(archiveColor);
+                                break;
+                            case APK:
+                                gradientDrawable.setColor(apkColor);
+                                break;
+                            case GENERIC:
+                                gradientDrawable.setColor(genericColor);
+                                break;
+                            default:
+                                gradientDrawable.setColor(mainFrag.icon_skin_color);
+                                break;
+                        }
                     }
                 } else gradientDrawable.setColor((mainFrag.icon_skin_color));
 
@@ -603,25 +622,42 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 mainFrag.ic.cancelLoad(holder.genericIcon);
                 mainFrag.ic.loadDrawable(holder.genericIcon, (rowItem.getDesc()), null);
             }
-            if (rowItem.isDirectory())
+
+            if (rowItem.isDirectory()) {
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
-            else if (Icons.isVideo(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(videoColor);
-            else if (Icons.isAudio(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(audioColor);
-            else if (Icons.isPdf(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(pdfColor);
-            else if (Icons.isCode(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(codeColor);
-            else if (Icons.isText(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(textColor);
-            else if (Icons.isArchive(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(archiveColor);
-            else if (Icons.isGeneric(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(genericColor);
-            else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(null);
-            else holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+            } else {
+                switch (analiseDescription(rowItem.getDesc())) {
+                    case VIDEO:
+                        holder.genericIcon.setColorFilter(videoColor);
+                        break;
+                    case AUDIO:
+                        holder.genericIcon.setColorFilter(audioColor);
+                        break;
+                    case PDF:
+                        holder.genericIcon.setColorFilter(pdfColor);
+                        break;
+                    case CODE:
+                        holder.genericIcon.setColorFilter(codeColor);
+                        break;
+                    case TEXT:
+                        holder.genericIcon.setColorFilter(textColor);
+                        break;
+                    case ARCHIVE:
+                        holder.genericIcon.setColorFilter(archiveColor);
+                        break;
+                    case GENERIC:
+                        holder.genericIcon.setColorFilter(genericColor);
+                        break;
+                    case APK:
+                    case PICTURE:
+                        holder.genericIcon.setColorFilter(null);
+                        break;
+                    default:
+                        holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+                        break;
+                }
+            }
+
             if (rowItem.getSize().equals(mainFrag.goback))
                 holder.genericIcon.setColorFilter(goBackColor);
 
@@ -666,8 +702,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (mainFrag.IS_LIST) {
                 if (i != items.size()) {
                     if (items.get(i).getSize().equals(mainFrag.goback)) return -1;
-                    if (items.get(i).isDirectory()) return 'D';
-                    else return 'F';
+                    if (items.get(i).isDirectory()) return DIRECTORY;
+                    else return FILE;
                 }
             }
         return -1;
@@ -684,9 +720,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         else holder.headerText.setTextColor(Utils.getColor(context, R.color.text_dark));
         return holder;
     }
-
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
 
     @Override
     public int getItemViewType(int position) {
@@ -849,19 +882,24 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     }
                 });
                 popupMenu.inflate(R.menu.item_extras);
-                String x = rowItem.getDesc().toLowerCase();
+                String description = rowItem.getDesc().toLowerCase();
                 if (rowItem.isDirectory()) {
                     popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
                     popupMenu.getMenu().findItem(R.id.share).setVisible(false);
                 } else {
                     popupMenu.getMenu().findItem(R.id.book).setVisible(false);
                 }
-                if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
+                if (description.endsWith(".zip") || description.endsWith(".jar")
+                        || description.endsWith(".apk") || description.endsWith(".rar")
+                        || description.endsWith(".tar") || description.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
-                if (x.endsWith(CryptUtil.CRYPT_EXTENSION) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+                        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+                    else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+                }
+
                 popupMenu.show();
             }
         });
@@ -941,6 +979,28 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             super(view);
             headerText = (TextView) view.findViewById(R.id.headertext);
         }
+    }
+
+    private int analiseDescription(String description) {
+        if (Icons.isVideo(description))
+            return VIDEO;
+        else if (Icons.isAudio(description))
+            return AUDIO;
+        else if (Icons.isPdf(description))
+            return PDF;
+        else if (Icons.isCode(description))
+            return CODE;
+        else if (Icons.isText(description))
+            return TEXT;
+        else if (Icons.isArchive(description))
+            return ARCHIVE;
+        else if (Icons.isGeneric(description))
+            return GENERIC;
+        else if (Icons.isApk(description))
+            return APK;
+        else if(Icons.isPicture(description))
+            return PICTURE;
+        else return -1;
     }
 
 }
