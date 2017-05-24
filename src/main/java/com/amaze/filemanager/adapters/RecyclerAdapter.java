@@ -45,6 +45,7 @@ import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -532,36 +533,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     if (rowItem.isDirectory()) {
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
                     } else {
-                        switch (Icons.getTypeOfFile(rowItem.getDesc())) {
-                            case VIDEO:
-                            case PICTURE:
-                                gradientDrawable.setColor(videoColor);
-                                break;
-                            case AUDIO:
-                                gradientDrawable.setColor(audioColor);
-                                break;
-                            case PDF:
-                                gradientDrawable.setColor(pdfColor);
-                                break;
-                            case CODE:
-                                gradientDrawable.setColor(codeColor);
-                                break;
-                            case TEXT:
-                                gradientDrawable.setColor(textColor);
-                                break;
-                            case ARCHIVE:
-                                gradientDrawable.setColor(archiveColor);
-                                break;
-                            case APK:
-                                gradientDrawable.setColor(apkColor);
-                                break;
-                            case GENERIC:
-                                gradientDrawable.setColor(genericColor);
-                                break;
-                            default:
-                                gradientDrawable.setColor(mainFrag.icon_skin_color);
-                                break;
-                        }
+                        ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.getDesc()),
+                                gradientDrawable, mainFrag.icon_skin_color);
                     }
                 } else gradientDrawable.setColor((mainFrag.icon_skin_color));
 

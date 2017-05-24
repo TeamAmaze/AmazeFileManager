@@ -88,7 +88,7 @@
     <color name="accent_blue_grey">#607d8b</color>
     <color name="accent_super_su">#004d40</color>
 
-    <!-- colors used for files -->
+    <!-- colors used for files items -->
     <color name="goback_item">#757575</color>
     <color name="video_item">#f06292</color>
     <color name="audio_item">#9575cd</color>

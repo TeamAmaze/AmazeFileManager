@@ -33,6 +33,7 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
@@ -331,23 +332,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     holder.txtDesc.setText(Formatter.formatFileSize(c, rowItem.getSize()));
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
                 if (zipViewer.coloriseIcons) {
-                    if (Icons.isVideo(rowItem.getName()) || Icons.isPicture(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#f06292"));
-                    else if (Icons.isAudio(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#9575cd"));
-                    else if (Icons.isPdf(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#da4336"));
-                    else if (Icons.isCode(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#00bfa5"));
-                    else if (Icons.isText(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#e06055"));
-                    else if (Icons.isArchive(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#f9a825"));
-                    else if (Icons.isApk(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#a4c439"));
-                    else if (Icons.isGeneric(rowItem.getName()))
-                        gradientDrawable.setColor(Color.parseColor("#9e9e9e"));
-                    else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+                    ColorUtils.colorizeIcons(c, Icons.getTypeOfFile(rowItem.getName()),
+                            gradientDrawable, Color.parseColor(zipViewer.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
             }
         }
