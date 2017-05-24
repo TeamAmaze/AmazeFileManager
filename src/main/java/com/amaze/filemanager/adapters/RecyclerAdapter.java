@@ -354,8 +354,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             });
 
             int filetype = -1;
-            ;
-            switch (analiseDescription(rowItem.getDesc())) {
+
+            switch (Icons.getTypeOfFile(rowItem.getDesc())) {
                 case PICTURE:
                     filetype = PICTURE_FILETYPE;
                     break;
@@ -532,7 +532,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     if (rowItem.isDirectory()) {
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
                     } else {
-                        switch (analiseDescription(rowItem.getDesc())) {
+                        switch (Icons.getTypeOfFile(rowItem.getDesc())) {
                             case VIDEO:
                             case PICTURE:
                                 gradientDrawable.setColor(videoColor);
@@ -629,7 +629,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (rowItem.isDirectory()) {
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
             } else {
-                switch (analiseDescription(rowItem.getDesc())) {
+                switch (Icons.getTypeOfFile(rowItem.getDesc())) {
                     case VIDEO:
                         holder.genericIcon.setColorFilter(videoColor);
                         break;
@@ -947,30 +947,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public int getSpanSize(int i) {
         return 1;
-    }
-
-    private int analiseDescription(String description) {
-        if (Icons.isVideo(description))
-            return VIDEO;
-        else if (Icons.isAudio(description))
-            return AUDIO;
-        else if (Icons.isPdf(description))
-            return PDF;
-        else if (Icons.isCode(description))
-            return CODE;
-        else if (Icons.isText(description))
-            return TEXT;
-        else if (Icons.isArchive(description))
-            return ARCHIVE;
-        else if (Icons.isGeneric(description))
-            return GENERIC;
-        else if (Icons.isApk(description))
-            return APK;
-        else if (Icons.isPicture(description))
-            return PICTURE;
-        else if (Icons.isEncrypted(description))
-            return ENCRYPTED;
-        else return -1;
     }
 
     public interface EncryptButtonCallbackInterface {
