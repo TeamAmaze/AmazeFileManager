@@ -42,6 +42,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -65,7 +66,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static final long FILE = 'F', DIRECTORY = 'D';
 
     private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
-            GENERIC = 6, APK = 7, PICTURE = 8;
+            GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
 
     private UtilitiesProviderInterface utilsProvider;
 
@@ -293,9 +294,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public void generate(ArrayList<LayoutElement> arrayList) {
-
         synchronized (arrayList) {
-
             offset = 0;
             stoppedAnimation = false;
             notifyDataSetChanged();
@@ -352,13 +351,28 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
             });
 
-            int filetype = -1;
-            String desc = rowItem.getDesc();
-            if (Icons.isPicture((desc.toLowerCase()))) filetype = PICTURE_FILETYPE;
-            else if (Icons.isApk((desc))) filetype = APK_FILETYPE;
-            else if (Icons.isVideo(desc)) filetype = VIDEO_FILETYPE;
-            else if (Icons.isEncrypted(desc) && !rowItem.isDirectory()) filetype = ENCRYPTED_FILETYPE;
-            else if (Icons.isGeneric(desc)) filetype = GENERIC_FILETYPE;
+            int filetype;
+            switch (analiseDescription(rowItem.getDesc())) {
+                case PICTURE:
+                    filetype = PICTURE_FILETYPE;
+                    break;
+                case APK:
+                    filetype = APK_FILETYPE;
+                    break;
+                case VIDEO:
+                    filetype = VIDEO_FILETYPE;
+                    break;
+                case ENCRYPTED:
+                    if (!rowItem.isDirectory()) filetype = ENCRYPTED_FILETYPE;
+                    break;
+                case GENERIC:
+                    filetype = GENERIC_FILETYPE;
+                    break;
+                default:
+                    filetype = -1;
+                    break;
+            }
+
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
@@ -713,7 +727,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
+        if (mainFrag.IS_LIST && (position == items.size()))
             return TYPE_HEADER;
 
         return TYPE_ITEM;
@@ -788,7 +802,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 GeneralDialogCreation.deleteFilesDialog(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
-                                utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
+                                Futils.openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
                                 return true;
                             case R.id.encrypt:
                                 final Intent encryptIntent = new Intent(context, EncryptService.class);
@@ -808,7 +822,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                                     @Override
                                     public void onButtonPressed(Intent intent, String password) throws Exception {
-
                                         startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
                                     }
                                 };
@@ -818,8 +831,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                                     @Override
                                     public void onButtonPressed(Intent intent) throws Exception {
-
-
                                         // check if a master password or fingerprint is set
                                         if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                                 Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
@@ -871,14 +882,17 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         return false;
                     }
                 });
+
                 popupMenu.inflate(R.menu.item_extras);
                 String description = rowItem.getDesc().toLowerCase();
+
                 if (rowItem.isDirectory()) {
                     popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
                     popupMenu.getMenu().findItem(R.id.share).setVisible(false);
                 } else {
                     popupMenu.getMenu().findItem(R.id.book).setVisible(false);
                 }
+
                 if (description.endsWith(".zip") || description.endsWith(".jar")
                         || description.endsWith(".apk") || description.endsWith(".rar")
                         || description.endsWith(".tar") || description.endsWith(".tar.gz"))
@@ -944,10 +958,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         void failed();
     }
 
-    private boolean isPositionHeader(int position) {
-        return mainFrag.IS_LIST && (position == items.size());
-    }
-
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (i != getItemCount() - 1) {
@@ -990,6 +1000,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             return APK;
         else if(Icons.isPicture(description))
             return PICTURE;
+        else if(Icons.isEncrypted(description))
+            return ENCRYPTED;
         else return -1;
     }
 
