@@ -308,7 +308,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder, final int p) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         final ViewHolder holder = ((ViewHolder) vholder);
         if (mainFrag.IS_LIST) {
             if (p == getItemCount() - 1) {
@@ -328,7 +328,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mainFrag.onListItemClicked(p, holder.checkImageView);
+                    mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageView);
                 }
             });
 
@@ -343,11 +343,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-
                     // check if the item on which action is performed is not the first {goback} item
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     }
 
                     return true;
@@ -373,18 +371,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.genericIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     int id = v.getId();
-                    if (id == R.id.generic_icon || id == R.id.picture_icon
-                            || id == R.id.apk_icon) {
-
+                    if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
                         // TODO: transform icon on press to the properties dialog with animation
                         if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                            toggleChecked(p, holder.checkImageView);
+                            toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         } else mainFrag.goBack();
                     }
-
                 }
             });
 
@@ -392,17 +385,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     } else mainFrag.goBack();
                 }
             });
+
             holder.apkIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     } else mainFrag.goBack();
                 }
             });
@@ -588,17 +580,15 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mainFrag.onListItemClicked(p, holder.checkImageViewGrid);
+                    mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                 }
             });
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageViewGrid);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                     }
                     return true;
                 }
