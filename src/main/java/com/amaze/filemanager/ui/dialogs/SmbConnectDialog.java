@@ -198,7 +198,6 @@ public class SmbConnectDialog extends DialogFragment {
         EditTextColorStateUtil.setTint(user, accentColor);
         EditTextColorStateUtil.setTint(pass, accentColor);
 
-        Utils.setTint(ch, accentColor);
         Utils.setTint(getContext(), ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override

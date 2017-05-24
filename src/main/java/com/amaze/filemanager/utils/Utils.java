@@ -3,7 +3,6 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
@@ -50,12 +49,12 @@ public class Utils {
         return location[1];
     }
 
-    public static void setTint(CheckBox box, int color) {
+    public static void setTint(Context context, CheckBox box, int color) {
         if (Build.VERSION.SDK_INT >= 21) return;
         ColorStateList sl = new ColorStateList(new int[][]{
                 new int[]{-android.R.attr.state_checked},
                 new int[]{android.R.attr.state_checked}
-        }, new int[]{Color.parseColor("#666666"), color});
+        }, new int[]{getColor(context, R.color.grey), color});
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             box.setButtonTintList(sl);
