@@ -713,7 +713,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup, int i) {
         View view = mInflater.inflate(R.layout.listheader, viewGroup, false);
         /*if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             view.setBackgroundResource(R.color.holo_dark_background);*/
@@ -937,6 +937,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public int getItemCount() {
         return mainFrag.IS_LIST ? items.size() + 1 : items.size();
+    }
+
+    @Override
+    public int getNumColumns() {
+        return 1;
+    }
+
+    @Override
+    public int getSpanSize(int i) {
+        return 1;
     }
 
     private int analiseDescription(String description) {

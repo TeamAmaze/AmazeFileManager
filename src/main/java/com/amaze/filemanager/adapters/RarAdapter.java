@@ -209,7 +209,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup, int i) {
         View view = mInflater.inflate(R.layout.listheader, viewGroup, false);
         return new HeaderViewHolder(view);
     }
@@ -605,6 +605,16 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         return zipMode ? enter1.size() : enter.size();
+    }
+
+    @Override
+    public int getNumColumns() {
+        return 1;
+    }
+
+    @Override
+    public int getSpanSize(int i) {
+        return 1;
     }
 
 }
