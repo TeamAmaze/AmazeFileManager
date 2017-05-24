@@ -72,7 +72,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private MainFragment mainFrag;
     private ArrayList<LayoutElement> items;
     private Context context;
-    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private SparseBooleanArray checkedItems = new SparseBooleanArray();
     private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
     private int rowHeight;
@@ -88,7 +88,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.items = items;
         this.context = context;
         for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, false);
+            checkedItems.put(i, false);
             animation.put(i, false);
         }
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -119,9 +119,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     public void toggleChecked(int position, ImageView imageView) {
         if (!stoppedAnimation) mainFrag.stopAnimation();
-        if (myChecked.get(position)) {
+        if (checkedItems.get(position)) {
             // if the view at position is checked, un-check it
-            myChecked.put(position, false);
+            checkedItems.put(position, false);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
             if (imageView != null) {
@@ -131,7 +131,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
         } else {
             // if view is un-checked, check it
-            myChecked.put(position, true);
+            checkedItems.put(position, true);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
             if (imageView != null) {
@@ -168,7 +168,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             i = 1;
         }
         for (; i < items.size(); i++) {
-            myChecked.put(i, b);
+            checkedItems.put(i, b);
             notifyItemChanged(i);
         }
         if (mainFrag.mActionMode != null)
@@ -188,7 +188,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     public void toggleChecked(boolean b) {
         for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, b);
+            checkedItems.put(i, b);
             notifyItemChanged(i);
         }
 
@@ -204,8 +204,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public ArrayList<Integer> getCheckedItemPositions() {
         ArrayList<Integer> checkedItemPositions = new ArrayList<>();
 
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (myChecked.get(i)) {
+        for (int i = 0; i < checkedItems.size(); i++) {
+            if (checkedItems.get(i)) {
                 (checkedItemPositions).add(i);
             }
         }
@@ -214,16 +214,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public boolean areAllChecked(String path) {
-        boolean b = true;
-        int a;
-        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) a = 0;
-        else a = 1;
-        for (int i = a; i < myChecked.size(); i++) {
-            if (!myChecked.get(i)) {
-                b = false;
+        boolean allChecked = true;
+        int i;
+        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) i = 0;
+        else i = 1;
+        for (; i < checkedItems.size(); i++) {
+            if (!checkedItems.get(i)) {
+                allChecked = false;
             }
         }
-        return b;
+        return allChecked;
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
@@ -301,7 +301,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             notifyDataSetChanged();
             items = arrayList;
             for (int i = 0; i < items.size(); i++) {
-                myChecked.put(i, false);
+                checkedItems.put(i, false);
                 animation.put(i, false);
             }
         }
@@ -499,7 +499,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     break;
             }
 
-            boolean checked = myChecked.get(p);
+            boolean checked = checkedItems.get(p);
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
@@ -582,7 +582,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
             // view is a grid view
-            Boolean checked = myChecked.get(p);
+            Boolean checked = checkedItems.get(p);
 
             holder.checkImageViewGrid.setColorFilter(Color.parseColor(mainFrag.fabSkin));
             holder.rl.setOnClickListener(new View.OnClickListener() {
