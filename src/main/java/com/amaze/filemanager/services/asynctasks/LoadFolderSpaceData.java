@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;

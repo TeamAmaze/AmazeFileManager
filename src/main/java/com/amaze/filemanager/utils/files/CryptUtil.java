@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.files;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +13,9 @@ import android.util.Base64;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

@@ -8,8 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
-import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;

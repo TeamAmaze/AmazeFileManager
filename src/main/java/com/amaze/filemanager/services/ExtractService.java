@@ -40,7 +40,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.GenericCopyUtil;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.github.junrar.Archive;

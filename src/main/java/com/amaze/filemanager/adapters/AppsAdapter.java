@@ -48,7 +48,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;

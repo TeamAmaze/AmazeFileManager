@@ -23,7 +23,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -199,6 +199,7 @@ public class SmbConnectDialog extends DialogFragment {
         EditTextColorStateUtil.setTint(pass, accentColor);
 
         Utils.setTint(ch, accentColor);
+        Utils.setTint(getContext(), ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -40,7 +40,7 @@ import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;

@@ -26,7 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
 import java.util.HashMap;

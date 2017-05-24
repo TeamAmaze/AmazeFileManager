@@ -46,10 +46,10 @@ import com.amaze.filemanager.services.asynctasks.CountFolderItems;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
@@ -84,9 +84,9 @@ import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
-import static com.amaze.filemanager.utils.Futils.getFreeSpace;
-import static com.amaze.filemanager.utils.Futils.getTotalSpace;
-import static com.amaze.filemanager.utils.Futils.toHFileArray;
+import static com.amaze.filemanager.utils.files.Futils.getFreeSpace;
+import static com.amaze.filemanager.utils.files.Futils.getTotalSpace;
+import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 /**
  * Here are a lot of function that create material dialogs

@@ -1,7 +1,9 @@
-package com.amaze.filemanager.utils.SmbStreamer;
+package com.amaze.filemanager.utils.cloud;
 
 import android.net.Uri;
 import android.util.Log;
+
+import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

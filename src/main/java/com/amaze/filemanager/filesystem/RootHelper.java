@@ -28,7 +28,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.File;

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.files;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -56,6 +56,10 @@ import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
