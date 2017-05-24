@@ -82,21 +82,27 @@ public class StickyRecyclerHeadersDecoration extends RecyclerView.ItemDecoration
   @Override
   public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
     super.onDrawOver(canvas, parent, state);
+
     mHeaderRects.clear();
 
-    if (parent.getChildCount() <= 0 || mAdapter.getItemCount() <= 0) {
+    final int childCount = parent.getChildCount();
+
+    if (childCount <= 0 || mAdapter.getItemCount() <= 0) {
       return;
     }
 
     for (int i = 0; i < parent.getChildCount(); i++) {
       View itemView = parent.getChildAt(i);
-      int position = parent.getChildPosition(itemView);
-      if (hasStickyHeader(i, position) || mHeaderPositionCalculator.hasNewHeader(position)) {
-        View header = mHeaderProvider.getHeader(parent, position);
-        Rect headerOffset = mHeaderPositionCalculator.getHeaderBounds(parent, header,
-            itemView, hasStickyHeader(i, position));
-        mRenderer.drawHeader(parent, canvas, header, headerOffset);
-        mHeaderRects.put(position, headerOffset);
+      int position = parent.getChildAdapterPosition(itemView);
+
+      if (position != RecyclerView.NO_POSITION) {
+        if (hasStickyHeader(i, position) || mHeaderPositionCalculator.hasNewHeader(position)) {
+          View header = mHeaderProvider.getHeader(parent, position);
+          Rect headerOffset = mHeaderPositionCalculator.getHeaderBounds(parent, header,
+                  itemView, hasStickyHeader(i, position));
+          mRenderer.drawHeader(parent, canvas, header, headerOffset);
+          mHeaderRects.put(position, headerOffset);
+        }
       }
     }
   }
