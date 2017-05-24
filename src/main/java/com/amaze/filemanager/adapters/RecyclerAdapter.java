@@ -109,7 +109,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void addItem() {
         //notifyDataSetChanged();
         notifyItemInserted(getItemCount());
-
     }
 
     /**
@@ -162,22 +161,22 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public void toggleChecked(boolean b, String path) {
-        int i;
-        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) {
-            i = 0;
-        } else {
-            i = 1;
-        }
+        int i = path.equals("/") || !mainFrag.GO_BACK_ITEM ? 0 : 1;
+
         for (; i < items.size(); i++) {
             checkedItems.put(i, b);
             notifyItemChanged(i);
         }
-        if (mainFrag.mActionMode != null)
+
+        if (mainFrag.mActionMode != null) {
             mainFrag.mActionMode.invalidate();
+        }
+
         if (getCheckedItemPositions().size() == 0) {
             mainFrag.selection = false;
-            if (mainFrag.mActionMode != null)
+            if (mainFrag.mActionMode != null) {
                 mainFrag.mActionMode.finish();
+            }
             mainFrag.mActionMode = null;
         }
     }
@@ -193,7 +192,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             notifyItemChanged(i);
         }
 
-        if (mainFrag.mActionMode != null) mainFrag.mActionMode.invalidate();
+        if (mainFrag.mActionMode != null) {
+            mainFrag.mActionMode.invalidate();
+        }
+
         if (getCheckedItemPositions().size() == 0) {
             mainFrag.selection = false;
             if (mainFrag.mActionMode != null)
@@ -351,7 +353,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
             });
 
-            int filetype;
+            int filetype = -1;
+            ;
             switch (analiseDescription(rowItem.getDesc())) {
                 case PICTURE:
                     filetype = PICTURE_FILETYPE;
@@ -367,9 +370,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     break;
                 case GENERIC:
                     filetype = GENERIC_FILETYPE;
-                    break;
-                default:
-                    filetype = -1;
                     break;
             }
 
@@ -469,8 +469,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     break;
                 case GENERIC_FILETYPE:
                     // if the file type is any unknown variable
-                    String ext = !rowItem.isDirectory()
-                            ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                    String ext = !rowItem.isDirectory() ? MimeTypes.getExtension(rowItem.getTitle()) : null;
                     if (ext != null && ext.trim().length() != 0) {
                         holder.genericText.setText(ext);
                         holder.genericIcon.setImageDrawable(null);
@@ -505,19 +504,19 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     break;
             }
 
-            boolean checked = checkedItems.get(p);
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
             }
             holder.rl.setSelected(false);
-            if (checked) {
+            if (checkedItems.get(p)) {
                 holder.checkImageView.setVisibility(View.VISIBLE);
                 // making sure the generic icon background color filter doesn't get changed
                 // to grey on picture/video/apk/generic text icons when checked
                 // so that user can still look at the thumbs even after selection
-                if ((filetype != 0 && filetype != 1 && filetype != 2)) {
+                if ((filetype != PICTURE_FILETYPE && filetype != APK_FILETYPE
+                        && filetype != VIDEO_FILETYPE)) {
                     holder.apkIcon.setVisibility(View.GONE);
                     holder.pictureIcon.setVisibility(View.GONE);
                     holder.genericIcon.setVisibility(View.VISIBLE);
@@ -746,13 +745,15 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                                         rowItem.getPermissions(), (BasicActivity) mainFrag.getActivity(),
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
-                                /*PropertiesSheet propertiesSheet = new PropertiesSheet();
+                                /*
+                                PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
                                 arguments.putParcelable(PropertiesSheet.KEY_FILE, rowItem.generateBaseFile());
                                 arguments.putString(PropertiesSheet.KEY_PERMISSION, rowItem.getPermissions());
                                 arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
                                 propertiesSheet.setArguments(arguments);
-                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);*/
+                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
+                                */
                                 return true;
                             case R.id.share:
                                 switch (rowItem.getMode()) {
@@ -815,46 +816,44 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                                 final EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
                                         new EncryptButtonCallbackInterface() {
-                                    @Override
-                                    public void onButtonPressed(Intent intent) {
-                                        // do nothing
-                                    }
+                                            @Override
+                                            public void onButtonPressed(Intent intent) {
+                                            }
 
-                                    @Override
-                                    public void onButtonPressed(Intent intent, String password) throws Exception {
-                                        startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
-                                    }
-                                };
+                                            @Override
+                                            public void onButtonPressed(Intent intent, String password) throws Exception {
+                                                startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
+                                            }
+                                        };
 
                                 EncryptButtonCallbackInterface encryptButtonCallbackInterface =
                                         new EncryptButtonCallbackInterface() {
 
-                                    @Override
-                                    public void onButtonPressed(Intent intent) throws Exception {
-                                        // check if a master password or fingerprint is set
-                                        if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+                                            @Override
+                                            public void onButtonPressed(Intent intent) throws Exception {
+                                                // check if a master password or fingerprint is set
+                                                if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
-                                            startEncryption(rowItem.generateBaseFile().getPath(),
-                                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
-                                        } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
-                                                Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+                                                    startEncryption(rowItem.generateBaseFile().getPath(),
+                                                            Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                                } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                                        Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
-                                            startEncryption(rowItem.generateBaseFile().getPath(),
-                                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
-                                        } else {
-                                            // let's ask a password from user
-                                            GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
-                                                    mainFrag, utilsProvider.getAppTheme(),
-                                                    encryptButtonCallbackInterfaceAuthenticate);
-                                        }
-                                    }
+                                                    startEncryption(rowItem.generateBaseFile().getPath(),
+                                                            Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                                } else {
+                                                    // let's ask a password from user
+                                                    GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
+                                                            mainFrag, utilsProvider.getAppTheme(),
+                                                            encryptButtonCallbackInterfaceAuthenticate);
+                                                }
+                                            }
 
-                                    @Override
-                                    public void onButtonPressed(Intent intent, String password) {
-                                        // do nothing
-                                    }
-                                };
+                                            @Override
+                                            public void onButtonPressed(Intent intent, String password) {
+                                            }
+                                        };
 
                                 if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
                                         Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
@@ -869,7 +868,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                     }
                                 } else {
 
-                                   GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
+                                    GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
                                             mainFrag, utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
                                 }
                                 return true;
@@ -898,7 +897,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         || description.endsWith(".tar") || description.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
                         popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
                     else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
@@ -912,11 +911,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     /**
      * Queries database to map path and password.
      * Starts the encryption process after database query
-     * @param path the path of file to encrypt
+     *
+     * @param path     the path of file to encrypt
      * @param password the password in plaintext
      */
     private void startEncryption(final String path, final String password, Intent intent) throws Exception {
-
         CryptHandler cryptHandler = new CryptHandler(context);
         EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
                 password);
@@ -924,38 +923,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
         // start the encryption process
         ServiceWatcherUtil.runService(mainFrag.getContext(), intent);
-    }
-
-    public interface EncryptButtonCallbackInterface {
-
-        /**
-         * Callback fired when we've just gone through warning dialog before encryption
-         * @param intent
-         * @throws Exception
-         */
-        void onButtonPressed(Intent intent) throws Exception;
-
-        /**
-         * Callback fired when user has entered a password for encryption
-         * Not called when we've a master password set or enable fingerprint authentication
-         * @param intent
-         * @param password the password entered by user
-         * @throws Exception
-         */
-        void onButtonPressed(Intent intent, String password) throws Exception;
-    }
-
-    public interface DecryptButtonCallbackInterface {
-        /**
-         * Callback fired when we've confirmed the password matches the database
-         * @param intent
-         */
-        void confirm(Intent intent);
-
-        /**
-         * Callback fired when password doesn't match the value entered by user
-         */
-        void failed();
     }
 
     @Override
@@ -970,15 +937,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     @Override
     public int getItemCount() {
         return mainFrag.IS_LIST ? items.size() + 1 : items.size();
-    }
-
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView headerText;
-
-        HeaderViewHolder(View view) {
-            super(view);
-            headerText = (TextView) view.findViewById(R.id.headertext);
-        }
     }
 
     private int analiseDescription(String description) {
@@ -998,11 +956,55 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             return GENERIC;
         else if (Icons.isApk(description))
             return APK;
-        else if(Icons.isPicture(description))
+        else if (Icons.isPicture(description))
             return PICTURE;
-        else if(Icons.isEncrypted(description))
+        else if (Icons.isEncrypted(description))
             return ENCRYPTED;
         else return -1;
+    }
+
+    public interface EncryptButtonCallbackInterface {
+
+        /**
+         * Callback fired when we've just gone through warning dialog before encryption
+         *
+         * @param intent
+         * @throws Exception
+         */
+        void onButtonPressed(Intent intent) throws Exception;
+
+        /**
+         * Callback fired when user has entered a password for encryption
+         * Not called when we've a master password set or enable fingerprint authentication
+         *
+         * @param intent
+         * @param password the password entered by user
+         * @throws Exception
+         */
+        void onButtonPressed(Intent intent, String password) throws Exception;
+    }
+
+    public interface DecryptButtonCallbackInterface {
+        /**
+         * Callback fired when we've confirmed the password matches the database
+         *
+         * @param intent
+         */
+        void confirm(Intent intent);
+
+        /**
+         * Callback fired when password doesn't match the value entered by user
+         */
+        void failed();
+    }
+
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView headerText;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            headerText = (TextView) view.findViewById(R.id.headertext);
+        }
     }
 
 }
