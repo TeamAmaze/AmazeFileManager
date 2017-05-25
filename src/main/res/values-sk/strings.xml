@@ -628,7 +628,9 @@
   <string name="monofont">Písmo Monospace</string>
   <string name="showHeaders">Zobraziť záhlavie</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="item">Položka</string>
-  <string name="items">Položky</string>
-  <string name="bytes">Bajtov</string>
+  <string name="noitems">Žiadne položky</string>
+  <string name="item">položka</string>
+  <string name="items">položiek</string>
+  <string name="byte_singular">bajtov</string>
+  <string name="bytes">bajtov</string>
 </resources>

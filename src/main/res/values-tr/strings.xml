@@ -51,6 +51,7 @@
   <string name="file_empty">Dosya boş</string>
   <string name="error">Hata</string>
   <string name="cantlistfiles">Root olmadan dosyalar listelenemez</string>
+  <string name="searchresults">Arama sonuçları </string>
   <string name="itemsselected">Öğeler seçildi</string>
   <string name="newhomedirectory">Yeni ana dizin</string>
   <string name="rename">Yeniden adlandır</string>
@@ -66,6 +67,7 @@
   <string name="date">Tarih:</string>
   <string name="location">Bulunan:</string>
   <string name="size_capitalized">Boyut</string>
+  <string name="size">klasör boyutu</string>
   <string name="totalitems">Toplam öğeler:</string>
   <string name="enterzipname">Zip adını gir</string>
   <string name="noappfound">Bu uygulamayı açmak için uygulama bulanamadı</string>
@@ -122,6 +124,7 @@
   <string name="mountsystemsummary">Sistem dosyalarını düzenlemek istiyorsanız bunu etkinleştirin</string>
   <string name="mountsystem">Yazılabilir klasörler</string>
   <string name="rootfailure">Root erişimi verilmemiş</string>
+  <string name="hiddenfailure">Gizli dosyalara erişemiyor</string>
   <string name="selectall">Tümünü seç</string>
   <string name="delete">Sil</string>
   <string name="setashome">Ana klasör olarak ayarla</string>

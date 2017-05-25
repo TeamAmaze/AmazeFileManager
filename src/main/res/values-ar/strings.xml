@@ -40,6 +40,7 @@
   <string name="properties">خصائص</string>
   <string name="copyingapk">جاري نسخ ملفات apk إلى</string>
   <string name="addbook">إضافة مفضلة</string>
+  <string name="delbook">حذف الإشارة المرجعية</string>
   <string name="addtobook">إضافة للمفضلة</string>
   <string name="enterpath">أدخل المسار</string>
   <string name="cancel">إلغاء</string>

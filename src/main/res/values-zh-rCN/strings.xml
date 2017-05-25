@@ -601,7 +601,9 @@
   <string name="monofont">等宽字体</string>
   <string name="showHeaders">显示页眉</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">无项目</string>
   <string name="item">项目</string>
   <string name="items">个项目</string>
+  <string name="byte_singular">字节</string>
   <string name="bytes">字节</string>
 </resources>

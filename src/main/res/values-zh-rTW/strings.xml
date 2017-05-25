@@ -633,7 +633,9 @@
   <string name="monofont">等寬字型</string>
   <string name="showHeaders">顯示標頭</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">無項目</string>
   <string name="item">項目</string>
   <string name="items">個項目</string>
+  <string name="byte_singular">位元組</string>
   <string name="bytes">位元組</string>
 </resources>
