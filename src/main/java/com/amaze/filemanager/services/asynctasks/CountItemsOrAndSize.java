@@ -68,8 +68,10 @@ public class CountItemsOrAndSize extends AsyncTask<Void, Pair<Integer, Long>, St
     }
 
     private String getText(int filesInFolder, long length, boolean loading) {
-        return filesInFolder + " " + context.getResources().getQuantityString(R.plurals.items, filesInFolder) + "; "
-                + (loading? ">":"") + Formatter.formatFileSize(context, length);
+        String numOfItems = (filesInFolder != 0? filesInFolder + " ":"")
+                + context.getResources().getQuantityString(R.plurals.items, filesInFolder) ;
+
+        return numOfItems + "; " + (loading? ">":"") + Formatter.formatFileSize(context, length);
     }
 
     protected void onPostExecute(String items) {
