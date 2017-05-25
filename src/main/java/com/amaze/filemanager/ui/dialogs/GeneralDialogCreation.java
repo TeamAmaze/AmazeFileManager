@@ -410,8 +410,9 @@ public class GeneralDialogCreation {
             });
         }
 
-        CountItemsOrAndSize countItemsOrAndSize = new CountItemsOrAndSize(c, itemsText, baseFile);
+        CountItemsOrAndSize countItemsOrAndSize = new CountItemsOrAndSize(c, itemsText, baseFile, forStorage);
         countItemsOrAndSize.executeOnExecutor(executor);
+
 
         GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
         hashGen.executeOnExecutor(executor);
