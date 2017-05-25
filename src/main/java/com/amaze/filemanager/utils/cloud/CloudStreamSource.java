@@ -1,10 +1,6 @@
-package com.amaze.filemanager.utils;
-
-import android.webkit.MimeTypeMap;
+package com.amaze.filemanager.utils.cloud;
 
 import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
 
 import java.io.IOException;
 import java.io.InputStream;

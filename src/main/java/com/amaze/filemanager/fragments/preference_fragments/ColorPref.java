@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.ui.views.CheckBox;
+import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;

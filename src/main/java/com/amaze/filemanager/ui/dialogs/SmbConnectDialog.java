@@ -14,7 +14,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,13 +21,14 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -114,17 +114,7 @@ public class SmbConnectDialog extends DialogFragment {
         final TextInputLayout usernameTIL = (TextInputLayout)v2.findViewById(R.id.usernameTIL);
         final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.connectionET);
 
-        conName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        conName.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
             if(conName.getText().toString().length()==0)
@@ -133,17 +123,7 @@ public class SmbConnectDialog extends DialogFragment {
             }
         });
         final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.ipET);
-        ip.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        ip.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if(ip.getText().toString().length()==0)
@@ -152,17 +132,7 @@ public class SmbConnectDialog extends DialogFragment {
             }
         });
         final AppCompatEditText domain = (AppCompatEditText) v2.findViewById(R.id.domainET);
-        domain.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        domain.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if(domain.getText().toString().contains(";"))
@@ -171,17 +141,7 @@ public class SmbConnectDialog extends DialogFragment {
             }
         });
         final AppCompatEditText user = (AppCompatEditText) v2.findViewById(R.id.usernameET);
-        user.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+        user.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if(user.getText().toString().contains(":"))
@@ -194,15 +154,16 @@ public class SmbConnectDialog extends DialogFragment {
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
 
-        EditTextColorStateUtil.setTint(conName, accentColor);
-        EditTextColorStateUtil.setTint(user, accentColor);
-        EditTextColorStateUtil.setTint(pass, accentColor);
+        EditTextColorStateUtil.setTint(context, conName, accentColor);
+        EditTextColorStateUtil.setTint(context, user, accentColor);
+        EditTextColorStateUtil.setTint(context, pass, accentColor);
 
-        Utils.setTint(ch, accentColor);
+        Utils.setTint(context, ch, accentColor);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeneralDialogCreation.showSMBHelpDialog(context,PreferenceUtils.getAccentString(sharedPreferences));
+                int accentColor = ((BaseActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+                GeneralDialogCreation.showSMBHelpDialog(context, accentColor);
             }
         });
 

@@ -11,7 +11,7 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.utils.FileListSorter;
+import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
 

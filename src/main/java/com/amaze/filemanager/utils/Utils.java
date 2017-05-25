@@ -3,12 +3,12 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -28,7 +28,6 @@ public class Utils {
 
     private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
     private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
-    ;
 
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
@@ -50,12 +49,12 @@ public class Utils {
         return location[1];
     }
 
-    public static void setTint(CheckBox box, int color) {
+    public static void setTint(Context context, CheckBox box, int color) {
         if (Build.VERSION.SDK_INT >= 21) return;
         ColorStateList sl = new ColorStateList(new int[][]{
                 new int[]{-android.R.attr.state_checked},
                 new int[]{android.R.attr.state_checked}
-        }, new int[]{Color.parseColor("#666666"), color});
+        }, new int[]{getColor(context, R.color.grey), color});
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             box.setButtonTintList(sl);
@@ -128,6 +127,11 @@ public class Utils {
         } else {
             return c.getResources().getColor(color);
         }
+    }
+
+    public static int dpToPx(int dp, Context c) {
+        DisplayMetrics displayMetrics = c.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
 }

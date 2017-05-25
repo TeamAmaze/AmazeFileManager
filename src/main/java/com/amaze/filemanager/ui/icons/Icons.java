@@ -26,12 +26,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
+
+    public static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
+            GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
 
     // construct a with an approximation of the capacity
     private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
@@ -302,6 +305,30 @@ public class Icons {
         Integer resId = sMimeIconIds.get(mimeType);
 
         return resId == null;
+    }
+
+    public static int getTypeOfFile(String description) {
+        if (Icons.isVideo(description))
+            return VIDEO;
+        else if (Icons.isAudio(description))
+            return AUDIO;
+        else if (Icons.isPdf(description))
+            return PDF;
+        else if (Icons.isCode(description))
+            return CODE;
+        else if (Icons.isText(description))
+            return TEXT;
+        else if (Icons.isArchive(description))
+            return ARCHIVE;
+        else if (Icons.isGeneric(description))
+            return GENERIC;
+        else if (Icons.isApk(description))
+            return APK;
+        else if (Icons.isPicture(description))
+            return PICTURE;
+        else if (Icons.isEncrypted(description))
+            return ENCRYPTED;
+        else return -1;
     }
 
     public static BitmapDrawable loadMimeIcon(String path, boolean grid, final Resources res) {

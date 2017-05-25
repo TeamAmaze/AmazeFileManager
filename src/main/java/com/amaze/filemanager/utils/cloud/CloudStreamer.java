@@ -1,8 +1,6 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.cloud;
 
 import android.util.Log;
-
-import com.amaze.filemanager.utils.SmbStreamer.CloudStreamServer;
 
 import java.io.File;
 import java.io.IOException;
