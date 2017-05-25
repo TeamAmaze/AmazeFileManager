@@ -43,6 +43,8 @@
 	<!--GRAY 700 used for icons instead of black-->
     <color name="item_light_theme">#FF616161</color>
 
+    <color name="roundedimagepaint">#BAB399</color>
+
     <!--Colors for preference dialog pie chart-->
     <color name="piechart_red">#FFEF5350</color>
     <color name="piechart_green">#FF4CAF50</color>
@@ -88,6 +90,29 @@
     <color name="accent_blue_grey">#607d8b</color>
     <color name="accent_super_su">#004d40</color>
 
+    <!-- colors used for files items -->
+    <color name="goback_item">#757575</color>
+    <color name="video_item">#f06292</color>
+    <color name="audio_item">#9575cd</color>
+    <color name="pdf_item">#da4336</color>
+    <color name="code_item">#00bfa5</color>
+    <color name="text_item">#e06055</color>
+    <color name="archive_item">#f9a825</color>
+    <color name="apk_item">#a4c439</color>
+    <color name="generic_item">#9e9e9e</color>
+
+    <color name="grey">#ff666666</color>
+
+    <color name="appsadapter_background">#5f33b5e5</color>
+
+    <color name="text_disabled">#f6f6f6</color>
+
+    <color name="item_background">#9f757575</color>
+    <color name="icon_background_dark">#303030</color>
+
+    <color name="text_light">#8A000000</color>
+    <color name="text_dark">#B3ffffff</color>
+
     <!-- indicator -->
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>
@@ -98,7 +123,5 @@
 
     <color name="white_translucent">#80ffffff</color>
 
-
     <color name="disabled_button">#BDBDBD</color>
-
 </resources>

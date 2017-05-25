@@ -44,7 +44,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
-import com.amaze.filemanager.utils.CloudUtil;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;

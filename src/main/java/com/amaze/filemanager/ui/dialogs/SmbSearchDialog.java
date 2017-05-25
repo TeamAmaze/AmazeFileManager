@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +20,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 import com.amaze.filemanager.utils.Computer;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.SubnetScanner;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -41,8 +40,7 @@ public class SmbSearchDialog extends DialogFragment {
 
     listViewAdapter listViewAdapter;
     ArrayList<Computer> computers = new ArrayList<>();
-    SharedPreferences sharedPrefs;
-    int fabskin;
+    int accentColor;
     SubnetScanner subnetScanner;
 
     @Override
@@ -50,8 +48,7 @@ public class SmbSearchDialog extends DialogFragment {
         super.onCreate(bundle);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        fabskin = Color.parseColor(PreferenceUtils.getAccentString(sharedPrefs));
+        accentColor = ((BaseActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class SmbSearchDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(R.string.searchingdevices);
-        builder.negativeColor(fabskin);
+        builder.negativeColor(accentColor);
         builder.negativeText(R.string.cancel);
         builder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -88,7 +85,7 @@ public class SmbSearchDialog extends DialogFragment {
             }
         });
         builder.positiveText(R.string.use_custom_ip);
-        builder.positiveColor(fabskin);
+        builder.positiveColor(accentColor);
         computers.add(new Computer("-1", "-1"));
         listViewAdapter = new listViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
         subnetScanner = new SubnetScanner(getActivity());

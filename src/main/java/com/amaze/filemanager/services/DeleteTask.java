@@ -35,10 +35,10 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.CryptUtil;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 

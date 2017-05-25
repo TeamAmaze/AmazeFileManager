@@ -32,7 +32,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
@@ -47,15 +46,13 @@ import com.amaze.filemanager.services.asynctasks.CountItemsOrAndSize;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.utils.AppConfig;
-import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -86,7 +83,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
-import static com.amaze.filemanager.utils.Futils.toHFileArray;
+import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -315,37 +312,34 @@ public class GeneralDialogCreation {
     }
 
     public static void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
-                                                           BasicActivity basic, boolean isRoot, AppTheme appTheme) {
-        showPropertiesDialog(baseFile, permissions, basic, isRoot, appTheme, true, false);
+                                                           BaseActivity activity, boolean isRoot, AppTheme appTheme) {
+        showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
     }
 
-    public static void showPropertiesDialogWithoutPermissions(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogWithoutPermissions(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
-    public static void showPropertiesDialogForStorage(final BaseFile f, BasicActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogForStorage(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
 
     private static void showPropertiesDialog(final BaseFile baseFile, final String permissions,
-                                             BasicActivity basic, boolean isRoot, AppTheme appTheme,
+                                             BaseActivity base, boolean isRoot, AppTheme appTheme,
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
-        final Context c = basic.getApplicationContext();
-        int accentColor = basic.getColorPreference().getColor(ColorUsage.ACCENT);
+        final Context c = base.getApplicationContext();
+        int accentColor = base.getColorPreference().getColor(ColorUsage.ACCENT);
         long last = baseFile.getDate();
         final String date = Utils.getDate(last),
-                items = basic.getResources().getString(R.string.calculating),
+                items = c.getString(R.string.calculating),
                 name  = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(c);
-        String fabskin = PreferenceUtils.getAccentString(sharedPrefs);
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(basic);
-        builder.title(basic.getResources().getString(R.string.properties));
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
+        builder.title(c.getString(R.string.properties));
         builder.theme(appTheme.getMaterialDialogTheme());
 
-        View v = basic.getLayoutInflater().inflate(R.layout.properties_dialog, null);
+        View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         TextView itemsText = (TextView) v.findViewById(R.id.t7);
 
         /*View setup*/ {
@@ -481,7 +475,7 @@ public class GeneralDialogCreation {
         }
 
         if(!forStorage && showPermissions) {
-            final MainFragment main = ((MainActivity) basic).mainFragment;
+            final MainFragment main = ((MainActivity) base).mainFragment;
             AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
             appCompatButton.setAllCaps(true);
 
@@ -507,8 +501,8 @@ public class GeneralDialogCreation {
         }
 
         builder.customView(v, true);
-        builder.positiveText(basic.getResources().getString(R.string.ok));
-        builder.positiveColor(Color.parseColor(fabskin));
+        builder.positiveText(base.getResources().getString(R.string.ok));
+        builder.positiveColor(accentColor);
         builder.dismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -547,8 +541,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-        String fabskin = PreferenceUtils.getAccentString(sp);
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
 
         switch (openMode) {
@@ -570,9 +563,9 @@ public class GeneralDialogCreation {
         builder.content(mainActivity.getResources().getString(R.string.cloud_remove));
 
         builder.positiveText(mainActivity.getResources().getString(R.string.yes));
-        builder.positiveColor(Color.parseColor(fabskin));
+        builder.positiveColor(accentColor);
         builder.negativeText(mainActivity.getResources().getString(R.string.no));
-        builder.negativeColor(Color.parseColor(fabskin));
+        builder.negativeColor(accentColor);
 
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -772,23 +765,24 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
-    public static void showSMBHelpDialog(Context m,String acc){
+    public static void showSMBHelpDialog(Context m, int accentColor){
         MaterialDialog.Builder b=new MaterialDialog.Builder(m);
         b.content(m.getText(R.string.smb_instructions));
         b.positiveText(R.string.doit);
-        b.positiveColor(Color.parseColor(acc));
+        b.positiveColor(accentColor);
         b.build().show();
     }
 
     public static void showPackageDialog(final File f, final MainActivity m) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
                 .positiveText(R.string.install)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
-                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
+                .positiveColor(accentColor)
+                .negativeColor(accentColor)
+                .neutralColor(accentColor)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -807,15 +801,16 @@ public class GeneralDialogCreation {
 
 
     public static void showArchiveDialog(final File f, final MainActivity m) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.archive)
                 .content(R.string.archtext)
                 .positiveText(R.string.extract)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
-                .positiveColor(Color.parseColor(BaseActivity.accentSkin))
-                .negativeColor(Color.parseColor(BaseActivity.accentSkin))
-                .neutralColor(Color.parseColor(BaseActivity.accentSkin))
+                .positiveColor(accentColor)
+                .negativeColor(accentColor)
+                .neutralColor(accentColor)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
@@ -840,6 +835,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, new
                 MaterialDialog.InputCallback() {
@@ -848,11 +844,11 @@ public class GeneralDialogCreation {
 
                     }
                 });
-        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
+        a.widgetColor(accentColor);
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(m.getResources().getString(R.string.enterzipname));
         a.positiveText(R.string.create);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveColor(accentColor);
         a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
@@ -865,11 +861,12 @@ public class GeneralDialogCreation {
             }
         });
         a.negativeText(m.getResources().getString(R.string.cancel));
-        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeColor(accentColor);
         a.build().show();
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme) {
+        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(m.sharedPref.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -882,8 +879,8 @@ public class GeneralDialogCreation {
             }
         });
 
-        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.ascending).positiveColor(accentColor);
+        a.positiveText(R.string.descending).negativeColor(accentColor);
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -910,6 +907,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final AppsList m, AppTheme appTheme) {
+        int accentColor = ((BaseActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -921,8 +919,8 @@ public class GeneralDialogCreation {
                 return true;
             }
         });
-        a.negativeText(R.string.ascending).positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.positiveText(R.string.descending).negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeText(R.string.ascending).positiveColor(accentColor);
+        a.positiveText(R.string.descending).negativeColor(accentColor);
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -951,11 +949,12 @@ public class GeneralDialogCreation {
 
 
     public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveColor(accentColor);
         a.negativeText(R.string.clear);
-        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        a.negativeColor(accentColor);
         a.title(R.string.history);
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -976,9 +975,10 @@ public class GeneralDialogCreation {
     }
 
     public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveColor(accentColor);
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);

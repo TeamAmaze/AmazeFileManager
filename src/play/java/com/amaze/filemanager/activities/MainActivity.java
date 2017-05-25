@@ -142,7 +142,7 @@ import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -1912,7 +1912,7 @@ public class MainActivity extends BaseActivity implements
                 if (rpaths.get(i).equals("/")) {
                     ImageButton ib = new ImageButton(this);
                     ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
+                    ib.setBackgroundColor(Color.TRANSPARENT);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {
@@ -1928,7 +1928,7 @@ public class MainActivity extends BaseActivity implements
                 } else if (isStorage(rpaths.get(i))) {
                     ImageButton ib = new ImageButton(this);
                     ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundColor(Color.parseColor("#00ffffff"));
+                    ib.setBackgroundColor(Color.TRANSPARENT);
                     ib.setOnClickListener(new View.OnClickListener() {
 
                         public void onClick(View p1) {

@@ -42,16 +42,18 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.utils.Futils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -67,9 +69,12 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
     public SparseBooleanArray myChecked = new SparseBooleanArray();
     AppsList app;
 
-    public AppsAdapter(Context context, UtilitiesProviderInterface utilsProvider, int resourceId,
-                       AppsList app) {
+    private BaseActivity baseActivity;
+
+    public AppsAdapter(Context context, BaseActivity ba, UtilitiesProviderInterface utilsProvider,
+                       int resourceId, AppsList app) {
         super(context, resourceId);
+        baseActivity = ba;
         this.utilsProvider = utilsProvider;
         this.context = context;
         this.app = app;
@@ -194,7 +199,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
         if (checked != null) {
 
             if (checked) {
-                holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
+                holder.rl.setBackgroundColor(Utils.getColor(context, R.color.appsadapter_background));
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -214,6 +219,8 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        int colorAccent = baseActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+
                         switch (item.getItemId()) {
                             case R.id.open:
                                 Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
@@ -225,13 +232,12 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
-                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), color1);
+                                baseActivity.getColorPreference();
+                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
                                 return true;
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());
                                 f1.setMode(OpenMode.ROOT);
-                                int color= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
 
                                 if ((Integer.valueOf(rowItem.getSymlink().substring(0,
                                         rowItem.getSymlink().indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -241,8 +247,8 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                                         builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
                                                 .content(app.getResources().getString(R.string.unin_system_apk))
                                                 .title(app.getResources().getString(R.string.warning))
-                                                .negativeColor(color)
-                                                .positiveColor(color)
+                                                .negativeColor(colorAccent)
+                                                .positiveColor(colorAccent)
                                                 .negativeText(app.getResources().getString(R.string.no))
                                                 .positiveText(app.getResources().getString(R.string.yes))
                                                 .callback(new MaterialDialog.ButtonCallback() {

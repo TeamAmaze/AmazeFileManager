@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
@@ -41,8 +40,11 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.utils.CryptUtil;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUtils;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -51,22 +53,32 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by Arpit on 11-04-2015.
+ * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+
+    private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
+            GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
+
+    private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
+
+    private static final long FILE = 'F', DIRECTORY = 'D';
+
+    private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
+            GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
 
     private UtilitiesProviderInterface utilsProvider;
 
     private MainFragment mainFrag;
     private ArrayList<LayoutElement> items;
     private Context context;
-    private SparseBooleanArray myChecked = new SparseBooleanArray();
-    private SparseBooleanArray myanim = new SparseBooleanArray();
+    private SparseBooleanArray checkedItems = new SparseBooleanArray();
+    private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
     private int rowHeight;
     private int grey_color;
-    private int c1, c2, c3, c4, c5, c6, c7, c8, c9;
+    private int goBackColor, videoColor, audioColor, pdfColor, codeColor, textColor, archiveColor, apkColor, genericColor;
 
     private int offset = 0;
     public boolean stoppedAnimation = false;
@@ -77,28 +89,26 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.items = items;
         this.context = context;
         for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, false);
-            myanim.put(i, false);
+            checkedItems.put(i, false);
+            animation.put(i, false);
         }
-        mInflater = (LayoutInflater) context
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        c1 = Color.parseColor("#757575");
-        c2 = Color.parseColor("#f06292");
-        c3 = Color.parseColor("#9575cd");
-        c4 = Color.parseColor("#da4336");
-        c5 = Color.parseColor("#00bfa5");
-        c6 = Color.parseColor("#e06055");
-        c7 = Color.parseColor("#f9a825");
-        c8 = Color.parseColor("#a4c439");
-        c9 = Color.parseColor("#9e9e9e");
-        rowHeight = mainFrag.dpToPx(100);
-        grey_color = Color.parseColor("#ff666666");
+        mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        goBackColor = Utils.getColor(context, R.color.goback_item);
+        videoColor = Utils.getColor(context, R.color.video_item);
+        audioColor = Utils.getColor(context, R.color.audio_item);
+        pdfColor = Utils.getColor(context, R.color.pdf_item);
+        codeColor = Utils.getColor(context, R.color.code_item);
+        textColor = Utils.getColor(context, R.color.text_item);
+        archiveColor = Utils.getColor(context, R.color.archive_item);
+        apkColor = Utils.getColor(context, R.color.apk_item);
+        genericColor = Utils.getColor(context, R.color.generic_item);
+        rowHeight = Utils.dpToPx(100, context);// TODO: 23/5/2017 don't hardcode pixel measurements
+        grey_color = Utils.getColor(context, R.color.grey);
     }
 
     public void addItem() {
         //notifyDataSetChanged();
         notifyItemInserted(getItemCount());
-
     }
 
     /**
@@ -109,9 +119,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     public void toggleChecked(int position, ImageView imageView) {
         if (!stoppedAnimation) mainFrag.stopAnimation();
-        if (myChecked.get(position)) {
+        if (checkedItems.get(position)) {
             // if the view at position is checked, un-check it
-            myChecked.put(position, false);
+            checkedItems.put(position, false);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
             if (imageView != null) {
@@ -121,7 +131,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
         } else {
             // if view is un-checked, check it
-            myChecked.put(position, true);
+            checkedItems.put(position, true);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
             if (imageView != null) {
@@ -151,22 +161,22 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public void toggleChecked(boolean b, String path) {
-        int i;
-        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) {
-            i = 0;
-        } else {
-            i = 1;
-        }
+        int i = path.equals("/") || !mainFrag.GO_BACK_ITEM ? 0 : 1;
+
         for (; i < items.size(); i++) {
-            myChecked.put(i, b);
+            checkedItems.put(i, b);
             notifyItemChanged(i);
         }
-        if (mainFrag.mActionMode != null)
+
+        if (mainFrag.mActionMode != null) {
             mainFrag.mActionMode.invalidate();
+        }
+
         if (getCheckedItemPositions().size() == 0) {
             mainFrag.selection = false;
-            if (mainFrag.mActionMode != null)
+            if (mainFrag.mActionMode != null) {
                 mainFrag.mActionMode.finish();
+            }
             mainFrag.mActionMode = null;
         }
     }
@@ -178,11 +188,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     public void toggleChecked(boolean b) {
         for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, b);
+            checkedItems.put(i, b);
             notifyItemChanged(i);
         }
 
-        if (mainFrag.mActionMode != null) mainFrag.mActionMode.invalidate();
+        if (mainFrag.mActionMode != null) {
+            mainFrag.mActionMode.invalidate();
+        }
+
         if (getCheckedItemPositions().size() == 0) {
             mainFrag.selection = false;
             if (mainFrag.mActionMode != null)
@@ -194,8 +207,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public ArrayList<Integer> getCheckedItemPositions() {
         ArrayList<Integer> checkedItemPositions = new ArrayList<>();
 
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (myChecked.get(i)) {
+        for (int i = 0; i < checkedItems.size(); i++) {
+            if (checkedItems.get(i)) {
                 (checkedItemPositions).add(i);
             }
         }
@@ -204,16 +217,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public boolean areAllChecked(String path) {
-        boolean b = true;
-        int a;
-        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) a = 0;
-        else a = 1;
-        for (int i = a; i < myChecked.size(); i++) {
-            if (!myChecked.get(i)) {
-                b = false;
+        boolean allChecked = true;
+        int i;
+        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) i = 0;
+        else i = 1;
+        for (; i < checkedItems.size(); i++) {
+            if (!checkedItems.get(i)) {
+                allChecked = false;
             }
         }
-        return b;
+        return allChecked;
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
@@ -259,8 +272,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         View v;
         if (mainFrag.IS_LIST) v = mInflater.inflate(R.layout.rowlayout, parent, false);
         else v = mInflater.inflate(R.layout.griditem, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -284,22 +296,20 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public void generate(ArrayList<LayoutElement> arrayList) {
-
         synchronized (arrayList) {
-
             offset = 0;
             stoppedAnimation = false;
             notifyDataSetChanged();
             items = arrayList;
             for (int i = 0; i < items.size(); i++) {
-                myChecked.put(i, false);
-                myanim.put(i, false);
+                checkedItems.put(i, false);
+                animation.put(i, false);
             }
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vholder, final int p) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         final ViewHolder holder = ((ViewHolder) vholder);
         if (mainFrag.IS_LIST) {
             if (p == getItemCount() - 1) {
@@ -310,34 +320,33 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 return;
             }
         }
-        if (!this.stoppedAnimation && !myanim.get(p)) {
+        if (!this.stoppedAnimation && !animation.get(p)) {
             animate(holder);
-            myanim.put(p, true);
+            animation.put(p, true);
         }
         final LayoutElement rowItem = items.get(p);
         if (mainFrag.IS_LIST) {
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mainFrag.onListItemClicked(p, holder.checkImageView);
+                    mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageView);
                 }
             });
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.checkImageView.setBackground(new CircleGradientDrawable(mainFrag.fabSkin,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
-            } else
+            } else {
                 holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(mainFrag.fabSkin,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
+            }
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-
                     // check if the item on which action is performed is not the first {goback} item
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     }
 
                     return true;
@@ -345,11 +354,25 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             });
 
             int filetype = -1;
-            if (Icons.isPicture((rowItem.getDesc().toLowerCase()))) filetype = 0;
-            else if (Icons.isApk((rowItem.getDesc()))) filetype = 1;
-            else if (Icons.isVideo(rowItem.getDesc())) filetype = 2;
-            else if (Icons.isEncrypted(rowItem.getDesc()) && !rowItem.isDirectory()) filetype = 4;
-            else if (Icons.isGeneric(rowItem.getDesc())) filetype = 3;
+
+            switch (Icons.getTypeOfFile(rowItem.getDesc())) {
+                case PICTURE:
+                    filetype = PICTURE_FILETYPE;
+                    break;
+                case APK:
+                    filetype = APK_FILETYPE;
+                    break;
+                case VIDEO:
+                    filetype = VIDEO_FILETYPE;
+                    break;
+                case ENCRYPTED:
+                    if (!rowItem.isDirectory()) filetype = ENCRYPTED_FILETYPE;
+                    break;
+                case GENERIC:
+                    filetype = GENERIC_FILETYPE;
+                    break;
+            }
+
             holder.txtTitle.setText(rowItem.getTitle());
             holder.genericIcon.setImageDrawable(rowItem.getImageId());
             holder.genericText.setText("");
@@ -362,18 +385,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             holder.genericIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     int id = v.getId();
-                    if (id == R.id.generic_icon || id == R.id.picture_icon
-                            || id == R.id.apk_icon) {
-
+                    if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
                         // TODO: transform icon on press to the properties dialog with animation
                         if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                            toggleChecked(p, holder.checkImageView);
+                            toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         } else mainFrag.goBack();
                     }
-
                 }
             });
 
@@ -381,17 +399,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     } else mainFrag.goBack();
                 }
             });
+
             holder.apkIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageView);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     } else mainFrag.goBack();
                 }
             });
@@ -405,106 +422,106 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             // setting icons for various cases
             // apkIcon holder refers to square/non-circular drawable
             // pictureIcon is circular drawable
-            if (filetype == 0) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
+            switch (filetype) {
+                case PICTURE_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
 
-                    if (mainFrag.CIRCULAR_IMAGES) {
-                        holder.apkIcon.setVisibility(View.GONE);
-                        holder.pictureIcon.setVisibility(View.VISIBLE);
-                        holder.pictureIcon.setImageDrawable(mainFrag.DARK_IMAGE);
-                        mainFrag.ic.cancelLoad(holder.pictureIcon);
-                        mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
-                    } else {
+                        if (mainFrag.CIRCULAR_IMAGES) {
+                            holder.apkIcon.setVisibility(View.GONE);
+                            holder.pictureIcon.setVisibility(View.VISIBLE);
+                            holder.pictureIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                            mainFrag.ic.cancelLoad(holder.pictureIcon);
+                            mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                        } else {
+                            holder.apkIcon.setVisibility(View.VISIBLE);
+                            holder.apkIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                            mainFrag.ic.cancelLoad(holder.apkIcon);
+                            mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                        }
+                    }
+                    break;
+                case APK_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
+                        holder.pictureIcon.setVisibility(View.GONE);
                         holder.apkIcon.setVisibility(View.VISIBLE);
-                        holder.apkIcon.setImageDrawable(mainFrag.DARK_IMAGE);
+                        holder.apkIcon.setImageDrawable(mainFrag.apk);
                         mainFrag.ic.cancelLoad(holder.apkIcon);
                         mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                     }
-                }
-            } else if (filetype == 1) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
-                    holder.pictureIcon.setVisibility(View.GONE);
-                    holder.apkIcon.setVisibility(View.VISIBLE);
-                    holder.apkIcon.setImageDrawable(mainFrag.apk);
-                    mainFrag.ic.cancelLoad(holder.apkIcon);
-                    mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
-                }
-
-            } else if (filetype == 2) {
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.GONE);
-                    if (mainFrag.CIRCULAR_IMAGES) {
-                        holder.pictureIcon.setVisibility(View.VISIBLE);
-                        holder.pictureIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                        mainFrag.ic.cancelLoad(holder.pictureIcon);
-                        mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
-                    } else {
-                        holder.apkIcon.setVisibility(View.VISIBLE);
-                        holder.apkIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                        mainFrag.ic.cancelLoad(holder.apkIcon);
-                        mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                    break;
+                case VIDEO_FILETYPE:
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.GONE);
+                        if (mainFrag.CIRCULAR_IMAGES) {
+                            holder.pictureIcon.setVisibility(View.VISIBLE);
+                            holder.pictureIcon.setImageDrawable(mainFrag.DARK_VIDEO);
+                            mainFrag.ic.cancelLoad(holder.pictureIcon);
+                            mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                        } else {
+                            holder.apkIcon.setVisibility(View.VISIBLE);
+                            holder.apkIcon.setImageDrawable(mainFrag.DARK_VIDEO);
+                            mainFrag.ic.cancelLoad(holder.apkIcon);
+                            mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                        }
                     }
-                }
-            } else if (filetype == 3) {
+                    break;
+                case GENERIC_FILETYPE:
+                    // if the file type is any unknown variable
+                    String ext = !rowItem.isDirectory() ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                    if (ext != null && ext.trim().length() != 0) {
+                        holder.genericText.setText(ext);
+                        holder.genericIcon.setImageDrawable(null);
+                        //holder.genericIcon.setVisibility(View.INVISIBLE);
+                    } else {
 
-                // if the file type is any unknown variable
-                String ext = !rowItem.isDirectory()
-                        ? MimeTypes.getExtension(rowItem.getTitle()) : null;
-                if (ext != null && ext.trim().length() != 0) {
-                    holder.genericText.setText(ext);
-                    holder.genericIcon.setImageDrawable(null);
-                    //holder.genericIcon.setVisibility(View.INVISIBLE);
-                } else {
-
-                    // we could not find the extension, set a generic file type icon
-                    // probably a directory
-                    holder.genericIcon.setVisibility(View.VISIBLE);
-                }
-                holder.pictureIcon.setVisibility(View.GONE);
-                holder.apkIcon.setVisibility(View.GONE);
-
-            } else if (filetype == 4) {
-
-                Bitmap lockBitmap = BitmapFactory.decodeResource(mainFrag.getResources(),
-                        R.drawable.ic_file_lock_white_36dp);
-                BitmapDrawable lockBitmapDrawable = new BitmapDrawable(mainFrag.getResources(), lockBitmap);
-
-                if (mainFrag.SHOW_THUMBS) {
-                    holder.genericIcon.setVisibility(View.VISIBLE);
+                        // we could not find the extension, set a generic file type icon
+                        // probably a directory
+                        holder.genericIcon.setVisibility(View.VISIBLE);
+                    }
                     holder.pictureIcon.setVisibility(View.GONE);
                     holder.apkIcon.setVisibility(View.GONE);
-                    holder.genericIcon.setImageDrawable(lockBitmapDrawable);
-                    //main.ic.cancelLoad(holder.apkIcon);
-                    //main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
-                }
-            } else {
-                holder.pictureIcon.setVisibility(View.GONE);
-                holder.apkIcon.setVisibility(View.GONE);
-                holder.genericIcon.setVisibility(View.VISIBLE);
+                    break;
+                case ENCRYPTED_FILETYPE:
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(mainFrag.getResources(),
+                            R.drawable.ic_file_lock_white_36dp);
+                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(mainFrag.getResources(), lockBitmap);
+
+                    if (mainFrag.SHOW_THUMBS) {
+                        holder.genericIcon.setVisibility(View.VISIBLE);
+                        holder.pictureIcon.setVisibility(View.GONE);
+                        holder.apkIcon.setVisibility(View.GONE);
+                        holder.genericIcon.setImageDrawable(lockBitmapDrawable);
+                        //main.ic.cancelLoad(holder.apkIcon);
+                        //main.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                    }
+                    break;
+                default:
+                    holder.pictureIcon.setVisibility(View.GONE);
+                    holder.apkIcon.setVisibility(View.GONE);
+                    holder.genericIcon.setVisibility(View.VISIBLE);
+                    break;
             }
 
-            Boolean checked = myChecked.get(p);
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
-
                 holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
             }
             holder.rl.setSelected(false);
-            if (checked) {
+            if (checkedItems.get(p)) {
                 holder.checkImageView.setVisibility(View.VISIBLE);
                 // making sure the generic icon background color filter doesn't get changed
                 // to grey on picture/video/apk/generic text icons when checked
                 // so that user can still look at the thumbs even after selection
-                if ((filetype != 0 && filetype != 1 && filetype != 2)) {
+                if ((filetype != PICTURE_FILETYPE && filetype != APK_FILETYPE
+                        && filetype != VIDEO_FILETYPE)) {
                     holder.apkIcon.setVisibility(View.GONE);
                     holder.pictureIcon.setVisibility(View.GONE);
                     holder.genericIcon.setVisibility(View.VISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
-                    gradientDrawable.setColor(c1);
+                    gradientDrawable.setColor(goBackColor);
                 }
                 holder.rl.setSelected(true);
                 //holder.genericText.setText("");
@@ -512,32 +529,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.checkImageView.setVisibility(View.INVISIBLE);
                 GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
                 if (mainFrag.COLORISE_ICONS) {
-                    if (rowItem.isDirectory())
+                    if (rowItem.isDirectory()) {
                         gradientDrawable.setColor(mainFrag.icon_skin_color);
-                    else if (Icons.isVideo(rowItem.getDesc()) || Icons.isPicture(rowItem
-                            .getDesc()))
-                        gradientDrawable.setColor(c2);
-                    else if (Icons.isAudio(rowItem.getDesc()))
-                        gradientDrawable.setColor(c3);
-                    else if (Icons.isPdf(rowItem.getDesc()))
-                        gradientDrawable.setColor(c4);
-                    else if (Icons.isCode(rowItem.getDesc()))
-                        gradientDrawable.setColor(c5);
-                    else if (Icons.isText(rowItem.getDesc()))
-                        gradientDrawable.setColor(c6);
-                    else if (Icons.isArchive(rowItem.getDesc()))
-                        gradientDrawable.setColor(c7);
-                    else if (Icons.isApk(rowItem.getDesc()))
-                        gradientDrawable.setColor(c8);
-                    else if (Icons.isGeneric(rowItem.getDesc())) {
-                        gradientDrawable.setColor(c9);
                     } else {
-                        gradientDrawable.setColor(mainFrag.icon_skin_color);
+                        ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.getDesc()),
+                                gradientDrawable, mainFrag.icon_skin_color);
                     }
                 } else gradientDrawable.setColor((mainFrag.icon_skin_color));
 
                 if (rowItem.getSize().equals(mainFrag.goback))
-                    gradientDrawable.setColor(c1);
+                    gradientDrawable.setColor(goBackColor);
             }
             if (mainFrag.SHOW_PERMISSIONS)
                 holder.perm.setText(rowItem.getPermissions());
@@ -558,23 +559,21 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.txtDesc.setText(rowItem.getSize());
         } else {
             // view is a grid view
-            Boolean checked = myChecked.get(p);
+            Boolean checked = checkedItems.get(p);
 
             holder.checkImageViewGrid.setColorFilter(Color.parseColor(mainFrag.fabSkin));
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mainFrag.onListItemClicked(p, holder.checkImageViewGrid);
+                    mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                 }
             });
 
             holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View p1) {
-
                     if (!rowItem.getSize().equals(mainFrag.goback)) {
-
-                        toggleChecked(p, holder.checkImageViewGrid);
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                     }
                     return true;
                 }
@@ -598,41 +597,58 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 mainFrag.ic.cancelLoad(holder.genericIcon);
                 mainFrag.ic.loadDrawable(holder.genericIcon, (rowItem.getDesc()), null);
             }
-            if (rowItem.isDirectory())
+
+            if (rowItem.isDirectory()) {
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
-            else if (Icons.isVideo(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c2);
-            else if (Icons.isAudio(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c3);
-            else if (Icons.isPdf(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c4);
-            else if (Icons.isCode(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c5);
-            else if (Icons.isText(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c6);
-            else if (Icons.isArchive(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c7);
-            else if (Icons.isGeneric(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(c9);
-            else if (Icons.isApk(rowItem.getDesc()) || Icons.isPicture(rowItem.getDesc()))
-                holder.genericIcon.setColorFilter(null);
-            else holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+            } else {
+                switch (Icons.getTypeOfFile(rowItem.getDesc())) {
+                    case VIDEO:
+                        holder.genericIcon.setColorFilter(videoColor);
+                        break;
+                    case AUDIO:
+                        holder.genericIcon.setColorFilter(audioColor);
+                        break;
+                    case PDF:
+                        holder.genericIcon.setColorFilter(pdfColor);
+                        break;
+                    case CODE:
+                        holder.genericIcon.setColorFilter(codeColor);
+                        break;
+                    case TEXT:
+                        holder.genericIcon.setColorFilter(textColor);
+                        break;
+                    case ARCHIVE:
+                        holder.genericIcon.setColorFilter(archiveColor);
+                        break;
+                    case GENERIC:
+                        holder.genericIcon.setColorFilter(genericColor);
+                        break;
+                    case APK:
+                    case PICTURE:
+                        holder.genericIcon.setColorFilter(null);
+                        break;
+                    default:
+                        holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+                        break;
+                }
+            }
+
             if (rowItem.getSize().equals(mainFrag.goback))
-                holder.genericIcon.setColorFilter(c1);
+                holder.genericIcon.setColorFilter(goBackColor);
 
             if (checked) {
                 holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
                 //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
                 holder.checkImageViewGrid.setVisibility(View.VISIBLE);
-                holder.rl.setBackgroundColor(Color.parseColor("#9f757575"));
+                holder.rl.setBackgroundColor(Utils.getColor(context, R.color.item_background));
             } else {
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                     holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                 else {
                     holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
-                    holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Color.parseColor("#303030"));
+                    holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Utils.getColor(context, R.color.icon_background_dark));
                 }
             }
 
@@ -661,40 +677,28 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if (mainFrag.IS_LIST) {
                 if (i != items.size()) {
                     if (items.get(i).getSize().equals(mainFrag.goback)) return -1;
-                    if (items.get(i).isDirectory()) return 'D';
-                    else return 'F';
+                    if (items.get(i).isDirectory()) return DIRECTORY;
+                    else return FILE;
                 }
             }
         return -1;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup, int i) {
         View view = mInflater.inflate(R.layout.listheader, viewGroup, false);
         /*if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
             view.setBackgroundResource(R.color.holo_dark_background);*/
         HeaderViewHolder holder = new HeaderViewHolder(view);
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
-            holder.ext.setTextColor(Color.parseColor("#8A000000"));
-        else holder.ext.setTextColor(Color.parseColor("#B3ffffff"));
+            holder.headerText.setTextColor(Utils.getColor(context, R.color.text_light));
+        else holder.headerText.setTextColor(Utils.getColor(context, R.color.text_dark));
         return holder;
     }
 
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView ext;
-
-        HeaderViewHolder(View view) {
-            super(view);
-            ext = (TextView) view.findViewById(R.id.headertext);
-        }
-    }
-
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
-
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
+        if (mainFrag.IS_LIST && (position == items.size()))
             return TYPE_HEADER;
 
         return TYPE_ITEM;
@@ -711,15 +715,17 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         switch (item.getItemId()) {
                             case R.id.about:
                                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
-                                        rowItem.getPermissions(), (BasicActivity) mainFrag.getActivity(),
+                                        rowItem.getPermissions(), (BaseActivity) mainFrag.getActivity(),
                                         BaseActivity.rootMode, utilsProvider.getAppTheme());
-                                /*PropertiesSheet propertiesSheet = new PropertiesSheet();
+                                /*
+                                PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
                                 arguments.putParcelable(PropertiesSheet.KEY_FILE, rowItem.generateBaseFile());
                                 arguments.putString(PropertiesSheet.KEY_PERMISSION, rowItem.getPermissions());
                                 arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
                                 propertiesSheet.setArguments(arguments);
-                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);*/
+                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
+                                */
                                 return true;
                             case R.id.share:
                                 switch (rowItem.getMode()) {
@@ -769,7 +775,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 GeneralDialogCreation.deleteFilesDialog(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
-                                utilsProvider.getFutils().openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
+                                Futils.openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
                                 return true;
                             case R.id.encrypt:
                                 final Intent encryptIntent = new Intent(context, EncryptService.class);
@@ -782,49 +788,44 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                                 final EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
                                         new EncryptButtonCallbackInterface() {
-                                    @Override
-                                    public void onButtonPressed(Intent intent) {
-                                        // do nothing
-                                    }
+                                            @Override
+                                            public void onButtonPressed(Intent intent) {
+                                            }
 
-                                    @Override
-                                    public void onButtonPressed(Intent intent, String password) throws Exception {
-
-                                        startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
-                                    }
-                                };
+                                            @Override
+                                            public void onButtonPressed(Intent intent, String password) throws Exception {
+                                                startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
+                                            }
+                                        };
 
                                 EncryptButtonCallbackInterface encryptButtonCallbackInterface =
                                         new EncryptButtonCallbackInterface() {
 
-                                    @Override
-                                    public void onButtonPressed(Intent intent) throws Exception {
+                                            @Override
+                                            public void onButtonPressed(Intent intent) throws Exception {
+                                                // check if a master password or fingerprint is set
+                                                if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
+                                                    startEncryption(rowItem.generateBaseFile().getPath(),
+                                                            Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                                } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                                        Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
-                                        // check if a master password or fingerprint is set
-                                        if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+                                                    startEncryption(rowItem.generateBaseFile().getPath(),
+                                                            Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                                } else {
+                                                    // let's ask a password from user
+                                                    GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
+                                                            mainFrag, utilsProvider.getAppTheme(),
+                                                            encryptButtonCallbackInterfaceAuthenticate);
+                                                }
+                                            }
 
-                                            startEncryption(rowItem.generateBaseFile().getPath(),
-                                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
-                                        } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
-                                                Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
-
-                                            startEncryption(rowItem.generateBaseFile().getPath(),
-                                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
-                                        } else {
-                                            // let's ask a password from user
-                                            GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
-                                                    mainFrag, utilsProvider.getAppTheme(),
-                                                    encryptButtonCallbackInterfaceAuthenticate);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onButtonPressed(Intent intent, String password) {
-                                        // do nothing
-                                    }
-                                };
+                                            @Override
+                                            public void onButtonPressed(Intent intent, String password) {
+                                            }
+                                        };
 
                                 if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
                                         Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
@@ -839,7 +840,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                     }
                                 } else {
 
-                                   GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
+                                    GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
                                             mainFrag, utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
                                 }
                                 return true;
@@ -852,20 +853,28 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         return false;
                     }
                 });
+
                 popupMenu.inflate(R.menu.item_extras);
-                String x = rowItem.getDesc().toLowerCase();
+                String description = rowItem.getDesc().toLowerCase();
+
                 if (rowItem.isDirectory()) {
                     popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
                     popupMenu.getMenu().findItem(R.id.share).setVisible(false);
                 } else {
                     popupMenu.getMenu().findItem(R.id.book).setVisible(false);
                 }
-                if (x.endsWith(".zip") || x.endsWith(".jar") || x.endsWith(".apk") || x.endsWith(".rar") || x.endsWith(".tar") || x.endsWith(".tar.gz"))
+
+                if (description.endsWith(".zip") || description.endsWith(".jar")
+                        || description.endsWith(".apk") || description.endsWith(".rar")
+                        || description.endsWith(".tar") || description.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
-                if (x.endsWith(CryptUtil.CRYPT_EXTENSION) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+                        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+                    else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+                }
+
                 popupMenu.show();
             }
         });
@@ -874,11 +883,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     /**
      * Queries database to map path and password.
      * Starts the encryption process after database query
-     * @param path the path of file to encrypt
+     *
+     * @param path     the path of file to encrypt
      * @param password the password in plaintext
      */
     private void startEncryption(final String path, final String password, Intent intent) throws Exception {
-
         CryptHandler cryptHandler = new CryptHandler(context);
         EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
                 password);
@@ -888,10 +897,35 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         ServiceWatcherUtil.runService(mainFrag.getContext(), intent);
     }
 
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        if (i < getItemCount() - 1) {
+            HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
+            if (items.get(i).isDirectory()) holder.headerText.setText(R.string.directories);
+            else holder.headerText.setText(R.string.files);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mainFrag.IS_LIST ? items.size() + 1 : items.size();
+    }
+
+    @Override
+    public int getNumColumns() {
+        return 1;
+    }
+
+    @Override
+    public int getSpanSize(int i) {
+        return 1;
+    }
+
     public interface EncryptButtonCallbackInterface {
 
         /**
          * Callback fired when we've just gone through warning dialog before encryption
+         *
          * @param intent
          * @throws Exception
          */
@@ -900,6 +934,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         /**
          * Callback fired when user has entered a password for encryption
          * Not called when we've a master password set or enable fingerprint authentication
+         *
          * @param intent
          * @param password the password entered by user
          * @throws Exception
@@ -910,6 +945,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public interface DecryptButtonCallbackInterface {
         /**
          * Callback fired when we've confirmed the password matches the database
+         *
          * @param intent
          */
         void confirm(Intent intent);
@@ -920,21 +956,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         void failed();
     }
 
-    private boolean isPositionHeader(int position) {
-        return mainFrag.IS_LIST && (position == items.size());
-    }
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView headerText;
 
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if (i != getItemCount() - 1) {
-            HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            if (items.get(i).isDirectory()) holder.ext.setText(R.string.directories);
-            else holder.ext.setText(R.string.files);
+        HeaderViewHolder(View view) {
+            super(view);
+            headerText = (TextView) view.findViewById(R.id.headertext);
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return mainFrag.IS_LIST ? items.size() + 1 : items.size();
-    }
 }

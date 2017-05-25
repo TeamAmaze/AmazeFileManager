@@ -45,7 +45,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.ui.views.CheckBox;
+import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.TinyDB;

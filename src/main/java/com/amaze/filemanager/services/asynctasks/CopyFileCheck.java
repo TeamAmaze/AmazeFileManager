@@ -169,7 +169,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-        Utils.setTint(checkBox, Color.parseColor(BaseActivity.accentSkin));
+        Utils.setTint(context, checkBox, Color.parseColor(BaseActivity.accentSkin));
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));
         dialogBuilder.positiveText(R.string.skip);

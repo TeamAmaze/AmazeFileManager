@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -14,6 +13,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Utils;
 
 
 /**
@@ -46,7 +48,7 @@ public class RoundedImageView extends ImageView {
 
     }
 
-    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
+    public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
         Bitmap finalBitmap;
         if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
             finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius,
@@ -65,7 +67,7 @@ public class RoundedImageView extends ImageView {
         paint.setFilterBitmap(true);
         paint.setDither(true);
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
+        paint.setColor(Utils.getColor(getContext(), R.color.roundedimagepaint));
         canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
                 finalBitmap.getHeight() / 2 + 0.7f,
                 finalBitmap.getWidth() / 2 + 0.1f, paint);
@@ -82,7 +84,7 @@ public class RoundedImageView extends ImageView {
      * @param drawable
      * @return
      */
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {

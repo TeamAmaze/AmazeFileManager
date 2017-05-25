@@ -1,6 +1,6 @@
 package com.amaze.filemanager.utils.provider;
 
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.amaze.filemanager.utils.theme.AppThemeManagerInterface;
