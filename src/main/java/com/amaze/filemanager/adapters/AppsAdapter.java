@@ -48,6 +48,7 @@ import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -194,7 +195,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
         if (checked != null) {
 
             if (checked) {
-                holder.rl.setBackgroundColor(Color.parseColor("#5f33b5e5"));
+                holder.rl.setBackgroundColor(Utils.getColor(context, R.color.appsadapter_background));
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -225,7 +226,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
-                                int color1= Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
+                                int color1 = Color.parseColor(PreferenceUtils.getAccentString(app.Sp));
                                 utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), color1);
                                 return true;
                             case R.id.unins:

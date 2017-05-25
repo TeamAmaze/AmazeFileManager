@@ -103,6 +103,8 @@
 
     <color name="grey">#ff666666</color>
 
+    <color name="appsadapter_background">#5f33b5e5</color>
+
     <color name="text_disabled">#f6f6f6</color>
 
     <color name="item_background">#9f757575</color>
