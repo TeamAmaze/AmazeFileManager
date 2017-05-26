@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 
 /**
@@ -21,11 +21,13 @@ public class CountItemsOrAndSize extends AsyncTask<Void, Pair<Integer, Long>, St
     private Context context;
     private TextView itemsText;
     private BaseFile file;
+    private boolean isStorage;
 
-    public CountItemsOrAndSize(Context c, TextView itemsText, BaseFile f) {
+    public CountItemsOrAndSize(Context c, TextView itemsText, BaseFile f, boolean storage) {
         this.context = c;
         this.itemsText = itemsText;
         file = f;
+        isStorage = storage;
     }
 
     @Override
@@ -35,12 +37,18 @@ public class CountItemsOrAndSize extends AsyncTask<Void, Pair<Integer, Long>, St
 
         if (file.isDirectory(context)) {
             final int x = file.listFiles(context, false).size();
-            long folderSize = Futils.folderSize(file, new OnProgressUpdate<Long>() {
-                @Override
-                public void onUpdate(Long data) {
-                    publishProgress(new Pair<>(x, data));
-                }
-            });
+            long folderSize;
+
+            if(isStorage) {
+                folderSize = file.getUsableSpace();
+            } else {
+                folderSize = Futils.folderSize(file, new OnProgressUpdate<Long>() {
+                    @Override
+                    public void onUpdate(Long data) {
+                        publishProgress(new Pair<>(x, data));
+                    }
+                });
+            }
 
             items = getText(x, folderSize, false);
         } else {
@@ -60,8 +68,10 @@ public class CountItemsOrAndSize extends AsyncTask<Void, Pair<Integer, Long>, St
     }
 
     private String getText(int filesInFolder, long length, boolean loading) {
-        return filesInFolder + " " + context.getResources().getQuantityString(R.plurals.items, filesInFolder) + "; "
-                + (loading? ">":"") + Formatter.formatFileSize(context, length);
+        String numOfItems = (filesInFolder != 0? filesInFolder + " ":"")
+                + context.getResources().getQuantityString(R.plurals.items, filesInFolder) ;
+
+        return numOfItems + "; " + (loading? ">":"") + Formatter.formatFileSize(context, length);
     }
 
     protected void onPostExecute(String items) {

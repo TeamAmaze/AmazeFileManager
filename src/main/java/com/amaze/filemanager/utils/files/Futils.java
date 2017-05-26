@@ -95,7 +95,7 @@ public class Futils {
                 if (file.isFile())
                     length += file.length();
                 else
-                    length += folderSize(file, updateState);
+                    length += folderSize(file, null); //null because updateState would be called for children dirs
 
                 if(updateState != null)
                     updateState.onUpdate(length);
