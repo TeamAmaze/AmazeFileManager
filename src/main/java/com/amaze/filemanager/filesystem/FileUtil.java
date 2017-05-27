@@ -20,7 +20,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.CloudUtil;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.RootUtils;
 
@@ -331,7 +330,7 @@ public abstract class FileUtil {
                 }
                 break;
             case OTG:
-                DocumentFile documentFile = RootHelper.getDocumentFile(file.getPath(), context, true);
+                DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true);
                 isSuccessful = documentFile != null;
                 break;
             case FILE:

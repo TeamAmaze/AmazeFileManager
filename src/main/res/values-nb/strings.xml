@@ -26,7 +26,7 @@
   <string name="share">Del</string>
   <string name="yes">Ja</string>
   <string name="no">Nei</string>
-  <string name="confirm">Bekreft</string>
+  <string name="dialog_delete_title">Bekreft</string>
   <string name="home">Hjem</string>
   <string name="close">Lukk</string>
   <string name="history">Logg</string>

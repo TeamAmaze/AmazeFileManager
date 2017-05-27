@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.amaze.filemanager.utils.theme.AppThemeManagerInterface;

@@ -26,7 +26,7 @@
   <string name="share">Deling</string>
   <string name="yes">Ja</string>
   <string name="no">Nee</string>
-  <string name="confirm">Bevestig</string>
+  <string name="dialog_delete_title">Bevestig</string>
   <string name="delete">Vee uit</string>
   <!-- New -->
   <!-- Array -->

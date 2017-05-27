@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/dialog_delete_disclaimer"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/dialog_list" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/category_directories"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:text="@string/dialog_delete_category_directories"
+        android:textAllCaps="true"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="@dimen/dialog_category"
+        android:textStyle="bold" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/list_directories"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/dialog_list"
+        tools:text="1. Directory01\n2. Directory02\n3. Directory03" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/category_files"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:text="@string/dialog_delete_category_files"
+        android:textAllCaps="true"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="@dimen/dialog_category"
+        android:textStyle="bold" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/list_files"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/dialog_list"
+        tools:text="1. File01.txt (1.00 MB)\n2. File02.txt (2.00 MB)\n3. File03.txt (3.00 MB)" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/total"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/dialog_list"
+        tools:text="Total: 6.00 MB" >
+    </TextView>
+
+</LinearLayout>

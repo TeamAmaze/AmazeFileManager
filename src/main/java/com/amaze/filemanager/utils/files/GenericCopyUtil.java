@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.files;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -10,6 +10,11 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.BufferedInputStream;
@@ -69,7 +74,7 @@ public class GenericCopyUtil {
             if (mSourceFile.isOtgFile()) {
                 // source is in otg
                 ContentResolver contentResolver = mContext.getContentResolver();
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(mSourceFile.getPath(),
+                DocumentFile documentSourceFile = OTGUtil.getDocumentFile(mSourceFile.getPath(),
                         mContext, false);
 
                 bufferedInputStream = new BufferedInputStream(contentResolver
@@ -135,7 +140,7 @@ public class GenericCopyUtil {
                 // target in OTG, obtain streams from DocumentFile Uri's
 
                 ContentResolver contentResolver = mContext.getContentResolver();
-                DocumentFile documentTargetFile = RootHelper.getDocumentFile(mTargetFile.getPath(),
+                DocumentFile documentTargetFile = OTGUtil.getDocumentFile(mTargetFile.getPath(),
                         mContext, true);
 
                 bufferedOutputStream = new BufferedOutputStream(contentResolver

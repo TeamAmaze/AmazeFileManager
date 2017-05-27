@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Utils;
 
 /**
  * Created by Arpit on 30-07-2015.
@@ -34,19 +35,19 @@ public class SizeDrawable extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(getResources().getColor(R.color.accent_indigo));
+        mPaint.setColor(Utils.getColor(context, R.color.accent_indigo));
         // mPaint.setStrokeCap(Paint.Cap.BUTT);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint1 = new Paint();
         mPaint1.setAntiAlias(true);
         mPaint1.setStyle(Paint.Style.FILL);
-        mPaint1.setColor(getResources().getColor(R.color.accent_red));
+        mPaint1.setColor(Utils.getColor(context, R.color.accent_red));
         //  mPaint1.setStrokeCap(Paint.Cap.BUTT);
         mPaint1.setStrokeWidth(strokeWidth);
         mPaint2 = new Paint();
         mPaint2.setAntiAlias(true);
         mPaint2.setStyle(Paint.Style.FILL);
-        mPaint2.setColor(getResources().getColor(R.color.accent_green));
+        mPaint2.setColor(Utils.getColor(context, R.color.accent_green));
         // mPaint2.setStrokeCap(Paint.Cap.BUTT);
         mPaint2.setStrokeWidth(strokeWidth);
         twenty = dpToPx(10);

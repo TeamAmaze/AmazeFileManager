@@ -96,9 +96,9 @@
     <string name="compress">Kompres</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
-    <string name="confirm">Konfirm</string>
+    <string name="dialog_delete_title">Konfirm</string>
     <string name="deleting">Menghapus</string>
-    <string name="questiondelete">Apakah Anda benar-benar ingin menghapus berkas ini?</string>
+    <string name="dialog_delete_disclaimer">Apakah Anda benar-benar ingin menghapus berkas ini?</string>
     <string name="questionset">Apakah Anda ingin menetapkan jalur saat ini sebagai beranda untuk tab ini?</string>
     <string name="viewmode">Mode Tampilan</string>
     <string name="uimode">Mode UI</string>

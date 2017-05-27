@@ -32,11 +32,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.IconHolder;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -82,9 +84,10 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
         ListView vl = getListView();
         vl.setDivider(null);
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
-            getActivity().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
 
-        adapter = new AppsAdapter(getContext(), utilsProvider, R.layout.rowlayout, app);
+        adapter = new AppsAdapter(getContext(), (BaseActivity) getActivity(), utilsProvider,
+                R.layout.rowlayout, app);
         setListAdapter(adapter);
         setListShown(false);
         setEmptyText(getResources().getString(R.string.no_applications));

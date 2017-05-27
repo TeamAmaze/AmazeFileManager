@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.Futils;
-import com.amaze.filemanager.utils.GenericCopyUtil;
+import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

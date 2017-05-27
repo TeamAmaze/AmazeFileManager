@@ -9,6 +9,7 @@ import android.support.annotation.ColorRes;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.Utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -183,10 +184,10 @@ public class ColorPreference {
     @ColorInt
     public int getColor(ColorUsage usage) {
         try {
-            return context.getResources().getColor(getRes(usage));
+            return Utils.getColor(context, getRes(usage));
         } catch (Resources.NotFoundException ex) {
             Log.e("ColorPreference", "Color resource not found for " + usage.asString() + ": " + Integer.toString(getRes(usage)));
-            return context.getResources().getColor(usage.getDefaultColor());
+            return Utils.getColor(context, usage.getDefaultColor());
         }
     }
 

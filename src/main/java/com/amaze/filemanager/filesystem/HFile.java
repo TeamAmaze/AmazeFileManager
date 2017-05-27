@@ -13,14 +13,15 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.CloudUtil;
-import com.amaze.filemanager.utils.Futils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.SpaceAllocation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +42,7 @@ import static com.amaze.filemanager.activities.MainActivity.dataUtils;
  */
 //Hybrid file for handeling all types of files
 public class HFile {
+
     String path;
     //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
     OpenMode mode = OpenMode.FILE;
@@ -228,7 +230,7 @@ public class HFile {
                 if(baseFile!=null) return baseFile.getSize();
                 break;
             case OTG:
-                s = RootHelper.getDocumentFile(path, context, false).length();
+                s = OTGUtil.getDocumentFile(path, context, false).length();
                 break;
             case DROPBOX:
                 s = dataUtils.getAccount(OpenMode.DROPBOX)
@@ -292,7 +294,7 @@ public class HFile {
             case ROOT:
                 return new File(path).getName();
             case OTG:
-                return RootHelper.getDocumentFile(path, context, false).getName();
+                return OTGUtil.getDocumentFile(path, context, false).getName();
             default:
                 StringBuilder builder = new StringBuilder(path);
                 name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
@@ -467,7 +469,7 @@ public class HFile {
                 }
                 break;
             case OTG:
-                isDirectory = RootHelper.getDocumentFile(path, context, false).isDirectory();
+                isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
                 break;
             case DROPBOX:
                 isDirectory = dataUtils.getAccount(OpenMode.DROPBOX)
@@ -565,20 +567,78 @@ public class HFile {
     }
 
 
+    /**
+     * Gets usable i.e. free space of a device
+     * @return
+     */
     public long getUsableSpace() {
         long size = 0L;
-        if (isSmb()) {
-            try {
-                size = (new SmbFile(path).getDiskFreeSpace());
-            } catch (MalformedURLException e) {
-                size = 0L;
-                e.printStackTrace();
-            } catch (SmbException e) {
-                size = 0L;
-                e.printStackTrace();
-            }
-        } else
-            size = (new File(path).getUsableSpace());
+        switch (mode) {
+            case SMB:
+                try {
+                    size = (new SmbFile(path).getDiskFreeSpace());
+                } catch (MalformedURLException e) {
+                    size = 0L;
+                    e.printStackTrace();
+                } catch (SmbException e) {
+                    size = 0L;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+            case ROOT:
+                size = new File(path).getUsableSpace();
+                break;
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+                SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
+                size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
+                break;
+            case OTG:
+                // TODO: Get free space from OTG when {@link DocumentFile} API adds support
+                break;
+
+        }
+        return size;
+    }
+
+    /**
+     * Gets total size of the disk
+     * @param context
+     * @return
+     */
+    public long getTotal(Context context) {
+        long size = 0l;
+        switch (mode) {
+            case SMB:
+                // TODO: Find total storage space of SMB when JCIFS adds support
+                try {
+                    size = new SmbFile(path).getDiskFreeSpace();
+                } catch (SmbException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+            case ROOT:
+                size = new File(path).getTotalSpace();
+                break;
+            case DROPBOX:
+            case BOX:
+            case ONEDRIVE:
+            case GDRIVE:
+                SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
+                size = spaceAllocation.getTotal();
+                break;
+            case OTG:
+                // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
+                DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
+                documentFile.length();
+                break;
+        }
         return size;
     }
 
@@ -753,7 +813,7 @@ public class HFile {
                 break;
             case OTG:
                 ContentResolver contentResolver = context.getContentResolver();
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
+                DocumentFile documentSourceFile = OTGUtil.getDocumentFile(path,
                         context, false);
                 try {
                     inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
@@ -804,7 +864,7 @@ public class HFile {
                 break;
             case OTG:
                 ContentResolver contentResolver = context.getContentResolver();
-                DocumentFile documentSourceFile = RootHelper.getDocumentFile(path,
+                DocumentFile documentSourceFile = OTGUtil.getDocumentFile(path,
                         context, true);
                 try {
                     outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
@@ -868,7 +928,7 @@ public class HFile {
      */
     public boolean exists(Context context) {
         if (isOtgFile()) {
-            DocumentFile fileToCheck = RootHelper.getDocumentFile(path, context, false);
+            DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
             return fileToCheck != null;
         } else return (exists());
     }
@@ -909,7 +969,7 @@ public class HFile {
             }
         } else if (isOtgFile()) {
             if (!exists(context)) {
-                DocumentFile parentDirectory = RootHelper.getDocumentFile(getParent(context), context, false);
+                DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
                 if (parentDirectory.isDirectory()) {
                     parentDirectory.createDirectory(getName(context));
                 }

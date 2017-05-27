@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.amaze.filemanager.utils.CryptUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;

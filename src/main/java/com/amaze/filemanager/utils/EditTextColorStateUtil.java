@@ -1,10 +1,12 @@
 package com.amaze.filemanager.utils;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.AppCompatEditText;
 import android.widget.EditText;
+
+import com.amaze.filemanager.R;
 
 /**
  * Created by vishal on 20/2/17.
@@ -15,9 +17,9 @@ import android.widget.EditText;
 
 public class EditTextColorStateUtil {
 
-    public static void setTint(EditText editText, int color) {
+    public static void setTint(Context context, EditText editText, int color) {
         if (Build.VERSION.SDK_INT >= 21) return;
-        ColorStateList editTextColorStateList = createEditTextColorStateList(color);
+        ColorStateList editTextColorStateList = createEditTextColorStateList(context, color);
         if (editText instanceof AppCompatEditText) {
             ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -25,15 +27,15 @@ public class EditTextColorStateUtil {
         }
     }
 
-    private static ColorStateList createEditTextColorStateList(int color) {
+    private static ColorStateList createEditTextColorStateList(Context context, int color) {
         int[][] states = new int[3][];
         int[] colors = new int[3];
         int i = 0;
         states[i] = new int[]{-android.R.attr.state_enabled};
-        colors[i] = Color.parseColor("#f6f6f6");
+        colors[i] = Utils.getColor(context, R.color.text_disabled);
         i++;
         states[i] = new int[]{-android.R.attr.state_pressed, -android.R.attr.state_focused};
-        colors[i] = Color.parseColor("#666666");
+        colors[i] = Utils.getColor(context, R.color.grey);
         i++;
         states[i] = new int[]{};
         colors[i] = color;

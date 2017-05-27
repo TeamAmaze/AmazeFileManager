@@ -23,7 +23,7 @@
   <string name="save">ບັນທຶກ</string>
   <string name="size_capitalized">ຂະໜາດ</string>
   <string name="share">ແບ່ງປັນ</string>
-  <string name="confirm">ຢືນຢັນ</string>
+  <string name="dialog_delete_title">ຢືນຢັນ</string>
   <string name="delete">ລຶບ</string>
   <!-- New -->
   <!-- Array -->

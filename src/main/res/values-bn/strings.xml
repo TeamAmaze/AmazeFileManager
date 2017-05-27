@@ -179,11 +179,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="no">না</string>
 
-    <string name="confirm">নিশ্চিত</string>
+    <string name="dialog_delete_title">নিশ্চিত</string>
 
     <string name="deleting">মুছে ফেলা হচ্ছে</string>
 
-    <string name="questiondelete">অাপনি কি নির্ধারিত ফাইলগুলো মুছে ফেলার ব্যাপারে নিশ্চিত?</string>
+    <string name="dialog_delete_disclaimer">অাপনি কি নির্ধারিত ফাইলগুলো মুছে ফেলার ব্যাপারে নিশ্চিত?</string>
 
     <string name="questionset">Do you want to set current path as home for this tab?</string>
 

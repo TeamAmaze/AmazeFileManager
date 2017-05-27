@@ -24,7 +24,7 @@
   <string name="about">About</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
-  <string name="confirm">ConfirmPlaceholderComment</string>
+  <string name="dialog_delete_title">ConfirmPlaceholderComment</string>
   <string name="home">Home</string>
   <string name="close">Close</string>
   <string name="history">History</string>

@@ -3,8 +3,6 @@ package com.amaze.filemanager.utils;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
-import com.amaze.filemanager.utils.color.ColorUsage;
-
 import java.util.Calendar;
 
 /**
@@ -27,13 +25,11 @@ public class PreferenceUtils {
     public static final int DEFAULT_CURRENT_TAB = 1;
 
     public static int getStatusColor(String skin) {
-        int c=darker(Color.parseColor(skin),0.6f);
-        return c;
+        return darker(Color.parseColor(skin),0.6f);
     }
 
     public static int getStatusColor(int skin) {
-        int c=darker(skin,0.6f);
-        return c;
+        return darker(skin,0.6f);
     }
 
     public static int darker (int color, float factor) {
@@ -46,18 +42,6 @@ public class PreferenceUtils {
                 Math.max( (int)(r * factor), 0 ),
                 Math.max( (int)(g * factor), 0 ),
                 Math.max( (int)(b * factor), 0 ) );
-    }
-
-    /**
-     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
-     * and {@link ColorUsage#ACCENT}
-     * @param Sp
-     * @return
-     */
-    public static int getAccent(SharedPreferences Sp) {
-        if (accent == -1)
-            accent = Sp.getInt(KEY_ACCENT, DEFAULT_ACCENT);
-        return accent;
     }
 
     /**
@@ -76,44 +60,10 @@ public class PreferenceUtils {
         return folder;
     }
 
-    /**
-     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
-     * and {@link ColorUsage#ACCENT}
-     * @param Sp
-     * @return
-     */
-    public static String getAccentString(SharedPreferences Sp) {
-        return (colors[getAccent(Sp)]);
-    }
-
     public static void reset(){
         primary=accent=folder=primaryTwo=-1;
     }
 
-    /**
-     * @deprecated use {@link com.amaze.filemanager.activities.BaseActivity#getColorPreference()#getColor(int)}
-     * and {@link ColorUsage#ACCENT}
-     */
-    public final static String[] colors = new String[]{
-            "#F44336",
-            "#e91e63",
-            "#9c27b0",
-            "#673ab7",
-            "#3f51b5",
-            "#2196F3",
-            "#03A9F4",
-            "#00BCD4",
-            "#009688",
-            "#4CAF50",
-            "#8bc34a",
-            "#FFC107",
-            "#FF9800",
-            "#FF5722",
-            "#795548",
-            "#212121",
-            "#607d8b",
-            "#004d40"
-    };
     public static final String LICENCE_TERMS = "<html><body>" +
             "<h3>Notices for files:</h3>" +
             "<ul><li>nineoldandroids-2.4.0.jar</ul></li>" +	//nineoldandroids

@@ -23,7 +23,7 @@
   <string name="save">บันทึก</string>
   <string name="size_capitalized">ขนาด</string>
   <string name="share">แบ่งปัน</string>
-  <string name="confirm">ยืนยัน</string>
+  <string name="dialog_delete_title">ยืนยัน</string>
   <string name="delete">ลบ</string>
   <!-- New -->
   <!-- Array -->

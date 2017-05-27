@@ -67,12 +67,13 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
+import com.timehop.stickyheadersrecyclerview.decorators.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -202,9 +203,9 @@ public class ZipViewer extends Fragment {
         res = getResources();
         mainActivity.supportInvalidateOptionsMenu();
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
-            rootView.setBackgroundColor(getResources().getColor(R.color.holo_dark_background));
+            rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
         else
-            listView.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
 
         gobackitem = Sp.getBoolean("goBack_checkbox", false);
         coloriseIcons = Sp.getBoolean("coloriseIcons", true);
@@ -352,12 +353,12 @@ public class ZipViewer extends Fragment {
             hideOption(R.id.hide, menu);
             showOption(R.id.ex, menu);
             mode.setTitle(getResources().getString(R.string.select));
-            mainActivity.updateViews(new ColorDrawable(getResources().getColor(R.color.holo_dark_action_mode)));
+            mainActivity.updateViews(new ColorDrawable(Utils.getColor(getContext(), R.color.holo_dark_action_mode)));
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
                 if (mainActivity.colourednavigation)
-                    window.setNavigationBarColor(getResources().getColor(android.R.color.black));
+                    window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
             }
             if (Build.VERSION.SDK_INT < 19)
                 getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
