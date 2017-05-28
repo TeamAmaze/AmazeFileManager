@@ -42,6 +42,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
@@ -78,12 +79,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private LayoutInflater mInflater;
     private int rowHeight;
     private int grey_color;
-    private int goBackColor, videoColor, audioColor, pdfColor, codeColor, textColor, archiveColor, apkColor, genericColor;
+    private int accentColor, iconSkinColor, goBackColor, videoColor, audioColor, pdfColor, codeColor, textColor,
+            archiveColor, apkColor, genericColor;
 
     private int offset = 0;
     public boolean stoppedAnimation = false;
 
-    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, ArrayList<LayoutElement> items, Context context) {
+    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider,
+                           ArrayList<LayoutElement> items, Context context) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.items = items;
@@ -93,6 +96,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             animation.put(i, false);
         }
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        iconSkinColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ICON_SKIN);
         goBackColor = Utils.getColor(context, R.color.goback_item);
         videoColor = Utils.getColor(context, R.color.video_item);
         audioColor = Utils.getColor(context, R.color.audio_item);
@@ -143,7 +148,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 // start actionmode if not already started
                 // null condition if there is config change
                 mainFrag.selection = true;
-                mainFrag.mActionMode = mainFrag.MAIN_ACTIVITY.startSupportActionMode(mainFrag.mActionModeCallback);
+                mainFrag.mActionMode = mainFrag.getMainActivity().startSupportActionMode(mainFrag.mActionModeCallback);
             }
         }
 
@@ -334,10 +339,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             });
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                holder.checkImageView.setBackground(new CircleGradientDrawable(mainFrag.fabSkin,
+                holder.checkImageView.setBackground(new CircleGradientDrawable(accentColor,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
             } else {
-                holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(mainFrag.fabSkin,
+                holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(accentColor,
                         utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
             }
 
@@ -530,12 +535,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
                 if (mainFrag.COLORISE_ICONS) {
                     if (rowItem.isDirectory()) {
-                        gradientDrawable.setColor(mainFrag.icon_skin_color);
+                        gradientDrawable.setColor(iconSkinColor);
                     } else {
                         ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.getDesc()),
-                                gradientDrawable, mainFrag.icon_skin_color);
+                                gradientDrawable, iconSkinColor);
                     }
-                } else gradientDrawable.setColor((mainFrag.icon_skin_color));
+                } else gradientDrawable.setColor(iconSkinColor);
 
                 if (rowItem.getSize().equals(mainFrag.goback))
                     gradientDrawable.setColor(goBackColor);
@@ -561,7 +566,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             // view is a grid view
             Boolean checked = checkedItems.get(p);
 
-            holder.checkImageViewGrid.setColorFilter(Color.parseColor(mainFrag.fabSkin));
+            holder.checkImageViewGrid.setColorFilter(accentColor);
             holder.rl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -599,7 +604,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
 
             if (rowItem.isDirectory()) {
-                holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+                holder.genericIcon.setColorFilter(iconSkinColor);
             } else {
                 switch (Icons.getTypeOfFile(rowItem.getDesc())) {
                     case VIDEO:
@@ -628,7 +633,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         holder.genericIcon.setColorFilter(null);
                         break;
                     default:
-                        holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+                        holder.genericIcon.setColorFilter(iconSkinColor);
                         break;
                 }
             }
@@ -637,7 +642,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.genericIcon.setColorFilter(goBackColor);
 
             if (checked) {
-                holder.genericIcon.setColorFilter(mainFrag.icon_skin_color);
+                holder.genericIcon.setColorFilter(iconSkinColor);
                 //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
                 holder.checkImageViewGrid.setVisibility(View.VISIBLE);
@@ -738,7 +743,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                     default:
                                         ArrayList<File> arrayList = new ArrayList<>();
                                         arrayList.add(new File(rowItem.getDesc()));
-                                        utilsProvider.getFutils().shareFiles(arrayList, mainFrag.MAIN_ACTIVITY, utilsProvider.getAppTheme(), Color.parseColor(mainFrag.fabSkin));
+                                        utilsProvider.getFutils().shareFiles(arrayList, mainFrag.getMainActivity(), utilsProvider.getAppTheme(), accentColor);
                                         break;
                                 }
                                 return true;
@@ -746,33 +751,34 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 mainFrag.rename(rowItem.generateBaseFile());
                                 return true;
                             case R.id.cpy:
-                                MainActivity MAIN_ACTIVITY = mainFrag.MAIN_ACTIVITY;
-                                mainFrag.MAIN_ACTIVITY.MOVE_PATH = null;
+                                mainFrag.getMainActivity().MOVE_PATH = null;
                                 ArrayList<BaseFile> copies = new ArrayList<>();
                                 copies.add(rowItem.generateBaseFile());
-                                MAIN_ACTIVITY.COPY_PATH = copies;
-                                MAIN_ACTIVITY.supportInvalidateOptionsMenu();
+                                mainFrag.getMainActivity().COPY_PATH = copies;
+                                mainFrag.getMainActivity().supportInvalidateOptionsMenu();
                                 return true;
                             case R.id.cut:
-                                MainActivity MAIN_ACTIVITY1 = mainFrag.MAIN_ACTIVITY;
-                                MAIN_ACTIVITY1.COPY_PATH = null;
+                                mainFrag.getMainActivity().COPY_PATH = null;
                                 ArrayList<BaseFile> copie = new ArrayList<>();
                                 copie.add(rowItem.generateBaseFile());
-                                MAIN_ACTIVITY1.MOVE_PATH = copie;
-                                MAIN_ACTIVITY1.supportInvalidateOptionsMenu();
+                                mainFrag.getMainActivity().MOVE_PATH = copie;
+                                mainFrag.getMainActivity().supportInvalidateOptionsMenu();
                                 return true;
                             case R.id.ex:
-                                mainFrag.MAIN_ACTIVITY.mainActivityHelper.extractFile(new File(rowItem.getDesc()));
+                                mainFrag.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                                 return true;
                             case R.id.book:
                                 MainActivity.dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
-                                mainFrag.MAIN_ACTIVITY.refreshDrawer();
+                                mainFrag.getMainActivity().refreshDrawer();
                                 Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.delete:
                                 ArrayList<Integer> positions = new ArrayList<>();
                                 positions.add(position);
-                                GeneralDialogCreation.deleteFilesDialog(mainFrag.getLayoutElements(), mainFrag, positions, utilsProvider.getAppTheme());
+                                GeneralDialogCreation.deleteFilesDialog(context,
+                                        mainFrag.getLayoutElements(),
+                                        mainFrag.getMainActivity(),
+                                        positions, utilsProvider.getAppTheme());
                                 return true;
                             case R.id.open_with:
                                 Futils.openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
@@ -816,8 +822,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                                             Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                                 } else {
                                                     // let's ask a password from user
-                                                    GeneralDialogCreation.showEncryptAuthenticateDialog(encryptIntent,
-                                                            mainFrag, utilsProvider.getAppTheme(),
+                                                    GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
+                                                            mainFrag.getMainActivity(), utilsProvider.getAppTheme(),
                                                             encryptButtonCallbackInterfaceAuthenticate);
                                                 }
                                             }

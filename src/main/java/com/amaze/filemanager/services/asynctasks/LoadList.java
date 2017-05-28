@@ -283,7 +283,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     }
                     try {
                         LayoutElement layoutElement = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                baseFile.getPath(), !ma.IS_LIST, ma.res), baseFile.getPath(), baseFile.getPermission(),
+                                baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
                         layoutElement.setMode(baseFile.getMode());
                         a.add(layoutElement);

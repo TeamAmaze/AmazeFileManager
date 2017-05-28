@@ -136,24 +136,28 @@ public class GeneralDialogCreation {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static void deleteFilesDialog(final ArrayList<LayoutElement> layoutElements, final MainFragment mainFragment, final List<Integer> positions, AppTheme appTheme) {
+    public static void deleteFilesDialog(final Context c, final ArrayList<LayoutElement> layoutElements,
+                                         final MainActivity mainActivity,
+                                         final List<Integer> positions,
+                                         AppTheme appTheme) {
 
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         // Build dialog with custom view layout and accent color.
-        MaterialDialog dialog = new MaterialDialog.Builder(mainFragment.getActivity())
-                .title(mainFragment.getResources().getString(R.string.dialog_delete_title))
+        MaterialDialog dialog = new MaterialDialog.Builder(c)
+                .title(c.getString(R.string.dialog_delete_title))
                 .customView(R.layout.dialog_delete, true)
                 .theme(appTheme.getMaterialDialogTheme())
-                .negativeText(mainFragment.getResources().getString(R.string.cancel).toUpperCase())
-                .positiveText(mainFragment.getResources().getString(R.string.delete).toUpperCase())
-                .positiveColor(Color.parseColor(mainFragment.fabSkin))
-                .negativeColor(Color.parseColor(mainFragment.fabSkin))
+                .negativeText(c.getString(R.string.cancel).toUpperCase())
+                .positiveText(c.getString(R.string.delete).toUpperCase())
+                .positiveColor(accentColor)
+                .negativeColor(accentColor)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.deleting), Toast.LENGTH_SHORT).show();
-                        mainFragment.MAIN_ACTIVITY.mainActivityHelper.deleteFiles(itemsToDelete);
+                        Toast.makeText(c, c.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+                        mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
                     }
                 })
                 .build();
@@ -179,9 +183,9 @@ public class GeneralDialogCreation {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                listFiles.setText(mainFragment.getResources().getString(R.string.loading));
-                listDirectories.setText(mainFragment.getResources().getString(R.string.loading));
-                total.setText(mainFragment.getResources().getString(R.string.loading));
+                listFiles.setText(c.getString(R.string.loading));
+                listDirectories.setText(c.getString(R.string.loading));
+                total.setText(c.getString(R.string.loading));
             }
 
             @Override
@@ -198,13 +202,13 @@ public class GeneralDialogCreation {
                             directories.append("\n");
                         }
 
-                        long sizeDirectory = layoutElement.generateBaseFile().folderSize(mainFragment.getContext());
+                        long sizeDirectory = layoutElement.generateBaseFile().folderSize(c);
 
                         directories.append(++counterDirectories)
                                 .append(". ")
                                 .append(layoutElement.getTitle())
                                 .append(" (")
-                                .append(Formatter.formatFileSize(mainFragment.getContext(), sizeDirectory))
+                                .append(Formatter.formatFileSize(c, sizeDirectory))
                                 .append(")");
                         sizeTotal += sizeDirectory;
                         // Build list of files to delete.
@@ -289,9 +293,9 @@ public class GeneralDialogCreation {
                 // Show total size with at least one directory or file and size is not zero.
                 if (tempCounterFiles + tempCounterDirectories > 1 && tempSizeTotal > 0) {
                     StringBuilder builderTotal = new StringBuilder()
-                            .append(mainFragment.getResources().getString(R.string.total))
+                            .append(c.getString(R.string.total))
                             .append(" ")
-                            .append(Formatter.formatFileSize(mainFragment.getContext(), tempSizeTotal));
+                            .append(Formatter.formatFileSize(c, tempSizeTotal));
                     total.setText(builderTotal);
                     if (total.getVisibility() != View.VISIBLE)
                         total.setVisibility(View.VISIBLE);
@@ -303,8 +307,8 @@ public class GeneralDialogCreation {
 
         // Set category text color for Jelly Bean (API 16) and later.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            categoryDirectories.setTextColor(Color.parseColor(mainFragment.fabSkin));
-            categoryFiles.setTextColor(Color.parseColor(mainFragment.fabSkin));
+            categoryDirectories.setTextColor(accentColor);
+            categoryFiles.setTextColor(accentColor);
         }
 
         // Show dialog on screen.
@@ -589,16 +593,15 @@ public class GeneralDialogCreation {
                                                 AppTheme appTheme,
                                                 final RecyclerAdapter.EncryptButtonCallbackInterface
                                                         encryptButtonCallbackInterface) {
-
+        int accentColor = main.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
-
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
         builder.title(main.getResources().getString(R.string.warning));
         builder.content(main.getResources().getString(R.string.crypt_warning_key));
         builder.theme(appTheme.getMaterialDialogTheme());
         builder.negativeText(main.getResources().getString(R.string.warning_never_show));
         builder.positiveText(main.getResources().getString(R.string.warning_confirm));
-        builder.positiveColor(Color.parseColor(main.fabSkin));
+        builder.positiveColor(accentColor);
 
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -634,14 +637,15 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
-    public static void showEncryptAuthenticateDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+    public static void showEncryptAuthenticateDialog(final Context c, final Intent intent,
+                                                     final MainActivity main, AppTheme appTheme,
                                                      final RecyclerAdapter.EncryptButtonCallbackInterface
                                                              encryptButtonCallbackInterface) {
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
+        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(main.getResources().getString(R.string.crypt_encrypt));
 
-        View rootView = View.inflate(main.getActivity(), R.layout.dialog_encrypt_authenticate, null);
+        View rootView = View.inflate(c, R.layout.dialog_encrypt_authenticate, null);
 
         final AppCompatEditText passwordEditText = (AppCompatEditText)
                 rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
@@ -650,11 +654,11 @@ public class GeneralDialogCreation {
 
         builder.customView(rootView, true);
 
-        builder.positiveText(main.getResources().getString(R.string.ok));
-        builder.negativeText(main.getResources().getString(R.string.cancel));
+        builder.positiveText(c.getString(R.string.ok));
+        builder.negativeText(c.getString(R.string.cancel));
         builder.theme(appTheme.getMaterialDialogTheme());
-        builder.positiveColor(Color.parseColor(main.fabSkin));
-        builder.negativeColor(Color.parseColor(main.fabSkin));
+        builder.positiveColor(accentColor);
+        builder.negativeColor(accentColor);
 
         builder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -679,9 +683,7 @@ public class GeneralDialogCreation {
                             passwordEditText.getText().toString());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(main.getActivity(),
-                            main.getResources().getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -690,21 +692,22 @@ public class GeneralDialogCreation {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static void showDecryptFingerprintDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
+    public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
+                                                    final Intent intent, AppTheme appTheme,
                                                     final RecyclerAdapter.DecryptButtonCallbackInterface
                                                             decryptButtonCallbackInterface)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
             UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.crypt_decrypt));
+        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
+        builder.title(c.getString(R.string.crypt_decrypt));
 
-        View rootView = View.inflate(main.getActivity(),
-                R.layout.dialog_decrypt_fingerprint_authentication, null);
+        View rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null);
 
         Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
-        cancelButton.setTextColor(Color.parseColor(main.fabSkin));
+        cancelButton.setTextColor(accentColor);
         builder.customView(rootView, true);
         builder.canceledOnTouchOutside(false);
 
@@ -718,34 +721,32 @@ public class GeneralDialogCreation {
             }
         });
 
-        FingerprintManager manager = (FingerprintManager) main.getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+        FingerprintManager manager = (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
         FingerprintManager.CryptoObject object = new
-                FingerprintManager.CryptoObject(CryptUtil.initCipher(main.getContext()));
+                FingerprintManager.CryptoObject(CryptUtil.initCipher(c));
 
-        FingerprintHandler handler = new FingerprintHandler(main.getActivity(), intent, dialog,
-                decryptButtonCallbackInterface);
+        FingerprintHandler handler = new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);
         handler.authenticate(manager, object);
     }
 
-    public static void showDecryptDialog(final Intent intent, final MainFragment main, AppTheme appTheme,
-                                  final String password,
-                                  final RecyclerAdapter.DecryptButtonCallbackInterface
+    public static void showDecryptDialog(Context c, final MainActivity main, final Intent intent,
+                                         AppTheme appTheme, final String password,
+                                         final RecyclerAdapter.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.crypt_decrypt));
-
-        builder.input(main.getResources().getString(R.string.authenticate_password), "", false,
+        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
+        builder.title(c.getString(R.string.crypt_decrypt));
+        builder.input(c.getString(R.string.authenticate_password), "", false,
                 new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                     }
                 });
-
         builder.theme(appTheme.getMaterialDialogTheme());
-        builder.positiveText(main.getResources().getString(R.string.ok));
-        builder.negativeText(main.getResources().getString(R.string.cancel));
-        builder.positiveColor(Color.parseColor(main.fabSkin));
-        builder.negativeColor(Color.parseColor(main.fabSkin));
+        builder.positiveText(c.getString(R.string.ok));
+        builder.negativeText(c.getString(R.string.cancel));
+        builder.positiveColor(accentColor);
+        builder.negativeColor(accentColor);
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -866,10 +867,10 @@ public class GeneralDialogCreation {
         a.build().show();
     }
 
-    public static void showSortDialog(final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
+    public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
+        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         String[] sort = m.getResources().getStringArray(R.array.sortby);
-        int current = Integer.parseInt(m.sharedPref.getString("sortby", "0"));
+        int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -885,8 +886,7 @@ public class GeneralDialogCreation {
         a.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
+                sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -896,8 +896,7 @@ public class GeneralDialogCreation {
         a.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                m.sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
+                sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
                 m.getSortModes();
                 m.updateList();
                 dialog.dismiss();
@@ -950,7 +949,7 @@ public class GeneralDialogCreation {
 
 
     public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
@@ -976,7 +975,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.MAIN_ACTIVITY.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
