@@ -98,8 +98,8 @@
   <string name="no">Ne</string>
   <string name="dialog_delete_category_directories">Adresáře</string>
   <string name="dialog_delete_category_files">Soubory</string>
-  <string name="dialog_delete_disclaimer">Opravdu chcete odstranit následující soubory?</string>
-  <string name="dialog_delete_title">Potvrdit</string>
+  <string name="dialog_delete_disclaimer">Vymazání níže uvedených položek je natrvalo odstraní ze zařízení a nebude je možné obnovit.</string>
+  <string name="dialog_delete_title">Odstranit položky natrvalo?</string>
   <string name="deleting">Odstraňování</string>
   <string name="questionset">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
   <string name="viewmode">Režim zobrazení</string>
@@ -628,7 +628,9 @@
   <string name="monofont">Monospace Font</string>
   <string name="showHeaders">Zobrazit záhlaví</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="item">Položka</string>
-  <string name="items">Položky</string>
-  <string name="bytes">Bajtů</string>
+  <string name="noitems">Žádné položky</string>
+  <string name="item">položka</string>
+  <string name="items">položky</string>
+  <string name="byte_singular">bajtů</string>
+  <string name="bytes">bajtů</string>
 </resources>

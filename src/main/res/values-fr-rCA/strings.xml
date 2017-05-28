@@ -619,5 +619,6 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Élément</string>
   <string name="items">Éléments</string>
+  <string name="byte_singular">octet</string>
   <string name="bytes">Octets</string>
 </resources>

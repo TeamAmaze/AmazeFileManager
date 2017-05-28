@@ -51,6 +51,7 @@
   <string name="file_empty">Il file è vuoto</string>
   <string name="error">Errore</string>
   <string name="cantlistfiles">Non è possibile elencare i file senza il percorso root</string>
+  <string name="searchresults">Mostra risultati per </string>
   <string name="itemsselected">Elementi selezionati</string>
   <string name="newhomedirectory">Nuova home directory</string>
   <string name="rename">Rinomina</string>
@@ -66,6 +67,7 @@
   <string name="date">Data</string>
   <string name="location">Percorso</string>
   <string name="size_capitalized">Dimensioni</string>
+  <string name="size">dimensione della Cartella</string>
   <string name="totalitems">Elementi totali</string>
   <string name="enterzipname">Inserisci nome file ZIP</string>
   <string name="noappfound">Nessuna app trovata per aprire questo file</string>
@@ -128,6 +130,7 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="mountsystemsummary">Abilita se vuoi modificare i file di sistema</string>
   <string name="mountsystem">Monta le cartelle di sistema come scrivibili</string>
   <string name="rootfailure">Accesso root non abilitato</string>
+  <string name="hiddenfailure">Non è possibile accedere ai file nascosti</string>
   <string name="selectall">Seleziona tutto</string>
   <string name="delete">Elimina</string>
   <string name="setashome">Imposta come home</string>
@@ -204,6 +207,9 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
 Tieni premuto un file od una cartella per altre opzioni
 </string>
   <string name="pathcopied">Percorso copiato</string>
+  <string name="used">spazio utilizzato</string>
+  <string name="used_by_others">utilizzato da altri utenti</string>
+  <string name="free">spazio libero</string>
   <string name="atroot">Sei alla root</string>
   <string name="listview">Visualizzazione lista</string>
   <string name="gridview">Visualizzazione griglia</string>
@@ -361,6 +367,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="clear">Pulisci</string>
   <string name="md5">md5:</string>
   <string name="md5_2">Copia md5</string>
+  <string name="total">Totale:</string>
   <string name="calculating">calcolo in corso</string>
   <string name="sort">Ordina</string>
   <string name="ascending">Crescente</string>
@@ -518,7 +525,16 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="error_busybox">Busybox non trovato. Chiusura shell interattiva.</string>
   <string name="service_timer">Tempo Trascorso</string>
   <string name="please_wait">Attendere, per favore</string>
+  <string name="cloud_connection">Connessione cloud</string>
+  <string name="cloud_connection_new">Nuova connessione Cloud</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">Scarica Cloud plugin</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">Indirizzo E-mail</string>
+  <string name="cloud_email">ID e-mail</string>
   <string name="no_applications">Nessuna applicazione</string>
   <string name="ftp_path">Percorso condiviso</string>
   <string name="ftp_path_hint">Percorso dell\'origine della directory da condividere</string>
@@ -535,12 +551,18 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="field_empty">Il campo non può essere vuoto</string>
   <string name="ftp_timeout">Timeout inattività</string>
   <string name="ftp_seconds">Secondi</string>
+  <string name="intellihide_toolbar_title">Barre che si nascondono intelligentemente</string>
+  <string name="intellihide_toolbar_summary">Nascondere automaticamente la barra degli strumenti durante lo scorrimento</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="properties_copied_clipboard">copiato negli appunti</string>
   <string name="contributors_1_summary">Traduzione</string>
   <string name="contributors_2_summary">Icona e banners</string>
+  <string name="contributors_3_summary">Theme engine</string>
+  <string name="contributors_4_summary">Ombra dietro FAB</string>
+  <string name="contributors_5_summary">Transizione di colore negli swipe tra schede</string>
   <string name="contributors_6_summary">Server FTP</string>
+  <string name="contributors_7_summary">Avviando una shell interattiva</string>
   <string name="connection_exists">Connessione già esistente</string>
   <string name="crypt_encrypting">Crittografia</string>
   <string name="crypt_decrypting">Decrittografia</string>
@@ -550,8 +572,14 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="crypt_encrypt">Cripta</string>
   <string name="crypt_decrypt">Decripta</string>
   <string name="operation_fail_following">Operazione non riuscita per i seguenti file</string>
+  <string name="crypt_pref_master_password_title">Password Principale</string>
+  <string name="crypt_pref_master_password_summary">Impostare una password per la crittografia.         Lasciare vuoto per rimuovere.</string>
   <string name="crypt_pref_fingerprint_title">Impronta digitale</string>
   <string name="crypt_pref_fingerprint_summary">Usa l\'impronta digitale per autenticare la crittografia</string>
+  <string name="crypt_fingerprint_no_permission">Autorizzazioni Impronte digitali mancanti</string>
+  <string name="crypt_fingerprint_not_enrolled">Nessuna impronta digitale registrata</string>
+  <string name="crypt_fingerprint_no_security">Nessuna sicurezza della lockscreen trovata</string>
+  <string name="crypt_warning_key">Attenzione, quando si modifica il modello di sicurezza da impostazioni di sistema, non si sarà in grado di decriptare questo contenuto.</string>
   <string name="warning_never_show">Non visualizzare più questo messaggio</string>
   <string name="warning_confirm">Ottenuto!</string>
   <string name="crypt_encryption_fail">Impossibile crittografare</string>
@@ -559,8 +587,28 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="crypt_decryption_fail_password">Password errata!</string>
   <string name="crypt_fingerprint_authenticate">Tocca il sensore per continuare</string>
   <string name="authenticate_password">Inserisci la password</string>
+  <string name="sidebarfolders_title">Collegamenti della barra laterale</string>
+  <string name="sidebarquickaccess_title">Accesso rapido Sidebar</string>
+  <string name="showfolders_pref_title">Visualizzare tasti di scelta rapida</string>
+  <string name="showfolders_pref">Tasti di scelta rapida</string>
+  <string name="showquickaccess_pref_title">Visualizza gli accessi rapidi</string>
+  <string name="showquickaccess_pref">Accessi rapidi</string>
+  <string name="create_shortcut">Crea collegamento</string>
+  <string name="edit_shortcut">Modificare la scelta rapida</string>
+  <string name="directory">Directory</string>
+  <string name="questiondelete_shortcut">Eliminare il collegamento?</string>
+  <string name="cloud_error_new_account">Impossibile aggiungere il nuovo account</string>
+  <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
+  <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>
+  <string name="cloud_remove">Si desidera rimuovere la connessione cloud?</string>
+  <string name="cloud_fail_authenticate">Autenticazione non riuscita</string>
+  <string name="cloud_share_copied">Link condivisibile copiato negli Appunti</string>
+  <string name="copy_low_memory">A corto di memoria, si prega di liberare della RAM</string>
+  <string name="showHeaders">Mostra Header</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Nessun elemento</string>
   <string name="item">Elemento</string>
   <string name="items">Elementi</string>
+  <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
 </resources>

@@ -91,6 +91,7 @@
   <string name="yes">Da</string>
   <string name="no">Nu</string>
   <string name="dialog_delete_category_directories">Dosare</string>
+  <string name="dialog_delete_category_files">Fișiere</string>
   <string name="dialog_delete_disclaimer">Doriţi să ștergeți următoarele fișiere?</string>
   <string name="dialog_delete_title">Confirmaţi</string>
   <string name="deleting">Ştergere</string>
