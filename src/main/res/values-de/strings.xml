@@ -51,6 +51,7 @@
   <string name="file_empty">Datei ist leer</string>
   <string name="error">Fehler</string>
   <string name="cantlistfiles">Kann Dateien ohne Root-Rechte nicht auflisten</string>
+  <string name="searchresults">Suchergebnisse von </string>
   <string name="itemsselected">Elemente ausgewählt</string>
   <string name="newhomedirectory">Neues Home-Verzeichnis</string>
   <string name="rename">Umbenennen</string>
@@ -66,6 +67,7 @@
   <string name="date">Datum</string>
   <string name="location">Standort</string>
   <string name="size_capitalized">Größe</string>
+  <string name="size">Größe des Ordners</string>
   <string name="totalitems">Objekte insgesamt</string>
   <string name="enterzipname">Zip-Namen eingeben</string>
   <string name="noappfound">Keine App zum öffnen dieser Datei gefunden</string>
@@ -196,6 +198,7 @@
   <string name="nofiles">Keine Dateien</string>
   <string name="tapnhold">Tippe und halte Datei für mehr Optionen</string>
   <string name="pathcopied">Pfad in Zwischenspeicher kopiert</string>
+  <string name="used">Belegter Speicherplatz</string>
   <string name="atroot">Oberstes Verzeichnis erreicht</string>
   <string name="listview">Listenansicht</string>
   <string name="gridview">Tabellenansicht</string>
