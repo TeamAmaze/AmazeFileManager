@@ -1127,8 +1127,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
      */
     public void createViews(ArrayList<LayoutElement> bitmap, boolean back, String path,
                             final OpenMode openMode, boolean results, boolean grid) {
-        synchronized (bitmap) {
-            if (bitmap != null) {
+        if (bitmap != null) {
+            synchronized (bitmap) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
                             && !path.equals(OTGUtil.PREFIX_OTG + "/")
@@ -1246,11 +1246,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 });
 
                 //getMainActivity().invalidateFab(openMode);
-            } else {
-                // list loading cancelled
-                // TODO: Add support for cancelling list loading
-                loadlist(home, true, OpenMode.FILE);
             }
+        } else {
+            // list loading cancelled
+            // TODO: Add support for cancelling list loading
+            loadlist(home, true, OpenMode.FILE);
         }
     }
 
