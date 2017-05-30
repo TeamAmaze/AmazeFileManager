@@ -103,7 +103,6 @@ import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.timehop.stickyheadersrecyclerview.decorators.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -152,7 +151,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private LinearLayoutManager mLayoutManager;
     private GridLayoutManager mLayoutManagerGrid;
     private boolean addheader = false;
-    private StickyRecyclerHeadersDecoration headersDecor;
+    //private StickyRecyclerHeadersDecoration headersDecor;
     private DividerItemDecoration dividerItemDecoration;
     private AppBarLayout mToolbarContainer;
     private TextView pathname, mFullPath;
@@ -303,7 +302,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         listView.setHasFixedSize(true);
         columns = Integer.parseInt(sharedPref.getString("columns", "-1"));
         if (IS_LIST) {
-            mLayoutManager = new LinearLayoutManager(getActivity());
+            mLayoutManager = new LinearLayoutManager(getContext());
             listView.setLayoutManager(mLayoutManager);
         } else {
             if (columns == -1 || columns == 0)
@@ -794,7 +793,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             selection = false;
 
             // translates the drawer content up
-            //if (MAIN_ACTIVITY.isDrawerLocked) MAIN_ACTIVITY.translateDrawerList(false);
+            //if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
             getMainActivity().floatingActionButton.showMenuButton(true);
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
@@ -1172,15 +1171,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                 listView.setAdapter(adapter);
                 if (!addheader) {
-                    listView.removeItemDecoration(headersDecor);
+                    //listView.removeItemDecoration(headersDecor);
                     listView.removeItemDecoration(dividerItemDecoration);
                     addheader = true;
                 }
                 if (addheader && IS_LIST) {
                     dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
                     listView.addItemDecoration(dividerItemDecoration);
-                    headersDecor = new StickyRecyclerHeadersDecoration(adapter);
-                    listView.addItemDecoration(headersDecor);
+                    //headersDecor = new StickyRecyclerHeadersDecoration(adapter);
+                    //listView.addItemDecoration(headersDecor);
                     addheader = false;
                 }
                 if (!results) this.results = false;

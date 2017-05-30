@@ -73,7 +73,6 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
-import com.timehop.stickyheadersrecyclerview.decorators.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -109,7 +108,7 @@ public class ZipViewer extends Fragment {
     View rootView;
     boolean addheader = true;
     public SwipeRefreshLayout swipeRefreshLayout;
-    StickyRecyclerHeadersDecoration headersDecor;
+    //StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
     boolean showDividers;
@@ -596,14 +595,14 @@ public class ZipViewer extends Fragment {
         stopAnims=true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
-            listView.removeItemDecoration(headersDecor);
+            //listView.removeItemDecoration(headersDecor);
             addheader = true;
         }
         if (addheader) {
             dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, showDividers);
             listView.addItemDecoration(dividerItemDecoration);
-            headersDecor = new StickyRecyclerHeadersDecoration(rarAdapter);
-            listView.addItemDecoration(headersDecor);
+            //headersDecor = new StickyRecyclerHeadersDecoration(rarAdapter);
+            //listView.addItemDecoration(headersDecor);
             addheader = false;
         }
         final FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
