@@ -77,15 +77,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     private boolean[] headers = new boolean[] {false, false};
     private int rowHeight;
-    /**
-     * Measures how much has the diference in position between the last item of items
-     * and the last items in the RecyclerArrayAdapter.
-     * For ex. if the list has 34 headers and 1 file displacementFromList should be 35 so that
-     * items.get(position - displacementFromList) returns the correct file.
-      */
-    private int displacementFromList = 0;
-    private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor, pdfColor, codeColor, textColor,
-            archiveColor, apkColor, genericColor;
+    private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
+            pdfColor, codeColor, textColor, archiveColor, genericColor;
 
     private int offset = 0;
     public boolean stoppedAnimation = false;
@@ -94,13 +87,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                            ArrayList<LayoutElement> itemsRaw, Context context) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
-        itemsDigested = new ArrayList<>();
-        digestItems(itemsRaw);
         this.context = context;
-        for (int i = 0; i < itemsRaw.size(); i++) {
-            checkedItems.put(i, false);
-            animation.put(i, false);
-        }
+
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         iconSkinColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ICON_SKIN);
@@ -111,14 +99,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         codeColor = Utils.getColor(context, R.color.code_item);
         textColor = Utils.getColor(context, R.color.text_item);
         archiveColor = Utils.getColor(context, R.color.archive_item);
-        apkColor = Utils.getColor(context, R.color.apk_item);
         genericColor = Utils.getColor(context, R.color.generic_item);
         rowHeight = Utils.dpToPx(100, context);// TODO: 23/5/2017 don't hardcode pixel measurements
         grey_color = Utils.getColor(context, R.color.grey);
+
+        setItems(itemsRaw, false);
     }
 
     public void addItem() {
-        //notifyDataSetChanged();
         notifyItemInserted(getItemCount());
     }
 
@@ -262,14 +250,25 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.offset += 30;
     }
 
-    public void generate(ArrayList<LayoutElement> arrayList) {
+    public void setItems(ArrayList<LayoutElement> arrayList) {
+        setItems(arrayList, true);
+    }
+
+    private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
             itemsDigested = new ArrayList<>();
-            digestItems(arrayList);
+            headers = new boolean[] {false, false};
+
+            for (LayoutElement e : arrayList) {
+                itemsDigested.add(new ListItem(e));
+            }
+
+            if(mainFrag.IS_LIST && itemsDigested.size() > 0) {
+                itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
+            }
 
             offset = 0;
             stoppedAnimation = false;
-            notifyDataSetChanged();
             for (int i = 0; i < itemsDigested.size(); i++) {
                 checkedItems.put(i, false);
                 animation.put(i, false);
@@ -287,6 +286,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         continue;//leave this continue for symmetry
                     }
                 }
+            }
+
+            if(invalidate) {
+                notifyDataSetChanged();
             }
         }
     }
@@ -691,20 +694,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (mainFrag.SHOW_PERMISSIONS)
                     holder.perm.setText(rowItem.getPermissions());
             }
-        }
-    }
-
-    private void digestItems(ArrayList<LayoutElement> l) {
-        if(mainFrag.IS_LIST && itemsDigested.size() > 0) {
-            itemsDigested.remove(itemsDigested.size()-1);
-        }
-
-        for (LayoutElement e : l) {
-            itemsDigested.add(new ListItem(e));
-        }
-
-        if(mainFrag.IS_LIST && itemsDigested.size() > 0) {
-            itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
         }
     }
 

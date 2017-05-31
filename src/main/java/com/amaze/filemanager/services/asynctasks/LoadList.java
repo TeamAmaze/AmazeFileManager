@@ -409,10 +409,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
-        Cursor cursor = c.getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), projection,
-                null,
-                null, null);
+        Cursor cursor = c.getContentResolver()
+                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex

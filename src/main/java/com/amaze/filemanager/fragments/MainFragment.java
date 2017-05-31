@@ -1158,10 +1158,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (grid && IS_LIST)
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
-                if (adapter == null)
+                if (adapter == null) {
                     adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity());
-                else {
-                    adapter.generate(getLayoutElements());
+                } else {
+                    adapter.setItems(getLayoutElements());
                 }
                 stopAnims = true;
                 this.openMode = openMode;
@@ -1178,8 +1178,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (addheader && IS_LIST) {
                     dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
                     listView.addItemDecoration(dividerItemDecoration);
-                    //headersDecor = new StickyRecyclerHeadersDecoration(adapter);
-                    //listView.addItemDecoration(headersDecor);
+                    //headersDecor = new StickyRecyclerHeadersDecoration(adapter);// TODO: 30/5/2017 delete this
+                    //listView.addItemDecoration(headersDecor);// TODO: 30/5/2017 delete this
                     addheader = false;
                 }
                 if (!results) this.results = false;
@@ -1602,16 +1602,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
         shortcutIntent.setAction(Intent.ACTION_MAIN);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent addIntent = new Intent();
-        addIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
-
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getActivity(),
-                        R.mipmap.ic_launcher));
-
-        addIntent
-                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+                Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
+        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getActivity().sendBroadcast(addIntent);
     }
 
@@ -1809,7 +1804,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             } else {
 
                                 // we already have some elements in list view, invalidate the adapter
-                                adapter.generate(getLayoutElements());
+                                adapter.setItems(getLayoutElements());
                             }
                         else {
                             // there was no list view, means the directory was empty
