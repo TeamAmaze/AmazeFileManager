@@ -72,10 +72,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private SparseBooleanArray checkedItems = new SparseBooleanArray();
     private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
-    /**
-     * Folders and files headers
-     */
-    private boolean[] headers = new boolean[] {false, false};
     private int rowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
@@ -257,7 +253,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
             itemsDigested = new ArrayList<>();
-            headers = new boolean[] {false, false};
+            boolean[] headers = new boolean[]{false, false};
 
             for (LayoutElement e : arrayList) {
                 itemsDigested.add(new ListItem(e));
@@ -325,8 +321,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 return new ItemViewHolder(v);
             case EMPTY_LAST_ITEM:
+                int totalFabHeight = (int) context.getResources().getDimension(R.dimen.fab_height),
+                        marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
                 v = new View(context);
-                v.setMinimumHeight(36);
+                v.setMinimumHeight(totalFabHeight + marginFab);
                 return new EmptyViewHolder(v);
             default:
                 throw new IllegalArgumentException("Illegal: " + viewType);
