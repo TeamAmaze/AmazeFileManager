@@ -57,7 +57,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private SparseBooleanArray checkedItems = new SparseBooleanArray();
     private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
-    private int rowHeight;
+    private float minRowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
 
@@ -81,7 +81,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         textColor = Utils.getColor(context, R.color.text_item);
         archiveColor = Utils.getColor(context, R.color.archive_item);
         genericColor = Utils.getColor(context, R.color.generic_item);
-        rowHeight = Utils.dpToPx(100, context);// TODO: 23/5/2017 don't hardcode pixel measurements
+        minRowHeight = context.getResources().getDimension(R.dimen.minimal_row_height);
         grey_color = Utils.getColor(context, R.color.grey);
 
         setItems(itemsRaw, false);
@@ -326,7 +326,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             final ItemViewHolder holder = (ItemViewHolder) vholder;
             if (mainFrag.IS_LIST) {
                 if (p == getItemCount() - 1) {
-                    holder.rl.setMinimumHeight(rowHeight);
+                    holder.rl.setMinimumHeight((int) minRowHeight);
                     if (itemsDigested.size() == (mainFrag.GO_BACK_ITEM ? 1 : 0))
                         holder.txtTitle.setText(R.string.nofiles);
                     else holder.txtTitle.setText("");
