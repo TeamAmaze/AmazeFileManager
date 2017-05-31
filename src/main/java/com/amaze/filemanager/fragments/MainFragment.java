@@ -410,9 +410,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
             getMainActivity().updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
             createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
-
-                for (int i : savedInstanceState.getIntegerArrayList("position")) {
-                    adapter.toggleChecked(i, null);
+                for (String path : savedInstanceState.getStringArrayList("position")) {
+                    adapter.toggleChecked(true, path);
                 }
             }
         }
@@ -446,7 +445,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
             outState.putInt("file_count", file_count);
 
             if (selection) {
-                outState.putIntegerArrayList("position", adapter.getCheckedItemPositions());
+                ArrayList<String> selectedPaths = new ArrayList<>();
+                for(LayoutElement e : adapter.getCheckedItemPositions()) {
+                    selectedPaths.add(e.getDesc());
+                }
+                outState.putStringArrayList("position", selectedPaths);
             }
 
             outState.putBoolean("results", results);
@@ -512,12 +515,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
             return true;
         }
 
-        // the following method is called each time
-        // the action mode is shown. Always called after
-        // onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
+        /**
+         * the following method is called each time
+         * the action mode is shown. Always called after
+         * onCreateActionMode, but
+         * may be called multiple times if the mode is invalidated.
+         */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<Integer> positions = adapter.getCheckedItemPositions();
+            ArrayList<LayoutElement> positions = adapter.getCheckedItemPositions();
             TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
@@ -541,7 +546,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(getLayoutElement(adapter.getCheckedItemPositions().get(0)).getDesc());
+                    File x = new File(adapter.getCheckedItemPositions().get(0).getDesc());
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -558,8 +563,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         showOption(R.id.share, menu);
                         if (getMainActivity().mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-                        for (int c : adapter.getCheckedItemPositions()) {
-                            File x = new File(getLayoutElement(c).getDesc());
+                        for (LayoutElement e : adapter.getCheckedItemPositions()) {
+                            File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -578,7 +583,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(getLayoutElement(adapter.getCheckedItemPositions().get(0)).getDesc());
+                    File x = new File(adapter.getCheckedItemPositions().get(0).getDesc());
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -596,8 +601,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         if (Build.VERSION.SDK_INT >= 16)
                             showOption(R.id.openmulti, menu);
                     try {
-                        for (int c : adapter.getCheckedItemPositions()) {
-                            File x = new File(getLayoutElement(c).getDesc());
+                        for (LayoutElement e : adapter.getCheckedItemPositions()) {
+                            File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -618,15 +623,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             computeScroll();
-            ArrayList<Integer> plist = adapter.getCheckedItemPositions();
+            ArrayList<LayoutElement> plist = adapter.getCheckedItemPositions();
             switch (item.getItemId()) {
                 case R.id.openmulti:
                     if (Build.VERSION.SDK_INT >= 16) {
                         Intent intentresult = new Intent();
                         ArrayList<Uri> resulturis = new ArrayList<>();
-                        for (int k : plist) {
+                        for (LayoutElement element : plist) {
                             try {
-                                resulturis.add(Uri.fromFile(new File(getLayoutElement(k).getDesc())));
+                                resulturis.add(Uri.fromFile(new File(element.getDesc())));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -643,18 +648,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }
                     return true;
                 case R.id.about:
-                    LayoutElement x;
-                    x = getLayoutElement((plist.get(0)));
-                    GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(), x.getPermissions(),
-                            (BaseActivity) getActivity(), BaseActivity.rootMode,
+                    LayoutElement x = plist.get(0);
+                    GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
+                            x.getPermissions(), (BaseActivity) getActivity(), BaseActivity.rootMode,
                             utilsProvider.getAppTheme());
-                    /*PropertiesSheet propertiesSheet = new PropertiesSheet();
+                    /*
+                    PropertiesSheet propertiesSheet = new PropertiesSheet();
                     Bundle arguments = new Bundle();
                     arguments.putParcelable(PropertiesSheet.KEY_FILE, x.generateBaseFile());
                     arguments.putString(PropertiesSheet.KEY_PERMISSION, x.getPermissions());
                     arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
                     propertiesSheet.setArguments(arguments);
-                    propertiesSheet.show(getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);*/
+                    propertiesSheet.show(getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
+                    */
                     mode.finish();
                     return true;
                 /*
@@ -694,8 +700,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     return true;
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<>();
-                    for (int i : plist) {
-                        arrayList.add(new File(getLayoutElement(i).getDesc()));
+                    for (LayoutElement e: plist) {
+                        arrayList.add(new File(e.getDesc()));
                     }
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
@@ -717,7 +723,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(getLayoutElement(plist.get(0)).getDesc()).getParent(), false, OpenMode.FILE);
+                    loadlist(new File(plist.get(0).getDesc()).getParent(), false, OpenMode.FILE);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
@@ -732,26 +738,26 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                     final ActionMode m = mode;
                     final BaseFile f;
-                    f = getLayoutElement(plist.get(0)).generateBaseFile();
+                    f = plist.get(0).generateBaseFile();
                     rename(f);
                     mode.finish();
                     return true;
                 case R.id.hide:
                     for (int i1 = 0; i1 < plist.size(); i1++) {
-                        hide(getLayoutElement(plist.get(i1)).getDesc());
+                        hide(plist.get(i1).getDesc());
                     }
                     updateList();
                     mode.finish();
                     return true;
                 case R.id.ex:
-                    getMainActivity().mainActivityHelper.extractFile(new File(getLayoutElement(plist.get(0)).getDesc()));
+                    getMainActivity().mainActivityHelper.extractFile(new File(plist.get(0).getDesc()));
                     mode.finish();
                     return true;
                 case R.id.cpy:
                     getMainActivity().MOVE_PATH = null;
                     ArrayList<BaseFile> copies = new ArrayList<>();
                     for (int i2 = 0; i2 < plist.size(); i2++) {
-                        copies.add(getLayoutElement(plist.get(i2)).generateBaseFile());
+                        copies.add(plist.get(i2).generateBaseFile());
                     }
                     getMainActivity().COPY_PATH = copies;
                     getMainActivity().supportInvalidateOptionsMenu();
@@ -761,7 +767,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     getMainActivity().COPY_PATH = null;
                     ArrayList<BaseFile> copie = new ArrayList<>();
                     for (int i3 = 0; i3 < plist.size(); i3++) {
-                        copie.add(getLayoutElement(plist.get(i3)).generateBaseFile());
+                        copie.add(plist.get(i3).generateBaseFile());
                     }
                     getMainActivity().MOVE_PATH = copie;
                     getMainActivity().supportInvalidateOptionsMenu();
@@ -776,10 +782,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    Futils.openunknown(new File(getLayoutElement(plist.get(0)).getDesc()), getActivity(), true);
+                    Futils.openunknown(new File(plist.get(0).getDesc()), getActivity(), true);
                     return true;
                 case R.id.addshortcut:
-                    addShortcut(getLayoutElement(plist.get(0)));
+                    addShortcut(plist.get(0));
                     mode.finish();
                     return true;
                 default:

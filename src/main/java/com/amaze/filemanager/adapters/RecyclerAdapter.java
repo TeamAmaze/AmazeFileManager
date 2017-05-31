@@ -67,7 +67,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
-    private ArrayList<ListItem> itemsDigested;
+    private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
     private SparseBooleanArray checkedItems = new SparseBooleanArray();
     private SparseBooleanArray animation = new SparseBooleanArray();
@@ -199,12 +199,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
     }
 
-    public ArrayList<Integer> getCheckedItemPositions() {
-        ArrayList<Integer> checkedItemPositions = new ArrayList<>();
+    public ArrayList<LayoutElement> getCheckedItemPositions() {
+        ArrayList<LayoutElement> checkedItemPositions = new ArrayList<>();
 
         for (int i = 0; i < checkedItems.size(); i++) {
             if (checkedItems.get(i)) {
-                (checkedItemPositions).add(i);
+                (checkedItemPositions).add(itemsDigested.get(i).elem);
             }
         }
 
@@ -252,8 +252,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
-            itemsDigested = new ArrayList<>();
             boolean[] headers = new boolean[]{false, false};
+
+            itemsDigested.clear();
+            checkedItems.clear();
+            offset = 0;
+            stoppedAnimation = false;
 
             for (LayoutElement e : arrayList) {
                 itemsDigested.add(new ListItem(e));
@@ -263,8 +267,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
             }
 
-            offset = 0;
-            stoppedAnimation = false;
             for (int i = 0; i < itemsDigested.size(); i++) {
                 checkedItems.put(i, false);
                 animation.put(i, false);
@@ -761,8 +763,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.delete:
-                                ArrayList<Integer> positions = new ArrayList<>();
-                                positions.add(position);
+                                ArrayList<LayoutElement> positions = new ArrayList<>();
+                                positions.add(rowItem);
                                 GeneralDialogCreation.deleteFilesDialog(context,
                                         mainFrag.getLayoutElements(),
                                         mainFrag.getMainActivity(),

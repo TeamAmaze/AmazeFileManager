@@ -137,8 +137,7 @@ public class GeneralDialogCreation {
 
     @SuppressWarnings("ConstantConditions")
     public static void deleteFilesDialog(final Context c, final ArrayList<LayoutElement> layoutElements,
-                                         final MainActivity mainActivity,
-                                         final List<Integer> positions,
+                                         final MainActivity mainActivity, final List<LayoutElement> positions,
                                          AppTheme appTheme) {
 
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
@@ -192,7 +191,7 @@ public class GeneralDialogCreation {
             protected Void doInBackground(Void... params) {
 
                 for (int i = 0; i < positions.size(); i++) {
-                    final LayoutElement layoutElement = layoutElements.get(positions.get(i));
+                    final LayoutElement layoutElement = positions.get(i);
                     itemsToDelete.add(layoutElement.generateBaseFile());
 
                     // Build list of directories to delete.
