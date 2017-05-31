@@ -133,7 +133,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             // we have the actionmode visible, invalidate it's views
             mainFrag.mActionMode.invalidate();
         }
-        if (getCheckedItemPositions().size() == 0) {
+        if (getCheckedItems().size() == 0) {
             mainFrag.selection = false;
             mainFrag.mActionMode.finish();
             mainFrag.mActionMode = null;
@@ -152,7 +152,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             mainFrag.mActionMode.invalidate();
         }
 
-        if (getCheckedItemPositions().size() == 0) {
+        if (getCheckedItems().size() == 0) {
             mainFrag.selection = false;
             if (mainFrag.mActionMode != null) {
                 mainFrag.mActionMode.finish();
@@ -176,7 +176,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             mainFrag.mActionMode.invalidate();
         }
 
-        if (getCheckedItemPositions().size() == 0) {
+        if (getCheckedItems().size() == 0) {
             mainFrag.selection = false;
             if (mainFrag.mActionMode != null)
                 mainFrag.mActionMode.finish();
@@ -184,16 +184,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
     }
 
-    public ArrayList<LayoutElement> getCheckedItemPositions() {
-        ArrayList<LayoutElement> checkedItemPositions = new ArrayList<>();
+    public ArrayList<LayoutElement> getCheckedItems() {
+        ArrayList<LayoutElement> checkedItems = new ArrayList<>();
 
-        for (int i = 0; i < checkedItems.size(); i++) {
-            if (checkedItems.get(i)) {
-                (checkedItemPositions).add(itemsDigested.get(i).elem);
+        for (int i = 0; i < this.checkedItems.size(); i++) {
+            if (this.checkedItems.get(i)) {
+                checkedItems.add(itemsDigested.get(i).elem);
             }
         }
 
-        return checkedItemPositions;
+        return checkedItems;
     }
 
     public boolean areAllChecked(String path) {

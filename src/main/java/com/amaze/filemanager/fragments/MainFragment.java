@@ -139,6 +139,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public int no;
 
+    /**
+     * This is not an exact copy of the elements in the adapter
+     */
     private ArrayList<LayoutElement> LIST_ELEMENTS;
     private RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
@@ -149,7 +152,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private LinearLayoutManager mLayoutManager;
     private GridLayoutManager mLayoutManagerGrid;
     private boolean addheader = false;
-    //private StickyRecyclerHeadersDecoration headersDecor;
     private DividerItemDecoration dividerItemDecoration;
     private AppBarLayout mToolbarContainer;
     private TextView pathname, mFullPath;
@@ -444,7 +446,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
             if (selection) {
                 ArrayList<String> selectedPaths = new ArrayList<>();
-                for(LayoutElement e : adapter.getCheckedItemPositions()) {
+                for(LayoutElement e : adapter.getCheckedItems()) {
                     selectedPaths.add(e.getDesc());
                 }
                 outState.putStringArrayList("position", selectedPaths);
@@ -520,7 +522,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
          * may be called multiple times if the mode is invalidated.
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<LayoutElement> positions = adapter.getCheckedItemPositions();
+            ArrayList<LayoutElement> positions = adapter.getCheckedItems();
             TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
@@ -544,7 +546,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItemPositions().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -561,7 +563,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         showOption(R.id.share, menu);
                         if (getMainActivity().mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-                        for (LayoutElement e : adapter.getCheckedItemPositions()) {
+                        for (LayoutElement e : adapter.getCheckedItems()) {
                             File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
@@ -581,7 +583,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItemPositions().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -599,7 +601,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         if (Build.VERSION.SDK_INT >= 16)
                             showOption(R.id.openmulti, menu);
                     try {
-                        for (LayoutElement e : adapter.getCheckedItemPositions()) {
+                        for (LayoutElement e : adapter.getCheckedItems()) {
                             File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
@@ -621,7 +623,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             computeScroll();
-            ArrayList<LayoutElement> plist = adapter.getCheckedItemPositions();
+            ArrayList<LayoutElement> plist = adapter.getCheckedItems();
             switch (item.getItemId()) {
                 case R.id.openmulti:
                     if (Build.VERSION.SDK_INT >= 16) {
