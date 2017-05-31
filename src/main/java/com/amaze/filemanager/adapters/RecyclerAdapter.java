@@ -2,54 +2,39 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
-import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.EncryptedEntry;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.EncryptService;
+import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.LayoutElement;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -705,153 +690,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(mainFrag.getActivity(), view);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.about:
-                                GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
-                                        rowItem.getPermissions(), (BaseActivity) mainFrag.getActivity(),
-                                        BaseActivity.rootMode, utilsProvider.getAppTheme());
-                                /*
-                                PropertiesSheet propertiesSheet = new PropertiesSheet();
-                                Bundle arguments = new Bundle();
-                                arguments.putParcelable(PropertiesSheet.KEY_FILE, rowItem.generateBaseFile());
-                                arguments.putString(PropertiesSheet.KEY_PERMISSION, rowItem.getPermissions());
-                                arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
-                                propertiesSheet.setArguments(arguments);
-                                propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
-                                */
-                                return true;
-                            case R.id.share:
-                                switch (rowItem.getMode()) {
-                                    case DROPBOX:
-                                    case BOX:
-                                    case GDRIVE:
-                                    case ONEDRIVE:
-                                        utilsProvider.getFutils().shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
-                                        break;
-                                    default:
-                                        ArrayList<File> arrayList = new ArrayList<>();
-                                        arrayList.add(new File(rowItem.getDesc()));
-                                        utilsProvider.getFutils().shareFiles(arrayList, mainFrag.getMainActivity(), utilsProvider.getAppTheme(), accentColor);
-                                        break;
-                                }
-                                return true;
-                            case R.id.rename:
-                                mainFrag.rename(rowItem.generateBaseFile());
-                                return true;
-                            case R.id.cpy:
-                                mainFrag.getMainActivity().MOVE_PATH = null;
-                                ArrayList<BaseFile> copies = new ArrayList<>();
-                                copies.add(rowItem.generateBaseFile());
-                                mainFrag.getMainActivity().COPY_PATH = copies;
-                                mainFrag.getMainActivity().supportInvalidateOptionsMenu();
-                                return true;
-                            case R.id.cut:
-                                mainFrag.getMainActivity().COPY_PATH = null;
-                                ArrayList<BaseFile> copie = new ArrayList<>();
-                                copie.add(rowItem.generateBaseFile());
-                                mainFrag.getMainActivity().MOVE_PATH = copie;
-                                mainFrag.getMainActivity().supportInvalidateOptionsMenu();
-                                return true;
-                            case R.id.ex:
-                                mainFrag.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.getDesc()));
-                                return true;
-                            case R.id.book:
-                                MainActivity.dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
-                                mainFrag.getMainActivity().refreshDrawer();
-                                Toast.makeText(mainFrag.getActivity(), mainFrag.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
-                                return true;
-                            case R.id.delete:
-                                ArrayList<LayoutElement> positions = new ArrayList<>();
-                                positions.add(rowItem);
-                                GeneralDialogCreation.deleteFilesDialog(context,
-                                        mainFrag.getLayoutElements(),
-                                        mainFrag.getMainActivity(),
-                                        positions, utilsProvider.getAppTheme());
-                                return true;
-                            case R.id.open_with:
-                                Futils.openWith(new File(rowItem.getDesc()), mainFrag.getActivity());
-                                return true;
-                            case R.id.encrypt:
-                                final Intent encryptIntent = new Intent(context, EncryptService.class);
-                                encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
-                                encryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
-                                        EncryptService.CryptEnum.ENCRYPT.ordinal());
-                                encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
-
-                                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-                                final EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
-                                        new EncryptButtonCallbackInterface() {
-                                            @Override
-                                            public void onButtonPressed(Intent intent) {
-                                            }
-
-                                            @Override
-                                            public void onButtonPressed(Intent intent, String password) throws Exception {
-                                                startEncryption(rowItem.generateBaseFile().getPath(), password, intent);
-                                            }
-                                        };
-
-                                EncryptButtonCallbackInterface encryptButtonCallbackInterface =
-                                        new EncryptButtonCallbackInterface() {
-
-                                            @Override
-                                            public void onButtonPressed(Intent intent) throws Exception {
-                                                // check if a master password or fingerprint is set
-                                                if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
-
-                                                    startEncryption(rowItem.generateBaseFile().getPath(),
-                                                            Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
-                                                } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
-                                                        Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
-
-                                                    startEncryption(rowItem.generateBaseFile().getPath(),
-                                                            Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
-                                                } else {
-                                                    // let's ask a password from user
-                                                    GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
-                                                            mainFrag.getMainActivity(), utilsProvider.getAppTheme(),
-                                                            encryptButtonCallbackInterfaceAuthenticate);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onButtonPressed(Intent intent, String password) {
-                                            }
-                                        };
-
-                                if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
-                                        Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
-                                    // let's skip warning dialog call
-                                    try {
-                                        encryptButtonCallbackInterface.onButtonPressed(encryptIntent);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(context,
-                                                mainFrag.getResources().getString(R.string.crypt_encryption_fail),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-
-                                    GeneralDialogCreation.showEncryptWarningDialog(encryptIntent,
-                                            mainFrag, utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
-                                }
-                                return true;
-                            case R.id.decrypt:
-                                MainFragment.decryptFile(mainFrag, mainFrag.openMode, rowItem.generateBaseFile(),
-                                        rowItem.generateBaseFile().getParent(context),
-                                        utilsProvider);
-                                return true;
-                        }
-                        return false;
-                    }
-                });
-
+                PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
+                        utilsProvider, mainFrag, rowItem, view);
                 popupMenu.inflate(R.menu.item_extras);
                 String description = rowItem.getDesc().toLowerCase();
 
@@ -876,58 +716,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 popupMenu.show();
             }
         });
-    }
-
-    /**
-     * Queries database to map path and password.
-     * Starts the encryption process after database query
-     *
-     * @param path     the path of file to encrypt
-     * @param password the password in plaintext
-     */
-    private void startEncryption(final String path, final String password, Intent intent) throws Exception {
-        CryptHandler cryptHandler = new CryptHandler(context);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
-        cryptHandler.addEntry(encryptedEntry);
-
-        // start the encryption process
-        ServiceWatcherUtil.runService(mainFrag.getContext(), intent);
-    }
-
-    public interface EncryptButtonCallbackInterface {
-
-        /**
-         * Callback fired when we've just gone through warning dialog before encryption
-         *
-         * @param intent
-         * @throws Exception
-         */
-        void onButtonPressed(Intent intent) throws Exception;
-
-        /**
-         * Callback fired when user has entered a password for encryption
-         * Not called when we've a master password set or enable fingerprint authentication
-         *
-         * @param intent
-         * @param password the password entered by user
-         * @throws Exception
-         */
-        void onButtonPressed(Intent intent, String password) throws Exception;
-    }
-
-    public interface DecryptButtonCallbackInterface {
-        /**
-         * Callback fired when we've confirmed the password matches the database
-         *
-         * @param intent
-         */
-        void confirm(Intent intent);
-
-        /**
-         * Callback fired when password doesn't match the value entered by user
-         */
-        void failed();
     }
 
     private static class ListItem {

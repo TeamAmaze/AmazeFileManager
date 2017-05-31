@@ -78,8 +78,6 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -93,12 +91,12 @@ import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -902,8 +900,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
-                    decryptFile(this, openMode, e.generateBaseFile(),
-                            getActivity().getExternalCacheDir().getPath(),
+                    EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
+                            e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
                             utilsProvider);
                     return;
                 }
@@ -941,76 +939,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
             } else {
                 goBackItemClick();
             }
-        }
-    }
-
-    public static void decryptFile(final MainFragment main, OpenMode openMode, BaseFile sourceFile,
-                                   String decryptPath,
-                                   UtilitiesProviderInterface utilsProvider) {
-
-        Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
-        decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
-        decryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
-                EncryptService.CryptEnum.DECRYPT.ordinal());
-        decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
-        decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
-        SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
-
-        EncryptedEntry encryptedEntry = null;
-
-        try {
-            encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (encryptedEntry == null) {
-            // we couldn't find any entry in database or lost the key to decipher
-            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        RecyclerAdapter.DecryptButtonCallbackInterface decryptButtonCallbackInterface =
-                new RecyclerAdapter.DecryptButtonCallbackInterface() {
-                    @Override
-                    public void confirm(Intent intent) {
-                        ServiceWatcherUtil.runService(main.getContext(), intent);
-                    }
-
-                    @Override
-                    public void failed() {
-                        Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail_password), Toast.LENGTH_LONG).show();
-                    }
-                };
-
-        switch (encryptedEntry.getPassword()) {
-            case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        GeneralDialogCreation.showDecryptFingerprintDialog(main.getContext(),
-                                main.getMainActivity(), decryptIntent, utilsProvider.getAppTheme(),
-                                decryptButtonCallbackInterface);
-                    } else throw new Exception();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(main.getContext(),
-                            main.getResources().getString(R.string.crypt_decryption_fail),
-                            Toast.LENGTH_LONG).show();
-                }
-                break;
-            case Preffrag.ENCRYPT_PASSWORD_MASTER:
-                GeneralDialogCreation.showDecryptDialog(main.getContext(), main.getMainActivity(),
-                        decryptIntent, utilsProvider.getAppTheme(),
-                        preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
-                        decryptButtonCallbackInterface);
-                break;
-            default:
-                GeneralDialogCreation.showDecryptDialog(main.getContext(), main.getMainActivity(),
-                        decryptIntent, utilsProvider.getAppTheme(), encryptedEntry.getPassword(),
-                        decryptButtonCallbackInterface);
-                break;
         }
     }
 

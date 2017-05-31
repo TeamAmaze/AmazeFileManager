@@ -11,7 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 
 /**
  * Created by vishal on 15/4/17.
@@ -21,13 +21,13 @@ import com.amaze.filemanager.adapters.RecyclerAdapter;
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
     private Context context;
-    private RecyclerAdapter.DecryptButtonCallbackInterface decryptButtonCallbackInterface;
+    private EncryptDecryptUtils.DecryptButtonCallbackInterface decryptButtonCallbackInterface;
     private Intent decryptIntent;
     private MaterialDialog materialDialog;
 
     // Constructor
     public FingerprintHandler(Context mContext, Intent intent, MaterialDialog materialDialog,
-                              RecyclerAdapter.DecryptButtonCallbackInterface decryptButtonCallbackInterface) {
+                              EncryptDecryptUtils.DecryptButtonCallbackInterface decryptButtonCallbackInterface) {
         context = mContext;
         this.decryptIntent = intent;
         this.materialDialog = materialDialog;

@@ -34,7 +34,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
-import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -52,6 +51,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
@@ -590,7 +590,7 @@ public class GeneralDialogCreation {
 
     public static void showEncryptWarningDialog(final Intent intent, final MainFragment main,
                                                 AppTheme appTheme,
-                                                final RecyclerAdapter.EncryptButtonCallbackInterface
+                                                final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                         encryptButtonCallbackInterface) {
         int accentColor = main.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
@@ -638,7 +638,7 @@ public class GeneralDialogCreation {
 
     public static void showEncryptAuthenticateDialog(final Context c, final Intent intent,
                                                      final MainActivity main, AppTheme appTheme,
-                                                     final RecyclerAdapter.EncryptButtonCallbackInterface
+                                                     final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                              encryptButtonCallbackInterface) {
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -693,7 +693,7 @@ public class GeneralDialogCreation {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
-                                                    final RecyclerAdapter.DecryptButtonCallbackInterface
+                                                    final EncryptDecryptUtils.DecryptButtonCallbackInterface
                                                             decryptButtonCallbackInterface)
             throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
             UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
@@ -730,7 +730,7 @@ public class GeneralDialogCreation {
 
     public static void showDecryptDialog(Context c, final MainActivity main, final Intent intent,
                                          AppTheme appTheme, final String password,
-                                         final RecyclerAdapter.DecryptButtonCallbackInterface
+                                         final EncryptDecryptUtils.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
