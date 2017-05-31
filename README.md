@@ -53,7 +53,8 @@ Existing code itself might not follow this, but you don't have to do same mistak
 
 Translators
 ----
-Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).
+Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).  
+_Maintainer required!_
 
 Vendors/Developers
 ----
