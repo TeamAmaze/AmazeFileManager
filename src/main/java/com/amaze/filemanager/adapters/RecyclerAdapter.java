@@ -355,7 +355,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageView);
+                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), rowItem,
+                                holder.checkImageView);
                     }
                 });
 
@@ -591,7 +592,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
+                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), rowItem,
+                                holder.checkImageViewGrid);
                     }
                 });
 

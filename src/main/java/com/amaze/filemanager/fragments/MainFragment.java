@@ -835,12 +835,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
     /**
      * method called when list item is clicked in the adapter
      *
-     * @param position  the {@link int} position of the list item
+     * @param position the position
+     * @param e the list item
      * @param imageView the check {@link RoundedImageView} that is to be animated
      */
-    public void onListItemClicked(int position, ImageView imageView) {
-        if (position >= getLayoutElementSize()) return;
-
+    public void onListItemClicked(int position, LayoutElement e, ImageView imageView) {
         if (results) {
             // check to initialize search results
             // if search task is been running, cancel it
@@ -864,7 +863,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
 
         if (selection) {
-            if (!getLayoutElement(position).getSize().equals(goback)) {
+            if (!e.getSize().equals(goback)) {
                 // the first {goback} item if back navigation is enabled
                 adapter.toggleChecked(position, imageView);
             } else {
@@ -874,66 +873,64 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 mActionMode = null;
             }
         } else {
-            if (!getLayoutElement(position).getSize().equals(goback)) {
-
+            if (!e.getSize().equals(goback)) {
                 // hiding search view if visible
                 if (MainActivity.isSearchViewEnabled) getMainActivity().hideSearchView();
 
                 String path;
-                LayoutElement l = getLayoutElement(position);
-                if (!l.hasSymlink()) {
+                if (!e.hasSymlink()) {
 
-                    path = l.getDesc();
+                    path = e.getDesc();
                 } else {
 
-                    path = l.getSymlink();
+                    path = e.getSymlink();
                 }
 
                 // check if we're trying to click on encrypted file
-                if (!getLayoutElement(position).isDirectory() &&
-                        getLayoutElement(position).getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                if (!e.isDirectory() &&
+                        e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
                     getMainActivity().isEncryptOpen = true;
 
                     getMainActivity().encryptBaseFile = new BaseFile(getActivity().getExternalCacheDir().getPath()
                             + "/"
-                            + getLayoutElement(position).generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
+                            + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
-                    decryptFile(this, openMode, getLayoutElement(position).generateBaseFile(),
+                    decryptFile(this, openMode, e.generateBaseFile(),
                             getActivity().getExternalCacheDir().getPath(),
                             utilsProvider);
                     return;
                 }
 
-                if (getLayoutElement(position).isDirectory()) {
+                if (e.isDirectory()) {
                     computeScroll();
                     loadlist(path, false, openMode);
                 } else {
-                    if (l.getMode() == OpenMode.SMB) {
+                    if (e.getMode() == OpenMode.SMB) {
                         try {
-                            SmbFile smbFile = new SmbFile(l.getDesc());
-                            launchSMB(smbFile, l.getlongSize(), getMainActivity());
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
+                            SmbFile smbFile = new SmbFile(e.getDesc());
+                            launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                        } catch (MalformedURLException ex) {
+                            ex.printStackTrace();
                         }
-                    } else if (l.getMode() == OpenMode.OTG) {
+                    } else if (e.getMode() == OpenMode.OTG) {
 
-                        utils.openFile(OTGUtil.getDocumentFile(l.getDesc(), getContext(), false),
+                        utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
                                 (MainActivity) getActivity());
-                    } else if (l.getMode() == OpenMode.DROPBOX
-                            || l.getMode() == OpenMode.BOX
-                            || l.getMode() == OpenMode.GDRIVE
-                            || l.getMode() == OpenMode.ONEDRIVE) {
+                    } else if (e.getMode() == OpenMode.DROPBOX
+                            || e.getMode() == OpenMode.BOX
+                            || e.getMode() == OpenMode.GDRIVE
+                            || e.getMode() == OpenMode.ONEDRIVE) {
 
                         Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
-                        CloudUtil.launchCloud(getLayoutElement(position).generateBaseFile(), openMode, getMainActivity());
+                        CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                     } else if (getMainActivity().mReturnIntent) {
-                        returnIntentResults(new File(l.getDesc()));
+                        returnIntentResults(new File(e.getDesc()));
                     } else {
 
-                        utils.openFile(new File(l.getDesc()), (MainActivity) getActivity());
+                        utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
                     }
-                    dataUtils.addHistoryFile(l.getDesc());
+                    dataUtils.addHistoryFile(e.getDesc());
                 }
             } else {
                 goBackItemClick();
