@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
+ * Check RecyclerAdapter's doc.
+ *
  * @author Emmanuel
  *         on 29/5/2017, at 22:48.
  */

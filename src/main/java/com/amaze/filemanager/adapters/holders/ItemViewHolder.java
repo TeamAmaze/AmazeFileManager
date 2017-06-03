@@ -10,6 +10,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 
 /**
+ * Check RecyclerAdapter's doc.
+ * TODO load everything related to this item here instead of in RecyclerAdapter.
+ *
  * @author Emmanuel
  *         on 29/5/2017, at 04:19.
  */

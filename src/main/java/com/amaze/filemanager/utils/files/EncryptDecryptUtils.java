@@ -21,6 +21,8 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 /**
+ * Provides useful interfaces and methods for encryption/decryption
+ *
  * @author Emmanuel
  *         on 25/5/2017, at 16:55.
  */

@@ -38,6 +38,12 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import java.util.ArrayList;
 
 /**
+ * This class is the information that serves to load the files into a "list" (a RecyclerView).
+ * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
+ * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
+ * The showPopup shows the file's popup menu.
+ * TODO optimize checking items (all the toggleChecked()).
+ *
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {

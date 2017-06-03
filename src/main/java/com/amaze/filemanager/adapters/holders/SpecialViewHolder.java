@@ -11,6 +11,8 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
+ * Check RecyclerAdapter's doc.
+ *
  * @author Emmanuel
  *         on 29/5/2017, at 04:22.
  */
