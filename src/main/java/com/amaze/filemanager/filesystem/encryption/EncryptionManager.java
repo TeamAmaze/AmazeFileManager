@@ -30,24 +30,6 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 public class EncryptionManager {
 
-    /**
-     * Queries database to map path and password.
-     * Starts the encryption process after database query
-     *
-     * @param path     the path of file to encrypt
-     * @param password the password in plaintext
-     */
-    public static void startEncryption(Context c, final String path, final String password,
-                                       Intent intent) throws Exception {
-        CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
-        cryptHandler.addEntry(encryptedEntry);
-
-        // start the encryption process
-        ServiceWatcherUtil.runService(c, intent);
-    }
-
     public static void encryptFile(final Context context, final MainFragment mainFragment,
                                    final UtilitiesProviderInterface utilsProvider,
                                    OpenMode openMode, final BaseFile file) {
@@ -118,9 +100,9 @@ public class EncryptionManager {
         }
     }
 
-    public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
-                                   BaseFile sourceFile, String decryptPath,
-                                   UtilitiesProviderInterface utilsProvider) {
+    public static void decryptFile(Context c, final MainActivity mainActivity,
+                                   final MainFragment main, OpenMode openMode, BaseFile sourceFile,
+                                   String decryptPath, UtilitiesProviderInterface utilsProvider) {
 
         Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
         decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
@@ -185,6 +167,24 @@ public class EncryptionManager {
                         decryptButtonCallbackInterface);
                 break;
         }
+    }
+
+    /**
+     * Queries database to map path and password.
+     * Starts the encryption process after database query
+     *
+     * @param path     the path of file to encrypt
+     * @param password the password in plaintext
+     */
+    private static void startEncryption(Context c, final String path, final String password,
+                                        Intent intent) throws Exception {
+        CryptHandler cryptHandler = new CryptHandler(c);
+        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
+                password);
+        cryptHandler.addEntry(encryptedEntry);
+
+        // start the encryption process
+        ServiceWatcherUtil.runService(c, intent);
     }
 
     /**
