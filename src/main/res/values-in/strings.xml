@@ -189,8 +189,6 @@
   <string name="copying_fles">Menyalin file</string>
   <string name="done">Selesai</string>
   <string name="Extracting_fles">Mengekstrak file</string>
-  <string name="items">Item</string>
-  <string name="item">Item</string>
   <string name="set">Atur</string>
   <string name="enablerootmde">Aktifkan Mode Root</string>
   <string name="goback">Kembali</string>
@@ -570,7 +568,6 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="crypt_decryption_fail_password">Kata sandi salah!</string>
   <string name="crypt_fingerprint_authenticate">Sentuh sensor untuk melanjutkan</string>
   <string name="authenticate_password">Masukkan sandi</string>
-  <string name="bytes">Bytes</string>
   <string name="sidebarfolders_title">Pintasan sidebar</string>
   <string name="sidebarquickaccess_title">Akses cepat sidebar</string>
   <string name="showfolders_pref_title">Lihat pintasan</string>
@@ -594,4 +591,8 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
         Silahkan unduh Amaze dari Play Store.</string>
   <string name="monofont">Monospace Font</string>
   <string name="showHeaders">Tampilkan Tajuk</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Item</string>
+  <string name="items">Item</string>
+  <string name="bytes">Bytes</string>
 </resources>

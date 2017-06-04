@@ -184,8 +184,6 @@
   <string name="copying_fles">در حال کپی کردن فایل ها</string>
   <string name="done">انجام گردید</string>
   <string name="Extracting_fles">در حال استخراج فایل ها</string>
-  <string name="items">آیتم ها</string>
-  <string name="item">آیتم</string>
   <string name="set">تنظیم</string>
   <string name="enablerootmde">فعال کردن حالت روت</string>
   <string name="goback">برگشت به عقب</string>
@@ -409,4 +407,7 @@
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">FTP سرور </string>
   <!-- references to 'Some files weren't successfully %s -->
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">آیتم</string>
+  <string name="items">آیتم ها</string>
 </resources>

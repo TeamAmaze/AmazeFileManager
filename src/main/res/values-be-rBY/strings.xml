@@ -191,8 +191,6 @@
   <string name="copying_fles">Капіяванне файлаў</string>
   <string name="done">Выканана</string>
   <string name="Extracting_fles">Выманне файлаў</string>
-  <string name="items">Элементы</string>
-  <string name="item">Элемент</string>
   <string name="set">Усталяваць</string>
   <string name="enablerootmde">Уключыць рэжым root</string>
   <string name="goback">Вярнуцца</string>
@@ -617,7 +615,6 @@
   <string name="crypt_decryption_fail_password">Няслушны пароль!</string>
   <string name="crypt_fingerprint_authenticate">Краніцеся сэнсара для працягу</string>
   <string name="authenticate_password">Увядзіце пароль</string>
-  <string name="bytes">Байты</string>
   <string name="sidebarfolders_title">Бакавая панэль цэтлікаў</string>
   <string name="sidebarquickaccess_title">Бакавая панэль хуткага доступу</string>
   <string name="showfolders_pref_title">Паказаць цэтлікі</string>
@@ -640,4 +637,8 @@
   <string name="cloud_plugin_not_supported">Плагін воблака не падтрымлівае Fdroid білд. Калі ласка, спампуйце з Play Store.</string>
   <string name="monofont">Монашырынны шрыфт</string>
   <string name="showHeaders">Паказаць загалоўкі</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Элемент</string>
+  <string name="items">Элементы</string>
+  <string name="bytes">Байты</string>
 </resources>

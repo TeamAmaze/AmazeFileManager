@@ -189,8 +189,6 @@
   <string name="copying_fles">Kopioidaan tiedostoja</string>
   <string name="done">Valmis</string>
   <string name="Extracting_fles">Puretaan tiedostoja</string>
-  <string name="items">Kohteet</string>
-  <string name="item">Kohde</string>
   <string name="set">Aseta</string>
   <string name="enablerootmde">Ota Root-tila käyttöön</string>
   <string name="goback">Mene takaisin</string>
@@ -617,7 +615,6 @@
   <string name="crypt_decryption_fail_password">Väärä salasana!</string>
   <string name="crypt_fingerprint_authenticate">Paina kosketusanturia jatkaaksesi</string>
   <string name="authenticate_password">Syötä salasana</string>
-  <string name="bytes">Tavua</string>
   <string name="sidebarfolders_title">Sivupalkin pikanäppäimet</string>
   <string name="sidebarquickaccess_title">Sivupalkin nopeavaus</string>
   <string name="showfolders_pref_title">Näytä pikanäppäimet</string>
@@ -640,4 +637,8 @@
         lataa Amaze Google Play Storesta.</string>
   <string name="monofont">Monospace fontti</string>
   <string name="showHeaders">Näytä ylätunniste</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Kohde</string>
+  <string name="items">Kohteet</string>
+  <string name="bytes">Tavua</string>
 </resources>
