@@ -600,7 +600,7 @@ public class CryptUtil {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
             return CryptUtil.rsaDecryptPassword(context, cipherText);
-        } else return cipherText;
+        } else throw new IllegalStateException("Not available in Android versions lower than Kitkat!");
     }
 
     /**
@@ -655,27 +655,10 @@ public class CryptUtil {
             try {
                 generateKeyPair(context);
                 setKeyPreference();
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (CertificateException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (UnrecoverableEntryException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
+            } catch (KeyStoreException | CertificateException | IOException
+                    | NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException
+                    | InvalidAlgorithmParameterException | UnrecoverableEntryException
+                    | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
                 e.printStackTrace();
             }
         }

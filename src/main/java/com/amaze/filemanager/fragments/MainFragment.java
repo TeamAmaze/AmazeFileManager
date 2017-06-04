@@ -96,7 +96,7 @@ import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
+import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -902,7 +902,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
-                    EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
+                    EncryptionManager.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
                             utilsProvider);
                     return;

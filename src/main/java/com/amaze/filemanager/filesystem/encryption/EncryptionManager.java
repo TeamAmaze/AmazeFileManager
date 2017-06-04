@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils.files;
+package com.amaze.filemanager.filesystem.encryption;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,16 +18,17 @@ import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 /**
- * Provides useful interfaces and methods for encryption/decryption
+ * This is the class that makes the headache that is encryption/decryption in Android be two methods.
  *
  * @author Emmanuel
  *         on 25/5/2017, at 16:55.
  */
 
-public class EncryptDecryptUtils {
+public class EncryptionManager {
 
     /**
      * Queries database to map path and password.
@@ -47,6 +48,75 @@ public class EncryptDecryptUtils {
         ServiceWatcherUtil.runService(c, intent);
     }
 
+    public static void encryptFile(final Context context, final MainFragment mainFragment,
+                                   final UtilitiesProviderInterface utilsProvider,
+                                   OpenMode openMode, final BaseFile file) {
+        final String path = file.getPath();
+        final Intent encryptIntent = new Intent(context, EncryptService.class);
+        encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
+        encryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
+                EncryptService.CryptEnum.ENCRYPT.ordinal());
+        encryptIntent.putExtra(EncryptService.TAG_SOURCE, file);
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        final EncryptionManager.EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
+                new EncryptionManager.EncryptButtonCallbackInterface() {
+                    @Override
+                    public void onButtonPressed(Intent intent) {
+                    }
+
+                    @Override
+                    public void onButtonPressed(Intent intent, String password) throws Exception {
+                        EncryptionManager.startEncryption(context, path, password, intent);
+                    }
+                };
+
+        EncryptionManager.EncryptButtonCallbackInterface encryptButtonCallbackInterface =
+                new EncryptionManager.EncryptButtonCallbackInterface() {
+
+                    @Override
+                    public void onButtonPressed(Intent intent) throws Exception {
+                        // check if a master password or fingerprint is set
+                        if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+
+                            EncryptionManager.startEncryption(context, path,
+                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                        } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+
+                            EncryptionManager.startEncryption(context, path,
+                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                        } else {
+                            // let's ask a password from user
+                            GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
+                                    mainFragment.getMainActivity(), utilsProvider.getAppTheme(),
+                                    encryptButtonCallbackInterfaceAuthenticate);
+                        }
+                    }
+
+                    @Override
+                    public void onButtonPressed(Intent intent, String password) {
+                    }
+                };
+
+        if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
+                Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
+            // let's skip warning dialog call
+            try {
+                encryptButtonCallbackInterface.onButtonPressed(encryptIntent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context,
+                        mainFragment.getResources().getString(R.string.crypt_encryption_fail),
+                        Toast.LENGTH_LONG).show();
+            }
+        } else {
+            GeneralDialogCreation.showEncryptWarningDialog(encryptIntent, mainFragment,
+                    utilsProvider.getAppTheme(), encryptButtonCallbackInterface);
+        }
+    }
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
                                    BaseFile sourceFile, String decryptPath,
@@ -105,7 +175,9 @@ public class EncryptDecryptUtils {
             case Preffrag.ENCRYPT_PASSWORD_MASTER:
                 GeneralDialogCreation.showDecryptDialog(c,
                         mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                        preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD, Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT), decryptButtonCallbackInterface);
+                        preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
+                        decryptButtonCallbackInterface);
                 break;
             default:
                 GeneralDialogCreation.showDecryptDialog(c, mainActivity, decryptIntent,
