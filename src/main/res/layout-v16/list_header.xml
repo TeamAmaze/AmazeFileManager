@@ -9,16 +9,14 @@
 
     <TextView
         android:id="@+id/text"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingLeft="@dimen/icon_width"
         android:paddingRight="@dimen/icon_width"
-        android:textAllCaps="true"
         android:textSize="@dimen/dialog_category"
-        android:textStyle="bold"
-        tools:ignore="RtlSymmetry"
         tools:text="@string/folders" >
     </TextView>
 
