@@ -38,6 +38,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
@@ -51,7 +52,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
@@ -65,21 +65,11 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -695,9 +685,7 @@ public class GeneralDialogCreation {
                                                     final Intent intent, AppTheme appTheme,
                                                     final EncryptionManager.DecryptButtonCallbackInterface
                                                             decryptButtonCallbackInterface)
-            throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-            UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+            throws IOException, GeneralSecurityException {
 
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);

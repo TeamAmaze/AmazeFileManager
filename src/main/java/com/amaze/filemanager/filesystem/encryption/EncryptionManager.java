@@ -42,20 +42,20 @@ public class EncryptionManager {
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        final EncryptionManager.EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
-                new EncryptionManager.EncryptButtonCallbackInterface() {
+        final EncryptButtonCallbackInterface encryptButtonCallbackInterfaceAuthenticate =
+                new EncryptButtonCallbackInterface() {
                     @Override
                     public void onButtonPressed(Intent intent) {
                     }
 
                     @Override
                     public void onButtonPressed(Intent intent, String password) throws Exception {
-                        EncryptionManager.startEncryption(context, path, password, intent);
+                        startEncryption(context, path, password, intent);
                     }
                 };
 
-        EncryptionManager.EncryptButtonCallbackInterface encryptButtonCallbackInterface =
-                new EncryptionManager.EncryptButtonCallbackInterface() {
+        EncryptButtonCallbackInterface encryptButtonCallbackInterface =
+                new EncryptButtonCallbackInterface() {
 
                     @Override
                     public void onButtonPressed(Intent intent) throws Exception {
@@ -63,12 +63,12 @@ public class EncryptionManager {
                         if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                 Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
-                            EncryptionManager.startEncryption(context, path,
+                            startEncryption(context, path,
                                     Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
                         } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
                                 Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
-                            EncryptionManager.startEncryption(context, path,
+                            startEncryption(context, path,
                                     Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                         } else {
                             // let's ask a password from user
