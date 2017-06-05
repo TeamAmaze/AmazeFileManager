@@ -73,7 +73,6 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
-import com.timehop.stickyheadersrecyclerview.decorators.StickyRecyclerHeadersDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -109,7 +108,6 @@ public class ZipViewer extends Fragment {
     View rootView;
     boolean addheader = true;
     public SwipeRefreshLayout swipeRefreshLayout;
-    StickyRecyclerHeadersDecoration headersDecor;
     LinearLayoutManager mLayoutManager;
     DividerItemDecoration dividerItemDecoration;
     boolean showDividers;
@@ -118,7 +116,7 @@ public class ZipViewer extends Fragment {
     View mToolbarContainer;
     public Resources res;
     int openmode;   //0 for zip 1 for rar
-    boolean stopAnims=true;
+    boolean stopAnims = true;
 
     public boolean isOpen = false;  // flag states whether to open file after service extracts it
 
@@ -145,15 +143,12 @@ public class ZipViewer extends Fragment {
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(stopAnims)
+                if (stopAnims && !rarAdapter.stoppedAnimation) {
+                    stopAnim();
+                }
+                rarAdapter.stoppedAnimation = true;
 
-                    if ((!rarAdapter.stoppedAnimation) )
-                    {
-                        stopAnim();
-                    }
-                    rarAdapter.stoppedAnimation = true;
-
-                stopAnims=false;
+                stopAnims = false;
                 return false;
             }
         });
@@ -167,32 +162,33 @@ public class ZipViewer extends Fragment {
 
         return rootView;
     }
-    public void stopAnim(){
-        for (int j = 0; j < listView.getChildCount(); j++)
-        {    View v=listView.getChildAt(j);
-            if(v!=null)v.clearAnimation();
+
+    public void stopAnim() {
+        for (int j = 0; j < listView.getChildCount(); j++) {
+            View v = listView.getChildAt(j);
+            if (v != null) v.clearAnimation();
         }
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         s = getArguments().getString(KEY_PATH);
-        Uri uri=Uri.parse(s);
+        Uri uri = Uri.parse(s);
         f = new File(uri.getPath());
         mToolbarContainer = getActivity().findViewById(R.id.lin);
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(stopAnims)
-                     {
-                        if ((!rarAdapter.stoppedAnimation) )
-                        {
-                            stopAnim();
-                        }
-                        rarAdapter.stoppedAnimation = true;
+                if (stopAnims) {
+                    if ((!rarAdapter.stoppedAnimation)) {
+                        stopAnim();
+                    }
+                    rarAdapter.stoppedAnimation = true;
 
-                    }stopAnims=false;
+                }
+                stopAnims = false;
                 return false;
             }
         });
@@ -250,7 +246,7 @@ public class ZipViewer extends Fragment {
             }
 
         }
-        String fileName=null;
+        String fileName = null;
         try {
             if (uri.getScheme().equals(KEY_FILE)) {
                 fileName = uri.getLastPathSegment();
@@ -274,7 +270,7 @@ public class ZipViewer extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(fileName==null || fileName.trim().length()==0)fileName=f.getName();
+        if (fileName == null || fileName.trim().length() == 0) fileName = f.getName();
         try {
             mainActivity.setActionBarTitle(fileName);
         } catch (Exception e) {
@@ -380,7 +376,7 @@ public class ZipViewer extends Fragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.all:
-                     rarAdapter.toggleChecked(true,"");
+                    rarAdapter.toggleChecked(true, "");
                     mode.invalidate();
                     return true;
                 case R.id.ex:
@@ -389,7 +385,7 @@ public class ZipViewer extends Fragment {
                     Intent intent = new Intent(getActivity(), ExtractService.class);
                     ArrayList<String> a = new ArrayList<>();
                     for (int i : rarAdapter.getCheckedItemPositions()) {
-                        a.add(openmode==0 ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
+                        a.add(openmode == 0 ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
                     }
                     intent.putExtra(ExtractService.KEY_PATH_ZIP, f.getPath());
                     intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
@@ -449,29 +445,26 @@ public class ZipViewer extends Fragment {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
             // open file if pending
             if (isOpen) {
                 // open most recent entry added to files to be deleted from cache
-                File cacheFile = new File(files.get(files.size()-1).getPath());
+                File cacheFile = new File(files.get(files.size() - 1).getPath());
                 if (cacheFile != null && cacheFile.exists())
                     utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity);
 
                 // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;
-                files.remove(files.size()-1);
+                files.remove(files.size() - 1);
             }
         }
     };
 
     void putDatatoSavedInstance(Bundle outState) {
         if (openmode == 0) {
-
             outState.putParcelableArrayList(KEY_WHOLE_LIST, wholelist);
             outState.putParcelableArrayList(KEY_ELEMENTS, elements);
         }
@@ -555,64 +548,65 @@ public class ZipViewer extends Fragment {
 
 
     public void bbar() {
-        if (current != null && current.length()!=0)
-            mainActivity.updatePath("/" + current,  false, OpenMode.FILE,folder,file);
-        else     mainActivity.updatePath("/", false,OpenMode.FILE,folder,file);
+        if (current != null && current.length() != 0)
+            mainActivity.updatePath("/" + current, false, OpenMode.FILE, folder, file);
+        else mainActivity.updatePath("/", false, OpenMode.FILE, folder, file);
 
 
     }
-    int file=0,folder=0;
+
+    int file = 0, folder = 0;
+
     public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
-        if(rarAdapter==null) {
-            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer,true);
+        if (rarAdapter == null) {
+            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer, true);
             zipViewer.listView.setAdapter(zipViewer.rarAdapter);
-        }
-        else rarAdapter.generate(zipEntries,true);
-        folder=0;
-        file=0;
-        for (ZipObj zipEntry:zipEntries)
-        if(zipEntry.isDirectory())folder++;
-        else file++;
+        } else rarAdapter.generate(zipEntries, true);
+        folder = 0;
+        file = 0;
+        for (ZipObj zipEntry : zipEntries)
+            if (zipEntry.isDirectory()) folder++;
+            else file++;
         createViews(dir);
         openmode = 0;
     }
 
     public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
-        if(rarAdapter==null){
+        if (rarAdapter == null) {
             zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer);
             zipViewer.listView.setAdapter(zipViewer.rarAdapter);
-        }else
-        rarAdapter.generate(zipEntries);
-        folder=0;
-        file=0;
-        for (FileHeader zipEntry:zipEntries)
-            if(zipEntry.isDirectory())folder++;
+        } else
+            rarAdapter.generate(zipEntries);
+        folder = 0;
+        file = 0;
+        for (FileHeader zipEntry : zipEntries)
+            if (zipEntry.isDirectory()) folder++;
             else file++;
         openmode = 1;
         createViews(dir);
     }
 
     void createViews(String dir) {
-        stopAnims=true;
+        stopAnims = true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
-            listView.removeItemDecoration(headersDecor);
+            //listView.removeItemDecoration(headersDecor);
             addheader = true;
         }
         if (addheader) {
             dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, showDividers);
             listView.addItemDecoration(dividerItemDecoration);
-            headersDecor = new StickyRecyclerHeadersDecoration(rarAdapter);
-            listView.addItemDecoration(headersDecor);
+            //headersDecor = new StickyRecyclerHeadersDecoration(rarAdapter);
+            //listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        final FastScroller fastScroller=(FastScroller)rootView.findViewById(R.id.fastscroll);
-        fastScroller.setRecyclerView(listView,1);
+        final FastScroller fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        fastScroller.setRecyclerView(listView, 1);
         fastScroller.setPressedHandleColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
-        ((AppBarLayout)mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                fastScroller.updateHandlePosition(verticalOffset,112);
+                fastScroller.updateHandlePosition(verticalOffset, 112);
             }
         });
         listView.stopScroll();

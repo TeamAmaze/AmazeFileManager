@@ -1067,7 +1067,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    GeneralDialogCreation.showSortDialog(ma, getAppTheme());
+                    GeneralDialogCreation.showSortDialog(ma, getAppTheme(), sharedPref);
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);

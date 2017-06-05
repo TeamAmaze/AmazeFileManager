@@ -16,6 +16,7 @@ Overview
 - App Manager to open, backup, or directly uninstall any app
 - Quickly access history, access bookmarks or search for any file
 - Root explorer for advanced users
+- AES Encryption and Decryption of files for security
 - All features freely available without any ads
 - lots more...
 
@@ -42,13 +43,18 @@ Make sure to write your name and email id in format `Name<email>` in the license
 
 You won't be able to claim the license for changes made by you unless you do that.
 
-Also, take a look at [this guide](https://source.android.com/source/code-style.html) before making changes in code. 
+Also, take a look at [this guide](https://source.android.com/source/code-style.html) before making changes in code.  
+
+The source code has two flavours, fDroid and play. Both of these include their own MainActivity.
+fDroid's MainAcitivity is generally outdated and is only updated during new release.  
+Any changes made to [fDroid's MainActivity](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/fdroid/java/com/amaze/filemanager/activities/MainActivity.java) will be overwritten. So please make sure to compile and work on [play's MainAcitivty](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/play/java/com/amaze/filemanager/activities/MainActivity.java).
 
 Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
 
 Translators
 ----
-Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).
+Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).  
+_Maintainer required!_
 
 Vendors/Developers
 ----
@@ -63,6 +69,11 @@ Social
 Join [G+ community](https://plus.google.com/communities/113997576965363268101) for discussions
 
 Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
+
+Support
+---
+Support the development by purchasing our [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud)  
+Cloud plugin supports Google Drive, Dropbox, OneDrive and Box accounts.
 
 Authors
 ---

@@ -188,8 +188,6 @@
   <string name="copying_fles">Копіювання файлів</string>
   <string name="done">Закінчено</string>
   <string name="Extracting_fles">Розпаковування файлів</string>
-  <string name="items">Елементи</string>
-  <string name="item">Елемент</string>
   <string name="set">Встановити</string>
   <string name="enablerootmde">Включити режим рут прав</string>
   <string name="goback">Повернутися</string>
@@ -614,7 +612,6 @@
   <string name="crypt_decryption_fail_password">Пароль невірний!</string>
   <string name="crypt_fingerprint_authenticate">Торкніться сенсору для продовження</string>
   <string name="authenticate_password">Введіть пароль</string>
-  <string name="bytes">Байт</string>
   <string name="cloud_error_new_account">Не вдалося додати новий обліковий запис</string>
   <string name="cloud_error_plugin">Плагін для цієї хмари не знайдено. Будь ласка, завантажити з Play Store.</string>
   <string name="cloud_error_failed_restart">Помилка завантаження. Будь ласка, выдкрийте Amaze Cloud. </string>
@@ -626,4 +623,8 @@
   <string name="cloud_plugin_not_supported">Хмарний плагін не підтримує Fdroid білд.         Будь ласка, завантажте з Play Store.</string>
   <string name="monofont">Моноширинний шрифт</string>
   <string name="showHeaders">Відображати заголовки</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Елемент</string>
+  <string name="items">Елементи</string>
+  <string name="bytes">Байт</string>
 </resources>

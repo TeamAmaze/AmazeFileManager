@@ -37,15 +37,13 @@ import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.rarfile.FileHeader;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
 
 /**
  * Created by Arpit on 25-01-2015.
  */
-public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder>
-        implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
 
     private Context c;
     private UtilitiesProviderInterface utilsProvider;
@@ -175,59 +173,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             txtDesc = (TextView) view.findViewById(R.id.secondLine);
             apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
             checkImageView = (ImageView) view.findViewById(R.id.check_icon);
-        }
-    }
-
-    @Override
-    public long getHeaderId(int position) {
-        if (zipMode) return getHeaderid(position);
-        if (position < 0) return -1;
-        if (position >= 0 && position < enter.size()) {
-            if (enter.get(position) == null) return -1;
-            else if (enter.get(position).isDirectory()) return 'D';
-            else return 'F';
-        }
-        return -1;
-    }
-
-    private long getHeaderid(int position) {
-        if (position >= 0 && position < enter1.size())
-            if (enter1.get(position) == null) return -1;
-            else if (enter1.get(position).isDirectory()) return 'D';
-            else return 'F';
-
-        return -1;
-    }
-
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView ext;
-
-        HeaderViewHolder(View view) {
-            super(view);
-
-            ext = (TextView) view.findViewById(R.id.headertext);
-        }
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup, int i) {
-        View view = mInflater.inflate(R.layout.listheader, viewGroup, false);
-        return new HeaderViewHolder(view);
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        if (zipMode && i >= 0) {
-            HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            if (enter1.get(i) != null && enter1.get(i).isDirectory())
-                holder.ext.setText("Directories");
-            else holder.ext.setText("Files");
-
-        } else if (i >= 0) {
-            HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            if (enter.get(i) != null && enter.get(i).isDirectory())
-                holder.ext.setText(R.string.directories);
-            else holder.ext.setText(R.string.files);
         }
     }
 
@@ -576,16 +521,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         return zipMode ? enter1.size() : enter.size();
-    }
-
-    @Override
-    public int getNumColumns() {
-        return 1;
-    }
-
-    @Override
-    public int getSpanSize(int i) {
-        return 1;
     }
 
 }

@@ -169,8 +169,6 @@
   <string name="copying_fles">Копиране на файлове</string>
   <string name="done">Готово</string>
   <string name="Extracting_fles">Извличане на файлове</string>
-  <string name="items">Елементи</string>
-  <string name="item">Елемент</string>
   <string name="set">Задай</string>
   <string name="enablerootmde">Разрешаване на Root режим</string>
   <string name="goback">Назад</string>
@@ -466,4 +464,7 @@
   <string name="crypt_encrypt">Криптиране</string>
   <string name="crypt_decrypt">Декриптиране</string>
   <string name="operation_fail_following">Операцията е неуспешна за следните файлове</string>
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Елемент</string>
+  <string name="items">Елементи</string>
 </resources>
