@@ -126,7 +126,7 @@ public class CryptUtil {
         this.failedOps = failedOps;
 
         HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
-        if (!targetPath.equals(context.getExternalCacheDir())) {
+        if (!targetPath.equals(context.getExternalCacheDir().toString())) {
 
             // same file system as of base file
             targetDirectory.setMode(baseFile.getMode());

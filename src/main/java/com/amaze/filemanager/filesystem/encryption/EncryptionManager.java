@@ -21,6 +21,9 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 /**
  * This is the class that makes the headache that is encryption/decryption in Android be two methods.
  *
@@ -49,7 +52,7 @@ public class EncryptionManager {
                     }
 
                     @Override
-                    public void onButtonPressed(Intent intent, String password) throws Exception {
+                    public void onButtonPressed(Intent intent, String password) throws IOException, GeneralSecurityException {
                         startEncryption(context, path, password, intent);
                     }
                 };
@@ -58,7 +61,7 @@ public class EncryptionManager {
                 new EncryptButtonCallbackInterface() {
 
                     @Override
-                    public void onButtonPressed(Intent intent) throws Exception {
+                    public void onButtonPressed(Intent intent) throws IOException, GeneralSecurityException {
                         // check if a master password or fingerprint is set
                         if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                 Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
@@ -177,7 +180,7 @@ public class EncryptionManager {
      * @param password the password in plaintext
      */
     private static void startEncryption(Context c, final String path, final String password,
-                                        Intent intent) throws Exception {
+                                        Intent intent) throws IOException, GeneralSecurityException {
         CryptHandler cryptHandler = new CryptHandler(c);
         EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
                 password);
@@ -193,7 +196,7 @@ public class EncryptionManager {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws IOException, GeneralSecurityException {
 
         CryptHandler handler = new CryptHandler(context);
 
@@ -216,9 +219,8 @@ public class EncryptionManager {
          * Callback fired when we've just gone through warning dialog before encryption
          *
          * @param intent
-         * @throws Exception
          */
-        void onButtonPressed(Intent intent) throws Exception;
+        void onButtonPressed(Intent intent) throws IOException, GeneralSecurityException;
 
         /**
          * Callback fired when user has entered a password for encryption
@@ -226,9 +228,8 @@ public class EncryptionManager {
          *
          * @param intent
          * @param password the password entered by user
-         * @throws Exception
          */
-        void onButtonPressed(Intent intent, String password) throws Exception;
+        void onButtonPressed(Intent intent, String password) throws IOException, GeneralSecurityException;
     }
 
     public interface DecryptButtonCallbackInterface {
