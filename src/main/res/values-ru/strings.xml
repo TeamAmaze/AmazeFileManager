@@ -51,6 +51,7 @@
   <string name="file_empty">Файл пуст</string>
   <string name="error">Ошибка</string>
   <string name="cantlistfiles">Не можете выполнить без рут прав</string>
+  <string name="searchresults">Результаты Поиска </string>
   <string name="itemsselected">Выбранные элементы</string>
   <string name="newhomedirectory">Новый домашний каталог</string>
   <string name="rename">Переименовать</string>
@@ -616,6 +617,7 @@
   <string name="edit_shortcut">Редактировать ярлык</string>
   <string name="directory">Директория</string>
   <string name="questiondelete_shortcut">Удалить ярлык?</string>
+  <string name="showHeaders">Показывать Заголовки</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Элемент</string>
   <string name="items">Элементы</string>
