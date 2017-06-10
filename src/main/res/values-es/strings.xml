@@ -122,6 +122,7 @@
   <string name="mountsystemsummary">Habilite esta opción si desea editar archivos de sistema</string>
   <string name="mountsystem">Montar carpetas del sistema para escritura</string>
   <string name="rootfailure">Acceso Root no concedido</string>
+  <string name="hiddenfailure">No puede acceder a archivos ocultos</string>
   <string name="selectall">Seleccionar todo</string>
   <string name="delete">Borrar</string>
   <string name="setashome"> Establecer como carpeta principal</string>

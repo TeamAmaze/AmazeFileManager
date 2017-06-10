@@ -124,6 +124,7 @@
   <string name="mountsystemsummary">Включите, если хотите редактировать системные файлы</string>
   <string name="mountsystem">Монтировать системные папки с правом записи</string>
   <string name="rootfailure">Рут доступ не предоставлен</string>
+  <string name="hiddenfailure">Не удается получить доступ к скрытым файлам</string>
   <string name="selectall">Выбрать все</string>
   <string name="delete">Удалить</string>
   <string name="setashome">Сделать домашней папкой</string>
@@ -617,6 +618,7 @@
   <string name="edit_shortcut">Редактировать ярлык</string>
   <string name="directory">Директория</string>
   <string name="questiondelete_shortcut">Удалить ярлык?</string>
+  <string name="cloud_error_new_account">Не удалось добавить новую учетную запись</string>
   <string name="showHeaders">Показывать Заголовки</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Элемент</string>
