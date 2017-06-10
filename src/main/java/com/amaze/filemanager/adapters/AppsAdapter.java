@@ -45,6 +45,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -70,14 +71,16 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
     AppsList app;
 
     private BaseActivity baseActivity;
+    private EncryptFunctions encription;
 
     public AppsAdapter(Context context, BaseActivity ba, UtilitiesProviderInterface utilsProvider,
-                       int resourceId, AppsList app) {
+                       int resourceId, AppsList app, EncryptFunctions encrypt) {
         super(context, resourceId);
         baseActivity = ba;
         this.utilsProvider = utilsProvider;
         this.context = context;
         this.app = app;
+        encription = encrypt;
 
         /*for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
@@ -273,7 +276,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                                                         } else {
                                                             files.add(f1);
                                                         }
-                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
+                                                        new DeleteTask(app.getActivity().getContentResolver(), app.getActivity(), encription).execute((files));
                                                     }
                                                 }).build().show();
                                     } else {

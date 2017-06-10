@@ -38,6 +38,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -51,7 +52,6 @@ import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
@@ -684,7 +684,8 @@ public class GeneralDialogCreation {
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
                                                     final EncryptionManager.DecryptButtonCallbackInterface
-                                                            decryptButtonCallbackInterface)
+                                                            decryptButtonCallbackInterface,
+                                                    EncryptFunctions encryption)
             throws IOException, GeneralSecurityException {
 
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
@@ -709,8 +710,7 @@ public class GeneralDialogCreation {
         });
 
         FingerprintManager manager = (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
-        FingerprintManager.CryptoObject object = new
-                FingerprintManager.CryptoObject(CryptUtil.initCipher(c));
+        FingerprintManager.CryptoObject object = new FingerprintManager.CryptoObject(encryption.initCipher(c));
 
         FingerprintHandler handler = new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);
         handler.authenticate(manager, object);
@@ -935,7 +935,9 @@ public class GeneralDialogCreation {
     }
 
 
-    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils,
+                                         final MainFragment m, AppTheme appTheme,
+                                         EncryptFunctions encryption) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -953,7 +955,7 @@ public class GeneralDialogCreation {
 
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHistory()), null, true);
+                toHFileArray(dataUtils.getHistory()), null, true, encryption);
         a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
@@ -961,7 +963,8 @@ public class GeneralDialogCreation {
         x.show();
     }
 
-    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m,
+                                        AppTheme appTheme, EncryptFunctions encryption) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -970,7 +973,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHiddenfiles()), null, false);
+                toHFileArray(dataUtils.getHiddenfiles()), null, false, encryption);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();

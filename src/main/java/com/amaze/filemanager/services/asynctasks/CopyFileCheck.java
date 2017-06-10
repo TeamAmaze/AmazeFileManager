@@ -18,6 +18,7 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
@@ -55,6 +56,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private MainActivity mainActivity;
     private Context context;
     private boolean rootMode = false;
+    private EncryptFunctions encryption;
     private OpenMode openMode = OpenMode.FILE;
     private DO_FOR_ALL_ELEMENTS dialogState = null;
 
@@ -65,15 +67,16 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
     private ArrayList<BaseFile> filesToCopy;    // a copy of params sent to this
 
-    public CopyFileCheck(MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
+    public CopyFileCheck(MainFragment ma, String path, Boolean move, MainActivity con,
+                         boolean rootMode, EncryptFunctions crypt) {
         mainFrag = ma;
         this.move = move;
         mainActivity = con;
         context = con;
         openMode = mainFrag.openMode;
         this.rootMode = rootMode;
-
         this.path = path;
+        encryption = crypt;
     }
 
     @Override
@@ -286,7 +289,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
                         startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
                     }
                 } else {
-                    new MoveFiles(filesToCopyPerFolder, mainFrag, context, openMode)
+                    new MoveFiles(filesToCopyPerFolder, mainFrag, context, openMode, encryption)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
                 }
             }

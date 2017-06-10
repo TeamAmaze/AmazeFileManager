@@ -23,12 +23,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -82,11 +83,13 @@ public class SmbConnectDialog extends DialogFragment {
     Context context;
     SmbConnectionListener smbConnectionListener;
     String emptyAddress, emptyName,invalidDomain,invalidUsername;
+    private EncryptFunctions encryption;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
     }
 
     @Override
@@ -307,7 +310,7 @@ public class SmbConnectDialog extends DialogFragment {
             path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
                     "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
                     (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                            ":" + CryptUtil.encryptPassword(context, auth[2]) + "@"))
+                            ":" + encryption.encryptPassword(context, auth[2]) + "@"))
                     + yourPeerIP + "/";
 
             HFile hFile = new HFile(OpenMode.SMB, path);
@@ -365,14 +368,14 @@ public class SmbConnectDialog extends DialogFragment {
      * Parse path to decrypt smb password
      * @return
      */
-    public static String getSmbDecryptedPath(Context context, String path) {
+    public static String getSmbDecryptedPath(Context context, String path, EncryptFunctions encryption) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String encryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
 
         String decryptedPassword;
         try {
-            decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
+            decryptedPassword = encryption.decryptPassword(context, encryptedPassword);
         } catch (Exception e) {
             e.printStackTrace();
             decryptedPassword = encryptedPassword;
@@ -384,14 +387,14 @@ public class SmbConnectDialog extends DialogFragment {
         return buffer.toString();
     }
 
-    public static String getSmbEncryptedPath(Context context, String path) {
+    public static String getSmbEncryptedPath(Context context, String path, EncryptFunctions encryption) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(path.substring(0, path.indexOf(":", 4)+1));
         String decryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
 
         String encryptPassword;
         try {
-            encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
+            encryptPassword =  encryption.encryptPassword(context, decryptedPassword);
         } catch (Exception e) {
             e.printStackTrace();
             encryptPassword = decryptedPassword;

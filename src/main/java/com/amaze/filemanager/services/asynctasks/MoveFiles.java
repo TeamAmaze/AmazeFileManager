@@ -28,11 +28,12 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
@@ -54,12 +55,15 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
+    private EncryptFunctions encryption;
 
-    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, MainFragment ma, Context context, OpenMode mode) {
+    public MoveFiles(ArrayList<ArrayList<BaseFile>> files, MainFragment ma, Context context,
+                     OpenMode mode, EncryptFunctions crypt) {
         mainFrag = ma;
         this.context = context;
         this.files = files;
         this.mode = mode;
+        encryption = crypt;
     }
 
     @Override
@@ -143,7 +147,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
         if (movedCorrectly) {
             if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0))) {
                 // mainFrag.updateList();
-                Intent intent = new Intent("loadlist");
+                Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
                 context.sendBroadcast(intent);
             }
 
@@ -163,7 +167,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                             if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                                 try {
 
-                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    CryptHandler cryptHandler = new CryptHandler(context, encryption);
                                     EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
                                     EncryptedEntry newEntry = new EncryptedEntry();
                                     newEntry.setId(oldEntry.getId());

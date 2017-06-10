@@ -38,11 +38,12 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 
@@ -620,7 +621,7 @@ public class ExtractService extends Service {
             // check whether watcherutil was initialized. It was not initialized when we got exception
             // in extracting the file
             if (watcherUtil != null) watcherUtil.stopWatch();
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
             sendBroadcast(intent);
             stopSelf();
         }

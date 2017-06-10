@@ -111,6 +111,8 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -142,7 +144,6 @@ import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -152,6 +153,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -321,6 +323,9 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY_CLOUD = 5434;
 
+    private EncryptFunctions encryption;
+    private boolean boundEncryptedService = false;
+
     /**
      * Called when the activity is first created.
      */
@@ -338,15 +343,17 @@ public class MainActivity extends BaseActivity implements
         tabHandler = new TabHandler(this);
         mImageLoader = AppConfig.getInstance().getImageLoader();
         utils = getFutils();
-        mainActivityHelper = new MainActivityHelper(this);
+        mainActivityHelper = new MainActivityHelper(this, encryption);
         initialiseFab();
 
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
+
         // TODO: Create proper SQLite database handler class with calls to database from background thread
-        history = new HistoryManager(this, "Table2");
+        history = new HistoryManager(this, "Table2", encryption);
         history.initializeTable(DataUtils.HISTORY, 0);
         history.initializeTable(DataUtils.HIDDEN, 0);
 
-        grid = new HistoryManager(this, "listgridmodes");
+        grid = new HistoryManager(this, "listgridmodes", encryption);
         grid.initializeTable(DataUtils.LIST, 0);
         grid.initializeTable(DataUtils.GRID, 0);
         grid.initializeTable(DataUtils.BOOKS, 1);
@@ -1035,7 +1042,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, ma, getAppTheme(), encryption);
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1092,7 +1099,7 @@ public class MainActivity extends BaseActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme(), encryption);
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
@@ -1116,7 +1123,7 @@ public class MainActivity extends BaseActivity implements
                 String path = ma.CURRENT_PATH;
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode, encryption)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -1271,8 +1278,7 @@ public class MainActivity extends BaseActivity implements
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            unbindService(mEncryptServiceConnection);
+        unbindEncryptedService();
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
@@ -1313,31 +1319,16 @@ public class MainActivity extends BaseActivity implements
             registerReceiver(mOtgReceiver, otgFilter);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // let's register encryption service to know when we've decrypted
-            Intent encryptIntent = new Intent(this, EncryptService.class);
-            bindService(encryptIntent, mEncryptServiceConnection, 0);
-
-            if (!isEncryptOpen && encryptBaseFile != null) {
-                // we've opened the file and are ready to delete it
-                // don't move this to ondestroy as we'll be getting destroyed and starting
-                // an async task just before it is not a good idea
-                ArrayList<BaseFile> baseFiles = new ArrayList<>();
-                baseFiles.add(encryptBaseFile);
-                new DeleteTask(getContentResolver(), this).execute(baseFiles);
-            }
-        }
+        bindEncryptService();
     }
 
     ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
             if (isEncryptOpen && encryptBaseFile != null) {
                 if (mainFragment != null) {
                     switch (mainFragment.openMode) {
@@ -1359,8 +1350,37 @@ public class MainActivity extends BaseActivity implements
                     getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
                 isEncryptOpen = false;
             }
+
+            unbindEncryptedService();//this is done so that the service can die (all clients need to be unbinded)
+            bindEncryptService();
         }
     };
+
+    private void bindEncryptService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !boundEncryptedService) {
+            // let's register encryption service to know when we've decrypted
+            Intent encryptIntent = new Intent(this, EncryptService.class);
+            boundEncryptedService = bindService(encryptIntent, mEncryptServiceConnection, Context.MODE_PRIVATE);
+            if(!boundEncryptedService)
+                Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_SHORT).show();
+
+            if (!isEncryptOpen && encryptBaseFile != null) {
+                // we've opened the file and are ready to delete it
+                // don't move this to ondestroy as we'll be getting destroyed and starting
+                // an async task just before it is not a good idea
+                ArrayList<BaseFile> baseFiles = new ArrayList<>();
+                baseFiles.add(encryptBaseFile);
+                new DeleteTask(getContentResolver(), this, encryption).execute(baseFiles);
+            }
+        }
+    }
+
+    private void unbindEncryptedService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && boundEncryptedService) {
+            unbindService(mEncryptServiceConnection);
+            boundEncryptedService = false;
+        }
+    }
 
     /**
      * Receiver to check if a USB device is connected at the runtime of application
@@ -1813,7 +1833,7 @@ public class MainActivity extends BaseActivity implements
             }
             switch (operation) {
                 case DataUtils.DELETE://deletion
-                    new DeleteTask(null, mainActivity).execute((oparrayList));
+                    new DeleteTask(null, mainActivity, encryption).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
                     //legacy compatibility
@@ -1844,7 +1864,7 @@ public class MainActivity extends BaseActivity implements
                     }
 
                     new MoveFiles(oparrayListList, ((MainFragment) getFragment().getTab()),
-                            getFragment().getTab().getActivity(), OpenMode.FILE)
+                            getFragment().getTab().getActivity(), OpenMode.FILE, encryption)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir

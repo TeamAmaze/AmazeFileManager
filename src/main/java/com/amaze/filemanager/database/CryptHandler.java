@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -27,10 +27,12 @@ public class CryptHandler extends SQLiteOpenHelper {
     private static final String COLUMN_ENCRYPTED_PASSWORD = "password";
 
     private Context context;
+    private EncryptFunctions encryption;
 
-    public CryptHandler(Context context) {
+    public CryptHandler(Context context, EncryptFunctions crypt) {
         super(context, DATABASE_NAME, null, TabHandler.DATABASE_VERSION);
         this.context = context;
+        encryption = crypt;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         //contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
         contentValues.put(COLUMN_ENCRYPTED_PATH, encryptedEntry.getPath());
-        contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
+        contentValues.put(COLUMN_ENCRYPTED_PASSWORD, encryption.encryptPassword(context,
                 encryptedEntry.getPassword()));
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -80,7 +82,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_ENCRYPTED_ID, newEncryptedEntry.getId());
         contentValues.put(COLUMN_ENCRYPTED_PATH, newEncryptedEntry.getPath());
-        contentValues.put(COLUMN_ENCRYPTED_PASSWORD, CryptUtil.encryptPassword(context,
+        contentValues.put(COLUMN_ENCRYPTED_PASSWORD, encryption.encryptPassword(context,
                 newEncryptedEntry.getPassword()));
 
         sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_ID + " = ?",
@@ -98,7 +100,7 @@ public class CryptHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             encryptedEntry.setId((cursor.getInt(0)));
             encryptedEntry.setPath(cursor.getString(1));
-            encryptedEntry.setPassword(CryptUtil.decryptPassword(context, cursor.getString(2)));
+            encryptedEntry.setPassword(encryption.decryptPassword(context, cursor.getString(2)));
 
             cursor.close();
         } else {
@@ -123,7 +125,7 @@ public class CryptHandler extends SQLiteOpenHelper {
                     EncryptedEntry encryptedEntry = new EncryptedEntry();
                     encryptedEntry.setId((cursor.getInt(0)));
                     encryptedEntry.setPath(cursor.getString(1));
-                    encryptedEntry.setPassword(CryptUtil.decryptPassword(context,
+                    encryptedEntry.setPassword(encryption.decryptPassword(context,
                             cursor.getString(2)));
 
                     entryList.add(encryptedEntry);

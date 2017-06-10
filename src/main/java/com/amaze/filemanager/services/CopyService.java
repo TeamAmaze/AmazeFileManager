@@ -46,14 +46,16 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +75,7 @@ public class CopyService extends Service {
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private Context c;
+    private EncryptFunctions encryption;
 
     private ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
@@ -87,6 +90,8 @@ public class CopyService extends Service {
     public void onCreate() {
         super.onCreate();
         c = getApplicationContext();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
+
         registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
     }
 
@@ -194,7 +199,7 @@ public class CopyService extends Service {
             watcherUtil.stopWatch();
             generateNotification(copy.failedFOps, move);
 
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
             sendBroadcast(intent);
             stopSelf();
         }
@@ -221,7 +226,7 @@ public class CopyService extends Service {
                 if (sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     try {
 
-                        CryptHandler cryptHandler = new CryptHandler(getApplicationContext());
+                        CryptHandler cryptHandler = new CryptHandler(getApplicationContext(), encryption);
                         EncryptedEntry oldEntry = cryptHandler.findEntry(sourceFile.getPath());
                         EncryptedEntry newEntry = new EncryptedEntry();
 
@@ -346,7 +351,7 @@ public class CopyService extends Service {
                         if (!failedFOps.contains(a))
                             toDelete.add(a);
                     }
-                    new DeleteTask(getContentResolver(), c).execute((toDelete));
+                    new DeleteTask(getContentResolver(), c, encryption).execute((toDelete));
                 }
             }
 

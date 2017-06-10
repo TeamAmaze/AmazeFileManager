@@ -78,6 +78,7 @@ import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -95,7 +96,7 @@ import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
 import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.Futils;
@@ -115,6 +116,8 @@ import jcifs.smb.SmbFile;
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class MainFragment extends android.support.v4.app.Fragment {
+
+    public static final String LOADLIST_ACTION = "com.amaze.filemanager.LOADLIST";
 
     public ActionMode mActionMode;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
@@ -178,11 +181,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
      */
     private boolean mRetainSearchTask = false;
 
+    private EncryptFunctions encryption;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = getMainActivity();
         utils = utilsProvider.getFutils();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
 
         setRetainInstance(true);
         no = getArguments().getInt("no", 1);
@@ -904,7 +910,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                     EncryptionManager.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
-                            utilsProvider);
+                            utilsProvider, encryption);
                     return;
                 }
 
@@ -950,9 +956,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path,
+                                                     EncryptFunctions encryption) throws Exception {
 
-        CryptHandler handler = new CryptHandler(context);
+        CryptHandler handler = new CryptHandler(context, encryption);
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry
@@ -1004,7 +1011,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             bindDrive(path);
         else */
         if (loadList != null) loadList.cancel(true);
-        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode);
+        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode, encryption);
         loadList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
@@ -1092,7 +1099,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null) {
-                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity());
+                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity(), encryption);
                 } else {
                     adapter.setItems(getLayoutElements());
                 }
@@ -1397,7 +1404,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
+        (getActivity()).registerReceiver(receiver2, new IntentFilter(LOADLIST_ACTION));
 
         fixIcons(false);
     }

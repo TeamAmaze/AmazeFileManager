@@ -10,6 +10,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -35,9 +36,10 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
     private MainFragment mainFragment;
     private LayoutElement rowItem;
     private int accentColor;
+    private EncryptFunctions encryption;
 
     public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProviderInterface up, MainFragment mainFragment,
-                         LayoutElement ri, View anchor) {
+                         LayoutElement ri, View anchor, EncryptFunctions encrypt) {
         super(c, anchor);
 
         context = c;
@@ -46,6 +48,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         this.mainFragment = mainFragment;
         rowItem = ri;
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        encryption = encrypt;
 
         setOnMenuItemClickListener(this);
     }
@@ -123,12 +126,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.encrypt:
                 EncryptionManager.encryptFile(context, mainFragment, utilitiesProvider,
-                        rowItem.getMode(), rowItem.generateBaseFile());
+                        rowItem.getMode(), rowItem.generateBaseFile(), encryption);
                 return true;
             case R.id.decrypt:
                 EncryptionManager.decryptFile(context, mainActivity, mainFragment,
                         mainFragment.openMode, rowItem.generateBaseFile(),
-                        rowItem.generateBaseFile().getParent(context), utilitiesProvider);
+                        rowItem.generateBaseFile().getParent(context), utilitiesProvider, encryption);
                 return true;
         }
         return false;

@@ -24,6 +24,8 @@ import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
@@ -59,6 +61,7 @@ public class TabFragment extends android.support.v4.app.Fragment
     View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
+    private EncryptFunctions encryption;
 
     // ink indicators for viewpager only for Lollipop+
     private Indicator indicator;
@@ -99,6 +102,8 @@ public class TabFragment extends android.support.v4.app.Fragment
         mainActivity = ((MainActivity) getActivity());
         mainActivity.supportInvalidateOptionsMenu();
         mViewPager.addOnPageChangeListener(this);
+
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
 
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
@@ -238,7 +243,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         else if ("/storage/emulated/0".equals(path))
             return resources.getString(R.string.storage);
         else if (openmode == OpenMode.CUSTOM)
-            return new MainActivityHelper(mainActivity).getIntegralNames(path);
+            return new MainActivityHelper(mainActivity, encryption).getIntegralNames(path);
         else
             return new File(path).getName();
     }

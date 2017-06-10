@@ -18,7 +18,6 @@ import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class EncryptionManager {
 
     public static void encryptFile(final Context context, final MainFragment mainFragment,
                                    final UtilitiesProviderInterface utilsProvider,
-                                   OpenMode openMode, final BaseFile file) {
+                                   OpenMode openMode, final BaseFile file, final EncryptFunctions encryption) {
         final String path = file.getPath();
         final Intent encryptIntent = new Intent(context, EncryptService.class);
         encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
@@ -53,7 +52,7 @@ public class EncryptionManager {
 
                     @Override
                     public void onButtonPressed(Intent intent, String password) throws IOException, GeneralSecurityException {
-                        startEncryption(context, path, password, intent);
+                        startEncryption(context, path, password, intent, encryption);
                     }
                 };
 
@@ -67,12 +66,12 @@ public class EncryptionManager {
                                 Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
                             startEncryption(context, path,
-                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                    Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent, encryption);
                         } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
                                 Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
                             startEncryption(context, path,
-                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                    Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent, encryption);
                         } else {
                             // let's ask a password from user
                             GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
@@ -105,7 +104,8 @@ public class EncryptionManager {
 
     public static void decryptFile(Context c, final MainActivity mainActivity,
                                    final MainFragment main, OpenMode openMode, BaseFile sourceFile,
-                                   String decryptPath, UtilitiesProviderInterface utilsProvider) {
+                                   String decryptPath, UtilitiesProviderInterface utilsProvider,
+                                   EncryptFunctions encryption) {
 
         Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
         decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
@@ -118,7 +118,7 @@ public class EncryptionManager {
         EncryptedEntry encryptedEntry = null;
 
         try {
-            encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
+            encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath(), encryption);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,7 +147,7 @@ public class EncryptionManager {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
-                                mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
+                                mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface, encryption);
                     } else throw new Exception();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -180,8 +180,8 @@ public class EncryptionManager {
      * @param password the password in plaintext
      */
     private static void startEncryption(Context c, final String path, final String password,
-                                        Intent intent) throws IOException, GeneralSecurityException {
-        CryptHandler cryptHandler = new CryptHandler(c);
+                                        Intent intent, EncryptFunctions encryption) throws IOException, GeneralSecurityException {
+        CryptHandler cryptHandler = new CryptHandler(c, encryption);
         EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
                 password);
         cryptHandler.addEntry(encryptedEntry);
@@ -196,9 +196,10 @@ public class EncryptionManager {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws IOException, GeneralSecurityException {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path, EncryptFunctions encryption)
+            throws IOException, GeneralSecurityException {
 
-        CryptHandler handler = new CryptHandler(context);
+        CryptHandler handler = new CryptHandler(context, encryption);
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry

@@ -35,6 +35,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -57,12 +59,15 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
 
     int index = 0, top = 0;
 
+    private EncryptFunctions encryption;
+
     public static final int ID_LOADER_APP_LIST = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
 
         setHasOptionsMenu(false);
         ic = new IconHolder(getActivity(), true, true);
@@ -87,7 +92,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
             getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
 
         adapter = new AppsAdapter(getContext(), (BaseActivity) getActivity(), utilsProvider,
-                R.layout.rowlayout, app);
+                R.layout.rowlayout, app, encryption);
         setListAdapter(adapter);
         setListShown(false);
         setEmptyText(getResources().getString(R.string.no_applications));

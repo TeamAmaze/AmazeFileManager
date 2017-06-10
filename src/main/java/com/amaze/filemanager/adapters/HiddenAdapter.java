@@ -16,6 +16,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.utils.files.Futils;
@@ -36,10 +37,12 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
     public ArrayList<HFile> items;
     private MaterialDialog materialDialog;
     private boolean hide;
+    private EncryptFunctions encryption;
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
     public HiddenAdapter(Context context, MainFragment mainFrag, Futils utils, @LayoutRes int layoutId,
-                         ArrayList<HFile> items, MaterialDialog materialDialog, boolean hide) {
+                         ArrayList<HFile> items, MaterialDialog materialDialog, boolean hide,
+                         EncryptFunctions crypt) {
         addAll(items);
         this.utils = utils;
         this.c = context;
@@ -47,6 +50,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
         this.items = items;
         this.hide = hide;
         this.materialDialog = materialDialog;
+        encryption = crypt;
     }
 
     @Override
@@ -95,7 +99,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                         BaseFile baseFile = new BaseFile(items.get(position).getPath() + "/.nomedia");
                         baseFile.setMode(OpenMode.FILE);
                         a.add(baseFile);
-                        new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));
+                        new DeleteTask(context.getActivity().getContentResolver(), c, encryption).execute((a));
                     }
                     MainActivity.dataUtils.removeHiddenFile(items.get(position).getPath());
                     items.remove(items.get(position));

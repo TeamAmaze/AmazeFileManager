@@ -18,7 +18,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -57,12 +59,14 @@ public class EncryptService extends Service {
     private CryptEnum cryptEnum;
     private ArrayList<HFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
+    private EncryptFunctions encryption;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         context = getApplicationContext();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
         registerReceiver(cancelReceiver, new IntentFilter(TAG_BROADCAST_CRYPT_CANCEL));
     }
 
@@ -106,8 +110,7 @@ public class EncryptService extends Service {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-            if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
+            if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
             progressHandler = new ProgressHandler(1, totalSize);
@@ -128,8 +131,8 @@ public class EncryptService extends Service {
             dataPackage.setTotal(totalSize);
             dataPackage.setByteProgress(0);
             dataPackage.setSpeedRaw(0);
-            dataPackage.setMove(cryptEnum==CryptEnum.ENCRYPT ? false : true);   // we're using encrypt as
-                                                                                // move flag false
+            dataPackage.setMove(cryptEnum == CryptEnum.ENCRYPT ? false : true);   // we're using encrypt as
+            // move flag false
             dataPackage.setCompleted(false);
             putDataPackage(dataPackage);
 
@@ -139,7 +142,7 @@ public class EncryptService extends Service {
                 if (cryptEnum == CryptEnum.ENCRYPT) {
                     // we're here to encrypt
                     try {
-                        new CryptUtil(context, baseFile, progressHandler, failedOps);
+                        new CryptUtil(context, baseFile, progressHandler, failedOps, encryption);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
@@ -150,7 +153,7 @@ public class EncryptService extends Service {
                     // the path is to the same directory as in encrypted one in normal case
                     // and the cache directory in case we're here because of the viewer
                     try {
-                        new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps);
+                        new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps, encryption);
                     } catch (Exception e) {
                         e.printStackTrace();
                         failedOps.add(baseFile);
@@ -167,7 +170,7 @@ public class EncryptService extends Service {
 
             serviceWatcherUtil.stopWatch();
             generateNotification(failedOps, cryptEnum==CryptEnum.ENCRYPT ? false : true);
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
             sendBroadcast(intent);
             stopSelf();
         }
@@ -231,7 +234,6 @@ public class EncryptService extends Service {
     }
 
     public class LocalBinder extends Binder {
-
         public EncryptService getService() {
             return EncryptService.this;
         }
