@@ -98,7 +98,7 @@
   <string name="no">Hayır</string>
   <string name="dialog_delete_category_directories">Dizinler</string>
   <string name="dialog_delete_category_files">Dosyalar</string>
-  <string name="dialog_delete_disclaimer">Aşağıdaki öğeler silindiğinde cihazınızdan kalıcı olarak kaldırılacaktır ve kurtalımaz.</string>
+  <string name="dialog_delete_disclaimer">Aşağıdaki öğeler silindiğinde cihazınızdan kalıcı olarak kaldırılacaktır ve bu işlem geri alınamaz.</string>
   <string name="dialog_delete_title">Öğeler kalıcı olarak silinsin mi?</string>
   <string name="deleting">Siliniyor</string>
   <string name="questionset">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
@@ -199,6 +199,9 @@
   <string name="nofiles">Dosya yok</string>
   <string name="tapnhold">Daha fazla seçenek için dosya veya klasörün üzerine basılı tutun</string>
   <string name="pathcopied">Yol panoya kopyalandı</string>
+  <string name="used">Kullanılan alan</string>
+  <string name="used_by_others">başkaları tarafından kullanılan</string>
+  <string name="free">Boş alan</string>
   <string name="atroot">Root izni var</string>
   <string name="listview">Liste görünümü</string>
   <string name="gridview">Izgara görünümü</string>
@@ -355,6 +358,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="clear">Temizle</string>
   <string name="md5">md5:</string>
   <string name="md5_2">md5 kopyala</string>
+  <string name="total">Toplam:</string>
   <string name="calculating">hesaplanıyor</string>
   <string name="sort">Sırala</string>
   <string name="ascending">Artan</string>
@@ -636,6 +640,8 @@ Kaldırmak için boş bırakın.</string>
   <string name="cloud_share_copied">Paylaşılabilir bağlantı panoya kopyalandı</string>
   <string name="copy_low_memory">Yetersiz hafıza, lütfen belleği temizleyin.</string>
   <string name="cloud_token_lost">Hatırlatıcı kayıp, lütfen tekrar giriş yapın</string>
+  <string name="cloud_plugin_not_supported">Bulut eklenti Fdroid yapısı tarafından desteklenmiyor. Şaşırmak için lütfen Play Store dan indirin.</string>
+  <string name="monofont">Tek aralıklı yazı tipi</string>
   <string name="showHeaders">Başlıkları Göster</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="noitems">Öğe yok</string>

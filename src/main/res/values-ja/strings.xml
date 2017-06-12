@@ -51,6 +51,7 @@
   <string name="file_empty">ファイルは空です</string>
   <string name="error">エラー</string>
   <string name="cantlistfiles">root がないとファイルを一覧表示できません</string>
+  <string name="searchresults">検索結果 </string>
   <string name="itemsselected">アイテム選択</string>
   <string name="newhomedirectory">新しいホームディレクトリー</string>
   <string name="rename">名前を変更</string>
@@ -66,6 +67,7 @@
   <string name="date">日付</string>
   <string name="location">場所</string>
   <string name="size_capitalized">サイズ</string>
+  <string name="size">フォルダのサイズ</string>
   <string name="totalitems">合計アイテム数</string>
   <string name="enterzipname">Zip 名を入力</string>
   <string name="noappfound">このファイルを開くアプリが見つかりません</string>
@@ -122,6 +124,7 @@
   <string name="mountsystemsummary">システムファイルを編集したい場合は、これを有効にします</string>
   <string name="mountsystem">システムフォルダーを書き込み可能としてマウント</string>
   <string name="rootfailure">Root アクセスは許可されていません</string>
+  <string name="hiddenfailure">隠しファイルにアクセスできない</string>
   <string name="selectall">すべて選択</string>
   <string name="delete">削除</string>
   <string name="setashome">ホームとして設定</string>
@@ -196,6 +199,9 @@
   <string name="nofiles">ファイルがありません</string>
   <string name="tapnhold">ファイルまたはフォルダーを長押しすると追加のオプション</string>
   <string name="pathcopied">パスをクリップボードにコピーしました</string>
+  <string name="used">使用済みスペース</string>
+  <string name="used_by_others">他人によって使用される</string>
+  <string name="free">フリースペース</string>
   <string name="atroot">ルートです</string>
   <string name="listview">リスト表示</string>
   <string name="gridview">グリッド表示</string>
@@ -351,6 +357,7 @@
   <string name="clear">クリア</string>
   <string name="md5">MD5</string>
   <string name="md5_2">md5 をコピー</string>
+  <string name="total">合計：</string>
   <string name="calculating">計算中</string>
   <string name="sort">並び替え</string>
   <string name="ascending">昇順</string>
@@ -535,10 +542,22 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="permission_group">グループ</string>
   <string name="permission_other">その他</string>
   <string name="clipboard_path_copy">パスをクリップボードにコピーしました</string>
+  <string name="error_busybox">Busyboxが見つかりません。 対話シェルを閉じます。</string>
   <string name="service_timer">経過時間</string>
   <string name="please_wait">お待ちください</string>
+  <string name="cloud_connection">クラウド接続</string>
+  <string name="cloud_connection_new">新しいクラウド接続</string>
+  <string name="cloud_dropbox">Dropbox</string>
+  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_box">Box</string>
+  <string name="cloud_get">クラウドプラグインを入手する</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <string name="cloud_error_email">電子メールアドレス</string>
+  <string name="cloud_email">電子メールID</string>
+  <string name="no_applications">アプリケーションなし</string>
   <string name="ftp_path">共有パス</string>
+  <string name="ftp_path_hint">共有するディレクトリのルートへのパス</string>
   <string name="error_ftp_path_file">パスはディレクトリではありません</string>
   <string name="change">変更</string>
   <string name="unknown_error">不具合が発生しました</string>
