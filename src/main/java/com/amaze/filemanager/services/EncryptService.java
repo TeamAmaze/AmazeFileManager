@@ -106,7 +106,7 @@ public class EncryptService extends Service {
         return START_STICKY;
     }
 
-    class BackgroundTask extends AsyncTask<Void, Void, Void> {
+    private class BackgroundTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -131,7 +131,7 @@ public class EncryptService extends Service {
             dataPackage.setTotal(totalSize);
             dataPackage.setByteProgress(0);
             dataPackage.setSpeedRaw(0);
-            dataPackage.setMove(cryptEnum == CryptEnum.ENCRYPT ? false : true);   // we're using encrypt as
+            dataPackage.setMove(cryptEnum != CryptEnum.ENCRYPT);   // we're using encrypt as
             // move flag false
             dataPackage.setCompleted(false);
             putDataPackage(dataPackage);
@@ -169,7 +169,7 @@ public class EncryptService extends Service {
             super.onPostExecute(aVoid);
 
             serviceWatcherUtil.stopWatch();
-            generateNotification(failedOps, cryptEnum==CryptEnum.ENCRYPT ? false : true);
+            generateNotification(failedOps, cryptEnum != CryptEnum.ENCRYPT);
             Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
             sendBroadcast(intent);
             stopSelf();
@@ -210,12 +210,12 @@ public class EncryptService extends Service {
             intent.setTotal(totalSize);
             intent.setByteProgress(writtenSize);
             intent.setSpeedRaw(speed);
-            intent.setMove(cryptEnum==CryptEnum.ENCRYPT ? false : true);
+            intent.setMove(cryptEnum != CryptEnum.ENCRYPT);
             intent.setCompleted(false);
             putDataPackage(intent);
             if(progressListener!=null) {
                 progressListener.onUpdate(intent);
-                if(false) progressListener.refresh();
+                //progressListener.refresh(); TODO check if needed
             }
         } else publishCompletedResult();
     }
