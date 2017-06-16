@@ -1,4 +1,5 @@
-/*
+/* Diego Felipe Lassa <diegoflassa@gmail.com>
+ *
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
  *
  * This file is part of Amaze File Manager.
@@ -1059,7 +1060,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
      */
     public void createViews(ArrayList<LayoutElement> bitmap, boolean back, String path,
                             final OpenMode openMode, boolean results, boolean grid) {
-        if (bitmap != null) {
+        if ( (bitmap != null) && (isAdded()) ) {
             synchronized (bitmap) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
