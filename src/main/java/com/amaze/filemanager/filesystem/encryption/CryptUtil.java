@@ -66,7 +66,7 @@ public class CryptUtil {
             return new AESEncryption();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return new RSAEncryption();
-        } else throw new IllegalStateException("Encryption not available in Android versions lower than Kitkat!");
+        } else return null;
     }
 
     /**
