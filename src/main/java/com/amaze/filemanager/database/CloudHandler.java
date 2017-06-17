@@ -7,8 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;
@@ -38,10 +39,12 @@ public class CloudHandler extends SQLiteOpenHelper {
 
 
     private Context context;
+    private EncryptFunctions encryption;
 
     public CloudHandler(Context context) {
         super(context, TabHandler.DATABASE_NAME, null, TabHandler.DATABASE_VERSION);
         this.context = context;
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
     }
 
     @Override
@@ -73,7 +76,7 @@ public class CloudHandler extends SQLiteOpenHelper {
 
         try {
 
-            contentValues.put(COLUMN_CLOUD_PERSIST, CryptUtil.encryptPassword(context,
+            contentValues.put(COLUMN_CLOUD_PERSIST, encryption.encryptPassword(context,
                     cloudEntry.getPersistData()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,7 +113,7 @@ public class CloudHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_CLOUD_SERVICE, newCloudEntry.getServiceType().ordinal());
         try {
 
-            contentValues.put(COLUMN_CLOUD_PERSIST, CryptUtil.encryptPassword(context,
+            contentValues.put(COLUMN_CLOUD_PERSIST, encryption.encryptPassword(context,
                     newCloudEntry.getPersistData()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +142,7 @@ public class CloudHandler extends SQLiteOpenHelper {
             cloudEntry.setId((cursor.getInt(0)));
             cloudEntry.setServiceType(serviceType);
             try {
-                cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
+                cloudEntry.setPersistData(encryption.decryptPassword(context, cursor.getString(2)));
             } catch (Exception e) {
                 e.printStackTrace();
                 cloudEntry.setPersistData(cursor.getString(2));
@@ -176,7 +179,7 @@ public class CloudHandler extends SQLiteOpenHelper {
                     cloudEntry.setId((cursor.getInt(0)));
                     cloudEntry.setServiceType(OpenMode.getOpenMode(cursor.getInt(1)));
                     try {
-                        cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
+                        cloudEntry.setPersistData(encryption.decryptPassword(context, cursor.getString(2)));
                     } catch (Exception e) {
                         e.printStackTrace();
                         cloudEntry.setPersistData(cursor.getString(2));

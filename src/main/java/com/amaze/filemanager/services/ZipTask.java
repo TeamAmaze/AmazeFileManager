@@ -38,12 +38,13 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -189,7 +190,7 @@ public class ZipTask extends Service {
         public void onPostExecute(Integer b) {
 
             watcherUtil.stopWatch();
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
             sendBroadcast(intent);
             stopSelf();
         }

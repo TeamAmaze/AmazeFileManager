@@ -33,13 +33,14 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.Futils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.ArrayList;
@@ -51,16 +52,19 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
     private Context cd;
     private boolean rootMode;
     private ZipViewer zipViewer;
+    private EncryptFunctions encryption;
 
-    public DeleteTask(ContentResolver c, Context cd) {
+    public DeleteTask(ContentResolver c, Context cd, EncryptFunctions crypt) {
         this.cd = cd;
+        encryption = crypt;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
     }
 
-    public DeleteTask(ContentResolver c, Context cd, ZipViewer zipViewer) {
+    public DeleteTask(ContentResolver c, Context cd, ZipViewer zipViewer, EncryptFunctions crypt) {
         this.cd = cd;
-        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
         this.zipViewer = zipViewer;
+        encryption = crypt;
+        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
     }
 
     @Override
@@ -74,94 +78,97 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         boolean b = true;
         if(files.size()==0)return true;
 
-        if (files.get(0).isOtgFile()) {
-            for (BaseFile a : files) {
+        try {
+            if (files.get(0).isOtgFile()) {
+                for (BaseFile a : files) {
 
-                DocumentFile documentFile = OTGUtil.getDocumentFile(a.getPath(), cd, false);
-                 b = documentFile.delete();
-            }
-        } else if (files.get(0).isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            for (BaseFile baseFile : files) {
-                try {
-                    cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    b = false;
-                    break;
+                    DocumentFile documentFile = OTGUtil.getDocumentFile(a.getPath(), cd, false);
+                    b = documentFile.delete();
                 }
-            }
-        } else if (files.get(0).isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            for (BaseFile baseFile : files) {
-                try {
-                    cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    b = false;
-                    break;
+            } else if (files.get(0).isDropBoxFile()) {
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                for (BaseFile baseFile : files) {
+                    try {
+                        cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        b = false;
+                        break;
+                    }
                 }
-            }
-        } else if (files.get(0).isGoogleDriveFile()) {
-            CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-            for (BaseFile baseFile : files) {
-                try {
-                    cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    b = false;
-                    break;
+            } else if (files.get(0).isBoxFile()) {
+                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                for (BaseFile baseFile : files) {
+                    try {
+                        cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        b = false;
+                        break;
+                    }
                 }
-            }
-        } else if (files.get(0).isOneDriveFile()) {
-            CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-            for (BaseFile baseFile : files) {
-                try {
-                    cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    b = false;
-                    break;
+            } else if (files.get(0).isGoogleDriveFile()) {
+                CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                for (BaseFile baseFile : files) {
+                    try {
+                        cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        b = false;
+                        break;
+                    }
                 }
-            }
-        } else {
+            } else if (files.get(0).isOneDriveFile()) {
+                CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                for (BaseFile baseFile : files) {
+                    try {
+                        cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        b = false;
+                        break;
+                    }
+                }
+            } else {
 
-            for(BaseFile a : files)
+                for (BaseFile a : files)
+                    try {
+                        (a).delete(cd, rootMode);
+                    } catch (RootNotPermittedException e) {
+                        e.printStackTrace();
+                        b = false;
+                    }
+            }
+
+            // delete file from media database
+            if (!files.get(0).isSmb()) {
                 try {
-                    (a).delete(cd, rootMode);
-                } catch (RootNotPermittedException e) {
-                    e.printStackTrace();
-                    b = false;
+                    for (BaseFile f : files) {
+                        delete(cd, f.getPath());
+                    }
+                } catch (Exception e) {
+                    for (BaseFile f : files) {
+                        Futils.scanFile(f.getPath(), cd);
+                    }
                 }
+            }
+
+            // delete file entry from encrypted database
+            for (BaseFile file : files) {
+                if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                    CryptHandler handler = new CryptHandler(cd, encryption);
+                    handler.clear(file.getPath());
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // delete file from media database
-        if(!files.get(0).isSmb()) {
-            try {
-                for (BaseFile f : files) {
-                    delete(cd,f.getPath());
-                }
-            } catch (Exception e) {
-                for (BaseFile f : files) {
-                    Futils.scanFile(f.getPath(), cd);
-                }
-            }
-        }
-
-        // delete file entry from encrypted database
-        for (BaseFile file : files) {
-            if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                CryptHandler handler = new CryptHandler(cd);
-                handler.clear(file.getPath());
-            }
-        }
-
         return b;
     }
 
     @Override
     public void onPostExecute(Boolean b) {
-        Intent intent = new Intent("loadlist");
+        Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
         cd.sendBroadcast(intent);
 
         if (!b) {

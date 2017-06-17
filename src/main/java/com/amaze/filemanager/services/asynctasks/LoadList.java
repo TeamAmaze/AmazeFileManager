@@ -37,6 +37,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -46,7 +47,7 @@ import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -74,14 +75,16 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     private Context c;
     private OpenMode openmode;
     private boolean grid;
+    private EncryptFunctions encryption;
 
     public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
-                    MainFragment ma, OpenMode openmode) {
+                    MainFragment ma, OpenMode openmode, EncryptFunctions crypt) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;
         this.openmode = openmode;
         this.c = c;
+        encryption = crypt;
     }
 
     @Override
@@ -426,7 +429,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     }
 
     private ArrayList<BaseFile> listRecent() {
-        final HistoryManager history = new HistoryManager(c, "Table2");
+        final HistoryManager history = new HistoryManager(c, "Table2", encryption);
         final ArrayList<String> paths = history.readTable(DataUtils.HISTORY);
         history.end();
         ArrayList<BaseFile> songs = new ArrayList<>();

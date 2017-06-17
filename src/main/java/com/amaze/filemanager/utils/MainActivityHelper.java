@@ -33,6 +33,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchAsyncHelper;
@@ -41,7 +42,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
@@ -64,9 +65,12 @@ public class MainActivityHelper {
      */
     public static String SEARCH_TEXT;
 
-    public MainActivityHelper(MainActivity mainActivity) {
+    private EncryptFunctions encryption;
+
+    public MainActivityHelper(MainActivity mainActivity, EncryptFunctions encrypt) {
         this.mainActivity = mainActivity;
         this.utils = mainActivity.getFutils();
+        encryption = encrypt;
     }
 
     public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move,
@@ -291,7 +295,7 @@ public class MainActivityHelper {
                     @Override
                     public void run() {
                         if (b) {
-                            Intent intent = new Intent("loadlist");
+                            Intent intent = new Intent(MainFragment.LOADLIST_ACTION);
                             mainActivity.sendBroadcast(intent);
 
                             // update the database entry to reflect rename for encrypted file
@@ -299,7 +303,7 @@ public class MainActivityHelper {
 
                                 try {
 
-                                    CryptHandler cryptHandler = new CryptHandler(context);
+                                    CryptHandler cryptHandler = new CryptHandler(context, encryption);
                                     EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
                                     EncryptedEntry newEntry = new EncryptedEntry();
                                     newEntry.setId(oldEntry.getId());
@@ -537,7 +541,7 @@ public class MainActivityHelper {
     public void deleteFiles(ArrayList<BaseFile> files) {
         if (files == null) return;
         if (files.get(0).isSmb()) {
-            new DeleteTask(null, mainActivity).execute((files));
+            new DeleteTask(null, mainActivity, encryption).execute((files));
             return;
         }
         int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
@@ -545,7 +549,7 @@ public class MainActivityHelper {
             mainActivity.oparrayList = (files);
             mainActivity.operation = DataUtils.DELETE;
         } else if (mode == 1 || mode == 0)
-            new DeleteTask(null, mainActivity).execute((files));
+            new DeleteTask(null, mainActivity, encryption).execute((files));
         else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

@@ -26,6 +26,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 
 import java.io.File;
@@ -41,10 +42,12 @@ public class HistoryManager {
     private Context c;
     private String dbname;
     String[] dirs;
+    private EncryptFunctions encryption;
 
-    public HistoryManager(Context c ,String dbname) {
+    public HistoryManager(Context c ,String dbname, EncryptFunctions crypt) {
         this.c = c;
         this.dbname=dbname;
+        encryption = crypt;
         open();
         String sd = Environment.getExternalStorageDirectory() + "/";
         dirs = new String[] {
@@ -153,7 +156,7 @@ public class HistoryManager {
 
                 // we need to encrypt the path back in order to get a valid match from database entry
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" +
-                        SmbConnectDialog.getSmbEncryptedPath(this.c, path) + "' and NAME='"+name+"'");
+                        SmbConnectDialog.getSmbEncryptedPath(this.c, path, encryption) + "' and NAME='"+name+"'");
             } else {
 
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "' and NAME='"+name+"'");
@@ -181,7 +184,7 @@ public class HistoryManager {
                 paths.add(new String[] {
                         c.getString(c.getColumnIndex("NAME")),
                         table.equals(DataUtils.SMB) ?
-                                SmbConnectDialog.getSmbDecryptedPath(this.c, c.getString(c.getColumnIndex("PATH"))) :
+                                SmbConnectDialog.getSmbDecryptedPath(this.c, c.getString(c.getColumnIndex("PATH")), encryption) :
                                 c.getString(c.getColumnIndex("PATH"))
                 });
             } catch (Exception e) {

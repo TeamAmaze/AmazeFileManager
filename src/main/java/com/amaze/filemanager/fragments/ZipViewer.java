@@ -58,6 +58,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RarAdapter;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
@@ -129,10 +131,13 @@ public class ZipViewer extends Fragment {
     public static final String KEY_ELEMENTS = "elements";
     public static final String KEY_OPEN = "is_open";
 
+    private EncryptFunctions encryption;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
+        encryption = CryptUtil.getCompatibleEncryptionInstance();
     }
 
     @Override
@@ -421,7 +426,7 @@ public class ZipViewer extends Fragment {
 
         if (files.get(0).exists()) {
 
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this, encryption).execute((files));
         }
     }
 

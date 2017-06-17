@@ -22,6 +22,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -31,7 +32,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.encryption.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -69,12 +70,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     private int offset = 0;
     public boolean stoppedAnimation = false;
+    private EncryptFunctions encryption;
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider,
-                           ArrayList<LayoutElement> itemsRaw, Context context) {
+                           ArrayList<LayoutElement> itemsRaw, Context context, EncryptFunctions encrypt) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
+        encryption = encrypt;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
@@ -697,7 +700,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             @Override
             public void onClick(View view) {
                 PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
-                        utilsProvider, mainFrag, rowItem, view);
+                        utilsProvider, mainFrag, rowItem, view, encryption);
                 popupMenu.inflate(R.menu.item_extras);
                 String description = rowItem.getDesc().toLowerCase();
 

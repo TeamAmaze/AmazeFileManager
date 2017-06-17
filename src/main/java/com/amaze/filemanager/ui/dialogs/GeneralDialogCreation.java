@@ -38,6 +38,8 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.encryption.EncryptFunctions;
+import com.amaze.filemanager.filesystem.encryption.EncryptionManager;
 import com.amaze.filemanager.fragments.AppsList;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
@@ -50,8 +52,6 @@ import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
@@ -65,21 +65,11 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -590,7 +580,7 @@ public class GeneralDialogCreation {
 
     public static void showEncryptWarningDialog(final Intent intent, final MainFragment main,
                                                 AppTheme appTheme,
-                                                final EncryptDecryptUtils.EncryptButtonCallbackInterface
+                                                final EncryptionManager.EncryptButtonCallbackInterface
                                                         encryptButtonCallbackInterface) {
         int accentColor = main.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
@@ -638,7 +628,7 @@ public class GeneralDialogCreation {
 
     public static void showEncryptAuthenticateDialog(final Context c, final Intent intent,
                                                      final MainActivity main, AppTheme appTheme,
-                                                     final EncryptDecryptUtils.EncryptButtonCallbackInterface
+                                                     final EncryptionManager.EncryptButtonCallbackInterface
                                                              encryptButtonCallbackInterface) {
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -693,11 +683,10 @@ public class GeneralDialogCreation {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
-                                                    final EncryptDecryptUtils.DecryptButtonCallbackInterface
-                                                            decryptButtonCallbackInterface)
-            throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-            UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+                                                    final EncryptionManager.DecryptButtonCallbackInterface
+                                                            decryptButtonCallbackInterface,
+                                                    EncryptFunctions encryption)
+            throws IOException, GeneralSecurityException {
 
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -721,8 +710,7 @@ public class GeneralDialogCreation {
         });
 
         FingerprintManager manager = (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
-        FingerprintManager.CryptoObject object = new
-                FingerprintManager.CryptoObject(CryptUtil.initCipher(c));
+        FingerprintManager.CryptoObject object = new FingerprintManager.CryptoObject(encryption.initCipher(c));
 
         FingerprintHandler handler = new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);
         handler.authenticate(manager, object);
@@ -730,7 +718,7 @@ public class GeneralDialogCreation {
 
     public static void showDecryptDialog(Context c, final MainActivity main, final Intent intent,
                                          AppTheme appTheme, final String password,
-                                         final EncryptDecryptUtils.DecryptButtonCallbackInterface
+                                         final EncryptionManager.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
@@ -947,7 +935,9 @@ public class GeneralDialogCreation {
     }
 
 
-    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils,
+                                         final MainFragment m, AppTheme appTheme,
+                                         EncryptFunctions encryption) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -965,7 +955,7 @@ public class GeneralDialogCreation {
 
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHistory()), null, true);
+                toHFileArray(dataUtils.getHistory()), null, true, encryption);
         a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
@@ -973,7 +963,8 @@ public class GeneralDialogCreation {
         x.show();
     }
 
-    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m,
+                                        AppTheme appTheme, EncryptFunctions encryption) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -982,7 +973,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHiddenfiles()), null, false);
+                toHFileArray(dataUtils.getHiddenfiles()), null, false, encryption);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();
