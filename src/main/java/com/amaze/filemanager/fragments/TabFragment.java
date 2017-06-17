@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.database.Tab;
+import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;

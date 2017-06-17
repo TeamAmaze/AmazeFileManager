@@ -48,7 +48,7 @@ public class SmbConnectDialog extends DialogFragment {
 
     private static final String TAG = "SmbConnectDialog";
 
-    public interface SmbConnectionListener{
+    public interface SmbConnectionListener {
 
         /**
          * Callback denoting a new connection been added from dialog
@@ -359,47 +359,5 @@ public class SmbConnectDialog extends DialogFragment {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             editText.setBackgroundTintList(editTextColorStateList);
         }
-    }
-
-    /**
-     * Parse path to decrypt smb password
-     * @return
-     */
-    public static String getSmbDecryptedPath(Context context, String path) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(path.substring(0, path.indexOf(":", 4)+1));
-        String encryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
-
-        String decryptedPassword;
-        try {
-            decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
-        } catch (Exception e) {
-            e.printStackTrace();
-            decryptedPassword = encryptedPassword;
-        }
-
-        buffer.append(decryptedPassword);
-        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
-
-        return buffer.toString();
-    }
-
-    public static String getSmbEncryptedPath(Context context, String path) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(path.substring(0, path.indexOf(":", 4)+1));
-        String decryptedPassword = path.substring(path.indexOf(":", 4)+1, path.lastIndexOf("@"));
-
-        String encryptPassword;
-        try {
-            encryptPassword =  CryptUtil.encryptPassword(context, decryptedPassword);
-        } catch (Exception e) {
-            e.printStackTrace();
-            encryptPassword = decryptedPassword;
-        }
-
-        buffer.append(encryptPassword);
-        buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
-
-        return buffer.toString();
     }
 }

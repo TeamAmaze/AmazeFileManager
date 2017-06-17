@@ -1,4 +1,4 @@
-package com.amaze.filemanager.database;
+package com.amaze.filemanager.database.models;
 
 /**
  * Created by vishal on 8/4/17.

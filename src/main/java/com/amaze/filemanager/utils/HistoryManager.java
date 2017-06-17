@@ -153,7 +153,7 @@ public class HistoryManager {
 
                 // we need to encrypt the path back in order to get a valid match from database entry
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" +
-                        SmbConnectDialog.getSmbEncryptedPath(this.c, path) + "' and NAME='"+name+"'");
+                        SmbUtil.getSmbEncryptedPath(this.c, path) + "' and NAME='"+name+"'");
             } else {
 
                 db.execSQL("DELETE FROM " + table + " WHERE PATH='" + path + "' and NAME='"+name+"'");
@@ -181,7 +181,7 @@ public class HistoryManager {
                 paths.add(new String[] {
                         c.getString(c.getColumnIndex("NAME")),
                         table.equals(DataUtils.SMB) ?
-                                SmbConnectDialog.getSmbDecryptedPath(this.c, c.getString(c.getColumnIndex("PATH"))) :
+                                SmbUtil.getSmbDecryptedPath(this.c, c.getString(c.getColumnIndex("PATH"))) :
                                 c.getString(c.getColumnIndex("PATH"))
                 });
             } catch (Exception e) {

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;

@@ -73,20 +73,17 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.EncryptedEntry;
-import com.amaze.filemanager.database.Tab;
-import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.IconHolder;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
@@ -1135,7 +1132,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
      * Loading adapter after getting a list of elements
      *
      * @param bitmap   the list of objects for the adapter
-     * @param back
+     * @param back     if we're coming back from any directory and want the scroll to be restored
      * @param path     the path for the adapter
      * @param openMode the type of file being created
      * @param results  is the list of elements a result from search
@@ -1777,20 +1774,20 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 switch (event) {
                     case CREATE:
                     case MOVED_TO:
-                        HFile fileCreated = new HFile(openMode, CURRENT_PATH + "/" + path);
+                        /*HFile fileCreated = new HFile(openMode, CURRENT_PATH + "/" + path);
                         addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
-                        Log.d(getClass().getSimpleName(), "ADDED: " + CURRENT_PATH + "/" + path);
+                        Log.d(getClass().getSimpleName(), "ADDED: " + CURRENT_PATH + "/" + path);*/
                         break;
                     case DELETE:
                     case MOVED_FROM:
-                        for (int i = 0; i < getLayoutElementSize(); i++) {
+                        /*for (int i = 0; i < getLayoutElementSize(); i++) {
                             File currentFile = new File(getLayoutElement(i).getDesc());
                             if (currentFile.getName().equals(path)) {
                                 removeLayoutElement(i);
                                 break;
                             }
                         }
-                        Log.d(getClass().getSimpleName(), "REMOVED: " + CURRENT_PATH + "/" + path);
+                        Log.d(getClass().getSimpleName(), "REMOVED: " + CURRENT_PATH + "/" + path);*/
                         break;
                     case DELETE_SELF:
                     case MOVE_SELF:
@@ -1814,8 +1811,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
 
-                        if (listView.getVisibility() == View.VISIBLE)
-
+                        /*if (listView.getVisibility() == View.VISIBLE) {
                             if (getLayoutElements().size() == 0) {
 
                                 // no item left in list, recreate views
@@ -1825,10 +1821,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
                                 // we already have some elements in list view, invalidate the adapter
                                 adapter.generate(getLayoutElements());
                             }
-                        else {
+                        } else {
                             // there was no list view, means the directory was empty
                             loadlist(CURRENT_PATH, true, openMode);
-                        }
+                        }*/
+
+                        computeScroll();
+                        loadlist(CURRENT_PATH, true, openMode);
                     }
                 });
             }

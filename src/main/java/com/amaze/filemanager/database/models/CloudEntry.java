@@ -1,4 +1,4 @@
-package com.amaze.filemanager.database;
+package com.amaze.filemanager.database.models;
 
 import com.amaze.filemanager.utils.OpenMode;
 

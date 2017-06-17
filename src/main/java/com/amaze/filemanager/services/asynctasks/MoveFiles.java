@@ -25,7 +25,7 @@ import android.os.AsyncTask;
 
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.EncryptedEntry;
+import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;

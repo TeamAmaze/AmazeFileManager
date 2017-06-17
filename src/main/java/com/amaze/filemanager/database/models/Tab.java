@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database;
+package com.amaze.filemanager.database.models;
 
 /**
  * Created by Vishal on 9/17/2014.

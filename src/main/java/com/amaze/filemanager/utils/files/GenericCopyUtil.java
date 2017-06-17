@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -327,16 +328,38 @@ public class GenericCopyUtil {
             throws IOException {
         MappedByteBuffer inBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, mSourceFile.getSize());
 
+        int count = -1;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        while (inBuffer.hasRemaining()) {
+        while (inBuffer.hasRemaining() && count != 0) {
 
-            int count = 0;
-            for (int i=0; i<buffer.length && inBuffer.hasRemaining(); i++) {
-                buffer[i] = inBuffer.get();
-                count++;
+            int tempPosition = inBuffer.position();
+
+            try {
+
+                // try normal way of getting bytes
+                ByteBuffer tempByteBuffer = inBuffer.get(buffer);
+                count = tempByteBuffer.position() - tempPosition;
+            } catch (BufferUnderflowException exception) {
+                exception.printStackTrace();
+
+                // not enough bytes left in the channel to read, iterate over each byte and store
+                // in the buffer
+
+                // reset the counter bytes
+                count = 0;
+                for (int i=0; i<buffer.length && inBuffer.hasRemaining(); i++) {
+                    buffer[i] = inBuffer.get();
+                    count++;
+                }
             }
-            bufferedOutputStream.write(buffer, 0, count);
-            ServiceWatcherUtil.POSITION = inBuffer.position();
+
+            Log.d(getClass().getSimpleName(), count + "");
+            if (count != -1) {
+
+                bufferedOutputStream.write(buffer, 0, count);
+                ServiceWatcherUtil.POSITION = inBuffer.position();
+            }
+
         }
         bufferedOutputStream.flush();
     }
