@@ -546,14 +546,17 @@
   <string name="cloud_drive">Google Drive</string>
   <string name="cloud_onedrive">OneDrive</string>
   <string name="cloud_box">Boîte</string>
+  <string name="cloud_get">Téléchargez le plugin Cloud</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">Adresse e-mail</string>
   <string name="cloud_email">ID e-mail</string>
   <string name="no_applications">Aucune application</string>
   <string name="ftp_path">Chemin d’accès partagé</string>
   <string name="ftp_path_hint">Chemin d’accès à la racine du répertoire à partager</string>
+  <string name="error_ftp_path_file">Le chemin n\'est pas un répertoire</string>
   <string name="change">Modifier</string>
   <string name="unknown_error">Oups, une erreur c\'est produite!</string>
+  <string name="ftp_path_change_success">Chemin d’accès FTP changé avec succès</string>
   <string name="ftp_path_change_error_invalid">Chemin invalide</string>
   <string name="ftp_status_no_connection">Aucune connexion</string>
   <string name="ftp_status_secure_connection">Connexion sécurisée</string>
@@ -572,7 +575,9 @@
   <string name="contributors_2_summary">Icône et bannières</string>
   <string name="contributors_3_summary">Moteur de thème</string>
   <string name="contributors_4_summary">Ombre derrière FAB</string>
+  <string name="contributors_5_summary">Changement de couleur lors du changement d\'onglets</string>
   <string name="contributors_6_summary">Serveur FTP</string>
+  <string name="contributors_7_summary">Lancer un shell interactif</string>
   <string name="connection_exists">Connexion déjà existante</string>
   <string name="crypt_encrypting">Chiffrement</string>
   <string name="crypt_decrypting">Déchiffrement</string>
@@ -598,6 +603,7 @@
   <string name="crypt_fingerprint_authenticate">Touchez le tactile pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
   <string name="sidebarfolders_title">Raccourcis de la barre latérale</string>
+  <string name="sidebarquickaccess_title">Accès rapide à la barre latérale</string>
   <string name="showfolders_pref_title">Afficher les raccourcis</string>
   <string name="showfolders_pref">Raccourcis</string>
   <string name="showquickaccess_pref_title">Afficher l\'accès rapide</string>
@@ -607,6 +613,7 @@
   <string name="directory">Répertoires</string>
   <string name="questiondelete_shortcut">Supprimer le raccourci?</string>
   <string name="cloud_error_new_account">Impossible d\'ajouter un nouveau compte</string>
+  <string name="cloud_error_plugin">Le plugin Amaze Cloud est introuvable. Télécharger le sur le Play Store.</string>
   <string name="cloud_error_failed_restart">Échec de chargement de la connexion.         S’il vous plaît ouvrez Amaze Cloud une fois.</string>
   <string name="cloud_remove">Voulez-vous supprimer la connexion Cloud ?</string>
   <string name="cloud_fail_authenticate">Échec de l\'authentification</string>
@@ -614,8 +621,10 @@
   <string name="copy_low_memory">Mémoire insuffisant, Veuillez libérer de la RAM</string>
   <string name="cloud_token_lost">Identification perdu, s’il vous plaît connectez-vous à nouveau</string>
   <string name="cloud_plugin_not_supported">Cloud plug-in n’est pas pris en charge pour Fdroid build.         S’il vous plaît télécharger Amaze sur Play Store.</string>
+  <string name="monofont">Police Monospace</string>
   <string name="showHeaders">Afficher les en-têtes</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Aucun éléments</string>
   <string name="item">Élément</string>
   <string name="items">Éléments</string>
   <string name="byte_singular">octet</string>
