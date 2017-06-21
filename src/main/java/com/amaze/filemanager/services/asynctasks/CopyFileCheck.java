@@ -17,6 +17,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
@@ -25,6 +26,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.files.Futils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,15 +98,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
             return null;
         }
 
-        for (int i = 0; i < filesToCopy.size(); i++) {
-            BaseFile file = filesToCopy.get(i);
-
-            if (file.isDirectory()) {
-                totalBytes = totalBytes + file.folderSize();
-            } else {
-                totalBytes = totalBytes + file.length();
-            }
-        }
+        totalBytes = Futils.getTotalBytes(filesToCopy, context);
 
         HFile destination = new HFile(openMode, path);
         if (destination.getUsableSpace() < totalBytes) {
@@ -142,6 +136,11 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
             startService(filesToCopy, path, openMode);
         } else {
+
+            if (copyFolder == null) {
+                // not starting service as there's no sufficient space
+                return;
+            }
 
             onEndDialog(null, null, null);
         }

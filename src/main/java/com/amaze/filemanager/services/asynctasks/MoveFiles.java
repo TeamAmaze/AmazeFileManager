@@ -48,6 +48,11 @@ import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
+/**
+ * AsyncTask that moves files from source to destination by trying to rename files first,
+ * if they're in the same filesystem, else starting the copy service.
+ * Be advised - do not start this AsyncTask directly but use {@link CopyFileCheck} instead
+ */
 public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     private ArrayList<ArrayList<BaseFile>> files;
     private MainFragment mainFrag;
