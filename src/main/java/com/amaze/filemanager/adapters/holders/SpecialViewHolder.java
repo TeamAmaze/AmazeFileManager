@@ -11,7 +11,7 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
- * Check RecyclerAdapter's doc.
+ * Check {@link com.amaze.filemanager.adapters.RecyclerAdapter}'s doc.
  *
  * @author Emmanuel
  *         on 29/5/2017, at 04:22.
@@ -36,7 +36,7 @@ public class SpecialViewHolder extends RecyclerView.ViewHolder {
                 txtTitle.setText(R.string.files);
                 break;
             case HEADER_FOLDERS:
-                txtTitle.setText(R.string.folders);
+                txtTitle.setText(R.string.directories);
                 break;
         }
 

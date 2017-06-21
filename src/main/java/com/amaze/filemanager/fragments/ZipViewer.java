@@ -594,7 +594,7 @@ public class ZipViewer extends Fragment {
             addheader = true;
         }
         if (addheader) {
-            dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, showDividers);
+            dividerItemDecoration = new DividerItemDecoration(getActivity(), true, showDividers);
             listView.addItemDecoration(dividerItemDecoration);
             //headersDecor = new StickyRecyclerHeadersDecoration(rarAdapter);
             //listView.addItemDecoration(headersDecor);

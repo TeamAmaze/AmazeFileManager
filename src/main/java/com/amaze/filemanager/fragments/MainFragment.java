@@ -316,7 +316,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
         // use a linear layout manager
         //View footerView = getActivity().getLayoutInflater().inflate(R.layout.divider, null);// TODO: 23/5/2017 use or delete
-        dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, false, SHOW_DIVIDERS);
+        dividerItemDecoration = new DividerItemDecoration(getActivity(), false, SHOW_DIVIDERS);
         listView.addItemDecoration(dividerItemDecoration);
         mSwipeRefreshLayout.setColorSchemeColors(accentColor);
         DefaultItemAnimator animator = new DefaultItemAnimator();
@@ -1112,7 +1112,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     addheader = true;
                 }
                 if (addheader && IS_LIST) {
-                    dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST, true, SHOW_DIVIDERS);
+                    dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
                     listView.addItemDecoration(dividerItemDecoration);
                     //headersDecor = new StickyRecyclerHeadersDecoration(adapter);// TODO: 30/5/2017 delete this
                     //listView.addItemDecoration(headersDecor);// TODO: 30/5/2017 delete this

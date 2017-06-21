@@ -51,7 +51,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
             GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
 
-    private static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
+    public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
 
     private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
             GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
@@ -307,7 +307,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             case TYPE_HEADER_FOLDERS:
             case TYPE_HEADER_FILES:
                 v = mInflater.inflate(R.layout.list_header, parent, false);
-                int type = viewType == TYPE_HEADER_FOLDERS? SpecialViewHolder.HEADER_FOLDERS : SpecialViewHolder.HEADER_FILES;
+                int type = viewType == TYPE_HEADER_FOLDERS ? SpecialViewHolder.HEADER_FOLDERS : SpecialViewHolder.HEADER_FILES;
 
                 return new SpecialViewHolder(context, v, utilsProvider, type);
             case TYPE_ITEM:
