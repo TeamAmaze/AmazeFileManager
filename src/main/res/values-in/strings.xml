@@ -51,6 +51,7 @@
   <string name="file_empty">Berkas ini kosong</string>
   <string name="error">Kesalahan</string>
   <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
+  <string name="searchresults">Hasil Pencarian dari </string>
   <string name="itemsselected">Item Dipilih</string>
   <string name="newhomedirectory">Direktori baru Laman Depan</string>
   <string name="rename">Ganti nama</string>
@@ -66,6 +67,7 @@
   <string name="date">Tanggal</string>
   <string name="location">Lokasi</string>
   <string name="size_capitalized">Ukuran</string>
+  <string name="size">ukuran dari folder</string>
   <string name="totalitems">Total item</string>
   <string name="enterzipname">Masukkan nama Zip</string>
   <string name="noappfound">Tidak ada aplikasi untuk membuka file ini</string>
@@ -197,6 +199,9 @@
   <string name="nofiles">Tidak ada berkas</string>
   <string name="tapnhold">Ketuk dan tahan pada Berkas atau Folder untuk opsi lebih lanjut</string>
   <string name="pathcopied">Path disalin ke clipboard</string>
+  <string name="used">ruang digunakan</string>
+  <string name="used_by_others">digunakan oleh lainnya</string>
+  <string name="free">ruang bebas</string>
   <string name="atroot">Anda berada di root</string>
   <string name="listview">Tampilan daftar</string>
   <string name="gridview">Gaya tampilan</string>
@@ -352,6 +357,7 @@
   <string name="clear">Bersihkan</string>
   <string name="md5">md5: </string>
   <string name="md5_2">Menyalin md5</string>
+  <string name="total">Total:</string>
   <string name="calculating"> menghitung </string>
   <string name="sort">Urutkan</string>
   <string name="ascending">Menaik</string>
@@ -592,7 +598,9 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="monofont">Monospace Font</string>
   <string name="showHeaders">Tampilkan Tajuk</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Tidak ada item</string>
   <string name="item">Item</string>
   <string name="items">Item</string>
+  <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
 </resources>

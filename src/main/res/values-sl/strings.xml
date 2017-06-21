@@ -21,6 +21,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="app_name">Amaze</string>
   <string name="drawer_open">Odpri predal za krmarjenje</string>
+  <string name="drawer_close">Zapri navigacijsko okno</string>
   <string name="books">Zaznamki</string>
   <string name="icon">ikona</string>
   <string name="efn">Vnesite ime datoteke</string>
@@ -28,6 +29,7 @@
   <string name="gallery">Galerija</string>
   <string name="apps">Upravljalec aplikacij</string>
   <string name="ftp">FTP strežnik</string>
+  <string name="bookmanag">Urejanje zaznamkov</string>
   <string name="setting">Nastavitve</string>
   <string name="select">Izberite element</string>
   <string name="pressagain">Ponovno pritisnite za izhod</string>
@@ -38,6 +40,8 @@
   <string name="copyingapk">Kopiranje apk v </string>
   <string name="addbook">Dodaj zaznamek</string>
   <string name="delbook">Izbriši zaznamek</string>
+  <string name="addtobook">Dodaj med zaznamke</string>
+  <string name="enterpath">Vnesite pot</string>
   <string name="cancel">PREKLIČI</string>
   <string name="create">USTVARI</string>
   <string name="success">Uspešno</string>
@@ -45,6 +49,7 @@
   <string name="loading">Nalaganje&#8230;</string>
   <string name="file_empty">Datoteka je prezna</string>
   <string name="error">Napaka</string>
+  <string name="searchresults">Rezultati iskanja </string>
   <string name="itemsselected">Izbranih elementov</string>
   <string name="newhomedirectory">Novi domači imenik</string>
   <string name="rename">Preimenuj</string>
@@ -62,6 +67,8 @@
   <string name="size_capitalized">Velikost</string>
   <string name="size">velikost mape</string>
   <string name="totalitems">Skupno število elementov</string>
+  <string name="enterzipname">Vnesite ime Zip</string>
+  <string name="noappfound">Program za odpiranje ni najden</string>
   <string name="copying">Kopiranje</string>
   <string name="moving">Premikam</string>
   <string name="add">Dodaj</string>
@@ -70,6 +77,7 @@
   <string name="folder">Mapa</string>
   <string name="newfolder">Nova mapa</string>
   <string name="entername">Vstavite ime</string>
+  <string name="guide1">Dobrodošli v Amaze upravitelju datotek</string>
   <string name="openwith">Odpri z</string>
   <string name="share">Skupna raba</string>
   <string name="about">O nas</string>
@@ -94,9 +102,13 @@
   <string name="rootfailure">Skrbniški dostop ni odobren</string>
   <string name="selectall">Izberi vse</string>
   <string name="delete">Izbriši</string>
+  <string name="setashome">Nastavi kot doma</string>
+  <string name="sethome">Novi domači imenik</string>
   <string name="foldercolor">Barva mape</string>
   <string name="imagegallery">Galerija slik</string>
   <string name="fileexplorer">Raziskovalec datotek</string>
+  <string name="changegallerypath">Spremeni pot galerije</string>
+  <string name="usedefaultgallerypath">Uporabi privzeto pot galerije</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
