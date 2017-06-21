@@ -854,7 +854,7 @@ public class GeneralDialogCreation {
             @Override
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
                 if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                    Toast.makeText(m, "File should have a name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
                 else {
                     String name = current + "/" + materialDialog.getInputEditText().getText().toString();
                     m.mainActivityHelper.compressFiles(new File(name), b);

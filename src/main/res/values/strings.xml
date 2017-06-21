@@ -674,4 +674,7 @@
 	
 	<string name="byte_singular">byte</string>
 	<string name="bytes">bytes</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">File should have a name</string>
 </resources>

@@ -779,7 +779,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case R.id.compress:
                     ArrayList<BaseFile> copies1 = new ArrayList<>();
                     for (int i4 = 0; i4 < plist.size(); i4++) {
-                        copies1.add(getLayoutElement(i4).generateBaseFile());
+                        copies1.add(plist.get(i4).generateBaseFile());
                     }
                     GeneralDialogCreation.showCompressDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
                     mode.finish();
