@@ -184,8 +184,6 @@
   <string name="copying_fles">Copiando ficheros</string>
   <string name="done">Fecho</string>
   <string name="Extracting_fles">Estrayendo ficheros</string>
-  <string name="items">Elementos</string>
-  <string name="item">Elementu</string>
   <string name="set">Afitar</string>
   <string name="enablerootmde">Habilitar mou root</string>
   <string name="goback">Dir p\'atrás</string>
@@ -495,4 +493,7 @@ to ordenador.</li><li/><br/>\\n
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_6_summary">Sirvidor FTP</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="item">Elementu</string>
+  <string name="items">Elementos</string>
 </resources>

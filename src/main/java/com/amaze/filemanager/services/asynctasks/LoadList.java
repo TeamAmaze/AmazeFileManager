@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *     Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -40,13 +41,13 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -62,39 +63,34 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.activities.MainActivity.dataUtils;
+import static com.amaze.filemanager.utils.OpenMode.DROPBOX;
+import static com.amaze.filemanager.utils.OpenMode.OTG;
 
 public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
     private UtilitiesProviderInterface utilsProvider;
     private String path;
-    boolean back;
-    MainFragment ma;
-    Context c;
-    OpenMode openmode;
-    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back, MainFragment ma, OpenMode openmode) {
+    private boolean back;
+    private MainFragment ma;
+    private Context c;
+    private OpenMode openmode;
+    private boolean grid;
+
+    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
+                    MainFragment ma, OpenMode openmode) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;
         this.openmode = openmode;
-        this.c=c;
+        this.c = c;
     }
 
     @Override
     protected void onPreExecute() {
-        if (ma!=null && ma.mSwipeRefreshLayout!=null)
-            ma.mSwipeRefreshLayout.setRefreshing(true);
+        ma.mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
-    public void onProgressUpdate(String... message) {
-        if(c!=null)
-            Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
-    }
-
-    boolean grid;
-
-    @Override
-    protected ArrayList<LayoutElement> doInBackground(String... params) {
-        // params comes from the execute() call: params[0] is the url.
+    protected ArrayList<LayoutElement> doInBackground(String... params) {// params[0] is the url.
         ArrayList<LayoutElement> list = null;
         path = params[0];
         grid = ma.checkforpath(path);
@@ -103,17 +99,18 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         if (openmode == OpenMode.UNKNOWN) {
             HFile hFile = new HFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
+
             if (hFile.isLocal()) {
                 openmode = OpenMode.FILE;
             } else if (hFile.isSmb()) {
                 openmode = OpenMode.SMB;
                 ma.smbPath = path;
             } else if (hFile.isOtgFile()) {
-                openmode = OpenMode.OTG;
+                openmode = OTG;
             } else if (hFile.isBoxFile()) {
                 openmode = OpenMode.BOX;
             } else if (hFile.isDropBoxFile()) {
-                openmode = OpenMode.DROPBOX;
+                openmode = DROPBOX;
             } else if (hFile.isGoogleDriveFile()) {
                 openmode = OpenMode.GDRIVE;
             } else if (hFile.isOneDriveFile()) {
@@ -133,7 +130,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     list = ma.addToSmb(smbFile, path);
                     openmode = OpenMode.SMB;
                 } catch (SmbAuthException e) {
-                    if(!e.getMessage().toLowerCase().contains("denied"))
+                    if (!e.getMessage().toLowerCase().contains("denied"))
                         ma.reauthenticateSmb();
                     publishProgress(e.getLocalizedMessage());
                 } catch (SmbException | NullPointerException e) {
@@ -169,23 +166,20 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
 
                 path = String.valueOf(Integer.parseInt(path));
 
-                try {
-                    if (arrayList != null)
-                        list = addTo(arrayList);
-                    else return new ArrayList<>();
-                } catch (Exception e) {
-                }
+                if (arrayList != null)
+                    list = addTo(arrayList);
+                else return new ArrayList<>();
                 break;
             case OTG:
                 list = addTo(listOtg(path));
-                openmode = OpenMode.OTG;
+                openmode = OTG;
                 break;
             case DROPBOX:
 
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(DROPBOX);
 
                 try {
-                    list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
+                    list = addTo(listCloud(path, cloudStorageDropbox, DROPBOX));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
                     return new ArrayList<>();
@@ -227,11 +221,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     ArrayList<BaseFile> arrayList1;
                     arrayList1 = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN,
                             new RootHelper.GetModeCallBack() {
-                        @Override
-                        public void getMode(OpenMode mode) {
-                            openmode = mode;
-                        }
-                    });
+                                @Override
+                                public void getMode(OpenMode mode) {
+                                    openmode = mode;
+                                }
+                            });
                     list = addTo(arrayList1);
 
                 } catch (RootNotPermittedException e) {
@@ -241,13 +235,31 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 break;
         }
 
-        if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6"))))
+        if (list != null && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6")))) {
             Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc));
+        }
+
         return list;
     }
 
+    @Override
+    protected void onPostExecute(ArrayList<LayoutElement> list) {
+        if (isCancelled()) {
+            list = null;
+        }
+
+        ma.createViews(list, back, path, openmode, false, grid);
+        ma.mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onProgressUpdate(String... message) {
+        Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
+    }
+
     private ArrayList<LayoutElement> addTo(ArrayList<BaseFile> baseFiles) {
-        ArrayList<LayoutElement> a = new ArrayList<>();
+        ArrayList<LayoutElement> items = new ArrayList<>();
+
         for (int i = 0; i < baseFiles.size(); i++) {
             BaseFile baseFile = baseFiles.get(i);
             //File f = new File(ele.getPath());
@@ -256,17 +268,16 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 if (baseFile.isDirectory()) {
                     size = "";
 
-                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(),
-                            R.drawable.ic_folder_lock_white_36dp);
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(), R.drawable.ic_folder_lock_white_36dp);
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
                     LayoutElement layoutElement = utilsProvider.getFutils()
                             .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
-                                    : ma.folder,
-                            baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
-                            baseFile.getDate() + "");
+                                            : ma.folder,
+                                    baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
+                                    baseFile.getDate() + "");
                     layoutElement.setMode(baseFile.getMode());
-                    a.add(layoutElement);
+                    items.add(layoutElement);
                     ma.folder_count++;
                 } else {
                     long longSize = 0;
@@ -283,10 +294,10 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     }
                     try {
                         LayoutElement layoutElement = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                baseFile.getPath(), !ma.IS_LIST, ma.res), baseFile.getPath(), baseFile.getPermission(),
+                                baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
                         layoutElement.setMode(baseFile.getMode());
-                        a.add(layoutElement);
+                        items.add(layoutElement);
                         ma.file_count++;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -294,20 +305,10 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 }
             }
         }
-        return a;
+        return items;
     }
 
-    @Override
-    protected void onPostExecute(ArrayList<LayoutElement> list) {
-        if (isCancelled()) {
-            list = null;
-        }
-
-        ma.createViews(list, back, path, openmode, false, grid);
-        ma.mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    ArrayList<BaseFile> listaudio() {
+    private ArrayList<BaseFile> listaudio() {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String[] projection = {
                 MediaStore.Audio.Media.DATA
@@ -333,7 +334,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         return songs;
     }
 
-    ArrayList<BaseFile> listImages() {
+    private ArrayList<BaseFile> listImages() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = c.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -350,7 +351,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         return songs;
     }
 
-    ArrayList<BaseFile> listVideos() {
+    private ArrayList<BaseFile> listVideos() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = c.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -367,7 +368,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         return songs;
     }
 
-    ArrayList<BaseFile> listRecentFiles() {
+    private ArrayList<BaseFile> listRecentFiles() {
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
         Calendar c = Calendar.getInstance();
@@ -408,10 +409,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         ArrayList<BaseFile> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
-        Cursor cursor = c.getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), projection,
-                null,
-                null, null);
+        Cursor cursor = c.getContentResolver()
+                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
@@ -466,6 +465,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
 
     /**
      * Lists files from an OTG device
+     *
      * @param path the path to the directory tree, starts with prefix {@link com.amaze.filemanager.utils.OTGUtil#PREFIX_OTG}
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
@@ -475,7 +475,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
         return OTGUtil.getDocumentFilesList(path, c);
     }
 
-    boolean contains(String[] types, String path) {
+    private boolean contains(String[] types, String path) {
         for (String string : types) {
             if (path.endsWith(string)) return true;
         }

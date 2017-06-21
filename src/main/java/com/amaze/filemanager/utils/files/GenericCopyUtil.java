@@ -353,7 +353,6 @@ public class GenericCopyUtil {
                 }
             }
 
-            Log.d(getClass().getSimpleName(), count + "");
             if (count != -1) {
 
                 bufferedOutputStream.write(buffer, 0, count);

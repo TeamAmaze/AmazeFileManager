@@ -1052,7 +1052,7 @@ public class HFile {
                                     file.lastModified() + "");
                 } else {
                     layoutElement = utilitiesProvider.getFutils().newElement(Icons.loadMimeIcon(
-                            file.getPath(), !mainFragment.IS_LIST, mainFragment.res),
+                            file.getPath(), !mainFragment.IS_LIST, mainFragment.getResources()),
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");
                 }

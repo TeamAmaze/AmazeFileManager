@@ -14,6 +14,11 @@
 
     <dimen name="minimal_material_padding">16dp</dimen>
     <dimen name="check_icon_margin_bottom_right">10dp</dimen>
+    <dimen name="icon_width">72dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_height">@dimen/fab_size_normal</dimen>
+    <dimen name="minimal_row_height">100dp</dimen>
+    <dimen name="minimal_header_size">40dp</dimen>
     <dimen name="minimal_row_size">72dp</dimen>
     <dimen name="minimal_icon_size">40dp</dimen>
     <dimen name="minimal_icon_parent_width">56dp</dimen>

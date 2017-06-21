@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/second"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
+
+    <TextView
+        android:id="@+id/text"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="@dimen/icon_width"
+        android:paddingRight="@dimen/icon_width"
+        android:textSize="@dimen/dialog_category"
+        tools:text="@string/folders" >
+    </TextView>
+
+</RelativeLayout>
