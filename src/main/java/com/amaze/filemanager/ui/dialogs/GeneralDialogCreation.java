@@ -863,7 +863,18 @@ public class GeneralDialogCreation {
         });
         a.negativeText(m.getResources().getString(R.string.cancel));
         a.negativeColor(accentColor);
-        a.build().show();
+        final MaterialDialog materialDialog = a.build();
+        materialDialog.show();
+
+        // place cursor at the starting of edit text by posting a runnable to edit text
+        // this is done because in case android has not populated the edit text layouts yet, it'll
+        // reset calls to selection if not posted in message queue
+        materialDialog.getInputEditText().post(new Runnable() {
+            @Override
+            public void run() {
+                materialDialog.getInputEditText().setSelection(0);
+            }
+        });
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {

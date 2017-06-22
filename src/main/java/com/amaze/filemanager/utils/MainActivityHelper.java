@@ -159,7 +159,6 @@ public class MainActivityHelper {
             }
         });
         materialDialog.show();
-
     }
 
     private interface OnClickMaterialListener {

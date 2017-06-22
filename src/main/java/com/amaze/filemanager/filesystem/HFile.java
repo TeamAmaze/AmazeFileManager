@@ -383,7 +383,7 @@ public class HFile {
             default:
                 StringBuilder builder = new StringBuilder(path);
                 StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
-                        builder.length()-(getName().length()+1)));
+                        builder.length()-(getName(context).length()+1)));
                 return parentPathBuilder.toString();
         }
         return parentPath;
@@ -1028,6 +1028,19 @@ public class HFile {
             }
         }
         return !exists();
+    }
+
+    /**
+     * Returns the name of file excluding it's extension
+     * If no extension is found then whole file name is returned
+     * @param context
+     * @return
+     */
+    public String getNameString(Context context) {
+        String fileName = getName(context);
+
+        int extensionStartIndex = fileName.lastIndexOf(".");
+        return fileName.substring(0, extensionStartIndex == -1 ? fileName.length() : extensionStartIndex);
     }
 
     /**

@@ -43,6 +43,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -67,6 +68,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
@@ -1205,28 +1207,35 @@ public class MainFragment extends android.support.v4.app.Fragment {
         });
         builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         builder.title(getResources().getString(R.string.rename));
-        builder.callback(new MaterialDialog.ButtonCallback() {
+
+        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                String name = materialDialog.getInputEditText().getText().toString();
-                if (f.isSmb())
-                    if (f.isDirectory() && !name.endsWith("/"))
-                        name = name + "/";
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                        CURRENT_PATH + "/" + name, getActivity(), BaseActivity.rootMode);
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-
-                materialDialog.cancel();
+                dialog.cancel();
             }
         });
+
         builder.positiveText(R.string.save);
         builder.negativeText(R.string.cancel);
         builder.positiveColor(accentColor).negativeColor(accentColor).widgetColor(accentColor);
-        builder.build().show();
+        final MaterialDialog materialDialog = builder.build();
+        materialDialog.show();
+        Log.d(getClass().getSimpleName(), f.getNameString(getContext()));
+
+        // place cursor at the starting of edit text by posting a runnable to edit text
+        // this is done because in case android has not populated the edit text layouts yet, it'll
+        // reset calls to selection if not posted in message queue
+        materialDialog.getInputEditText().post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (!f.isDirectory()) {
+
+                    materialDialog.getInputEditText().setSelection(f.getNameString(getContext()).length());
+                }
+            }
+        });
     }
 
     public void computeScroll() {
