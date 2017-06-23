@@ -199,6 +199,9 @@
   <string name="nofiles">Няма файлаў</string>
   <string name="tapnhold">Націсніце і ўтрымлівайце файл або тэчку для большай колькасці варыянтаў</string>
   <string name="pathcopied">Шлях скапіяваны ў буфер абмену</string>
+  <string name="used">выкарыстаная прастора</string>
+  <string name="used_by_others">выкарыстоўваецца іншымі</string>
+  <string name="free">вольная прастора</string>
   <string name="atroot">Вы знаходзіцеся ў каранёвай дырэкторыі</string>
   <string name="listview">Спіс</string>
   <string name="gridview">Сетка</string>
@@ -638,7 +641,9 @@
   <string name="monofont">Монашырынны шрыфт</string>
   <string name="showHeaders">Паказаць загалоўкі</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Няма элементаў</string>
   <string name="item">Элемент</string>
   <string name="items">Элементы</string>
+  <string name="byte_singular">байт</string>
   <string name="bytes">Байты</string>
 </resources>

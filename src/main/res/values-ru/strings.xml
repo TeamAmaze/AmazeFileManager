@@ -200,6 +200,7 @@
   <string name="tapnhold">Нажмите и удерживайте файл или папку для больше вариантов</string>
   <string name="pathcopied">Путь скопирован в буфер обмена</string>
   <string name="used">используемое пространство</string>
+  <string name="used_by_others">используемые другими</string>
   <string name="free">свободное пространство</string>
   <string name="atroot">Вы находитесь в корне</string>
   <string name="listview">Список</string>
@@ -552,6 +553,7 @@
   <string name="cloud_drive">Google Диск</string>
   <string name="cloud_onedrive">OneDrive</string>
   <string name="cloud_box">Ящик</string>
+  <string name="cloud_get">Получить Облачный плагин</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">E-mail адрес</string>
   <string name="cloud_email">E-mail ID</string>
@@ -619,8 +621,18 @@
   <string name="directory">Директория</string>
   <string name="questiondelete_shortcut">Удалить ярлык?</string>
   <string name="cloud_error_new_account">Не удалось добавить новую учетную запись</string>
+  <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
+  <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
+  <string name="cloud_remove">Вы хотите удалить облачное соединение?</string>
+  <string name="cloud_fail_authenticate">Ошибка аутентификации</string>
+  <string name="cloud_share_copied">Ссылка скопирована в буфер обмена</string>
+  <string name="copy_low_memory">Недостаточно оперативной памяти, пожалуйста освободите больше ОЗУ</string>
+  <string name="cloud_token_lost">Идентификатор потерян, пожалуйста, войдите снова</string>
+  <string name="cloud_plugin_not_supported">Облачный плагин не поддерживается Fdroid сборками.        Пожалуйста загрузите Amaze из Play Маркета.</string>
+  <string name="monofont">Моноширинный Шрифт</string>
   <string name="showHeaders">Показывать Заголовки</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Ничего нет</string>
   <string name="item">Элемент</string>
   <string name="items">Элементы</string>
   <string name="byte_singular">байт</string>
