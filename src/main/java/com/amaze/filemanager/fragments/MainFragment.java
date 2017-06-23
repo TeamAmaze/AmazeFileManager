@@ -1156,32 +1156,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                 if (buttons.getVisibility() == View.VISIBLE) getMainActivity().bbar(this);
 
-                AppConfig.runInBackground(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (openMode) {
-                            case ROOT:
-                            case FILE:
-                                // watch the current directory
-                                File file = new File(CURRENT_PATH);
-
-                                if (file.isDirectory() && file.canRead()) {
-
-                                    if (customFileObserver != null) {
-                                        // already a watcher instantiated, first it should be stopped
-                                        customFileObserver.stopWatching();
-                                    }
-
-                                    customFileObserver = new CustomFileObserver(CURRENT_PATH);
-                                    customFileObserver.startWatching();
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                });
-
+                startFileObserver();
                 //getMainActivity().invalidateFab(openMode);
             }
         } else {
@@ -1189,6 +1164,35 @@ public class MainFragment extends android.support.v4.app.Fragment {
             // TODO: Add support for cancelling list loading
             loadlist(home, true, OpenMode.FILE);
         }
+    }
+
+    private void startFileObserver() {
+
+        AppConfig.runInBackground(new Runnable() {
+            @Override
+            public void run() {
+                switch (openMode) {
+                    case ROOT:
+                    case FILE:
+                        // watch the current directory
+                        File file = new File(CURRENT_PATH);
+
+                        if (file.isDirectory() && file.canRead()) {
+
+                            if (customFileObserver != null) {
+                                // already a watcher instantiated, first it should be stopped
+                                customFileObserver.stopWatching();
+                            }
+
+                            customFileObserver = new CustomFileObserver(CURRENT_PATH);
+                            customFileObserver.startWatching();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -1411,6 +1415,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
 
+        startFileObserver();
         fixIcons(false);
     }
 
@@ -1418,6 +1423,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onPause() {
         super.onPause();
         (getActivity()).unregisterReceiver(receiver2);
+
     }
 
     @Override
