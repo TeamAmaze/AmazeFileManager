@@ -9,10 +9,13 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
+import android.util.Log;
 
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -560,7 +563,7 @@ public class CryptUtil {
         cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
         byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT));
 
-        return decryptedBytes.toString();
+        return new String(decryptedBytes);
     }
 
     /**
@@ -783,14 +786,15 @@ public class CryptUtil {
          * @throws IllegalBlockSizeException
          */
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-        public Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException, IOException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+        public Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException,
+                NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException,
+                IOException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             String encodedString = preferences.getString(PREFERENCE_KEY, null);
             if (encodedString != null) {
 
-                return new SecretKeySpec(decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)),
-                        "AES");
+                return new SecretKeySpec(decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)), "AES");
             } else {
                 generateKeyPair(context);
                 setKeyPreference();
@@ -811,7 +815,9 @@ public class CryptUtil {
          * @throws NoSuchPaddingException
          * @throws InvalidKeyException
          */
-        private byte[] decryptAESKey(byte[] encodedBytes) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException {
+        private byte[] decryptAESKey(byte[] encodedBytes) throws KeyStoreException, CertificateException, NoSuchAlgorithmException,
+                IOException, UnrecoverableEntryException, NoSuchProviderException, NoSuchPaddingException,
+                InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
             KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
             keyStore.load(null);
