@@ -264,13 +264,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                 if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
                     if (itemsDigested.get(i).elem != null) {
-                        if (!headers[0] && itemsDigested.get(i).elem.isDirectory()) {
+                        LayoutElement nextItem = itemsDigested.get(i).elem;
+
+                        if (!headers[0] && nextItem.isDirectory()) {
                             headers[0] = true;
                             itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
                             continue;
                         }
 
-                        if (!headers[1] && !itemsDigested.get(i).elem.isDirectory()) {
+                        if (!headers[1] && !nextItem.isDirectory()
+                                && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
                             headers[1] = true;
                             itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
                             continue;//leave this continue for symmetry
