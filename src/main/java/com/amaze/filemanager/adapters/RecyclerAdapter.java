@@ -716,7 +716,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         || description.endsWith(".tar") || description.endsWith(".tar.gz"))
                     popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
                         popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
                     else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);

@@ -2939,7 +2939,14 @@ public class MainActivity extends BaseActivity implements
         CloudHandler cloudHandler = new CloudHandler(this);
         cloudHandler.clear(service);
         dataUtils.removeAccount(service);
-        refreshDrawer();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                refreshDrawer();
+            }
+        });
     }
 
     @Override
