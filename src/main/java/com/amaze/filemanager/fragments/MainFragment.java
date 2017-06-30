@@ -1220,6 +1220,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                String name = dialog.getInputEditText().getText().toString();
+                if (f.isSmb()){
+                    if (f.isDirectory() && !name.endsWith("/"))
+                        name = name + "/";
+                }
+                getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
+                        CURRENT_PATH + "/" + name, getActivity(), BaseActivity.rootMode);
+            }
+        });
+
         builder.positiveText(R.string.save);
         builder.negativeText(R.string.cancel);
         builder.positiveColor(accentColor).negativeColor(accentColor).widgetColor(accentColor);
