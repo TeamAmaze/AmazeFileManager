@@ -35,24 +35,41 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.TinyDB;
+import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import static com.amaze.filemanager.R.string.feedback;
 import static com.amaze.filemanager.fragments.preference_fragments.FoldersPref.castStringListToTrioList;
@@ -108,16 +125,14 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             gplus.setEnabled(false);
 
         // crypt master password
-        final EditTextPreference masterPasswordPreference = (EditTextPreference) findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
+        final Preference masterPasswordPreference = findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
+                sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
             // encryption feature not available
             masterPasswordPreference.setEnabled(false);
         }
-
-        if (sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
-            masterPasswordPreference.setEnabled(false);
-        }
+        masterPasswordPreference.setOnPreferenceClickListener(this);
 
         CheckBox checkBoxFingerprint = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
 
@@ -281,6 +296,74 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             case "advancedsearch":
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.ADVANCEDSEARCH_PREFERENCE);
+                return true;
+            case PREFERENCE_CRYPT_MASTER_PASSWORD:
+                MaterialDialog.Builder masterPasswordDialogBuilder = new MaterialDialog.Builder(getActivity());
+                masterPasswordDialogBuilder.title(getResources().getString(R.string.crypt_pref_master_password_title));
+
+                String decryptedPassword = null;
+                try {
+                    String preferencePassword = sharedPref.getString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                            PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT);
+                    if (!preferencePassword.equals(PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+
+                        // password is set, try to decrypt
+                        decryptedPassword = CryptUtil.decryptPassword(getActivity(), preferencePassword);
+                    } else {
+                        // no password set in preferences, just leave the field empty
+                        decryptedPassword = "";
+                    }
+                } catch (CryptException e) {
+                    e.printStackTrace();
+                }
+
+                masterPasswordDialogBuilder.input(getResources().getString(R.string.authenticate_password),
+                        decryptedPassword, false,
+                        new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+
+                            }
+                        });
+                masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+                masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
+                masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
+                masterPasswordDialogBuilder.positiveColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
+                masterPasswordDialogBuilder.negativeColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
+
+                masterPasswordDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        try {
+
+                            String inputText = dialog.getInputEditText().getText().toString();
+                            if (!inputText.equals(PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+
+                                sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                        CryptUtil.encryptPassword(getActivity(),
+                                                dialog.getInputEditText().getText().toString())).apply();
+                            } else {
+                                // empty password, remove the preference
+                                sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                        "").apply();
+                            }
+                        } catch (CryptException e) {
+                            e.printStackTrace();
+
+                            sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
+                        }
+                    }
+                });
+
+                masterPasswordDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.cancel();
+                    }
+                });
+
+                masterPasswordDialogBuilder.build().show();
                 return true;
         }
 

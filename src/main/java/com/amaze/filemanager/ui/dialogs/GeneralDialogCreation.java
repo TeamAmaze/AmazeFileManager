@@ -34,6 +34,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -694,10 +695,7 @@ public class GeneralDialogCreation {
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
                                                     final EncryptDecryptUtils.DecryptButtonCallbackInterface
-                                                            decryptButtonCallbackInterface)
-            throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-            UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+                                                            decryptButtonCallbackInterface) throws CryptException {
 
         int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);

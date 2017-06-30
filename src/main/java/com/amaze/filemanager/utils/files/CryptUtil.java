@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
@@ -107,11 +108,7 @@ public class CryptUtil {
      * @param sourceFile the file to encrypt
      */
     public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler,
-                     ArrayList<HFile> failedOps)
-            throws IOException, CertificateException,
-            NoSuchAlgorithmException, UnrecoverableEntryException, InvalidKeyException,
-            InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException,
-            BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+                     ArrayList<HFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
@@ -119,7 +116,13 @@ public class CryptUtil {
         // target encrypted file
         HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
 
-        encrypt(context, sourceFile, hFile);
+        try {
+
+            encrypt(context, sourceFile, hFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CryptException();
+        }
     }
 
     /**
@@ -136,10 +139,7 @@ public class CryptUtil {
      *                   the source's parent in normal case
      */
     public CryptUtil(Context context, BaseFile baseFile, String targetPath,
-                     ProgressHandler progressHandler, ArrayList<HFile> failedOps)
-            throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
-            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+                     ProgressHandler progressHandler, ArrayList<HFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
@@ -151,7 +151,13 @@ public class CryptUtil {
             targetDirectory.setMode(baseFile.getMode());
         }
 
-        decrypt(context, baseFile, targetDirectory);
+        try {
+
+            decrypt(context, baseFile, targetDirectory);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CryptException();
+        }
     }
 
     /**
@@ -326,9 +332,11 @@ public class CryptUtil {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static String aesDecryptPassword(String cipherPassword) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
-            KeyStoreException, NoSuchProviderException, InvalidAlgorithmParameterException,
-            IOException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+            NoSuchAlgorithmException, CertificateException,
+            UnrecoverableKeyException, KeyStoreException, NoSuchProviderException,
+            InvalidAlgorithmParameterException, IOException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+
         Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), gcmParameterSpec);
@@ -551,11 +559,10 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static String rsaDecryptPassword(Context context, String cipherText) throws
-            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
-            KeyStoreException, UnrecoverableEntryException, IllegalBlockSizeException,
-            InvalidKeyException, IOException {
+    private static String rsaDecryptPassword(Context context, String cipherText) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, NoSuchProviderException, CertificateException, BadPaddingException,
+            InvalidAlgorithmParameterException, KeyStoreException, UnrecoverableEntryException,
+            IllegalBlockSizeException, InvalidKeyException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
@@ -572,18 +579,21 @@ public class CryptUtil {
      * @param plainText
      * @return
      */
-    public static String encryptPassword(Context context, String plainText) throws IOException,
-            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
-            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    public static String encryptPassword(Context context, String plainText) throws CryptException {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        try {
 
-            return CryptUtil.aesEncryptPassword(plainText);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            return CryptUtil.rsaEncryptPassword(context, plainText);
-        } else return plainText;
+                return CryptUtil.aesEncryptPassword(plainText);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+                return CryptUtil.rsaEncryptPassword(context, plainText);
+            } else return plainText;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CryptException();
+        }
     }
 
     /**
@@ -592,18 +602,21 @@ public class CryptUtil {
      * @param cipherText
      * @return
      */
-    public static String decryptPassword(Context context, String cipherText) throws IOException,
-            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
-            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    public static String decryptPassword(Context context, String cipherText) throws CryptException {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        try {
 
-            return CryptUtil.aesDecryptPassword(cipherText);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            return CryptUtil.rsaDecryptPassword(context, cipherText);
-        } else return cipherText;
+                return CryptUtil.aesDecryptPassword(cipherText);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+                return CryptUtil.rsaDecryptPassword(context, cipherText);
+            } else return cipherText;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CryptException();
+        }
     }
 
     /**
@@ -622,25 +635,28 @@ public class CryptUtil {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public static Cipher initCipher(Context context) throws NoSuchPaddingException, NoSuchAlgorithmException,
-            CertificateException, UnrecoverableEntryException, KeyStoreException,
-            NoSuchProviderException, InvalidAlgorithmParameterException, IOException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+    public static Cipher initCipher(Context context) throws CryptException {
 
-        Cipher cipher = null;
+        try {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Cipher cipher = null;
 
-            cipher = Cipher.getInstance(ALGO_AES);
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
-            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            cipher = Cipher.getInstance(ALGO_AES, "BC");
-            RSAKeygen keygen = new RSAKeygen(context);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
+                cipher = Cipher.getInstance(ALGO_AES);
+                GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
+                cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                cipher = Cipher.getInstance(ALGO_AES, "BC");
+                RSAKeygen keygen = new RSAKeygen(context);
+
+                cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
+            }
+            return cipher;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CryptException();
         }
-        return cipher;
     }
 
     /**
@@ -786,7 +802,7 @@ public class CryptUtil {
          * @throws IllegalBlockSizeException
          */
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        public Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException,
+        private Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException,
                 NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException,
                 IOException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.IOException;
@@ -62,11 +63,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addEntry(EncryptedEntry encryptedEntry) throws IOException,
-            CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-            UnrecoverableEntryException, InvalidAlgorithmParameterException,
-            NoSuchPaddingException, BadPaddingException, KeyStoreException,
-            NoSuchProviderException, IllegalBlockSizeException {
+    public void addEntry(EncryptedEntry encryptedEntry) throws CryptException {
 
         ContentValues contentValues = new ContentValues();
         //contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
@@ -89,10 +86,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry)
-            throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-            UnrecoverableEntryException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            BadPaddingException, KeyStoreException, NoSuchProviderException, IllegalBlockSizeException {
+    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) throws CryptException {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_ENCRYPTED_ID, newEncryptedEntry.getId());
@@ -105,10 +99,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public EncryptedEntry findEntry(String path) throws IOException, CertificateException,
-            NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException,
-            InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException,
-            KeyStoreException, NoSuchProviderException, IllegalBlockSizeException {
+    public EncryptedEntry findEntry(String path) throws CryptException {
         String query = "Select * FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_ENCRYPTED_PATH
                 + "= \"" + path + "\"";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
@@ -128,10 +119,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         return encryptedEntry;
     }
 
-    public List<EncryptedEntry> getAllEntries() throws IOException, CertificateException,
-            NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException,
-            InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException,
-            KeyStoreException, NoSuchProviderException, IllegalBlockSizeException {
+    public List<EncryptedEntry> getAllEntries() throws CryptException {
         List<EncryptedEntry> entryList = new ArrayList<EncryptedEntry>();
         // Select all query
         String query = "Select * FROM " + TABLE_ENCRYPTED;

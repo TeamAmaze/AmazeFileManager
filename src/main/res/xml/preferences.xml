@@ -124,11 +124,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/security">
-        <EditTextPreference
+        <Preference
             android:key="crypt_password"
             android:summary="@string/crypt_pref_master_password_summary"
             android:title="@string/crypt_pref_master_password_title">
-        </EditTextPreference>
+        </Preference>
 
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:key="crypt_fingerprint"

@@ -12,6 +12,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
@@ -65,11 +66,9 @@ public class EncryptDecryptUtils {
 
         try {
             encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
-        } catch (Exception e) {
+        } catch (CryptException e) {
             e.printStackTrace();
-        }
 
-        if (encryptedEntry == null) {
             // we couldn't find any entry in database or lost the key to decipher
             Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
             return;
@@ -94,8 +93,8 @@ public class EncryptDecryptUtils {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
                                 mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
-                    } else throw new Exception();
-                } catch (Exception e) {
+                    } else throw new CryptException();
+                } catch (CryptException e) {
                     e.printStackTrace();
 
                     Toast.makeText(main.getContext(),
@@ -104,9 +103,19 @@ public class EncryptDecryptUtils {
                 }
                 break;
             case Preffrag.ENCRYPT_PASSWORD_MASTER:
-                GeneralDialogCreation.showDecryptDialog(c,
-                        mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                        preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD, Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT), decryptButtonCallbackInterface);
+                try {
+                    GeneralDialogCreation.showDecryptDialog(c,
+                            mainActivity, decryptIntent, utilsProvider.getAppTheme(),
+                            CryptUtil.decryptPassword(c, preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
+                } catch (CryptException e) {
+                    e.printStackTrace();
+
+
+                    Toast.makeText(main.getContext(),
+                            main.getResources().getString(R.string.crypt_decryption_fail),
+                            Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 GeneralDialogCreation.showDecryptDialog(c, mainActivity, decryptIntent,
@@ -122,7 +131,7 @@ public class EncryptDecryptUtils {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws CryptException {
 
         CryptHandler handler = new CryptHandler(context);
 
