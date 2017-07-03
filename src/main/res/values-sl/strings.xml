@@ -288,7 +288,7 @@
   <string name="folders">Mape</string>
   <string name="videos">Video posnetki</string>
   <string name="apks">Apk-ji</string>
-  <string name="documents">Dokumentov</string>
+  <string name="documents">Dokumenti</string>
   <string name="images">Slike</string>
   <string name="clear">Počisti</string>
   <string name="md5">MD5</string>
@@ -416,6 +416,7 @@
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">E - poštni naslov</string>
   <string name="cloud_email">E-poštni ID</string>
+  <string name="ftp_path">Skupna pot</string>
   <string name="change">Spremeni</string>
   <string name="unknown_error">Ops... nekaj je šlo narobe!</string>
   <string name="ftp_path_change_success">FTP pot uspešno spremenjena</string>
@@ -429,6 +430,8 @@
   <string name="ftp_seconds">Sekund</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_1_summary">Prevod</string>
+  <string name="contributors_2_summary">Ikone in transparenti</string>
   <string name="contributors_6_summary">FTP strežnik</string>
   <string name="crypt_encrypting">Šifriram</string>
   <string name="crypt_decrypting">Dešifriram</string>
