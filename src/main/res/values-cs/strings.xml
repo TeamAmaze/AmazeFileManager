@@ -633,4 +633,6 @@
   <string name="items">položky</string>
   <string name="byte_singular">bajtů</string>
   <string name="bytes">bajtů</string>
+  <!-- end of plurals -->
+  <string name="no_name">Soubor by měl mít název</string>
 </resources>

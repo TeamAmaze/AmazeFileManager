@@ -612,4 +612,5 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="items">Elementi</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
+  <!-- end of plurals -->
 </resources>

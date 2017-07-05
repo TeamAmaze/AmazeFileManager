@@ -372,4 +372,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">아이템</string>
   <string name="items">항목</string>
+  <!-- end of plurals -->
 </resources>

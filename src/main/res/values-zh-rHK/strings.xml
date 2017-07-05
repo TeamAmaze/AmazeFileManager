@@ -601,4 +601,6 @@
   <string name="items">個專案</string>
   <string name="byte_singular">位元組</string>
   <string name="bytes">位元組</string>
+  <!-- end of plurals -->
+  <string name="no_name">檔案必須要有名稱</string>
 </resources>

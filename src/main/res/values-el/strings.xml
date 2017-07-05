@@ -483,4 +483,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Αντικείμενο</string>
   <string name="items">Αντικείμενα</string>
+  <!-- end of plurals -->
 </resources>

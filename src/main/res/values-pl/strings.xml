@@ -580,4 +580,5 @@ smb_instructions
   <string name="items">Elementy</string>
   <string name="byte_singular">bajtów</string>
   <string name="bytes">Bajtów</string>
+  <!-- end of plurals -->
 </resources>

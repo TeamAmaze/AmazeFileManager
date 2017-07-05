@@ -245,4 +245,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Elementas</string>
   <string name="items">Elementai</string>
+  <!-- end of plurals -->
 </resources>

@@ -627,4 +627,5 @@
   <string name="item">Елемент</string>
   <string name="items">Елементи</string>
   <string name="bytes">Байт</string>
+  <!-- end of plurals -->
 </resources>

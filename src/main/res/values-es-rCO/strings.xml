@@ -533,4 +533,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Elemento</string>
   <string name="items">Elementos</string>
+  <!-- end of plurals -->
 </resources>

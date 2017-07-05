@@ -472,4 +472,5 @@
   <string name="items">elementi</string>
   <string name="byte_singular">bajt</string>
   <string name="bytes">bajtov</string>
+  <!-- end of plurals -->
 </resources>

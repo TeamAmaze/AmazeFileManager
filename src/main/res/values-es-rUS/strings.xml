@@ -650,4 +650,6 @@
   <string name="items">Elementos</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
+  <!-- end of plurals -->
+  <string name="no_name">Archivo debe tener un nombre</string>
 </resources>
