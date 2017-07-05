@@ -87,6 +87,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             pm.getPackageInfo(CloudContract.APP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
     }

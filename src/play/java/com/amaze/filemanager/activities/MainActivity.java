@@ -319,7 +319,6 @@ public class MainActivity extends BaseActivity implements
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
-    private static final int REQUEST_CODE_CLOUD_LIST_KEY_CLOUD = 5434;
 
     /**
      * Called when the activity is first created.
@@ -372,7 +371,7 @@ public class MainActivity extends BaseActivity implements
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
-            getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY_CLOUD, null, this);
+            getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
         util = new IconUtils(sharedPref, this);
@@ -2952,7 +2951,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys/");
+        Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
 
         String[] projection = new String[] {
                 CloudContract.COLUMN_ID,
@@ -2965,57 +2964,55 @@ public class MainActivity extends BaseActivity implements
                 Uri uriAppendedPath = uri;
                 switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
                     case GDRIVE:
-                        uriAppendedPath = ContentUris.withAppendedId(uri, 1);
-                        break;
-                    case DROPBOX:
                         uriAppendedPath = ContentUris.withAppendedId(uri, 2);
                         break;
-                    case BOX:
+                    case DROPBOX:
                         uriAppendedPath = ContentUris.withAppendedId(uri, 3);
                         break;
-                    case ONEDRIVE:
+                    case BOX:
                         uriAppendedPath = ContentUris.withAppendedId(uri, 4);
+                        break;
+                    case ONEDRIVE:
+                        uriAppendedPath = ContentUris.withAppendedId(uri, 5);
                         break;
                 }
                 return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
             case REQUEST_CODE_CLOUD_LIST_KEYS:
                 // we need a list of all secret keys
-                Uri uriAll = Uri.withAppendedPath(Uri.parse("content://" +
-                        CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
                 CloudHandler cloudHandler = new CloudHandler(getApplicationContext());
                 try {
                     List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
 
-                    String ids[] = new String[cloudEntries.size()];
+                    // we want keys for services saved in database, and the cloudrail app key which
+                    // is at index 1
+                    String ids[] = new String[cloudEntries.size() + 1];
 
-                    for (int i=0; i<cloudEntries.size(); i++) {
+                    ids[0] = 1 + "";
+                    for (int i=1; i<=cloudEntries.size(); i++) {
 
                         // we need to get only those cloud details which user wants
-                        switch (cloudEntries.get(i).getServiceType()) {
+                        switch (cloudEntries.get(i-1).getServiceType()) {
                             case GDRIVE:
-                                ids[i] = 1 + "";
-                                break;
-                            case DROPBOX:
                                 ids[i] = 2 + "";
                                 break;
-                            case BOX:
+                            case DROPBOX:
                                 ids[i] = 3 + "";
                                 break;
-                            case ONEDRIVE:
+                            case BOX:
                                 ids[i] = 4 + "";
+                                break;
+                            case ONEDRIVE:
+                                ids[i] = 5 + "";
                                 break;
                         }
                     }
-                    return new CursorLoader(this, uriAll, projection, CloudContract.COLUMN_ID, ids, null);
+                    return new CursorLoader(this, uri, projection, CloudContract.COLUMN_ID, ids, null);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
                     Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin),
                             Toast.LENGTH_LONG).show();
                 }
-            case REQUEST_CODE_CLOUD_LIST_KEY_CLOUD:
-                Uri uriAppendedPathCloud = ContentUris.withAppendedId(uri, 5);
-                return new CursorLoader(this, uriAppendedPathCloud, projection, null, null, null);
             default:
                 return null;
         }
@@ -3039,7 +3036,6 @@ public class MainActivity extends BaseActivity implements
             @Override
             protected Boolean doInBackground(Void... params) {
 
-
                 CloudHandler cloudHandler = new CloudHandler(MainActivity.this);
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
@@ -3047,6 +3043,9 @@ public class MainActivity extends BaseActivity implements
 
                         switch (data.getInt(0)) {
                             case 1:
+                                CloudRail.setAppKey(data.getString(1));
+                                break;
+                            case 2:
                                 // DRIVE
                                 try {
 
@@ -3093,7 +3092,7 @@ public class MainActivity extends BaseActivity implements
                                     return false;
                                 }
                                 break;
-                            case 2:
+                            case 3:
                                 // DROPBOX
                                 try {
 
@@ -3137,7 +3136,7 @@ public class MainActivity extends BaseActivity implements
                                     return false;
                                 }
                                 break;
-                            case 3:
+                            case 4:
                                 // BOX
                                 try {
 
@@ -3182,7 +3181,7 @@ public class MainActivity extends BaseActivity implements
                                     return false;
                                 }
                                 break;
-                            case 4:
+                            case 5:
                                 // ONEDRIVE
                                 try {
 
@@ -3227,16 +3226,6 @@ public class MainActivity extends BaseActivity implements
                                     return false;
                                 }
                                 break;
-                            case 5:
-                                CloudRail.setAppKey(data.getString(1));
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, MainActivity.this);
-                                    }
-                                });
-                                return false;
                             default:
                                 Toast.makeText(MainActivity.this, getResources().getString(R.string.cloud_error_failed_restart),
                                         Toast.LENGTH_LONG).show();
@@ -3250,14 +3239,14 @@ public class MainActivity extends BaseActivity implements
             @Override
             protected void onPostExecute(Boolean refreshDrawer) {
                 super.onPostExecute(refreshDrawer);
-                if (refreshDrawer)
+                if (refreshDrawer) {
                     refreshDrawer();
+                }
             }
         }.execute();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
