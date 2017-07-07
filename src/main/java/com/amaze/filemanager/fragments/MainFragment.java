@@ -1062,7 +1062,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
      */
     public void createViews(ArrayList<LayoutElement> bitmap, boolean back, String path,
                             final OpenMode openMode, boolean results, boolean grid) {
-        if ( (bitmap != null) && (isAdded()) ) {
+        if (bitmap != null && isAdded()) {
             synchronized (bitmap) {
                 if (GO_BACK_ITEM)
                     if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
@@ -1074,8 +1074,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                            bitmap.add(0,
-                                    utils.newElement(new BitmapDrawable(res, iconBitmap),
+                            bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
                                             "..", "", "", goback, 0, false, true, ""));
                         }
                     }
@@ -1114,8 +1113,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (addheader && IS_LIST) {
                     dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
                     listView.addItemDecoration(dividerItemDecoration);
-                    //headersDecor = new StickyRecyclerHeadersDecoration(adapter);// TODO: 30/5/2017 delete this
-                    //listView.addItemDecoration(headersDecor);// TODO: 30/5/2017 delete this
                     addheader = false;
                 }
                 if (!results) this.results = false;
