@@ -14,15 +14,12 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * Created by vishal on 26/2/16.
+ * Worker fragment designed to not be destroyed when the activity holding it is recreated
+ * (aka the state changes like screen rotation) thus maintaining alive an AsyncTask (SearchTask in this case)
+ *
+ * Created by vishal on 26/2/16 edited by EmmanuelMess.
  */
-public class SearchAsyncHelper extends Fragment {
-
-    private HelperCallbacks mCallbacks;
-    private String mPath, mInput;
-    public SearchTask mSearchTask;
-    private OpenMode mOpenMode;
-    private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
+public class SearchWorkerFragment extends Fragment {
 
     public static final String KEY_PATH = "path";
     public static final String KEY_INPUT = "input";
@@ -30,6 +27,15 @@ public class SearchAsyncHelper extends Fragment {
     public static final String KEY_ROOT_MODE = "root_mode";
     public static final String KEY_REGEX = "regex";
     public static final String KEY_REGEX_MATCHES = "matches";
+
+    public SearchAsyncTask mSearchAsyncTask;
+
+    private static final String TAG = "SearchWorkerFragment";
+
+    private HelperCallbacks mCallbacks;
+    private String mPath, mInput;
+    private OpenMode mOpenMode;
+    private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
@@ -58,8 +64,8 @@ public class SearchAsyncHelper extends Fragment {
         mRootMode = getArguments().getBoolean(KEY_ROOT_MODE);
         isRegexEnabled = getArguments().getBoolean(KEY_REGEX);
         isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);
-        mSearchTask = new SearchTask();
-        mSearchTask.execute(mPath);
+        mSearchAsyncTask = new SearchAsyncTask();
+        mSearchAsyncTask.execute(mPath);
     }
 
     @Override
@@ -70,7 +76,7 @@ public class SearchAsyncHelper extends Fragment {
         mCallbacks = null;
     }
 
-    public class SearchTask extends AsyncTask<String, BaseFile, Void> {
+    public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
         @Override
         protected void onPreExecute() {
             /*
@@ -79,7 +85,6 @@ public class SearchAsyncHelper extends Fragment {
             * Fragment's onDestroy() method have been called.
              */
             if (mCallbacks!=null) {
-
                 mCallbacks.onPreExecute(mInput);
             }
         }
@@ -96,9 +101,9 @@ public class SearchAsyncHelper extends Fragment {
 
             // level 1
             // if regex or not
-            if (!isRegexEnabled) search(file, mInput);
-            else {
-
+            if (!isRegexEnabled) {
+                search(file, mInput);
+            } else {
                 // compile the regular expression in the input
                 Pattern pattern = Pattern.compile(bashRegexToJava(mInput));
                 // level 2
@@ -129,34 +134,39 @@ public class SearchAsyncHelper extends Fragment {
 
         /**
          * Recursively search for occurrences of a given text in file names and publish the result
+         * @param directory the current path
+         */
+        private void search(HFile directory, SearchFilter filter) {
+            if (directory.isDirectory(getContext())) {// do you have permission to read this directory?
+                ArrayList<BaseFile> filesInDirectory = directory.listFiles(getContext(), mRootMode);
+                for (BaseFile file : filesInDirectory) {
+                    if (!isCancelled()) {
+                        if (filter.searchFilter(file.getName())) {
+                            publishProgress(file);
+                        }
+                        if (file.isDirectory() && !isCancelled()) {
+                            search(file, filter);
+                        }
+                    } else return;
+                }
+            } else {
+                Log.d(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
+            }
+        }
+
+
+        /**
+         * Recursively search for occurrences of a given text in file names and publish the result
          * @param file the current path
          * @param query the searched text
          */
-        private void search(HFile file, String query) {
-            if (file.isDirectory()) {
-                ArrayList<BaseFile> f = file.listFiles(mRootMode);
-                // do you have permission to read this directory?
-                if (!isCancelled())
-                    for (BaseFile x : f) {
-                        if (!isCancelled()) {
-                            if (x.isDirectory()) {
-                                if (x.getName().toLowerCase()
-                                        .contains(query.toLowerCase())) {
-                                    publishProgress(x);
-                                }
-                                if (!isCancelled()) search(x, query);
-
-                            } else {
-                                if (x.getName().toLowerCase()
-                                        .contains(query.toLowerCase())) {
-                                    publishProgress(x);
-                                }
-                            }
-                        } else return;
-                    }
-            } else {
-                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
-            }
+        private void search(HFile file, final String query) {
+            search(file, new SearchFilter() {
+                @Override
+                public boolean searchFilter(String fileName) {
+                    return fileName.toLowerCase().contains(query.toLowerCase());
+                }
+            });
         }
 
         /**
@@ -164,28 +174,13 @@ public class SearchAsyncHelper extends Fragment {
          * @param file the current file
          * @param pattern the compiled java regex
          */
-        private void searchRegExFind(HFile file, Pattern pattern) {
-            if (file.isDirectory()) {
-                ArrayList<BaseFile> f = file.listFiles(mRootMode);
-
-                if (!isCancelled()) {
-                    for (BaseFile x : f) {
-                        if (!isCancelled()) {
-                            if (x.isDirectory()) {
-                                if (pattern.matcher(x.getName()).find()) publishProgress(x);
-                                if (!isCancelled()) searchRegExFind(x, pattern);
-
-                            } else {
-                                if (pattern.matcher(x.getName()).find()) {
-                                    publishProgress(x);
-                                }
-                            }
-                        } else return;
-                    }
+        private void searchRegExFind(HFile file, final Pattern pattern) {
+            search(file, new SearchFilter() {
+                @Override
+                public boolean searchFilter(String fileName) {
+                    return pattern.matcher(fileName).find();
                 }
-            } else {
-                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
-            }
+            });
         }
 
         /**
@@ -193,27 +188,13 @@ public class SearchAsyncHelper extends Fragment {
          * @param file the current file
          * @param pattern the compiled java regex
          */
-        private void searchRegExMatch(HFile file, Pattern pattern) {
-            if (file.isDirectory()) {
-                ArrayList<BaseFile> f = file.listFiles(mRootMode);
-
-                if (!isCancelled())
-                    for (BaseFile x : f) {
-                        if (!isCancelled()) {
-                            if (x.isDirectory()) {
-                                if (pattern.matcher(x.getName()).matches()) publishProgress(x);
-                                if (!isCancelled()) searchRegExMatch(x, pattern);
-
-                            } else {
-                                if (pattern.matcher(x.getName()).matches()) {
-                                    publishProgress(x);
-                                }
-                            }
-                        } else return;
-                    }
-            } else {
-                Log.d("SearchAsyncHelper", file.getPath() + "Permission Denied");
-            }
+        private void searchRegExMatch(HFile file, final Pattern pattern) {
+            search(file, new SearchFilter() {
+                @Override
+                public boolean searchFilter(String fileName) {
+                    return pattern.matcher(fileName).matches();
+                }
+            });
         }
 
         /**
@@ -241,5 +222,9 @@ public class SearchAsyncHelper extends Fragment {
             Log.d(getClass().getSimpleName(), stringBuilder.toString());
             return stringBuilder.toString();
         }
+    }
+
+    public interface SearchFilter {
+        boolean searchFilter(String fileName);
     }
 }

@@ -93,10 +93,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         setItems(itemsRaw, false);
     }
 
-    public void addItem() {
-        notifyItemInserted(getItemCount());
-    }
-
     /**
      * called as to toggle selection of any item in adapter
      *
@@ -237,14 +233,30 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.offset += 30;
     }
 
+    /**
+     * Adds item to the end of the list, don't use this unless you are dynamically loading the adapter,
+     * after you are finished you must call createHeaders
+     * @param e
+     */
+    public void addItem(LayoutElement e) {
+        if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+            itemsDigested.add(itemsDigested.size()-1, new ListItem(e));
+        } else if(mainFrag.IS_LIST) {
+            itemsDigested.add(new ListItem(e));
+            itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
+        } else {
+            itemsDigested.add(new ListItem(e));
+        }
+
+        notifyItemInserted(getItemCount());
+    }
+
     public void setItems(ArrayList<LayoutElement> arrayList) {
         setItems(arrayList, true);
     }
 
     private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
-            boolean[] headers = new boolean[]{false, false};
-
             itemsDigested.clear();
             checkedItems.clear();
             offset = 0;
@@ -261,30 +273,38 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             for (int i = 0; i < itemsDigested.size(); i++) {
                 checkedItems.put(i, false);
                 animation.put(i, false);
+            }
 
-                if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
-                    if (itemsDigested.get(i).elem != null) {
-                        LayoutElement nextItem = itemsDigested.get(i).elem;
+            createHeaders(invalidate);
+        }
+    }
 
-                        if (!headers[0] && nextItem.isDirectory()) {
-                            headers[0] = true;
-                            itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
-                            continue;
-                        }
+    public void createHeaders(boolean invalidate)  {
+        boolean[] headers = new boolean[]{false, false};
 
-                        if (!headers[1] && !nextItem.isDirectory()
-                                && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
-                            headers[1] = true;
-                            itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
-                            continue;//leave this continue for symmetry
-                        }
+        for (int i = 0; i < itemsDigested.size(); i++) {
+            if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
+                if (itemsDigested.get(i).elem != null) {
+                    LayoutElement nextItem = itemsDigested.get(i).elem;
+
+                    if (!headers[0] && nextItem.isDirectory()) {
+                        headers[0] = true;
+                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
+                        continue;
+                    }
+
+                    if (!headers[1] && !nextItem.isDirectory()
+                            && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
+                        headers[1] = true;
+                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
+                        continue;//leave this continue for symmetry
                     }
                 }
             }
+        }
 
-            if(invalidate) {
-                notifyDataSetChanged();
-            }
+        if(invalidate) {
+            notifyDataSetChanged();
         }
     }
 
