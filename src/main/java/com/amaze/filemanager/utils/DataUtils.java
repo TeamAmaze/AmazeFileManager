@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * Created by arpitkh996 on 20-01-2016.
+ *
+ * Singleton class to handle data for various services
  */
 
 //Central data being used across activity,fragments and classes
@@ -33,8 +35,13 @@ public class DataUtils {
 
     private DataChangeListener dataChangeListener;
 
-    public DataUtils() {
+    private static DataUtils sDataUtils;
 
+    public static DataUtils getInstance() {
+        if (sDataUtils == null) {
+            sDataUtils = new DataUtils();
+        }
+        return sDataUtils;
     }
 
     public int containsServer(String[] a) {
@@ -139,20 +146,28 @@ public class DataUtils {
         for (CloudStorage storage : accounts) {
             switch (serviceType) {
                 case BOX:
-                    if (storage instanceof Box)
+                    if (storage instanceof Box) {
                         accounts.remove(storage);
+                        return;
+                    }
                     break;
                 case DROPBOX:
-                    if (storage instanceof Dropbox)
+                    if (storage instanceof Dropbox) {
                         accounts.remove(storage);
+                        return;
+                    }
                     break;
                 case GDRIVE:
-                    if (storage instanceof GoogleDrive)
+                    if (storage instanceof GoogleDrive) {
                         accounts.remove(storage);
+                        return;
+                    }
                     break;
                 case ONEDRIVE:
-                    if (storage instanceof OneDrive)
+                    if (storage instanceof OneDrive) {
                         accounts.remove(storage);
+                        return;
+                    }
                     break;
                 default:
                     return;

@@ -329,7 +329,7 @@ public class MainActivity extends BaseActivity implements
         initialisePreferences();
         initializeInteractiveShell();
 
-        dataUtils = new DataUtils();
+        dataUtils = DataUtils.getInstance();
         dataUtils.registerOnDataChangedListener(this);
 
         setContentView(R.layout.main_toolbar);
@@ -2962,7 +2962,7 @@ public class MainActivity extends BaseActivity implements
         switch (id) {
             case REQUEST_CODE_CLOUD_LIST_KEY:
                 Uri uriAppendedPath = uri;
-                switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 6))) {
+                switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 2))) {
                     case GDRIVE:
                         uriAppendedPath = ContentUris.withAppendedId(uri, 2);
                         break;

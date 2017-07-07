@@ -136,7 +136,6 @@ public class CloudHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         CloudEntry cloudEntry = new CloudEntry();
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
             cloudEntry.setId((cursor.getInt(0)));
             cloudEntry.setServiceType(serviceType);
             try {
