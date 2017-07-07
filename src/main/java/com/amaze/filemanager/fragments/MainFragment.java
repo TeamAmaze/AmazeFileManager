@@ -81,8 +81,6 @@ import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -855,13 +853,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
             // check to initialize search results
             // if search task is been running, cancel it
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            SearchAsyncHelper fragment = (SearchAsyncHelper) fragmentManager
+            SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
 
-                if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
+                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
 
-                    fragment.mSearchTask.cancel(true);
+                    fragment.mSearchAsyncTask.cancel(true);
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             }
@@ -1320,10 +1318,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     // the path back to parent on back press
                     CURRENT_PATH = parentPath;
 
-                    MainActivityHelper.addSearchFragment(fm, new SearchAsyncHelper(),
+                    MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
                             parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
-                            sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
-                            sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
+                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
+                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
 
                 mRetainSearchTask = false;
@@ -1331,10 +1329,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
         } else {
             // to go back after search list have been popped
             FragmentManager fm = getActivity().getSupportFragmentManager();
-            SearchAsyncHelper fragment = (SearchAsyncHelper) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
+            SearchWorkerFragment fragment = (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-                if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchTask.cancel(true);
+                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.mSearchAsyncTask.cancel(true);
                 }
             }
             loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);

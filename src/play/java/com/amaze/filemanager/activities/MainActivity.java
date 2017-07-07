@@ -117,7 +117,7 @@ import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbac
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.SearchAsyncHelper;
+import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
@@ -189,7 +189,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchAsyncHelper.HelperCallbacks, CloudConnectionCallbacks,
+        SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");

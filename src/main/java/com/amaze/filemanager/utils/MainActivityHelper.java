@@ -35,7 +35,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.SearchAsyncHelper;
+import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
@@ -603,7 +603,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Creates a fragment which will handle the search AsyncTask {@link SearchAsyncHelper}
+     * Creates a fragment which will handle the search AsyncTask {@link SearchWorkerFragment}
      *
      * @param query the text query entered the by user
      */
@@ -619,20 +619,19 @@ public class MainActivityHelper {
         SEARCH_TEXT = query;
         mainActivity.mainFragment = (MainFragment) mainActivity.getFragment().getTab();
         FragmentManager fm = mainActivity.getSupportFragmentManager();
-        SearchAsyncHelper fragment =
-                (SearchAsyncHelper) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
+        SearchWorkerFragment fragment =
+                (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
 
         if (fragment != null) {
-            if (fragment.mSearchTask.getStatus() == AsyncTask.Status.RUNNING) {
-
-                fragment.mSearchTask.cancel(true);
+            if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                fragment.mSearchAsyncTask.cancel(true);
             }
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchAsyncHelper(), fpath, query, ma.openMode, BaseActivity.rootMode,
-                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX, false),
-                mainActivity.sharedPref.getBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, false));
+        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, BaseActivity.rootMode,
+                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
+                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }
 
     /**
@@ -651,16 +650,15 @@ public class MainActivityHelper {
                                          String path, String input, OpenMode openMode, boolean rootMode,
                                          boolean regex, boolean matches) {
         Bundle args = new Bundle();
-        args.putString(SearchAsyncHelper.KEY_INPUT, input);
-        args.putString(SearchAsyncHelper.KEY_PATH, path);
-        args.putInt(SearchAsyncHelper.KEY_OPEN_MODE, openMode.ordinal());
-        args.putBoolean(SearchAsyncHelper.KEY_ROOT_MODE, rootMode);
-        args.putBoolean(SearchAsyncHelper.KEY_REGEX, regex);
-        args.putBoolean(SearchAsyncHelper.KEY_REGEX_MATCHES, matches);
+        args.putString(SearchWorkerFragment.KEY_INPUT, input);
+        args.putString(SearchWorkerFragment.KEY_PATH, path);
+        args.putInt(SearchWorkerFragment.KEY_OPEN_MODE, openMode.ordinal());
+        args.putBoolean(SearchWorkerFragment.KEY_ROOT_MODE, rootMode);
+        args.putBoolean(SearchWorkerFragment.KEY_REGEX, regex);
+        args.putBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, matches);
 
         fragment.setArguments(args);
-        fragmentManager.beginTransaction().add(fragment,
-                MainActivity.TAG_ASYNC_HELPER).commit();
+        fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
     }
 
     /**
