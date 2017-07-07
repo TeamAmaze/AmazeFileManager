@@ -849,7 +849,11 @@ public class Futils {
         }*/
     }
 
-    public LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
+    /**
+     *
+     * @deprecated use new LayoutElement()
+     */
+    public static LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
                                     String size, long longSize, boolean directorybool, boolean b,
                                     String date) {
         return new LayoutElement(i, new File(d).getName(), d, permissions, symlink,

@@ -28,6 +28,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class LayoutElement implements Parcelable {
@@ -102,6 +103,12 @@ public class LayoutElement implements Parcelable {
             this.date = Long.parseLong(date);
             this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
         }
+    }
+
+    public LayoutElement(BitmapDrawable drawable, String path, String permissions, String symlink,
+                                           String size, long longSize, boolean isDirectory, boolean header,
+                                           String date) {
+        this(drawable, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
     }
 
     public static final Parcelable.Creator<LayoutElement> CREATOR =

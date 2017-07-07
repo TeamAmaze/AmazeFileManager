@@ -1497,16 +1497,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     // method to add search result entry to the LIST_ELEMENT arrayList
-    private void addTo(BaseFile mFile) {
+    private LayoutElement addTo(BaseFile mFile) {
         File f = new File(mFile.getPath());
         String size = "";
         if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                LayoutElement layoutElement = utils.newElement(folder, f.getPath(), mFile.getPermission(), mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+                LayoutElement layoutElement = new LayoutElement(folder, f.getPath(), mFile.getPermission(),
+                        mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+
                 layoutElement.setMode(mFile.getMode());
                 addLayoutElement(layoutElement);
                 folder_count++;
+                return layoutElement;
             } else {
                 long longSize = 0;
                 try {
@@ -1521,15 +1524,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     //e.printStackTrace();
                 }
                 try {
-                    LayoutElement layoutElement = utils.newElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res), f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    LayoutElement layoutElement = new LayoutElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
+                            f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
                     layoutElement.setMode(mFile.getMode());
                     addLayoutElement(layoutElement);
                     file_count++;
+                    return layoutElement;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+
+        return null;
     }
 
     @Override
@@ -1591,14 +1598,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
             }
 
             // adding new value to LIST_ELEMENTS
-            addTo(a);
+            LayoutElement layoutElementAdded = addTo(a);
             if (!results) {
                 createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
                 pathname.setText(getMainActivity().getString(R.string.empty));
                 mFullPath.setText(getMainActivity().getString(R.string.searching) + " " + query);
                 results = true;
             } else {
-                adapter.addItem();
+                adapter.addItem(layoutElementAdded);
             }
             stopAnimation();
         }
@@ -1618,7 +1625,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onPostExecute(Void c) {
-                createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);
+                createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
                 pathname.setText(getMainActivity().getString(R.string.empty));
                 mFullPath.setText(getMainActivity().getString(R.string.searchresults) + " " + query);
             }
