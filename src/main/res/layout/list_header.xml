@@ -15,11 +15,7 @@
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingLeft="@dimen/icon_width"
         android:paddingRight="@dimen/icon_width"
-        android:textAllCaps="true"
-        android:textSize="@dimen/dialog_category"
-        android:textStyle="bold"
-        tools:ignore="RtlSymmetry"
-        tools:text="@string/folders" >
+        android:textSize="@dimen/list_header_textsize">
     </TextView>
 
 </RelativeLayout>
