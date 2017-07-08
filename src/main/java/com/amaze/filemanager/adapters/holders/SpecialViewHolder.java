@@ -36,7 +36,7 @@ public class SpecialViewHolder extends RecyclerView.ViewHolder {
                 txtTitle.setText(R.string.files);
                 break;
             case HEADER_FOLDERS:
-                txtTitle.setText(R.string.directories);
+                txtTitle.setText(R.string.folders);
                 break;
         }
 
