@@ -56,8 +56,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
             GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
 
+    public boolean stoppedAnimation = false;
+
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
+    private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
     private SparseBooleanArray checkedItems = new SparseBooleanArray();
@@ -66,15 +69,15 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private float minRowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
-
     private int offset = 0;
-    public boolean stoppedAnimation = false;
+
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider,
-                           ArrayList<LayoutElement> itemsRaw, Context context) {
+                           ArrayList<LayoutElement> itemsRaw, Context context, boolean showHeaders) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
+        this.showHeaders = showHeaders;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
@@ -275,7 +278,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 animation.put(i, false);
             }
 
-            createHeaders(invalidate);
+            if(showHeaders) {
+                createHeaders(invalidate);
+            }
         }
     }
 

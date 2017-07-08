@@ -1094,7 +1094,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null) {
-                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity());
+                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity(), SHOW_HEADERS);
                 } else {
                     adapter.setItems(getLayoutElements());
                 }
