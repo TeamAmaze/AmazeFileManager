@@ -677,4 +677,5 @@
     <!-- end of plurals -->
 
     <string name="no_name">File should have a name</string>
+    <string name="add_item">Add Item</string>
 </resources>

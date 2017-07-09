@@ -74,7 +74,7 @@ public class SmbConnectDialog extends DialogFragment {
          *             from db and to successfully delete it. If we don't want this behaviour,
          *             then we'll have to not allow duplicate connection name, and delete entry based
          *             on the name only. But that is not supported as of now.
-         *             See {@link com.amaze.filemanager.utils.HistoryManager#removePath(String, String, String)}
+         *             See {@link com.amaze.filemanager.database.UtilsHandler#removeSmbPath(String, String)}
          */
         void deleteConnection(String name, String path);
     }

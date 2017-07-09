@@ -102,10 +102,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.CloudContract;
-import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.CloudEntry;
+import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -142,8 +143,6 @@ import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
-import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -152,6 +151,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity implements
     static final int RC_SIGN_IN = 0;
 
     /*Global variable for storing data. MUST be set null if cleared*/
-    public static DataUtils dataUtils = null;
+    public static DataUtils dataUtils = DataUtils.getInstance();
 
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
@@ -240,7 +240,7 @@ public class MainActivity extends BaseActivity implements
 
     private static final int image_selector_request_code = 31;
 
-    private HistoryManager history, grid;
+    //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
     private IconUtils util;
@@ -294,6 +294,7 @@ public class MainActivity extends BaseActivity implements
     private int[] searchCoords = new int[2];
     private CoordinatorLayout mScreenLayout;
     private View fabBgView;
+    private UtilsHandler utilsHandler;
 
     private static final int REQUEST_CODE_SAF = 223;
     private static final String VALUE_PREF_OTG_NULL = "n/a";
@@ -320,6 +321,8 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
+    private static final String KEY_PREFERENCE_BOOKMARKS_ADDED = "books_added";
+
     /**
      * Called when the activity is first created.
      */
@@ -329,19 +332,19 @@ public class MainActivity extends BaseActivity implements
         initialisePreferences();
         initializeInteractiveShell();
 
-        dataUtils = DataUtils.getInstance();
         dataUtils.registerOnDataChangedListener(this);
 
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
+        utilsHandler = new UtilsHandler(this);
         mImageLoader = AppConfig.getInstance().getImageLoader();
         utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
         // TODO: Create proper SQLite database handler class with calls to database from background thread
-        history = new HistoryManager(this, "Table2");
+        /*history = new HistoryManager(this, "Table2");
         history.initializeTable(DataUtils.HISTORY, 0);
         history.initializeTable(DataUtils.HIDDEN, 0);
 
@@ -351,13 +354,10 @@ public class MainActivity extends BaseActivity implements
         grid.initializeTable(DataUtils.BOOKS, 1);
         grid.initializeTable(DataUtils.SMB, 1);
 
-        if (!sharedPref.getBoolean("booksadded", false)) {
-            grid.make(DataUtils.BOOKS);
-            sharedPref.edit().putBoolean("booksadded", true).commit();
-        }
+
         dataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
         dataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
-        dataUtils.setListfiles(grid.readTable(DataUtils.LIST));
+        dataUtils.setListfiles(grid.readTable(DataUtils.LIST));*/
 
         // initialize g+ api client as per preferences
         if (sharedPref.getBoolean("plus_pic", false)) {
@@ -425,8 +425,6 @@ public class MainActivity extends BaseActivity implements
 
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
         }
-
-        refreshDrawer();
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
         if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -535,6 +533,49 @@ public class MainActivity extends BaseActivity implements
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
             setTaskDescription(taskDescription);
         }
+
+
+
+        if (!sharedPref.getBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, false)) {
+            utilsHandler.addCommonBookmarks();
+            sharedPref.edit().putBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, true).commit();
+        }
+
+        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+            @Override
+            public <E> E doInBackground() {
+
+                dataUtils.setHiddenfiles(utilsHandler.getHiddenList());
+                dataUtils.setGridfiles(utilsHandler.getGridViewList());
+                dataUtils.setListfiles(utilsHandler.getListViewList());
+                dataUtils.setBooks(utilsHandler.getBookmarksList());
+                dataUtils.setServers(utilsHandler.getSmbList());
+
+                return null;
+            }
+
+            @Override
+            public Void onPostExecute(Object result) {
+
+                refreshDrawer();
+                return null;
+            }
+
+            @Override
+            public Void onPreExecute() {
+                return null;
+            }
+
+            @Override
+            public Void publishResult(Object... result) {
+                return null;
+            }
+
+            @Override
+            public <T> T[] params() {
+                return null;
+            }
+        });
     }
 
     /**
@@ -552,7 +593,7 @@ public class MainActivity extends BaseActivity implements
             handler = new Handler(handlerThread.getLooper());
             shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
 
-            // check for busybox
+            // TODO: check for busybox
             /*try {
                 if (!RootUtils.isBusyboxAvailable()) {
                     Toast.makeText(this, getString(R.string.error_busybox), Toast.LENGTH_LONG).show();
@@ -716,7 +757,7 @@ public class MainActivity extends BaseActivity implements
                 if (path != null && path.length() > 0) {
                     HFile file = new HFile(OpenMode.UNKNOWN, path);
                     file.generateMode(this);
-                    if (file.isDirectory())
+                    if (file.isDirectory(this))
                         goToMain(path);
                     else {
                         goToMain("");
@@ -1094,19 +1135,48 @@ public class MainActivity extends BaseActivity implements
                 GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme());
                 break;
             case R.id.view:
+                final MainFragment mainFragment = ma;
                 if (ma.IS_LIST) {
                     if (dataUtils.getListfiles().contains(ma.CURRENT_PATH)) {
                         dataUtils.getListfiles().remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
+
+                        AppConfig.runInBackground(new Runnable() {
+                            @Override
+                            public void run() {
+                                utilsHandler.removeListViewPath(mainFragment.CURRENT_PATH);
+                            }
+                        });
+                        //grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
                     }
-                    grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
+
+                    AppConfig.runInBackground(new Runnable() {
+                        @Override
+                        public void run() {
+                            utilsHandler.addGridView(mainFragment.CURRENT_PATH);
+                        }
+                    });
+                    //grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
                     dataUtils.getGridFiles().add(ma.CURRENT_PATH);
                 } else {
                     if (dataUtils.getGridFiles().contains(ma.CURRENT_PATH)) {
                         dataUtils.getGridFiles().remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
+                        //grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
+
+                        AppConfig.runInBackground(new Runnable() {
+                            @Override
+                            public void run() {
+                                utilsHandler.removeGridViewPath(mainFragment.CURRENT_PATH);
+                            }
+                        });
                     }
-                    grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
+
+                    AppConfig.runInBackground(new Runnable() {
+                        @Override
+                        public void run() {
+                            utilsHandler.addListView(mainFragment.CURRENT_PATH);
+                        }
+                    });
+                    //grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
                     dataUtils.getListfiles().add(ma.CURRENT_PATH);
                 }
                 ma.switchView();
@@ -1404,10 +1474,6 @@ public class MainActivity extends BaseActivity implements
         // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
         closeInteractiveShell();
 
-        if (grid != null)
-            grid.end();
-        if (history != null)
-            history.end();
         /*if (mainFragment!=null)
             mainFragment = null;*/
     }
@@ -1486,8 +1552,6 @@ public class MainActivity extends BaseActivity implements
 
         ArrayList<Item> sectionItems = new ArrayList<>();
         ArrayList<String> storageDirectories = getStorageDirectories();
-        ArrayList<String[]> books = new ArrayList<>();
-        ArrayList<String[]> servers = new ArrayList<>();
         storage_count = 0;
         for (String file : storageDirectories) {
             File f = new File(file);
@@ -1511,19 +1575,16 @@ public class MainActivity extends BaseActivity implements
         }
         dataUtils.setStorages(storageDirectories);
         sectionItems.add(new SectionItem());
-        try {
-            for (String[] file : grid.readTableSecondary(DataUtils.SMB))
-                servers.add(file);
-            dataUtils.setServers(servers);
-            if (servers.size() > 0) {
-                Collections.sort(servers, new BookSorter());
-                for (String[] file : servers)
+
+        if (dataUtils.getServers().size() > 0) {
+            Collections.sort(dataUtils.getServers(), new BookSorter());
+            synchronized (dataUtils.getServers()) {
+
+                for (String[] file : dataUtils.getServers())
                     sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
                             R.drawable.ic_settings_remote_white_48dp)));
-                sectionItems.add(new SectionItem());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            sectionItems.add(new SectionItem());
         }
 
         ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
@@ -1580,31 +1641,18 @@ public class MainActivity extends BaseActivity implements
                 sectionItems.add(new SectionItem());
         }
 
-        if (!sharedPref.contains(FoldersPref.KEY)) {
-            for (String[] file : grid.readTableSecondary(DataUtils.BOOKS)) {
-                books.add(file);
-            }
-        } else {
-            ArrayList<FoldersPref.Shortcut> booksPref =
-                    FoldersPref.castStringListToTrioList(TinyDB.getList(sharedPref, String.class,
-                            FoldersPref.KEY, new ArrayList<String>()));
-
-            for (FoldersPref.Shortcut t : booksPref) {
-                if (t.enabled) {
-                    books.add(new String[]{t.name, t.directory});
-                }
-            }
-        }
-        dataUtils.setBooks(books);
         if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-            if (books.size() > 0) {
+            if (dataUtils.getBooks().size() > 0) {
                 if (!sharedPref.contains(FoldersPref.KEY)) {
-                    Collections.sort(books, new BookSorter());
+                    Collections.sort(dataUtils.getBooks(), new BookSorter());
                 }
 
-                for (String[] file : books) {
-                    sectionItems.add(new EntryItem(file[0], file[1],
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
+                synchronized (dataUtils.getBooks()) {
+
+                    for (String[] file : dataUtils.getBooks()) {
+                        sectionItems.add(new EntryItem(file[0], file[1],
+                                ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
+                    }
                 }
                 sectionItems.add(new SectionItem());
             }
@@ -2799,49 +2847,67 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void addConnection(boolean edit, String name, String path, String encryptedPath,
-                              String oldname, String oldPath) {
-        try {
-            String[] s = new String[]{name, path};
-            if (!edit) {
-                if ((dataUtils.containsServer(path)) == -1) {
-                    dataUtils.addServer(s);
-                    refreshDrawer();
-                    grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-                    TabFragment fragment = getFragment();
-                    if (fragment != null) {
-                        Fragment fragment1 = fragment.getTab();
-                        if (fragment1 != null) {
-                            final MainFragment ma = (MainFragment) fragment1;
-                            ma.loadlist(path, false, OpenMode.UNKNOWN);
-                        }
-                    }
-                } else
+    public void addConnection(boolean edit, final String name, final String path, final String encryptedPath,
+                              final String oldname, final String oldPath) {
 
-                    Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
-            } else {
-                int i = dataUtils.containsServer(new String[]{oldname, oldPath});
-                if (i != -1) {
-                    dataUtils.removeServer(i);
-                    mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
-                }
+        String[] s = new String[]{name, path};
+        if (!edit) {
+            if ((dataUtils.containsServer(path)) == -1) {
                 dataUtils.addServer(s);
-                Collections.sort(dataUtils.getServers(), new BookSorter());
-                mainActivity.refreshDrawer();
-                mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+                refreshDrawer();
+
+                AppConfig.runInBackground(new Runnable() {
+                    @Override
+                    public void run() {
+                        utilsHandler.addSmb(name, encryptedPath);
+                    }
+                });
+                //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+                TabFragment fragment = getFragment();
+                if (fragment != null) {
+                    Fragment fragment1 = fragment.getTab();
+                    if (fragment1 != null) {
+                        final MainFragment ma = (MainFragment) fragment1;
+                        ma.loadlist(path, false, OpenMode.UNKNOWN);
+                    }
+                }
+            } else
+
+                Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+        } else {
+            int i = dataUtils.containsServer(new String[]{oldname, oldPath});
+            if (i != -1) {
+                dataUtils.removeServer(i);
+
+                AppConfig.runInBackground(new Runnable() {
+                    @Override
+                    public void run() {
+                        utilsHandler.renameSMB(oldname, oldPath, name, path);
+                    }
+                });
+                //mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
             }
-        } catch (Exception e) {
-            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            dataUtils.addServer(s);
+            Collections.sort(dataUtils.getServers(), new BookSorter());
+            mainActivity.refreshDrawer();
+            //mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
         }
     }
 
     @Override
-    public void deleteConnection(String name, String path) {
+    public void deleteConnection(final String name, final String path) {
+
         int i = dataUtils.containsServer(new String[]{name, path});
         if (i != -1) {
             dataUtils.removeServer(i);
-            grid.removePath(name, path, DataUtils.SMB);
+
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+                    utilsHandler.removeSmbPath(name, path);
+                }
+            });
+            //grid.removePath(name, path, DataUtils.SMB);
             refreshDrawer();
         }
 
@@ -2849,41 +2915,48 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onHiddenFileAdded(String path) {
-        history.addPath(null, path, DataUtils.HIDDEN, 0);
+
+        utilsHandler.addHidden(path);
     }
 
     @Override
     public void onHiddenFileRemoved(String path) {
-        history.removePath(path, DataUtils.HIDDEN);
+
+        utilsHandler.removeHiddenPath(path);
     }
 
     @Override
     public void onHistoryAdded(String path) {
-        history.addPath(null, path, DataUtils.HISTORY, 0);
+
+        utilsHandler.addHistory(path);
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        grid.addPath(path[0], path[1], DataUtils.BOOKS, 1);
+
+        utilsHandler.addBookmark(path[0], path[1]);
         if (refreshdrawer)
             refreshDrawer();
     }
 
     @Override
     public void onHistoryCleared() {
-        history.clear(DataUtils.HISTORY);
+
+        utilsHandler.clearHistoryTable();
     }
 
     @Override
     public void delete(String title, String path) {
-        grid.removePath(title, path, DataUtils.BOOKS);
+
+        utilsHandler.removeBookmarksPath(title, path);
         refreshDrawer();
 
     }
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-        grid.rename(oldname, oldpath, newPath, newname, DataUtils.BOOKS);
+
+        utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
         refreshDrawer();
     }
 

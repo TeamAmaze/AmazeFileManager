@@ -5,15 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 import com.amaze.filemanager.utils.SmbUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
  * Created by Vishal on 29-05-2017.
  * Class handles database with tables having list of various utilities like
  * history, hidden files, list paths, grid paths, bookmarks, smb entry
+ *
+ * Try to use these functions from a background thread
  */
 
 public class UtilsHandler extends SQLiteOpenHelper {
@@ -21,7 +25,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private Context context;
 
     private static final String DATABASE_NAME = "utilities.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;  // increment only when making change in schema
 
     private static final String TABLE_HISTORY = "history";
     private static final String TABLE_HIDDEN = "hidden";
@@ -88,7 +92,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
     private enum Operation {
         HISTORY,
         HIDDEN,
@@ -96,6 +99,47 @@ public class UtilsHandler extends SQLiteOpenHelper {
         GRID,
         BOOKMARKS,
         SMB
+    }
+
+    public void addCommonBookmarks() {
+        String sd = Environment.getExternalStorageDirectory() + "/";
+
+        String[] dirs = new String[] {
+                sd + Environment.DIRECTORY_DCIM,
+                sd + Environment.DIRECTORY_DOWNLOADS,
+                sd + Environment.DIRECTORY_MOVIES,
+                sd + Environment.DIRECTORY_MUSIC,
+                sd + Environment.DIRECTORY_PICTURES
+        };
+
+        for (String dir : dirs) {
+
+            addBookmark(new File(dir).getName(), dir);
+        }
+    }
+
+    public void addHistory(String path) {
+        setPath(Operation.HISTORY, path);
+    }
+
+    public void addHidden(String path) {
+        setPath(Operation.HIDDEN, path);
+    }
+
+    public void addListView(String path) {
+        setPath(Operation.LIST, path);
+    }
+
+    public void addGridView(String path) {
+        setPath(Operation.GRID, path);
+    }
+
+    public void addBookmark(String name, String path) {
+        setPath(Operation.BOOKMARKS, name, path);
+    }
+
+    public void addSmb(String name, String path) {
+        setPath(Operation.SMB, name, path);
     }
 
     public ArrayList<String> getHistoryList() {
@@ -125,7 +169,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         ArrayList<String[]> row = new ArrayList<>();
         try {
 
-            while (!cursor.isAfterLast()) {
+            while (cursor.moveToNext()) {
                 row.add(new String[] {
                         cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                         cursor.getString(cursor.getColumnIndex(COLUMN_PATH))
@@ -144,11 +188,10 @@ public class UtilsHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SMB), null,
                 null, null, null, null, null);
         cursor.moveToFirst();
-
         ArrayList<String[]> row = new ArrayList<>();
         try {
 
-            while (!cursor.isAfterLast()) {
+            while (cursor.moveToNext()) {
                 row.add(new String[] {
                         cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                         SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
@@ -194,7 +237,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         try {
-            sqLiteDatabase.delete(TABLE_BOOKMARKS, COLUMN_NAME + "=? AND " + COLUMN_PATH + "=?",
+            sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + "=? AND " + COLUMN_PATH + "=?",
                     new String[] {name, path});
         } finally {
             sqLiteDatabase.close();
@@ -225,10 +268,43 @@ public class UtilsHandler extends SQLiteOpenHelper {
         clearTable(Operation.SMB);
     }
 
+    public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
+        renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
+    }
+
+    public void renameSMB(String oldName, String oldPath, String newName, String newPath) {
+        renamePath(Operation.SMB, oldName, oldPath, newName, newPath);
+    }
+
+    private void setPath(Operation operation, String path) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_PATH, path);
+
+        try {
+
+            sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
+        } finally {
+            sqLiteDatabase.close();
+        }
+    }
+
+    private void setPath(Operation operation, String name, String path) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_PATH, path);
+
+        try {
+            sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
+        } finally {
+            sqLiteDatabase.close();
+        }
+    }
+
     private ArrayList<String> getPath(Operation operation) {
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(operation), null,
                 null, null, null, null, null);
         cursor.moveToFirst();
@@ -241,7 +317,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 ArrayList<String> paths = new ArrayList<>();
                 try {
 
-                    while (!cursor.isAfterLast()) {
+                    while (cursor.moveToNext()) {
                         paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
                     }
                 } finally {
@@ -278,13 +354,35 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    private boolean renamePath(Operation operation, String oldName, String oldPath,
+    private void renamePath(Operation operation, String name, String path) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_PATH, path);
+
+        try {
+            sqLiteDatabase.update(getTableForOperation(operation), contentValues,
+                    COLUMN_PATH + "=?", new String[] {name});
+        } finally {
+            sqLiteDatabase.close();
+        }
+    }
+
+    private void renamePath(Operation operation, String oldName, String oldPath,
                                String newName, String newPath) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        //contentValues.put();
-        //sqLiteDatabase.update(getTableForOperation(operation), )
-        return false;
+        contentValues.put(COLUMN_NAME, newName);
+        contentValues.put(COLUMN_PATH, newPath);
+
+        try {
+
+            sqLiteDatabase.update(getTableForOperation(operation), contentValues, COLUMN_NAME
+                    + "=? AND " + COLUMN_PATH + "=?", new String[] {oldName, oldPath});
+        } finally {
+            sqLiteDatabase.close();
+        }
+        return;
     }
 
     /**

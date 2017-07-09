@@ -59,19 +59,19 @@ public class TabHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+        String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + " ("
                 + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT,"
                 + COLUMN_HOME + " TEXT"
                 + ")";
 
-        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + " ("
                 + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_ENCRYPTED_PATH + " TEXT,"
                 + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
                 + ")";
 
-        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + "("
+        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + " ("
                 + CloudHandler.COLUMN_CLOUD_ID
                 + " INTEGER PRIMARY KEY,"
                 + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"

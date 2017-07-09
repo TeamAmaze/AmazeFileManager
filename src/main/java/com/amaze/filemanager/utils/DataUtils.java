@@ -22,8 +22,6 @@ public class DataUtils {
 
     public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
             RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
-    public static final String DRIVE = "drive", SMB = "smb", BOOKS = "books",
-            HISTORY = "Table1", HIDDEN = "Table2", LIST = "list", GRID = "grid";
 
     private ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
             listfiles = new ArrayList<>(), history = new ArrayList<>(), storages = new ArrayList<>();
@@ -49,12 +47,16 @@ public class DataUtils {
     }
 
     public int containsServer(String path) {
-        if (servers == null) return -1;
-        int i = 0;
-        for (String[] x : servers) {
-            if (x[1].equals(path)) return i;
-            i++;
 
+        synchronized (servers) {
+
+            if (servers == null) return -1;
+            int i = 0;
+            for (String[] x : servers) {
+                if (x[1].equals(path)) return i;
+                i++;
+
+            }
         }
         return -1;
     }
@@ -138,8 +140,11 @@ public class DataUtils {
     }
 
     public void removeBook(int i) {
-        if (books.size() > i)
-            books.remove(i);
+        synchronized (books) {
+
+            if (books.size() > i)
+                books.remove(i);
+        }
     }
 
     public synchronized void removeAccount(OpenMode serviceType) {
@@ -176,20 +181,37 @@ public class DataUtils {
     }
 
     public void removeServer(int i) {
-        if (servers.size() > i)
-            servers.remove(i);
+        synchronized (servers) {
+
+            if (servers.size() > i)
+                servers.remove(i);
+        }
     }
 
     public void addBook(String[] i) {
-        books.add(i);
+        synchronized (books) {
+
+            books.add(i);
+        }
     }
 
-    public void addBook(String[] i, boolean refreshdrawer) {
-        if (refreshdrawer && dataChangeListener != null) dataChangeListener.onBookAdded(i, true);
-        books.add(i);
+    public void addBook(final String[] i, boolean refreshdrawer) {
+        synchronized (books) {
+
+            books.add(i);
+        }
+        if (refreshdrawer && dataChangeListener != null) {
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+
+                    dataChangeListener.onBookAdded(i, true);
+                }
+            });
+        }
     }
 
-    public synchronized void addAccount(CloudStorage storage) {
+    public void addAccount(CloudStorage storage) {
         accounts.add(storage);
     }
 
@@ -197,33 +219,66 @@ public class DataUtils {
         servers.add(i);
     }
 
-    public void addHiddenFile(String i) {
-        hiddenfiles.add(i);
-        if (dataChangeListener != null)
-            dataChangeListener.onHiddenFileAdded(i);
+    public void addHiddenFile(final String i) {
+
+        synchronized (hiddenfiles) {
+
+            hiddenfiles.add(i);
+        }
+        if (dataChangeListener != null) {
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+
+                    dataChangeListener.onHiddenFileAdded(i);
+                }
+            });
+        }
     }
 
-    public void removeHiddenFile(String i) {
-        hiddenfiles.remove(i);
-        if (dataChangeListener != null)
-            dataChangeListener.onHiddenFileRemoved(i);
+    public void removeHiddenFile(final String i) {
+
+        synchronized (hiddenfiles) {
+
+            hiddenfiles.remove(i);
+        }
+        if (dataChangeListener != null) {
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+
+                    dataChangeListener.onHiddenFileRemoved(i);
+                }
+            });
+        }
     }
 
     public ArrayList<String> getHistory() {
         return history;
     }
 
-    public void addHistoryFile(String i) {
-        history.add(i);
-        if (dataChangeListener != null)
-            dataChangeListener.onHistoryAdded(i);
+    public void addHistoryFile(final String i) {
+
+        synchronized (history) {
+
+            history.add(i);
+        }
+        if (dataChangeListener != null) {
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+
+                    dataChangeListener.onHistoryAdded(i);
+                }
+            });
+        }
     }
 
     public void sortBook() {
         Collections.sort(books, new BookSorter());
     }
 
-    public void setServers(ArrayList<String[]> servers) {
+    public synchronized void setServers(ArrayList<String[]> servers) {
         if (servers != null)
             this.servers = servers;
     }
@@ -280,7 +335,7 @@ public class DataUtils {
         return hiddenfiles;
     }
 
-    public void setHiddenfiles(ArrayList<String> hiddenfiles) {
+    public synchronized void setHiddenfiles(ArrayList<String> hiddenfiles) {
         if (hiddenfiles != null)
             this.hiddenfiles = hiddenfiles;
     }
@@ -289,7 +344,7 @@ public class DataUtils {
         return gridfiles;
     }
 
-    public void setGridfiles(ArrayList<String> gridfiles) {
+    public synchronized void setGridfiles(ArrayList<String> gridfiles) {
         if (gridfiles != null)
             this.gridfiles = gridfiles;
     }
@@ -298,15 +353,21 @@ public class DataUtils {
         return listfiles;
     }
 
-    public void setListfiles(ArrayList<String> listfiles) {
+    public synchronized void setListfiles(ArrayList<String> listfiles) {
         if (listfiles != null)
             this.listfiles = listfiles;
     }
 
     public void clearHistory() {
         history = new ArrayList<>();
-        if (dataChangeListener != null)
-            dataChangeListener.onHistoryCleared();
+        if (dataChangeListener != null) {
+            AppConfig.runInBackground(new Runnable() {
+                @Override
+                public void run() {
+                    dataChangeListener.onHistoryCleared();
+                }
+            });
+        }
     }
 
     public synchronized List<String> getStorages() {
@@ -325,7 +386,10 @@ public class DataUtils {
         this.list = list;
     }
 
-    //Callbacks to do original changes in database (and ui if required)
+    /**
+     * Callbacks to do original changes in database (and ui if required)
+     * The callbacks are called in a background thread
+     */
     public interface DataChangeListener {
         void onHiddenFileAdded(String path);
 

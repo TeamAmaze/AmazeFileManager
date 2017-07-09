@@ -1428,7 +1428,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
 
-        startFileObserver();
+        //startFileObserver();
         fixIcons(false);
     }
 
