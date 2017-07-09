@@ -46,4 +46,7 @@
 
     <dimen name="spacebetweenitems_properties_dialog">10dp</dimen>
 
+    <dimen name="list_header_height">48dp</dimen>
+    <dimen name="list_header_textsize">16sp</dimen>
+
 </resources>

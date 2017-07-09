@@ -56,8 +56,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
             GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
 
+    public boolean stoppedAnimation = false;
+
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
+    private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
     private SparseBooleanArray checkedItems = new SparseBooleanArray();
@@ -66,15 +69,15 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private float minRowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
-
     private int offset = 0;
-    public boolean stoppedAnimation = false;
+
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider,
-                           ArrayList<LayoutElement> itemsRaw, Context context) {
+                           ArrayList<LayoutElement> itemsRaw, Context context, boolean showHeaders) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
+        this.showHeaders = showHeaders;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
@@ -91,10 +94,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         grey_color = Utils.getColor(context, R.color.grey);
 
         setItems(itemsRaw, false);
-    }
-
-    public void addItem() {
-        notifyItemInserted(getItemCount());
     }
 
     /**
@@ -237,14 +236,30 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         this.offset += 30;
     }
 
+    /**
+     * Adds item to the end of the list, don't use this unless you are dynamically loading the adapter,
+     * after you are finished you must call createHeaders
+     * @param e
+     */
+    public void addItem(LayoutElement e) {
+        if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+            itemsDigested.add(itemsDigested.size()-1, new ListItem(e));
+        } else if(mainFrag.IS_LIST) {
+            itemsDigested.add(new ListItem(e));
+            itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
+        } else {
+            itemsDigested.add(new ListItem(e));
+        }
+
+        notifyItemInserted(getItemCount());
+    }
+
     public void setItems(ArrayList<LayoutElement> arrayList) {
         setItems(arrayList, true);
     }
 
     private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
-            boolean[] headers = new boolean[]{false, false};
-
             itemsDigested.clear();
             checkedItems.clear();
             offset = 0;
@@ -261,30 +276,40 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             for (int i = 0; i < itemsDigested.size(); i++) {
                 checkedItems.put(i, false);
                 animation.put(i, false);
+            }
 
-                if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
-                    if (itemsDigested.get(i).elem != null) {
-                        LayoutElement nextItem = itemsDigested.get(i).elem;
+            if(showHeaders) {
+                createHeaders(invalidate);
+            }
+        }
+    }
 
-                        if (!headers[0] && nextItem.isDirectory()) {
-                            headers[0] = true;
-                            itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
-                            continue;
-                        }
+    public void createHeaders(boolean invalidate)  {
+        boolean[] headers = new boolean[]{false, false};
 
-                        if (!headers[1] && !nextItem.isDirectory()
-                                && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
-                            headers[1] = true;
-                            itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
-                            continue;//leave this continue for symmetry
-                        }
+        for (int i = 0; i < itemsDigested.size(); i++) {
+            if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
+                if (itemsDigested.get(i).elem != null) {
+                    LayoutElement nextItem = itemsDigested.get(i).elem;
+
+                    if (!headers[0] && nextItem.isDirectory()) {
+                        headers[0] = true;
+                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
+                        continue;
+                    }
+
+                    if (!headers[1] && !nextItem.isDirectory()
+                            && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
+                        headers[1] = true;
+                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
+                        continue;//leave this continue for symmetry
                     }
                 }
             }
+        }
 
-            if(invalidate) {
-                notifyDataSetChanged();
-            }
+        if(invalidate) {
+            notifyDataSetChanged();
         }
     }
 
