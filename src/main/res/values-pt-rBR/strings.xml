@@ -640,4 +640,5 @@ Abra o prompt de comando. Digite \'ipconfig\' e pressione Enter. Procure Gateway
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
   <!-- end of plurals -->
+  <string name="no_name">O arquivo deve ter um nome</string>
 </resources>

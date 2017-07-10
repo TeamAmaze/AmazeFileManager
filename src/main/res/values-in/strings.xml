@@ -604,4 +604,5 @@ Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat sel
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
   <!-- end of plurals -->
+  <string name="no_name">Berkas harus memiliki nama</string>
 </resources>
