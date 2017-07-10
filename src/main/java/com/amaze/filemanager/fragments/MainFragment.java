@@ -390,7 +390,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     public void switchView() {
-        createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkforpath(CURRENT_PATH));
+        createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkPathIsGrid(CURRENT_PATH));
     }
 
     @Override
@@ -1021,26 +1021,33 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public boolean checkforpath(String path) {
+    /**
+     * Probably checks if path is supposed to be shown as a list or as a grid of files.
+     * @param path path to check
+     * @return should be shown as grid
+     */
+    public boolean checkPathIsGrid(String path) {
         boolean grid = false, both_contain = false;
-        int index1 = -1, index2 = -1;
+        int i1 = -1, i2 = -1;
         for (String s : dataUtils.getGridFiles()) {
-            index1++;
+            i1++;
             if ((path).contains(s)) {
                 grid = true;
                 break;
             }
         }
         for (String s : dataUtils.getListfiles()) {
-            index2++;
-            if ((path).contains(s)) {
+            i2++;
+            if (path.contains(s)) {
                 if (grid) both_contain = true;
                 grid = false;
                 break;
             }
         }
+        
         if (!both_contain) return grid;
-        String path1 = dataUtils.getGridFiles().get(index1), path2 = dataUtils.getListfiles().get(index2);
+        String path1 = dataUtils.getGridFiles().get(i1), path2 = dataUtils.getListfiles().get(i2);
+
         if (path1.contains(path2))
             return true;
         else if (path2.contains(path1))
