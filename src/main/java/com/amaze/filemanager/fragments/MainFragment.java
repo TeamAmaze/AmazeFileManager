@@ -1064,20 +1064,18 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             final OpenMode openMode, boolean results, boolean grid) {
         if (bitmap != null && isAdded()) {
             synchronized (bitmap) {
-                if (GO_BACK_ITEM)
-                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                            && !path.equals(OTGUtil.PREFIX_OTG + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
-                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
+                boolean isOtg = path.equals(OTGUtil.PREFIX_OTG + "/"),
+                            isOnTheCloud = path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
-                            Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                            bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
-                                            "..", "", "", goback, 0, false, true, ""));
-                        }
-                    }
+                if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
+                        && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))) {
+                    Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
+                    bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
+                            "..", "", "", goback, 0, false, true, ""));
+                }
 
                 if (bitmap.size() == 0 && !results) {
                     nofilesview.setVisibility(View.VISIBLE);
