@@ -332,7 +332,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
                 if (savedInstanceState != null && !IS_LIST)
-                    retrieveFromSavedInstance(savedInstanceState);
+                    onSavedInstanceState(savedInstanceState);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -346,7 +346,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             loadlist(CURRENT_PATH, false, openMode);
         } else {
             if (IS_LIST)
-                retrieveFromSavedInstance(savedInstanceState);
+                onSavedInstanceState(savedInstanceState);
         }
     }
 
@@ -393,7 +393,49 @@ public class MainFragment extends android.support.v4.app.Fragment {
         createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkforpath(CURRENT_PATH));
     }
 
-    void retrieveFromSavedInstance(final Bundle savedInstanceState) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        int index;
+        View vi;
+        if (listView != null) {
+            if (IS_LIST) {
+                index = (mLayoutManager).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            } else {
+                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            }
+
+            int top = (vi == null) ? 0 : vi.getTop();
+
+            outState.putInt("index", index);
+            outState.putInt("top", top);
+            outState.putParcelableArrayList("list", getLayoutElements());
+            outState.putString("CURRENT_PATH", CURRENT_PATH);
+            outState.putBoolean("selection", selection);
+            outState.putInt("openMode", openMode.ordinal());
+            outState.putInt("folder_count", folder_count);
+            outState.putInt("file_count", file_count);
+
+            if (selection) {
+                ArrayList<String> selectedPaths = new ArrayList<>();
+                for(LayoutElement e : adapter.getCheckedItems()) {
+                    selectedPaths.add(e.getDesc());
+                }
+                outState.putStringArrayList("position", selectedPaths);
+            }
+
+            outState.putBoolean("results", results);
+
+            if (openMode == OpenMode.SMB) {
+                outState.putString("SmbPath", smbPath);
+            }
+        }
+    }
+
+    void onSavedInstanceState(final Bundle savedInstanceState) {
         Bundle b = new Bundle();
         String cur = savedInstanceState.getString("CURRENT_PATH");
 
@@ -416,49 +458,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 for (String path : savedInstanceState.getStringArrayList("position")) {
                     adapter.toggleChecked(true, path);
                 }
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        int index;
-        View vi;
-        if (listView != null) {
-            if (IS_LIST) {
-                index = (mLayoutManager).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            } else {
-                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            }
-
-            int top = (vi == null) ? 0 : vi.getTop();
-
-            outState.putInt("index", index);
-            outState.putInt("top", top);
-            //outState.putBoolean("IS_LIST", IS_LIST);
-            outState.putParcelableArrayList("list", getLayoutElements());
-            outState.putString("CURRENT_PATH", CURRENT_PATH);
-            outState.putBoolean("selection", selection);
-            outState.putInt("openMode", openMode.ordinal());
-            outState.putInt("folder_count", folder_count);
-            outState.putInt("file_count", file_count);
-
-            if (selection) {
-                ArrayList<String> selectedPaths = new ArrayList<>();
-                for(LayoutElement e : adapter.getCheckedItems()) {
-                    selectedPaths.add(e.getDesc());
-                }
-                outState.putStringArrayList("position", selectedPaths);
-            }
-
-            outState.putBoolean("results", results);
-
-            if (openMode == OpenMode.SMB) {
-                outState.putString("SmbPath", smbPath);
             }
         }
     }
