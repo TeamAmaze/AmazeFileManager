@@ -57,7 +57,7 @@ public class FTPService extends Service implements Runnable {
     public static final String PORT_PREFERENCE_KEY = "ftpPort";
     public static final String KEY_PREFERENCE_PATH = "ftp_path";
     public static final String KEY_PREFERENCE_USERNAME = "ftp_username";
-    public static final String KEY_PREFERENCE_PASSWORD = "ftp_password";
+    public static final String KEY_PREFERENCE_PASSWORD = "ftp_password_encrypted";
     public static final String KEY_PREFERENCE_TIMEOUT = "ftp_timeout";
     public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
