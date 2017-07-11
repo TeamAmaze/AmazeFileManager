@@ -464,7 +464,7 @@ public class MainActivity extends BaseActivity implements
                 if (path != null && path.length() > 0) {
                     HFile file = new HFile(OpenMode.UNKNOWN, path);
                     file.generateMode(this);
-                    if (file.isDirectory())
+                    if (file.isDirectory(this))
                         goToMain(path);
                     else {
                         goToMain("");

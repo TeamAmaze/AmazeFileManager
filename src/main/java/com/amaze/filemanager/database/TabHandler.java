@@ -58,28 +58,28 @@ public class TabHandler extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + " ("
+    public void onCreate(SQLiteDatabase db) {
+        String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
                 + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT,"
-                + COLUMN_HOME + " TEXT"
-                + ")";
+                + COLUMN_HOME + " TEXT" +
+                ")";
 
-        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + " ("
+        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
                 + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_ENCRYPTED_PATH + " TEXT,"
                 + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
                 + ")";
 
-        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + " ("
+        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + "("
                 + CloudHandler.COLUMN_CLOUD_ID
                 + " INTEGER PRIMARY KEY,"
                 + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
                 + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
 
-        sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_ENCRYPTED);
-        sqLiteDatabase.execSQL(CREATE_TABLE_CLOUD);
+        db.execSQL(CREATE_TAB_TABLE);
+        db.execSQL(CREATE_TABLE_ENCRYPTED);
+        db.execSQL(CREATE_TABLE_CLOUD);
     }
 
     @Override
@@ -88,6 +88,11 @@ public class TabHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CloudHandler.TABLE_CLOUD_PERSIST);
         onCreate(sqLiteDatabase);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
     }
 
     public void addTab(Tab tab) {
@@ -130,31 +135,30 @@ public class TabHandler extends SQLiteOpenHelper {
     }
 
     public List<Tab> getAllTabs() {
+
         List<Tab> tabList = new ArrayList<>();
         // Select all query
-        String query = "Select * FROM " + TABLE_TAB;
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = null;
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(TABLE_TAB, null, null, null, null, null, null);
+       // cursor.moveToFirst();
         try {
-            cursor = sqLiteDatabase.rawQuery(query, null);
+
             // Looping through all rows and adding them to list
-            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-                do {
+            if (cursor.moveToFirst() && cursor.getCount() > 0) {
+
+                while (cursor.moveToNext()) {
                     Tab tab = new Tab();
                     tab.setTab((cursor.getInt(0)));
                     tab.setPath(cursor.getString(1));
                     tab.setHome(cursor.getString(2));
                     //Adding them to list
                     tabList.add(tab);
-                } while (cursor.moveToNext());
+                }
             }
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
+            sqLiteDatabase.close();
         }
-        sqLiteDatabase.close();
 
         return tabList;
     }

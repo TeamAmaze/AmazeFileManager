@@ -45,7 +45,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String queryHistroy = "CREATE TABLE IF NOT EXISTS " + TABLE_HISTORY + " ("
+        String queryHistory = "CREATE TABLE IF NOT EXISTS " + TABLE_HISTORY + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT"
                 + ")";
@@ -72,7 +72,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_PATH + " TEXT"
                 + ")";
 
-        db.execSQL(queryHistroy);
+        db.execSQL(queryHistory);
         db.execSQL(queryHidden);
         db.execSQL(queryList);
         db.execSQL(queryGrid);

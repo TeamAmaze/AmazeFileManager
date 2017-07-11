@@ -73,9 +73,13 @@ public class TabFragment extends android.support.v4.app.Fragment
     // colors relative to current visible tab
     private String startColor, endColor;
 
+    private TabHandler tabHandler;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
+
+        tabHandler = new TabHandler(getContext());
         fragmentManager = getActivity().getSupportFragmentManager();
         mToolBarContainer = getActivity().findViewById(R.id.lin);
 
@@ -104,7 +108,6 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (savedInstanceState == null) {
             int l = sharedPrefs.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
             MainActivity.currentTab = l;
-            TabHandler tabHandler = new TabHandler(getActivity());
             List<Tab> tabs1 = tabHandler.getAllTabs();
             int i = tabs1.size();
             if (i == 0) {
@@ -192,8 +195,6 @@ public class TabFragment extends android.support.v4.app.Fragment
             e.printStackTrace();
         }
     }
-
-    TabHandler tabHandler;
 
     public void updatepaths(int pos) {
         if (tabHandler == null)
