@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -36,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import jcifs.smb.SmbFile;
 
@@ -269,12 +271,12 @@ public class SmbConnectDialog extends DialogFragment {
                 }
                 if (smbFile == null) return;
                 s = new String[]{conName.getText().toString(), smbFile.getPath()};
-                if(smbConnectionListener!=null){
+                if(smbConnectionListener!=null) {
                     // encrypted path means path with encrypted pass
                     smbConnectionListener.addConnection(edit, s[0], createSMBPath(new String[]{ipa,
                                     user.getText().toString().replaceAll(" ", "\\ "),
                                     pass.getText().toString(),
-                                    domaind}, false).getPath(),
+                                    domaind}, ch.isChecked()).getPath(),
                             s[1], name, path);
                 }
                 dismiss();
@@ -283,10 +285,12 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.deleteConnection(name,path);
-                dismiss();
+                    smbConnectionListener.deleteConnection(name, path);
                 }
+
+                dismiss();
                 }
         });
         ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
@@ -307,7 +311,8 @@ public class SmbConnectDialog extends DialogFragment {
             path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
                     "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
                     (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                            ":" + CryptUtil.encryptPassword(context, auth[2]) + "@"))
+                            ":" + CryptUtil.encryptPassword(context, URLEncoder.encode(auth[2],
+                            "UTF-8")) + "@"))
                     + yourPeerIP + "/";
 
             HFile hFile = new HFile(OpenMode.SMB, path);

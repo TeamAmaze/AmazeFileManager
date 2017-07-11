@@ -6,8 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.widget.Toast;
 
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -192,10 +196,21 @@ public class UtilsHandler extends SQLiteOpenHelper {
         try {
 
             while (cursor.moveToNext()) {
-                row.add(new String[] {
-                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                        SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
-                });
+                try {
+                    row.add(new String[] {
+                            cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                            SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
+                    });
+                } catch (CryptException e) {
+                    e.printStackTrace();
+
+                    // failing to decrypt the path, removing entry from database
+                    Toast.makeText(context,
+                            context.getResources().getString(R.string.failed_smb_decrypt_path),
+                            Toast.LENGTH_LONG).show();
+                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                            "");
+                }
             }
         } finally {
             cursor.close();
@@ -225,20 +240,37 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         try {
-            sqLiteDatabase.delete(TABLE_BOOKMARKS, COLUMN_NAME + "=? AND " + COLUMN_PATH + "=?",
+            sqLiteDatabase.delete(TABLE_BOOKMARKS, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
                     new String[] {name, path});
         } finally {
             sqLiteDatabase.close();
         }
     }
 
+    /**
+     * Remove SMB entry
+     * @param name
+     * @param path the path we get from saved runtime variables is a decrypted, to remove entry,
+     *             we must encrypt it's password fiend first first
+     */
     public void removeSmbPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         try {
-            sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + "=? AND " + COLUMN_PATH + "=?",
-                    new String[] {name, path});
+            if (path.equals("")) {
+                // we don't have a path, remove the entry with this name
+                throw new CryptException();
+            }
+
+            sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
+                    new String[] {name, SmbUtil.getSmbEncryptedPath(context, path)});
+        } catch (CryptException e) {
+            e.printStackTrace();
+            // force remove entry, we end up deleting all entries with same name
+
+            sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + " = ?",
+                    new String[] {name});
         } finally {
             sqLiteDatabase.close();
         }

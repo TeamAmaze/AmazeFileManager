@@ -2871,9 +2871,9 @@ public class MainActivity extends BaseActivity implements
                         ma.loadlist(path, false, OpenMode.UNKNOWN);
                     }
                 }
-            } else
-
+            } else {
                 Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+            }
         } else {
             int i = dataUtils.containsServer(new String[]{oldname, oldPath});
             if (i != -1) {
@@ -3116,7 +3116,14 @@ public class MainActivity extends BaseActivity implements
 
                         switch (data.getInt(0)) {
                             case 1:
-                                CloudRail.setAppKey(data.getString(1));
+                                try {
+                                    CloudRail.setAppKey(data.getString(1));
+                                } catch (Exception e) {
+                                    // any other exception due to network conditions or other error
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.failed_cloud_api_key));
+                                    return false;
+                                }
                                 break;
                             case 2:
                                 // DRIVE
@@ -3163,6 +3170,12 @@ public class MainActivity extends BaseActivity implements
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
                                     deleteConnection(OpenMode.GDRIVE);
                                     return false;
+                                } catch (Exception e) {
+                                    // any other exception due to network conditions or other error
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.failed_cloud_new_connection));
+                                    deleteConnection(OpenMode.GDRIVE);
+                                    return false;
                                 }
                                 break;
                             case 3:
@@ -3205,6 +3218,12 @@ public class MainActivity extends BaseActivity implements
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.DROPBOX);
+                                    return false;
+                                } catch (Exception e) {
+                                    // any other exception due to network conditions or other error
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.failed_cloud_new_connection));
                                     deleteConnection(OpenMode.DROPBOX);
                                     return false;
                                 }
@@ -3252,6 +3271,12 @@ public class MainActivity extends BaseActivity implements
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
                                     deleteConnection(OpenMode.BOX);
                                     return false;
+                                } catch (Exception e) {
+                                    // any other exception due to network conditions or other error
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.failed_cloud_new_connection));
+                                    deleteConnection(OpenMode.BOX);
+                                    return false;
                                 }
                                 break;
                             case 5:
@@ -3295,6 +3320,12 @@ public class MainActivity extends BaseActivity implements
                                 } catch (AuthenticationException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_fail_authenticate));
+                                    deleteConnection(OpenMode.ONEDRIVE);
+                                    return false;
+                                } catch (Exception e) {
+                                    // any other exception due to network conditions or other error
+                                    e.printStackTrace();
+                                    AppConfig.toast(MainActivity.this, getResources().getString(R.string.failed_cloud_new_connection));
                                     deleteConnection(OpenMode.ONEDRIVE);
                                     return false;
                                 }

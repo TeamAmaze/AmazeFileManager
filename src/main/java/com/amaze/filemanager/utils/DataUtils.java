@@ -35,6 +35,8 @@ public class DataUtils {
 
     private static DataUtils sDataUtils;
 
+
+
     public static DataUtils getInstance() {
         if (sDataUtils == null) {
             sDataUtils = new DataUtils();
@@ -115,7 +117,9 @@ public class DataUtils {
     }
 
     public void registerOnDataChangedListener(DataChangeListener l) {
+
         dataChangeListener = l;
+        clear();
     }
 
     int contains(String a, ArrayList<String[]> b) {
