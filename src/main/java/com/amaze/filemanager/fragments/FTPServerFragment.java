@@ -517,7 +517,10 @@ public class FTPServerFragment extends Fragment {
             return decryptedPassword;
         } catch (CryptException e) {
             e.printStackTrace();
+
             Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            // can't decrypt the password saved in preferences, remove the preference altogether
+            preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
             return "";
         }
     }

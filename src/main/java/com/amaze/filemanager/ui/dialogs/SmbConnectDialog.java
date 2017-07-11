@@ -119,9 +119,9 @@ public class SmbConnectDialog extends DialogFragment {
         conName.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-            if(conName.getText().toString().length()==0)
-                connectionTIL.setError(emptyName);
-            else connectionTIL.setError("");
+                if(conName.getText().toString().length()==0)
+                    connectionTIL.setError(emptyName);
+                else connectionTIL.setError("");
             }
         });
         final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.ipET);
@@ -194,7 +194,7 @@ public class SmbConnectDialog extends DialogFragment {
                     int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
                     domainp = inf.substring(0,domainDelim);
                     if(domainp!=null && domainp.length()>0)
-                    inf = inf.substring(domainDelim+1);
+                        inf = inf.substring(domainDelim+1);
                     userp = inf.substring(0, inf.indexOf(":"));
                     passp = inf.substring(inf.indexOf(":") + 1, inf.length());
                     domain.setText(domainp);
@@ -291,12 +291,12 @@ public class SmbConnectDialog extends DialogFragment {
                 }
 
                 dismiss();
-                }
+            }
         });
         ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-           dismiss();
+                dismiss();
             }
         });
 
