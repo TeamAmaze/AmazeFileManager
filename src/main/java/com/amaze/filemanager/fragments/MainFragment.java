@@ -184,14 +184,18 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = getMainActivity();
-        utils = utilsProvider.getFutils();
 
         setRetainInstance(true);
+
+        utilsProvider = getMainActivity();
+        utils = utilsProvider.getFutils();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        res = getResources();
+
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         IS_LIST = !checkPathIsGrid(CURRENT_PATH);
 
         accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
@@ -205,8 +209,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);
         CIRCULAR_IMAGES = sharedPref.getBoolean("circularimages", true);
         SHOW_LAST_MODIFIED = sharedPref.getBoolean("showLastModified", true);
-
-        res = getResources();
     }
 
     public void stopAnimation() {
