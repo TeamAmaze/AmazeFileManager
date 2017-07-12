@@ -1161,11 +1161,11 @@ public class MainActivity extends BaseActivity implements
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                            utilsHandler.addListView(mainFragment.CURRENT_PATH);
+                            utilsHandler.addListView(mainFragment.getCurrentPath());
                         }
                     });
                     //grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
-                    dataUtils.getListfiles().add(ma.CURRENT_PATH);
+                    dataUtils.getListfiles().add(ma.getCurrentPath());
                 }
                 ma.switchView();
                 break;
