@@ -35,8 +35,6 @@ public class DataUtils {
 
     private static DataUtils sDataUtils;
 
-
-
     public static DataUtils getInstance() {
         if (sDataUtils == null) {
             sDataUtils = new DataUtils();

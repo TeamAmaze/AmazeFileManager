@@ -1626,9 +1626,8 @@ public class MainActivity extends BaseActivity implements
 
         if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
             if (dataUtils.getBooks().size() > 0) {
-                if (!sharedPref.contains(FoldersPref.KEY)) {
-                    Collections.sort(dataUtils.getBooks(), new BookSorter());
-                }
+
+                Collections.sort(dataUtils.getBooks(), new BookSorter());
 
                 synchronized (dataUtils.getBooks()) {
 

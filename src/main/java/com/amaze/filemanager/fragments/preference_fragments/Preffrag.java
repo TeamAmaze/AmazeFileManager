@@ -31,7 +31,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -57,22 +56,9 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import static com.amaze.filemanager.R.string.feedback;
-import static com.amaze.filemanager.fragments.preference_fragments.FoldersPref.castStringListToTrioList;
 
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
@@ -243,28 +229,6 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
                         !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
                 return true;
-            case PREFERENCE_SHOW_HIDDENFILES:
-                setEnabledShortcuts();
-                return false;
-            case PREFERENCE_ROOTMODE:
-                setEnabledShortcuts();
-
-                /*
-                boolean b = sharedPref.getBoolean("rootmode", false);
-                if (b) {
-                    if (MainActivity.shellInteractive.isRunning()) {
-                        rootmode.setChecked(true);
-
-                    } else {  rootmode.setChecked(false);
-
-                        Toast.makeText(getActivity(), getResources().getString(R.string.rootfailure), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    rootmode.setChecked(false);
-
-                }
-                */
-                return false;
             case "feedback":
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
@@ -385,32 +349,4 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
         boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
         if(!a)gplus.setChecked(false);
     }
-
-    /**
-     * Dynamically enables autodisabled shortcuts, and disables inaccessible shortcuts when user
-     * changes root access and hidden files visibility preferences.
-     */
-    private void setEnabledShortcuts() {
-        ArrayList<String> predigestedPref = TinyDB.getList(sharedPref, String.class, FoldersPref.KEY, null);
-        if(predigestedPref == null) return;
-
-        ArrayList<FoldersPref.Shortcut> currentValue = castStringListToTrioList(predigestedPref);
-
-        for(int i = 0; i < currentValue.size(); i++) {
-            if(FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
-                    && currentValue.get(i).autodisabled) {
-                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
-                        currentValue.get(i).directory, FoldersPref.Shortcut.TRUE);
-                currentValue.set(i, shortcut);
-            } else if (!FoldersPref.canShortcutTo(currentValue.get(i).directory, sharedPref)
-                    && currentValue.get(i).enabled) {
-                FoldersPref.Shortcut shortcut = new FoldersPref.Shortcut(currentValue.get(i).name,
-                        currentValue.get(i).directory, FoldersPref.Shortcut.AUTOFALSE);
-                currentValue.set(i, shortcut);
-            }
-        }
-
-        TinyDB.putList(sharedPref, FoldersPref.KEY, FoldersPref.castTrioListToStringList(currentValue));
-    }
-
 }
