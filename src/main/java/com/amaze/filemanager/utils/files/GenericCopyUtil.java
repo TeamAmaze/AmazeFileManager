@@ -11,6 +11,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -30,8 +31,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * Created by vishal on 26/10/16.
  *
@@ -43,6 +42,7 @@ public class GenericCopyUtil {
     private BaseFile mSourceFile;
     private HFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
+    private DataUtils dataUtils = DataUtils.getInstance();
     public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
     public static final int DEFAULT_BUFFER_SIZE =  8192;

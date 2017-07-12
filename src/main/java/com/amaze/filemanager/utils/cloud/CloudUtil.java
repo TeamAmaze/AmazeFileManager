@@ -16,6 +16,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
@@ -23,8 +24,6 @@ import com.cloudrail.si.types.CloudMetaData;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by vishal on 19/4/17.
@@ -159,6 +158,7 @@ public class CloudUtil {
         new AsyncTask<String, Void, Boolean>() {
 
             OpenMode serviceType;
+            private DataUtils dataUtils = DataUtils.getInstance();
 
             @Override
             protected Boolean doInBackground(String... params) {

@@ -18,6 +18,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.DeleteTask;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -29,6 +30,7 @@ import java.util.ArrayList;
  * Created by Arpit on 16-11-2014.
  */
 public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.ViewHolder> {
+
     private Futils utils;
 
     private MainFragment context;
@@ -36,6 +38,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
     public ArrayList<HFile> items;
     private MaterialDialog materialDialog;
     private boolean hide;
+    private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
     public HiddenAdapter(Context context, MainFragment mainFrag, Futils utils, @LayoutRes int layoutId,
@@ -97,7 +100,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                         a.add(baseFile);
                         new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));
                     }
-                    MainActivity.dataUtils.removeHiddenFile(items.get(position).getPath());
+                    dataUtils.removeHiddenFile(items.get(position).getPath());
                     items.remove(items.get(position));
                     notifyDataSetChanged();
                 }

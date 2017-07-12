@@ -56,6 +56,7 @@ import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.OpenMode;
@@ -73,8 +74,6 @@ import java.util.Date;
 
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * Functions that deal with files
  */
@@ -84,6 +83,7 @@ public class Futils {
     public static final int WRITE = 2;
     public static final int EXECUTE = 1;
     private Toast studioCount;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public Futils() {
     }
@@ -127,6 +127,8 @@ public class Futils {
     }
 
     public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
+
+        DataUtils dataUtils = DataUtils.getInstance();
         long length = 0;
         CloudStorage cloudStorage = dataUtils.getAccount(openMode);
         for (CloudMetaData metaData : cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {

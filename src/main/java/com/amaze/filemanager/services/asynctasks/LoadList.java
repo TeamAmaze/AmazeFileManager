@@ -42,6 +42,7 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
@@ -61,11 +62,8 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-import static com.amaze.filemanager.utils.OpenMode.DROPBOX;
-import static com.amaze.filemanager.utils.OpenMode.OTG;
-
 public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
+
     private UtilitiesProviderInterface utilsProvider;
     private String path;
     private boolean back;
@@ -73,6 +71,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     private Context c;
     private OpenMode openmode;
     private boolean grid;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
                     MainFragment ma, OpenMode openmode) {
@@ -105,11 +104,11 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 openmode = OpenMode.SMB;
                 ma.smbPath = path;
             } else if (hFile.isOtgFile()) {
-                openmode = OTG;
+                openmode = OpenMode.OTG;
             } else if (hFile.isBoxFile()) {
                 openmode = OpenMode.BOX;
             } else if (hFile.isDropBoxFile()) {
-                openmode = DROPBOX;
+                openmode = OpenMode.DROPBOX;
             } else if (hFile.isGoogleDriveFile()) {
                 openmode = OpenMode.GDRIVE;
             } else if (hFile.isOneDriveFile()) {
@@ -171,14 +170,14 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 break;
             case OTG:
                 list = addTo(listOtg(path));
-                openmode = OTG;
+                openmode = OpenMode.OTG;
                 break;
             case DROPBOX:
 
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(DROPBOX);
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
 
                 try {
-                    list = addTo(listCloud(path, cloudStorageDropbox, DROPBOX));
+                    list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
                     return new ArrayList<>();

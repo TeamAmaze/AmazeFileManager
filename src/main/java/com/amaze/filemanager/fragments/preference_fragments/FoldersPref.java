@@ -22,6 +22,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.TinyDB;
@@ -32,8 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * @author Emmanuel
@@ -49,18 +48,12 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     private Map<Preference, Integer> position = new HashMap<>();
     private ArrayList<Shortcut> currentValue;
     private String numbPreferenceListener = null;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (PreferencesActivity) getActivity();
-
-        //If dataUtils is null then there's no simple way to restore it,
-        //except letting MainActivity deal with it
-        if(dataUtils == null) {
-            Intent i = new Intent(getActivity(), MainActivity.class);
-            startActivity(i);
-        }
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.folders_prefs);

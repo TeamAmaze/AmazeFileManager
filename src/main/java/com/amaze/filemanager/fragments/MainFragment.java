@@ -91,6 +91,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -114,8 +115,6 @@ import java.util.List;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 public class MainFragment extends android.support.v4.app.Fragment {
 
@@ -171,6 +170,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private FastScroller fastScroller;
     private Bitmap mFolderBitmap;
     private CustomFileObserver customFileObserver;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;

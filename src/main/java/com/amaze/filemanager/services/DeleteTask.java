@@ -35,6 +35,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -44,13 +45,13 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.ArrayList;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
+
     private ArrayList<BaseFile> files;
     private Context cd;
     private boolean rootMode;
     private ZipViewer zipViewer;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public DeleteTask(ContentResolver c, Context cd) {
         this.cd = cd;

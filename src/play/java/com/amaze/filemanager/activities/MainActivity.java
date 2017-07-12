@@ -199,8 +199,7 @@ public class MainActivity extends BaseActivity implements
     /* Request code used to invoke sign in user interactions. */
     static final int RC_SIGN_IN = 0;
 
-    /*Global variable for storing data. MUST be set null if cleared*/
-    public static DataUtils dataUtils = DataUtils.getInstance();
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;

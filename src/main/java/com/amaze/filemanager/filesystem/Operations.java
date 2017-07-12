@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -24,8 +25,6 @@ import java.net.MalformedURLException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * Created by arpitkh996 on 13-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
@@ -42,6 +41,7 @@ public class Operations {
     private static final String LESS_THAN = "<";
 
     private static final String FAT = "FAT";
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public interface ErrorCallBack {
 
@@ -87,7 +87,11 @@ public class Operations {
 
     public static void mkdir(@NonNull final HFile file, final Context context, final boolean rootMode,
                              @NonNull final ErrorCallBack errorCallBack) {
+
         new AsyncTask<Void, Void, Void>() {
+
+            private DataUtils dataUtils = DataUtils.getInstance();
+
             @Override
             protected Void doInBackground(Void... params) {
                 // checking whether filename is valid or a recursive call possible
@@ -194,7 +198,11 @@ public class Operations {
 
     public static void mkfile(@NonNull final HFile file, final Context context, final boolean rootMode,
                               @NonNull final ErrorCallBack errorCallBack) {
+
         new AsyncTask<Void, Void, Void>() {
+
+            private DataUtils dataUtils = DataUtils.getInstance();
+
             @Override
             protected Void doInBackground(Void... params) {
                 // check whether filename is valid or not
@@ -316,7 +324,11 @@ public class Operations {
 
     public static void rename(final HFile oldFile, final HFile newFile, final boolean rootMode,
                               final Context context, final ErrorCallBack errorCallBack) {
+
         new AsyncTask<Void, Void, Void>() {
+
+            private DataUtils dataUtils = DataUtils.getInstance();
+
             @Override
             protected Void doInBackground(Void... params) {
                 // check whether file names for new file are valid or recursion occurs

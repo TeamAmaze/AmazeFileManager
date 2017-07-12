@@ -16,14 +16,13 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by arpitkh996 on 21-01-2016.
@@ -36,6 +35,7 @@ public class RenameBookmark extends DialogFragment {
     private String pass = "";
     private BookmarkCallback bookmarkCallback;
     private int studiomode = 0;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public static RenameBookmark getInstance(String name, String path, String fabskin) {
         RenameBookmark renameBookmark = new RenameBookmark();

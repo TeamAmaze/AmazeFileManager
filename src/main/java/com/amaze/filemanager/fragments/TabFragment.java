@@ -28,6 +28,7 @@ import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
@@ -37,8 +38,6 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
 
 /**
  * Created by Arpit on 15-12-2014.
@@ -74,6 +73,7 @@ public class TabFragment extends android.support.v4.app.Fragment
     private String startColor, endColor;
 
     private TabHandler tabHandler;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

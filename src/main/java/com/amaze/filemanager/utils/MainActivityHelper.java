@@ -57,6 +57,7 @@ public class MainActivityHelper {
 
     private MainActivity mainActivity;
     private Futils utils;
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     /*
      * A static string which saves the last searched query. Used to retain search task after
@@ -94,7 +95,7 @@ public class MainActivityHelper {
                     Toast.makeText(mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
-                        MainActivity.dataUtils.getStorages().add(a);
+                        dataUtils.getStorages().add(a);
                         mainActivity.refreshDrawer();
                     } else {
                         mainActivity.refreshDrawer();

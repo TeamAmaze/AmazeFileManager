@@ -44,6 +44,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -54,8 +55,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
     private UtilitiesProviderInterface utilsProvider;
@@ -65,6 +64,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     //TODO queried but never updated
     private HashMap<String, Float[]> colors = new HashMap<>();
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public void toggleChecked(int position) {
         toggleChecked(false);

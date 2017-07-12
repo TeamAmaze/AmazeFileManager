@@ -13,6 +13,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.Logger;
@@ -35,8 +36,6 @@ import java.util.ArrayList;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * Created by Arpit on 07-07-2015.
  */
@@ -46,6 +45,8 @@ public class HFile {
     String path;
     //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
     OpenMode mode = OpenMode.FILE;
+
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public HFile(OpenMode mode, String path) {
         this.path = path;

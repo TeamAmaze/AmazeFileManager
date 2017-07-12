@@ -31,6 +31,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
@@ -46,14 +47,13 @@ import java.util.ArrayList;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.activities.MainActivity.dataUtils;
-
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first,
  * if they're in the same filesystem, else starting the copy service.
  * Be advised - do not start this AsyncTask directly but use {@link CopyFileCheck} instead
  */
 public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
+
     private ArrayList<ArrayList<BaseFile>> files;
     private MainFragment mainFrag;
     private ArrayList<String> paths;
@@ -118,6 +118,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
             case GDRIVE:
                 for (int i=0; i<paths.size(); i++) {
                     for (BaseFile baseFile : files.get(i)) {
+
+                        DataUtils dataUtils = DataUtils.getInstance();
 
                         CloudStorage cloudStorage = dataUtils.getAccount(mode);
                         String targetPath = paths.get(i) + "/" + baseFile.getName();
@@ -196,19 +198,5 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                 ServiceWatcherUtil.runService(context, intent);
             }
         }
-
-        //final folder cleaning
-        // let service handle this
-        /*Collections.reverse(files);
-        for (ArrayList<BaseFile> folder : files) {
-            BaseFile folderPath = new BaseFile(folder.get(0).getParent());
-
-            try {
-                if (folderPath.listFiles(rootMode).size() == 0)
-                    folderPath.delete(context, rootMode);
-            } catch (RootNotPermittedException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 }

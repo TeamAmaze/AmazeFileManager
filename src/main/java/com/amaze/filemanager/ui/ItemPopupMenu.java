@@ -17,6 +17,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.Futils;
@@ -111,7 +112,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                 return true;
             case R.id.book:
-                MainActivity.dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
+                DataUtils dataUtils = DataUtils.getInstance();
+                dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
                 mainFragment.getMainActivity().refreshDrawer();
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
