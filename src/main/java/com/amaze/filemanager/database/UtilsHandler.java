@@ -181,7 +181,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
             }
         } finally {
             cursor.close();
-            sqLiteDatabase.close();
         }
         return row;
     }
@@ -214,7 +213,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
             }
         } finally {
             cursor.close();
-            sqLiteDatabase.close();
         }
         return row;
     }
@@ -239,12 +237,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        try {
-            sqLiteDatabase.delete(TABLE_BOOKMARKS, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
-                    new String[] {name, path});
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.delete(TABLE_BOOKMARKS, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
+                new String[] {name, path});
     }
 
     /**
@@ -271,8 +265,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
             sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + " = ?",
                     new String[] {name});
-        } finally {
-            sqLiteDatabase.close();
         }
     }
 
@@ -313,12 +305,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_PATH, path);
 
-        try {
-
-            sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
     }
 
     private void setPath(Operation operation, String name, String path) {
@@ -327,11 +314,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_NAME, name);
         contentValues.put(COLUMN_PATH, path);
 
-        try {
-            sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
     }
 
     private ArrayList<String> getPath(Operation operation) {
@@ -354,7 +337,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
                     }
                 } finally {
                     cursor.close();
-                    sqLiteDatabase.close();
                 }
                 return paths;
             default:
@@ -366,24 +348,16 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        try {
-            sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
-                    new String[] {path});
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
+                new String[] {path});
     }
 
     private void clearTable(Operation operation) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        try {
-            sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
-                    new String[] { "NOT NULL" });
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
+                new String[] { "NOT NULL" });
     }
 
     private void renamePath(Operation operation, String name, String path) {
@@ -392,12 +366,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_NAME, name);
         contentValues.put(COLUMN_PATH, path);
 
-        try {
-            sqLiteDatabase.update(getTableForOperation(operation), contentValues,
-                    COLUMN_PATH + "=?", new String[] {name});
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.update(getTableForOperation(operation), contentValues,
+                COLUMN_PATH + "=?", new String[] {name});
     }
 
     private void renamePath(Operation operation, String oldName, String oldPath,
@@ -407,13 +377,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_NAME, newName);
         contentValues.put(COLUMN_PATH, newPath);
 
-        try {
-
-            sqLiteDatabase.update(getTableForOperation(operation), contentValues, COLUMN_NAME
-                    + "=? AND " + COLUMN_PATH + "=?", new String[] {oldName, oldPath});
-        } finally {
-            sqLiteDatabase.close();
-        }
+        sqLiteDatabase.update(getTableForOperation(operation), contentValues, COLUMN_NAME
+                + "=? AND " + COLUMN_PATH + "=?", new String[] {oldName, oldPath});
         return;
     }
 

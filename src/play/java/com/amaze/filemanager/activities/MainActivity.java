@@ -103,6 +103,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
@@ -295,6 +296,7 @@ public class MainActivity extends BaseActivity implements
     private CoordinatorLayout mScreenLayout;
     private View fabBgView;
     private UtilsHandler utilsHandler;
+    private CloudHandler cloudHandler;
 
     private static final int REQUEST_CODE_SAF = 223;
     private static final String VALUE_PREF_OTG_NULL = "n/a";
@@ -327,7 +329,7 @@ public class MainActivity extends BaseActivity implements
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialisePreferences();
         initializeInteractiveShell();
@@ -338,26 +340,12 @@ public class MainActivity extends BaseActivity implements
         initialiseViews();
         tabHandler = new TabHandler(this);
         utilsHandler = new UtilsHandler(this);
+        cloudHandler = new CloudHandler(this);
+
         mImageLoader = AppConfig.getInstance().getImageLoader();
         utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
-
-        // TODO: Create proper SQLite database handler class with calls to database from background thread
-        /*history = new HistoryManager(this, "Table2");
-        history.initializeTable(DataUtils.HISTORY, 0);
-        history.initializeTable(DataUtils.HIDDEN, 0);
-
-        grid = new HistoryManager(this, "listgridmodes");
-        grid.initializeTable(DataUtils.LIST, 0);
-        grid.initializeTable(DataUtils.GRID, 0);
-        grid.initializeTable(DataUtils.BOOKS, 1);
-        grid.initializeTable(DataUtils.SMB, 1);
-
-
-        dataUtils.setHiddenfiles(history.readTable(DataUtils.HIDDEN));
-        dataUtils.setGridfiles(grid.readTable(DataUtils.GRID));
-        dataUtils.setListfiles(grid.readTable(DataUtils.LIST));*/
 
         // initialize g+ api client as per preferences
         if (sharedPref.getBoolean("plus_pic", false)) {
@@ -438,55 +426,6 @@ public class MainActivity extends BaseActivity implements
             getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
         }
 
-        if (savedInstanceState == null) {
-            if (openProcesses) {
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
-                //transaction.addToBackStack(null);
-                selectedStorage = SELECT_102;
-                openProcesses = false;
-                //title.setText(utils.getString(con, R.string.process_viewer));
-                //Commit the transaction
-                transaction.commit();
-                supportInvalidateOptionsMenu();
-            }  else if (intent.getAction() != null &&
-                    intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
-                // tile preferences, open ftp fragment
-
-                android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-
-                selectedStorage = SELECT_MINUS_2;
-                adapter.toggleChecked(false);
-                transaction2.commit();
-            } else {
-                if (path != null && path.length() > 0) {
-                    HFile file = new HFile(OpenMode.UNKNOWN, path);
-                    file.generateMode(this);
-                    if (file.isDirectory(this))
-                        goToMain(path);
-                    else {
-                        goToMain("");
-                        utils.openFile(new File(path), this);
-                    }
-                } else {
-                    goToMain("");
-
-                }
-            }
-        } else {
-            COPY_PATH = savedInstanceState.getParcelableArrayList("COPY_PATH");
-            MOVE_PATH = savedInstanceState.getParcelableArrayList("MOVE_PATH");
-            oppathe = savedInstanceState.getString("oppathe");
-            oppathe1 = savedInstanceState.getString("oppathe1");
-            oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
-            operation = savedInstanceState.getInt("operation");
-            selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
-            //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
-            adapter.toggleChecked(selectedStorage);
-        }
-
         if (getAppTheme().equals(AppTheme.DARK)) {
             mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
         }
@@ -558,6 +497,55 @@ public class MainActivity extends BaseActivity implements
             public Void onPostExecute(Object result) {
 
                 refreshDrawer();
+
+                if (savedInstanceState == null) {
+                    if (openProcesses) {
+                        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
+                        //transaction.addToBackStack(null);
+                        selectedStorage = SELECT_102;
+                        openProcesses = false;
+                        //title.setText(utils.getString(con, R.string.process_viewer));
+                        //Commit the transaction
+                        transaction.commit();
+                        supportInvalidateOptionsMenu();
+                    }  else if (intent.getAction() != null &&
+                            intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+                        // tile preferences, open ftp fragment
+
+                        android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                        transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+
+                        selectedStorage = SELECT_MINUS_2;
+                        adapter.toggleChecked(false);
+                        transaction2.commit();
+                    } else {
+                        if (path != null && path.length() > 0) {
+                            HFile file = new HFile(OpenMode.UNKNOWN, path);
+                            file.generateMode(MainActivity.this);
+                            if (file.isDirectory(MainActivity.this))
+                                goToMain(path);
+                            else {
+                                goToMain("");
+                                utils.openFile(new File(path), MainActivity.this);
+                            }
+                        } else {
+                            goToMain("");
+
+                        }
+                    }
+                } else {
+                    COPY_PATH = savedInstanceState.getParcelableArrayList("COPY_PATH");
+                    MOVE_PATH = savedInstanceState.getParcelableArrayList("MOVE_PATH");
+                    oppathe = savedInstanceState.getString("oppathe");
+                    oppathe1 = savedInstanceState.getString("oppathe1");
+                    oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
+                    operation = savedInstanceState.getInt("operation");
+                    selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
+                    //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
+                    adapter.toggleChecked(selectedStorage);
+                }
                 return null;
             }
 
@@ -1363,16 +1351,6 @@ public class MainActivity extends BaseActivity implements
         newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
-        if (getSupportFragmentManager().findFragmentById(R.id.content_frame)
-                .getClass().getName().contains("TabFragment")) {
-
-            floatingActionButton.setVisibility(View.VISIBLE);
-            floatingActionButton.showMenuButton(false);
-        } else {
-
-            floatingActionButton.setVisibility(View.INVISIBLE);
-            floatingActionButton.hideMenuButton(false);
-        }
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // Registering intent filter for OTG
@@ -1473,6 +1451,13 @@ public class MainActivity extends BaseActivity implements
         // TODO: 6/5/2017 Android may choose to not call this method before destruction
         // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
         closeInteractiveShell();
+
+        tabHandler.close();
+        utilsHandler.close();
+        cloudHandler.close();
+
+        CryptHandler cryptHandler = new CryptHandler(this);
+        cryptHandler.close();
 
         /*if (mainFragment!=null)
             mainFragment = null;*/
@@ -2477,9 +2462,9 @@ public class MainActivity extends BaseActivity implements
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (oldPath.isEmpty()) {
             // case when app starts
-            // FIXME: COUNTER is incremented twice on app startup
             COUNTER++;
-            if (COUNTER == 2) {
+            Log.d(getClass().getSimpleName(), "COUNTER: " + COUNTER);
+            if (COUNTER == 1) {
                 animPath.setAnimation(slideIn);
                 animPath.setText(newPath);
                 animPath.animate().setListener(new AnimatorListenerAdapter() {
@@ -2986,7 +2971,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void addConnection(OpenMode service) {
-        CloudHandler cloudHandler = new CloudHandler(this);
+
         try {
             if (cloudHandler.findEntry(service) != null) {
                 // cloud entry already exists
@@ -3008,7 +2993,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void deleteConnection(OpenMode service) {
 
-        CloudHandler cloudHandler = new CloudHandler(this);
         cloudHandler.clear(service);
         dataUtils.removeAccount(service);
 
@@ -3052,7 +3036,7 @@ public class MainActivity extends BaseActivity implements
                 return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
             case REQUEST_CODE_CLOUD_LIST_KEYS:
                 // we need a list of all secret keys
-                CloudHandler cloudHandler = new CloudHandler(getApplicationContext());
+
                 try {
                     List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
 
@@ -3108,8 +3092,6 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             protected Boolean doInBackground(Void... params) {
-
-                CloudHandler cloudHandler = new CloudHandler(MainActivity.this);
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
                     do {

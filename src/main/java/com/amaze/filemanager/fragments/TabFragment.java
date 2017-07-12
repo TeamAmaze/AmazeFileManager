@@ -206,7 +206,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         tabHandler.clear();
         for (Fragment fragment : fragments) {
-            if (fragment.getClass().getName().contains("Main")) {
+            if (fragment.getClass().getName().contains("MainFragment")) {
                 MainFragment m = (MainFragment) fragment;
                 items.add(parsePathForName(m.CURRENT_PATH, m.openMode));
                 if (i - 1 == MainActivity.currentTab && i == pos) {

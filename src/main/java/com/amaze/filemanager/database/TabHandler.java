@@ -37,18 +37,18 @@ public class TabHandler extends SQLiteOpenHelper {
 
     protected static final int DATABASE_VERSION = 5;
     protected static final String DATABASE_NAME = "explorer.db";
-    private static final String TABLE_TAB = "tab";
+    protected static final String TABLE_TAB = "tab";
 
-    private static final String COLUMN_TAB_NO = "tab_no";
-    private static final String COLUMN_LABEL = "label";
-    private static final String COLUMN_PATH = "path";
-    private static final String COLUMN_HOME = "home";
+    protected static final String COLUMN_TAB_NO = "tab_no";
+    protected static final String COLUMN_LABEL = "label";
+    protected static final String COLUMN_PATH = "path";
+    protected static final String COLUMN_HOME = "home";
 
-    private static final String TABLE_ENCRYPTED = "encrypted";
+    protected static final String TABLE_ENCRYPTED = "encrypted";
 
-    private static final String COLUMN_ENCRYPTED_ID = "_id";
-    private static final String COLUMN_ENCRYPTED_PATH = "path";
-    private static final String COLUMN_ENCRYPTED_PASSWORD = "password";
+    protected static final String COLUMN_ENCRYPTED_ID = "_id";
+    protected static final String COLUMN_ENCRYPTED_PATH = "path";
+    protected static final String COLUMN_ENCRYPTED_PASSWORD = "password";
 
     private Context context;
 
@@ -102,7 +102,6 @@ public class TabHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_HOME, tab.getHome());
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
-        sqLiteDatabase.close();
     }
 
     public void clear() {
@@ -110,7 +109,6 @@ public class TabHandler extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 1});
             sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
-            sqLiteDatabase.close();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -130,7 +128,6 @@ public class TabHandler extends SQLiteOpenHelper {
         } else {
             tab = null;
         }
-        sqLiteDatabase.close();
         return tab;
     }
 
@@ -157,17 +154,8 @@ public class TabHandler extends SQLiteOpenHelper {
             }
         } finally {
             cursor.close();
-            sqLiteDatabase.close();
         }
 
         return tabList;
-    }
-
-    public void close() {
-        try {
-            getWritableDatabase().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
