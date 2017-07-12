@@ -123,7 +123,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public String home, CURRENT_PATH = "", goback;
+    public String home, goback;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
             SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
@@ -142,6 +142,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public int no;
 
+    private String CURRENT_PATH = "";
     /**
      * This is not an exact copy of the elements in the adapter
      */
@@ -1563,6 +1564,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
             Futils.scanFile(path, getActivity());
         }
 
+    }
+
+    public String getCurrentPath() {
+        return CURRENT_PATH;
     }
 
     private void addShortcut(LayoutElement path) {

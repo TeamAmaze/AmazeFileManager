@@ -928,7 +928,7 @@ public class MainActivity extends BaseActivity implements
                 MainFragment ma = ((MainFragment) tabFragment.getTab());
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                updatePath(ma.CURRENT_PATH, ma.results, ma.openMode, ma.folder_count, ma.file_count);
+                updatePath(ma.getCurrentPath(), ma.results, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {}
 
             initiatebbar();
@@ -1049,7 +1049,7 @@ public class MainActivity extends BaseActivity implements
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        main.home = main.CURRENT_PATH;
+                        main.home = main.getCurrentPath();
                         updatePaths(main.no);
                         dialog.dismiss();
                     }
@@ -1095,24 +1095,24 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.view:
                 if (ma.IS_LIST) {
-                    if (dataUtils.getListfiles().contains(ma.CURRENT_PATH)) {
-                        dataUtils.getListfiles().remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
+                    if (dataUtils.getListfiles().contains(ma.getCurrentPath())) {
+                        dataUtils.getListfiles().remove(ma.getCurrentPath());
+                        grid.removePath(ma.getCurrentPath(), DataUtils.LIST);
                     }
-                    grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
-                    dataUtils.getGridFiles().add(ma.CURRENT_PATH);
+                    grid.addPath(null, ma.getCurrentPath(), DataUtils.GRID, 0);
+                    dataUtils.getGridFiles().add(ma.getCurrentPath());
                 } else {
-                    if (dataUtils.getGridFiles().contains(ma.CURRENT_PATH)) {
-                        dataUtils.getGridFiles().remove(ma.CURRENT_PATH);
-                        grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
+                    if (dataUtils.getGridFiles().contains(ma.getCurrentPath())) {
+                        dataUtils.getGridFiles().remove(ma.getCurrentPath());
+                        grid.removePath(ma.getCurrentPath(), DataUtils.GRID);
                     }
-                    grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
-                    dataUtils.getListfiles().add(ma.CURRENT_PATH);
+                    grid.addPath(null, ma.getCurrentPath(), DataUtils.LIST, 0);
+                    dataUtils.getListfiles().add(ma.getCurrentPath());
                 }
                 ma.switchView();
                 break;
             case R.id.paste:
-                String path = ma.CURRENT_PATH;
+                String path = ma.getCurrentPath();
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
                 new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
@@ -1880,7 +1880,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void bbar(final MainFragment mainFrag) {
-        final String path = mainFrag.CURRENT_PATH;
+        final String path = mainFrag.getCurrentPath();
         try {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathbar.getHeight());
@@ -2906,7 +2906,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.CURRENT_PATH,
+        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.getCurrentPath(),
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
