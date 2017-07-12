@@ -192,6 +192,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        IS_LIST = !checkPathIsGrid(CURRENT_PATH);
 
         accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
