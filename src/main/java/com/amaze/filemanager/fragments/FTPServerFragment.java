@@ -34,9 +34,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.services.ftpservice.FTPService;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
@@ -355,7 +357,7 @@ public class FTPServerFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (Objects.equals(action, FTPService.ACTION_STARTED)) {
+            if (action.equals(FTPService.ACTION_STARTED)) {
                 if (getSecurePreference()) {
                     statusText.setText(spannedStatusSecure);
                 } else {
@@ -363,14 +365,14 @@ public class FTPServerFragment extends Fragment {
                 }
                 ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
 
-            } else if (Objects.equals(action, FTPService.ACTION_FAILEDTOSTART)) {
+            } else if (action.equals(FTPService.ACTION_FAILEDTOSTART)) {
                 statusText.setText(spannedStatusNotRunning);
 
                 Toast.makeText(getContext(),
                         getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
 
                 ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
-            } else if (Objects.equals(action, FTPService.ACTION_STOPPED)) {
+            } else if (action.equals(FTPService.ACTION_STOPPED)) {
                 statusText.setText(spannedStatusNotRunning);
                 ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
             }
@@ -509,7 +511,18 @@ public class FTPServerFragment extends Fragment {
     private String getPasswordFromPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        return preferences.getString(FTPService.KEY_PREFERENCE_PASSWORD, "");
+        try {
+            String decryptedPassword = CryptUtil.decryptPassword(getContext(),
+                    preferences.getString(FTPService.KEY_PREFERENCE_PASSWORD, ""));
+            return decryptedPassword;
+        } catch (CryptException e) {
+            e.printStackTrace();
+
+            Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            // can't decrypt the password saved in preferences, remove the preference altogether
+            preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
+            return "";
+        }
     }
 
     private String getDefaultPathFromPreferences() {
@@ -546,7 +559,12 @@ public class FTPServerFragment extends Fragment {
     private void setFTPPassword(String password) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, password).apply();
+        try {
+            preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, CryptUtil.encryptPassword(getContext(), password)).apply();
+        } catch (CryptException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+        }
         updateStatus();
     }
 

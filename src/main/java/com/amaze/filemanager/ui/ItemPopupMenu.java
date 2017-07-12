@@ -201,6 +201,9 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                         mainFragment.openMode, rowItem.generateBaseFile(),
                         rowItem.generateBaseFile().getParent(context), utilitiesProvider);
                 return true;
+            case R.id.return_select:
+                mainFragment.returnIntentResults(rowItem.generateBaseFile());
+                return true;
         }
         return false;
     }

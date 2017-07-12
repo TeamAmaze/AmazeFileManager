@@ -138,7 +138,10 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                         checkForPath(item.getPath());
                     }
 
-                    if (dataUtils.getAccounts().size() > 0) {
+                    if (dataUtils.getAccounts().size() > 0 && (item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
                         // we have cloud accounts, try see if token is expired or not
                         CloudUtil.checkToken(item.getPath(), m);
                     }

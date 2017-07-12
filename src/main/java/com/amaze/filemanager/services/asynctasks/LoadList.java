@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -41,8 +42,6 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.HistoryManager;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
@@ -426,9 +425,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     }
 
     private ArrayList<BaseFile> listRecent() {
-        final HistoryManager history = new HistoryManager(c, "Table2");
-        final ArrayList<String> paths = history.readTable(DataUtils.HISTORY);
-        history.end();
+        UtilsHandler utilsHandler = new UtilsHandler(c);
+        final ArrayList<String> paths = utilsHandler.getHistoryList();
         ArrayList<BaseFile> songs = new ArrayList<>();
         for (String f : paths) {
             if (!f.equals("/")) {
