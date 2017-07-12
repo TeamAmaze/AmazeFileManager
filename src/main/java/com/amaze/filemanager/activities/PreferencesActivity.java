@@ -168,8 +168,6 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
         activity.startActivity(activity.getIntent());
     }
 
-    Preffrag p;
-
     /**
      * When a Preference (that requires an independent fragment) is selected this is called.
      * @param i the Preference in question
@@ -199,7 +197,12 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == 66) {
-            p.invalidateGplus();
+            Preffrag preffrag = (Preffrag) getFragmentManager().findFragmentById(R.id.prefsfragment);
+
+            if (preffrag != null) {
+
+                preffrag.invalidateGplus();
+            }
         }
 
     }
