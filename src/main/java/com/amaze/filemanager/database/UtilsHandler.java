@@ -209,6 +209,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                             Toast.LENGTH_LONG).show();
                     removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                             "");
+                    continue;
                 }
             }
         } finally {

@@ -732,6 +732,10 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (rowItem.isDirectory()) {
                     popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
                     popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+
+                    if (mainFrag.getMainActivity().mReturnIntent) {
+                        popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
+                    }
                 } else {
                     popupMenu.getMenu().findItem(R.id.book).setVisible(false);
                 }

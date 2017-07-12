@@ -912,33 +912,41 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 }
 
                 if (e.isDirectory()) {
+
                     computeScroll();
                     loadlist(path, false, openMode);
                 } else {
-                    if (e.getMode() == OpenMode.SMB) {
-                        try {
-                            SmbFile smbFile = new SmbFile(e.getDesc());
-                            launchSMB(smbFile, e.getlongSize(), getMainActivity());
-                        } catch (MalformedURLException ex) {
-                            ex.printStackTrace();
-                        }
-                    } else if (e.getMode() == OpenMode.OTG) {
 
-                        utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
-                                (MainActivity) getActivity());
-                    } else if (e.getMode() == OpenMode.DROPBOX
-                            || e.getMode() == OpenMode.BOX
-                            || e.getMode() == OpenMode.GDRIVE
-                            || e.getMode() == OpenMode.ONEDRIVE) {
-
-                        Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
-                        CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
-                    } else if (getMainActivity().mReturnIntent) {
-                        returnIntentResults(new File(e.getDesc()));
-                    } else {
-
-                        utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
+                    if (getMainActivity().mReturnIntent) {
+                        returnIntentResults(e.generateBaseFile());
+                        return;
                     }
+
+                    switch (e.getMode()) {
+                        case SMB:
+                            try {
+                                SmbFile smbFile = new SmbFile(e.getDesc());
+                                launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                            } catch (MalformedURLException ex) {
+                                ex.printStackTrace();
+                            }
+                            break;
+                        case OTG:
+                            utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                    (MainActivity) getActivity());
+                            break;
+                        case DROPBOX:
+                        case BOX:
+                        case GDRIVE:
+                        case ONEDRIVE:
+                            Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                            CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
+                            break;
+                        default:
+                            utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
+                            break;
+                    }
+
                     dataUtils.addHistoryFile(e.getDesc());
                 }
             } else {
@@ -976,22 +984,44 @@ public class MainFragment extends android.support.v4.app.Fragment {
         loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
     }
 
-    private void returnIntentResults(File file) {
+    public void returnIntentResults(BaseFile baseFile) {
+
         getMainActivity().mReturnIntent = false;
 
         Intent intent = new Intent();
         if (getMainActivity().mRingtonePickerIntent) {
 
-            Uri mediaStoreUri = MediaStoreHack.getUriFromFile(file.getPath(), getActivity());
-            System.out.println(mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(file));
-            intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(file));
+            Uri mediaStoreUri = MediaStoreHack.getUriFromFile(baseFile.getPath(), getActivity());
+            System.out.println(mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(new File(baseFile.getPath())));
+            intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(new File(baseFile.getPath())));
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
             getActivity().setResult(FragmentActivity.RESULT_OK, intent);
             getActivity().finish();
         } else {
 
             Log.d("pickup", "file");
-            intent.setData(Uri.fromFile(file));
+
+            switch (baseFile.getMode()) {
+                case FILE:
+                case ROOT:
+                    intent.setData(Uri.fromFile(new File(baseFile.getPath())));
+                    break;
+                case OTG:
+                    intent.setData(OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri());
+                    break;
+                case SMB:
+                case DROPBOX:
+                case GDRIVE:
+                case ONEDRIVE:
+                case BOX:
+                    Toast.makeText(getActivity(),
+                            getActivity().getResources().getString(R.string.smb_launch_error),
+                            Toast.LENGTH_LONG).show();
+
+                    getMainActivity().mReturnIntent = true;
+                    return;
+            }
+
             getActivity().setResult(FragmentActivity.RESULT_OK, intent);
             getActivity().finish();
         }
@@ -1075,7 +1105,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                             Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
                             bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
-                                            "..", "", "", goback, 0, false, true, ""));
+                                    "..", "", "", goback, 0, false, true, ""));
                         }
                     }
 
@@ -1676,7 +1706,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onDetach() {
         super.onDetach();
     }
-    
+
     public MainActivity getMainActivity() {
         return (MainActivity) getActivity();
     }
