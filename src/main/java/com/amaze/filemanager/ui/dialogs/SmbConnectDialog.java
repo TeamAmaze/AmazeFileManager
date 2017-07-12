@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -36,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import jcifs.smb.SmbFile;
 
@@ -74,7 +76,7 @@ public class SmbConnectDialog extends DialogFragment {
          *             from db and to successfully delete it. If we don't want this behaviour,
          *             then we'll have to not allow duplicate connection name, and delete entry based
          *             on the name only. But that is not supported as of now.
-         *             See {@link com.amaze.filemanager.utils.HistoryManager#removePath(String, String, String)}
+         *             See {@link com.amaze.filemanager.database.UtilsHandler#removeSmbPath(String, String)}
          */
         void deleteConnection(String name, String path);
     }
@@ -117,9 +119,9 @@ public class SmbConnectDialog extends DialogFragment {
         conName.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-            if(conName.getText().toString().length()==0)
-                connectionTIL.setError(emptyName);
-            else connectionTIL.setError("");
+                if(conName.getText().toString().length()==0)
+                    connectionTIL.setError(emptyName);
+                else connectionTIL.setError("");
             }
         });
         final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.ipET);
@@ -192,7 +194,7 @@ public class SmbConnectDialog extends DialogFragment {
                     int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
                     domainp = inf.substring(0,domainDelim);
                     if(domainp!=null && domainp.length()>0)
-                    inf = inf.substring(domainDelim+1);
+                        inf = inf.substring(domainDelim+1);
                     userp = inf.substring(0, inf.indexOf(":"));
                     passp = inf.substring(inf.indexOf(":") + 1, inf.length());
                     domain.setText(domainp);
@@ -269,12 +271,12 @@ public class SmbConnectDialog extends DialogFragment {
                 }
                 if (smbFile == null) return;
                 s = new String[]{conName.getText().toString(), smbFile.getPath()};
-                if(smbConnectionListener!=null){
+                if(smbConnectionListener!=null) {
                     // encrypted path means path with encrypted pass
                     smbConnectionListener.addConnection(edit, s[0], createSMBPath(new String[]{ipa,
                                     user.getText().toString().replaceAll(" ", "\\ "),
                                     pass.getText().toString(),
-                                    domaind}, false).getPath(),
+                                    domaind}, ch.isChecked()).getPath(),
                             s[1], name, path);
                 }
                 dismiss();
@@ -283,16 +285,18 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
                 if(smbConnectionListener!=null){
-                    smbConnectionListener.deleteConnection(name,path);
+                    smbConnectionListener.deleteConnection(name, path);
+                }
+
                 dismiss();
-                }
-                }
+            }
         });
         ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-           dismiss();
+                dismiss();
             }
         });
 
@@ -307,7 +311,8 @@ public class SmbConnectDialog extends DialogFragment {
             path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
                     "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
                     (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                            ":" + CryptUtil.encryptPassword(context, auth[2]) + "@"))
+                            ":" + CryptUtil.encryptPassword(context, URLEncoder.encode(auth[2],
+                            "UTF-8")) + "@"))
                     + yourPeerIP + "/";
 
             HFile hFile = new HFile(OpenMode.SMB, path);

@@ -41,14 +41,10 @@ public class CloudUtil {
 
         String strippedPath = stripPath(openMode, path);
 
-        Log.d("PATH", path);
-        Log.d("STRIPPED PATH", strippedPath);
-
         try {
 
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
 
-                Log.d("FOUND FILE: ", cloudMetaData.getName());
                 BaseFile baseFile = new BaseFile(path + "/" + cloudMetaData.getName(),
                         "", (cloudMetaData.getModifiedAt() == null)
                         ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
@@ -56,7 +52,6 @@ public class CloudUtil {
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
                 baseFiles.add(baseFile);
-                Log.d("FILE", cloudMetaData.getName());
             }
         } catch (Exception e) {
             e.printStackTrace();

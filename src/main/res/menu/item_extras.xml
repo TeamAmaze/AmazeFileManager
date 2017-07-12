@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/return_select"
+        android:title="@string/select_intent"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/open_with"
         android:title="@string/openwith"
         />

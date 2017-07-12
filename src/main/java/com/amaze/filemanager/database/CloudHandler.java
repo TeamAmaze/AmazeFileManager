@@ -48,19 +48,36 @@ public class CloudHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_TABLE_CLOUD = "CREATE TABLE " + TABLE_CLOUD_PERSIST + "("
-                + COLUMN_CLOUD_ID
-                + " INTEGER PRIMARY KEY,"
-                + COLUMN_CLOUD_SERVICE + " INTEGER," + COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+        String CREATE_TAB_TABLE = "CREATE TABLE " + TabHandler.TABLE_TAB + "("
+                + TabHandler.COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                + TabHandler.COLUMN_PATH + " TEXT,"
+                + TabHandler.COLUMN_HOME + " TEXT" +
+                ")";
 
+        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TabHandler.TABLE_ENCRYPTED + "("
+                + TabHandler.COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                + TabHandler.COLUMN_ENCRYPTED_PATH + " TEXT,"
+                + TabHandler.COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                + ")";
+
+        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + "("
+                + CloudHandler.COLUMN_CLOUD_ID
+                + " INTEGER PRIMARY KEY,"
+                + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
+                + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+
+        db.execSQL(CREATE_TAB_TABLE);
+        db.execSQL(CREATE_TABLE_ENCRYPTED);
         db.execSQL(CREATE_TABLE_CLOUD);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLOUD_PERSIST);
-        onCreate(db);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TabHandler.TABLE_TAB);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TabHandler.TABLE_ENCRYPTED);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CloudHandler.TABLE_CLOUD_PERSIST);
+        onCreate(sqLiteDatabase);
     }
 
     public void addEntry(CloudEntry cloudEntry) throws CloudPluginException {
@@ -84,7 +101,6 @@ public class CloudHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_CLOUD_PERSIST, null, contentValues);
-        sqLiteDatabase.close();
     }
 
     public void clear(OpenMode serviceType) {
@@ -93,7 +109,6 @@ public class CloudHandler extends SQLiteOpenHelper {
 
             sqLiteDatabase.delete(TABLE_CLOUD_PERSIST, COLUMN_CLOUD_SERVICE + " = ?",
                     new String[]{serviceType.ordinal() + ""});
-            sqLiteDatabase.close();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -121,8 +136,6 @@ public class CloudHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.update(TABLE_CLOUD_PERSIST, contentValues, COLUMN_CLOUD_SERVICE + " = ?",
                 new String[]{serviceType.ordinal() + ""});
-
-        sqLiteDatabase.close();
     }
 
     public CloudEntry findEntry(OpenMode serviceType) throws CloudPluginException {
@@ -151,7 +164,6 @@ public class CloudHandler extends SQLiteOpenHelper {
         } else {
             cloudEntry = null;
         }
-        sqLiteDatabase.close();
         return cloudEntry;
     }
 
@@ -192,7 +204,6 @@ public class CloudHandler extends SQLiteOpenHelper {
                 cursor.close();
             }
         }
-        sqLiteDatabase.close();
 
         return entryList;
     }

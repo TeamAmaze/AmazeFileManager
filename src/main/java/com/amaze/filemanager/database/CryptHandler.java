@@ -73,14 +73,12 @@ public class CryptHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_ENCRYPTED, null, contentValues);
-        sqLiteDatabase.close();
     }
 
     public void clear(String path) {
         try {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             sqLiteDatabase.delete(TABLE_ENCRYPTED, COLUMN_ENCRYPTED_PATH + " = ?", new String[]{path});
-            sqLiteDatabase.close();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -96,7 +94,6 @@ public class CryptHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.update(TABLE_ENCRYPTED, contentValues, COLUMN_ENCRYPTED_ID + " = ?",
                 new String[]{oldEncryptedEntry.getId() + ""});
-        sqLiteDatabase.close();
     }
 
     public EncryptedEntry findEntry(String path) throws CryptException {
@@ -115,7 +112,6 @@ public class CryptHandler extends SQLiteOpenHelper {
         } else {
             encryptedEntry = null;
         }
-        sqLiteDatabase.close();
         return encryptedEntry;
     }
 
@@ -145,7 +141,6 @@ public class CryptHandler extends SQLiteOpenHelper {
                 cursor.close();
             }
         }
-        sqLiteDatabase.close();
 
         return entryList;
     }

@@ -37,18 +37,18 @@ public class TabHandler extends SQLiteOpenHelper {
 
     protected static final int DATABASE_VERSION = 5;
     protected static final String DATABASE_NAME = "explorer.db";
-    private static final String TABLE_TAB = "tab";
+    protected static final String TABLE_TAB = "tab";
 
-    private static final String COLUMN_TAB_NO = "tab_no";
-    private static final String COLUMN_LABEL = "label";
-    private static final String COLUMN_PATH = "path";
-    private static final String COLUMN_HOME = "home";
+    protected static final String COLUMN_TAB_NO = "tab_no";
+    protected static final String COLUMN_LABEL = "label";
+    protected static final String COLUMN_PATH = "path";
+    protected static final String COLUMN_HOME = "home";
 
-    private static final String TABLE_ENCRYPTED = "encrypted";
+    protected static final String TABLE_ENCRYPTED = "encrypted";
 
-    private static final String COLUMN_ENCRYPTED_ID = "_id";
-    private static final String COLUMN_ENCRYPTED_PATH = "path";
-    private static final String COLUMN_ENCRYPTED_PASSWORD = "password";
+    protected static final String COLUMN_ENCRYPTED_ID = "_id";
+    protected static final String COLUMN_ENCRYPTED_PATH = "path";
+    protected static final String COLUMN_ENCRYPTED_PASSWORD = "password";
 
     private Context context;
 
@@ -58,12 +58,12 @@ public class TabHandler extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase db) {
         String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
                 + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT,"
-                + COLUMN_HOME + " TEXT"
-                + ")";
+                + COLUMN_HOME + " TEXT" +
+                ")";
 
         String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
                 + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
@@ -77,9 +77,9 @@ public class TabHandler extends SQLiteOpenHelper {
                 + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
                 + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
 
-        sqLiteDatabase.execSQL(CREATE_TAB_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TABLE_ENCRYPTED);
-        sqLiteDatabase.execSQL(CREATE_TABLE_CLOUD);
+        db.execSQL(CREATE_TAB_TABLE);
+        db.execSQL(CREATE_TABLE_ENCRYPTED);
+        db.execSQL(CREATE_TABLE_CLOUD);
     }
 
     @Override
@@ -90,6 +90,11 @@ public class TabHandler extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
+    }
+
     public void addTab(Tab tab) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TAB_NO, tab.getTab());
@@ -97,7 +102,6 @@ public class TabHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_HOME, tab.getHome());
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
-        sqLiteDatabase.close();
     }
 
     public void clear() {
@@ -105,7 +109,6 @@ public class TabHandler extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 1});
             sqLiteDatabase.delete(TABLE_TAB, COLUMN_TAB_NO + " = ?", new String[]{"" + 2});
-            sqLiteDatabase.close();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -125,45 +128,34 @@ public class TabHandler extends SQLiteOpenHelper {
         } else {
             tab = null;
         }
-        sqLiteDatabase.close();
         return tab;
     }
 
     public List<Tab> getAllTabs() {
+
         List<Tab> tabList = new ArrayList<>();
         // Select all query
-        String query = "Select * FROM " + TABLE_TAB;
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = null;
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(TABLE_TAB, null, null, null, null, null, null);
+       // cursor.moveToFirst();
         try {
-            cursor = sqLiteDatabase.rawQuery(query, null);
+
             // Looping through all rows and adding them to list
-            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-                do {
+            if (cursor.moveToFirst() && cursor.getCount() > 0) {
+
+                while (cursor.moveToNext()) {
                     Tab tab = new Tab();
                     tab.setTab((cursor.getInt(0)));
                     tab.setPath(cursor.getString(1));
                     tab.setHome(cursor.getString(2));
                     //Adding them to list
                     tabList.add(tab);
-                } while (cursor.moveToNext());
+                }
             }
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
         }
-        sqLiteDatabase.close();
 
         return tabList;
-    }
-
-    public void close() {
-        try {
-            getWritableDatabase().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
