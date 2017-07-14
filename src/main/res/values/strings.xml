@@ -373,8 +373,8 @@
     <string name="defualt">Default</string>
     <string name="doit">Do it</string>
     <string name="wanthelp"><u>Need help?</u></string>
-    <string name="quick">Quick Access</string>
-    <string name="recent">Recent Files</string>
+    <string name="quick">Quick access</string>
+    <string name="recent">Recent files</string>
     <string name="edit">Edit</string>
     <string name="find">Find in page</string>
     <string name="grant">Grant</string>
@@ -642,14 +642,14 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
 
-    <string name="sidebarfolders_title">Sidebar Shortcuts</string>
-    <string name="sidebarquickaccess_title">Sidebar Quick Access</string>
-    <string name="showfolders_pref_title">Show Shortcuts</string>
+    <string name="sidebarfolders_title">Sidebar shortcuts</string>
+    <string name="sidebarquickaccess_title">Sidebar quick access</string>
+    <string name="showfolders_pref_title">Show shortcuts</string>
     <string name="showfolders_pref">Shortcuts</string>
-    <string name="showquickaccess_pref_title">Show Quick Accesses</string>
-    <string name="showquickaccess_pref">Quick Accesses</string>
-    <string name="create_shortcut">Create Shortcut</string>
-    <string name="edit_shortcut">Edit Shortcut</string>
+    <string name="showquickaccess_pref_title">Show quick accesses</string>
+    <string name="showquickaccess_pref">Quick accesses</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
     <string name="questiondelete_shortcut">Delete shortcut?</string>
 
