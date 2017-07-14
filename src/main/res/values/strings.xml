@@ -648,7 +648,7 @@
     <string name="showfolders_pref">Shortcuts</string>
     <string name="showquickaccess_pref_title">Show quick accesses</string>
     <string name="showquickaccess_pref">Quick accesses</string>
-    <string name="create_shortcut">Create chortcut</string>
+    <string name="create_shortcut">Create shortcut</string>
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
     <string name="questiondelete_shortcut">Delete shortcut?</string>
