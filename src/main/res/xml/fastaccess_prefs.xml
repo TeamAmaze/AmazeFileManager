@@ -3,29 +3,29 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="fastaccess"
-        android:title="Fast access"/>
+        android:title="@string/quick"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="recent"
-        android:title="Recent"/>
+        android:title="@string/recent"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="image"
-        android:title="Image"/>
+        android:title="@string/images"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="video"
-        android:title="Movie"/>
+        android:title="@string/videos"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="audio"
-        android:title="Audio"/>
+        android:title="@string/audio"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="documents"
-        android:title="Documents"/>
+        android:title="@string/documents"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="apks"
-        android:title="APKs"/>
+        android:title="@string/apks"/>
 </PreferenceScreen>
