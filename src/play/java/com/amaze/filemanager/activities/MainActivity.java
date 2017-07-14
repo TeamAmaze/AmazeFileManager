@@ -2975,6 +2975,15 @@ public class MainActivity extends BaseActivity implements
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
                 Bundle args = new Bundle();
                 args.putInt(ARGS_KEY_LOADER, service.ordinal());
+
+                // check if we already had done some work on the loader
+                Loader loader = getSupportLoaderManager().getLoader(REQUEST_CODE_CLOUD_LIST_KEY);
+                if (loader != null && loader.isStarted()) {
+
+                    // making sure that loader is not started
+                    getSupportLoaderManager().destroyLoader(REQUEST_CODE_CLOUD_LIST_KEY);
+                }
+
                 getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
             }
         } catch (CloudPluginException e) {
@@ -3001,6 +3010,11 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+            cloudSyncTask.cancel(true);
+
+        }
 
         Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
 
@@ -3076,10 +3090,6 @@ public class MainActivity extends BaseActivity implements
             Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
                     Toast.LENGTH_LONG).show();
             return;
-        }
-
-        if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-            cloudSyncTask.cancel(true);
         }
 
         cloudSyncTask = new AsyncTask<Void, Void, Boolean>() {
