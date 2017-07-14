@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>, Luca D'Amico (Luca91)
 
     This file is part of Amaze File Manager.
 
@@ -41,6 +41,9 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
+    <uses-feature android:name="android.software.leanback"
+        android:required="false" />
+
     <application
         android:name=".utils.AppConfig"
         android:icon="@mipmap/ic_launcher"
@@ -57,6 +60,8 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
