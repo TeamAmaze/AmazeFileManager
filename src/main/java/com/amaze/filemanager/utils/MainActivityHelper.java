@@ -168,7 +168,7 @@ public class MainActivityHelper {
 
     public void add(int pos) {
         final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
-        final String path = ma.CURRENT_PATH;
+        final String path = ma.getCurrentPath();
 
         switch (pos) {
             case NEW_FOLDER:
@@ -612,7 +612,7 @@ public class MainActivityHelper {
         TabFragment tabFragment = mainActivity.getFragment();
         if (tabFragment == null) return;
         final MainFragment ma = (MainFragment) tabFragment.getTab();
-        final String fpath = ma.CURRENT_PATH;
+        final String fpath = ma.getCurrentPath();
 
         /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/

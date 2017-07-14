@@ -122,7 +122,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public String home, CURRENT_PATH = "", goback;
+    public String home, goback;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
             SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
@@ -141,6 +141,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public int no;
 
+    private String CURRENT_PATH = "";
     /**
      * This is not an exact copy of the elements in the adapter
      */
@@ -184,14 +185,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = getMainActivity();
-        utils = utilsProvider.getFutils();
 
         setRetainInstance(true);
+
+        utilsProvider = getMainActivity();
+        utils = utilsProvider.getFutils();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        res = getResources();
+
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        IS_LIST = !checkPathIsGrid(CURRENT_PATH);
 
         accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
@@ -204,8 +210,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);
         CIRCULAR_IMAGES = sharedPref.getBoolean("circularimages", true);
         SHOW_LAST_MODIFIED = sharedPref.getBoolean("showLastModified", true);
-
-        res = getResources();
     }
 
     public void stopAnimation() {
@@ -332,7 +336,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
                 if (savedInstanceState != null && !IS_LIST)
-                    retrieveFromSavedInstance(savedInstanceState);
+                    onSavedInstanceState(savedInstanceState);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -346,7 +350,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             loadlist(CURRENT_PATH, false, openMode);
         } else {
             if (IS_LIST)
-                retrieveFromSavedInstance(savedInstanceState);
+                onSavedInstanceState(savedInstanceState);
         }
     }
 
@@ -390,10 +394,52 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     public void switchView() {
-        createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkforpath(CURRENT_PATH));
+        createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkPathIsGrid(CURRENT_PATH));
     }
 
-    void retrieveFromSavedInstance(final Bundle savedInstanceState) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        int index;
+        View vi;
+        if (listView != null) {
+            if (IS_LIST) {
+                index = (mLayoutManager).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            } else {
+                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
+                vi = listView.getChildAt(0);
+            }
+
+            int top = (vi == null) ? 0 : vi.getTop();
+
+            outState.putInt("index", index);
+            outState.putInt("top", top);
+            outState.putParcelableArrayList("list", getLayoutElements());
+            outState.putString("CURRENT_PATH", CURRENT_PATH);
+            outState.putBoolean("selection", selection);
+            outState.putInt("openMode", openMode.ordinal());
+            outState.putInt("folder_count", folder_count);
+            outState.putInt("file_count", file_count);
+
+            if (selection) {
+                ArrayList<String> selectedPaths = new ArrayList<>();
+                for(LayoutElement e : adapter.getCheckedItems()) {
+                    selectedPaths.add(e.getDesc());
+                }
+                outState.putStringArrayList("position", selectedPaths);
+            }
+
+            outState.putBoolean("results", results);
+
+            if (openMode == OpenMode.SMB) {
+                outState.putString("SmbPath", smbPath);
+            }
+        }
+    }
+
+    void onSavedInstanceState(final Bundle savedInstanceState) {
         Bundle b = new Bundle();
         String cur = savedInstanceState.getString("CURRENT_PATH");
 
@@ -416,49 +462,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 for (String path : savedInstanceState.getStringArrayList("position")) {
                     adapter.toggleChecked(true, path);
                 }
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        int index;
-        View vi;
-        if (listView != null) {
-            if (IS_LIST) {
-                index = (mLayoutManager).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            } else {
-                index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
-                vi = listView.getChildAt(0);
-            }
-
-            int top = (vi == null) ? 0 : vi.getTop();
-
-            outState.putInt("index", index);
-            outState.putInt("top", top);
-            //outState.putBoolean("IS_LIST", IS_LIST);
-            outState.putParcelableArrayList("list", getLayoutElements());
-            outState.putString("CURRENT_PATH", CURRENT_PATH);
-            outState.putBoolean("selection", selection);
-            outState.putInt("openMode", openMode.ordinal());
-            outState.putInt("folder_count", folder_count);
-            outState.putInt("file_count", file_count);
-
-            if (selection) {
-                ArrayList<String> selectedPaths = new ArrayList<>();
-                for(LayoutElement e : adapter.getCheckedItems()) {
-                    selectedPaths.add(e.getDesc());
-                }
-                outState.putStringArrayList("position", selectedPaths);
-            }
-
-            outState.putBoolean("results", results);
-
-            if (openMode == OpenMode.SMB) {
-                outState.putString("SmbPath", smbPath);
             }
         }
     }
@@ -1052,26 +1055,33 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public boolean checkforpath(String path) {
+    /**
+     * Probably checks if path is supposed to be shown as a list or as a grid of files.
+     * @param path path to check
+     * @return should be shown as grid
+     */
+    public boolean checkPathIsGrid(String path) {
         boolean grid = false, both_contain = false;
-        int index1 = -1, index2 = -1;
+        int i1 = -1, i2 = -1;
         for (String s : dataUtils.getGridFiles()) {
-            index1++;
+            i1++;
             if ((path).contains(s)) {
                 grid = true;
                 break;
             }
         }
         for (String s : dataUtils.getListfiles()) {
-            index2++;
-            if ((path).contains(s)) {
+            i2++;
+            if (path.contains(s)) {
                 if (grid) both_contain = true;
                 grid = false;
                 break;
             }
         }
+        
         if (!both_contain) return grid;
-        String path1 = dataUtils.getGridFiles().get(index1), path2 = dataUtils.getListfiles().get(index2);
+        String path1 = dataUtils.getGridFiles().get(i1), path2 = dataUtils.getListfiles().get(i2);
+
         if (path1.contains(path2))
             return true;
         else if (path2.contains(path1))
@@ -1094,21 +1104,19 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             final OpenMode openMode, boolean results, boolean grid) {
         if (bitmap != null && isAdded()) {
             synchronized (bitmap) {
-                if (GO_BACK_ITEM)
-                    if (!path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                            && !path.equals(OTGUtil.PREFIX_OTG + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                            && !path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
-                        if (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback)) {
+                boolean isOtg = path.equals(OTGUtil.PREFIX_OTG + "/"),
+                            isOnTheCloud = path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                                    || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
-                            Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                            bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
-                                    "..", "", "", goback, 0, false, true, ""));
-                        }
-                    }
-
+                if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
+                        && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))) {
+                    Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
+                    bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
+                            "..", "", "", goback, 0, false, true, ""));
+                }
+              
                 if (bitmap.size() == 0 && !results) {
                     nofilesview.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);
@@ -1586,6 +1594,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
             Futils.scanFile(path, getActivity());
         }
 
+    }
+
+    public String getCurrentPath() {
+        return CURRENT_PATH;
     }
 
     private void addShortcut(LayoutElement path) {

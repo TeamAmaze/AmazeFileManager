@@ -148,7 +148,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
     @Override
     public void onPostExecute(Boolean movedCorrectly) {
         if (movedCorrectly) {
-            if (mainFrag != null && mainFrag.CURRENT_PATH.equals(paths.get(0))) {
+            if (mainFrag != null && mainFrag.getCurrentPath().equals(paths.get(0))) {
                 // mainFrag.updateList();
                 Intent intent = new Intent("loadlist");
                 context.sendBroadcast(intent);

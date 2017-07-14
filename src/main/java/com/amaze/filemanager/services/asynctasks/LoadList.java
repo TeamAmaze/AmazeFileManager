@@ -91,7 +91,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     protected ArrayList<LayoutElement> doInBackground(String... params) {// params[0] is the url.
         ArrayList<LayoutElement> list = null;
         path = params[0];
-        grid = ma.checkforpath(path);
+        grid = ma.checkPathIsGrid(path);
         ma.folder_count = 0;
         ma.file_count = 0;
         if (openmode == OpenMode.UNKNOWN) {
