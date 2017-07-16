@@ -649,4 +649,5 @@ Kaldırmak için boş bırakın.</string>
   <string name="items">Öğeler</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
+  <!-- end of plurals -->
 </resources>

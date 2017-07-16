@@ -90,7 +90,7 @@
   <string name="viewmode">Prikaz</string>
   <string name="uimode">UI način</string>
   <string name="sortby">Razvrsti po</string>
-  <string name="theme">Teme</string>
+  <string name="theme">Tema</string>
   <string name="skin">Preobleka</string>
   <string name="random">Naključna preobleka</string>
   <string name="colorize">Barvne ikone</string>
@@ -155,6 +155,7 @@
   <!--Folder-->
   <string name="Yellow">Rumena</string>
   <string name="pick_a_file">Izberite datoteko</string>
+  <string name="in_safe">Premalo prostora</string>
   <string name="no_file_overwrite">Nobena datoteka prepisana</string>
   <string name="skip">Preskoči</string>
   <string name="overwrite">Prepiši</string>
@@ -175,6 +176,7 @@
   <string name="pathcopied">Pot kopirana v odložišče</string>
   <string name="used">zasedeno</string>
   <string name="used_by_others">uporabljajo drugi</string>
+  <string name="free">nezaseden prostor</string>
   <string name="listview">Seznamski pogled</string>
   <string name="gridview">Mrežni pogled</string>
   <string name="permission">Dovoljenja</string>
@@ -210,6 +212,7 @@
   <string name="hiddenfiles">Skrite datoteke</string>
   <string name="type">Vrsta</string>
   <string name="typeDesc">Vrsta (Desc)</string>
+  <string name="rootdirectory">Koren</string>
   <string name="new_string">Novo</string>
   <string name="setringtone">Nastavi kot melodijo zvonjenja</string>
   <string name="copy_path">Kopiraj pot</string>
@@ -224,7 +227,7 @@
   <string name="xda_title">XDA nit</string>
   <string name="xda_summary">Q &amp; A, pomoč &amp; odpravljanje težav</string>
   <string name="circularimages">Uporabi krožne ikone za slike in video posnetke</string>
-  <string name="circularicons">Uporabi krožno ikone</string>
+  <string name="circularicons">Uporabi krožno ikono</string>
   <string name="details">Podrobnosti</string>
   <string name="translators">Prevajalci</string>
   <string name="german_translation_title">Nemščina</string>
@@ -258,13 +261,17 @@
   <string name="other">Drugo</string>
   <string name="image">Slike</string>
   <string name="contributors">Sodelavci</string>
+  <string name="savepaths">Ne pozabi poti</string>
+  <string name="savepathsummary">Pri zagonu si v vsakem jezičku zapolni nazadnje ogledane mape</string>
   <string name="select_intent">Izberi</string>
   <string name="md5copied">MD5 je kopirano v odložišče</string>
   <string name="colourednavigation">Barvna vrstica za krmarjenje</string>
   <string name="colourednavigationsum">Ne glede na to, ali je sistemska navigacijska vrstica obarvana s preobleko</string>
   <string name="gplus_pic_title">Vpis z G +</string>
+  <string name="gplus_pic_summary">Pokaži G + naslovno sliko v predalu</string>
   <string name="icon_credits">Grafika &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Barva</string>
+  <string name="color_summary">Nastavite izgled uporabniškega vmesnika</string>
   <string name="accent_color_title">Barva poudarka</string>
   <string name="icon_color_title">Barva ikone</string>
   <string name="icon_color_summary">Nastavi barvo za ikone</string>
@@ -288,7 +295,7 @@
   <string name="folders">Mape</string>
   <string name="videos">Video posnetki</string>
   <string name="apks">Apk-ji</string>
-  <string name="documents">Dokumentov</string>
+  <string name="documents">Dokumenti</string>
   <string name="images">Slike</string>
   <string name="clear">Počisti</string>
   <string name="md5">MD5</string>
@@ -346,6 +353,7 @@
   <string name="searchingdevices">Iskanje naprav</string>
   <string name="use_custom_ip">Uporaba IP po meri</string>
   <string name="share_limit">Ne moremo deliti več kot 100 datotek</string>
+  <string name="otg_access">Izberite koren OTG naprave</string>
   <string name="no_profile_pic">Ni G + slike profila</string>
   <string name="opening">Odpiranje..</string>
   <string name="information">Podatki</string>
@@ -380,6 +388,7 @@
   <string name="flash_fired">Uporaba bliskavice</string>
   <string name="focal_length">Goriščna razdalja</string>
   <string name="document">Dokument</string>
+  <string name="subject">Zadeva</string>
   <string name="author">Avtor</string>
   <string name="keywords">Ključne besede</string>
   <string name="created">Ustvarjeno</string>
@@ -395,6 +404,7 @@
   <string name="move_complete">Premikanje končano</string>
   <string name="waiting_title">Čakam</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <string name="out_of">od</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
   <string name="of">od</string>
   <string name="processing_file">Obdelava datoteke</string>
@@ -416,6 +426,7 @@
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">E - poštni naslov</string>
   <string name="cloud_email">E-poštni ID</string>
+  <string name="ftp_path">Skupna pot</string>
   <string name="change">Spremeni</string>
   <string name="unknown_error">Ops... nekaj je šlo narobe!</string>
   <string name="ftp_path_change_success">FTP pot uspešno spremenjena</string>
@@ -427,9 +438,14 @@
   <string name="ftp_login">Prijava</string>
   <string name="field_empty">Polje ne sme biti prazno</string>
   <string name="ftp_seconds">Sekund</string>
+  <string name="intellihide_toolbar_title">Pametna orodna vrstica</string>
+  <string name="intellihide_toolbar_summary">Samodejno skrije orodno vrstico med drsenjem</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
+  <string name="contributors_1_summary">Prevod</string>
+  <string name="contributors_2_summary">Ikone in transparenti</string>
   <string name="contributors_6_summary">FTP strežnik</string>
+  <string name="connection_exists">Povezava že obstaja</string>
   <string name="crypt_encrypting">Šifriram</string>
   <string name="crypt_decrypting">Dešifriram</string>
   <!-- references to 'Some files weren't successfully %s -->
@@ -437,13 +453,18 @@
   <string name="crypt_decrypted">Dešifrirano</string>
   <string name="crypt_encrypt">Šifriranje</string>
   <string name="crypt_decrypt">Dešifriranje</string>
+  <string name="operation_fail_following">Operacija ni uspela za te datoteke</string>
   <string name="crypt_pref_master_password_title">Glavno geslo</string>
+  <string name="crypt_pref_master_password_summary">Nastaviti glavno geslo za šifriranje.         Pustite prazno, če želite odstraniti.</string>
   <string name="crypt_pref_fingerprint_title">Prstni odtis</string>
+  <string name="crypt_pref_fingerprint_summary">Uporabi prstni odtis za preverjanje pristnosti pri šifriranju</string>
+  <string name="crypt_fingerprint_no_permission">Dovoljenja za prstni odtis mankajo</string>
   <string name="warning_never_show">Ne prikaži več</string>
   <string name="warning_confirm">Razumem!</string>
   <string name="crypt_encryption_fail">Ni bilo mogoče šifrirati</string>
   <string name="crypt_decryption_fail">Ni bilo mogoče dešifrirati</string>
   <string name="crypt_decryption_fail_password">Napačno geslo!</string>
+  <string name="crypt_fingerprint_authenticate">Dotaknite se senzorja za nadaljevanje</string>
   <string name="authenticate_password">Vnesite geslo</string>
   <string name="sidebarfolders_title">Bližnjice stranske vrstice</string>
   <string name="sidebarquickaccess_title">Hitri dostop stranske vrstice</string>
@@ -461,6 +482,7 @@
   <string name="cloud_fail_authenticate">Preverjanje pristnosti ni uspelo</string>
   <string name="cloud_share_copied">Povezava za izvoz kopirana v odložišče</string>
   <string name="copy_low_memory">Zmanjkuje pomnilnika, počistite nekaj RAM-a</string>
+  <string name="cloud_plugin_not_supported">Vtičnik za oblak ni podprt za Fdroid gradnjo.         Prinesite si ga iz TrgovinePlay.</string>
   <string name="monofont">Monospace pisave</string>
   <string name="showHeaders">Pokaži glavo</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
@@ -469,4 +491,6 @@
   <string name="items">elementi</string>
   <string name="byte_singular">bajt</string>
   <string name="bytes">bajtov</string>
+  <!-- end of plurals -->
+  <string name="no_name">Datoteka mora imeti ime</string>
 </resources>

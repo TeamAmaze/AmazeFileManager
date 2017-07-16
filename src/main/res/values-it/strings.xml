@@ -604,6 +604,7 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="cloud_fail_authenticate">Autenticazione non riuscita</string>
   <string name="cloud_share_copied">Link condivisibile copiato negli Appunti</string>
   <string name="copy_low_memory">A corto di memoria, si prega di liberare della RAM</string>
+  <string name="cloud_token_lost">Token perso, accedi nuovamente</string>
   <string name="showHeaders">Mostra Header</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="noitems">Nessun elemento</string>
@@ -611,4 +612,5 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="items">Elementi</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">Bytes</string>
+  <!-- end of plurals -->
 </resources>

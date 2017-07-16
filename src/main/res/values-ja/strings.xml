@@ -581,4 +581,5 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="item">アイテム</string>
   <string name="items">アイテム</string>
   <string name="bytes">バイト</string>
+  <!-- end of plurals -->
 </resources>

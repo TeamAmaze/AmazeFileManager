@@ -508,4 +508,5 @@ Anders wordt er naar een voorval gezocht.</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Object</string>
   <string name="items">Objecten</string>
+  <!-- end of plurals -->
 </resources>

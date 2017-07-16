@@ -641,4 +641,5 @@
   <string name="item">Kohde</string>
   <string name="items">Kohteet</string>
   <string name="bytes">Tavua</string>
+  <!-- end of plurals -->
 </resources>

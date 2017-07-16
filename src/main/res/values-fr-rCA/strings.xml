@@ -630,4 +630,5 @@
   <string name="items">Éléments</string>
   <string name="byte_singular">octet</string>
   <string name="bytes">Octets</string>
+  <!-- end of plurals -->
 </resources>

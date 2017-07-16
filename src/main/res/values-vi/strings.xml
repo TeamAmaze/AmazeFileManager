@@ -491,4 +491,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Mục</string>
   <string name="items">Các mục</string>
+  <!-- end of plurals -->
 </resources>
