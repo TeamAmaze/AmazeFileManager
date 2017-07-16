@@ -635,4 +635,5 @@
   <string name="bytes">bajtov</string>
   <!-- end of plurals -->
   <string name="no_name">Súbor by mal mať názov</string>
+  <string name="add_item">Pridať položku</string>
 </resources>

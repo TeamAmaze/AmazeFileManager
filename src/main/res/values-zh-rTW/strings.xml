@@ -640,4 +640,8 @@
   <string name="bytes">位元組</string>
   <!-- end of plurals -->
   <string name="no_name">檔案必須要有名稱</string>
+  <string name="add_item">新增項目</string>
+  <string name="failed_smb_decrypt_path">載入 SMB 連線失敗</string>
+  <string name="failed_cloud_new_connection">新增雲端硬碟失敗</string>
+  <string name="failed_cloud_api_key">認證雲端硬碟套件失敗</string>
 </resources>

@@ -639,4 +639,5 @@
   <string name="bytes">Байты</string>
   <!-- end of plurals -->
   <string name="no_name">Файл должен иметь имя</string>
+  <string name="add_item">Добавить элемент</string>
 </resources>

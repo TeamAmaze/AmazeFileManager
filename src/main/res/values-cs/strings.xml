@@ -635,4 +635,8 @@
   <string name="bytes">bajtů</string>
   <!-- end of plurals -->
   <string name="no_name">Soubor by měl mít název</string>
+  <string name="add_item">Přidat položku</string>
+  <string name="failed_smb_decrypt_path">Pokus o otevření spojení selhal</string>
+  <string name="failed_cloud_new_connection">Nepodařilo se přidat cloudové připojení</string>
+  <string name="failed_cloud_api_key">Autentizace cloudového pluginu se nezdařila</string>
 </resources>

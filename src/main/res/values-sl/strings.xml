@@ -90,7 +90,7 @@
   <string name="viewmode">Prikaz</string>
   <string name="uimode">UI način</string>
   <string name="sortby">Razvrsti po</string>
-  <string name="theme">Teme</string>
+  <string name="theme">Tema</string>
   <string name="skin">Preobleka</string>
   <string name="random">Naključna preobleka</string>
   <string name="colorize">Barvne ikone</string>
@@ -227,7 +227,7 @@
   <string name="xda_title">XDA nit</string>
   <string name="xda_summary">Q &amp; A, pomoč &amp; odpravljanje težav</string>
   <string name="circularimages">Uporabi krožne ikone za slike in video posnetke</string>
-  <string name="circularicons">Uporabi krožno ikone</string>
+  <string name="circularicons">Uporabi krožno ikono</string>
   <string name="details">Podrobnosti</string>
   <string name="translators">Prevajalci</string>
   <string name="german_translation_title">Nemščina</string>
@@ -261,13 +261,17 @@
   <string name="other">Drugo</string>
   <string name="image">Slike</string>
   <string name="contributors">Sodelavci</string>
+  <string name="savepaths">Ne pozabi poti</string>
+  <string name="savepathsummary">Pri zagonu si v vsakem jezičku zapolni nazadnje ogledane mape</string>
   <string name="select_intent">Izberi</string>
   <string name="md5copied">MD5 je kopirano v odložišče</string>
   <string name="colourednavigation">Barvna vrstica za krmarjenje</string>
   <string name="colourednavigationsum">Ne glede na to, ali je sistemska navigacijska vrstica obarvana s preobleko</string>
   <string name="gplus_pic_title">Vpis z G +</string>
+  <string name="gplus_pic_summary">Pokaži G + naslovno sliko v predalu</string>
   <string name="icon_credits">Grafika &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Barva</string>
+  <string name="color_summary">Nastavite izgled uporabniškega vmesnika</string>
   <string name="accent_color_title">Barva poudarka</string>
   <string name="icon_color_title">Barva ikone</string>
   <string name="icon_color_summary">Nastavi barvo za ikone</string>
@@ -434,6 +438,8 @@
   <string name="ftp_login">Prijava</string>
   <string name="field_empty">Polje ne sme biti prazno</string>
   <string name="ftp_seconds">Sekund</string>
+  <string name="intellihide_toolbar_title">Pametna orodna vrstica</string>
+  <string name="intellihide_toolbar_summary">Samodejno skrije orodno vrstico med drsenjem</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
   <string name="contributors_1_summary">Prevod</string>

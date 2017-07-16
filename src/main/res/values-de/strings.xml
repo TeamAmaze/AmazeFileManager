@@ -587,11 +587,20 @@ rund um die Entwicklung</string>
   <string name="questiondelete_shortcut">Verknüpfung löschen?</string>
   <string name="cloud_error_new_account">Fehler beim Hinzufügen des neuen Kontos</string>
   <string name="cloud_error_plugin">Amaze Cloud Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
+  <string name="cloud_error_failed_restart">Fehler beim Laden der Verbindung.
+         Bitte öffnen Sie Amaze Cloud einmal.</string>
+  <string name="cloud_remove">Möchten Sie die cloud-Verbindung entfernen?</string>
   <string name="cloud_fail_authenticate">Authentifizierung fehlgeschlagen</string>
+  <string name="cloud_share_copied">Teilbarer-Link wurde in die Zwischenablage kopiert</string>
+  <string name="copy_low_memory">Speicher fast voll, bitte machen Sie etwas RAM frei</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <string name="noitems">Keine Elemente</string>
   <string name="item">Objekt</string>
   <string name="items">Elemente</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">bytes</string>
   <!-- end of plurals -->
+  <string name="no_name">Datei sollte ein Namen haben</string>
+  <string name="add_item">Element hinzufügen</string>
+  <string name="failed_cloud_new_connection">Hinzufügen neuer Cloud-Verbindung fehlgeschlagen</string>
 </resources>
