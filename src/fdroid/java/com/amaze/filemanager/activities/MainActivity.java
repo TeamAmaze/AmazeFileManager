@@ -119,7 +119,6 @@ import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbac
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;

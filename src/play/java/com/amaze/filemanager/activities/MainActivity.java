@@ -119,10 +119,8 @@ import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbac
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewer;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -189,8 +187,7 @@ import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREF
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
-        SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
+        SmbConnectionListener, DataChangeListener, BookmarkCallback, CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
@@ -2937,30 +2934,6 @@ public class MainActivity extends BaseActivity implements
 
         utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
         refreshDrawer();
-    }
-
-    @Override
-    public void onPreExecute(String query) {
-        mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-        mainFragment.onSearchPreExecute(query);
-    }
-
-    @Override
-    public void onPostExecute(String query) {
-        mainFragment.onSearchCompleted(query);
-        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onProgressUpdate(BaseFile val , String query) {
-        mainFragment.addSearchResult(val,query);
-    }
-
-    @Override
-    public void onCancelled() {
-        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.getCurrentPath(),
-                mainFragment.openMode, false, !mainFragment.IS_LIST);
-        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
