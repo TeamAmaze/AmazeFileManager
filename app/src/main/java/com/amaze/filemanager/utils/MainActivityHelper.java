@@ -7,14 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,11 +38,11 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.services.loaders.SearchLoader;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
@@ -53,7 +56,16 @@ import java.util.ArrayList;
  */
 public class MainActivityHelper {
 
+    public static final String KEY_PATH = "path";
+    public static final String KEY_INPUT = "input";
+    public static final String KEY_OPEN_MODE = "open_mode";
+    public static final String KEY_ROOT_MODE = "root_mode";
+    public static final String KEY_REGEX = "regex";
+    public static final String KEY_REGEX_MATCHES = "matches";
+
     public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
+
+    private static final int SEARCH_LOADER = 50600;
 
     private MainActivity mainActivity;
     private Futils utils;
@@ -604,7 +616,7 @@ public class MainActivityHelper {
     }
 
     /**
-     * Creates a fragment which will handle the search AsyncTask {@link SearchWorkerFragment}
+     * Creates a SearchLoader and starts a AsyncTask
      *
      * @param query the text query entered the by user
      */
@@ -614,52 +626,86 @@ public class MainActivityHelper {
         final MainFragment ma = (MainFragment) tabFragment.getTab();
         final String fpath = ma.getCurrentPath();
 
-        /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
-        //ma.searchTask = task;
         SEARCH_TEXT = query;
         mainActivity.mainFragment = (MainFragment) mainActivity.getFragment().getTab();
-        FragmentManager fm = mainActivity.getSupportFragmentManager();
-        SearchWorkerFragment fragment =
-                (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
 
-        if (fragment != null) {
-            if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                fragment.mSearchAsyncTask.cancel(true);
-            }
-            fm.beginTransaction().remove(fragment).commit();
-        }
-
-        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, BaseActivity.rootMode,
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+        createSearch(mainActivity, query, fpath, ma.openMode, BaseActivity.rootMode,
+                mainActivity.sharedPref.getBoolean(KEY_REGEX, false),
+                mainActivity.sharedPref.getBoolean(KEY_REGEX_MATCHES, false));
     }
 
-    /**
-     * Adds a search fragment that can persist it's state on config change
-     *
-     * @param fragmentManager fragmentManager
-     * @param fragment        current fragment
-     * @param path            current path
-     * @param input           query typed by user
-     * @param openMode        defines the file type
-     * @param rootMode        is root enabled
-     * @param regex           is regular expression search enabled
-     * @param matches         is matches enabled for patter matching
-     */
-    public static void addSearchFragment(FragmentManager fragmentManager, Fragment fragment,
-                                         String path, String input, OpenMode openMode, boolean rootMode,
-                                         boolean regex, boolean matches) {
-        Bundle args = new Bundle();
-        args.putString(SearchWorkerFragment.KEY_INPUT, input);
-        args.putString(SearchWorkerFragment.KEY_PATH, path);
-        args.putInt(SearchWorkerFragment.KEY_OPEN_MODE, openMode.ordinal());
-        args.putBoolean(SearchWorkerFragment.KEY_ROOT_MODE, rootMode);
-        args.putBoolean(SearchWorkerFragment.KEY_REGEX, regex);
-        args.putBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, matches);
+    public static void createSearch(final MainActivity mainActivity, final String query,
+                                    final String directoryToSearchPath, final OpenMode openMode,
+                                    final boolean root, final boolean regex, final boolean matches) {
+        LoaderManager.LoaderCallbacks<Void> searchCallbacks = new LoaderManager.LoaderCallbacks<Void>() {
+            Handler fileHandler;
 
-        fragment.setArguments(args);
-        fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
+            @Override
+            public Loader<Void> onCreateLoader(int id, Bundle args) {
+                final MainFragment mainFragment = mainActivity.mainFragment;
+
+                mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+                mainFragment.onSearchPreExecute(query);
+
+                SearchLoader.OnCancelledListener cancelledListener = new SearchLoader.OnCancelledListener() {
+                    @Override
+                    public void onCancelled() {
+                        mainActivity.runOnUiThread(new Runnable() {
+                            public void run() {
+                                mainFragment.createViews(mainFragment.getLayoutElements(), false,
+                                        mainFragment.getCurrentPath(), mainFragment.openMode, false,
+                                        !mainFragment.IS_LIST);
+                                mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+
+                    }
+                };
+
+                fileHandler = new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message inputMessage) {
+                        final Pair<String, BaseFile> queryToResult = (Pair<String, BaseFile>) inputMessage.obj;
+
+                        mainActivity.runOnUiThread(new Runnable() {
+                            public void run() {
+                                mainFragment.addSearchResult(queryToResult.second, queryToResult.first);
+                            }
+                        });
+                    }
+                };
+
+                SearchLoader searchLoader = new SearchLoader(mainActivity, cancelledListener, fileHandler);
+                searchLoader.loadParameters( query, directoryToSearchPath, openMode, root, regex, matches);
+
+                return searchLoader;
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Void> loader, Void data) {
+                mainActivity.mainFragment.onSearchCompleted(query);
+                mainActivity.mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Void> loader) {
+                ((SearchLoader) loader).loadParameters(query, directoryToSearchPath, openMode,
+                        root, regex, matches);
+            }
+        };
+
+        LoaderManager loaderManager = mainActivity.getSupportLoaderManager();
+
+        if(loaderManager.getLoader(SEARCH_LOADER) == null) {
+            loaderManager.initLoader(SEARCH_LOADER, null, searchCallbacks).forceLoad();
+        } else {
+            loaderManager.restartLoader(SEARCH_LOADER, null, searchCallbacks).forceLoad();
+        }
+
+    }
+
+    public static void cancelSearch(MainActivity mainActivity) {
+        mainActivity.getSupportLoaderManager().destroyLoader(SEARCH_LOADER);
     }
 
     /**

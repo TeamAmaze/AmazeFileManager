@@ -46,7 +46,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -855,17 +854,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         if (results) {
             // check to initialize search results
             // if search task is been running, cancel it
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
-                    .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-            if (fragment != null) {
-
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-
-                    fragment.mSearchAsyncTask.cancel(true);
-                }
-                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            }
+            MainActivityHelper.cancelSearch(getMainActivity());
 
             mRetainSearchTask = true;
             results = false;
@@ -1345,7 +1334,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                     // starting the search query again :O
                     getMainActivity().mainFragment = (MainFragment) getMainActivity().getFragment().getTab();
-                    FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
                     // getting parent path to resume search from there
                     String parentPath = new HFile(openMode, CURRENT_PATH).getParent(getActivity());
@@ -1353,23 +1341,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     // the path back to parent on back press
                     CURRENT_PATH = parentPath;
 
-                    MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
-                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
-                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+                    MainActivityHelper.createSearch(getMainActivity(), MainActivityHelper.SEARCH_TEXT,
+                            parentPath, openMode, BaseActivity.rootMode,
+                            sharedPref.getBoolean(MainActivityHelper.KEY_REGEX, false),
+                            sharedPref.getBoolean(MainActivityHelper.KEY_REGEX_MATCHES, false));
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
 
                 mRetainSearchTask = false;
             }
         } else {
             // to go back after search list have been popped
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            SearchWorkerFragment fragment = (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-            if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
-                }
-            }
+            MainActivityHelper.cancelSearch(getMainActivity());
             loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
             results = false;
         }
