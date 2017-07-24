@@ -43,10 +43,12 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Objects;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
+ * Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed FTP Server while using Eth connection)
  */
 public class FTPServerFragment extends Fragment {
 
@@ -120,10 +122,10 @@ public class FTPServerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!FTPService.isRunning()) {
-                    if (FTPService.isConnectedToWifi(getContext()))
+                    if (FTPService.isConnectedToWifi(getContext()) || FTPService.isConnectedToLocalNetwork(getContext()))
                         startServer();
                     else {
-                        // no wifi, we shouldn't be here in the first place, because of broadcast
+                        // no wifi and no eth, we shouldn't be here in the first place, because of broadcast
                         // receiver, but just to be sure
                         statusText.setText(spannedStatusNoConnection);
                     }
@@ -340,11 +342,11 @@ public class FTPServerFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                // connected to wifi
+            if (netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET)) {
+                // connected to wifi or eth
                 ftpBtn.setEnabled(true);
             } else {
-                // wifi connection lost
+                // wifi or eth connection lost
                 stopServer();
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(true);
@@ -421,7 +423,7 @@ public class FTPServerFragment extends Fragment {
     private void updateStatus() {
 
         if (!FTPService.isRunning()) {
-            if (!FTPService.isConnectedToWifi(getContext())) {
+            if (!FTPService.isConnectedToWifi(getContext()) && !FTPService.isConnectedToLocalNetwork(getContext())) {
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(false);
             } else {
@@ -496,7 +498,11 @@ public class FTPServerFragment extends Fragment {
      * @return address at which server is running
      */
     private String getFTPAddressString() {
-        return "ftp://" + FTPService.getLocalInetAddress(getContext()).getHostAddress() + ":" + FTPService.getPort();
+        String hostAddress = "";
+        InetAddress ia = FTPService.getLocalInetAddress(getContext());
+        if (ia != null)
+            hostAddress = ia.getHostAddress();
+        return "ftp://" + hostAddress  + ":" + FTPService.getPort();
     }
 
     private int getDefaultPortFromPreferences() {
