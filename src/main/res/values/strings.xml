@@ -296,8 +296,8 @@
     <string name="archive_preferences">Archive Preferences</string>
     <string name="archive_extract_folder">Archive Extract Folder</string>
     <string name="zip_create_folder">Zip Create Folder</string>
-    <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
-    <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
+    <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present.</string>
+    <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present.</string>
     <string name="openas">Open As</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
@@ -373,8 +373,8 @@
     <string name="defualt">Default</string>
     <string name="doit">Do it</string>
     <string name="wanthelp"><u>Need help?</u></string>
-    <string name="quick">Quick Access</string>
-    <string name="recent">Recent Files</string>
+    <string name="quick">Quick access</string>
+    <string name="recent">Recent files</string>
     <string name="edit">Edit</string>
     <string name="find">Find in page</string>
     <string name="grant">Grant</string>
@@ -647,7 +647,7 @@
     <string name="showfolders_pref_title">Show shortcuts</string>
     <string name="showfolders_pref">Shortcuts</string>
     <string name="showquickaccess_pref_title">Show quick accesses</string>
-    <string name="showquickaccess_pref">Quick acceses</string>
+    <string name="showquickaccess_pref">Quick accesses</string>
     <string name="create_shortcut">Create shortcut</string>
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>

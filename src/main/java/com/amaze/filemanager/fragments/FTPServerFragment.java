@@ -89,9 +89,10 @@ public class FTPServerFragment extends Fragment {
         skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
-        spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
+        spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
                 "<font color='" + accentColor + "'>"
-                + getResources().getString(R.string.ftp_status_running) + "</font></b>");
+                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
+                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
@@ -512,9 +513,13 @@ public class FTPServerFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         try {
-            String decryptedPassword = CryptUtil.decryptPassword(getContext(),
-                    preferences.getString(FTPService.KEY_PREFERENCE_PASSWORD, ""));
-            return decryptedPassword;
+            String encryptedPassword = preferences.getString(FTPService.KEY_PREFERENCE_PASSWORD, "");
+
+            if (encryptedPassword.equals("")) {
+                return "";
+            } else {
+                return CryptUtil.decryptPassword(getContext(), encryptedPassword);
+            }
         } catch (CryptException e) {
             e.printStackTrace();
 

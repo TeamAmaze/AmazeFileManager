@@ -431,4 +431,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">ставка</string>
   <string name="items">ставки</string>
+  <!-- end of plurals -->
 </resources>

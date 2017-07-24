@@ -17,16 +17,19 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
+import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -182,6 +185,7 @@ public class SmbConnectDialog extends DialogFragment {
                 }
             }
         });
+
         if (edit) {
             String userp = "", passp = "", ipp = "",domainp = "";
             conName.setText(name);
@@ -209,15 +213,15 @@ public class SmbConnectDialog extends DialogFragment {
                 e.printStackTrace();
             }
 
-        }else if(path!=null && path.length()>0){
+        } else if(path!=null && path.length()>0) {
             conName.setText(name);
             ip.setText(path);
             user.requestFocus();
-        }
-        else {
+        } else {
             conName.setText(R.string.smb_con);
             conName.requestFocus();
         }
+
         ba3.customView(v2, true);
         ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         ba3.neutralText(R.string.cancel);
@@ -262,22 +266,29 @@ public class SmbConnectDialog extends DialogFragment {
                 SmbFile smbFile;
                 String domaind = domain.getText().toString();
                 if (ch.isChecked())
-                    smbFile = connectingWithSmbServer(new String[]{ipa, "", "",domaind}, true);
+                    smbFile = createSMBPath(new String[]{ipa, "", "",domaind}, true);
                 else {
                     String useraw = user.getText().toString();
                     String useru = useraw.replaceAll(" ", "\\ ");
                     String passp = pass.getText().toString();
-                    smbFile = connectingWithSmbServer(new String[]{ipa, useru, passp,domaind}, false);
+                    smbFile = createSMBPath(new String[]{ipa, useru, passp,domaind}, false);
                 }
-                if (smbFile == null) return;
-                s = new String[]{conName.getText().toString(), smbFile.getPath()};
+
+                if (smbFile == null)
+                    return;
+
+                try {
+                    s = new String[]{conName.getText().toString(), SmbUtil.getSmbEncryptedPath(getActivity(),
+                            smbFile.getPath())};
+                } catch (CryptException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 if(smbConnectionListener!=null) {
                     // encrypted path means path with encrypted pass
-                    smbConnectionListener.addConnection(edit, s[0], createSMBPath(new String[]{ipa,
-                                    user.getText().toString().replaceAll(" ", "\\ "),
-                                    pass.getText().toString(),
-                                    domaind}, ch.isChecked()).getPath(),
-                            s[1], name, path);
+                    smbConnectionListener.addConnection(edit, s[0], smbFile.getPath(), s[1], name, path);
                 }
                 dismiss();
             }
@@ -301,27 +312,6 @@ public class SmbConnectDialog extends DialogFragment {
         });
 
         return ba3.build();
-    }
-
-    public SmbFile connectingWithSmbServer(String[] auth, boolean anonym) {
-        try {
-            String yourPeerIP = auth[0], domain = auth[3];
-            String path;
-
-            path = "smb://"+(android.text.TextUtils.isEmpty(domain) ?
-                    "" :( URLEncoder.encode(domain + ";","UTF-8")) ) +
-                    (anonym ? "" : (URLEncoder.encode(auth[1], "UTF-8") +
-                            ":" + CryptUtil.encryptPassword(context, URLEncoder.encode(auth[2],
-                            "UTF-8")) + "@"))
-                    + yourPeerIP + "/";
-
-            HFile hFile = new HFile(OpenMode.SMB, path);
-            SmbFile smbFile = hFile.getSmbFile(5000);
-            return smbFile;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private SmbFile createSMBPath(String[] auth, boolean anonym) {

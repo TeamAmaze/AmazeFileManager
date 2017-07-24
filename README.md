@@ -16,8 +16,10 @@ Overview
 - App Manager to open, backup, or directly uninstall any app
 - Quickly access history, access bookmarks or search for any file
 - Root explorer for advanced users
-- AES Encryption and Decryption of files for security
-- All features freely available without any ads
+- AES Encryption and Decryption of files for security (Jellybean v4.3+)
+- Cloud services support (Jellybean v4.3+ / requires additional plug-in)
+- Inbuilt Database Reader, Zip/Rar Reader, Apk Reader, Text Reader
+- No ads or In-app purchases
 - lots more...
 
 Warning

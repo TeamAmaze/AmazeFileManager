@@ -467,4 +467,5 @@
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="item">Елемент</string>
   <string name="items">Елементи</string>
+  <!-- end of plurals -->
 </resources>

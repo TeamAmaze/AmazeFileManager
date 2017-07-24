@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -43,7 +44,6 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         super.setupDialog(dialog, style);
 
         rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_sheet_cloud, null);
-        dialog.setContentView(rootView);
 
         if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.DARK)) {
             rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
@@ -73,6 +73,8 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         mGoogleDriveLayout.setOnClickListener(this);
         mOnedriveLayout.setOnClickListener(this);
         mGetCloudLayout.setOnClickListener(this);
+
+        dialog.setContentView(rootView);
     }
 
     /**

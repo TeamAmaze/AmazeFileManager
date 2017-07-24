@@ -19,24 +19,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Amaze</string>
+  <string name="app_name">Amaze File Manager</string>
   <string name="drawer_open">Navigációs fiók megnyitása</string>
   <string name="drawer_close">Navigációs fiók bezárása</string>
   <string name="books">Könyvjelzők</string>
   <string name="icon">ikon</string>
-  <string name="efn">Fájlnév megadása</string>
+  <string name="efn">Adja meg a fájl nevét</string>
   <string name="storage">Tárhely</string>
   <string name="gallery">Galéria</string>
   <string name="apps">Alkalmazáskezelő</string>
   <string name="ftp">FTP-kiszolgáló</string>
   <string name="bookmanag">Könyvjelző-kezelő</string>
   <string name="setting">Beállítások</string>
-  <string name="select">Elem kiválasztása</string>
+  <string name="select">Válasszon elemet</string>
   <string name="pressagain">Nyomja meg újra a kilépéshez</string>
   <string name="open">Megnyitás</string>
   <string name="backup">Biztonsági mentés</string>
   <string name="uninstall">Eltávolítás</string>
-  <string name="play">Play Áruház</string>
+  <string name="play">Play áruház</string>
   <string name="properties">Tulajdonságok</string>
   <string name="copyingapk">Apk másolása ide:</string>
   <string name="addbook">Könyvjelző hozzáadása</string>
@@ -50,7 +50,8 @@
   <string name="loading">Betöltés&#8230;</string>
   <string name="file_empty">A fájl üres</string>
   <string name="error">Hiba</string>
-  <string name="cantlistfiles">Nem listázhatja ki a fájlokat root jogosultság nélkül</string>
+  <string name="cantlistfiles">Nem lehet kilistázni a fájlokat root jogosultság nélkül</string>
+  <string name="searchresults">Keresés eredménye</string>
   <string name="itemsselected">elem kiválasztva</string>
   <string name="newhomedirectory">Új kezdőkönyvtár</string>
   <string name="rename">Átnevezés</string>
@@ -84,8 +85,8 @@
   <string name="guide2">Érintse meg a kék csíkot az útvonalsáv megjelenítéséhez vagy elrejtéséhez</string>
   <string name="guide3">Érintse meg hosszan bármelyik fájlt további lehetőségek eléréséhez</string>
   <string name="guide4">Mint a másolás, áthelyezés, tulajdonságok, stb.</string>
-  <string name="guide5">A vissza gomb segítségével bármikor kiléphet az alkalmazásból&#8230;</string>
-  <string name="guide6">..És használja a bal nyíl gombot a fájlkezelőn belüli navigáláshoz</string>
+  <string name="guide5">Az alkalmazás vissza gombjával bármikor kiléphet az alkalmazásból&#8230;</string>
+  <string name="guide6">..Használja a bal nyíl gombot a fájlkezelőben való navigáláshoz</string>
   <string name="maintab">A fő lap nem távolítható el</string>
   <string name="openparent">Szülőkönyvtár megnyitása</string>
   <string name="openwith">Megnyitás a következővel…</string>
@@ -96,20 +97,20 @@
   <string name="yes">Igen</string>
   <string name="no">Nem</string>
   <string name="dialog_delete_category_directories">Könyvtárak</string>
-  <string name="dialog_delete_category_files">Fájlok</string>
-  <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja őket a készülékről, és nem lehet helyreállítani.</string>
-  <string name="dialog_delete_title">Véglegesen törli a tételeket?</string>
+  <string name="dialog_delete_category_files">fájl</string>
+  <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja azokat a készülékről, és nem lehet őket visszaállítani.</string>
+  <string name="dialog_delete_title">Véglegesen törli az elemeket?</string>
   <string name="deleting">Törlés</string>
   <string name="questionset">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
-  <string name="viewmode">Megjelenítési mód</string>
-  <string name="uimode">Kezelőfelület mód</string>
+  <string name="viewmode">Megtekintési mód</string>
+  <string name="uimode">Felhasználói felület mód</string>
   <string name="directorysort">Könyvtár rendezési mód</string>
-  <string name="sortby">Rendezés</string>
+  <string name="sortby">Elrendezés</string>
   <string name="theme">Téma</string>
   <string name="skin">Felszín</string>
   <string name="random">Véletlenszerű felszín</string>
-  <string name="random_summary">Véletlenszerű alapszín beállítás indításkor</string>
-  <string name="colorize">Színes ikonok</string>
+  <string name="random_summary">Véletlenszerű alapszín beállítása indításkor</string>
+  <string name="colorize">Ikonok színezése</string>
   <string name="colorize_summary">Statikus ikon színének beállítása. Nem bírálja felül a könyvtár ikon színbeállításait.</string>
   <string name="back">Vissza</string>
   <string name="home">Kezdőlap</string>
@@ -119,10 +120,11 @@
   <string name="refresh">Frissítés</string>
   <string name="copy">Másolás</string>
   <string name="rootmode">Root-kezelő</string>
-  <string name="rootmodesummary">Rootolt eszközökre. Csak akkor aktiválja, ha biztos benne</string>
+  <string name="rootmodesummary">Csak rootolt eszközökre. Csak akkor aktiválja, ha biztos benne</string>
   <string name="mountsystemsummary">Engedélyezze ezt, ha szerkeszteni szeretné a rendszerfájlokat</string>
   <string name="mountsystem">Rendszermappák csatolása írhatóként</string>
   <string name="rootfailure">A root hozzáférés nincs megadva</string>
+  <string name="hiddenfailure">Nem lehet hozzáférni a rejtett fájlokhoz</string>
   <string name="selectall">Összes kijelölése</string>
   <string name="delete">Törlés</string>
   <string name="setashome">Beállítás kezdőkönyvtárként</string>
@@ -131,12 +133,12 @@
   <string name="imagegallery">Képgaléria</string>
   <string name="fileexplorer">Fájlkezelő</string>
   <string name="changegallerypath">Galéria útvonalának módosítása</string>
-  <string name="usedefaultgallerypath">Alapértelmezett képgaléria útvonal használata</string>
+  <string name="usedefaultgallerypath">Az alapértelmezett képtár útvonal használata</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <string name="simple">Egyszerű kezelőfelület</string>
-  <string name="card">Kártya kezelőfelület</string>
+  <string name="card">Kártya felhasználói felület</string>
   <!-- Theme -->
   <string name="light">Világos</string>
   <string name="dark">Sötét</string>
@@ -146,7 +148,7 @@
   <string name="pink">Rózsaszín</string>
   <string name="purple">Lila</string>
   <string name="deep_purple">Mélyvörös</string>
-  <string name="indigo">Sötétkék</string>
+  <string name="indigo">Indigókék</string>
   <string name="blue">Kék</string>
   <string name="light_blue">Világoskék</string>
   <string name="cyan">Ciánkék</string>
@@ -154,7 +156,7 @@
   <string name="green">Zöld</string>
   <string name="light_green">Világoszöld</string>
   <string name="amber">Borostyán</string>
-  <string name="orange">Narancssárga</string>
+  <string name="orange">Narancs</string>
   <string name="deep_orange">Mélynarancs</string>
   <string name="brown">Barna</string>
   <string name="black">Fekete</string>
@@ -169,8 +171,7 @@
   <string name="lastModified">Utoljára módosítva</string>
   <string name="sortSize">Méret</string>
   <string name="sortNameDesc">Név (csökkenő)</string>
-  <string name="lastModifiedDesc">Utoljára módosítva (csökkenő)
-</string>
+  <string name="lastModifiedDesc">Utoljára módosítva (csökkenő)</string>
   <string name="sortSizeDesc">Méret (csökkenő)</string>
   <!--ListMode-->
   <string name="detailedView">Részletes nézet</string>
@@ -184,7 +185,7 @@
   <string name="skip">Kihagyás</string>
   <string name="overwrite">Felülírás</string>
   <string name="cant_read_file">A fájl nem olvasható</string>
-  <string name="not_allowed">Nem engedélyezett</string>
+  <string name="not_allowed">Nincs engedélyezve</string>
   <string name="processes">Folyamatok</string>
   <string name="searching">Keresés</string>
   <string name="copying_fles">Fájlok másolása</string>
@@ -219,7 +220,7 @@
   <string name="fullChangelog">Teljes változásnapló</string>
   <string name="ok">Rendben</string>
   <string name="chooseUI">Elem kezelőfelület kiválasztása</string>
-  <string name="ui">Kezelőfelület</string>
+  <string name="ui">Felület</string>
   <string name="general">Általános</string>
   <string name="thumbSummary">Alkalmazás és kép miniatűrök megjelenítése</string>
   <string name="thumb">Miniatűrök megjelenítése</string>
@@ -234,7 +235,7 @@
   <string name="aboutFileManager">Amaze File Manager névjegy</string>
   <string name="version">Verzió</string>
   <string name="rate">Alkalmazás értékelése</string>
-  <string name="license">Nyílt forrású licencek</string>
+  <string name="license">Nyílt forráskódú licencek</string>
   <string name="feedback">Visszajelzés küldése</string>
   <string name="hiddenfiles">Rejtett fájlok</string>
   <string name="type">Típus</string>
@@ -257,8 +258,8 @@
   <string name="xda_summary">Kérdések/válaszok, súgó és hibaelhárítás</string>
   <string name="invalid_dir">Érvénytelen könyvtár</string>
   <string name="circularimages">Kör alakú ikonok használata a képeknél és videóknál</string>
-  <string name="circularicons">Kör alakú ikonok használata</string>
-  <string name="back_title">Visszaugrás</string>
+  <string name="circularicons">Kerek ikonok használata</string>
+  <string name="back_title">Visszaléptetés</string>
   <string name="back_summary">Egyéni visszaléptetési lehetőség engedélyezése a lista tetején</string>
   <string name="details">Részletek</string>
   <string name="translators">Fordítók</string>
@@ -278,14 +279,13 @@
   <string name="greek_translation_title">Görög</string>
   <string name="dutch_translation_title">Holland</string>
   <string name="romanian_translation_title">Román</string>
-  <string name="vietnamese_translation_title">Vietnámi</string>
+  <string name="vietnamese_translation_title">Vietnami</string>
   <string name="japanese_translation_title">Japán</string>
-  <string name="brazilian_portuguese_translation_title">Brazíliai portugál</string>
+  <string name="brazilian_portuguese_translation_title">Brazil portugál</string>
   <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Zip megjelenítő</string>
-  <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\\n
-Folytatja?</string>
-  <string name="warning">Figyelem</string>
+  <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\nFolytatja?</string>
+  <string name="warning">Figyelmeztetés</string>
   <string name="donate">Adomány</string>
   <string name="archive_preferences">Archívum beállításai</string>
   <string name="archive_extract_folder">Archívumok kibontási mappája</string>
@@ -294,7 +294,7 @@ Folytatja?</string>
   <string name="zip_summary">Az új zip fájlokat ebbe a mappába hozza létre. Ez alapértelmezettként az a könyvtár, amelyben a fájlok vannak</string>
   <string name="openas">Megnyitás mint</string>
   <string name="text">Szöveg</string>
-  <string name="audio">Audió</string>
+  <string name="audio">Zene</string>
   <string name="video">Videó</string>
   <string name="other">Egyéb</string>
   <string name="image">Kép</string>
@@ -318,7 +318,7 @@ Folytatja?</string>
   <string name="color_summary">Állítsa be a különböző kezelőfelületi elemek színét</string>
   <string name="primary_color_title">Alapszín (bal lap)</string>
   <string name="primary_color_summary">Állítsa be a bal lapon lévő nagy kezelőfelületi elemek a színét</string>
-  <string name="accent_color_title">Kiemelőszín</string>
+  <string name="accent_color_title">Kiemelés színe</string>
   <string name="accent_color_summary">Állítsa be a FAB és egyéb kis felhasználói felület elemek színét</string>
   <string name="icon_color_title">Ikon színe</string>
   <string name="icon_color_summary">Állítsa be az ikonok színét</string>
@@ -340,9 +340,9 @@ Folytatja?</string>
   <string name="topFab">FAB az alkalmazás sávon</string>
   <string name="topFabS">A + gombnak felül vagy alul kell lennie. Csak akkor alkalmazható, ha az alkalmazás sáv nincs elrejtve.</string>
   <string name="needsaccess">Írási hozzáférés szükséges</string>
-  <string name="needsaccesssummary">Kérjük, válassza ki a(z) \\t gyökérkönyvtárát</string>
-  <string name="needsaccesssummary1">\\taz írási hozzáférés megadásához</string>
-  <string name="smb_con">SMB kapcsolat</string>
+  <string name="needsaccesssummary">Kérjük, válassza ki a(z) 	 gyökérkönyvtárát</string>
+  <string name="needsaccesssummary1">	az írási hozzáférés biztosításához </string>
+  <string name="smb_con">SMB-kapcsolat</string>
   <string name="smb_server">Kiszolgáló IP-címe</string>
   <string name="username">Felhasználónév</string>
   <string name="password">Jelszó</string>
@@ -358,17 +358,17 @@ Folytatja?</string>
   <string name="md5">md5: </string>
   <string name="md5_2">md5 másolása</string>
   <string name="total">Összesen:</string>
-  <string name="calculating">kiszámítás</string>
+  <string name="calculating"> kiszámítás </string>
   <string name="sort">Rendezés</string>
   <string name="ascending">Növekvő</string>
   <string name="descending">Csökkenő</string>
   <string name="defualt">Alapértelmezett</string>
   <string name="doit">Hajtsa végre</string>
-  <string name="wanthelp"><u>Segítségre van szüksége?</u></string>
+  <string name="wanthelp">Segítségre van szüksége?</string>
   <string name="quick">Gyorselérés</string>
   <string name="recent">Legutóbbi fájlok</string>
   <string name="edit">Szerkesztés</string>
-  <string name="find">Keresés az oldalon</string>
+  <string name="find">Keresés a lapon</string>
   <string name="grant">Megadás</string>
   <string name="grantper">Engedély megadása</string>
   <string name="grantfailed">Az engedély nincs megadva</string>
@@ -392,21 +392,21 @@ Folytatja?</string>
   <string name="regular_expression">Reguláris kifejezés</string>
   <string name="regular_expression_summary">Keresés BASH stílusú reguláris kifejezés használatával</string>
   <string name="match_content">Egyező tartalom</string>
-  <string name="match_content_summary">Ha beállítja, a reguláris kifejezés egyeztetve lesz a teljes fájlnévvel, 
-egyébként az előfordulásokra fog rákeresni.</string>
+  <string name="match_content_summary">Ha beállítja, a reguláris kifejezés egyeztetve lesz a teljes fájlnévvel,
+        egyébként az előfordulásokra fog rákeresni.</string>
   <string name="start_ftp">Indítás</string>
   <string name="stop_ftp">Leállítás</string>
   <string name="ftp_status_running">Fut</string>
   <string name="ftp_status_not_running">Nem fut</string>
-  <string name="ftp_no_wifi">Ellenőrizze a WiFi kapcsolatot</string>
+  <string name="ftp_no_wifi">Győződjön meg róla, hogy csatlakozik a WiFi-hez</string>
   <string name="domain">Tartomány</string>
-  <string name="invalid">Érvénytelen: %s</string>
+  <string name="invalid">%s érvénytelen</string>
   <string name="ftp_notif_starting">FTP-kiszolgáló indítása</string>
   <string name="ftp_notif_title">Az Amaze FTP-kiszolgáló fut</string>
   <string name="ftp_notif_text">%s</string>
   <string name="ftp_notif_stop_server">LEÁLLÍTÁS</string>
   <string name="ftp_port_edit_menu_title">Válasszon FTP portot</string>
-  <string name="ftp_port_change_success">FTP port sikeresen módosítva</string>
+  <string name="ftp_port_change_success">Az FTP port sikeresen módosítva lett</string>
   <string name="ftp_port_change_error_invalid">Érvénytelen port szám lett kiválasztva</string>
   <string name="primary_two_title">Alapszín (jobb lap)</string>
   <string name="primary_two_summary">Állítsa be a jobb lapon lévő nagy kezelőfelületi elemek a színét</string>
@@ -416,46 +416,64 @@ egyébként az előfordulásokra fog rákeresni.</string>
   <string name="report_bugs_summary">Hibák jelentése vagy új funkciók igénylése</string>
   <string name="translate_title">Fordítás</string>
   <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
-  <string name="g_plus_community_summary">Vegyenek részt a béta tesztelésben, 
-és a fejlesztéssel kapcsolatos eszmecseréken</string>
+  <string name="g_plus_community_summary">Vegyenek részt a béta tesztelésben és a fejlesztéssel
+        kapcsolatos eszmecseréken</string>
   <string name="easter_egg_title">Stúdió mód</string>
   <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
   <string name="searchingdevices">Eszközök keresése</string>
   <string name="use_custom_ip">Egyéni IP használata</string>
   <string name="bookmark_lost">Nem található könyvjelző, létrehozás újra&#8230;</string>
-  <string name="smb_instructions"><html>
-<body>
-<center>\\n
-<h1>Hogyan érhető el a megosztott windows mappa androidon (smb)</h1>\\n
-</center>\\n
-<ol>\\n
-<li>\\n
-<b>Engedélyezze a fájlmegosztást</b>\\n
-<br/>Nyissa meg a Vezérlőpultot, és kattintson az Otthoni csoport és megosztási beállítások
-kiválasztása hivatkozásra a Hálózati és megosztási központ lehetőség alatt, majd válassza a
-Speciális megosztási beállításokat. Engedélyezze a fájl- és nyomtatómegosztás funkciót.\\n
-</li><br/><li/><b>További fájlmegosztási beállítások</b><br/>Itt további speciális megosztási
-beállítások konfigurálására nyílik lehetősége. \\n
-Például, engedélyezheti a fájlok jelszó nélküli elérését, ha megbízik a helyi hálózaton
-lévő összes eszközben. A fájl- és nyomtatómegosztás engedélyezése után, megnyithatja
-a Fájlkezelőt vagy a Windows Intézőt, kattintson jobb gombbal a megosztani kívánt
-mappára és válassza a Tulajdonságok lehetőséget.. \\n
-Kattintson a Megosztás gombra, és tegye a mappát elérhetővé a hálózaton.\\n
-<li><li/><br/><b>Ellenőrizze, hogy mindkét eszköz azonos Wifi hálózaton legyen</b><br/> \\n
-Ez a funkció elérhetővé teszi a fájlokat a helyi hálózaton, így PC-je, illetve mobil készüléke
-ugyanazon a helyi hálózaton lesz. Nem férhet hozzá a megosztott Windows mappához
-interneten keresztül vagy okostelefonjáról mobil adatátviteli kapcsolat használatával — ehhez
-kapcsolódnia kell a Wi-Fi-hez.</li><li>\\n
-<br/><b>IP-cím keresése</b>\\n
-<br/>Nyissa meg a parancssort. Írja be az \'ipconfig\' parancsot, majd nyomja le az Enter
-billentyűt. Keresse az alapértelmezett átjárót a hálózati adapter alatt routere IP-címével.
-Keresse az \"IPv4 cím\" bejegyzést ugyanabban a csatoló részben számítógépe IP-címének
-megtalálásához..</li><li/><br/>\\n
-<b>Adja meg a részleteket az smb párbeszédablakban</b>\\n
-<br/>\\n
-</ol>\\n
-</body>\\n
-</html></string>
+  <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Hogyan érhető el a megosztott windows mappa androidon (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Engedélyezze a fájlmegosztást</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Nyissa meg a Vezérlőpultot, kattintson az Otthoni csoport és megosztás kiválasztása ikonra a Hálózat
+                        és Internet alatt, majd kattintson a Speciális megosztási beállítások módosítása hivatkozásra. Engedélyezze a fájl- és
+                        nyomtatómegosztás funkciót.\n\n
+                    </p>
+
+                    <li>
+                        <b>További fájlmegosztási beállítások</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Itt további speciális megosztási beálítások konfigurálására nyílik lehetősége. \n
+                        Például, engedélyezheti a fájlok jelszó nélküli elérését, ha megbízik a helyi hálózaton lévő
+                        összes eszközben. A fájl- és nyomtatómegosztás engedélyezése után megnyithatja a Fájlkezelőt
+                        vagy a Windows Intézőt, kattintson jobb gombbal a megosztani kívánt mappára, és válassza a
+                        Tulajdonságok lehetőséget. \n
+                        Kattintson a Megosztás gombra, és tegye a mappát elérhetővé a hálózaton.\n\n
+                        </p>
+
+                    <li>
+                        <b>Győződjön meg arról, hogy mindkét eszköz ugyanazon a Wifi hálózaton van</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Ez a funkció elérhetővé teszi a fájlokat a helyi hálózaton, így PC-je, illetve mobil készüléke
+                        ugyanazon a helyi hálózaton lesz. Nem férhet hozzá a megosztott Windows mappához
+                        interneten keresztül vagy okostelefonjáról mobil adatátviteli kapcsolat használatával —
+                        ehhez kapcsolódnia kell a Wi-Fi-hez.\n\n
+                    </p>
+
+                    <li>
+                        <b>IP-cím keresése</b>\n
+                    </li>
+                    <p style="margin-left: 40px">
+                        Nyissa meg a parancssort. Írja be az \'ipconfig\' parancsot, majd nyomja le az Enter billentyűt. Keresse az alapértelmezett átjárót
+                        a hálózati adapter alatt routere IP-címével. Keresse az
+                        \\"IPv4-cím\\" bejegyzést ugyanabban a csatoló részben számítógépe IP-címének
+                        megtalálásához.\n\n
+                    </p>
+
+                    <b>Adja meg a részleteket az smb párbeszédablakban</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
   <string name="share_limit">Nem oszthat meg 100-nál több fájlt</string>
   <string name="otg_access">Válassza ki az OTG eszköz gyökerét</string>
   <string name="no_profile_pic">Nincs G+ profilkép</string>
@@ -502,12 +520,12 @@ megtalálásához..</li><li/><br/>\\n
   <string name="format">Formátum</string>
   <string name="pages">Lapok száma</string>
   <!-- reference to a document file -->
-  <string name="optimized">Optimalizálva</string>
+  <string name="optimized">Optimizálva</string>
   <string name="security">Biztonság</string>
   <string name="paper_size">Papír mérete</string>
-  <string name="root_error">Hiba egy interaktív root shellben</string>
+  <string name="root_error">Hiba történt az interaktív gyökérhéj indításakor</string>
   <!-- %s will be replaced with either copied or moved -->
-  <string name="copy_error">Néhány fájlt nem sikerült %s</string>
+  <string name="copy_error">Egyes fájlok másolása sikertelen volt: %s</string>
   <string name="copied">másolva</string>
   <string name="moved">áthelyezve</string>
   <string name="process_chart_description">Folyamat</string>
@@ -520,63 +538,124 @@ megtalálásához..</li><li/><br/>\\n
   <string name="compressing">Tömörítés</string>
   <string name="cancelled">Megszakítva</string>
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
-  <string name="written">Írta</string>
-  <string name="out_of">out of</string>
+  <string name="written">Írt</string>
+  <string name="out_of">-ból</string>
   <!-- reference to - 'Processing file # of #' in process viewer -->
-  <string name="of">-ból</string>
+  <string name="of">-</string>
   <string name="processing_file">Fájl feldolgozása</string>
   <string name="current_speed">Aktuális sebesség</string>
-  <string name="smb_launch_error">Át kell másolni a fájlt a tárhelyre a megnyitáshoz</string>
+  <string name="smb_launch_error">Át kell másolnia a fájlt a tárhelyre annak megnyitásához</string>
   <string name="error_file_not_found">Hiba: A fájl nem található</string>
-  <string name="error_io">I/O Hiba</string>
-  <string name="error_root_not_permitted">Hiba: Root jogosultság nem adott</string>
+  <string name="error_io">I/O hiba</string>
+  <string name="error_root_not_permitted">Hiba: Nincs megadva root jogosultság</string>
   <string name="medium_text">Közepes szöveg</string>
   <string name="tap_and_hold_tips">Érintse meg és tartsa nyomva a fájlt vagy mappát további lehetőségek eléréséhez</string>
   <string name="permission_read">Elolvas</string>
   <string name="permission_write">Írás</string>
-  <string name="permission_execute">Futtatás</string>
-  <string name="permission_owner">Hirdető</string>
+  <string name="permission_execute">Végrehajtás</string>
+  <string name="permission_owner">Tulajdonos</string>
   <string name="permission_group">Csoport</string>
   <string name="permission_other">Egyéb</string>
   <string name="clipboard_path_copy">Az útvonal a vágólapra került</string>
-  <string name="error_busybox">BusyBox nem található. Interaktív rendszerhéj bezárása.</string>
+  <string name="error_busybox">A BusyBox nem található. Interaktív rendszerhéj bezárása.</string>
   <string name="service_timer">Eltelt idő</string>
-  <string name="please_wait">Kérjük, várjon</string>
+  <string name="please_wait">Kis türelmet</string>
   <string name="cloud_connection">Felhő-kapcsolat</string>
-  <string name="cloud_connection_new">Új Felhő-kapcsolat</string>
+  <string name="cloud_connection_new">Új felhő kapcsolat</string>
   <string name="cloud_dropbox">Dropbox</string>
   <string name="cloud_drive">Google Drive</string>
   <string name="cloud_onedrive">OneDrive</string>
+  <string name="cloud_get">Felhő beépülő letöltése</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <string name="cloud_error_email">E-mail cím</string>
+  <string name="cloud_email">E-mail azonosító</string>
   <string name="no_applications">Nincsenek alkalmazások</string>
-  <string name="ftp_path">Keresési útvonal</string>
-  <string name="change">Csere</string>
-  <string name="unknown_error">Hoppá, hiba történt!</string>
-  <string name="ftp_path_change_success">FTP elérési útja megváltozott sikeresen</string>
-  <string name="ftp_path_change_error_invalid">Érvénytelen útvonal</string>
+  <string name="ftp_path">Megosztott hely</string>
+  <string name="ftp_path_hint">Útvonal a megosztandó könyvtár gyökeréhez</string>
+  <string name="error_ftp_path_file">A hely nem könyvtár</string>
+  <string name="change">Módosítás</string>
+  <string name="unknown_error">Hoppá, valami hiba törént!</string>
+  <string name="ftp_path_change_success">Az FTP elérési útvonala sikeresen módosítva lett</string>
+  <string name="ftp_path_change_error_invalid">Érvénytelen elérési útvonal</string>
   <string name="ftp_status_no_connection">Nincs kapcsolat</string>
   <string name="ftp_status_secure_connection">Biztonságos kapcsolat</string>
   <string name="ftp_status_title">Állapot</string>
   <string name="ftp_port">Port</string>
   <string name="ftp_login">Bejelentkezés</string>
   <string name="field_empty">A mező nem lehet üres</string>
+  <string name="ftp_timeout">Üresjárat időkorlátja</string>
+  <string name="ftp_seconds">Mp</string>
+  <string name="intellihide_toolbar_title">Eszköztár elrejtése</string>
+  <string name="intellihide_toolbar_summary">Az eszköztár automatikus elrejtése görgetés közben</string>
   <string name="hash_sha256">SHA-256</string>
   <!-- references 'name/size/location/hash' copied to clipboard -->
-  <string name="properties_copied_clipboard">vágólapra másolva</string>
+  <string name="properties_copied_clipboard">a vágólapra másolva</string>
   <string name="contributors_1_summary">Fordítás</string>
   <string name="contributors_2_summary">Ikon és bannerek</string>
+  <string name="contributors_3_summary">Téma motor</string>
+  <string name="contributors_4_summary">FAB háttér munkatárs</string>
+  <string name="contributors_5_summary">Színátmenet a lapok váltásakor</string>
   <string name="contributors_6_summary">FTP-kiszolgáló</string>
+  <string name="contributors_7_summary">Interaktív héj feltöltése</string>
+  <string name="connection_exists">A kapcsolat már létezik</string>
+  <string name="crypt_encrypting">Titkosítás</string>
+  <string name="crypt_decrypting">Visszafejtése</string>
   <!-- references to 'Some files weren't successfully %s -->
+  <string name="crypt_encrypted">Titkosítva</string>
+  <string name="crypt_decrypted">Visszafejtve</string>
+  <string name="crypt_encrypt">Titkosítás</string>
+  <string name="crypt_decrypt">Vsszafejtés</string>
+  <string name="operation_fail_following">A művelet sikertelen a következő fájloknál</string>
+  <string name="crypt_pref_master_password_title">Fő jelszó</string>
+  <string name="crypt_pref_master_password_summary">Állítson be egy fő jelszót a titkosításhoz.
+        Hagyja üresen az eltávolításhoz.</string>
+  <string name="crypt_pref_fingerprint_title">Ujjlenyomat</string>
+  <string name="crypt_pref_fingerprint_summary">Használja az ujjlenyomatot a titkosítás hitelesítéséhez</string>
+  <string name="crypt_fingerprint_no_permission">Az ujjlenyomat-engedélyek hiányoznak</string>
+  <string name="crypt_fingerprint_not_enrolled">Nincs ujjlenyomat megadva</string>
+  <string name="crypt_fingerprint_no_security">Nincs képernyőzár védelem</string>
+  <string name="crypt_warning_key">\"Tájékoztatjuk, hogy a biztonsági beállítások
+        rendszerbeállításokból történő módosításakor nem fogja tudni visszafejteni ezt a tartalmat.</string>
+  <string name="warning_never_show">Ne jelenjen meg</string>
+  <string name="warning_confirm">Értem!</string>
   <string name="crypt_encryption_fail">Nem sikerült titkosítani</string>
   <string name="crypt_decryption_fail">Nem sikerült visszafejteni</string>
-  <string name="crypt_decryption_fail_password">Hibás jelszó!</string>
+  <string name="crypt_decryption_fail_password">Rossz jelszó!</string>
+  <string name="crypt_fingerprint_authenticate">Érintse meg a szenzort a folytatáshoz</string>
   <string name="authenticate_password">Adja meg a jelszót</string>
-  <string name="monofont">Monospace betű</string>
+  <string name="sidebarfolders_title">Oldalsáv parancsikonjai</string>
+  <string name="sidebarquickaccess_title">Oldalsáv gyorselérés</string>
+  <string name="showfolders_pref_title">Parancsikonok megjelenítése</string>
+  <string name="showfolders_pref">Parancsikonok</string>
+  <string name="showquickaccess_pref_title">Gyorselérés megjelenítése</string>
+  <string name="showquickaccess_pref">Gyorselérés</string>
+  <string name="create_shortcut">Parancsikon létrehozása</string>
+  <string name="edit_shortcut">Parancsikon szerkesztése</string>
+  <string name="directory">Könyvtár</string>
+  <string name="questiondelete_shortcut">Törli a parancsikont?</string>
+  <string name="cloud_error_new_account">Nem sikerült új fiókot hozzáadni</string>
+  <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
+  <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
+        Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
+  <string name="cloud_remove">Megszünteti a felhő kapcsolatot?</string>
+  <string name="cloud_fail_authenticate">Nem hitelesíthető</string>
+  <string name="cloud_share_copied">A megosztható link a vágólapra lett másolva</string>
+  <string name="copy_low_memory">Elfogy a memória. Szabadítson fel némi memóriát.</string>
+  <string name="cloud_token_lost">A token elveszett. Kérjük, jelentkezzen be újra</string>
+  <string name="cloud_plugin_not_supported">A felhő beépülő nem támogatott a Fdroid build által.
+         Kérjük, töltse le az Amaze alkalmazást a Play Áruházból.</string>
+  <string name="monofont">Fix szélességű betű</string>
   <string name="showHeaders">Fejlécek megjelenítése</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="item">Elem</string>
-  <string name="items">Elem</string>
-  <string name="byte_singular">byte</string>
-  <string name="bytes">bytes</string>
+  <string name="noitems">Nincsenek elemek</string>
+  <string name="item">elem</string>
+  <string name="items">elem</string>
+  <string name="byte_singular">bájt</string>
+  <string name="bytes">bájt</string>
+  <!-- end of plurals -->
+  <string name="no_name">A fájlnak névvel kell rendelkeznie</string>
+  <string name="add_item">Elem hozzáadása</string>
+  <string name="failed_smb_decrypt_path">Nem sikerült betölteni az SMB kapcsolatot</string>
+  <string name="failed_cloud_new_connection">Nem sikerült hozzáadni új Cloud-kapcsolatot</string>
+  <string name="failed_cloud_api_key">A felh beépülő hitelesítése sikertelen volt</string>
 </resources>

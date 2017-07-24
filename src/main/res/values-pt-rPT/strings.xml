@@ -478,4 +478,5 @@ debater ideias com os programadores</string>
   <!-- references to 'Some files weren't successfully %s -->
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="items">Itens</string>
+  <!-- end of plurals -->
 </resources>
