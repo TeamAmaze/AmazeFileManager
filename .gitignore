@@ -50,10 +50,9 @@ local.properties
 gradlew
 gradlew.bat
 .project
-AmazeFileManager.iml
-libs/libs.iml
 .idea/
 gradle.properties
 projectFilesBackup
 captures
+*.iml
 
