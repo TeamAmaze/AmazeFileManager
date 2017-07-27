@@ -18,8 +18,11 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.exceptions.CryptException;
+import com.amaze.filemanager.utils.files.CryptUtil;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.ftpserver.ConnectionConfigFactory;
@@ -61,13 +64,12 @@ public class FTPService extends Service implements Runnable {
     public static final String KEY_PREFERENCE_TIMEOUT = "ftp_timeout";
     public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static final String INITIALS_HOST_FTP = "ftp://";
+    public static final String INITIALS_HOST_SFTP = "sftp://";
 
     private static final String TAG = FTPService.class.getSimpleName();
 
-    /**
-     * TODO: 25/10/16 This is ugly
-     */
-    private static int port = 2211;
+    private int port = 2211;
 
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
@@ -121,8 +123,18 @@ public class FTPService extends Service implements Runnable {
         String usernamePreference = preferences.getString(KEY_PREFERENCE_USERNAME, DEFAULT_USERNAME);
         if (!usernamePreference.equals(DEFAULT_USERNAME)) {
             username = usernamePreference;
-            password = preferences.getString(KEY_PREFERENCE_PASSWORD, "");
-            isPasswordProtected = true;
+            try {
+                password = CryptUtil.decryptPassword(getApplicationContext(), preferences.getString(KEY_PREFERENCE_PASSWORD, ""));
+                isPasswordProtected = true;
+            } catch (CryptException e) {
+                e.printStackTrace();
+
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+                // can't decrypt the password saved in preferences, remove the preference altogether
+                // and start an anonymous connection instead
+                preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
+                isPasswordProtected = false;
+            }
         }
 
         BaseUser user = new BaseUser();
@@ -153,7 +165,7 @@ public class FTPService extends Service implements Runnable {
             try {
 
                 InputStream stream = getResources().openRawResource(R.raw.key);
-                file = File.createTempFile("keystore", "bks");
+                file = File.createTempFile("keystore.bks", "");
                 FileOutputStream outputStream = new FileOutputStream(file);
                 IOUtils.copy(stream, outputStream);
             } catch (Exception e) {
@@ -340,10 +352,6 @@ public class FTPService extends Service implements Runnable {
     public static byte byteOfInt(int value, int which) {
         int shift = which * 8;
         return (byte) (value >> shift);
-    }
-
-    public static int getPort() {
-        return port;
     }
 
     public static boolean isPortAvailable(int port) {

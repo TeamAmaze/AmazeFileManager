@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -17,7 +19,7 @@ import java.net.InetAddress;
 /**
  * Created by yashwanthreddyg on 19-06-2016.
  */
-public class FTPNotification extends BroadcastReceiver{
+public class FTPNotification extends BroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 2123;
 
@@ -34,15 +36,20 @@ public class FTPNotification extends BroadcastReceiver{
     }
 
     @SuppressWarnings("NewApi")
-    private void createNotification(Context context){
+    private void createNotification(Context context) {
 
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int port = sharedPreferences.getInt(FTPService.PORT_PREFERENCE_KEY, FTPService.DEFAULT_PORT);
+        boolean secureConnection = sharedPreferences.getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
+
         InetAddress address = FTPService.getLocalInetAddress(context);
 
-        String iptext = "ftp://" + address.getHostAddress() + ":"
-                + FTPService.getPort() + "/";
+        String iptext = (secureConnection ? FTPService.INITIALS_HOST_SFTP : FTPService.INITIALS_HOST_FTP)
+                + address.getHostAddress() + ":"
+                + port + "/";
 
         int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = context.getResources().getString(R.string.ftp_notif_starting);
