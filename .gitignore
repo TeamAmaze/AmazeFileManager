@@ -44,14 +44,10 @@ build/
 .settings
 bin/
 gen/
-gradle/
 .classpath
 local.properties
-gradlew
-gradlew.bat
 .project
 .idea/
-gradle.properties
 projectFilesBackup
 captures
 *.iml
