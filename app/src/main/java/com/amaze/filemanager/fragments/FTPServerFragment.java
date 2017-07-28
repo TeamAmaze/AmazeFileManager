@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,10 +44,12 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Objects;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
+ * Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed FTP Server while using Eth connection)
  */
 public class FTPServerFragment extends Fragment {
 
@@ -60,6 +63,7 @@ public class FTPServerFragment extends Fragment {
     private int skin_color, skinTwoColor, accentColor;
     private Spanned spannedStatusNoConnection, spannedStatusConnected;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
+    private ImageButton ftpPasswordVisibleButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,28 +85,13 @@ public class FTPServerFragment extends Fragment {
         ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
-
-        String statusHead = getResources().getString(R.string.ftp_status_title) + ": ";
-
+        ftpPasswordVisibleButton = (ImageButton) rootView.findViewById(R.id.ftp_password_visible);
 
         skin_color = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
         skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
-        spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
-                "<font color='" + accentColor + "'>"
-                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
-                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
-        spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
-                + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
-
-        spannedStatusNotRunning = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                getResources().getString(R.string.ftp_status_not_running) + "</b>");
-        spannedStatusSecure = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_green_light) + "'>"
-                + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>");
-
+        updateSpans();
         updateStatus();
 
         //light theme
@@ -120,10 +109,12 @@ public class FTPServerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!FTPService.isRunning()) {
-                    if (FTPService.isConnectedToWifi(getContext()))
+                    if (FTPService.isConnectedToWifi(getContext())
+                            || FTPService.isConnectedToLocalNetwork(getContext())
+                            || FTPService.isEnabledWifiHotspot(getContext()))
                         startServer();
                     else {
-                        // no wifi, we shouldn't be here in the first place, because of broadcast
+                        // no wifi and no eth, we shouldn't be here in the first place, because of broadcast
                         // receiver, but just to be sure
                         statusText.setText(spannedStatusNoConnection);
                     }
@@ -340,11 +331,12 @@ public class FTPServerFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                // connected to wifi
+            if ((netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET))
+                    || FTPService.isEnabledWifiHotspot(getContext())) {
+                // connected to wifi or eth
                 ftpBtn.setEnabled(true);
             } else {
-                // wifi connection lost
+                // wifi or eth connection lost
                 stopServer();
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(true);
@@ -358,6 +350,7 @@ public class FTPServerFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            updateSpans();
             if (action.equals(FTPService.ACTION_STARTED)) {
                 if (getSecurePreference()) {
                     statusText.setText(spannedStatusSecure);
@@ -421,7 +414,9 @@ public class FTPServerFragment extends Fragment {
     private void updateStatus() {
 
         if (!FTPService.isRunning()) {
-            if (!FTPService.isConnectedToWifi(getContext())) {
+            if (!FTPService.isConnectedToWifi(getContext())
+                    && !FTPService.isConnectedToLocalNetwork(getContext())
+                    && !FTPService.isEnabledWifiHotspot(getContext())) {
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(false);
             } else {
@@ -438,14 +433,65 @@ public class FTPServerFragment extends Fragment {
             ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
         }
 
+        final String passwordDecrypted = getPasswordFromPreferences();
+        final String passwordBulleted = passwordDecrypted.replaceAll(".", "\u25CF");
+
         username.setText(getResources().getString(R.string.username) + ": " +
                 getUsernameFromPreferences());
         password.setText(getResources().getString(R.string.password) + ": " +
-                getPasswordFromPreferences());
+                passwordBulleted);
+
+        ftpPasswordVisibleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_grey600_24dp));
+
+        if (passwordDecrypted.equals("")) {
+            ftpPasswordVisibleButton.setVisibility(View.GONE);
+        } else {
+            ftpPasswordVisibleButton.setVisibility(View.VISIBLE);
+        }
+
+        ftpPasswordVisibleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (password.getText().toString().contains("\u25CF")) {
+                    // password was not visible, let's make it visible
+                    password.setText(getResources().getString(R.string.password) + ": " +
+                            passwordDecrypted);
+                    ftpPasswordVisibleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_off_grey600_24dp));
+                } else {
+                    // password was visible, let's hide it
+                    password.setText(getResources().getString(R.string.password) + ": " + passwordBulleted);
+                    ftpPasswordVisibleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_grey600_24dp));
+                }
+            }
+        });
+
         port.setText(getResources().getString(R.string.ftp_port) + ": " +
                 getDefaultPortFromPreferences());
         sharedPath.setText(getResources().getString(R.string.ftp_path) + ": " +
                 getDefaultPathFromPreferences());
+    }
+
+    /**
+     * Updates the status spans
+     */
+    private void updateSpans() {
+
+        String statusHead = getResources().getString(R.string.ftp_status_title) + ": ";
+
+        spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
+                "<font color='" + accentColor + "'>"
+                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
+                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
+        spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
+                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
+                + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
+
+        spannedStatusNotRunning = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
+                getResources().getString(R.string.ftp_status_not_running) + "</b>");
+        spannedStatusSecure = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
+                "<font color='" + Utils.getColor(getContext(), android.R.color.holo_green_light) + "'>"
+                + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>" +
+                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
     }
 
     private void initLoginDialogViews(View loginDialogView) {
@@ -496,7 +542,13 @@ public class FTPServerFragment extends Fragment {
      * @return address at which server is running
      */
     private String getFTPAddressString() {
-        return "ftp://" + FTPService.getLocalInetAddress(getContext()).getHostAddress() + ":" + FTPService.getPort();
+        String hostAddress = "";
+        InetAddress ia = FTPService.getLocalInetAddress(getContext());
+        if (ia != null)
+            hostAddress = ia.getHostAddress();
+
+        return (getSecurePreference() ? FTPService.INITIALS_HOST_SFTP : FTPService.INITIALS_HOST_FTP)
+                + hostAddress  + ":" + getDefaultPortFromPreferences();
     }
 
     private int getDefaultPortFromPreferences() {
@@ -543,6 +595,8 @@ public class FTPServerFragment extends Fragment {
                 .putInt(FTPService.PORT_PREFERENCE_KEY, port)
                 .apply();
 
+        // first update spans which will point to an updated status
+        updateSpans();
         updateStatus();
     }
 
