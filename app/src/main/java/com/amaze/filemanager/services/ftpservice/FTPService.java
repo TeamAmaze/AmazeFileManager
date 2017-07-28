@@ -69,7 +69,7 @@ public class FTPService extends Service implements Runnable {
 
     private static final String TAG = FTPService.class.getSimpleName();
 
-    private int port = 2211;
+    private static final String WIFI_AP_ADDRESS = "192.168.43.1";
 
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
@@ -156,8 +156,6 @@ public class FTPService extends Service implements Runnable {
         }
         ListenerFactory fac = new ListenerFactory();
 
-        port = preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
-
         if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
             SslConfigurationFactory sslConfigurationFactory = new SslConfigurationFactory();
 
@@ -184,7 +182,7 @@ public class FTPService extends Service implements Runnable {
             }
         }
 
-        fac.setPort(port);
+        fac.setPort(preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT));
         fac.setIdleTimeout(preferences.getInt(KEY_PREFERENCE_TIMEOUT, DEFAULT_TIMEOUT));
 
         serverFactory.addListener("default", fac.createListener());
@@ -267,16 +265,6 @@ public class FTPService extends Service implements Runnable {
                 && ni.isConnected()
                 && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
-            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            try {
-                Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-                connected = (Boolean) method.invoke(wm);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (!connected) {
             Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
             try {
                 for (NetworkInterface netInterface : Collections.list(NetworkInterface
@@ -301,8 +289,21 @@ public class FTPService extends Service implements Runnable {
                 && ni.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
+    public static boolean isEnabledWifiHotspot(Context context) {
+        boolean enabled = false;
+        Log.d(TAG, "isEnabledWifiHotspot: see if it is an WIFI AP");
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        try {
+            Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
+            enabled = (Boolean) method.invoke(wm);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return enabled;
+    }
+
     public static InetAddress getLocalInetAddress(Context context) {
-        if (!isConnectedToLocalNetwork(context)) {
+        if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
             Log.e(TAG, "getLocalInetAddress called and no connection");
             return null;
         }
@@ -321,9 +322,14 @@ public class FTPService extends Service implements Runnable {
                     .getNetworkInterfaces();
             while (netinterfaces.hasMoreElements()) {
                 NetworkInterface netinterface = netinterfaces.nextElement();
-                Enumeration<InetAddress> adresses = netinterface.getInetAddresses();
-                while (adresses.hasMoreElements()) {
-                    InetAddress address = adresses.nextElement();
+                Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
+
+                    if(isEnabledWifiHotspot(context)
+                            && WIFI_AP_ADDRESS.equals(address.getHostAddress()))
+                        return address;
+
                     // this is the condition that sometimes gives problems
                     if (!address.isLoopbackAddress()
                             && !address.isLinkLocalAddress())
@@ -352,6 +358,12 @@ public class FTPService extends Service implements Runnable {
     public static byte byteOfInt(int value, int which) {
         int shift = which * 8;
         return (byte) (value >> shift);
+    }
+
+    public static int getPort(Context context)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
     }
 
     public static boolean isPortAvailable(int port) {
