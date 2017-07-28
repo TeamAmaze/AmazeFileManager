@@ -60,7 +60,7 @@ public class FTPServerFragment extends Fragment {
     private MainActivity mainActivity;
     private View rootView, startDividerView, statusDividerView;
     private int skin_color, skinTwoColor, accentColor;
-    private Spanned spannedStatusNoConnection, spannedStatusConnected;
+    private Spanned spannedStatusNoConnection;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
 
     @Override
@@ -91,10 +91,6 @@ public class FTPServerFragment extends Fragment {
         skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
-        spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
-                "<font color='" + accentColor + "'>"
-                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
-                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
@@ -367,7 +363,7 @@ public class FTPServerFragment extends Fragment {
                 if (getSecurePreference()) {
                     statusText.setText(spannedStatusSecure);
                 } else {
-                    statusText.setText(spannedStatusConnected);
+                    statusText.setText(getFTPServiceUrl());
                 }
                 ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
 
@@ -440,7 +436,7 @@ public class FTPServerFragment extends Fragment {
             ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
 
         } else {
-            statusText.setText(spannedStatusConnected);
+            statusText.setText(getFTPServiceUrl());
             ftpBtn.setEnabled(true);
             ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
         }
@@ -453,6 +449,17 @@ public class FTPServerFragment extends Fragment {
                 getDefaultPortFromPreferences());
         sharedPath.setText(getResources().getString(R.string.ftp_path) + ": " +
                 getDefaultPathFromPreferences());
+    }
+
+    private Spanned getFTPServiceUrl()
+    {
+        String statusHead = getResources().getString(R.string.ftp_status_title) + ": ";
+        Spanned spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
+                "<font color='" + accentColor + "'>"
+                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
+                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
+
+        return spannedStatusConnected;
     }
 
     private void initLoginDialogViews(View loginDialogView) {
