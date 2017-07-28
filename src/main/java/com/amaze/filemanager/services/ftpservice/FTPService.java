@@ -69,6 +69,8 @@ public class FTPService extends Service implements Runnable {
      */
     private static int port = 2211;
 
+    private static final String WIFI_AP_ADDRESS = "192.168.43.1";
+
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
     static public final String ACTION_STOPPED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED";
@@ -315,6 +317,11 @@ public class FTPService extends Service implements Runnable {
                 Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
+
+                    if(isEnabledWifiHotspot(context)
+                            && WIFI_AP_ADDRESS.equals(address.getHostAddress()))
+                        return address;
+
                     // this is the condition that sometimes gives problems
                     if (!address.isLoopbackAddress()
                             && !address.isLinkLocalAddress())
