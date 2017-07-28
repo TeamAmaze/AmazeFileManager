@@ -122,7 +122,9 @@ public class FTPServerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!FTPService.isRunning()) {
-                    if (FTPService.isConnectedToWifi(getContext()) || FTPService.isConnectedToLocalNetwork(getContext()))
+                    if (FTPService.isConnectedToWifi(getContext())
+                            || FTPService.isConnectedToLocalNetwork(getContext())
+                            || FTPService.isEnabledWifiHotspot(getContext()))
                         startServer();
                     else {
                         // no wifi and no eth, we shouldn't be here in the first place, because of broadcast
@@ -342,7 +344,8 @@ public class FTPServerFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
-            if (netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET)) {
+            if ((netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET))
+                    || FTPService.isEnabledWifiHotspot(getContext())) {
                 // connected to wifi or eth
                 ftpBtn.setEnabled(true);
             } else {
@@ -423,7 +426,9 @@ public class FTPServerFragment extends Fragment {
     private void updateStatus() {
 
         if (!FTPService.isRunning()) {
-            if (!FTPService.isConnectedToWifi(getContext()) && !FTPService.isConnectedToLocalNetwork(getContext())) {
+            if (!FTPService.isConnectedToWifi(getContext())
+                    && !FTPService.isConnectedToLocalNetwork(getContext())
+                    && !FTPService.isEnabledWifiHotspot(getContext())) {
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(false);
             } else {
@@ -502,7 +507,7 @@ public class FTPServerFragment extends Fragment {
         InetAddress ia = FTPService.getLocalInetAddress(getContext());
         if (ia != null)
             hostAddress = ia.getHostAddress();
-        return "ftp://" + hostAddress  + ":" + FTPService.getPort();
+        return "ftp://" + hostAddress  + ":" + FTPService.getPort(getContext());
     }
 
     private int getDefaultPortFromPreferences() {
