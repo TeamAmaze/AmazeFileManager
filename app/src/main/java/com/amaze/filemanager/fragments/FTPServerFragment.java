@@ -350,6 +350,7 @@ public class FTPServerFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            updateSpans();
             if (action.equals(FTPService.ACTION_STARTED)) {
                 if (getSecurePreference()) {
                     statusText.setText(spannedStatusSecure);
