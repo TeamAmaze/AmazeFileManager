@@ -312,9 +312,9 @@ public class FTPService extends Service implements Runnable {
                     .getNetworkInterfaces();
             while (netinterfaces.hasMoreElements()) {
                 NetworkInterface netinterface = netinterfaces.nextElement();
-                Enumeration<InetAddress> adresses = netinterface.getInetAddresses();
-                while (adresses.hasMoreElements()) {
-                    InetAddress address = adresses.nextElement();
+                Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
                     // this is the condition that sometimes gives problems
                     if (!address.isLoopbackAddress()
                             && !address.isLinkLocalAddress())
