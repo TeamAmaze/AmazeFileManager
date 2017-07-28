@@ -281,7 +281,7 @@ public class FTPService extends Service implements Runnable {
 
     public static boolean isEnabledWifiHotspot(Context context) {
         boolean enabled = false;
-        Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
+        Log.d(TAG, "isEnabledWifiHotspot: see if it is an WIFI AP");
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         try {
             Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
