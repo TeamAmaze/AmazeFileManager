@@ -255,16 +255,6 @@ public class FTPService extends Service implements Runnable {
                 && ni.isConnected()
                 && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
-            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            try {
-                Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-                connected = (Boolean) method.invoke(wm);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (!connected) {
             Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
             try {
                 for (NetworkInterface netInterface : Collections.list(NetworkInterface
@@ -287,6 +277,19 @@ public class FTPService extends Service implements Runnable {
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnected()
                 && ni.getType() == ConnectivityManager.TYPE_WIFI;
+    }
+
+    public static boolean isEnabledWifiHotspot(Context context) {
+        boolean enabled = false;
+        Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        try {
+            Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
+            enabled = (Boolean) method.invoke(wm);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return enabled;
     }
 
     public static InetAddress getLocalInetAddress(Context context) {
