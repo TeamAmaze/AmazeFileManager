@@ -182,7 +182,7 @@ public class FTPService extends Service implements Runnable {
             }
         }
 
-        fac.setPort(preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT));
+        fac.setPort(getPort(preferences));
         fac.setIdleTimeout(preferences.getInt(KEY_PREFERENCE_TIMEOUT, DEFAULT_TIMEOUT));
 
         serverFactory.addListener("default", fac.createListener());
@@ -360,9 +360,8 @@ public class FTPService extends Service implements Runnable {
         return (byte) (value >> shift);
     }
 
-    public static int getPort(Context context)
+    public static int getPort(SharedPreferences preferences)
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
     }
 
