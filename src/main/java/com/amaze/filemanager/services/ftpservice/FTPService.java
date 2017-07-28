@@ -64,11 +64,6 @@ public class FTPService extends Service implements Runnable {
 
     private static final String TAG = FTPService.class.getSimpleName();
 
-    /**
-     * TODO: 25/10/16 This is ugly
-     */
-    private static int port = 2211;
-
     private static final String WIFI_AP_ADDRESS = "192.168.43.1";
 
     // Service will (global) broadcast when server start/stop
@@ -146,8 +141,6 @@ public class FTPService extends Service implements Runnable {
         }
         ListenerFactory fac = new ListenerFactory();
 
-        port = preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
-
         if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
             SslConfigurationFactory sslConfigurationFactory = new SslConfigurationFactory();
 
@@ -174,7 +167,7 @@ public class FTPService extends Service implements Runnable {
             }
         }
 
-        fac.setPort(port);
+        fac.setPort(preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT));
         fac.setIdleTimeout(preferences.getInt(KEY_PREFERENCE_TIMEOUT, DEFAULT_TIMEOUT));
 
         serverFactory.addListener("default", fac.createListener());
@@ -295,7 +288,7 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static InetAddress getLocalInetAddress(Context context) {
-        if (!isConnectedToLocalNetwork(context)) {
+        if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
             Log.e(TAG, "getLocalInetAddress called and no connection");
             return null;
         }
@@ -352,8 +345,10 @@ public class FTPService extends Service implements Runnable {
         return (byte) (value >> shift);
     }
 
-    public static int getPort() {
-        return port;
+    public static int getPort(Context context)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
     }
 
     public static boolean isPortAvailable(int port) {

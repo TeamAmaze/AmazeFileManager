@@ -42,7 +42,7 @@ public class FTPNotification extends BroadcastReceiver{
         InetAddress address = FTPService.getLocalInetAddress(context);
 
         String iptext = "ftp://" + address.getHostAddress() + ":"
-                + FTPService.getPort() + "/";
+                + FTPService.getPort(context) + "/";
 
         int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = context.getResources().getString(R.string.ftp_notif_starting);
