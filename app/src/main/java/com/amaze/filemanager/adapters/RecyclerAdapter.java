@@ -41,6 +41,7 @@ import java.util.ArrayList;
  * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
  * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
  * The showPopup shows the file's popup menu.
+ * The back button (go to settings to activate it) is just a folder.
  *
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
