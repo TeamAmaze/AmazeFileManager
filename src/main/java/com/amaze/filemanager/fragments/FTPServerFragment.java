@@ -91,10 +91,21 @@ public class FTPServerFragment extends Fragment {
         skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
+        String ftpAddress = "";
+
+        try{
+            ftpAddress = getFTPAddressString();
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            Toast.makeText(getContext(), getResources().getString(R.string.local_inet_addr_error), Toast.LENGTH_SHORT).show();
+            mainActivity.onBackPressed();
+        }
+
+
         spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
                 "<font color='" + accentColor + "'>"
                 + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
-                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
+                "&nbsp;<i>(" + ftpAddress + ")</i>");
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
@@ -498,11 +509,11 @@ public class FTPServerFragment extends Fragment {
      * @return address at which server is running
      */
     private String getFTPAddressString() {
-        String hostAddress = "";
         InetAddress ia = FTPService.getLocalInetAddress(getContext());
-        if (ia != null)
-            hostAddress = ia.getHostAddress();
-        return "ftp://" + hostAddress  + ":" + FTPService.getPort();
+        if(ia == null){
+            throw new NullPointerException("getFTPAddressString(): getLocalInetAddress returned a null value");
+        }
+        return "ftp://" + ia.getHostAddress() + ":" + FTPService.getPort();
     }
 
     private int getDefaultPortFromPreferences() {
