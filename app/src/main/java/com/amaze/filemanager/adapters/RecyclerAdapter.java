@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +61,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
-    private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
     private float minRowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
@@ -287,7 +285,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
 
             for (int i = 0; i < itemsDigested.size(); i++) {
-                animation.put(i, false);
+                itemsDigested.get(i).setAnimate(false);
             }
 
             if(showHeaders) {
@@ -379,9 +377,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     return;
                 }
             }
-            if (!this.stoppedAnimation && !animation.get(p)) {
+            if (!this.stoppedAnimation && !itemsDigested.get(p).getAnimating()) {
                 animate(holder);
-                animation.put(p, true);
+                itemsDigested.get(p).setAnimate(true);
             }
             final LayoutElement rowItem = itemsDigested.get(p).elem;
             if (mainFrag.IS_LIST) {
@@ -772,6 +770,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         private LayoutElement elem;
         private int specialType;
         private boolean checked;
+        private boolean animate;
 
         ListItem(LayoutElement elem) {
             this.elem = elem;
@@ -790,6 +789,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             if(checked) return CHECKED;
             else if(specialType == TYPE_ITEM) return NOT_CHECKED;
             else return UNCHECKABLE;
+        }
+
+        public void setAnimate(boolean animating) {
+            if(specialType == -1) this.animate = animating;
+        }
+
+        public boolean getAnimating() {
+            return animate;
         }
     }
 
