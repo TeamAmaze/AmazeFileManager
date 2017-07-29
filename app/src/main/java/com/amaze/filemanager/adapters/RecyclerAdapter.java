@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
  * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
  * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
  * The showPopup shows the file's popup menu.
- * TODO optimize checking items (all the toggleChecked()).
+ * The back button (go to settings to activate it) is just a folder.
  *
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
@@ -63,8 +62,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
-    private SparseBooleanArray checkedItems = new SparseBooleanArray();
-    private SparseBooleanArray animation = new SparseBooleanArray();
     private LayoutInflater mInflater;
     private float minRowHeight;
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
@@ -103,10 +100,14 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      * @param imageView the check {@link CircleGradientDrawable} that is to be animated
      */
     public void toggleChecked(int position, ImageView imageView) {
+        if(itemsDigested.get(position).getChecked() == ListItem.UNCHECKABLE) {
+            throw new IllegalArgumentException("You have checked a header");
+        }
+
         if (!stoppedAnimation) mainFrag.stopAnimation();
-        if (checkedItems.get(position)) {
+        if (itemsDigested.get(position).getChecked() == ListItem.CHECKED) {
             // if the view at position is checked, un-check it
-            checkedItems.put(position, false);
+            itemsDigested.get(position).setChecked(false);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
             if (imageView != null) {
@@ -116,7 +117,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
         } else {
             // if view is un-checked, check it
-            checkedItems.put(position, true);
+            itemsDigested.get(position).setChecked(true);
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
             if (imageView != null) {
@@ -149,7 +150,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         int i = path.equals("/") || !mainFrag.GO_BACK_ITEM ? 0 : 1;
 
         for (; i < itemsDigested.size(); i++) {
-            checkedItems.put(i, b);
+            itemsDigested.get(i).setChecked(b);
             notifyItemChanged(i);
         }
 
@@ -173,7 +174,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      */
     public void toggleChecked(boolean b) {
         for (int i = 0; i < itemsDigested.size(); i++) {
-            checkedItems.put(i, b);
+            itemsDigested.get(i).setChecked(b);
             notifyItemChanged(i);
         }
 
@@ -190,28 +191,40 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     public ArrayList<LayoutElement> getCheckedItems() {
-        ArrayList<LayoutElement> checkedItems = new ArrayList<>();
+        ArrayList<LayoutElement> selected = new ArrayList<>();
 
-        for (int i = 0; i < this.checkedItems.size(); i++) {
-            if (this.checkedItems.get(i)) {
-                checkedItems.add(itemsDigested.get(i).elem);
+        for (int i = 0; i < itemsDigested.size(); i++) {
+            if (itemsDigested.get(i).getChecked() == ListItem.CHECKED) {
+                selected.add(itemsDigested.get(i).elem);
             }
         }
 
-        return checkedItems;
+        return selected;
     }
 
     public boolean areAllChecked(String path) {
         boolean allChecked = true;
-        int i;
-        if (path.equals("/") || !mainFrag.GO_BACK_ITEM) i = 0;
-        else i = 1;
-        for (; i < checkedItems.size(); i++) {
-            if (!checkedItems.get(i)) {
+        int i = (path.equals("/") || !mainFrag.GO_BACK_ITEM)? 0:1;
+
+        for (; i < itemsDigested.size(); i++) {
+            if (itemsDigested.get(i).getChecked() == ListItem.NOT_CHECKED) {
                 allChecked = false;
             }
         }
+
         return allChecked;
+    }
+
+    public ArrayList<Integer> getCheckedItemsIndex() {
+        ArrayList<Integer> checked = new ArrayList<>();
+
+        for (int i = 0; i < itemsDigested.size(); i++) {
+            if (itemsDigested.get(i).getChecked() == ListItem.CHECKED) {
+                checked.add(i);
+            }
+        }
+
+        return checked;
     }
 
     @Override
@@ -261,7 +274,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
         synchronized (arrayList) {
             itemsDigested.clear();
-            checkedItems.clear();
             offset = 0;
             stoppedAnimation = false;
 
@@ -274,8 +286,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
 
             for (int i = 0; i < itemsDigested.size(); i++) {
-                checkedItems.put(i, false);
-                animation.put(i, false);
+                itemsDigested.get(i).setAnimate(false);
             }
 
             if(showHeaders) {
@@ -367,9 +378,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     return;
                 }
             }
-            if (!this.stoppedAnimation && !animation.get(p)) {
+            if (!this.stoppedAnimation && !itemsDigested.get(p).getAnimating()) {
                 animate(holder);
-                animation.put(p, true);
+                itemsDigested.get(p).setAnimate(true);
             }
             final LayoutElement rowItem = itemsDigested.get(p).elem;
             if (mainFrag.IS_LIST) {
@@ -558,7 +569,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
                 }
                 holder.rl.setSelected(false);
-                if (checkedItems.get(p)) {
+                if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
                     holder.checkImageView.setVisibility(View.VISIBLE);
                     // making sure the generic icon background color filter doesn't get changed
                     // to grey on picture/video/apk/generic text icons when checked
@@ -607,8 +618,6 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.txtDesc.setText(rowItem.getSize());
             } else {
                 // view is a grid view
-                Boolean checked = checkedItems.get(p);
-
                 holder.checkImageViewGrid.setColorFilter(accentColor);
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -685,7 +694,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 if (rowItem.getSize().equals(mainFrag.goback))
                     holder.genericIcon.setColorFilter(goBackColor);
 
-                if (checked) {
+                if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
                     holder.genericIcon.setColorFilter(iconSkinColor);
                     //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
 
@@ -757,16 +766,38 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private static class ListItem {
+        public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
+
         private LayoutElement elem;
         private int specialType;
+        private boolean checked;
+        private boolean animate;
 
         ListItem(LayoutElement elem) {
             this.elem = elem;
-            specialType = -1;
+            specialType = TYPE_ITEM;
         }
 
         ListItem(int specialType) {
             this.specialType = specialType;
+        }
+
+        public void setChecked(boolean checked) {
+            if(specialType == TYPE_ITEM) this.checked = checked;
+        }
+
+        public int getChecked() {
+            if(checked) return CHECKED;
+            else if(specialType == TYPE_ITEM) return NOT_CHECKED;
+            else return UNCHECKABLE;
+        }
+
+        public void setAnimate(boolean animating) {
+            if(specialType == -1) this.animate = animating;
+        }
+
+        public boolean getAnimating() {
+            return animate;
         }
     }
 
