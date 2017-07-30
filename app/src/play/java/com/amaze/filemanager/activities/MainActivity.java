@@ -2231,7 +2231,7 @@ public class MainActivity extends BaseActivity implements
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Perform action on key press
-                    mainActivityHelper.search(searchViewEditText.getText().toString());
+                    mainActivityHelper.search(searchViewEditText.getText().toString(), false);
                     hideSearchView();
                     return true;
                 }
