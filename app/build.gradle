@@ -105,6 +105,9 @@ dependencies {
     compile 'com.cloudrail:cloudrail-si-android:2.17.0'
 
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
+
+    //SFTP
+    compile 'com.hierynomus:sshj:0.21.1'
 }
 
 def Properties props = new Properties()
