@@ -1404,7 +1404,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 adapter.toggleChecked(false);
             } else {
                 if (openMode == OpenMode.SMB) {
-
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
@@ -1413,15 +1412,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
-                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                        )
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
                     getMainActivity().exit();
-                else if (utils.canGoBack(getContext(), currentFile)) {
+                } else if (utils.canGoBack(getContext(), currentFile)) {
                     loadlist(currentFile.getParent(getContext()), true, openMode);
                 } else getMainActivity().exit();
             }
