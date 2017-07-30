@@ -46,7 +46,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -82,6 +81,7 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.services.asynctasks.LoadList;
+import com.amaze.filemanager.services.loaders.SearchHelper;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.IconHolder;
@@ -418,6 +418,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             outState.putInt("top", top);
             outState.putParcelableArrayList("list", getLayoutElements());
             outState.putString("CURRENT_PATH", CURRENT_PATH);
+            outState.putString("CURRENT_SEARCH", MainActivityHelper.SEARCH_TEXT);
             outState.putBoolean("selection", selection);
             outState.putInt("openMode", openMode.ordinal());
             outState.putInt("folder_count", folder_count);
@@ -452,6 +453,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
+            if(results) {
+                getMainActivity().mainActivityHelper.search(savedInstanceState.getString("CURRENT_SEARCH"), true);
+            }
             getMainActivity().updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
             createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
@@ -851,17 +855,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         if (results) {
             // check to initialize search results
             // if search task is been running, cancel it
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
-                    .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-            if (fragment != null) {
-
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-
-                    fragment.mSearchAsyncTask.cancel(true);
-                }
-                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            }
+            SearchHelper.cancelSearch(getMainActivity());
 
             mRetainSearchTask = true;
             results = false;
@@ -1036,7 +1030,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             bindDrive(path);
         else */
         if (loadList != null) loadList.cancel(true);
-        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode);
+        loadList = new LoadList(getContext(), utilsProvider, back, ma, openMode);
         loadList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
@@ -1341,7 +1335,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
                     // starting the search query again :O
                     getMainActivity().mainFragment = (MainFragment) getMainActivity().getFragment().getTab();
-                    FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
                     // getting parent path to resume search from there
                     String parentPath = new HFile(openMode, CURRENT_PATH).getParent(getActivity());
@@ -1349,23 +1342,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     // the path back to parent on back press
                     CURRENT_PATH = parentPath;
 
-                    MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
-                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
-                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-                            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+                    SearchHelper.createSearch(getMainActivity(), MainActivityHelper.SEARCH_TEXT,
+                            parentPath, openMode, BaseActivity.rootMode,
+                            sharedPref.getBoolean(MainActivityHelper.KEY_REGEX, false),
+                            sharedPref.getBoolean(MainActivityHelper.KEY_REGEX_MATCHES, false), false);
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
 
                 mRetainSearchTask = false;
             }
         } else {
             // to go back after search list have been popped
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            SearchWorkerFragment fragment = (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-            if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
-                }
-            }
+            SearchHelper.cancelSearch(getMainActivity());
             loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
             results = false;
         }
