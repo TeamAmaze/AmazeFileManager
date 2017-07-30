@@ -34,7 +34,9 @@ public class SearchHelper {
                 openMode, root, regex, matches);
 
 
-        if(loaderManager.getLoader(SEARCH_LOADER) == null || restart) {
+        if(restart) {
+            loaderManager.initLoader(SEARCH_LOADER, null, callbacks);
+        } else if(loaderManager.getLoader(SEARCH_LOADER) == null) {
             loaderManager.initLoader(SEARCH_LOADER, null, callbacks).forceLoad();
         } else {
             loaderManager.restartLoader(SEARCH_LOADER, null, callbacks).forceLoad();
