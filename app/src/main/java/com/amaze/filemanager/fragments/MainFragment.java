@@ -1,6 +1,7 @@
 /* Diego Felipe Lassa <diegoflassa@gmail.com>
  *
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ *                          Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -122,7 +123,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public LinearLayout buttons;
     public int sortby, dsort, asc;
-    public String home, goback;
+    public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
             SHOW_SIZE, SHOW_LAST_MODIFIED;
     public LinearLayout pathbar;
@@ -289,7 +290,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
         COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
         mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
-        goback = getString(R.string.goback);
         folder = new BitmapDrawable(res, mFolderBitmap);
         getSortModes();
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
@@ -843,11 +843,12 @@ public class MainFragment extends android.support.v4.app.Fragment {
     /**
      * method called when list item is clicked in the adapter
      *
+     * @param isBackButton is it the back button aka '..'
      * @param position the position
      * @param e the list item
      * @param imageView the check {@link RoundedImageView} that is to be animated
      */
-    public void onListItemClicked(int position, LayoutElement e, ImageView imageView) {
+    public void onListItemClicked(boolean isBackButton, int position, LayoutElement e, ImageView imageView) {
         if (results) {
             // check to initialize search results
             // if search task is been running, cancel it
@@ -871,7 +872,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
 
         if (selection) {
-            if (!e.getSize().equals(goback)) {
+            if (!isBackButton) {
                 // the first {goback} item if back navigation is enabled
                 adapter.toggleChecked(position, imageView);
             } else {
@@ -881,7 +882,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 mActionMode = null;
             }
         } else {
-            if (!e.getSize().equals(goback)) {
+            if (!isBackButton) {
                 // hiding search view if visible
                 if (MainActivity.isSearchViewEnabled) getMainActivity().hideSearchView();
 
@@ -1106,11 +1107,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
                                     || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                                     || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
+                String goToParentText = getString(R.string.goback);
+
                 if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                        && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goback))) {
+                        && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
+                    //create the "go to parent" button (aka '..')
                     Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                    bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap),
-                            "..", "", "", goback, 0, false, true, ""));
+                    bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap), "..", "",
+                            "", goToParentText, 0, false, true, ""));
                 }
               
                 if (bitmap.size() == 0 && !results) {
@@ -1400,7 +1404,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 adapter.toggleChecked(false);
             } else {
                 if (openMode == OpenMode.SMB) {
-
                     try {
                         if (!CURRENT_PATH.equals(smbPath)) {
                             String path = (new SmbFile(CURRENT_PATH).getParent());
@@ -1409,15 +1412,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
-                        CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
+                } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                        )
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
                     getMainActivity().exit();
-                else if (utils.canGoBack(getContext(), currentFile)) {
+                } else if (utils.canGoBack(getContext(), currentFile)) {
                     loadlist(currentFile.getParent(getContext()), true, openMode);
                 } else getMainActivity().exit();
             }

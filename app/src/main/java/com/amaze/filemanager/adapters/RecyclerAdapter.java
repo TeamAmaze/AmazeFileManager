@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
  * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
  * The showPopup shows the file's popup menu.
- * The back button (go to settings to activate it) is just a folder.
+ * The 'go to parent' aka '..' button (go to settings to activate it) is just a folder.
  *
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
@@ -369,6 +369,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         if(vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
+            final boolean isBackButton = mainFrag.GO_BACK_ITEM && p == 0;
+
             if (mainFrag.IS_LIST) {
                 if (p == getItemCount() - 1) {
                     holder.rl.setMinimumHeight((int) minRowHeight);
@@ -387,7 +389,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), rowItem,
+                        mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
                                 holder.checkImageView);
                     }
                 });
@@ -404,7 +406,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
                     public boolean onLongClick(View p1) {
                         // check if the item on which action is performed is not the first {goback} item
-                        if (!rowItem.getSize().equals(mainFrag.goback)) {
+                        if (!isBackButton) {
                             toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         }
 
@@ -447,7 +449,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         int id = v.getId();
                         if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
                             // TODO: transform icon on press to the properties dialog with animation
-                            if (!rowItem.getSize().equals(mainFrag.goback)) {
+                            if (!isBackButton) {
                                 toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                             } else mainFrag.goBack();
                         }
@@ -457,7 +459,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.pictureIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!rowItem.getSize().equals(mainFrag.goback)) {
+                        if (!isBackButton) {
                             toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         } else mainFrag.goBack();
                     }
@@ -466,7 +468,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.apkIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!rowItem.getSize().equals(mainFrag.goback)) {
+                        if (!isBackButton) {
                             toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         } else mainFrag.goBack();
                     }
@@ -596,7 +598,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         }
                     } else gradientDrawable.setColor(iconSkinColor);
 
-                    if (rowItem.getSize().equals(mainFrag.goback))
+                    if (isBackButton)
                         gradientDrawable.setColor(goBackColor);
                 }
                 if (mainFrag.SHOW_PERMISSIONS)
@@ -606,23 +608,20 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 } else {
                     holder.date.setVisibility(View.GONE);
                 }
-                String size = rowItem.getSize();
 
-                if (size.equals(mainFrag.goback)) {
-
-                    holder.date.setText(size);
-
+                if (isBackButton) {
+                    holder.date.setText(rowItem.getSize());
                     holder.txtDesc.setText("");
-                } else if (mainFrag.SHOW_SIZE)
-
+                } else if (mainFrag.SHOW_SIZE) {
                     holder.txtDesc.setText(rowItem.getSize());
+                }
             } else {
                 // view is a grid view
                 holder.checkImageViewGrid.setColorFilter(accentColor);
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mainFrag.onListItemClicked(vholder.getAdapterPosition(), rowItem,
+                        mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
                                 holder.checkImageViewGrid);
                     }
                 });
@@ -630,7 +629,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
 
                     public boolean onLongClick(View p1) {
-                        if (!rowItem.getSize().equals(mainFrag.goback)) {
+                        if (!isBackButton) {
                             toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                         }
                         return true;
@@ -691,7 +690,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     }
                 }
 
-                if (rowItem.getSize().equals(mainFrag.goback))
+                if (isBackButton)
                     holder.genericIcon.setColorFilter(goBackColor);
 
                 if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
@@ -717,7 +716,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 }
                 if (mainFrag.SHOW_LAST_MODIFIED)
                     holder.date.setText(rowItem.getDate());
-                if (rowItem.getSize().equals(mainFrag.goback)) {
+                if (isBackButton) {
                     holder.date.setText(rowItem.getSize());
                     holder.txtDesc.setText("");
                 }/*else if(main.SHOW_SIZE)
