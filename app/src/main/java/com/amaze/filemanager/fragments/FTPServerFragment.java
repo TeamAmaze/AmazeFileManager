@@ -476,12 +476,22 @@ public class FTPServerFragment extends Fragment {
      */
     private void updateSpans() {
 
+        String ftpAddress = "";
+
+        try{
+            ftpAddress = getFTPAddressString();
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            Toast.makeText(getContext(), getResources().getString(R.string.local_inet_addr_error), Toast.LENGTH_SHORT).show();
+            mainActivity.onBackPressed();
+        }
+
         String statusHead = getResources().getString(R.string.ftp_status_title) + ": ";
 
         spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
                 "<font color='" + accentColor + "'>"
                 + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
-                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
+                "&nbsp;<i>(" + ftpAddress + ")</i>");
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
@@ -491,7 +501,7 @@ public class FTPServerFragment extends Fragment {
         spannedStatusSecure = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_green_light) + "'>"
                 + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>" +
-                "&nbsp;<i>(" + getFTPAddressString() + ")</i>");
+                "&nbsp;<i>(" + ftpAddress + ")</i>");
     }
 
     private void initLoginDialogViews(View loginDialogView) {
@@ -542,13 +552,12 @@ public class FTPServerFragment extends Fragment {
      * @return address at which server is running
      */
     private String getFTPAddressString() {
-        String hostAddress = "";
         InetAddress ia = FTPService.getLocalInetAddress(getContext());
-        if (ia != null)
-            hostAddress = ia.getHostAddress();
-
+        if(ia == null){
+            throw new NullPointerException("getLocalInetAddress returned a null value");
+        }
         return (getSecurePreference() ? FTPService.INITIALS_HOST_SFTP : FTPService.INITIALS_HOST_FTP)
-                + hostAddress  + ":" + getDefaultPortFromPreferences();
+                + ia.getHostAddress()  + ":" + getDefaultPortFromPreferences();
     }
 
     private int getDefaultPortFromPreferences() {
