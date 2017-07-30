@@ -266,8 +266,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 if (baseFile.isDirectory()) {
                     size = "";
 
-                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(), R.drawable.ic_folder_lock_white_36dp);
-                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
+                    Bitmap lockBitmap = BitmapFactory.decodeResource(c.getResources(), R.drawable.ic_folder_lock_white_36dp);
+                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(c.getResources(), lockBitmap);
 
                     LayoutElement layoutElement = utilsProvider.getFutils()
                             .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
@@ -292,7 +292,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     }
                     try {
                         LayoutElement layoutElement = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
-                                baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
+                                baseFile.getPath(), !ma.IS_LIST, c.getResources()), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
                         layoutElement.setMode(baseFile.getMode());
                         items.add(layoutElement);

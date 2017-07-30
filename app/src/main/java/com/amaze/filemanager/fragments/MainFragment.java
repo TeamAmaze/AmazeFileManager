@@ -1034,7 +1034,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             bindDrive(path);
         else */
         if (loadList != null) loadList.cancel(true);
-        loadList = new LoadList(ma.getActivity(), utilsProvider, back, ma, openMode);
+        loadList = new LoadList(getContext(), utilsProvider, back, ma, openMode);
         loadList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
 
     }
