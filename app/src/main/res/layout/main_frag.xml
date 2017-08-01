@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+    Jens Klingenberg <mail@jensklingenberg.de>
 
     This file is part of Amaze File Manager.
 
@@ -50,7 +51,7 @@
         android:layout_gravity="right"
         android:layout_height="match_parent"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/nofilelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -82,5 +83,5 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/nofiles"/>
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

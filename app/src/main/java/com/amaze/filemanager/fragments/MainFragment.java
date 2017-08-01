@@ -1,7 +1,7 @@
 /* Diego Felipe Lassa <diegoflassa@gmail.com>
  *
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                          Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ *                          Emmanuel Messulam <emmanuelbendavid@gmail.com>, Jens Klingenberg <mail@jensklingenberg.de>
  *
  * This file is part of Amaze File Manager.
  *
@@ -160,7 +160,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private AppBarLayout mToolbarContainer;
     private TextView pathname, mFullPath;
     private boolean stopAnims = true;
-    private View nofilesview;
+    private SwipeRefreshLayout nofilesview;
 
     private android.support.v7.widget.RecyclerView listView;
     private UtilitiesProviderInterface utilsProvider;
@@ -1043,7 +1043,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     void initNoFileLayout() {
-        nofilesview = rootView.findViewById(R.id.nofilelayout);
+        nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadlist((CURRENT_PATH), false, openMode);
+                nofilesview.setRefreshing(false);
+            }
+        });
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
         else {
