@@ -300,7 +300,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         boolean[] headers = new boolean[]{false, false};
 
         for (int i = 0; i < itemsDigested.size(); i++) {
-            // TODO: 31/5/2017 add fragments to gird view
+            
                 if (itemsDigested.get(i).elem != null) {
                     LayoutElement nextItem = itemsDigested.get(i).elem;
 
@@ -341,26 +341,34 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;
+        View view;
 
         switch (viewType) {
             case TYPE_HEADER_FOLDERS:
             case TYPE_HEADER_FILES:
-                v = mInflater.inflate(R.layout.list_header, parent, false);
+
+                if (mainFrag.IS_LIST) {
+
+                    view = mInflater.inflate(R.layout.list_header, parent, false);
+                } else {
+
+                    view = mInflater.inflate(R.layout.grid_header, parent, false);
+                }
+
                 int type = viewType == TYPE_HEADER_FOLDERS ? SpecialViewHolder.HEADER_FOLDERS : SpecialViewHolder.HEADER_FILES;
 
-                return new SpecialViewHolder(context, v, utilsProvider, type);
+                return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
-                if (mainFrag.IS_LIST) v = mInflater.inflate(R.layout.rowlayout, parent, false);
-                else v = mInflater.inflate(R.layout.griditem, parent, false);
+                if (mainFrag.IS_LIST) view = mInflater.inflate(R.layout.rowlayout, parent, false);
+                else view = mInflater.inflate(R.layout.griditem, parent, false);
 
-                return new ItemViewHolder(v);
+                return new ItemViewHolder(view);
             case EMPTY_LAST_ITEM:
                 int totalFabHeight = (int) context.getResources().getDimension(R.dimen.fab_height),
                         marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
-                v = new View(context);
-                v.setMinimumHeight(totalFabHeight + marginFab);
-                return new EmptyViewHolder(v);
+                view = new View(context);
+                view.setMinimumHeight(totalFabHeight + marginFab);
+                return new EmptyViewHolder(view);
             default:
                 throw new IllegalArgumentException("Illegal: " + viewType);
         }

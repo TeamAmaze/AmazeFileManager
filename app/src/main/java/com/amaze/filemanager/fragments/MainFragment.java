@@ -356,12 +356,13 @@ public class MainFragment extends android.support.v4.app.Fragment {
     }
 
     void setGridLayoutSpanSizeLookup(GridLayoutManager mLayoutManagerGrid) {
+
         mLayoutManagerGrid.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
             @Override
             public int getSpanSize(int position) {
                 switch(adapter.getItemViewType(position)){
                     case RecyclerAdapter.TYPE_HEADER_FILES:
-                        return columns;
                     case RecyclerAdapter.TYPE_HEADER_FOLDERS:
                         return columns;
                     default:
@@ -389,6 +390,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
             else
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
         listView.setLayoutManager(mLayoutManagerGrid);
         adapter = null;
     }

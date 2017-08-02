@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingLeft="@dimen/icon_width"
-        android:paddingRight="@dimen/icon_width"
+        android:paddingLeft="@dimen/material_generic"
+        android:paddingRight="@dimen/material_generic"
         android:textSize="@dimen/list_header_textsize">
     </TextView>
 
