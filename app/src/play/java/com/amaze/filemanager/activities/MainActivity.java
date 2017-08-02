@@ -1535,17 +1535,17 @@ public class MainActivity extends BaseActivity implements
         for (String file : storageDirectories) {
             File f = new File(file);
             String name;
-            Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
             } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                 name = "OTG";
-                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -1558,25 +1558,23 @@ public class MainActivity extends BaseActivity implements
         if (dataUtils.getServers().size() > 0) {
             Collections.sort(dataUtils.getServers(), new BookSorter());
             synchronized (dataUtils.getServers()) {
-
-                for (String[] file : dataUtils.getServers())
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
+                for (String[] file : dataUtils.getServers()) {
+                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this,
                             R.drawable.ic_settings_remote_white_48dp)));
+                }
             }
             sectionItems.add(new SectionItem());
         }
 
         ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
 
-        if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
-
+        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
             for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
-
                 if (cloudStorage instanceof Dropbox) {
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
                             CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_DROPBOX,
@@ -1586,7 +1584,7 @@ public class MainActivity extends BaseActivity implements
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
                             CloudHandler.CLOUD_PREFIX_BOX + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_BOX,
@@ -1596,7 +1594,7 @@ public class MainActivity extends BaseActivity implements
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_ONE_DRIVE,
@@ -1606,7 +1604,7 @@ public class MainActivity extends BaseActivity implements
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
@@ -1626,10 +1624,9 @@ public class MainActivity extends BaseActivity implements
                 Collections.sort(dataUtils.getBooks(), new BookSorter());
 
                 synchronized (dataUtils.getBooks()) {
-
                     for (String[] file : dataUtils.getBooks()) {
                         sectionItems.add(new EntryItem(file[0], file[1],
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
+                                ContextCompat.getDrawable(this, R.drawable.folder_fab)));
                     }
                 }
                 sectionItems.add(new SectionItem());
@@ -1642,33 +1639,32 @@ public class MainActivity extends BaseActivity implements
         if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
             if (quickAccessPref[1])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
             if (quickAccessPref[2])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
             if (quickAccessPref[3])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
             if (quickAccessPref[4])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
             if (quickAccessPref[5])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
             if (quickAccessPref[6])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         } else {
             sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
         }
 
         dataUtils.setList(sectionItems);
 
-        adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, sectionItems,
-                MainActivity.this, sharedPref);
+        adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
         mDrawerList.setAdapter(adapter);
     }
 

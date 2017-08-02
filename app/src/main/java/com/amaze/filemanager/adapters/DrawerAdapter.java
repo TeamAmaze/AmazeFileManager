@@ -82,7 +82,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     private LayoutInflater inflater;
     private int fabskin;
 
-    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
+    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
+                         ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;
 
