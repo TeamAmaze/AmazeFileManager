@@ -1369,7 +1369,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (MainActivityHelper.SEARCH_TEXT != null) {
 
                     // starting the search query again :O
-                    getMainActivity().mainFragment = (MainFragment) getMainActivity().getFragment().getTab();
+                    getMainActivity().mainFragment = (MainFragment) getMainActivity().getTabFragment().getCurrentTabFragment();
                     FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
                     // getting parent path to resume search from there

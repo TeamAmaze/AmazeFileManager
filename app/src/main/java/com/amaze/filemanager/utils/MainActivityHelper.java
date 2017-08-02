@@ -167,7 +167,7 @@ public class MainActivityHelper {
     }
 
     public void add(int pos) {
-        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getCurrentTabFragment();
         final String path = ma.getCurrentPath();
 
         switch (pos) {
@@ -609,16 +609,16 @@ public class MainActivityHelper {
      * @param query the text query entered the by user
      */
     public void search(String query) {
-        TabFragment tabFragment = mainActivity.getFragment();
+        TabFragment tabFragment = mainActivity.getTabFragment();
         if (tabFragment == null) return;
-        final MainFragment ma = (MainFragment) tabFragment.getTab();
+        final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
         final String fpath = ma.getCurrentPath();
 
         /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
         //ma.searchTask = task;
         SEARCH_TEXT = query;
-        mainActivity.mainFragment = (MainFragment) mainActivity.getFragment().getTab();
+        mainActivity.mainFragment = (MainFragment) mainActivity.getTabFragment().getCurrentTabFragment();
         FragmentManager fm = mainActivity.getSupportFragmentManager();
         SearchWorkerFragment fragment =
                 (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);

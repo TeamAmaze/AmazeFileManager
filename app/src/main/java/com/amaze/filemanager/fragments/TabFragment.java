@@ -179,7 +179,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 BaseActivity.skinTwo : BaseActivity.skin));
         mainActivity.updateViews(colorDrawable);*/
 
-        mainActivity.mainFragment = (MainFragment) getTab();
+        mainActivity.mainFragment = (MainFragment) getCurrentTabFragment();
 
         return rootView;
     }
@@ -362,15 +362,13 @@ public class TabFragment extends android.support.v4.app.Fragment
         mViewPager.setOffscreenPageLimit(4);
     }
 
-    public Fragment getTab() {
-        if (fragments.size() == 2)
-            return fragments.get(mViewPager.getCurrentItem());
+    public Fragment getCurrentTabFragment() {
+        if (fragments.size() == 2) return fragments.get(mViewPager.getCurrentItem());
         else return null;
     }
 
-    public Fragment getTab(int pos) {
-        if (fragments.size() == 2 && pos < 2)
-            return fragments.get(pos);
+    public Fragment getFragmentAtIndex(int pos) {
+        if (fragments.size() == 2 && pos < 2) return fragments.get(pos);
         else return null;
     }
 
