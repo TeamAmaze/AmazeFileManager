@@ -299,7 +299,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         boolean[] headers = new boolean[]{false, false};
 
         for (int i = 0; i < itemsDigested.size(); i++) {
-            if(mainFrag.IS_LIST) {// TODO: 31/5/2017 add fragments to gird view
+            // TODO: 31/5/2017 add fragments to gird view
                 if (itemsDigested.get(i).elem != null) {
                     LayoutElement nextItem = itemsDigested.get(i).elem;
 
@@ -316,7 +316,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         continue;//leave this continue for symmetry
                     }
                 }
-            }
+
         }
 
         if(invalidate) {
