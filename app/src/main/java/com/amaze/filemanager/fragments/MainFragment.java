@@ -316,6 +316,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
             else
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+            setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
             listView.setLayoutManager(mLayoutManagerGrid);
         }
         // use a linear layout manager
@@ -352,6 +353,22 @@ public class MainFragment extends android.support.v4.app.Fragment {
             if (IS_LIST)
                 onSavedInstanceState(savedInstanceState);
         }
+    }
+
+    void setGridLayoutSpanSizeLookup(GridLayoutManager mLayoutManagerGrid) {
+        mLayoutManagerGrid.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch(adapter.getItemViewType(position)){
+                    case RecyclerAdapter.TYPE_HEADER_FILES:
+                        return columns;
+                    case RecyclerAdapter.TYPE_HEADER_FOLDERS:
+                        return columns;
+                    default:
+                        return 1;
+                }
+            }
+        });
     }
 
     void switchToGrid() {
@@ -1044,6 +1061,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     void initNoFileLayout() {
         nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview.setColorSchemeColors(accentColor);
         nofilesview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
