@@ -92,7 +92,7 @@ public class FTPService extends Service implements Runnable {
         while (serverThread != null) {
             if (attempts > 0) {
                 attempts--;
-                FTPService.sleepIgnoreInterupt(1000);
+                sleepIgnoreInterupt(1000);
             } else {
                 return START_STICKY;
             }

@@ -2024,21 +2024,12 @@ public class MainActivity extends BaseActivity implements
     }
 
     void sendScroll(final HorizontalScrollView scrollView) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {}
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollView.fullScroll(View.FOCUS_RIGHT);
-                    }
-                });
+                scrollView.fullScroll(View.FOCUS_RIGHT);
             }
-        }).start();
+        }, 100);
     }
 
     void initialisePreferences() {
