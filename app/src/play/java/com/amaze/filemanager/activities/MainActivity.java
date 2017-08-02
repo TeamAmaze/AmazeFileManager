@@ -69,7 +69,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -2556,11 +2555,6 @@ public class MainActivity extends BaseActivity implements
                 }
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
         }
-    }
-
-    public int dpToPx(double dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
     }
 
     public void initiatebbar() {

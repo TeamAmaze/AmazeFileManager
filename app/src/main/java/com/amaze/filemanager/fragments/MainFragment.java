@@ -331,7 +331,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             public void onGlobalLayout() {
                 if ((columns == 0 || columns == -1)) {
                     int screen_width = listView.getWidth();
-                    int dptopx = Utils.dpToPx(115, getContext());
+                    int dptopx = Utils.dpToPx(getContext(), 115);
                     columns = screen_width / dptopx;
                     if (columns == 0 || columns == -1) columns = 3;
                     if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);

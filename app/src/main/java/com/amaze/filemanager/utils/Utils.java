@@ -129,7 +129,7 @@ public class Utils {
         }
     }
 
-    public static int dpToPx(int dp, Context c) {
+    public static int dpToPx(Context c, int dp) {
         DisplayMetrics displayMetrics = c.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
