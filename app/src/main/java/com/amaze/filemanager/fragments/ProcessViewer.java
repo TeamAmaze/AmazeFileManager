@@ -48,11 +48,10 @@ import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -69,7 +68,6 @@ public class ProcessViewer extends Fragment {
 
     boolean isInitialized = false;
     SharedPreferences sharedPrefs;
-    IconUtils icons;
     MainActivity mainActivity;
     int accentColor, primaryColor;
     ImageButton mCancelButton;
@@ -99,7 +97,6 @@ public class ProcessViewer extends Fragment {
         mainActivity.setActionBarTitle(getResources().getString(R.string.process_viewer));
         mainActivity.floatingActionButton.hideMenuButton(true);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        icons = new IconUtils(sharedPrefs, getActivity());
         mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = (CardView) rootView.findViewById(R.id.card_view);

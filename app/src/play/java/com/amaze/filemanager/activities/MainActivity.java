@@ -135,7 +135,6 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.utils.AppConfig;
@@ -244,7 +243,6 @@ public class MainActivity extends BaseActivity implements
     //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
-    private IconUtils util;
     private Context con = this;
     private String zippath;
     private FragmentTransaction pending_fragmentTransaction;
@@ -267,7 +265,6 @@ public class MainActivity extends BaseActivity implements
     private LinearLayout buttons;
     private HorizontalScrollView scroll, scroll1;
     private CountDownTimer timer;
-    private IconUtils icons;
     private TabHandler tabHandler;
     // Check for user interaction for Google+ api only once
     private boolean mGoogleApiKey = false;
@@ -360,9 +357,6 @@ public class MainActivity extends BaseActivity implements
 
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
-
-        util = new IconUtils(sharedPref, this);
-        icons = new IconUtils(sharedPref, this);
 
         timer = new CountDownTimer(5000, 1000) {
             @Override
@@ -1932,7 +1926,7 @@ public class MainActivity extends BaseActivity implements
                 final int index = i;
                 if (rpaths.get(i).equals("/")) {
                     ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getRootDrawable());
+                    ib.setImageDrawable(getResources().getDrawable(R.drawable.root));
                     ib.setBackgroundColor(Color.TRANSPARENT);
                     ib.setOnClickListener(new View.OnClickListener() {
 
@@ -1948,7 +1942,7 @@ public class MainActivity extends BaseActivity implements
                         buttons.addView(v);
                 } else if (isStorage(rpaths.get(i))) {
                     ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getSdDrawable());
+                    ib.setImageDrawable(getResources().getDrawable(R.drawable.root));
                     ib.setBackgroundColor(Color.TRANSPARENT);
                     ib.setOnClickListener(new View.OnClickListener() {
 
