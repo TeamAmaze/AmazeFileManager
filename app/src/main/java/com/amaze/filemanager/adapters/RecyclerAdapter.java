@@ -44,6 +44,7 @@ import java.util.ArrayList;
  * The 'go to parent' aka '..' button (go to settings to activate it) is just a folder.
  *
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ *                                edited by Jens Klingenberg <mail@jensklingenberg.de>
  */
 public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
 
