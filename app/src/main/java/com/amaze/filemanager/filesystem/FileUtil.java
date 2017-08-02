@@ -1,7 +1,6 @@
 package com.amaze.filemanager.filesystem;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -471,40 +470,6 @@ public abstract class FileUtil {
                 totalSuccess = false;
         }
         return totalSuccess;
-    }
-
-    /**
-     * Delete a directory asynchronously.
-     *
-     * @param activity    The activity calling this method.
-     * @param file        The folder name.
-     * @param postActions Commands to be executed after success.
-     */
-    public static void rmdirAsynchronously(final Activity activity, final File file, final Runnable postActions, final Context context) {
-        if (file == null)
-            return;
-        new Thread() {
-            @Override
-            public void run() {
-                int retryCounter = 5; // MAGIC_NUMBER
-                while (!FileUtil.rmdir(file, context) && retryCounter > 0) {
-                    try {
-                        Thread.sleep(100); // MAGIC_NUMBER
-                    } catch (InterruptedException e) {
-                        // do nothing
-                    }
-                    retryCounter--;
-                }
-                if (file.exists()) {
-           /*         DialogUtil.displayError(activity, R.string.message_dialog_failed_to_delete_folder, false,
-                            file.getAbsolutePath());
-           */
-                } else {
-                    activity.runOnUiThread(postActions);
-                }
-
-            }
-        }.start();
     }
 
     /**

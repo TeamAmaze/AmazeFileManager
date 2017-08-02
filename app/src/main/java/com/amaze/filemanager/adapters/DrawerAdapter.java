@@ -82,7 +82,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     private LayoutInflater inflater;
     private int fabskin;
 
-    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
+    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
+                         ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;
 
@@ -116,8 +117,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 view.setBackgroundColor(Color.WHITE);
             else view.setBackgroundResource(R.color.background_material_dark);
-            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
-            view.setPadding(0, m.dpToPx(8), 0, m.dpToPx(8));
+            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(m, 17)));
+            view.setPadding(0, Utils.dpToPx(m, 8), 0, Utils.dpToPx(m, 8));
             return view;
         } else {
             View view = inflater.inflate(R.layout.drawerrow, parent, false);

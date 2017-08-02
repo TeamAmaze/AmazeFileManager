@@ -32,7 +32,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -122,7 +121,6 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -198,7 +196,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String path = "", launchPath;
+    public String path = "";
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
@@ -228,6 +226,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public ArrayList<String> oppatheList;
     public RelativeLayout drawerHeaderParent;
 
+    /**
+     * @deprecated use getCurrentMainFragment()
+     */
     public MainFragment mainFragment;
 
     public static final String KEY_PREF_OTG = "uri_usb_otg";
@@ -237,8 +238,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
-    private IconUtils util;
-    private Context con = this;
     private String zippath;
     private FragmentTransaction pending_fragmentTransaction;
     private String pendingPath;
@@ -343,7 +342,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
-        util = new IconUtils(sharedPref, this);
         icons = new IconUtils(sharedPref, this);
 
         timer = new CountDownTimer(5000, 1000) {
@@ -386,12 +384,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
         if (savedInstanceState != null) {
-
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
         }
 
@@ -696,10 +692,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 if (floatingActionButton.isOpened()) {
                     floatingActionButton.close(true);
                 } else {
-                    TabFragment tabFragment = ((TabFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame));
-                    Fragment fragment1 = tabFragment.getTab();
-                    MainFragment mainFrag = (MainFragment) fragment1;
-                    mainFrag.goBack();
+                    getCurrentMainFragment().goBack();
                 }
             } else if (name.contains("ZipViewer")) {
                 ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -933,13 +926,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
             }
-            try {
-                TabFragment tabFragment = (TabFragment) fragment;
-                MainFragment ma = ((MainFragment) tabFragment.getTab());
+            MainFragment ma = getCurrentMainFragment();
+            if(ma != null) {
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
                 updatePath(ma.getCurrentPath(), ma.results, ma.openMode, ma.folder_count, ma.file_count);
-            } catch (Exception e) {}
+            }
 
             initiatebbar();
             if (SDK_INT >= 21) toolbar.setElevation(0);
@@ -1030,12 +1022,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             return true;
         }
         // Handle action buttons
-        MainFragment ma = null;
-        try {
-            TabFragment tabFragment = getFragment();
-            if (tabFragment != null)
-                ma = (MainFragment) tabFragment.getTab();
-        } catch (Exception e) {}
+        MainFragment ma = getCurrentMainFragment();
 
         switch (item.getItemId()) {
             case R.id.home:
@@ -1070,7 +1057,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 finish();
                 break;
             case R.id.sort:
-                Fragment fragment = getDFragment();
+                Fragment fragment = getFragmentAtFrame();
                 if (fragment.getClass().getName().contains("AppsList"))
                     GeneralDialogCreation.showSortDialog((AppsList) fragment, getAppTheme());
                 break;
@@ -1459,7 +1446,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     public void updatePaths(int pos) {
-        TabFragment tabFragment = getFragment();
+        TabFragment tabFragment = getTabFragment();
         if (tabFragment != null)
             tabFragment.updatepaths(pos);
     }
@@ -1480,19 +1467,26 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         openZip(path);
     }
 
-    public TabFragment getFragment() {
-        Fragment fragment = getDFragment();
+    public MainFragment getCurrentMainFragment() {
+        TabFragment tab = getTabFragment();
 
-        if (fragment == null || !(fragment instanceof TabFragment)) return null;
+        if(tab != null && tab.getCurrentTabFragment() instanceof MainFragment) {
+            return (MainFragment) tab.getCurrentTabFragment();
+        } else return null;
+    }
+    public TabFragment getTabFragment() {
+        Fragment fragment = getFragmentAtFrame();
+
+        if (!(fragment instanceof TabFragment)) return null;
         else return (TabFragment) fragment;
     }
 
-    public Fragment getDFragment() {
+    public Fragment getFragmentAtFrame() {
         return getSupportFragmentManager().findFragmentById(R.id.content_frame);
     }
 
     public void setPagingEnabled(boolean b) {
-        getFragment().mViewPager.setPagingEnabled(b);
+        getTabFragment().mViewPager.setPagingEnabled(b);
     }
 
     public File getUsbDrive() {
@@ -1704,7 +1698,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         oppathe = "";
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
-                        Intent intent1 = new Intent(con, CopyService.class);
+                        Intent intent1 = new Intent(this, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
@@ -1721,22 +1715,18 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         oppathe = "";
                     }
 
-                    new MoveFiles(oparrayListList, ((MainFragment) getFragment().getTab()),
-                            getFragment().getTab().getActivity(), OpenMode.FILE)
+                    new MoveFiles(oparrayListList, getCurrentMainFragment(), getCurrentMainFragment().getActivity(), OpenMode.FILE)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
-                    MainFragment ma1 = ((MainFragment) getFragment().getTab());
-                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), ma1);
+                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), getCurrentMainFragment());
                     break;
                 case DataUtils.RENAME:
-                    MainFragment ma2 = ((MainFragment) getFragment().getTab());
-                    mainActivityHelper.rename(ma2.openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
-                    ma2.updateList();
+                    mainActivityHelper.rename(getCurrentMainFragment().openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
+                    getCurrentMainFragment().updateList();
                     break;
                 case DataUtils.NEW_FILE:
-                    MainFragment ma3 = ((MainFragment) getFragment().getTab());
-                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), ma3);
+                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
 
                     break;
                 case DataUtils.EXTRACT:
@@ -2422,7 +2412,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         pathbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainFragment m = ((MainFragment) getFragment().getTab());
+                MainFragment m = getCurrentMainFragment();
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons, pathbar);
@@ -2434,7 +2424,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainFragment m = ((MainFragment) getFragment().getTab());
+                MainFragment m = getCurrentMainFragment();
                 if (m.openMode == OpenMode.FILE) {
                     bbar(m);
                     utils.crossfade(buttons, pathbar);
@@ -2492,12 +2482,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     pendingPath = null;
                     return;
                 }
-                TabFragment m = getFragment();
+                TabFragment m = getTabFragment();
                 if (m == null) {
                     goToMain(pendingPath);
                     return;
                 }
-                MainFragment mainFrag = ((MainFragment) m.getTab());
+                MainFragment mainFrag = getCurrentMainFragment();
                 if (mainFrag != null) mainFrag.loadlist(pendingPath, false, OpenMode.UNKNOWN);
             } catch (ClassCastException e) {
                 selectedStorage = NO_VALUE;
@@ -2516,10 +2506,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         if (path != null) {
             if (new File(path).isDirectory()) {
-                Fragment f = getDFragment();
+                Fragment f = getFragmentAtFrame();
                 if ((f.getClass().getName().contains("TabFragment"))) {
-                    MainFragment m = ((MainFragment) getFragment().getTab());
-                    m.loadlist(path, false, OpenMode.FILE);
+                    getCurrentMainFragment().loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
@@ -2618,7 +2607,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 refreshDrawer();
-                TabFragment tabFragment = getFragment();
+                TabFragment tabFragment = getTabFragment();
                 boolean b = sharedPref.getBoolean("needtosethome", true);
                 //reset home and current paths according to new storages
                 if (b) {
@@ -2633,10 +2622,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     } else
                         tabHandler.addTab(new Tab(2, "", ((EntryItem) dataUtils.getList().get(1)).getPath(), "/"));
                     if (tabFragment != null) {
-                        Fragment main = tabFragment.getTab(0);
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)
                             ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                        Fragment main1 = tabFragment.getTab(1);
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
                         if (main1 != null)
                             ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
@@ -2644,10 +2633,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 } else {
                     //just refresh list
                     if (tabFragment != null) {
-                        Fragment main = tabFragment.getTab(0);
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)
                             ((MainFragment) main).updateList();
-                        Fragment main1 = tabFragment.getTab(1);
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
                         if (main1 != null)
                             ((MainFragment) main1).updateList();
                     }
@@ -2691,14 +2680,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     }
                 });
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-                TabFragment fragment = getFragment();
-                if (fragment != null) {
-                    Fragment fragment1 = fragment.getTab();
-                    if (fragment1 != null) {
-                        final MainFragment ma = (MainFragment) fragment1;
-                        ma.loadlist(path, false, OpenMode.UNKNOWN);
-                    }
-                }
+                MainFragment mainFrag = getCurrentMainFragment();
+                if (mainFrag != null) mainFrag.loadlist(path, false, OpenMode.UNKNOWN);
             } else {
                 Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             }
