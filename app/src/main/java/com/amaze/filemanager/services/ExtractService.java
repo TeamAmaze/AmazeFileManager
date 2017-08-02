@@ -53,6 +53,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
@@ -436,12 +437,7 @@ public class ExtractService extends Service {
 
                 ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
 
-                TarArchiveInputStream inputStream;
-
-                if (archive.getName().endsWith(".tar"))
-                    inputStream = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(archive)));
-                else
-                    inputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(archive)));
+                TarArchiveInputStream inputStream = createTarInputStream(archive);
 
                 TarArchiveEntry tarArchiveEntry = inputStream.getNextTarEntry();
 
@@ -462,10 +458,13 @@ public class ExtractService extends Service {
                 watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
                 watcherUtil.watch();
 
+                inputStream = createTarInputStream(archive);
+
                 for (TarArchiveEntry entry : archiveEntries) {
 
                     if (!progressHandler.getCancelled()) {
 
+                        inputStream.getNextTarEntry();
                         progressHandler.setFileName(entry.getName());
                         unzipTAREntry(inputStream, entry, destinationPath);
                     }
@@ -482,6 +481,14 @@ public class ExtractService extends Service {
                 return false;
             }
 
+        }
+
+        private TarArchiveInputStream createTarInputStream(File archive) throws IOException {
+            if (archive.getName().endsWith(".tar")) {
+                return new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(archive)));
+            } else {
+                return new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(archive)));
+            }
         }
 
         private boolean extractRar(File archive, String destinationPath) {
