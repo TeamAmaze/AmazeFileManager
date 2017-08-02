@@ -1044,6 +1044,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     void initNoFileLayout() {
         nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview.setColorSchemeColors(accentColor);
         nofilesview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
