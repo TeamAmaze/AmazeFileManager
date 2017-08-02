@@ -32,7 +32,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -122,7 +121,6 @@ import com.amaze.filemanager.fragments.ProcessViewer;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -198,7 +196,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String path = "", launchPath;
+    public String path = "";
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
@@ -237,8 +235,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
-    private IconUtils util;
-    private Context con = this;
     private String zippath;
     private FragmentTransaction pending_fragmentTransaction;
     private String pendingPath;
@@ -343,7 +339,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
-        util = new IconUtils(sharedPref, this);
         icons = new IconUtils(sharedPref, this);
 
         timer = new CountDownTimer(5000, 1000) {
@@ -386,12 +381,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 }
             }
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
         if (savedInstanceState != null) {
-
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
         }
 
@@ -1704,7 +1697,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         oppathe = "";
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
-                        Intent intent1 = new Intent(con, CopyService.class);
+                        Intent intent1 = new Intent(this, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
