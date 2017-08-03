@@ -94,7 +94,7 @@ public class ProcessViewer extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK))
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
-        mainActivity.setActionBarTitle(getResources().getString(R.string.process_viewer));
+        mainActivity.getAppbar().setTitle(getResources().getString(R.string.process_viewer));
         mainActivity.floatingActionButton.hideMenuButton(true);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity.supportInvalidateOptionsMenu();

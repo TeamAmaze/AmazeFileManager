@@ -54,8 +54,6 @@ public class TabFragment extends android.support.v4.app.Fragment
     // current visible tab, either 0 or 1
     //public int currenttab;
     MainActivity mainActivity;
-    View buttons;
-    View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
 
@@ -81,7 +79,6 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         tabHandler = new TabHandler(getContext());
         fragmentManager = getActivity().getSupportFragmentManager();
-        mToolBarContainer = getActivity().findViewById(R.id.lin);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             indicator = (Indicator) getActivity().findViewById(R.id.indicator);
@@ -99,7 +96,6 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (getArguments() != null) {
             path = getArguments().getString("path");
         }
-        buttons = getActivity().findViewById(R.id.buttons);
         mainActivity = ((MainActivity) getActivity());
         mainActivity.supportInvalidateOptionsMenu();
         mViewPager.addOnPageChangeListener(this);
@@ -210,7 +206,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 MainFragment m = (MainFragment) fragment;
                 items.add(parsePathForName(m.getCurrentPath(), m.openMode));
                 if (i - 1 == MainActivity.currentTab && i == pos) {
-                    mainActivity.updatePath(m.getCurrentPath(), m.results, m.openMode, m
+                    mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results, m.openMode, m
                             .folder_count, m.file_count);
                     mainActivity.updateDrawer(m.getCurrentPath());
                 }
@@ -283,7 +279,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onPageSelected(int p1) {
-        mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
         MainActivity.currentTab = p1;
         if (sharedPrefs != null)
@@ -298,10 +294,10 @@ public class TabFragment extends android.support.v4.app.Fragment
                 if (ma.getCurrentPath() != null) {
                     try {
                         mainActivity.updateDrawer(ma.getCurrentPath());
-                        mainActivity.updatePath(ma.getCurrentPath(), ma.results, ma.openMode,
+                        mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(), ma.results, ma.openMode,
                                 ma.folder_count, ma.file_count);
-                        if (buttons.getVisibility() == View.VISIBLE) {
-                            mainActivity.bbar(ma);
+                        if (mainActivity.getAppbar().getBottomBar().areButtonsShowing()) {
+                            mainActivity.getAppbar().getBottomBar().bbar(ma);
                         }
                     } catch (Exception e) {
                         //       e.printStackTrace();5

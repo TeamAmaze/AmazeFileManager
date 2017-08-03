@@ -65,7 +65,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,12 +120,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     public ActionMode mActionMode;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
-    public LinearLayout buttons;
     public int sortby, dsort, asc;
     public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
             SHOW_SIZE, SHOW_LAST_MODIFIED;
-    public LinearLayout pathbar;
     public OpenMode openMode = OpenMode.FILE;
 
     public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS, SHOW_HEADERS;
@@ -158,7 +155,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private boolean addheader = false;
     private DividerItemDecoration dividerItemDecoration;
     private AppBarLayout mToolbarContainer;
-    private TextView pathname, mFullPath;
     private boolean stopAnims = true;
     private SwipeRefreshLayout nofilesview;
 
@@ -228,7 +224,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         setRetainInstance(true);
         listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
-        mToolbarContainer = (AppBarLayout) getActivity().findViewById(R.id.lin);
+        mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
         fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
         fastScroller.setPressedHandleColor(accentColor);
         listView.setOnTouchListener(new View.OnTouchListener() {
@@ -260,21 +256,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 loadlist((CURRENT_PATH), false, openMode);
             }
         });
-        buttons = (LinearLayout) getActivity().findViewById(R.id.buttons);
-        pathbar = (LinearLayout) getActivity().findViewById(R.id.pathbar);
+
         SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
-        pathname = (TextView) getActivity().findViewById(R.id.pathname);
-        mFullPath = (TextView) getActivity().findViewById(R.id.fullpath);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
         apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
-
-        if (!sharedPref.getBoolean("intelliHideToolbar", true)) {
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) getActivity()
-                    .findViewById(R.id.action_bar).getLayoutParams();
-            params.setScrollFlags(0);
-            mToolbarContainer.setExpanded(true, true);
-        }
 
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
         return rootView;
@@ -297,7 +283,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         this.setRetainInstance(false);
         HFile f = new HFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
-        getMainActivity().initiatebbar();
+        getMainActivity().getAppbar().getBottomBar().initiatebbar();
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST) {
@@ -471,7 +457,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
-            getMainActivity().updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
+            getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
             createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
@@ -903,7 +889,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
         } else {
             if (!isBackButton) {
                 // hiding search view if visible
-                if (MainActivity.isSearchViewEnabled) getMainActivity().hideSearchView();
+                if (getMainActivity().getAppbar().getSearchView().isEnabled()) {
+                    getMainActivity().getAppbar().getSearchView().hideSearchView();
+                }
 
                 String path;
                 if (!e.hasSymlink()) {
@@ -1214,7 +1202,9 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     }
                 });
 
-                if (buttons.getVisibility() == View.VISIBLE) getMainActivity().bbar(this);
+                if (getMainActivity().getAppbar().getBottomBar().areButtonsShowing()) {
+                    getMainActivity().getAppbar().getBottomBar().bbar(this);
+                }
 
                 startFileObserver();
                 //getMainActivity().invalidateFab(openMode);
@@ -1643,8 +1633,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     // This method is used to implement the modification for the pre Searching
     public void onSearchPreExecute(String query) {
-        pathname.setText(getMainActivity().getString(R.string.empty));
-        mFullPath.setText(getMainActivity().getString(R.string.searching) + " " + query);
+        getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
+        getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searching) + " " + query);
     }
 
 
@@ -1664,8 +1654,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
             LayoutElement layoutElementAdded = addTo(a);
             if (!results) {
                 createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
-                pathname.setText(getMainActivity().getString(R.string.empty));
-                mFullPath.setText(getMainActivity().getString(R.string.searching) + " " + query);
+                getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
+                getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searching) + " " + query);
                 results = true;
             } else {
                 adapter.addItem(layoutElementAdded);
@@ -1689,8 +1679,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
             @Override
             public void onPostExecute(Void c) {
                 createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
-                pathname.setText(getMainActivity().getString(R.string.empty));
-                mFullPath.setText(getMainActivity().getString(R.string.searchresults) + " " + query);
+                getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
+                getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searchresults) + " " + query);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

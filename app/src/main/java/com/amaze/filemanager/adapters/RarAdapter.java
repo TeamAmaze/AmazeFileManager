@@ -120,7 +120,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             zipViewer.selection = true;
             /*zipViewer.mActionMode = zipViewer.getActivity().startActionMode(
                    zipViewer.mActionModeCallback);*/
-            zipViewer.mActionMode = zipViewer.mainActivity.toolbar.startActionMode(zipViewer.mActionModeCallback);
+            zipViewer.mActionMode = zipViewer.mainActivity.getAppbar().getToolbar().startActionMode(zipViewer.mActionModeCallback);
         }
         zipViewer.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
