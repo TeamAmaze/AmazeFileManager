@@ -180,7 +180,6 @@
   <string name="cant_read_file">نمی توان فایل را خواند</string>
   <string name="not_allowed">بدون اجازه</string>
   <string name="processes">پردازشگر</string>
-  <string name="searching">در حال جستجو</string>
   <string name="copying_fles">در حال کپی کردن فایل ها</string>
   <string name="done">انجام گردید</string>
   <string name="Extracting_fles">در حال استخراج فایل ها</string>

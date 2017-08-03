@@ -51,7 +51,6 @@
   <string name="file_empty">Datei ist leer</string>
   <string name="error">Fehler</string>
   <string name="cantlistfiles">Kann Dateien ohne Root-Rechte nicht auflisten</string>
-  <string name="searchresults">Suchergebnisse von </string>
   <string name="itemsselected">Elemente ausgewählt</string>
   <string name="newhomedirectory">Neues Home-Verzeichnis</string>
   <string name="rename">Umbenennen</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Kann Datei nicht lesen</string>
   <string name="not_allowed">Nicht erlaubt</string>
   <string name="processes">Prozessse</string>
-  <string name="searching">Suche</string>
   <string name="copying_fles">Kopiere Dateien</string>
   <string name="done">Fertig</string>
   <string name="Extracting_fles">Extrahiere Dateien</string>

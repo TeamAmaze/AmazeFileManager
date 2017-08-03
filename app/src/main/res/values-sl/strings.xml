@@ -49,7 +49,6 @@
   <string name="loading">Nalaganje&#8230;</string>
   <string name="file_empty">Datoteka je prezna</string>
   <string name="error">Napaka</string>
-  <string name="searchresults">Rezultati iskanja </string>
   <string name="itemsselected">Izbranih elementov</string>
   <string name="newhomedirectory">Novi domači imenik</string>
   <string name="rename">Preimenuj</string>
@@ -162,7 +161,6 @@
   <string name="cant_read_file">Datoteke ni mogoče prebrati</string>
   <string name="not_allowed">Ni dovoljeno</string>
   <string name="processes">Procesi</string>
-  <string name="searching">Iskanje</string>
   <string name="copying_fles">Kopiranje datotek</string>
   <string name="done">Opravljeno</string>
   <string name="Extracting_fles">Ekstrahiranje datotek</string>

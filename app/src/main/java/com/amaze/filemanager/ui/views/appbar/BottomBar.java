@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -93,7 +92,7 @@ public class BottomBar {
             public void onClick(View view) {
                 MainFragment m = mainActivity.get().getCurrentMainFragment();
                 if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
+                    showButtons(m);
                     Futils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -105,7 +104,7 @@ public class BottomBar {
             public void onClick(View view) {
                 MainFragment m = mainActivity.get().getCurrentMainFragment();
                 if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
+                    showButtons(m);
                     Futils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -119,16 +118,8 @@ public class BottomBar {
         fullPathText.setOnClickListener(null);
     }
 
-    public void setPathText(@StringRes int text) {
-        pathText.setText(text);
-    }
-
     public void setPathText(String text) {
         pathText.setText(text);
-    }
-
-    public void setFullPathText(@StringRes int text) {
-        fullPathText.setText(text);
     }
 
     public void setFullPathText(String text) {
@@ -139,7 +130,7 @@ public class BottomBar {
         return buttons.getVisibility() == View.VISIBLE;
     }
 
-    public void bbar(final MainFragment mainFrag) {
+    public void showButtons(final MainFragment mainFrag) {
         final String path = mainFrag.getCurrentPath();
         try {
             buttons.removeAllViews();
@@ -251,8 +242,8 @@ public class BottomBar {
         }
     }
 
-    public void updatePath(@NonNull final String news, boolean results, OpenMode openmode,
-                           int folder_count, int file_count) {
+    public void updatePath(@NonNull final String news, boolean results, String query, OpenMode openmode,
+                           int folderCount, int fileCount) {
 
         if (news.length() == 0) return;
 
@@ -279,11 +270,10 @@ public class BottomBar {
         }
 
         if (!results) {
-            pathText.setText(folder_count + " " + mainActivity.get().getResources().getString(R.string.folders) + "" +
-                    " " + file_count + " " + mainActivity.get().getResources().getString(R.string.files));
+            pathText.setText(mainActivity.get().getString(R.string.folderfilecount, folderCount, fileCount));
         } else {
-            fullPathText.setText(R.string.searchresults);
-            pathText.setText(R.string.empty);
+            fullPathText.setText(mainActivity.get().getString(R.string.searchresults, query));
+            pathText.setText("");
             return;
         }
         final String oldPath = fullPathText.getText().toString();

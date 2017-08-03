@@ -53,7 +53,6 @@
     <string name="file_empty">கோப்பு காலியாக உள்ளது</string>
     <string name="error">பிழை</string>
     <string name="cantlistfiles">ரூட் இல்லாமல் கோப்புகளை பட்டியலிட முடியாது</string>
-    <string name="searchresults">தேடல் முடிவுகள்</string>
     <string name="itemsselected">உருப்படிகள் தேர்ந்தெடுக்கப்பட்டது</string>
     <string name="newhomedirectory">புதிய முகப்பு அடைவு</string>
     <string name="rename">மறுபெயரிடு</string>
@@ -186,7 +185,6 @@
     <string name="cant_read_file">கோப்பை படிக்கமுடியவில்லை</string>
     <string name="not_allowed">அனுமதி இல்லை</string>
     <string name="processes">செயல்பாடுகள்</string>
-    <string name="searching">தேடுகிறது</string>
     <string name="copying_fles">கோப்புகளை நகலெடுக்கிறது</string>
     <string name="done">முடிந்தது</string>
     <string name="Extracting_fles">கோப்புகளை பிரித்தெடுக்கிறது</string>
@@ -386,7 +384,6 @@
     <string name="path">பாதை</string>
     <string name="renamebookmark">புத்தகக்குறிகளை மாற்றியமை</string>
     <string name="cut">வெட்டு</string>
-    <string name="empty"></string>
     <string name="search">தேடுதல்</string>
     <string name="invalid_name">தவறான பெயர்</string>
     <string name="search_hint">தேட உள்ளீடவும்&#8230;</string>

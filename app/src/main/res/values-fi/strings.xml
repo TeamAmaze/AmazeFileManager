@@ -185,7 +185,6 @@
   <string name="cant_read_file">Tiedostoa ei voida lukea</string>
   <string name="not_allowed">Ei sallittu</string>
   <string name="processes">Prosessit</string>
-  <string name="searching">Etsii</string>
   <string name="copying_fles">Kopioidaan tiedostoja</string>
   <string name="done">Valmis</string>
   <string name="Extracting_fles">Puretaan tiedostoja</string>

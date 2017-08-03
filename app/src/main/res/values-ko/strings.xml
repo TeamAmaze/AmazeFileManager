@@ -182,7 +182,6 @@
   <string name="cant_read_file">파일을 읽을 수 없습니다</string>
   <string name="not_allowed">허용되지 않았습니다</string>
   <string name="processes">프로세스</string>
-  <string name="searching">검색하는 중입니다</string>
   <string name="copying_fles">파일을 복사하는 중입니다</string>
   <string name="done">완료되었습니다</string>
   <string name="Extracting_fles">파일의 압축을 해제하는 중입니다</string>

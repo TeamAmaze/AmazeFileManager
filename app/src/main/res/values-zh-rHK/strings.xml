@@ -51,7 +51,6 @@
   <string name="file_empty">檔案是空的</string>
   <string name="error">錯誤</string>
   <string name="cantlistfiles">無 root 權限無法列出檔案</string>
-  <string name="searchresults">搜尋結果 </string>
   <string name="itemsselected">專案已選中</string>
   <string name="newhomedirectory">新首頁目錄</string>
   <string name="rename">重命名</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">無法讀取檔</string>
   <string name="not_allowed">不允許的操作</string>
   <string name="processes">進程列表</string>
-  <string name="searching">搜索中</string>
   <string name="copying_fles">正在複製檔</string>
   <string name="done">完成</string>
   <string name="Extracting_fles">正在提取檔</string>

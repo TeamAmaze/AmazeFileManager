@@ -169,6 +169,7 @@ import jcifs.smb.SmbFile;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
+import static com.amaze.filemanager.utils.MainActivityHelper.SEARCH_TEXT;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -908,7 +909,7 @@ public class MainActivity extends BaseActivity implements
                 MainFragment ma = getCurrentMainFragment();
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, ma.openMode, ma.folder_count, ma.file_count);
+                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {}
 
             appbar.getBottomBar().initiatebbar();

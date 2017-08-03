@@ -206,8 +206,8 @@ public class TabFragment extends android.support.v4.app.Fragment
                 MainFragment m = (MainFragment) fragment;
                 items.add(parsePathForName(m.getCurrentPath(), m.openMode));
                 if (i - 1 == MainActivity.currentTab && i == pos) {
-                    mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results, m.openMode, m
-                            .folder_count, m.file_count);
+                    mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results,
+                            MainActivityHelper.SEARCH_TEXT, m.openMode, m.folder_count, m.file_count);
                     mainActivity.updateDrawer(m.getCurrentPath());
                 }
                 if (m.openMode == OpenMode.FILE) {
@@ -294,10 +294,10 @@ public class TabFragment extends android.support.v4.app.Fragment
                 if (ma.getCurrentPath() != null) {
                     try {
                         mainActivity.updateDrawer(ma.getCurrentPath());
-                        mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(), ma.results, ma.openMode,
+                        mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
                                 ma.folder_count, ma.file_count);
                         if (mainActivity.getAppbar().getBottomBar().areButtonsShowing()) {
-                            mainActivity.getAppbar().getBottomBar().bbar(ma);
+                            mainActivity.getAppbar().getBottomBar().showButtons(ma);
                         }
                     } catch (Exception e) {
                         //       e.printStackTrace();5

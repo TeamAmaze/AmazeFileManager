@@ -550,8 +550,8 @@ public class ZipViewer extends Fragment {
 
     public void bbar() {
         if (current != null && current.length() != 0)
-            mainActivity.getAppbar().getBottomBar().updatePath("/" + current, false, OpenMode.FILE, folder, file);
-        else mainActivity.getAppbar().getBottomBar().updatePath("/", false, OpenMode.FILE, folder, file);
+            mainActivity.getAppbar().getBottomBar().updatePath("/" + current, false, null, OpenMode.FILE, folder, file);
+        else mainActivity.getAppbar().getBottomBar().updatePath("/", false, null, OpenMode.FILE, folder, file);
 
 
     }

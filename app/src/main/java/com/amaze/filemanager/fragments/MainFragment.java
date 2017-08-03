@@ -457,7 +457,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
-            getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, openMode, folder_count, file_count);
+            getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count);
             createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
@@ -1203,7 +1203,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 });
 
                 if (getMainActivity().getAppbar().getBottomBar().areButtonsShowing()) {
-                    getMainActivity().getAppbar().getBottomBar().bbar(this);
+                    getMainActivity().getAppbar().getBottomBar().showButtons(this);
                 }
 
                 startFileObserver();
@@ -1633,8 +1633,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     // This method is used to implement the modification for the pre Searching
     public void onSearchPreExecute(String query) {
-        getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
-        getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searching) + " " + query);
+        getMainActivity().getAppbar().getBottomBar().setPathText("");
+        getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searching, query));
     }
 
 
@@ -1654,8 +1654,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
             LayoutElement layoutElementAdded = addTo(a);
             if (!results) {
                 createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
-                getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
-                getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searching) + " " + query);
+                getMainActivity().getAppbar().getBottomBar().setPathText("");
+                getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searching, query));
                 results = true;
             } else {
                 adapter.addItem(layoutElementAdded);
@@ -1679,8 +1679,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
             @Override
             public void onPostExecute(Void c) {
                 createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
-                getMainActivity().getAppbar().getBottomBar().setPathText(getMainActivity().getString(R.string.empty));
-                getMainActivity().getAppbar().getBottomBar().setFullPathText(getMainActivity().getString(R.string.searchresults) + " " + query);
+                getMainActivity().getAppbar().getBottomBar().setPathText("");
+                getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searchresults, query));
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

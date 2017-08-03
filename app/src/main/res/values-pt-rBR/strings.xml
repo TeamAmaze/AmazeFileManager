@@ -51,7 +51,6 @@
   <string name="file_empty">O arquivo está vazio</string>
   <string name="error">Erro</string>
   <string name="cantlistfiles">Não é possível listar arquivos sem root</string>
-  <string name="searchresults">Resultados da pesquisa de </string>
   <string name="itemsselected">Itens selecionados</string>
   <string name="newhomedirectory">Nova pasta Início</string>
   <string name="rename">Renomear</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Não foi possível ler o arquivo</string>
   <string name="not_allowed">Não permitido</string>
   <string name="processes">Processos</string>
-  <string name="searching">Procurando</string>
   <string name="copying_fles">Copiando arquivos</string>
   <string name="done">Concluído</string>
   <string name="Extracting_fles">Extraindo arquivos</string>

@@ -51,7 +51,6 @@
   <string name="file_empty">Súbor je prázdny</string>
   <string name="error">Chyba</string>
   <string name="cantlistfiles">Nie je možné listovať súbormi bez root oprávnenia</string>
-  <string name="searchresults">Výsledky vyhľadávania</string>
   <string name="itemsselected">Vybraté položky</string>
   <string name="newhomedirectory">Nový domovský adresár</string>
   <string name="rename">Premenovať</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Súbor sa nedá prečítať</string>
   <string name="not_allowed">Nie je povolené</string>
   <string name="processes">Procesy</string>
-  <string name="searching">Vyhľadávanie</string>
   <string name="copying_fles">Kopírovanie súborov</string>
   <string name="done">Hotovo</string>
   <string name="Extracting_fles">Rozbaľovanie súborov</string>
