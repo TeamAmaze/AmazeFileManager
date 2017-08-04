@@ -10,6 +10,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import static android.os.Build.VERSION.SDK_INT;
 
 /**
+ * This is a class containing containing methods to each section of the AppBar,
+ * creating the object loads the views.
+ *
  * @author Emmanuel
  *         on 2/8/2017, at 23:27.
  */

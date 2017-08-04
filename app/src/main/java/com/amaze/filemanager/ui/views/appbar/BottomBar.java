@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,9 @@ import java.util.Collections;
 import static com.amaze.filemanager.R.id.pathbar;
 
 /**
+ * BottomBar, it lays under the toolbar, used to show data of what is being displayed in the MainFragment,
+ * for example directory, folder and file amounts, etc.
+ *
  * @author Emmanuel
  *         on 2/8/2017, at 23:31.
  */
@@ -132,7 +134,7 @@ public class BottomBar {
 
     public void showButtons(final MainFragment mainFrag) {
         final String path = mainFrag.getCurrentPath();
-        try {
+        if (buttons.getVisibility() == View.VISIBLE) {
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathLayout.getHeight());
             Drawable arrow = mainActivity.get().getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
@@ -140,8 +142,7 @@ public class BottomBar {
             ArrayList<String> names = bundle.getStringArrayList("names");
             ArrayList<String> rnames = bundle.getStringArrayList("names");
             Collections.reverse(rnames);
-
-            ArrayList<String> paths = bundle.getStringArrayList("paths");
+            
             final ArrayList<String> rpaths = bundle.getStringArrayList("paths");
             Collections.reverse(rpaths);
 
@@ -236,9 +237,6 @@ public class BottomBar {
                 timer.cancel();
                 timer.start();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("BBar", "button view not available");
         }
     }
 
@@ -276,26 +274,15 @@ public class BottomBar {
             pathText.setText("");
             return;
         }
+
         final String oldPath = fullPathText.getText().toString();
         if (oldPath.equals(newPath)) return;
-
-        final StringBuffer newPathBuilder, oldPathBuilder;
-
-        // implement animation while setting text
-        newPathBuilder = new StringBuffer().append(newPath);
-        oldPathBuilder = new StringBuffer().append(oldPath);
 
         final Animation slideIn = AnimationUtils.loadAnimation(mainActivity.get(), R.anim.slide_in);
         Animation slideOut = AnimationUtils.loadAnimation(mainActivity.get(), R.anim.slide_out);
 
-        if (newPath.length() > oldPath.length() &&
-                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
-                oldPath.length() != 0) {
-
+        if (newPath.length() > oldPath.length() && newPath.contains(oldPath) && oldPath.length() != 0) {
             // navigate forward
-            newPathBuilder.delete(0, newPathBuilder.length());
-            newPathBuilder.append(newPath);
-            newPathBuilder.delete(0, oldPath.length());
             fullPathAnim.setAnimation(slideIn);
             fullPathAnim.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -304,7 +291,6 @@ public class BottomBar {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             fullPathAnim.setVisibility(View.GONE);
                             fullPathText.setText(newPath);
                         }
@@ -315,7 +301,7 @@ public class BottomBar {
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     fullPathAnim.setVisibility(View.VISIBLE);
-                    fullPathAnim.setText(newPathBuilder.toString());
+                    fullPathAnim.setText(Utils.differenceStrings(oldPath, newPath));
                     //fullPathText.setText(oldPath);
 
                     scroll.post(new Runnable() {
@@ -332,13 +318,8 @@ public class BottomBar {
                     //onAnimationEnd(animation);
                 }
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else if (newPath.length() < oldPath.length() &&
-                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
-
+        } else if (newPath.length() < oldPath.length() && oldPath.contains(newPath)) {
             // navigate backwards
-            oldPathBuilder.delete(0, oldPathBuilder.length());
-            oldPathBuilder.append(oldPath);
-            oldPathBuilder.delete(0, newPath.length());
             fullPathAnim.setAnimation(slideOut);
             fullPathAnim.animate().setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -359,7 +340,7 @@ public class BottomBar {
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
                     fullPathAnim.setVisibility(View.VISIBLE);
-                    fullPathAnim.setText(oldPathBuilder.toString());
+                    fullPathAnim.setText(Utils.differenceStrings(newPath, oldPath));
                     fullPathText.setText(newPath);
 
                     scroll.post(new Runnable() {
@@ -371,7 +352,6 @@ public class BottomBar {
                 }
             }).setStartDelay(PATH_ANIM_START_DELAY).start();
         } else if (oldPath.isEmpty()) {
-
             // case when app starts
             fullPathAnim.setAnimation(slideIn);
             fullPathAnim.setText(newPath);
