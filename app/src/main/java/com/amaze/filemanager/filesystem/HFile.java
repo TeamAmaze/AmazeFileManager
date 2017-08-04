@@ -11,6 +11,8 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.services.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
@@ -23,6 +25,8 @@ import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
+
+import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +45,8 @@ import jcifs.smb.SmbFile;
  */
 //Hybrid file for handeling all types of files
 public class HFile {
+
+    private static final String TAG = "HFile";
 
     String path;
     //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
@@ -65,6 +71,8 @@ public class HFile {
     public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
+        } else if (path.startsWith("scp://") || path.startsWith("sftp://")) {
+            mode = OpenMode.SFTP;
         } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
@@ -123,6 +131,8 @@ public class HFile {
         return mode == OpenMode.SMB;
     }
 
+    public boolean isSftp() { return mode == OpenMode.SFTP; }
+
     public boolean isOtgFile() {
         return mode == OpenMode.OTG;
     }
@@ -164,6 +174,14 @@ public class HFile {
 
     public long lastModified() throws MalformedURLException, SmbException {
         switch (mode) {
+            case SFTP:
+                SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.mtime(path);
+                    }
+                });
+                break;
             case SMB:
                 SmbFile smbFile = getSmbFile();
                 if (smbFile != null)
