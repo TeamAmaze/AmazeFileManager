@@ -34,9 +34,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.amaze.filemanager.R.id.pathbar;
-
 /**
+ * layout_appbar.xml contains the layout for AppBar and BottomBar
+ *
  * BottomBar, it lays under the toolbar, used to show data of what is being displayed in the MainFragment,
  * for example directory, folder and file amounts, etc.
  *
@@ -66,7 +66,7 @@ public class BottomBar {
         scroll = (HorizontalScrollView) a.findViewById(R.id.scroll);
         buttons = (LinearLayout) a.findViewById(R.id.buttons);
 
-        pathLayout = (LinearLayout) a.findViewById(pathbar);
+        pathLayout = (LinearLayout) a.findViewById(R.id.pathbar);
         pathScroll = (HorizontalScrollView) a.findViewById(R.id.scroll1);
         fullPathText = (TextView) a.findViewById(R.id.fullpath);
         fullPathAnim= (TextView) a.findViewById(R.id.fullpath_anim);

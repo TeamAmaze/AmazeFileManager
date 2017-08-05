@@ -10,6 +10,8 @@ import com.amaze.filemanager.activities.MainActivity;
 import static android.os.Build.VERSION.SDK_INT;
 
 /**
+ * layout_appbar.xml contains the layout for AppBar and BottomBar
+ *
  * This is a class containing containing methods to each section of the AppBar,
  * creating the object loads the views.
  *

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/lin"
+    android:elevation="4dp">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/action_bar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/toolbar_theme"
+        app:popupTheme="?attr/popup"
+        app:contentInsetLeft="72dp"
+        app:contentInsetStart="72dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        >
+
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/buttonbarframe"
+        android:layout_height="72dp"
+        android:layout_width="match_parent"
+        android:layout_below="@id/action_bar">
+
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:id="@+id/scroll"
+            android:paddingRight="16dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/pathbar"
+            android:paddingRight="16dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:scrollbars="none"
+                android:id="@+id/scroll1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:paddingLeft="72dp"
+                android:paddingTop="5dp">
+
+                <LinearLayout
+                    android:clickable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        style="@android:style/TextAppearance.Medium"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fullpath" />
+                    <TextView
+                        android:clickable="false"
+                        android:layout_width="wrap_content"
+                        style="@android:style/TextAppearance.Medium"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fullpath_anim"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+            <TextView
+                android:clickable="false"
+                android:layout_width="wrap_content"
+                android:textSize="12sp"
+                android:paddingBottom="8dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="72dp"
+                android:textColor="@android:color/white"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/pathname" />
+
+        </LinearLayout>
+    </FrameLayout>
+</android.support.design.widget.AppBarLayout>
