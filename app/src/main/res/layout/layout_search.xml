@@ -2,6 +2,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_view"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
@@ -16,7 +17,7 @@
         android:id="@+id/img_view_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_back_white_48dp"
+        app:srcCompat="@drawable/ic_arrow_back_black_24dp"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
@@ -38,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_clear_black"
+        app:srcCompat="@drawable/ic_close_black_24dp"
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
         android:layout_marginRight="@dimen/search_view_info_margin_left_right"/>
