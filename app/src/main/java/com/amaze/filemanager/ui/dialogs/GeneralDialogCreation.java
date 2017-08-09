@@ -15,6 +15,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.SpannableString;
@@ -33,6 +34,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ImageViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
@@ -310,7 +312,7 @@ public class GeneralDialogCreation {
         AppTheme appTheme) {
         //TODO: Integrate with deleteFilesDialog()
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
-        int accentColor = Color.BLACK;
+        int accentColor = ContextCompat.getColor(c,ColorUsage.ACCENT.getDefaultColor());
 
         // Build dialog with custom view layout and accent color.
         MaterialDialog dialog = new MaterialDialog.Builder(c)
@@ -326,9 +328,9 @@ public class GeneralDialogCreation {
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     Toast.makeText(c, c.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
                    // mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
-                    for (BaseFile position : baseFiles) {
+                    for (BaseFile baseFile : baseFiles) {
                         try {
-                            position.delete(c,position.isRoot());
+                            baseFile.delete(c,baseFile.isRoot());
                         } catch (RootNotPermittedException e) {
                             e.printStackTrace();
                         }

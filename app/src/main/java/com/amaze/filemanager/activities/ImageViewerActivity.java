@@ -120,9 +120,9 @@ public class ImageViewerActivity extends BaseActivity {
     for (int i = 0; i < baseFiles.size(); i++) {
       BaseFile baseFile = baseFiles.get(i);
       Log.d(TAG, "filterList: " + getMimeType(baseFile.getPath()));
-      String mimeType= "";
+      String mimeType = "";
       if (getMimeType(baseFile.getPath()) != null) {
-          mimeType= getMimeType(baseFile.getPath());
+        mimeType = getMimeType(baseFile.getPath());
       }
       if (mimeType.contains("image/")) {
         newList.add(baseFile);
@@ -181,14 +181,11 @@ public class ImageViewerActivity extends BaseActivity {
     ivImage.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
 
-  if (llToolbarLayout.getVisibility() == View.VISIBLE) {
-    setMenuVisibility(View.INVISIBLE);
-  } else {
-    setMenuVisibility(View.VISIBLE);
-  }
-
-
-
+        if (llToolbarLayout.getVisibility() == View.VISIBLE) {
+          setMenuVisibility(View.INVISIBLE);
+        } else {
+          setMenuVisibility(View.VISIBLE);
+        }
       }
     });
   }
@@ -212,8 +209,14 @@ public class ImageViewerActivity extends BaseActivity {
   }
 
   private void updateTvFolderName() {
-    tvFolderName.setText(
-        "Folder:" + currentFile.getParentName() + " (" + (currentIndex + 1) + "/" + baseFiles.size()+") "+currentFile.getName());
+    tvFolderName.setText("Folder:"
+        + currentFile.getParentName()
+        + " ("
+        + (currentIndex + 1)
+        + "/"
+        + baseFiles.size()
+        + ") "
+        + currentFile.getName());
   }
 
   private void showPreviousImage() {
@@ -261,11 +264,9 @@ public class ImageViewerActivity extends BaseActivity {
   }
 
   private void showDeleteDialog() {
-    ArrayList<BaseFile> baseFiles =  new ArrayList<BaseFile>();
+    ArrayList<BaseFile> baseFiles = new ArrayList<BaseFile>();
     baseFiles.add(currentFile);
-    GeneralDialogCreation.deleteImageDialog(this, baseFiles,getAppTheme());
-
-
+    GeneralDialogCreation.deleteImageDialog(this, baseFiles, getAppTheme());
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -310,8 +311,5 @@ public class ImageViewerActivity extends BaseActivity {
   private void showDetails() {
     GeneralDialogCreation.showImagePropertiesDialogForStorage(currentFile, this, getAppTheme());
   }
-
-
-
 }
 
