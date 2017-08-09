@@ -29,7 +29,7 @@
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t5"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
@@ -54,7 +54,7 @@
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t6"
+                android:id="@+id/tvLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
@@ -78,7 +78,7 @@
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t7"
+                android:id="@+id/tvSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
@@ -102,7 +102,7 @@
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t8"
+                android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"

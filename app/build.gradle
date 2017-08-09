@@ -23,6 +23,7 @@ android {
         versionName "3.1.2 RC4"
 
         vectorDrawables.useSupportLibrary = true;
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -74,7 +75,9 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.junrar:junrar:0.7'
     compile 'com.afollestad.material-dialogs:core:0.9.4.3'
-
+    compile 'com.github.bumptech.glide:glide:4.0.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     //FTP Server
     /*
     compile 'org.apache.mina:mina-core:2.0.13'

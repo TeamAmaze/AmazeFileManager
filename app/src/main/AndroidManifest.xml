@@ -25,6 +25,7 @@
     android:versionCode="61"
     android:versionName="3.1.2 RC4">
 
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -51,6 +52,9 @@
         tools:replace="android:label"
         android:label="Amaze"
         android:banner="@drawable/about_header">
+
+        <meta-data android:name="com.amaze.filemanager.activities.MyAppGlideModule"
+            android:value="MyAppGlideModule"/>
 
         <activity
             android:label="Amaze"
@@ -115,6 +119,18 @@
                 <data android:mimeType="application/javascript" />
                 <data android:mimeType="application/json" />
                 <data android:mimeType="application/xml" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:label="@string/imageViewer"
+            android:name=".activities.ImageViewerActivity"
+            android:theme="@style/appCompatLight">
+            <intent-filter
+                android:label="Amaze Image Viewer">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
             </intent-filter>
 
         </activity>

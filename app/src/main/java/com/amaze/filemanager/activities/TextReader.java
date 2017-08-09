@@ -551,7 +551,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 break;
             case R.id.openwith:
                 if (mFile.exists()) {
-                    getFutils().openunknown(new File(mFile.getPath()), this, false);
+                    getFutils().openUnknownFile(new File(mFile.getPath()), this, false);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:
