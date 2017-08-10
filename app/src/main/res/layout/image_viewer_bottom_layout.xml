@@ -10,7 +10,7 @@
       android:id="@+id/tvFolderName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Foldername:"
+      android:text="@string/folder"
       />
 
 </LinearLayout>

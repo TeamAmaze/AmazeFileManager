@@ -123,7 +123,7 @@
 
         </activity>
         <activity
-            android:label="@string/imageViewer"
+            android:label="@string/image_viewer"
             android:name=".activities.ImageViewerActivity"
             android:theme="@style/appCompatLight">
             <intent-filter

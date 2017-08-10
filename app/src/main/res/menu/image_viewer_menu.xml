@@ -22,7 +22,7 @@
 
     <item
         android:id="@+id/rotate_left"
-        android:title="RotateLeft"
+        android:title="@string/rotate_left"
         app:showAsAction="never" />
 
     <item
@@ -43,7 +43,7 @@
         />
     <item
         android:id="@+id/setImageAs"
-        android:title="@string/setImageAs"
+        android:title="@string/set_image_as"
         app:showAsAction="never" />
 
 </menu>

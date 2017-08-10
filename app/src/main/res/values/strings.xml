@@ -682,6 +682,8 @@
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
     <string name="local_inet_addr_error">Error getting local inet address</string>
-    <string name="setImageAs">Set image as:</string>
-  <string name="imageViewer">Amaze Image Viewer</string>
+    <string name="set_image_as">Set image as:</string>
+  <string name="image_viewer">Amaze Image Viewer</string>
+    <string name="image_viewer_bottom_bar">%1$s: %2$s ( %3$d / %4$d ) %5$s</string>
+
 </resources>

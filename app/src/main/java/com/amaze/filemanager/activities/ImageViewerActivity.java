@@ -20,11 +20,11 @@
 package com.amaze.filemanager.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -59,7 +59,6 @@ public class ImageViewerActivity extends BaseActivity {
   private LinearLayout llBottomBar;
   private TextView tvFolderName;
   private String TAG = ImageViewerActivity.class.getSimpleName();
-  private boolean menuIsVisible = true;
 
   public static String getMimeType(String url) {
     String type = null;
@@ -82,7 +81,6 @@ public class ImageViewerActivity extends BaseActivity {
     loadFileList();
     if (savedInstanceState != null) {
       currentIndex = savedInstanceState.getInt(CURRENT_INDEX);
-      Log.d(TAG, "onCreate: adsfadsdfadsfadsfd" + currentIndex);
       currentFile = baseFiles.get(currentIndex);
     }
 
@@ -119,7 +117,6 @@ public class ImageViewerActivity extends BaseActivity {
 
     for (int i = 0; i < baseFiles.size(); i++) {
       BaseFile baseFile = baseFiles.get(i);
-      Log.d(TAG, "filterList: " + getMimeType(baseFile.getPath()));
       String mimeType = "";
       if (getMimeType(baseFile.getPath()) != null) {
         mimeType = getMimeType(baseFile.getPath());
@@ -152,7 +149,6 @@ public class ImageViewerActivity extends BaseActivity {
 
         switch (event.getAction()) {
           case MotionEvent.ACTION_DOWN:
-
             oldXValue = event.getX();
             break;
 
@@ -209,18 +205,16 @@ public class ImageViewerActivity extends BaseActivity {
   }
 
   private void updateTvFolderName() {
-    tvFolderName.setText("Folder:"
-        + currentFile.getParentName()
-        + " ("
-        + (currentIndex + 1)
-        + "/"
-        + baseFiles.size()
-        + ") "
-        + currentFile.getName());
+    Resources res = getResources();
+    String text =
+        res.getString(R.string.image_viewer_bottom_bar, getResources().getString(R.string.folder),
+            currentFile.getParentName(), currentIndex + 1, baseFiles.size(), currentFile.getName());
+
+    tvFolderName.setText(text);
   }
 
   private void showPreviousImage() {
-    if (currentIndex != 0) {
+    if (currentIndex > 0) {
       currentIndex--;
       currentFile = baseFiles.get(currentIndex);
       loadImage();
@@ -264,7 +258,7 @@ public class ImageViewerActivity extends BaseActivity {
   }
 
   private void showDeleteDialog() {
-    ArrayList<BaseFile> baseFiles = new ArrayList<BaseFile>();
+    ArrayList<BaseFile> baseFiles = new ArrayList<>();
     baseFiles.add(currentFile);
     GeneralDialogCreation.deleteImageDialog(this, baseFiles, getAppTheme());
   }
@@ -275,7 +269,6 @@ public class ImageViewerActivity extends BaseActivity {
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
-
     return super.onPrepareOptionsMenu(menu);
   }
 
