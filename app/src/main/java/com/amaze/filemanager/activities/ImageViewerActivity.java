@@ -60,9 +60,9 @@ public class ImageViewerActivity extends BaseActivity {
   private TextView tvFolderName;
   private String TAG = ImageViewerActivity.class.getSimpleName();
 
-  public static String getMimeType(String url) {
+  public static String getMimeType(BaseFile baseFile) {
     String type = null;
-    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+    String extension = MimeTypeMap.getFileExtensionFromUrl(baseFile.getPath());
     if (extension != null) {
       type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
     }
@@ -78,7 +78,7 @@ public class ImageViewerActivity extends BaseActivity {
       currentFile = new BaseFile(getIntent().getData().getPath());
     }
 
-    loadFileList();
+    loadImageFileList();
     if (savedInstanceState != null) {
       currentIndex = savedInstanceState.getInt(CURRENT_INDEX);
       currentFile = baseFiles.get(currentIndex);
@@ -104,33 +104,28 @@ public class ImageViewerActivity extends BaseActivity {
     }
   }
 
-  private void loadFileList() {
-    int IS_FOLDER = 1;
+  private void loadImageFileList() {
+    baseFiles = new ArrayList<>();
+    final int IS_FOLDER = 1;
+
     if (FileUtil.checkFolder(currentFile.getParent(this), this) == IS_FOLDER) {
       BaseFile parentDir = new BaseFile(currentFile.getParent(this));
-      baseFiles = filterList(parentDir.listFiles(this, parentDir.isRoot()));
+
+      int index = 0;
+      for (BaseFile baseFile : parentDir.listFiles(this, parentDir.isRoot())) {
+        if (getMimeType(baseFile) != null) {
+          if (getMimeType(baseFile).contains("image/")) {
+            baseFiles.add(baseFile);
+            index++;
+          }
+          if (baseFile.getPath().equals(currentFile.getPath())) {
+            currentIndex = index;
+          }
+        }
+      }
     }
   }
 
-  private ArrayList<BaseFile> filterList(ArrayList<BaseFile> baseFiles) {
-    ArrayList<BaseFile> newList = new ArrayList<>();
-
-    for (int i = 0; i < baseFiles.size(); i++) {
-      BaseFile baseFile = baseFiles.get(i);
-      String mimeType = "";
-      if (getMimeType(baseFile.getPath()) != null) {
-        mimeType = getMimeType(baseFile.getPath());
-      }
-      if (mimeType.contains("image/")) {
-        newList.add(baseFile);
-      }
-
-      if (baseFile.getPath().equals(currentFile.getPath())) {
-        currentIndex = i;
-      }
-    }
-    return newList;
-  }
 
   private void initToolbar() {
     toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -176,7 +171,6 @@ public class ImageViewerActivity extends BaseActivity {
 
     ivImage.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-
         if (llToolbarLayout.getVisibility() == View.VISIBLE) {
           setMenuVisibility(View.INVISIBLE);
         } else {
@@ -246,15 +240,11 @@ public class ImageViewerActivity extends BaseActivity {
     this.startActivity(Intent.createChooser(intent, "Set as:"));
   }
 
-  void deleteImage() {
-    showDeleteDialog();
-  }
-
   void sharePicture() {
-    ArrayList<File> files = new ArrayList<>();
+    ArrayList<File> shareFiles = new ArrayList<>();
     int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
-    files.add(new File(currentFile.getPath()));
-    getFutils().shareFiles(files, this, getAppTheme(), colorAccent);
+    shareFiles.add(new File(currentFile.getPath()));
+    getFutils().shareFiles(shareFiles, this, getAppTheme(), colorAccent);
   }
 
   private void showDeleteDialog() {
@@ -268,9 +258,6 @@ public class ImageViewerActivity extends BaseActivity {
     return super.onCreateOptionsMenu(menu);
   }
 
-  @Override public boolean onPrepareOptionsMenu(Menu menu) {
-    return super.onPrepareOptionsMenu(menu);
-  }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
@@ -280,7 +267,7 @@ public class ImageViewerActivity extends BaseActivity {
         break;
 
       case R.id.delete:
-        deleteImage();
+        showDeleteDialog();
         break;
 
       case R.id.rotate_left:
