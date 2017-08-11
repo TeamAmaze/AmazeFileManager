@@ -1073,18 +1073,18 @@ public abstract class FileUtil {
 
     }
 
-    public static String getRealFilePath(Context c,Uri uri) {
+    public static String getRealFilePath(Context c, Uri uri) {
         String filePath = null;
         Cursor cursor;
         if (uri != null && "content".equals(uri.getScheme())) {
-            cursor = c.getContentResolver().query(uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null);
-            if(cursor != null && cursor.getColumnCount() > 0 ){
+            cursor = c.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (cursor != null && cursor.getColumnCount() > 0) {
                 cursor.moveToFirst();
 
                 filePath = cursor.getString(0);
                 cursor.close();
-            }else{
-                filePath=uri.toString();
+            } else {
+                filePath = uri.toString();
             }
 
         } else {

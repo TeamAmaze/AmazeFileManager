@@ -310,7 +310,7 @@ public class GeneralDialogCreation {
     @SuppressWarnings("ConstantConditions")
     public static void deleteImageDialog(final Context c,  final ArrayList<BaseFile> baseFiles,
         AppTheme appTheme) {
-        //TODO: Integrate with deleteFilesDialog()
+        //TODO:@Foso find out if possible to merge with deleteFilesDialog()
         final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
         int accentColor = ContextCompat.getColor(c,ColorUsage.ACCENT.getDefaultColor());
 

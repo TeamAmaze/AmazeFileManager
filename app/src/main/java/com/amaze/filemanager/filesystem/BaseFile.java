@@ -2,8 +2,8 @@ package com.amaze.filemanager.filesystem;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import android.webkit.MimeTypeMap;
+
 import com.amaze.filemanager.utils.OpenMode;
 
 /**
@@ -33,12 +33,12 @@ public class BaseFile extends HFile implements Parcelable {
     }
 
     public String getMimeType() {
-      String type = "";
-      String extension = MimeTypeMap.getFileExtensionFromUrl(getPath());
-      if (extension != null) {
-        type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-      }
-      return type;
+        String type = "";
+        String extension = MimeTypeMap.getFileExtensionFromUrl(getPath());
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
     }
 
     @Override
