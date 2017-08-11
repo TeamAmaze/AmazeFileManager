@@ -127,16 +127,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     	sharedConstructing(context);
     }
 
-  public void loadImageWithGlide(String path) {
-    GlideApp.with(this)
-        .load(path)
-        .error(R.mipmap.ic_launcher)
-        .placeholder(R.color.black_trans)
-        .into(this);
-        setRotation(0f);
-  }
 
-    
     private void sharedConstructing(Context context) {
         super.setClickable(true);
         this.context = context;

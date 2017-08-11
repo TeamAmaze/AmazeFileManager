@@ -68,7 +68,7 @@ public class ImageViewerActivity extends BaseActivity {
         setContentView(R.layout.image_viewer);
 
         if (getIntent().getData() != null) {
-            String filePath = FileUtil.getRealFilePath(this, getIntent().getData());
+            String filePath = FileUtil.getAbsoluteFilePath(this, getIntent().getData());
             currentFile = new BaseFile(filePath);
         }
 
@@ -104,16 +104,15 @@ public class ImageViewerActivity extends BaseActivity {
 
         if (FileUtil.checkFolder(currentFile.getParent(this), this) == IS_FOLDER) {
             BaseFile parentDir = new BaseFile(currentFile.getParent(this));
-
             int index = 0;
             for (BaseFile baseFile : parentDir.listFiles(this, parentDir.isRoot())) {
                 if (baseFile.getMimeType() != null) {
+                    if (baseFile.getPath().equals(currentFile.getPath())) {
+                        currentIndex = index;
+                    }
                     if (baseFile.getMimeType().contains("image/")) {
                         baseFiles.add(baseFile);
                         index++;
-                    }
-                    if (baseFile.getPath().equals(currentFile.getPath())) {
-                        currentIndex = index;
                     }
                 }
             }
@@ -181,7 +180,12 @@ public class ImageViewerActivity extends BaseActivity {
     }
 
     private void loadImage() {
-        ivImage.loadImageWithGlide(currentFile.getPath());
+        GlideApp.with(ivImage)
+                .load(currentFile.getPath())
+                .error(R.mipmap.ic_launcher)
+                .placeholder(R.color.black_trans)
+                .into(ivImage);
+        ivImage.setRotation(0f);
     }
 
     private void showNextImage() {
@@ -223,11 +227,11 @@ public class ImageViewerActivity extends BaseActivity {
         outState.putInt(CURRENT_INDEX, currentIndex);
     }
 
-    void rotateImage(float rotation) {
+    private void rotateImage(float rotation) {
         ivImage.animate().rotationBy(rotation).start();
     }
 
-    void setImageAs() {
+    private void setImageAs() {
         Uri uri = Uri.fromFile(new File(currentFile.getPath()));
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -237,7 +241,7 @@ public class ImageViewerActivity extends BaseActivity {
                 Intent.createChooser(intent, getResources().getString(R.string.set_image_as)));
     }
 
-    void shareImage() {
+    private void shareImage() {
         ArrayList<File> shareFiles = new ArrayList<>();
         int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
         shareFiles.add(new File(currentFile.getPath()));
