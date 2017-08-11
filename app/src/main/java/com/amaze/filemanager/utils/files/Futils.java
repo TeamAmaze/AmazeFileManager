@@ -325,13 +325,12 @@ public class Futils {
     public static void openUnknownFile(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
-        DocumentFile doc = DocumentFile.fromFile(f);
         String type = MimeTypes.getMimeType(f);
         if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
         {
             Uri uri=fileToContentUri(c, f);
             if(uri==null)uri=Uri.fromFile(f);
-            intent.setDataAndType(doc.getUri(), type);
+            intent.setDataAndType(uri, type);
         Intent startintent;
         if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
         else startintent=intent;

@@ -29,7 +29,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.amaze.filemanager.R;
@@ -60,22 +59,14 @@ public class ImageViewerActivity extends BaseActivity {
   private TextView tvFolderName;
   private String TAG = ImageViewerActivity.class.getSimpleName();
 
-  public static String getMimeType(BaseFile baseFile) {
-    String type = null;
-    String extension = MimeTypeMap.getFileExtensionFromUrl(baseFile.getPath());
-    if (extension != null) {
-      type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-    }
-    return type;
-  }
-
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
     setContentView(R.layout.image_viewer);
 
     if (getIntent().getData() != null) {
-      currentFile = new BaseFile(getIntent().getData().getPath());
+      String filePath = FileUtil.getRealFilePath(this,getIntent().getData());
+      currentFile = new BaseFile(filePath);
     }
 
     loadImageFileList();
@@ -113,8 +104,8 @@ public class ImageViewerActivity extends BaseActivity {
 
       int index = 0;
       for (BaseFile baseFile : parentDir.listFiles(this, parentDir.isRoot())) {
-        if (getMimeType(baseFile) != null) {
-          if (getMimeType(baseFile).contains("image/")) {
+        if (baseFile.getMimeType() != null) {
+          if (baseFile.getMimeType().contains("image/")) {
             baseFiles.add(baseFile);
             index++;
           }
@@ -237,10 +228,10 @@ public class ImageViewerActivity extends BaseActivity {
     intent.addCategory(Intent.CATEGORY_DEFAULT);
     intent.setDataAndType(uri, "image/jpeg");
     intent.putExtra("mimeType", "image/jpeg");
-    this.startActivity(Intent.createChooser(intent, "Set as:"));
+    this.startActivity(Intent.createChooser(intent, getResources().getString(R.string.set_image_as)));
   }
 
-  void sharePicture() {
+  void shareImage() {
     ArrayList<File> shareFiles = new ArrayList<>();
     int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
     shareFiles.add(new File(currentFile.getPath()));
@@ -275,7 +266,7 @@ public class ImageViewerActivity extends BaseActivity {
         break;
 
       case R.id.share:
-        sharePicture();
+        shareImage();
         break;
 
       case R.id.setImageAs:
