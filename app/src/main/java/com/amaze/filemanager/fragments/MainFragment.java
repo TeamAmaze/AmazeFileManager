@@ -138,6 +138,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
+    public String sftpPath;
     public ArrayList<BaseFile> searchHelper = new ArrayList<>();
     public int no;
 
