@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
@@ -26,6 +27,10 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.FileMode;
+import net.schmizz.sshj.sftp.RemoteFile;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.File;
@@ -205,6 +210,13 @@ public class HFile {
     public long length() {
         long s = 0L;
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(path);
+                    }
+                });
             case SMB:
                 SmbFile smbFile = getSmbFile();
                 if (smbFile != null)
@@ -233,6 +245,13 @@ public class HFile {
 
         long s = 0l;
         switch (mode){
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(path);
+                    }
+                });
             case SMB:
                 SmbFile smbFile=getSmbFile();
                 if(smbFile!=null)
@@ -426,6 +445,13 @@ public class HFile {
     public boolean isDirectory() {
         boolean isDirectory;
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                    @Override
+                    public Boolean execute(SFTPClient client) throws IOException {
+                        return client.stat(path).getType().equals(FileMode.Type.DIRECTORY);
+                    }
+                });
             case SMB:
                 try {
                     isDirectory = new SmbFile(path).isDirectory();
@@ -465,6 +491,13 @@ public class HFile {
 
         boolean isDirectory;
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                    @Override
+                    public Boolean execute(SFTPClient client) throws IOException {
+                        return client.stat(path).getType().equals(FileMode.Type.DIRECTORY);
+                    }
+                });
             case SMB:
                 try {
                     isDirectory = new SmbFile(path).isDirectory();
@@ -522,6 +555,13 @@ public class HFile {
         long size = 0L;
 
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(path);
+                    }
+                });
             case SMB:
                 try {
                     size = Futils.folderSize(new SmbFile(path));
@@ -554,6 +594,13 @@ public class HFile {
         long size = 0l;
 
         switch (mode){
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(path);
+                    }
+                });
             case SMB:
                 try {
                     size = Futils.folderSize(new SmbFile(path));
@@ -615,6 +662,7 @@ public class HFile {
                 SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
                 size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
                 break;
+            case SFTP:
             case OTG:
                 // TODO: Get free space from OTG when {@link DocumentFile} API adds support
                 break;
@@ -652,6 +700,7 @@ public class HFile {
                 SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
                 size = spaceAllocation.getTotal();
                 break;
+            case SFTP:
             case OTG:
                 // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
                 DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
@@ -708,6 +757,24 @@ public class HFile {
     public ArrayList<BaseFile> listFiles(Context context, boolean isRoot) {
         ArrayList<BaseFile> arrayList = new ArrayList<>();
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<ArrayList<BaseFile>>(path) {
+                    @Override
+                    public ArrayList<BaseFile> execute(SFTPClient client) throws IOException {
+                        ArrayList<BaseFile> retval = new ArrayList<BaseFile>();
+                        for(RemoteResourceInfo info : client.ls(path))
+                        {
+                            BaseFile f = new BaseFile(info.getPath());
+                            f.setName(info.getName());
+                            f.setMode(OpenMode.SFTP);
+                            f.setDirectory(info.isDirectory());
+                            f.setDate(info.getAttributes().getMtime());
+                            f.setSize(f.isDirectory()?0:info.getAttributes().getSize());
+                            retval.add(f);
+                        }
+                        return retval;
+                    }
+                });
             case SMB:
                 try {
                     SmbFile smbFile = new SmbFile(path);
@@ -800,7 +867,28 @@ public class HFile {
      */
     public InputStream getInputStream() {
         InputStream inputStream;
-        if (isSmb()) {
+        if (isSftp()) {
+            return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path) {
+                @Override
+                public InputStream execute(SFTPClient client) throws IOException {
+                    final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                    return rf. new RemoteFileInputStream(){
+                        @Override
+                        public void close() throws IOException {
+                            try
+                            {
+                                super.close();
+                            }
+                            finally
+                            {
+                                rf.close();
+                            }
+                        }
+                    };
+                }
+            });
+        }
+        else if (isSmb()) {
             try {
                 inputStream = new SmbFile(path).getInputStream();
             } catch (IOException e) {
@@ -822,6 +910,26 @@ public class HFile {
         InputStream inputStream;
 
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path) {
+                    @Override
+                    public InputStream execute(SFTPClient client) throws IOException {
+                        final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                        return rf. new RemoteFileInputStream(){
+                            @Override
+                            public void close() throws IOException {
+                                try
+                                {
+                                    super.close();
+                                }
+                                finally
+                                {
+                                    rf.close();
+                                }
+                            }
+                        };
+                    }
+                });
             case SMB:
                 try {
                     inputStream = new SmbFile(path).getInputStream();
@@ -873,6 +981,26 @@ public class HFile {
     public OutputStream getOutputStream(Context context) {
         OutputStream outputStream;
         switch (mode) {
+            case SFTP:
+                return SFtpClientUtils.execute(new SFtpClientTemplate<OutputStream>(path) {
+                    @Override
+                    public OutputStream execute(SFTPClient client) throws IOException {
+                        final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                        return rf.new RemoteFileOutputStream(){
+                            @Override
+                            public void close() throws IOException {
+                                try
+                                {
+                                    super.close();
+                                }
+                                finally
+                                {
+                                    rf.close();
+                                }
+                            }
+                        };
+                    }
+                });
             case SMB:
                 try {
                     outputStream = new SmbFile(path).getOutputStream();
@@ -906,7 +1034,14 @@ public class HFile {
 
     public boolean exists() {
         boolean exists = false;
-        if (isSmb()) {
+        if (isSftp()) {
+            exists = SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                @Override
+                public Boolean execute(SFTPClient client) throws IOException {
+                    return client.stat(path) != null;
+                }
+            });
+        } else if (isSmb()) {
             try {
                 SmbFile smbFile = getSmbFile(2000);
                 exists = smbFile != null && smbFile.exists();
@@ -961,11 +1096,27 @@ public class HFile {
         return !isSmb() && !isOtgFile() && !isCustomPath()
                 && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
                 !new File(path).isDirectory() && !isOneDriveFile() && !isGoogleDriveFile()
-                && !isDropBoxFile() && !isBoxFile();
+                && !isDropBoxFile() && !isBoxFile() && !isSftp();
     }
 
-    public boolean setLastModified(long date) {
-        if (isSmb())
+    public boolean setLastModified(final long date) {
+        if (isSftp()) {
+            return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                @Override
+                public Boolean execute(SFTPClient client) throws IOException {
+                    FileAttributes fa = client.stat(path);
+                    client.setattr(path, new FileAttributes.Builder()
+                            .withAtimeMtime(fa.getAtime(), date)
+                            .withPermissions(fa.getPermissions())
+                            .withSize(fa.getSize())
+                            .withType(fa.getType())
+                            .withUIDGID(fa.getUID(), fa.getGID())
+                            .build());
+                    return true;
+                }
+            });
+        }
+        else if (isSmb())
             try {
                 new SmbFile(path).setLastModified(date);
                 return true;
@@ -980,7 +1131,15 @@ public class HFile {
     }
 
     public void mkdir(Context context) {
-        if (isSmb()) {
+        if(isSftp()) {
+            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path) {
+                @Override
+                public Void execute(SFTPClient client) throws IOException {
+                    client.mkdir(path);
+                    return null;
+                }
+            });
+        } else if (isSmb()) {
             try {
                 new SmbFile(path).mkdirs();
             } catch (SmbException | MalformedURLException e) {
@@ -1030,7 +1189,16 @@ public class HFile {
     }
 
     public boolean delete(Context context, boolean rootmode) throws RootNotPermittedException {
-        if (isSmb()) {
+        if (isSftp()) {
+            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path) {
+                @Override
+                public Void execute(SFTPClient client) throws IOException {
+                    client.rm(Uri.parse(path).getPath());
+                    return null;
+                }
+            });
+            return true;
+        } else if (isSmb()) {
             try {
                 new SmbFile(path).delete();
             } catch (SmbException | MalformedURLException e) {
