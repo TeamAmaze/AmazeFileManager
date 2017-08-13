@@ -78,10 +78,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import eu.chainfire.libsuperuser.Shell;
 
 import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
@@ -95,8 +91,8 @@ import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m)
+    public static MaterialDialog showBasicDialog(Context c, String fabskin, AppTheme appTheme, String[] texts) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c)
                 .content(texts[0])
                 .widgetColor(Color.parseColor(fabskin))
                 .theme(appTheme.getMaterialDialogTheme())
@@ -114,26 +110,32 @@ public class GeneralDialogCreation {
 
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false, new
-                MaterialDialog.InputCallback() {
+        a.input(texts[0], texts[1], false,
+                new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
                     }
                 });
+
         a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
 
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
+
         a.positiveText(texts[3]);
         a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        a.neutralText(texts[4]);
-        if (texts[5] != (null)) {
+
+        if(texts[4] != null) {
+            a.neutralText(texts[4]);
+        }
+
+        if (texts[5] != null) {
             a.negativeText(texts[5]);
             a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
         }
-        MaterialDialog dialog = a.build();
-        return dialog;
+
+        return a.build();
     }
 
     @SuppressWarnings("ConstantConditions")
