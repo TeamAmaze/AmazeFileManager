@@ -284,7 +284,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         this.setRetainInstance(false);
         HFile f = new HFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
-        getMainActivity().getAppbar().getBottomBar().initiatebbar();
+        getMainActivity().getAppbar().getBottomBar().setClickListener();
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST) {

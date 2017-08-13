@@ -1,6 +1,5 @@
 package com.amaze.filemanager.ui.dialogs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,14 +64,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -1081,6 +1073,42 @@ public class GeneralDialogCreation {
 
             }
         });
+    }
+
+    public static void showChangePathsDialog(final WeakReference<MainActivity> m, final SharedPreferences prefs) {
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.get());
+        a.input(null, m.get().getCurrentMainFragment().getCurrentPath(), false,
+                new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence charSequence) {
+                        boolean isAccesible = Futils.isPathAccesible(charSequence.toString(), prefs);
+                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccesible);
+                    }
+                });
+
+        a.alwaysCallInputCallback();
+
+        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
+
+        a.theme(m.get().getAppTheme().getMaterialDialogTheme());
+        a.title(R.string.enterpath);
+
+        a.positiveText(R.string.go);
+        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+
+        a.negativeText(R.string.cancel);
+        a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                m.get().getCurrentMainFragment().loadlist(dialog.getInputEditText().getText().toString(),
+                        false, OpenMode.UNKNOWN);
+            }
+
+        });
+
+        a.show();
     }
 
 }

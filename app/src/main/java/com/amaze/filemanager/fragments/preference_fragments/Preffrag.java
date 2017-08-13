@@ -50,13 +50,10 @@ import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-
-import java.util.ArrayList;
 
 import static com.amaze.filemanager.R.string.feedback;
 
@@ -66,7 +63,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
     private static final String[] PREFERENCE_KEYS =
             {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
                     "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
-                    "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
+                    "sidebar_folders", "sidebar_quickaccess", "advancedsearch", "typeablepaths"};
 
 
     public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
@@ -75,6 +72,8 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
     public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
 
     public static final String PREFERENCE_ROOTMODE = "rootmode";
+
+    public static final String PREFERENCE_CHANGEPATHS = "changeablepaths";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -244,6 +243,10 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                     if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
                 }
                 return false;
+            case "typeablepaths":
+                sharedPref.edit().putBoolean(PREFERENCE_CHANGEPATHS,
+                        !sharedPref.getBoolean(PREFERENCE_CHANGEPATHS, false)).apply();
+                return true;
             /*FROM HERE BE FRAGMENTS*/
             case "colors":
                 ((PreferencesActivity) getActivity())

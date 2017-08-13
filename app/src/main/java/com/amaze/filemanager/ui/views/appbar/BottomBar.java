@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +26,8 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -42,7 +47,7 @@ import java.util.Collections;
  *         on 2/8/2017, at 23:31.
  */
 
-public class BottomBar {
+public class BottomBar implements View.OnTouchListener{
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
 
@@ -50,6 +55,7 @@ public class BottomBar {
     private AppBar appbar;
     private String newPath;
 
+    private FrameLayout frame;
     private LinearLayout pathLayout;
     private LinearLayout buttons;
     private HorizontalScrollView scroll, pathScroll;
@@ -65,10 +71,14 @@ public class BottomBar {
     private Drawable arrow;
 
     private CountDownTimer timer;
+    private boolean allowChangePaths;
+    private GestureDetector gestureDetector;
 
     public BottomBar(AppBar appbar, MainActivity a) {
         mainActivity = new WeakReference<>(a);
         this.appbar = appbar;
+
+        frame = (FrameLayout) a.findViewById(R.id.buttonbarframe);
 
         scroll = (HorizontalScrollView) a.findViewById(R.id.scroll);
         buttons = (LinearLayout) a.findViewById(R.id.buttons);
@@ -76,7 +86,7 @@ public class BottomBar {
         pathLayout = (LinearLayout) a.findViewById(R.id.pathbar);
         pathScroll = (HorizontalScrollView) a.findViewById(R.id.scroll1);
         fullPathText = (TextView) a.findViewById(R.id.fullpath);
-        fullPathAnim= (TextView) a.findViewById(R.id.fullpath_anim);
+        fullPathAnim = (TextView) a.findViewById(R.id.fullpath_anim);
 
         pathText = (TextView) a.findViewById(R.id.pathname);
 
@@ -108,46 +118,59 @@ public class BottomBar {
 
         timer = new CountDownTimer(5000, 1000) {
             @Override
-            public void onTick(long l) {
-            }
+            public void onTick(long l) {}
 
             @Override
             public void onFinish() {
                 Futils.crossfadeInverse(buttons, pathLayout);
             }
         };
-    }
 
-    public void initiatebbar() {
-        pathLayout.setOnClickListener(new View.OnClickListener() {
+        allowChangePaths = mainActivity.get().sharedPref.getBoolean(Preffrag.PREFERENCE_CHANGEPATHS, false);
+
+        gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
                 MainFragment m = mainActivity.get().getCurrentMainFragment();
                 if (m.openMode == OpenMode.FILE) {
-                    showButtons(m);
                     Futils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
-                }
-            }
-        });
-        fullPathText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainFragment m = mainActivity.get().getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
                     showButtons(m);
-                    Futils.crossfade(buttons, pathLayout);
-                    timer.cancel();
-                    timer.start();
+                }
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                if(allowChangePaths &&
+                        (!mainActivity.get().getCurrentMainFragment().results || buttons.getVisibility() == View.VISIBLE)) {
+                    GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.get().sharedPref);
                 }
             }
         });
     }
 
-    public void resetClickListeners() {
-        pathText.setOnClickListener(null);
-        fullPathText.setOnClickListener(null);
+    public void setClickListener() {// TODO: 15/8/2017 this is a horrible hack, if you see this, correct it
+        frame.setOnTouchListener(this);
+        scroll.setOnTouchListener(this);
+        buttons.setOnTouchListener(this);
+        pathLayout.setOnTouchListener(this);
+        pathScroll .setOnTouchListener(this);
+        fullPathText.setOnTouchListener(this);
+        pathText.setOnTouchListener(this);
+        scroll.setOnTouchListener(this);
+        pathScroll.setOnTouchListener(this);
+
+    }
+
+    public void resetClickListener() {
+        frame.setOnTouchListener(null);
     }
 
     public void setPathText(String text) {
@@ -481,6 +504,11 @@ public class BottomBar {
                 scrollView.fullScroll(View.FOCUS_RIGHT);
             }
         }, 100);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 
 }

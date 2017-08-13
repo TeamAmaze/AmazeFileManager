@@ -52,6 +52,7 @@ import com.amaze.filemanager.activities.DbViewer;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -1022,4 +1023,22 @@ public class Futils {
             if (s.equals(path)) return true;
         return false;
     }
+
+    public static boolean isPathAccesible(String dir, SharedPreferences pref) {
+        File f = new File(dir);
+        boolean showIfHidden = pref.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
+                isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
+                showIfRoot = pref.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false);
+
+        return f.exists() && f.isDirectory()
+                && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))
+                && (!isRoot(dir) || showIfRoot);
+
+        // TODO: 2/5/2017 use another system that doesn't create new object
+    }
+
+    public static boolean isRoot(String dir) {// TODO: 5/5/2017 hardcoding root might lead to problems down the line
+        return !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");
+    }
+
 }
