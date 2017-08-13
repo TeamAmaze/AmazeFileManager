@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -110,7 +110,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/properties_dialog_md5"
+            android:id="@+id/properties_dialog_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacebetweenitems_properties_dialog"
@@ -118,15 +118,15 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title_md5"
+                android:id="@+id/title_width"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/md5"
+                android:text="@string/width"
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t9"
+                android:id="@+id/tvWidth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
@@ -134,7 +134,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/properties_dialog_sha256"
+            android:id="@+id/properties_dialog_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacebetweenitems_properties_dialog"
@@ -142,43 +142,72 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title_sha256"
+                android:id="@+id/title_height"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/hash_sha256"
+                android:text="@string/height"
                 android:textSize="@dimen/material_generic_title"/>
 
             <TextView
-                android:id="@+id/t10"
+                android:id="@+id/tvHeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/calculating"
                 android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/properties_dialog_model"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/spacebetweenitems_properties_dialog"
+          android:background="?selectableItemBackground"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/camera_model"
+            android:textSize="@dimen/material_generic_title"/>
+
+        <TextView
+            android:id="@+id/tvModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera_model"
+            android:textSize="@dimen/material_generic_title_summary"/>
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/properties_dialog_iso"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/spacebetweenitems_properties_dialog"
+          android:background="?selectableItemBackground"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_iso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/image_iso"
+            android:textSize="@dimen/material_generic_title"/>
+
+        <TextView
+            android:id="@+id/tvIso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/image_iso"
+            android:textSize="@dimen/material_generic_title_summary"/>
+      </LinearLayout>
+
+
+
+
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="150dp" />
-
-    <android.support.v7.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/permission"
-        android:id="@+id/permissionsButton"
-        android:visibility="gone"/>
-
-    <include
-        android:id="@+id/permtable"
-        android:visibility="gone"
-        layout="@layout/permissiontable"/>
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/set"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/set"
-        android:visibility="gone"/>
 </LinearLayout>

@@ -8,12 +8,14 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.SpannableString;
@@ -32,6 +34,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ImageViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
@@ -66,21 +69,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -315,6 +307,191 @@ public class GeneralDialogCreation {
         dialog.show();
     }
 
+    @SuppressWarnings("ConstantConditions")
+    public static void deleteImageDialog(final Context c,  final ArrayList<BaseFile> baseFiles,
+        AppTheme appTheme) {
+        //TODO:@Foso find out if possible to merge with deleteFilesDialog()
+        final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
+        int accentColor = ContextCompat.getColor(c,ColorUsage.ACCENT.getDefaultColor());
+
+        // Build dialog with custom view layout and accent color.
+        MaterialDialog dialog = new MaterialDialog.Builder(c)
+            .title(c.getString(R.string.dialog_delete_title))
+            .customView(R.layout.dialog_delete, true)
+            .theme(appTheme.getMaterialDialogTheme())
+            .negativeText(c.getString(R.string.cancel).toUpperCase())
+            .positiveText(c.getString(R.string.delete).toUpperCase())
+            .positiveColor(accentColor)
+            .negativeColor(accentColor)
+            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    Toast.makeText(c, c.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+                   // mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
+                    for (BaseFile baseFile : baseFiles) {
+                        try {
+                            baseFile.delete(c,baseFile.isRoot());
+                        } catch (RootNotPermittedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            })
+            .build();
+
+        // Get views from custom layout to set text values.
+        final TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
+        final TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
+        final TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
+        final TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
+        final TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+
+        // Parse items to delete.
+
+        new AsyncTask<Void, Object, Void>() {
+
+            long sizeTotal = 0;
+            StringBuilder files = new StringBuilder();
+            StringBuilder directories = new StringBuilder();
+            int counterDirectories = 0;
+            int counterFiles = 0;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                listFiles.setText(c.getString(R.string.loading));
+                listDirectories.setText(c.getString(R.string.loading));
+                total.setText(c.getString(R.string.loading));
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                for (int i = 0; i < baseFiles.size(); i++) {
+                    final BaseFile baseFile = baseFiles.get(i);
+                    itemsToDelete.add(baseFile);
+
+                    // Build list of directories to delete.
+                    if (baseFile.isDirectory()) {
+                        // Don't add newline between category and list.
+                        if (counterDirectories != 0) {
+                            directories.append("\n");
+                        }
+
+                        long sizeDirectory = baseFile.folderSize(c);
+
+                        directories.append(++counterDirectories)
+                            .append(". ")
+                            .append(baseFile.getName())
+                            .append(" (")
+                            .append(Formatter.formatFileSize(c, sizeDirectory))
+                            .append(")");
+                        sizeTotal += sizeDirectory;
+                        // Build list of files to delete.
+                    } else {
+                        // Don't add newline between category and list.
+                        if (counterFiles != 0) {
+                            files.append("\n");
+                        }
+
+                        files.append(++counterFiles)
+                            .append(". ")
+                            .append(baseFile.getName())
+                            .append(" (")
+                            .append(baseFile.getSize())
+                            .append(")");
+                        sizeTotal += baseFile.getSize();
+                    }
+
+                    publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Object... result) {
+                super.onProgressUpdate(result);
+
+                int tempCounterFiles = (int) result[1];
+                int tempCounterDirectories = (int) result[2];
+                long tempSizeTotal = (long) result[0];
+                StringBuilder tempFilesStringBuilder = (StringBuilder) result[3];
+                StringBuilder tempDirectoriesStringBuilder = (StringBuilder) result[4];
+
+                updateViews(tempSizeTotal, tempFilesStringBuilder, tempDirectoriesStringBuilder,
+                    tempCounterFiles, tempCounterDirectories);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                updateViews(sizeTotal, files, directories, counterFiles, counterDirectories);
+            }
+
+            private void updateViews(long tempSizeTotal, StringBuilder filesStringBuilder,
+                StringBuilder directoriesStringBuilder, int... values) {
+
+                int tempCounterFiles = values[0];
+                int tempCounterDirectories = values[1];
+
+                // Hide category and list for directories when zero.
+                if (tempCounterDirectories == 0) {
+
+                    if (tempCounterDirectories == 0) {
+
+                        categoryDirectories.setVisibility(View.GONE);
+                        listDirectories.setVisibility(View.GONE);
+                    }
+                    // Hide category and list for files when zero.
+                }
+
+                if (tempCounterFiles == 0) {
+
+
+                    categoryFiles.setVisibility(View.GONE);
+                    listFiles.setVisibility(View.GONE);
+                }
+
+                if (tempCounterDirectories != 0 || tempCounterFiles !=0) {
+                    listDirectories.setText(directoriesStringBuilder);
+                    if (listDirectories.getVisibility() != View.VISIBLE && tempCounterDirectories != 0)
+                        listDirectories.setVisibility(View.VISIBLE);
+                    listFiles.setText(filesStringBuilder);
+                    if (listFiles.getVisibility() != View.VISIBLE && tempCounterFiles != 0)
+                        listFiles.setVisibility(View.VISIBLE);
+
+                    if (categoryDirectories.getVisibility() != View.VISIBLE && tempCounterDirectories != 0)
+                        categoryDirectories.setVisibility(View.VISIBLE);
+                    if (categoryFiles.getVisibility() != View.VISIBLE && tempCounterFiles != 0)
+                        categoryFiles.setVisibility(View.VISIBLE);
+                }
+
+                // Show total size with at least one directory or file and size is not zero.
+                if (tempCounterFiles + tempCounterDirectories > 1 && tempSizeTotal > 0) {
+                    StringBuilder builderTotal = new StringBuilder()
+                        .append(c.getString(R.string.total))
+                        .append(" ")
+                        .append(Formatter.formatFileSize(c, tempSizeTotal));
+                    total.setText(builderTotal);
+                    if (total.getVisibility() != View.VISIBLE)
+                        total.setVisibility(View.VISIBLE);
+                } else {
+                    total.setVisibility(View.GONE);
+                }
+            }
+        }.execute();
+
+        // Set category text color for Jelly Bean (API 16) and later.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            categoryDirectories.setTextColor(accentColor);
+            categoryFiles.setTextColor(accentColor);
+        }
+
+        // Show dialog on screen.
+        dialog.show();
+    }
+
     public static void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
                                                            BaseActivity activity, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
@@ -326,6 +503,174 @@ public class GeneralDialogCreation {
     public static void showPropertiesDialogForStorage(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
+
+  public static void showImagePropertiesDialogForStorage(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
+
+    final ExecutorService executor = Executors.newFixedThreadPool(3);
+    final Context c = activity.getApplicationContext();
+    int accentColor = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+    long last = f.getDate();
+    final String date = Utils.getDate(last),
+            items = c.getString(R.string.calculating),
+            name  = f.getName(),
+            parent = f.getReadablePath(f.getParent(c))
+      ;
+    String dateTime;
+    String width = "";
+    String height;
+    String camera_model;
+    String isoSpeedRating;
+
+    MaterialDialog.Builder builder = new MaterialDialog.Builder(activity);
+    builder.title(c.getString(R.string.properties));
+    builder.theme(appTheme.getMaterialDialogTheme());
+
+    View v = activity.getLayoutInflater().inflate(R.layout.properties_image_dialog, null);
+    TextView itemsText = (TextView) v.findViewById(R.id.tvSize);
+
+        /*View setup*/
+    {
+        TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
+        mNameTitle.setTextColor(accentColor);
+
+        TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
+        mDateTitle.setTextColor(accentColor);
+
+        TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
+        mSizeTitle.setTextColor(accentColor);
+
+        TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
+        mLocationTitle.setTextColor(accentColor);
+
+        TextView mWidth = (TextView) v.findViewById(R.id.title_width);
+        mWidth.setTextColor(accentColor);
+
+        TextView mHeight = (TextView) v.findViewById(R.id.title_height);
+        mHeight.setTextColor(accentColor);
+
+        TextView mModel = (TextView) v.findViewById(R.id.title_model);
+        mModel.setTextColor(accentColor);
+
+        TextView mISO = (TextView) v.findViewById(R.id.title_iso);
+        mISO.setTextColor(accentColor);
+
+        try {
+
+          //  ExifInterface.TAG_DATETIME, exif);
+          //  ExifInterface.TAG_FLASH, exif);
+          //  ExifInterface.TAG_GPS_LATITUDE, exif);
+          //  ExifInterface.TAG_GPS_LATITUDE_REF, exif);
+          //  ExifInterface.TAG_GPS_LONGITUDE, exif);
+          //  ExifInterface.TAG_GPS_LONGITUDE_REF, exif);
+          //  ExifInterface.TAG_IMAGE_LENGTH, exif);
+          //  ExifInterface.TAG_IMAGE_WIDTH, exif);
+          //  ExifInterface.TAG_MAKE, exif);
+          //  ExifInterface.TAG_MODEL, exif);
+          //  ExifInterface.TAG_ORIENTATION, exif);
+          //  ExifInterface.TAG_WHITE_BALANCE, exif);
+           // ExifInterface.TAG_ISO_SPEED_RATINGS, exif);
+            ExifInterface exif = new ExifInterface(f.getPath());
+            dateTime=exif.getAttribute(ExifInterface.TAG_DATETIME);
+            width =exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+            height =exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+            camera_model = exif.getAttribute(ExifInterface.TAG_MODEL);
+            isoSpeedRating = (exif.getAttribute(ExifInterface.TAG_ISO));
+
+            ((TextView) v.findViewById(R.id.tvDate)).setText(dateTime);
+            ((TextView) v.findViewById(R.id.tvWidth)).setText(width);
+            ((TextView) v.findViewById(R.id.tvHeight)).setText(height);
+            ((TextView) v.findViewById(R.id.tvModel)).setText(camera_model);
+            ((TextView) v.findViewById(R.id.tvIso)).setText(isoSpeedRating);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ((TextView) v.findViewById(R.id.tvName)).setText(name);
+        ((TextView) v.findViewById(R.id.tvLocation)).setText(parent);
+        itemsText.setText(items);
+
+
+        LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
+        LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
+        LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
+        LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+        LinearLayout mWidthLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_width);
+        LinearLayout mHeightLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_height);
+        LinearLayout mModelLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_model);
+        LinearLayout mIsoLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_iso);
+
+
+        // setting click listeners for long press
+        mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, name);
+                Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, parent);
+                Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, items);
+                Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, date);
+                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        final String finalWidth = width;
+        mWidthLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Futils.copyToClipboard(c, finalWidth);
+                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
+                    c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+
+    }
+
+    CountItemsOrAndSize countItemsOrAndSize = new CountItemsOrAndSize(c, itemsText, f, true);
+    countItemsOrAndSize.executeOnExecutor(executor);
+
+
+    builder.customView(v, true);
+    builder.positiveText(activity.getResources().getString(R.string.ok));
+    builder.positiveColor(accentColor);
+    builder.dismissListener(new DialogInterface.OnDismissListener() {
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            executor.shutdown();
+        }
+    });
+
+    MaterialDialog materialDialog = builder.build();
+    materialDialog.show();
+    materialDialog.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
+
+  }
 
     private static void showPropertiesDialog(final BaseFile baseFile, final String permissions,
                                              BaseActivity base, boolean isRoot, AppTheme appTheme,
@@ -344,7 +689,7 @@ public class GeneralDialogCreation {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        TextView itemsText = (TextView) v.findViewById(R.id.t7);
+        TextView itemsText = (TextView) v.findViewById(R.id.tvSize);
 
         /*View setup*/ {
             TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
@@ -365,10 +710,10 @@ public class GeneralDialogCreation {
             TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
             sha256Title.setTextColor(accentColor);
 
-            ((TextView) v.findViewById(R.id.t5)).setText(name);
-            ((TextView) v.findViewById(R.id.t6)).setText(parent);
+            ((TextView) v.findViewById(R.id.tvName)).setText(name);
+            ((TextView) v.findViewById(R.id.tvLocation)).setText(parent);
             itemsText.setText(items);
-            ((TextView) v.findViewById(R.id.t8)).setText(date);
+            ((TextView) v.findViewById(R.id.tvDate)).setText(date);
 
             LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
             LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
@@ -785,7 +1130,7 @@ public class GeneralDialogCreation {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        Futils.openunknown(f, m, false);
+                        Futils.openUnknownFile(f, m, false);
                     }
 
                     @Override

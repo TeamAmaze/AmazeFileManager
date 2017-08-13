@@ -790,7 +790,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true);
+                    Futils.openUnknownFile(new File(checkedItems.get(0).getDesc()), getActivity(), true);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));

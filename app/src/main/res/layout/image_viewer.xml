@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <RelativeLayout
+      android:id="@+id/relImage"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+
+    <com.amaze.filemanager.ui.views.TouchImageView
+        android:id="@+id/ivImage"
+        android:background="@color/theme_dark_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="matrix"
+        />
+
+  </RelativeLayout>
+
+  <LinearLayout
+      android:id="@+id/linToolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="10dp"
+      android:orientation="vertical"
+      >
+    <include
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        />
+    <include layout="@layout/actionmode_textviewer"/>
+  </LinearLayout>
+
+ <LinearLayout
+     android:id="@+id/linBottomBar"
+     android:background="@color/item_light_theme"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:layout_gravity="bottom"
+     >
+   <include
+       layout="@layout/image_viewer_bottom_layout"></include>
+ </LinearLayout>
+
+</FrameLayout>

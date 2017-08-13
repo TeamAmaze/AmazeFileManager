@@ -1072,5 +1072,29 @@ public abstract class FileUtil {
         }
 
     }
+    /**
+     * Returns the absolute FilePath of an URI
+     */
+    public static String getAbsoluteFilePath(Context c, Uri uri) {
+        String filePath = null;
+        Cursor cursor;
+        if (uri != null) {
+            if ("content".equals(uri.getScheme())) {
+                cursor = c.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+                if (cursor != null && cursor.getColumnCount() > 0) {
+                    cursor.moveToFirst();
+                    filePath = cursor.getString(0);
+                    cursor.close();
+                } else {
+                    filePath = uri.toString();
+                }
+            } else if ("file".equals(uri.getScheme())) {
+                    filePath = uri.getPath();
+            }
+        } else {
+            filePath = uri.toString();
+        }
+        return filePath;
+    }
 
 }

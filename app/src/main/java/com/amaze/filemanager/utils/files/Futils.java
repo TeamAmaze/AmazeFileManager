@@ -322,10 +322,9 @@ public class Futils {
         return digitGroups;
     }
 
-    public static void openunknown(File f, Context c, boolean forcechooser) {
+    public static void openUnknownFile(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
-
         String type = MimeTypes.getMimeType(f);
         if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
         {
@@ -345,7 +344,7 @@ public class Futils {
 
     }
 
-    public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
+    public void openUnknownFile(DocumentFile f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -769,7 +768,7 @@ public class Futils {
                 m.startActivity(intent);
         } else {
             try {
-                openunknown(f, m, false);
+                openUnknownFile(f, m, false);
             } catch (Exception e) {
                 Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
@@ -791,7 +790,7 @@ public class Futils {
     public void openFile(final DocumentFile f, final MainActivity m) {
         //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
         try {
-            openunknown(f, m, false);
+            openUnknownFile(f, m, false);
         } catch (Exception e) {
             Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
             openWith(f, m);
@@ -843,7 +842,7 @@ public class Futils {
                 m.startActivity(intent);
         } else {
             try {
-                openunknown(f, m, false);
+                openUnknownFile(f, m, false);
             } catch (Exception e) {
                 Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
