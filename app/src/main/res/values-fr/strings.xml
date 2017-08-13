@@ -51,7 +51,6 @@
   <string name="file_empty">Le fichier est vide</string>
   <string name="error">Erreur</string>
   <string name="cantlistfiles">Impossible de lister les fichiers sans le mode root</string>
-  <string name="searchresults">Rechercher les résultats de </string>
   <string name="itemsselected">Éléments sélectionnés</string>
   <string name="newhomedirectory">Nouveau répertoire d\'accueil</string>
   <string name="rename">Renommer</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Impossible de lire le fichier</string>
   <string name="not_allowed">Non autorisé</string>
   <string name="processes">Processus</string>
-  <string name="searching">Recherche en cours</string>
   <string name="copying_fles">Copie des fichiers</string>
   <string name="done">Terminé</string>
   <string name="Extracting_fles">Extraction des fichiers</string>

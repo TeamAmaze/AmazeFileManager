@@ -51,7 +51,6 @@
   <string name="file_empty">Файл пуст</string>
   <string name="error">Ошибка</string>
   <string name="cantlistfiles">Не можете выполнить без рут прав</string>
-  <string name="searchresults">Результаты Поиска </string>
   <string name="itemsselected">Выбранные элементы</string>
   <string name="newhomedirectory">Новый домашний каталог</string>
   <string name="rename">Переименовать</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Не удаётся прочитать файл</string>
   <string name="not_allowed">Не допускается</string>
   <string name="processes">Процессы</string>
-  <string name="searching">Поиск</string>
   <string name="copying_fles">Копирование файлов</string>
   <string name="done">Готово</string>
   <string name="Extracting_fles">Извлечение файлов</string>

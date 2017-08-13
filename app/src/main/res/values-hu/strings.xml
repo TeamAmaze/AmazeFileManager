@@ -51,7 +51,6 @@
   <string name="file_empty">A fájl üres</string>
   <string name="error">Hiba</string>
   <string name="cantlistfiles">Nem lehet kilistázni a fájlokat root jogosultság nélkül</string>
-  <string name="searchresults">Keresés eredménye</string>
   <string name="itemsselected">elem kiválasztva</string>
   <string name="newhomedirectory">Új kezdőkönyvtár</string>
   <string name="rename">Átnevezés</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">A fájl nem olvasható</string>
   <string name="not_allowed">Nincs engedélyezve</string>
   <string name="processes">Folyamatok</string>
-  <string name="searching">Keresés</string>
   <string name="copying_fles">Fájlok másolása</string>
   <string name="done">Kész</string>
   <string name="Extracting_fles">Fájlok kibontása</string>

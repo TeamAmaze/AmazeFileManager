@@ -52,7 +52,6 @@
     <string name="file_empty">Fitxategia hutsik dago</string>
     <string name="error">Akatsa</string>
     <string name="cantlistfiles">root izan gabe ezin dira fitxategiak zerrendatu</string>
-    <string name="searchresults">Bilaketaren emaitzak</string>
     <string name="itemsselected">Hautatutako elementuak</string>
     <string name="newhomedirectory">Etxeko direktorio berria</string>
     <string name="rename">Berrizendatu</string>
@@ -186,7 +185,6 @@
     <string name="cant_read_file">Ezin da fitxategia irakurri</string>
     <string name="not_allowed">Ez baimenduta</string>
     <string name="processes">Prozesuak</string>
-    <string name="searching">Bilatzen</string>
     <string name="copying_fles">Fitxategiak kopiatzen</string>
     <string name="done">Eginda</string>
     <string name="Extracting_fles">Fitxategiak erauzten</string>

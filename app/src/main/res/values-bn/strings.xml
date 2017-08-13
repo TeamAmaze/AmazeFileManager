@@ -93,8 +93,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="cantlistfiles">রুট ছাড়া ফাইলের তালিকা তৈরি করা যাচ্ছে না</string>
 
-    <string name="searchresults">অনুসন্ধানের ফলাফল</string>
-
     <string name="itemsselected">আইটেম নির্বাচিত হয়েছে</string>
 
     <string name="newhomedirectory">নতুন হোম ডাইরেক্টরি</string>
@@ -356,8 +354,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="not_allowed">Not Allowed</string>
 
     <string name="processes">Processes</string>
-
-    <string name="searching">অনুসন্ধান করা হচ্ছে</string>
 
     <string name="copying_fles">ফাইলগুলো কপি করা হচ্ছে</string>
 
@@ -749,8 +745,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="renamebookmark">Modify Bookmark</string>
 
     <string name="cut">Cut</string>
-
-    <string name="empty"></string>
 
     <string name="search">Search</string>
 

@@ -53,7 +53,6 @@
     <string name="file_empty">Berkas kosong</string>
     <string name="error">Galat</string>
     <string name="cantlistfiles">Tidak bisa menampilkan berkas tanpa akses root</string>
-    <string name="searchresults">Hasil Pencarian</string>
     <string name="itemsselected">Item Terpilih</string>
     <string name="newhomedirectory">Direktori Beranda Baru</string>
     <string name="rename">Ubah Nama</string>
@@ -186,7 +185,6 @@
     <string name="cant_read_file">Tidak bisa membaca berkas</string>
     <string name="not_allowed">Tidak Diizinkan</string>
     <string name="processes">Proses</string>
-    <string name="searching">Mencari</string>
     <string name="copying_fles">Menyalin Berkas</string>
     <string name="done">Selesai</string>
     <string name="Extracting_fles">Mengekstrak Berkas</string>
@@ -386,7 +384,6 @@
     <string name="path">Jalur</string>
     <string name="renamebookmark">Sunting Markah</string>
     <string name="cut">Potong</string>
-    <string name="empty"></string>
     <string name="search">Cari</string>
     <string name="invalid_name">Nama Tidak Valid</string>
     <string name="search_hint">Ketuk untuk mencari&#8230;</string>

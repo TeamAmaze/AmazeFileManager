@@ -51,7 +51,6 @@
   <string name="file_empty">文件夹是空的</string>
   <string name="error">错误</string>
   <string name="cantlistfiles">缺少 Root 权限，无法列出文件</string>
-  <string name="searchresults">搜索结果</string>
   <string name="itemsselected">项目已选中</string>
   <string name="newhomedirectory">新首页目录</string>
   <string name="rename">重命名</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">无法读取文件</string>
   <string name="not_allowed">此操作不被允许</string>
   <string name="processes">进程列表</string>
-  <string name="searching">正在搜索</string>
   <string name="copying_fles">正在复制文件</string>
   <string name="done">完成</string>
   <string name="Extracting_fles">正在提取文件</string>

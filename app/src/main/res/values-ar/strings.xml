@@ -180,7 +180,6 @@
   <string name="cant_read_file">تعذر قراءة الملف</string>
   <string name="not_allowed">غير مسموح</string>
   <string name="processes">العمليات</string>
-  <string name="searching">جاري البحث</string>
   <string name="copying_fles">جاري نسخ الملفات</string>
   <string name="done">تم</string>
   <string name="Extracting_fles">جاري إستخراج الملفات</string>

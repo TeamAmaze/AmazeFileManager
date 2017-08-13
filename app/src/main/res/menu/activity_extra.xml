@@ -22,25 +22,23 @@
     <item
         android:id="@+id/paste"
         android:title="@string/paste"
-        android:icon="@drawable/ic_content_paste_white_36dp"
+        android:icon="@drawable/ic_content_paste_white_24dp"
         app:showAsAction="always"
         android:visible="false" />
     <item
         android:id="@+id/search"
         android:title="@string/search"
-        android:icon="@drawable/ic_action_search"
+        android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="always" />
     <item android:id="@+id/home"
         android:title="@string/home"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_home_white_48dp"
-        />
-
+        android:icon="@drawable/ic_home_white_24dp"/>
     <item
         app:showAsAction="ifRoom"
         android:id="@+id/sort"
         android:title="@string/sort"
-        android:icon="@drawable/ic_sort_white_48dp">
+        android:icon="@drawable/ic_sort_white_24dp">
         <menu >
             <item android:title="@string/sortby"
                 android:id="@+id/sortby"/>
@@ -50,10 +48,9 @@
 
     </item>
     <item android:id="@+id/history"
-        android:icon="@drawable/ic_history_white_48dp"
+        android:icon="@drawable/ic_history_white_24dp"
         app:showAsAction="ifRoom"
-        android:title="@string/history"
-/>
+        android:title="@string/history"/>
     <item
         android:id="@+id/view"
         android:title=""/>
@@ -73,7 +70,6 @@
     <item
         android:id="@+id/exit"
         android:title="@string/exit"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_action_cancel_light" />
+        android:orderInCategory="100"/>
 
 </menu>
