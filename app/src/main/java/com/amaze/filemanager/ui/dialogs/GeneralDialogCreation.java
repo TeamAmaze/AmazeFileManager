@@ -104,24 +104,28 @@ public class GeneralDialogCreation {
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false, new
-                MaterialDialog.InputCallback() {
+        a.input(texts[0], texts[1], false,
+                new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
                     }
                 });
         a.widgetColor(accentColor);
-
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
+
         a.positiveText(texts[3]);
         a.positiveColor(accentColor);
-        a.neutralText(texts[4]);
+        if(texts[4] != null) {
+            a.neutralText(texts[4]);
+        }
+
         if (texts[5] != (null)) {
             a.negativeText(texts[5]);
             a.negativeColor(accentColor);
         }
+
         return a.build();
     }
 
