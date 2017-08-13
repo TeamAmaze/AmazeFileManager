@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -29,7 +28,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.Futils;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +55,15 @@ public class BottomBar {
     private HorizontalScrollView scroll, pathScroll;
     private TextView pathText, fullPathText, fullPathAnim;
 
+    private LinearLayout.LayoutParams buttonParams;
+    private ImageButton buttonRoot;
+    private ImageButton buttonStorage;
+    private ArrayList<ImageView> arrowButtons = new ArrayList<>();
+    private int lastUsedArrowButton = 0;
+    private ArrayList<Button> folderButtons = new ArrayList<>();
+    private int lastUsedFolderButton = 0;
+    private Drawable arrow;
+
     private CountDownTimer timer;
 
     public BottomBar(AppBar appbar, MainActivity a) {
@@ -75,6 +82,29 @@ public class BottomBar {
 
         scroll.setSmoothScrollingEnabled(true);
         pathScroll.setSmoothScrollingEnabled(true);
+
+        buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        buttonParams.gravity = Gravity.CENTER_VERTICAL;
+
+        buttonRoot = new ImageButton(a);
+        buttonRoot.setImageDrawable(a.getResources().getDrawable(R.drawable.root));
+        buttonRoot.setBackgroundColor(Color.TRANSPARENT);
+        buttonRoot.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View p1) {
+                MainFragment m = mainActivity.get().getCurrentMainFragment();
+                m.loadlist(("/"), false, m.openMode);
+                timer.cancel();
+                timer.start();
+            }
+        });
+        buttonRoot.setLayoutParams(buttonParams);
+
+        buttonStorage = new ImageButton(a);
+        buttonStorage.setImageDrawable(a.getResources().getDrawable(R.drawable.ic_sd_storage_white_56dp));
+        buttonStorage.setBackgroundColor(Color.TRANSPARENT);
+        buttonStorage.setLayoutParams(buttonParams);
+
+        arrow = mainActivity.get().getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
 
         timer = new CountDownTimer(5000, 1000) {
             @Override
@@ -135,9 +165,11 @@ public class BottomBar {
     public void showButtons(final MainFragment mainFrag) {
         final String path = mainFrag.getCurrentPath();
         if (buttons.getVisibility() == View.VISIBLE) {
+            lastUsedArrowButton = 0;
+            lastUsedFolderButton = 0;
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathLayout.getHeight());
-            Drawable arrow = mainActivity.get().getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
+
             Bundle bundle = Futils.getPaths(path, mainActivity.get());
             ArrayList<String> names = bundle.getStringArrayList("names");
             ArrayList<String> rnames = bundle.getStringArrayList("names");
@@ -151,77 +183,27 @@ public class BottomBar {
                     appbar.getToolbar().getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params1);
             buttons.addView(view);
+
             for (int i = 0; i < names.size(); i++) {
                 final int k = i;
-                ImageView v = new ImageView(mainActivity.get());
-                v.setImageDrawable(arrow);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.gravity = Gravity.CENTER_VERTICAL;
-                v.setLayoutParams(params);
-                final int index = i;
                 if (rpaths.get(i).equals("/")) {
-                    ImageButton ib = new ImageButton(mainActivity.get());
-                    ib.setImageDrawable(mainActivity.get().getResources().getDrawable(R.drawable.root));
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist(("/"), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
+                    buttons.addView(buttonRoot);
                 } else if (Futils.isStorage(rpaths.get(i))) {
-                    ImageButton ib = new ImageButton(mainActivity.get());
-                    ib.setImageDrawable(mainActivity.get().getResources().getDrawable(R.drawable.ic_sd_storage_white_56dp));
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
+                    buttonStorage.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View p1) {
                             mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
                             timer.cancel();
                             timer.start();
                         }
                     });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
+                    buttons.addView(buttonStorage);
                 } else {
-                    Button b = new Button(mainActivity.get());
-                    b.setText(rnames.get(index));
-                    b.setTextColor(Utils.getColor(mainActivity.get(), android.R.color.white));
-                    b.setTextSize(13);
-                    b.setLayoutParams(params);
-                    b.setBackgroundResource(0);
-                    b.setOnClickListener(new Button.OnClickListener() {
+                    Button button = createFolderButton(rnames.get(i));
+                    buttons.addView(button);
+                }
 
-                        public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    b.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-
-                            File file1 = new File(rpaths.get(index));
-                            Futils.copyToClipboard(mainActivity.get(), file1.getPath());
-                            Toast.makeText(mainActivity.get(), mainActivity.get().getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
-
-                    buttons.addView(b);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
+                if (names.size() - i != 1) {
+                    buttons.addView(createArrow());
                 }
             }
 
@@ -238,6 +220,44 @@ public class BottomBar {
                 timer.start();
             }
         }
+    }
+
+    private ImageView createArrow() {
+        ImageView buttonArrow;
+
+        if(lastUsedArrowButton >= arrowButtons.size()) {
+            buttonArrow = new ImageView(mainActivity.get());
+            buttonArrow.setImageDrawable(arrow);
+            buttonArrow.setLayoutParams(buttonParams);
+            arrowButtons.add(buttonArrow);
+        } else {
+            buttonArrow = arrowButtons.get(lastUsedArrowButton);
+        }
+
+        lastUsedArrowButton++;
+
+        return buttonArrow;
+    }
+
+    private Button createFolderButton(String text) {
+        Button button;
+
+        if(lastUsedFolderButton >= folderButtons.size()) {
+            button = new Button(mainActivity.get());
+            button.setTextColor(Utils.getColor(mainActivity.get(), android.R.color.white));
+            button.setTextSize(13);
+            button.setLayoutParams(buttonParams);
+            button.setBackgroundResource(0);
+            folderButtons.add(button);
+        } else {
+            button = folderButtons.get(lastUsedFolderButton);
+        }
+
+        button.setText(text);
+
+        lastUsedFolderButton++;
+
+        return button;
     }
 
     public void updatePath(@NonNull final String news, boolean results, String query, OpenMode openmode,
