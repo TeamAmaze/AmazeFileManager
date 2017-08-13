@@ -20,11 +20,10 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.Futils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,23 +95,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         }
 
         return false;
-    }
-
-    public static boolean canShortcutTo(String dir, SharedPreferences pref) {
-        File f = new File(dir);
-        boolean showIfHidden = pref.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
-                isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
-                showIfRoot = pref.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false);
-
-        return f.exists() && f.isDirectory()
-                && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))
-                && (!isRoot(dir) || showIfRoot);
-
-        // TODO: 2/5/2017 use another system that doesn't create new object
-    }
-
-    private static boolean isRoot(String dir) {// TODO: 5/5/2017 hardcoding root might lead to problems down the line
-        return !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");
     }
 
     private void loadCreateDialog() {
@@ -197,7 +179,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setEnabled(canShortcutTo(editText2.getText().toString(), sharedPrefs));
+                .setEnabled(Futils.isPathAccesible(editText2.getText().toString(), sharedPrefs));
 
         disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
@@ -277,7 +259,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(canShortcutTo(s.toString(), sharedPrefs));
+                        .setEnabled(Futils.isPathAccesible(s.toString(), sharedPrefs));
             }
         });
     }

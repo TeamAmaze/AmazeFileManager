@@ -140,11 +140,12 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/miscellaneous">
-
         <Preference
             android:key="advancedsearch"
             android:title="@string/advanced_search"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/advanced">
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="showPermissions"
@@ -155,6 +156,11 @@
             android:key="rootmode"
             android:summary="@string/rootmodesummary"
             android:title="@string/rootmode"/>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="typeablepaths"
+            android:summary="@string/typeablepaths_summary"
+            android:title="@string/typeablepaths_title"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">

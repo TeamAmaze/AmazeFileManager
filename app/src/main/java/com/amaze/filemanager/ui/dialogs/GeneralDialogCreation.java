@@ -65,6 +65,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -1072,6 +1073,43 @@ public class GeneralDialogCreation {
 
             }
         });
+    }
+
+    public static void showChangePathsDialog(final WeakReference<MainActivity> m, final SharedPreferences prefs) {
+        int accentColor = m.get().getColorPreference().getColor(ColorUsage.ACCENT);
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.get());
+        a.input(null, m.get().getCurrentMainFragment().getCurrentPath(), false,
+                new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence charSequence) {
+                        boolean isAccesible = Futils.isPathAccesible(charSequence.toString(), prefs);
+                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccesible);
+                    }
+                });
+
+        a.alwaysCallInputCallback();
+
+        a.widgetColor(accentColor);
+
+        a.theme(m.get().getAppTheme().getMaterialDialogTheme());
+        a.title(R.string.enterpath);
+
+        a.positiveText(R.string.go);
+        a.positiveColor(accentColor);
+
+        a.negativeText(R.string.cancel);
+        a.negativeColor(accentColor);
+
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                m.get().getCurrentMainFragment().loadlist(dialog.getInputEditText().getText().toString(),
+                        false, OpenMode.UNKNOWN);
+            }
+
+        });
+
+        a.show();
     }
 
 }
