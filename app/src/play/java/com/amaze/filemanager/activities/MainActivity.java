@@ -172,7 +172,6 @@ import jcifs.smb.SmbFile;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
-import static com.amaze.filemanager.utils.MainActivityHelper.SEARCH_TEXT;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -314,7 +313,9 @@ public class MainActivity extends BaseActivity implements
         appbar = new AppBar(this, sharedPref, new SearchView.SearchListener() {
             @Override
             public void onSearch(String queue) {
-                mainActivityHelper.search(queue);
+                if(!queue.isEmpty()) {
+                    mainActivityHelper.search(queue);
+                }
             }
         });
         initialiseViews();
