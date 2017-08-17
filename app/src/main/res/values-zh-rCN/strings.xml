@@ -47,8 +47,8 @@
   <string name="create">新建</string>
   <string name="success">成功</string>
   <string name="filenotexists">文件不存在</string>
-  <string name="loading">正在载入</string>
-  <string name="file_empty">文件夹是空的</string>
+  <string name="loading">正在载入&#8230;</string>
+  <string name="file_empty">文件是空的</string>
   <string name="error">错误</string>
   <string name="cantlistfiles">缺少 Root 权限，无法列出文件</string>
   <string name="itemsselected">项目已选中</string>
@@ -87,7 +87,7 @@
   <string name="guide5">使用返回按钮可以随时退出应用</string>
   <string name="guide6">此外也可以使用左侧栏进行浏览</string>
   <string name="maintab">无法移除主标签页</string>
-  <string name="openparent">打开父目录</string>
+  <string name="openparent">打开上一级目录</string>
   <string name="openwith">打开方式</string>
   <string name="share">分享</string>
   <string name="about">关于</string>
@@ -97,8 +97,8 @@
   <string name="no">否</string>
   <string name="dialog_delete_category_directories">目录</string>
   <string name="dialog_delete_category_files">文件</string>
-  <string name="dialog_delete_disclaimer">您确定要删除这些文件吗？</string>
-  <string name="dialog_delete_title">确认</string>
+  <string name="dialog_delete_disclaimer">您确定要永久删除这些文件吗？删除后将无法恢复</string>
+  <string name="dialog_delete_title">永久删除？</string>
   <string name="deleting">正在删除</string>
   <string name="questionset">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
   <string name="viewmode">视图模式</string>
@@ -110,7 +110,7 @@
   <string name="random">随机皮肤</string>
   <string name="random_summary">每次启动都显示随机主题</string>
   <string name="colorize">多彩图标</string>
-  <string name="colorize_summary">设置静态图标的颜色</string>
+  <string name="colorize_summary">设置静态图标的颜色，不会覆盖目录图标设置</string>
   <string name="back">后退</string>
   <string name="home">首页目录</string>
   <string name="paste">粘贴</string>
@@ -119,7 +119,7 @@
   <string name="refresh">刷新</string>
   <string name="copy">复制</string>
   <string name="rootmode">根目录浏览</string>
-  <string name="rootmodesummary">仅供已获取 Root 权限的设备使用</string>
+  <string name="rootmodesummary">仅供已获取 Root 权限的设备使用，请谨慎启用该选项</string>
   <string name="mountsystemsummary">如果您想修改系统文件请启用此选项</string>
   <string name="mountsystem">挂载 System 分区为可读写</string>
   <string name="rootfailure">未获取 Root 权限</string>
@@ -131,7 +131,7 @@
   <string name="foldercolor">文件夹颜色</string>
   <string name="imagegallery">图库</string>
   <string name="fileexplorer">文件管理器</string>
-  <string name="changegallerypath">选择图库目录</string>
+  <string name="changegallerypath">改变图库目录</string>
   <string name="usedefaultgallerypath">使用默认图库目录</string>
   <!-- New -->
   <!-- Array -->
@@ -160,17 +160,17 @@
   <string name="brown">棕色</string>
   <string name="black">黑色</string>
   <string name="blue_grey">蓝灰色</string>
-  <string name="supersu">超级用户</string>
+  <string name="supersu">SuperSU</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">文件夹显示在顶部</string>
-  <string name="filesOnTop">文件夹显示在底部</string>
+  <string name="filesOnTop">文件显示在顶部</string>
   <string name="noneOnTop">文件与文件夹混合显示</string>
   <!--SortBy-->
   <string name="sortName">名称</string>
   <string name="lastModified">修改时间</string>
   <string name="sortSize">大小</string>
   <string name="sortNameDesc">名称（降序）</string>
-  <string name="lastModifiedDesc">日期（降序）</string>
+  <string name="lastModifiedDesc">修改时间（降序）</string>
   <string name="sortSizeDesc">大小（降序）</string>
   <!--ListMode-->
   <string name="detailedView">详细视图</string>
@@ -230,10 +230,10 @@
   <string name="miscellaneous">其他</string>
   <string name="rootPrefSummary">显示文件及文件夹的权限</string>
   <string name="rootPref">显示权限</string>
-  <string name="aboutFileManager">详细信息</string>
+  <string name="aboutFileManager">关于 Amaze 文件管理器</string>
   <string name="version">版本</string>
   <string name="rate">为本应用评分</string>
-  <string name="license">开源许可</string>
+  <string name="license">开源许可协议</string>
   <string name="feedback">反馈意见</string>
   <string name="hiddenfiles">排除文件</string>
   <string name="type">类型</string>
@@ -285,7 +285,7 @@
   <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n请问您是否继续？</string>
   <string name="warning">警告</string>
   <string name="donate">捐赠</string>
-  <string name="archive_preferences">压缩</string>
+  <string name="archive_preferences">压缩设置</string>
   <string name="archive_extract_folder">压缩包提取目录</string>
   <string name="zip_create_folder">ZIP 创建目录</string>
   <string name="archive_summary">压缩包内的文件会被提取到此目录。默认提取到压缩包所在目录。</string>
@@ -301,7 +301,7 @@
   <string name="savepathsummary">在选项卡中显示最近文件夹</string>
   <string name="select_intent">选择</string>
   <string name="md5copied">MD5 值已复制到剪切板</string>
-  <string name="generating">正在生成</string>
+  <string name="generating">正在生成&#8230;</string>
   <string name="tables">表格</string>
   <string name="database">数据库</string>
   <string name="colourednavigation">导航栏变色</string>
@@ -311,7 +311,7 @@
   <string name="fab_skin">浮动操作按钮颜色</string>
   <string name="gplus_pic_title">用 G+ 账号登录</string>
   <string name="gplus_pic_summary">在抽屉中显示 G+ 用户头像</string>
-  <string name="icon_credits">图像由 &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt; 提供</string>
+  <string name="icon_credits">图标由 &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt; 提供</string>
   <string name="color_title">颜色</string>
   <string name="color_summary">为各种界面组件设置颜色</string>
   <string name="primary_color_title">主色调（左侧面板）</string>
@@ -340,7 +340,7 @@
   <string name="needsaccess">需要写入权限</string>
   <string name="needsaccesssummary">请选择根目录下的 \t</string>
   <string name="needsaccesssummary1">\\t 授予当前操作写入权限</string>
-  <string name="smb_con">共享连接</string>
+  <string name="smb_con">SMB 共享连接</string>
   <string name="smb_server">服务器 IP 地址</string>
   <string name="username">用户名</string>
   <string name="password">密码</string>
@@ -353,7 +353,7 @@
   <string name="documents">文档</string>
   <string name="images">图片</string>
   <string name="clear">清空</string>
-  <string name="md5">md5值：</string>
+  <string name="md5">MD5 值：</string>
   <string name="md5_2">复制 MD5 值</string>
   <string name="total">总计：</string>
   <string name="calculating">正在计算</string>
@@ -364,7 +364,7 @@
   <string name="doit">确定</string>
   <string name="wanthelp"><u>需要帮助吗？</u></string>
   <string name="quick">快速访问</string>
-  <string name="recent">最近文件</string>
+  <string name="recent">最近访问文件</string>
   <string name="edit">编辑</string>
   <string name="find">在本页中查找</string>
   <string name="grant">授予</string>
@@ -374,7 +374,7 @@
   <string name="grantgplus">此功能需要获得权限，关闭对话框将无法启用此功能。</string>
   <string name="operationunsuccesful">操作失败</string>
   <string name="creatingfile">正在创建文件</string>
-  <string name="creatingfolder">正在创建文件夹...</string>
+  <string name="creatingfolder">正在创建文件夹</string>
   <string name="renaming">重命名</string>
   <string name="cantbeempty">%s不能为空</string>
   <string name="ip">地址</string>
@@ -384,21 +384,21 @@
   <string name="renamebookmark">修改书签</string>
   <string name="cut">剪切</string>
   <string name="search">搜索</string>
-  <string name="invalid_name">无效名称</string>
-  <string name="search_hint">请输入要搜索的内容</string>
+  <string name="invalid_name">无效的名称</string>
+  <string name="search_hint">请输入要搜索的内容&#8230;</string>
   <string name="advanced_search">高级搜索</string>
   <string name="regular_expression">正则表达式</string>
-  <string name="regular_expression_summary">使用基于 bash 的正则表达式进行搜索</string>
+  <string name="regular_expression_summary">使用基于 BASH 的正则表达式进行搜索</string>
   <string name="match_content">匹配到的内容</string>
   <string name="match_content_summary">启用此选项后，正则表达式将匹配整个文件名，否则将进行一般查找。</string>
   <string name="start_ftp">开始</string>
   <string name="stop_ftp">停止</string>
   <string name="ftp_status_running">正在运行</string>
   <string name="ftp_status_not_running">没有运行</string>
-  <string name="ftp_no_wifi">请确保您已连接上可用的 WLAN</string>
+  <string name="ftp_no_wifi">请确保您已连接上可用的 WiFi</string>
   <string name="domain">域名</string>
-  <string name="invalid">无效%s</string>
-  <string name="ftp_notif_starting">FTP 服务器已启动</string>
+  <string name="invalid">无效的%s</string>
+  <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
   <string name="ftp_notif_title">Amaze FTP 服务器已启动</string>
   <string name="ftp_notif_text">位于 %s</string>
   <string name="ftp_notif_stop_server">停止</string>
@@ -419,16 +419,44 @@
   <string name="searchingdevices">正在搜索设备</string>
   <string name="use_custom_ip">使用自定义 IP</string>
   <string name="bookmark_lost">无法找到书签。正在重新创建</string>
-  <string name="smb_instructions">怎样在 Android (SMB) 上访问 Windows 共享文件夹？\n\n
-1.启用文件共享功能\n
-在 Windows 中打开控制面板，点击“网络和 Internet——选择家庭组和共享选项——更改高级共享设置——启用文件和打印机共享功能”。\n\n
-2.其他文件共享设置\n
-如果您相信本地网络上的所有设备，则可以无需密码访问文件。具体做法是在 Windows 中启用文件和打印机共享功能后，打开资源管理器，右键点击您想要共享的文件夹并选择“属性——共享”。\n\n
-3.确保两个设备处于同一个 WLAN 下\n
-此功能使文件在本地网络上可用，因此您的 PC 和移动设备必须处于同一个本地网络上。当您的设备使用移动数据时，您无法通过 Internet 访问共享的 Windows 文件夹——您需要连接到 WLAN。\n\n
-4.查找 IP 地址\n
-在 Windows 中打开命令提示符，输入 ipconfig 后按回车键。网络适配器下的“默认网关”即是您路由器的 IP 地址。“IPv4 地址”即是您计算机的IP地址。\n\n
-5.在 SMB 对话框中输入详细信息。</string>
+  <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>如何在Android上访问Window(smb)共享文件夹？</h1>\n\n
+                <ul>
+                    <li>
+                        <b>启用文件共享功能</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        在 Windows 中打开控制面板，点击“网络和 Internet——选择家庭组和共享选项——更改高级共享设置——启用文件和打印机共享功能”。\n\n
+                    </p>
+                    <li>
+                        <b>其他文件共享设置</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        您还可以设置一些其他高级选项。\n
+                        如：如果您信任本地网络上的所有设备，则可以无需密码访问文件。具体做法是在 Windows 中启用文件和打印机共享功能后，
+                        打开资源管理器，右键点击您想要共享的文件夹并选择“属性——共享”。\n
+                        </p>
+                    <li>
+                        <b>确保设备处于同一的局域网</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        此功能使文件在本地网络上可用，因此您的 PC 和移动设备必须处于同一个本地网络上。
+                        当您的设备使用移动数据时，您无法通过 Internet 访问共享的 Windows 文件夹——您必须链接同一局域网。\n\n
+                    </p>
+                    <li>
+                        <b>查找 IP 地址</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        在 Windows 中打开命令提示符，输入 ipconfig 后按回车键。
+                        网络适配器下的“默认网关”即是您路由器的 IP 地址。“IPv4 地址”即是您计算机的IP地址。\n\n
+                    </p>
+                    <b>在 SMB 对话框中输入详细信息。</b>\n
+                </ul>
+            </body>
+        </html>
+  </string>
   <string name="share_limit">您最多只能分享 100 个文件</string>
   <string name="otg_access">选择根目录下的 OTG 设备</string>
   <string name="no_profile_pic">没有 G+ 个人资料图片</string>
@@ -443,7 +471,7 @@
   <string name="album">专辑</string>
   <string name="year">年份</string>
   <string name="duration">时长</string>
-  <string name="comment">注释</string>
+  <string name="comment">备注</string>
   <!-- reference to audio/video file -->
   <string name="container">容器格式文件</string>
   <string name="codec">编解码器</string>
@@ -478,7 +506,7 @@
   <string name="optimized">优化</string>
   <string name="security">加密</string>
   <string name="paper_size">纸张大小</string>
-  <string name="root_error">Root 过程中出现问题</string>
+  <string name="root_error">开启Root Shell 过程中出现问题</string>
   <!-- %s will be replaced with either copied or moved -->
   <string name="copy_error">有些文件无法成功%s</string>
   <string name="copied">已复制</string>
@@ -512,7 +540,7 @@
   <string name="permission_group">用户组</string>
   <string name="permission_other">其他</string>
   <string name="clipboard_path_copy">路径已复制到剪贴板</string>
-  <string name="error_busybox">无法找到 Busybox 。请关闭交互式 shell。</string>
+  <string name="error_busybox">无法找到 Busybox。请关闭交互式 shell。</string>
   <string name="service_timer">用时</string>
   <string name="please_wait">请稍候</string>
   <string name="cloud_connection">网盘</string>
@@ -530,7 +558,7 @@
   <string name="ftp_path_hint">共享目录的根路径</string>
   <string name="error_ftp_path_file">路径不是目录</string>
   <string name="change">更改</string>
-  <string name="unknown_error">出现了一些问题</string>
+  <string name="unknown_error">出现了一些问题！</string>
   <string name="ftp_path_change_success">FTP 路径更改成功</string>
   <string name="ftp_path_change_error_invalid">路径无效</string>
   <string name="ftp_status_no_connection">无连接</string>
@@ -567,15 +595,15 @@
   <string name="crypt_pref_fingerprint_title">指纹</string>
   <string name="crypt_pref_fingerprint_summary">使用指纹进行身份验证</string>
   <string name="crypt_fingerprint_no_permission">缺少指纹权限</string>
-  <string name="crypt_fingerprint_not_enrolled">没有指纹登记</string>
+  <string name="crypt_fingerprint_not_enrolled">没有可用的指纹录入</string>
   <string name="crypt_fingerprint_no_security">未设置锁屏安全</string>
-  <string name="crypt_warning_key">当您在系统设置中改变安全模式时，您将无法解密此内容。</string>
+  <string name="crypt_warning_key">注意，当您在系统设置中改变安全模式时，您将无法解密此内容。</string>
   <string name="warning_never_show">不再通知</string>
   <string name="warning_confirm">确定</string>
   <string name="crypt_encryption_fail">加密失败</string>
   <string name="crypt_decryption_fail">解密失败</string>
   <string name="crypt_decryption_fail_password">密码错误</string>
-  <string name="crypt_fingerprint_authenticate">请继续触摸传感器</string>
+  <string name="crypt_fingerprint_authenticate">请触摸传感器以继续</string>
   <string name="authenticate_password">输入密码</string>
   <string name="sidebarfolders_title">侧边栏快捷方式</string>
   <string name="sidebarquickaccess_title">侧边栏快速访问</string>
@@ -610,4 +638,8 @@
   <string name="failed_smb_decrypt_path">无法加载 SMB 连接</string>
   <string name="failed_cloud_new_connection">无法添加新网盘</string>
   <string name="failed_cloud_api_key">网盘插件无法通过身份验证</string>
+  <string name="folderfilecount">%1$d 文件夹 和 %2$d 文件</string>
+  <string name="local_inet_addr_error">获取本地网络地址出错</string>
+  <string name="searching">搜索 %s</string>
+  <string name="searchresults">" %s"</string>
 </resources>
