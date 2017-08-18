@@ -11,4 +11,4 @@ android:
     - android-25
     - extra-google-m2repository
 
-script: "./gradlew build"
+script: "./gradlew assembleplayplayDebug"
