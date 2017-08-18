@@ -653,17 +653,34 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         ArrayList<Uri> resulturis = new ArrayList<>();
                         for (LayoutElement element : checkedItems) {
                             try {
-                                resulturis.add(Uri.fromFile(new File(element.getDesc())));
+                                BaseFile baseFile = element.generateBaseFile();
+                                switch (baseFile.getMode()) {
+                                    case FILE:
+                                    case ROOT:
+                                        resulturis.add(Uri.fromFile(new File(baseFile.getPath())));
+                                        break;
+                                    case OTG:
+                                        resulturis.add(OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri());
+                                        break;
+                                    case SMB:
+                                    case DROPBOX:
+                                    case GDRIVE:
+                                    case ONEDRIVE:
+                                    case BOX:
+                                        Toast.makeText(getActivity(),
+                                                getActivity().getResources().getString(R.string.smb_launch_error),
+                                                Toast.LENGTH_LONG).show();
+                                        return true;
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
-                        final ClipData clipData = new ClipData(
-                                null, new String[]{"*/*"}, new ClipData.Item(resulturis.get(0)));
-                        for (int i = 1; i < resulturis.size(); i++) {
-                            clipData.addItem(new ClipData.Item(resulturis.get(i)));
-                        }
-                        intentresult.setClipData(clipData);
+
+                        intentresult.setAction(Intent.ACTION_SEND_MULTIPLE);
+                        intentresult.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
+                        intentresult.setType("*/*");
+                        intentresult.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         mode.finish();
                         getActivity().setResult(FragmentActivity.RESULT_OK, intentresult);
                         getActivity().finish();
@@ -938,6 +955,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 } else {
 
                     if (getMainActivity().mReturnIntent) {
+                        // are we here to return an intent to another app
                         returnIntentResults(e.generateBaseFile());
                         return;
                     }

@@ -155,9 +155,8 @@ public class CloudHandler extends SQLiteOpenHelper {
                 cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
             } catch (Exception e) {
                 e.printStackTrace();
-                cloudEntry.setPersistData(cursor.getString(2));
-                // we're getting plain text, just in case it works,
-                // if this doesn't restore the cloud storage state, it'll automatically be updated later
+                cloudEntry.setPersistData("");
+                return cloudEntry;
             }
 
             cursor.close();
@@ -191,9 +190,9 @@ public class CloudHandler extends SQLiteOpenHelper {
                         cloudEntry.setPersistData(CryptUtil.decryptPassword(context, cursor.getString(2)));
                     } catch (Exception e) {
                         e.printStackTrace();
-                        cloudEntry.setPersistData(cursor.getString(2));
-                        // we're getting plain text, just in case it works,
-                        // if this doesn't restore the cloud storage state, it'll automatically be updated later
+                        cloudEntry.setPersistData("");
+                        entryList.add(cloudEntry);
+                        continue;
                     }
 
                     entryList.add(cloudEntry);

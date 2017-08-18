@@ -91,6 +91,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
+
+            <intent-filter android:label="@string/intent_save_as">
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
         </activity>
         <activity
             android:uiOptions="splitActionBarWhenNarrow"

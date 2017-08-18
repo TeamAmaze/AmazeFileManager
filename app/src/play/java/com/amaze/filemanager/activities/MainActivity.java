@@ -41,6 +41,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -55,8 +56,10 @@ import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -378,29 +381,45 @@ public class MainActivity extends BaseActivity implements
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
             intent = getIntent();
+
+            String actionIntent = intent.getAction();
+            String typeIntent = intent.getType();
             if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
                 ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
                 }
             }
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+            if (actionIntent != null) {
+                if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
 
                     // file picker intent
                     mReturnIntent = true;
                     Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+                } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
                     // ringtone picker intent
                     mReturnIntent = true;
                     mRingtonePickerIntent = true;
                     Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+                } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
 
                     // zip viewer intent
                     Uri uri = intent.getData();
                     openzip = true;
                     zippath = uri.toString();
+                } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
+                    // save a single file to filesystem
+
+                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    ArrayList<Uri> uris = new ArrayList<>();
+                    uris.add(uri);
+                    initFabToSave(uris);
+
+                } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && typeIntent != null) {
+                    // save multiple files to filesystem
+
+                    ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    initFabToSave(arrayList);
                 }
             }
         } catch (Exception e) {
@@ -499,7 +518,7 @@ public class MainActivity extends BaseActivity implements
 
                 if (savedInstanceState == null) {
                     if (openProcesses) {
-                        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
                         selectedStorage = SELECT_102;
@@ -512,7 +531,7 @@ public class MainActivity extends BaseActivity implements
                             intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
                         // tile preferences, open ftp fragment
 
-                        android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
                         findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
@@ -561,6 +580,52 @@ public class MainActivity extends BaseActivity implements
             @Override
             public <T> T[] params() {
                 return null;
+            }
+        });
+    }
+
+    /**
+     * Initializes the floating action button to act as to save data from an external intent
+     */
+    private void initFabToSave(final ArrayList<Uri> uris) {
+
+        floatingActionButton.setVisibility(View.VISIBLE);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_file_download_black_24dp);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawable vectorDrawable = (VectorDrawable) drawable;
+            vectorDrawable.setTint(getResources().getColor(android.R.color.white));
+
+            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawable);
+        } else {
+
+            VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
+            vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
+
+            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawableCompat);
+        }
+
+
+        floatingActionButton.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MainFragment mainFragment = getCurrentMainFragment();
+                String path = mainFragment.getCurrentPath();
+                ArrayList<BaseFile> baseUris = new ArrayList<>();
+
+                for (Uri uri : uris) {
+                    // iterate all uri's and add them to list for them to be downloaded
+                    BaseFile baseFile = new BaseFile(uri.getPath());
+                    baseUris.add(baseFile);
+                }
+
+                new CopyFileCheck(mainFragment, path, false, mainActivity, BaseActivity.rootMode)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, baseUris);
+                COPY_PATH = null;
+                MOVE_PATH = null;
+                finish();
             }
         });
     }
@@ -1373,8 +1438,8 @@ public class MainActivity extends BaseActivity implements
         public void onServiceDisconnected(ComponentName name) {
 
             if (isEncryptOpen && encryptBaseFile != null) {
-                if (mainFragment != null) {
-                    switch (mainFragment.openMode) {
+                if (getCurrentMainFragment() != null) {
+                    switch (getCurrentMainFragment().openMode) {
                         case OTG:
                             getFutils().openFile(OTGUtil.getDocumentFile(encryptBaseFile.getPath(),
                                     MainActivity.this, false), MainActivity.this);
@@ -1493,6 +1558,7 @@ public class MainActivity extends BaseActivity implements
             return (MainFragment) tab.getCurrentTabFragment();
         } else return null;
     }
+
     public TabFragment getTabFragment() {
         Fragment fragment = getFragmentAtFrame();
 

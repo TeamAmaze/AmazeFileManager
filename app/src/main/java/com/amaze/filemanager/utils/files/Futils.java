@@ -291,12 +291,13 @@ public class Futils {
     }
 
     public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
+
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
             uris.add(Uri.fromFile(f));
         }
-        System.out.println("uri done");
+
         String mime = MimeTypes.getMimeType(a.get(0));
         if (a.size() > 1)
             for (File f : a) {
@@ -322,30 +323,51 @@ public class Futils {
         return digitGroups;
     }
 
+    /**
+     * Open a file not supported by Amaze
+     * @param f the file
+     * @param c
+     * @param forcechooser force the chooser to show up even when set default by user
+     */
     public static void openunknown(File f, Context c, boolean forcechooser) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f);
-        if(type!=null && type.trim().length()!=0 && !type.equals("*/*"))
-        {
-            Uri uri=fileToContentUri(c, f);
-            if(uri==null)uri=Uri.fromFile(f);
-            intent.setDataAndType(uri, type);
-        Intent startintent;
-        if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
-        else startintent=intent;
-        try {
-            c.startActivity(startintent);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-        openWith(f,c);
-        }}else{openWith(f, c);}
+        if(type!=null && type.trim().length()!=0 && !type.equals("*/*")) {
 
+            Uri uri=fileToContentUri(c, f);
+            if(uri==null) uri=Uri.fromFile(f);
+            intent.setDataAndType(uri, type);
+
+            Intent startintent;
+            if (forcechooser) {
+                startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+            } else {
+                startintent=intent;
+            }
+            try {
+                c.startActivity(startintent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
+                openWith(f,c);
+            }
+        } else {
+
+            // failed to load mime type
+            openWith(f, c);
+        }
     }
 
+    /**
+     * Open file from OTG
+     * @param f
+     * @param c
+     * @param forcechooser
+     */
     public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
+
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -456,6 +478,11 @@ public class Futils {
         return null;
     }
 
+    /**
+     * Method supports showing a UI to ask user to open a file without any extension/mime
+     * @param f
+     * @param c
+     */
     public static void openWith(final File f,final Context c) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
@@ -788,6 +815,11 @@ public class Futils {
         return s.equals("com.amaze.filemanager") || rii == null;
     }
 
+    /**
+     * Support file opening for {@link DocumentFile} (eg. OTG)
+     * @param f
+     * @param m
+     */
     public void openFile(final DocumentFile f, final MainActivity m) {
         //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
         try {
@@ -856,8 +888,8 @@ public class Futils {
      * @deprecated use new LayoutElement()
      */
     public static LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
-                                    String size, long longSize, boolean directorybool, boolean b,
-                                    String date) {
+                                           String size, long longSize, boolean directorybool, boolean b,
+                                           String date) {
         return new LayoutElement(i, new File(d).getName(), d, permissions, symlink,
                 size, longSize, b, date, directorybool);
     }

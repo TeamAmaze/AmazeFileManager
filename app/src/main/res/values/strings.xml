@@ -682,4 +682,5 @@
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
     <string name="local_inet_addr_error">Error getting local inet address</string>
+    <string name="intent_save_as">Save as&#8230;</string>
 </resources>
