@@ -124,4 +124,7 @@
     <color name="white_translucent">#80ffffff</color>
 
     <color name="disabled_button">#BDBDBD</color>
+
+    <!--Used for white vectors -->
+    <color name="vectors_white">#FFFFFFFF</color>
 </resources>

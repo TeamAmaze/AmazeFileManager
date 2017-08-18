@@ -184,7 +184,6 @@
   <string name="cant_read_file">Αδυναμία ανάγνωσης αρχείου</string>
   <string name="not_allowed">Δεν επιτρέπεται</string>
   <string name="processes">Διεργασίες</string>
-  <string name="searching">Αναζήτηση</string>
   <string name="copying_fles">Αντιγραφή αρχείων</string>
   <string name="done">Ολοκληρώθηκε</string>
   <string name="Extracting_fles">Εξαγωγή αρχείων</string>

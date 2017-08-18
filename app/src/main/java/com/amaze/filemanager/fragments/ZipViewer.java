@@ -177,7 +177,7 @@ public class ZipViewer extends Fragment {
         s = getArguments().getString(KEY_PATH);
         Uri uri = Uri.parse(s);
         f = new File(uri.getPath());
-        mToolbarContainer = getActivity().findViewById(R.id.lin);
+        mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -272,9 +272,9 @@ public class ZipViewer extends Fragment {
         }
         if (fileName == null || fileName.trim().length() == 0) fileName = f.getName();
         try {
-            mainActivity.setActionBarTitle(fileName);
+            mainActivity.getAppbar().setTitle(fileName);
         } catch (Exception e) {
-            mainActivity.setActionBarTitle(getResources().getString(R.string.zip_viewer));
+            mainActivity.getAppbar().setTitle(getResources().getString(R.string.zip_viewer));
         }
         mainActivity.supportInvalidateOptionsMenu();
         mToolbarHeight = getToolbarHeight(getActivity());
@@ -283,7 +283,7 @@ public class ZipViewer extends Fragment {
             @Override
             public void onGlobalLayout() {
                 paddingTop = mToolbarContainer.getHeight();
-                mToolbarHeight = mainActivity.toolbar.getHeight();
+                mToolbarHeight = mainActivity.getAppbar().getToolbar().getHeight();
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -356,8 +356,9 @@ public class ZipViewer extends Fragment {
                 if (mainActivity.colourednavigation)
                     window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
             }
-            if (Build.VERSION.SDK_INT < 19)
-                getActivity().findViewById(R.id.action_bar).setVisibility(View.GONE);
+            if (Build.VERSION.SDK_INT < 19) {
+                mainActivity.getAppbar().getToolbar().setVisibility(View.GONE);
+            }
             return true;
         }
 
@@ -549,8 +550,8 @@ public class ZipViewer extends Fragment {
 
     public void bbar() {
         if (current != null && current.length() != 0)
-            mainActivity.updatePath("/" + current, false, OpenMode.FILE, folder, file);
-        else mainActivity.updatePath("/", false, OpenMode.FILE, folder, file);
+            mainActivity.getAppbar().getBottomBar().updatePath("/" + current, false, null, OpenMode.FILE, folder, file);
+        else mainActivity.getAppbar().getBottomBar().updatePath("/", false, null, OpenMode.FILE, folder, file);
 
 
     }

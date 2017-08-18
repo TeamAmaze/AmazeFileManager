@@ -51,7 +51,6 @@
   <string name="file_empty">Il file è vuoto</string>
   <string name="error">Errore</string>
   <string name="cantlistfiles">Non è possibile elencare i file senza il percorso root</string>
-  <string name="searchresults">Mostra risultati per </string>
   <string name="itemsselected">Elementi selezionati</string>
   <string name="newhomedirectory">Nuova home directory</string>
   <string name="rename">Rinomina</string>
@@ -193,7 +192,6 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="cant_read_file">Impossibile leggere il file</string>
   <string name="not_allowed">Non permesso</string>
   <string name="processes">Processi</string>
-  <string name="searching">Ricerca</string>
   <string name="copying_fles">Copia file in corso</string>
   <string name="done">Fatto</string>
   <string name="Extracting_fles">Estrazione file in corso</string>

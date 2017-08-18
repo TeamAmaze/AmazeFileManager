@@ -20,9 +20,6 @@
 
 package com.amaze.filemanager.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -48,7 +45,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -69,29 +65,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -138,9 +123,10 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
-import com.amaze.filemanager.ui.icons.IconUtils;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.ui.views.appbar.AppBar;
+import com.amaze.filemanager.ui.views.appbar.SearchView;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
@@ -186,6 +172,7 @@ import jcifs.smb.SmbFile;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
+import static com.amaze.filemanager.utils.MainActivityHelper.SEARCH_TEXT;
 
 public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -211,7 +198,6 @@ public class MainActivity extends BaseActivity implements
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
-    public Toolbar toolbar;
     public int skinStatusBar;
 
     public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
@@ -244,10 +230,10 @@ public class MainActivity extends BaseActivity implements
 
     private static final int image_selector_request_code = 31;
 
+    private AppBar appbar;
     //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
-    private IconUtils util;
     private Context con = this;
     private String zippath;
     private FragmentTransaction pending_fragmentTransaction;
@@ -267,10 +253,6 @@ public class MainActivity extends BaseActivity implements
     private ImageLoader mImageLoader;
 
     private TextView mGoogleName, mGoogleId;
-    private LinearLayout buttons;
-    private HorizontalScrollView scroll, scroll1;
-    private CountDownTimer timer;
-    private IconUtils icons;
     private TabHandler tabHandler;
     // Check for user interaction for Google+ api only once
     private boolean mGoogleApiKey = false;
@@ -280,21 +262,12 @@ public class MainActivity extends BaseActivity implements
     private boolean mIntentInProgress, showHidden = false;
     private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
-    // string builder object variables for pathBar animations
-    private StringBuffer newPathBuilder, oldPathBuilder;
     private AppBarLayout appBarLayout;
-
-    private static final int PATH_ANIM_START_DELAY = 0;
-    private static final int PATH_ANIM_END_DELAY = 0;
 
     //TODO make var names meaningful
     private static final int SELECT_MINUS_2 = -2, NO_VALUE = -1, SELECT_0 = 0, SELECT_102 = 102;
     private int selectedStorage;
 
-    private int TOOLBAR_START_INSET;
-    private RelativeLayout searchViewLayout;
-    private AppCompatEditText searchViewEditText;
-    private int[] searchCoords = new int[2];
     private CoordinatorLayout mScreenLayout;
     private View fabBgView;
     private UtilsHandler utilsHandler;
@@ -314,7 +287,6 @@ public class MainActivity extends BaseActivity implements
     // the current visible tab, either 0 or 1
     public static int currentTab;
 
-    public static boolean isSearchViewEnabled = false;
     public static Shell.Interactive shellInteractive;
     public static Handler handler;
 
@@ -339,6 +311,12 @@ public class MainActivity extends BaseActivity implements
         dataUtils.registerOnDataChangedListener(this);
 
         setContentView(R.layout.main_toolbar);
+        appbar = new AppBar(this, sharedPref, new SearchView.SearchListener() {
+            @Override
+            public void onSearch(String queue) {
+                mainActivityHelper.search(queue);
+            }
+        });
         initialiseViews();
         tabHandler = new TabHandler(this);
         utilsHandler = new UtilsHandler(this);
@@ -364,19 +342,6 @@ public class MainActivity extends BaseActivity implements
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
-        util = new IconUtils(sharedPref, this);
-        icons = new IconUtils(sharedPref, this);
-
-        timer = new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long l) {
-            }
-
-            @Override
-            public void onFinish() {
-                utils.crossfadeInverse(buttons, pathbar);
-            }
-        };
         path = getIntent().getStringExtra("path");
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         try {
@@ -533,7 +498,7 @@ public class MainActivity extends BaseActivity implements
 
                         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                         selectedStorage = SELECT_MINUS_2;
                         adapter.toggleChecked(false);
@@ -770,9 +735,9 @@ public class MainActivity extends BaseActivity implements
 
     void onbackpressed() {
         Fragment fragment = getFragmentAtFrame();
-        if (searchViewLayout.isShown()) {
+        if (getAppbar().getSearchView().isShown()) {
             // hide search view if visible, with an animation
-            hideSearchView();
+            getAppbar().getSearchView().hideSearchView();
         } else if (fragment instanceof TabFragment) {
             if (floatingActionButton.isOpened()) {
                 floatingActionButton.close(true);
@@ -899,7 +864,7 @@ public class MainActivity extends BaseActivity implements
         selectedStorage = SELECT_0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
-        setActionBarTitle(null);
+        appbar.setTitle(null);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
@@ -984,11 +949,6 @@ public class MainActivity extends BaseActivity implements
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void setActionBarTitle(String title) {
-        if (toolbar != null)
-            toolbar.setTitle(title);
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem s = menu.findItem(R.id.view);
@@ -1003,7 +963,7 @@ public class MainActivity extends BaseActivity implements
             return true;
         }
         if (fragmentName.contains("TabFragment")) {
-            setActionBarTitle("Amaze");
+            appbar.setTitle("Amaze");
             if (useGridView) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
@@ -1014,11 +974,11 @@ public class MainActivity extends BaseActivity implements
                 MainFragment ma = getCurrentMainFragment();
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                updatePath(ma.getCurrentPath(), ma.results, ma.openMode, ma.folder_count, ma.file_count);
+                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {}
 
-            initiatebbar();
-            if (SDK_INT >= 21) toolbar.setElevation(0);
+            appbar.getBottomBar().initiatebbar();
+
             invalidatePasteButton(paste);
             search.setVisible(true);
             if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
@@ -1053,17 +1013,7 @@ public class MainActivity extends BaseActivity implements
         } else if (fragmentName.contains("ZipViewer")) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
-            TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
-            pathbar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
+            getAppbar().getBottomBar().resetClickListeners();
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -1237,95 +1187,10 @@ public class MainActivity extends BaseActivity implements
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
             case R.id.search:
-                View searchItem = toolbar.findViewById(R.id.search);
-                searchViewEditText.setText("");
-                searchItem.getLocationOnScreen(searchCoords);
-                revealSearchView();
+                getAppbar().getSearchView().revealSearchView();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * show search view with a circular reveal animation
-     */
-    void revealSearchView() {
-        final int START_RADIUS = 16;
-        int endRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
-
-        Animator animator;
-        if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0] + 32, searchCoords[1] - 16, START_RADIUS, endRadius);
-        } else {
-            // TODO:ViewAnimationUtils.createCircularReveal
-            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-        }
-
-        utils.revealShow(fabBgView, true);
-
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(600);
-        searchViewLayout.setVisibility(View.VISIBLE);
-        animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                searchViewEditText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
-                isSearchViewEnabled = true;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
-    }
-
-    /**
-     * hide search view with a circular reveal animation
-     */
-    public void hideSearchView() {
-        final int END_RADIUS = 16;
-        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
-        Animator animator;
-        if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0] + 32, searchCoords[1] - 16, startRadius, END_RADIUS);
-        } else {
-            // TODO: ViewAnimationUtils.createCircularReveal
-            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 1f, 0f);
-        }
-
-        // removing background fade view
-        utils.revealShow(fabBgView, false);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(600);
-        animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                searchViewLayout.setVisibility(View.GONE);
-                isSearchViewEnabled = false;
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
     }
 
     /*@Override
@@ -1536,7 +1401,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void openZip(String path) {
-        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
@@ -1854,6 +1719,10 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    public AppBar getAppbar() {
+        return appbar;
+    }
+
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient != null) {
             new Thread(new Runnable() {
@@ -1967,133 +1836,6 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    public void bbar(final MainFragment mainFrag) {
-        final String path = mainFrag.getCurrentPath();
-        try {
-            buttons.removeAllViews();
-            buttons.setMinimumHeight(pathbar.getHeight());
-            Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            Bundle bundle = utils.getPaths(path, this);
-            ArrayList<String> names = bundle.getStringArrayList("names");
-            ArrayList<String> rnames = bundle.getStringArrayList("names");
-            Collections.reverse(rnames);
-
-            ArrayList<String> paths = bundle.getStringArrayList("paths");
-            final ArrayList<String> rpaths = bundle.getStringArrayList("paths");
-            Collections.reverse(rpaths);
-
-            View view = new View(this);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                    toolbar.getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(params1);
-            buttons.addView(view);
-            for (int i = 0; i < names.size(); i++) {
-                final int k = i;
-                ImageView v = new ImageView(this);
-                v.setImageDrawable(arrow);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.gravity = Gravity.CENTER_VERTICAL;
-                v.setLayoutParams(params);
-                final int index = i;
-                if (rpaths.get(i).equals("/")) {
-                    ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist(("/"), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                } else if (isStorage(rpaths.get(i))) {
-                    ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                } else {
-                    Button b = new Button(this);
-                    b.setText(rnames.get(index));
-                    b.setTextColor(Utils.getColor(this, android.R.color.white));
-                    b.setTextSize(13);
-                    b.setLayoutParams(params);
-                    b.setBackgroundResource(0);
-                    b.setOnClickListener(new Button.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    b.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-
-                            File file1 = new File(rpaths.get(index));
-                            copyToClipboard(MainActivity.this, file1.getPath());
-                            Toast.makeText(MainActivity.this, getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
-
-                    buttons.addView(b);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                }
-            }
-
-            scroll.post(new Runnable() {
-                @Override
-                public void run() {
-                    sendScroll(scroll);
-                    sendScroll(scroll1);
-                }
-            });
-
-            if (buttons.getVisibility() == View.VISIBLE) {
-                timer.cancel();
-                timer.start();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("BBar", "button view not available");
-        }
-    }
-
-    boolean isStorage(String path) {
-        for (String s : dataUtils.getStorages())
-            if (s.equals(path)) return true;
-        return false;
-    }
-
-    void sendScroll(final HorizontalScrollView scrollView) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(View.FOCUS_RIGHT);
-            }
-        }, 100);
-    }
-
     void initialisePreferences() {
         hidemode = sharedPref.getInt("hidemode", 0);
         showHidden = sharedPref.getBoolean("showHidden", false);
@@ -2104,7 +1846,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     void initialiseViews() {
-        appBarLayout = (AppBarLayout) findViewById(R.id.lin);
+        appBarLayout = getAppbar().getAppbarLayout();
 
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
@@ -2133,10 +1875,7 @@ public class MainActivity extends BaseActivity implements
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
-        toolbar = (Toolbar) findViewById(R.id.action_bar);
-        /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
-        TOOLBAR_START_INSET = toolbar.getContentInsetStart();
-        setSupportActionBar(toolbar);
+        setSupportActionBar(getAppbar().getToolbar());
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
@@ -2169,16 +1908,10 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                if (isSearchViewEnabled) hideSearchView();
+                if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
             }
         });
 
-        pathbar = (LinearLayout) findViewById(R.id.pathbar);
-        buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
-        scroll1.setSmoothScrollingEnabled(true);
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
@@ -2212,7 +1945,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
@@ -2233,7 +1966,7 @@ public class MainActivity extends BaseActivity implements
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
@@ -2261,38 +1994,6 @@ public class MainActivity extends BaseActivity implements
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
         }
-
-        searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
-        searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
-        ImageView clear = (ImageView) findViewById(R.id.search_close_btn);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchViewEditText.setText("");
-            }
-        });
-        findViewById(R.id.img_view_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSearchView();
-            }
-        });
-        searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Perform action on key press
-                    mainActivityHelper.search(searchViewEditText.getText().toString());
-                    hideSearchView();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        //    searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-        //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
     }
 
     /**
@@ -2374,268 +2075,6 @@ public class MainActivity extends BaseActivity implements
                 mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
                 //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
-            }
-        });
-    }
-
-    public void updatePath(@NonNull final String news, boolean results, OpenMode openmode,
-                           int folder_count, int file_count) {
-
-        if (news.length() == 0) return;
-
-        switch (openmode) {
-            case SMB:
-                newPath = mainActivityHelper.parseSmbPath(news);
-                break;
-            case OTG:
-                newPath = mainActivityHelper.parseOTGPath(news);
-                break;
-            case CUSTOM:
-                newPath = mainActivityHelper.getIntegralNames(news);
-                break;
-            case DROPBOX:
-            case BOX:
-            case ONEDRIVE:
-            case GDRIVE:
-                newPath = mainActivityHelper.parseCloudPath(openmode, news);
-                break;
-            default:
-                newPath = news;
-        }
-
-        final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
-        final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
-        TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-        if (!results) {
-            textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
-                    " " + file_count + " " + getResources().getString(R.string.files));
-        } else {
-            bapath.setText(R.string.searchresults);
-            textView.setText(R.string.empty);
-            return;
-        }
-        final String oldPath = bapath.getText().toString();
-        if (oldPath.equals(newPath)) return;
-
-        // implement animation while setting text
-        newPathBuilder = new StringBuffer().append(newPath);
-        oldPathBuilder = new StringBuffer().append(oldPath);
-
-        final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
-        Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
-
-        if (newPath.length() > oldPath.length() &&
-                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
-                oldPath.length() != 0) {
-
-            // navigate forward
-            newPathBuilder.delete(0, newPathBuilder.length());
-            newPathBuilder.append(newPath);
-            newPathBuilder.delete(0, oldPath.length());
-            animPath.setAnimation(slideIn);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-                    }, PATH_ANIM_END_DELAY);
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(newPathBuilder.toString());
-                    //bapath.setText(oldPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else if (newPath.length() < oldPath.length() &&
-                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
-
-            // navigate backwards
-            oldPathBuilder.delete(0, oldPathBuilder.length());
-            oldPathBuilder.append(oldPath);
-            oldPathBuilder.delete(0, newPath.length());
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    animPath.setVisibility(View.GONE);
-                    bapath.setText(newPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPathBuilder.toString());
-                    bapath.setText(newPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else if (oldPath.isEmpty()) {
-
-            // case when app starts
-            animPath.setAnimation(slideIn);
-            animPath.setText(newPath);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    bapath.setText("");
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-                    }, PATH_ANIM_END_DELAY);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else {
-            // completely different path
-            // first slide out of old path followed by slide in of new path
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-                    super.onAnimationStart(animator);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPath);
-                    bapath.setText("");
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    super.onAnimationEnd(animator);
-
-                    //animPath.setVisibility(View.GONE);
-                    animPath.setText(newPath);
-                    bapath.setText("");
-                    animPath.setAnimation(slideIn);
-
-                    animPath.animate().setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    animPath.setVisibility(View.GONE);
-                                    bapath.setText(newPath);
-                                }
-                            }, PATH_ANIM_END_DELAY);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            // we should not be having anything here in path bar
-                            animPath.setVisibility(View.VISIBLE);
-                            bapath.setText("");
-                            scroll.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        }
-    }
-
-    public void initiatebbar() {
-        final View pathbar = findViewById(R.id.pathbar);
-        TextView textView = (TextView) findViewById(R.id.fullpath);
-
-        pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainFragment m = getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
-                    utils.crossfade(buttons, pathbar);
-                    timer.cancel();
-                    timer.start();
-                }
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainFragment m = getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
-                    utils.crossfade(buttons, pathbar);
-                    timer.cancel();
-                    timer.start();
-                }
             }
         });
     }
@@ -2862,6 +2301,18 @@ public class MainActivity extends BaseActivity implements
         bundle.putBoolean("edit", edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    }
+
+    /**
+     * Shows a view that goes from white at it's lowest part to transparent a the top.
+     * It covers the fragment.
+     */
+    public void showSmokeScreen() {
+        Futils.revealShow(fabBgView, true);
+    }
+
+    public void hideSmokeScreen() {
+        Futils.revealShow(fabBgView, false);
     }
 
     @Override

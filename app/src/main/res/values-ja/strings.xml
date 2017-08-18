@@ -51,7 +51,6 @@
   <string name="file_empty">ファイルは空です</string>
   <string name="error">エラー</string>
   <string name="cantlistfiles">root がないとファイルを一覧表示できません</string>
-  <string name="searchresults">検索結果 </string>
   <string name="itemsselected">アイテム選択</string>
   <string name="newhomedirectory">新しいホームディレクトリー</string>
   <string name="rename">名前を変更</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">ファイルを読み取りできません</string>
   <string name="not_allowed">許可されていません</string>
   <string name="processes">プロセス</string>
-  <string name="searching">検索中</string>
   <string name="copying_fles">ファイルのコピー中</string>
   <string name="done">完了</string>
   <string name="Extracting_fles">ファイルの抽出中</string>

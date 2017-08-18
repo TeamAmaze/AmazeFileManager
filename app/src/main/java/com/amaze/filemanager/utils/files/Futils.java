@@ -186,7 +186,7 @@ public class Futils {
         }
     }
 
-    public void crossfade(View buttons,final View pathbar) {
+    public static void crossfade(View buttons,final View pathbar) {
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
         buttons.setAlpha(0f);
@@ -213,7 +213,7 @@ public class Futils {
         // participate in layout passes, etc.)
     }
 
-    public void revealShow(final View view, boolean reveal) {
+    public static void revealShow(final View view, boolean reveal) {
         if (reveal) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
             animator.setDuration(300); //ms
@@ -238,7 +238,7 @@ public class Futils {
         }
     }
 
-    public void crossfadeInverse(final View buttons,final View pathbar) {
+    public static void crossfadeInverse(final View buttons,final View pathbar) {
         // Set the content view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation.
 
@@ -708,7 +708,7 @@ public class Futils {
         }
     }
 
-    public Bundle getPaths(String path, Context c) {
+    public static Bundle getPaths(String path, Context c) {
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> paths = new ArrayList<>();
         Bundle b = new Bundle();
@@ -1017,4 +1017,9 @@ public class Futils {
         return arrayList;
     }
 
+    public static boolean isStorage(String path) {
+        for (String s : DataUtils.getInstance().getStorages())
+            if (s.equals(path)) return true;
+        return false;
+    }
 }

@@ -51,7 +51,6 @@
   <string name="file_empty">Berkas ini kosong</string>
   <string name="error">Kesalahan</string>
   <string name="cantlistfiles">Tidak bisa melihat daftar berkas tanpa akses root</string>
-  <string name="searchresults">Hasil Pencarian dari </string>
   <string name="itemsselected">Item Dipilih</string>
   <string name="newhomedirectory">Direktori baru Laman Depan</string>
   <string name="rename">Ganti nama</string>
@@ -187,7 +186,6 @@
   <string name="cant_read_file">Tidak dapat membaca file</string>
   <string name="not_allowed">Tidak diijinkan</string>
   <string name="processes">Proses</string>
-  <string name="searching">Mencari</string>
   <string name="copying_fles">Menyalin file</string>
   <string name="done">Selesai</string>
   <string name="Extracting_fles">Mengekstrak file</string>

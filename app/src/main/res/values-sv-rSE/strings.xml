@@ -53,7 +53,6 @@
     <string name="file_empty">Filen är tom</string>
     <string name="error">Error</string>
     <string name="cantlistfiles">Kan inte lista filer utan root</string>
-    <string name="searchresults">Sökträffar</string>
     <string name="itemsselected">Valda Object</string>
     <string name="newhomedirectory">Ny Hemkatalog</string>
     <string name="rename">Döp om</string>
@@ -186,7 +185,6 @@
     <string name="cant_read_file">Kan inte läsa fil</string>
     <string name="not_allowed">Inte Tillåtet</string>
     <string name="processes">Processer</string>
-    <string name="searching">Söker</string>
     <string name="copying_fles">Kopierar Filer</string>
     <string name="done">Klart</string>
     <string name="Extracting_fles">Packar upp Filer</string>
@@ -386,7 +384,6 @@
     <string name="path">Sökväg</string>
     <string name="renamebookmark">Justera Bokmärke</string>
     <string name="cut">Klipp ut</string>
-    <string name="empty"></string>
     <string name="search">Sök</string>
     <string name="invalid_name">Ogiltigt namn</string>
     <string name="search_hint">Skriv för att söka&#8230;</string>
