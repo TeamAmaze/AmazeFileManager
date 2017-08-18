@@ -20,10 +20,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
@@ -371,11 +370,14 @@ public class TabFragment extends android.support.v4.app.Fragment
     // updating indicator color as per the current viewpager tab
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
+
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+
         if (index == 0) {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(ThemedActivity.accentSkin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
         } else {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(ThemedActivity.accentSkin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
         }
     }

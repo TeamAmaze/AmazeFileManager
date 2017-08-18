@@ -2,7 +2,6 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -25,6 +23,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.Futils;
 
 import java.io.File;
@@ -156,6 +155,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
     private void showDialog(final String path, final ArrayList<BaseFile> filesToCopy,
                             final ArrayList<BaseFile> conflictingFiles) {
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
         LayoutInflater layoutInflater =
                 (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -167,15 +167,15 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-        Utils.setTint(context, checkBox, Color.parseColor(ThemedActivity.accentSkin));
+        Utils.setTint(context, checkBox, accentColor);
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));
         dialogBuilder.positiveText(R.string.skip);
         dialogBuilder.negativeText(R.string.overwrite);
         dialogBuilder.neutralText(R.string.cancel);
-        dialogBuilder.positiveColor(Color.parseColor(ThemedActivity.accentSkin));
-        dialogBuilder.negativeColor(Color.parseColor(ThemedActivity.accentSkin));
-        dialogBuilder.neutralColor(Color.parseColor(ThemedActivity.accentSkin));
+        dialogBuilder.positiveColor(accentColor);
+        dialogBuilder.negativeColor(accentColor);
+        dialogBuilder.neutralColor(accentColor);
         dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

@@ -1072,7 +1072,7 @@ public class MainActivity extends ThemedActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity, ThemedActivity.accentSkin, getAppTheme(),
+                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -2025,13 +2025,12 @@ public class MainActivity extends ThemedActivity implements
     }
 
     void initialiseFab() {
-        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(ThemedActivity.accentSkin);
-        int folderskin = Color.parseColor(folder_skin);
-        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
+        int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
+
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(ThemedActivity.accentSkin));
-        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        floatingActionButton.setMenuButtonColorNormal(colorAccent);
+        floatingActionButton.setMenuButtonColorPressed(colorAccent);
 
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
@@ -2042,8 +2041,8 @@ public class MainActivity extends ThemedActivity implements
         });
 
         FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
-        fabNewFolder.setColorNormal(folderskin);
-        fabNewFolder.setColorPressed(fabskinpressed);
+        fabNewFolder.setColorNormal(iconSkin);
+        fabNewFolder.setColorPressed(iconSkin);
         fabNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2054,8 +2053,8 @@ public class MainActivity extends ThemedActivity implements
             }
         });
         FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
-        fabNewFile.setColorNormal(folderskin);
-        fabNewFile.setColorPressed(fabskinpressed);
+        fabNewFile.setColorNormal(iconSkin);
+        fabNewFile.setColorPressed(iconSkin);
         fabNewFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2065,8 +2064,8 @@ public class MainActivity extends ThemedActivity implements
             }
         });
         final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setColorNormal(iconSkin);
+        floatingActionButton3.setColorPressed(iconSkin);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2103,7 +2102,7 @@ public class MainActivity extends ThemedActivity implements
 
     public void renameBookmark(final String title, final String path) {
         if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, ThemedActivity.accentSkin);
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getColorPreference().getColor(ColorUsage.ACCENT));
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }

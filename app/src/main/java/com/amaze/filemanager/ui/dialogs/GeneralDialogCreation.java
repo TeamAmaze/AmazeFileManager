@@ -1,6 +1,5 @@
 package com.amaze.filemanager.ui.dialogs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,8 +30,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
@@ -72,6 +72,7 @@ import java.util.concurrent.Executors;
 
 import eu.chainfire.libsuperuser.Shell;
 
+import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 /**
@@ -83,24 +84,25 @@ import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
+    public static MaterialDialog showBasicDialog(BasicActivity m, String[] texts) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m)
                 .content(texts[0])
-                .widgetColor(Color.parseColor(fabskin))
-                .theme(appTheme.getMaterialDialogTheme())
+                .widgetColor(accentColor)
+                .theme(m.getAppTheme().getMaterialDialogTheme())
                 .title(texts[1])
                 .positiveText(texts[2])
-                .positiveColor(Color.parseColor(fabskin))
+                .positiveColor(accentColor)
                 .negativeText(texts[3])
-                .negativeColor(Color.parseColor(fabskin));
+                .negativeColor(accentColor);
         if (texts[4] != (null)) {
-            a.neutralText(texts[4])
-                    .neutralColor(Color.parseColor(fabskin));
+            a.neutralText(texts[4]).neutralColor(accentColor);
         }
         return a.build();
     }
 
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false, new
                 MaterialDialog.InputCallback() {
@@ -109,19 +111,18 @@ public class GeneralDialogCreation {
 
                     }
                 });
-        a.widgetColor(Color.parseColor(ThemedActivity.accentSkin));
+        a.widgetColor(accentColor);
 
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
         a.positiveText(texts[3]);
-        a.positiveColor(Color.parseColor(ThemedActivity.accentSkin));
+        a.positiveColor(accentColor);
         a.neutralText(texts[4]);
         if (texts[5] != (null)) {
             a.negativeText(texts[5]);
-            a.negativeColor(Color.parseColor(ThemedActivity.accentSkin));
+            a.negativeColor(accentColor);
         }
-        MaterialDialog dialog = a.build();
-        return dialog;
+        return a.build();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -679,7 +680,7 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = M)
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
                                                     final EncryptDecryptUtils.DecryptButtonCallbackInterface

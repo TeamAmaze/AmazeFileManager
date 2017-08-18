@@ -232,7 +232,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             case "plus_pic":
                 if(gplus.isChecked()){
                     boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
-                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
+                    if(!b) MainActivityHelper.requestAccountsPermission((PreferencesActivity) getActivity());
                 }
                 return false;
             /*FROM HERE BE FRAGMENTS*/

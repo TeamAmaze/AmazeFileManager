@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -37,12 +36,12 @@ public class RenameBookmark extends DialogFragment {
     private int studiomode = 0;
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public static RenameBookmark getInstance(String name, String path, String fabskin) {
+    public static RenameBookmark getInstance(String name, String path, int accentColor) {
         RenameBookmark renameBookmark = new RenameBookmark();
         Bundle bundle = new Bundle();
         bundle.putString("title", name);
         bundle.putString("path", path);
-        bundle.putString("fabskin", fabskin);
+        bundle.putInt("accentColor", accentColor);
 
         renameBookmark.setArguments(bundle);
         return renameBookmark;
@@ -60,7 +59,7 @@ public class RenameBookmark extends DialogFragment {
             bookmarkCallback = (BookmarkCallback) getActivity();
         title = getArguments().getString("title");
         path = getArguments().getString("path");
-        String fabskin = getArguments().getString("fabskin");
+        int accentColor = getArguments().getInt("accentColor");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
 
         studiomode = sp.getInt("studio", 0);
@@ -69,9 +68,9 @@ public class RenameBookmark extends DialogFragment {
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
             builder.title(R.string.renamebookmark);
-            builder.positiveColor(Color.parseColor(fabskin));
-            builder.negativeColor(Color.parseColor(fabskin));
-            builder.neutralColor(Color.parseColor(fabskin));
+            builder.positiveColor(accentColor);
+            builder.negativeColor(accentColor);
+            builder.neutralColor(accentColor);
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);

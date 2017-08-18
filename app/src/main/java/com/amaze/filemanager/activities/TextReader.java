@@ -284,8 +284,8 @@ public class TextReader extends ThemedActivity implements TextWatcher, View.OnCl
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
-                    .positiveColor(Color.parseColor(accentSkin))
-                    .negativeColor(Color.parseColor(accentSkin))
+                    .positiveColor(getColorPreference().getColor(ColorUsage.ACCENT))
+                    .negativeColor(getColorPreference().getColor(ColorUsage.ACCENT))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
