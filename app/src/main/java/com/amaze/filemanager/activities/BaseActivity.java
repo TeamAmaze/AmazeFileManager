@@ -97,7 +97,7 @@ public class BaseActivity extends BasicActivity {
     }
 
     void setTheme() {
-        AppTheme theme = getAppTheme();
+        AppTheme theme = getAppTheme().getSimpleTheme();
         if (Build.VERSION.SDK_INT >= 21) {
 
             switch (accentSkin.toUpperCase()) {

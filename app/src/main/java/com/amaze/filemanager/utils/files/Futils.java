@@ -265,10 +265,6 @@ public class Futils {
         // participate in layout passes, etc.)
     }
 
-    public void shareFiles(ArrayList<File> a, Activity c,int theme,int fab_skin) {
-        shareFiles(a,c, AppTheme.fromIndex(theme), fab_skin);
-    }
-
     public void shareCloudFile(String path, final OpenMode openMode, final Context context) {
         new AsyncTask<String, Void, String>() {
 
