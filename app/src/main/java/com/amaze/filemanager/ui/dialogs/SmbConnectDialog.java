@@ -22,17 +22,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
-import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +36,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import jcifs.smb.SmbFile;
 
@@ -167,7 +162,7 @@ public class SmbConnectDialog extends DialogFragment {
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int accentColor = ((BaseActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+                int accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
                 GeneralDialogCreation.showSMBHelpDialog(context, accentColor);
             }
         });

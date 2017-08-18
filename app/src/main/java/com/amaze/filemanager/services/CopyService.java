@@ -36,7 +36,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -209,7 +209,7 @@ public class CopyService extends Service {
             // even directories can end with CRYPT_EXTENSION
             if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
 
-                for (BaseFile file : sourceFile.listFiles(getApplicationContext(), BaseActivity.rootMode)) {
+                for (BaseFile file : sourceFile.listFiles(getApplicationContext(), ThemedActivity.rootMode)) {
                     // iterating each file inside source files which were copied to find instance of
                     // any copied / moved encrypted file
 
@@ -294,7 +294,7 @@ public class CopyService extends Service {
 
                                 if (!f1.isSmb()
                                         && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
-                                        && BaseActivity.rootMode) {
+                                        && ThemedActivity.rootMode) {
                                     // either source or target are in root
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
@@ -316,7 +316,7 @@ public class CopyService extends Service {
                         }
                     }
 
-                } else if (BaseActivity.rootMode) {
+                } else if (ThemedActivity.rootMode) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         if (!progressHandler.getCancelled()) {
 
@@ -521,7 +521,7 @@ public class CopyService extends Service {
     // avoid using the method as there is no way to know when we would be returning from command callbacks
     // rather confirm from the command result itself, inside it's callback
     boolean checkFiles(HFile hFile1, HFile hFile2) throws RootNotPermittedException {
-        if (RootHelper.isDirectory(hFile1.getPath(), BaseActivity.rootMode, 5)) {
+        if (RootHelper.isDirectory(hFile1.getPath(), ThemedActivity.rootMode, 5)) {
             if (RootHelper.fileExists(hFile2.getPath())) return false;
             ArrayList<BaseFile> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
             if (baseFiles.size() > 0) {

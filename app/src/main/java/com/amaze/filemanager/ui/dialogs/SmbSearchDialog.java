@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 import com.amaze.filemanager.utils.Computer;
@@ -48,7 +48,7 @@ public class SmbSearchDialog extends DialogFragment {
         super.onCreate(bundle);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        accentColor = ((BaseActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
     @Override

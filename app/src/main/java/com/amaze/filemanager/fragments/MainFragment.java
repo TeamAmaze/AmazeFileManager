@@ -71,7 +71,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.CloudHandler;
@@ -675,14 +675,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case R.id.about:
                     LayoutElement x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
-                            x.getPermissions(), (BaseActivity) getActivity(), BaseActivity.rootMode,
+                            x.getPermissions(), (ThemedActivity) getActivity(), ThemedActivity.rootMode,
                             utilsProvider.getAppTheme());
                     /*
                     PropertiesSheet propertiesSheet = new PropertiesSheet();
                     Bundle arguments = new Bundle();
                     arguments.putParcelable(PropertiesSheet.KEY_FILE, x.generateBaseFile());
                     arguments.putString(PropertiesSheet.KEY_PERMISSION, x.getPermissions());
-                    arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
+                    arguments.putBoolean(PropertiesSheet.KEY_ROOT, ThemedActivity.rootMode);
                     propertiesSheet.setArguments(arguments);
                     propertiesSheet.show(getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
                     */
@@ -1298,7 +1298,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                         name = name + "/";
                 }
                 getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                        CURRENT_PATH + "/" + name, getActivity(), BaseActivity.rootMode);
+                        CURRENT_PATH + "/" + name, getActivity(), ThemedActivity.rootMode);
             }
         });
 
@@ -1390,7 +1390,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     CURRENT_PATH = parentPath;
 
                     MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
-                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, BaseActivity.rootMode,
+                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ThemedActivity.rootMode,
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);

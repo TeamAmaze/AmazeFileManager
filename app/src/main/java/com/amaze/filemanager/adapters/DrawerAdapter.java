@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HFile;
@@ -94,8 +94,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             myChecked.put(i, false);
         }
         this.m = m;
-        fabskin = Color.parseColor(BaseActivity.accentSkin);
-        color = colors.get(BaseActivity.accentSkin);
+        fabskin = Color.parseColor(ThemedActivity.accentSkin);
+        color = colors.get(ThemedActivity.accentSkin);
         if (color == null) {
             color = colors.get("#e91e63");
         }
@@ -199,7 +199,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 else view.setBackgroundColor(Color.parseColor("#ff424242"));
                 imageView.setColorFilter(fabskin);
-                txtTitle.setTextColor(Color.parseColor(BaseActivity.accentSkin));
+                txtTitle.setTextColor(Color.parseColor(ThemedActivity.accentSkin));
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     imageView.setColorFilter(Color.parseColor("#666666"));
@@ -225,7 +225,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         if (!new File(path).exists()) {
             Toast.makeText(getContext(), getContext().getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
             Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), getContext(),
-                    BaseActivity.rootMode, new Operations.ErrorCallBack() {
+                    ThemedActivity.rootMode, new Operations.ErrorCallBack() {
                         //TODO empty
                         @Override
                         public void exists(HFile file) {

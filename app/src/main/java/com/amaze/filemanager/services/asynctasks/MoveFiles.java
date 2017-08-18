@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
@@ -99,7 +99,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                         if (!source.renameTo(dest)) {
 
                             // check if we have root
-                            if (BaseActivity.rootMode) {
+                            if (ThemedActivity.rootMode) {
                                 try {
                                     if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName()))
                                         return false;

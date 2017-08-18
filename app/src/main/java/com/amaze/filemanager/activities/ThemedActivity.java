@@ -20,7 +20,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
-public class BaseActivity extends BasicActivity {
+public class ThemedActivity extends BasicActivity {
     public SharedPreferences sharedPref;
 
     // Accent and Primary hex color string respectively
@@ -77,7 +77,7 @@ public class BaseActivity extends BasicActivity {
                 @Override
                 public void onClick(View v) {
                     ActivityCompat
-                            .requestPermissions(BaseActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
+                            .requestPermissions(ThemedActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
                     materialDialog.dismiss();
                 }
             });

@@ -14,10 +14,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.services.CopyService;
@@ -168,15 +167,15 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-        Utils.setTint(context, checkBox, Color.parseColor(BaseActivity.accentSkin));
+        Utils.setTint(context, checkBox, Color.parseColor(ThemedActivity.accentSkin));
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));
         dialogBuilder.positiveText(R.string.skip);
         dialogBuilder.negativeText(R.string.overwrite);
         dialogBuilder.neutralText(R.string.cancel);
-        dialogBuilder.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        dialogBuilder.negativeColor(Color.parseColor(BaseActivity.accentSkin));
-        dialogBuilder.neutralColor(Color.parseColor(BaseActivity.accentSkin));
+        dialogBuilder.positiveColor(Color.parseColor(ThemedActivity.accentSkin));
+        dialogBuilder.negativeColor(Color.parseColor(ThemedActivity.accentSkin));
+        dialogBuilder.neutralColor(Color.parseColor(ThemedActivity.accentSkin));
         dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

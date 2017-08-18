@@ -10,7 +10,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -62,14 +62,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         switch (item.getItemId()) {
             case R.id.about:
                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
-                        rowItem.getPermissions(), (BaseActivity) mainFragment.getActivity(),
-                        BaseActivity.rootMode, utilitiesProvider.getAppTheme());
+                        rowItem.getPermissions(), (ThemedActivity) mainFragment.getActivity(),
+                        ThemedActivity.rootMode, utilitiesProvider.getAppTheme());
                                 /*
                                 PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
                                 arguments.putParcelable(PropertiesSheet.KEY_FILE, rowItem.generateBaseFile());
                                 arguments.putString(PropertiesSheet.KEY_PERMISSION, rowItem.getPermissions());
-                                arguments.putBoolean(PropertiesSheet.KEY_ROOT, BaseActivity.rootMode);
+                                arguments.putBoolean(PropertiesSheet.KEY_ROOT, ThemedActivity.rootMode);
                                 propertiesSheet.setArguments(arguments);
                                 propertiesSheet.show(main.getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
                                 */

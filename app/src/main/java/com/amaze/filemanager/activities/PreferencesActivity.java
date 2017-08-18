@@ -50,7 +50,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
 
-public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PreferencesActivity extends ThemedActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     //Start is the first activity you see
     public static final int START_PREFERENCE = 0;
