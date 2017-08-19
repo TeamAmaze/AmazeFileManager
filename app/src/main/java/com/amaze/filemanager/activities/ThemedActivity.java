@@ -20,14 +20,9 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
-public class BaseActivity extends BasicActivity {
+public class ThemedActivity extends BasicActivity {
     public SharedPreferences sharedPref;
 
-    // Accent and Primary hex color string respectively
-    /**
-     * @deprecated use {@link #getColorPreference()#getColor(int)} and {@link ColorUsage#ACCENT}
-     */
-    public static String accentSkin;
     public static boolean rootMode;
     boolean checkStorage = true;
 
@@ -42,7 +37,6 @@ public class BaseActivity extends BasicActivity {
                     .saveToPreferences(sharedPref);
         }
 
-        accentSkin = getColorPreference().getColorAsString(ColorUsage.ACCENT);
         setTheme();
 
         rootMode = sharedPref.getBoolean(PreferenceUtils.KEY_ROOT, false);
@@ -72,12 +66,17 @@ public class BaseActivity extends BasicActivity {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this, accentSkin, getAppTheme(), new String[]{getResources().getString(R.string.granttext), getResources().getString(R.string.grantper), getResources().getString(R.string.grant), getResources().getString(R.string.cancel), null});
+            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this,
+                    new String[]{getString(R.string.granttext),
+                            getString(R.string.grantper),
+                            getString(R.string.grant),
+                            getString(R.string.cancel),
+                            null});
             materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ActivityCompat
-                            .requestPermissions(BaseActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
+                            .requestPermissions(ThemedActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
                     materialDialog.dismiss();
                 }
             });
@@ -97,10 +96,10 @@ public class BaseActivity extends BasicActivity {
     }
 
     void setTheme() {
-        AppTheme theme = getAppTheme();
+        AppTheme theme = getAppTheme().getSimpleTheme();
         if (Build.VERSION.SDK_INT >= 21) {
 
-            switch (accentSkin.toUpperCase()) {
+            switch (getColorPreference().getColorAsString(ColorUsage.ACCENT).toUpperCase()) {
                 case "#F44336":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_red);

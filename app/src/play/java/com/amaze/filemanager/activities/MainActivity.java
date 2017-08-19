@@ -52,7 +52,6 @@ import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -172,9 +171,8 @@ import jcifs.smb.SmbFile;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
-import static com.amaze.filemanager.utils.MainActivityHelper.SEARCH_TEXT;
 
-public class MainActivity extends BaseActivity implements
+public class MainActivity extends ThemedActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
@@ -586,7 +584,7 @@ public class MainActivity extends BaseActivity implements
                     baseUris.add(baseFile);
                 }
 
-                new CopyFileCheck(mainFragment, path, false, mainActivity, BaseActivity.rootMode)
+                new CopyFileCheck(mainFragment, path, false, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, baseUris);
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -691,7 +689,7 @@ public class MainActivity extends BaseActivity implements
                     rv.add(s);
             }
         }
-        if (BaseActivity.rootMode)
+        if (ThemedActivity.rootMode)
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
@@ -794,7 +792,7 @@ public class MainActivity extends BaseActivity implements
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
-            if (BaseActivity.rootMode) {
+            if (ThemedActivity.rootMode) {
                 // TODO close all shells
             }
         } else {
@@ -1074,7 +1072,7 @@ public class MainActivity extends BaseActivity implements
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
+                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1175,7 +1173,7 @@ public class MainActivity extends BaseActivity implements
                 String path = ma.getCurrentPath();
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                new CopyFileCheck(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -1810,7 +1808,7 @@ public class MainActivity extends BaseActivity implements
                 case DataUtils.RENAME:
                     MainFragment ma = getCurrentMainFragment();
                     mainActivityHelper.rename(ma.openMode, (oppathe),
-                            (oppathe1), mainActivity, BaseActivity.rootMode);
+                            (oppathe1), mainActivity, ThemedActivity.rootMode);
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
@@ -2027,13 +2025,12 @@ public class MainActivity extends BaseActivity implements
     }
 
     void initialiseFab() {
-        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
-        int folderskin = Color.parseColor(folder_skin);
-        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
+        int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
+
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
-        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        floatingActionButton.setMenuButtonColorNormal(colorAccent);
+        floatingActionButton.setMenuButtonColorPressed(colorAccent);
 
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
@@ -2044,8 +2041,8 @@ public class MainActivity extends BaseActivity implements
         });
 
         FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
-        fabNewFolder.setColorNormal(folderskin);
-        fabNewFolder.setColorPressed(fabskinpressed);
+        fabNewFolder.setColorNormal(iconSkin);
+        fabNewFolder.setColorPressed(iconSkin);
         fabNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2056,8 +2053,8 @@ public class MainActivity extends BaseActivity implements
             }
         });
         FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
-        fabNewFile.setColorNormal(folderskin);
-        fabNewFile.setColorPressed(fabskinpressed);
+        fabNewFile.setColorNormal(iconSkin);
+        fabNewFile.setColorPressed(iconSkin);
         fabNewFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2067,8 +2064,8 @@ public class MainActivity extends BaseActivity implements
             }
         });
         final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setColorNormal(iconSkin);
+        floatingActionButton3.setColorPressed(iconSkin);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2105,7 +2102,7 @@ public class MainActivity extends BaseActivity implements
 
     public void renameBookmark(final String title, final String path) {
         if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getColorPreference().getColor(ColorUsage.ACCENT));
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }

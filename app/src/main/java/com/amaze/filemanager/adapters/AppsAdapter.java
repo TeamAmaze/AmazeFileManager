@@ -42,7 +42,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsList;
@@ -69,12 +69,12 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
     public SparseBooleanArray myChecked = new SparseBooleanArray();
     AppsList app;
 
-    private BaseActivity baseActivity;
+    private ThemedActivity themedActivity;
 
-    public AppsAdapter(Context context, BaseActivity ba, UtilitiesProviderInterface utilsProvider,
+    public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProviderInterface utilsProvider,
                        int resourceId, AppsList app) {
         super(context, resourceId);
-        baseActivity = ba;
+        themedActivity = ba;
         this.utilsProvider = utilsProvider;
         this.context = context;
         this.app = app;
@@ -219,7 +219,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int colorAccent = baseActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+                        int colorAccent = themedActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
                         switch (item.getItemId()) {
                             case R.id.open:
@@ -232,7 +232,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                             case R.id.share:
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
-                                baseActivity.getColorPreference();
+                                themedActivity.getColorPreference();
                                 utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
                                 return true;
                             case R.id.unins:

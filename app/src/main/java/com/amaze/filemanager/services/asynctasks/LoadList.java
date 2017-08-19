@@ -31,7 +31,7 @@ import android.text.format.Formatter;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
@@ -217,7 +217,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 try {
                     ArrayList<BaseFile> arrayList1;
-                    arrayList1 = RootHelper.getFilesList(path, BaseActivity.rootMode, ma.SHOW_HIDDEN,
+                    arrayList1 = RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
                             new RootHelper.GetModeCallBack() {
                                 @Override
                                 public void getMode(OpenMode mode) {

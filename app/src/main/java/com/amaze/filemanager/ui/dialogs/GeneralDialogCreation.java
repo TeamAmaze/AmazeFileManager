@@ -1,6 +1,5 @@
 package com.amaze.filemanager.ui.dialogs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,8 +30,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
@@ -65,25 +65,14 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import eu.chainfire.libsuperuser.Shell;
 
+import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 /**
@@ -95,24 +84,25 @@ import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(Activity m, String fabskin, AppTheme appTheme, String[] texts) {
+    public static MaterialDialog showBasicDialog(BasicActivity m, String[] texts) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m)
                 .content(texts[0])
-                .widgetColor(Color.parseColor(fabskin))
-                .theme(appTheme.getMaterialDialogTheme())
+                .widgetColor(accentColor)
+                .theme(m.getAppTheme().getMaterialDialogTheme())
                 .title(texts[1])
                 .positiveText(texts[2])
-                .positiveColor(Color.parseColor(fabskin))
+                .positiveColor(accentColor)
                 .negativeText(texts[3])
-                .negativeColor(Color.parseColor(fabskin));
+                .negativeColor(accentColor);
         if (texts[4] != (null)) {
-            a.neutralText(texts[4])
-                    .neutralColor(Color.parseColor(fabskin));
+            a.neutralText(texts[4]).neutralColor(accentColor);
         }
         return a.build();
     }
 
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
+        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false, new
                 MaterialDialog.InputCallback() {
@@ -121,19 +111,18 @@ public class GeneralDialogCreation {
 
                     }
                 });
-        a.widgetColor(Color.parseColor(BaseActivity.accentSkin));
+        a.widgetColor(accentColor);
 
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
         a.positiveText(texts[3]);
-        a.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        a.positiveColor(accentColor);
         a.neutralText(texts[4]);
         if (texts[5] != (null)) {
             a.negativeText(texts[5]);
-            a.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+            a.negativeColor(accentColor);
         }
-        MaterialDialog dialog = a.build();
-        return dialog;
+        return a.build();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -316,19 +305,19 @@ public class GeneralDialogCreation {
     }
 
     public static void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
-                                                           BaseActivity activity, boolean isRoot, AppTheme appTheme) {
+                                                           ThemedActivity activity, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
     }
 
-    public static void showPropertiesDialogWithoutPermissions(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogWithoutPermissions(final BaseFile f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
-    public static void showPropertiesDialogForStorage(final BaseFile f, BaseActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogForStorage(final BaseFile f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
 
     private static void showPropertiesDialog(final BaseFile baseFile, final String permissions,
-                                             BaseActivity base, boolean isRoot, AppTheme appTheme,
+                                             ThemedActivity base, boolean isRoot, AppTheme appTheme,
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
         final Context c = base.getApplicationContext();
@@ -691,7 +680,7 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = M)
     public static void showDecryptFingerprintDialog(final Context c, MainActivity main,
                                                     final Intent intent, AppTheme appTheme,
                                                     final EncryptDecryptUtils.DecryptButtonCallbackInterface
@@ -915,7 +904,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final AppsList m, AppTheme appTheme) {
-        int accentColor = ((BaseActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = ((ThemedActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());

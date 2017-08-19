@@ -89,7 +89,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends BaseActivity implements TextWatcher, View.OnClickListener {
+public class TextReader extends ThemedActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
     private BaseFile mFile;
@@ -284,8 +284,8 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
-                    .positiveColor(Color.parseColor(accentSkin))
-                    .negativeColor(Color.parseColor(accentSkin))
+                    .positiveColor(getColorPreference().getColor(ColorUsage.ACCENT))
+                    .negativeColor(getColorPreference().getColor(ColorUsage.ACCENT))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
@@ -379,7 +379,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
                 outputStream = null;
             }
 
-            if (BaseActivity.rootMode && outputStream == null) {
+            if (ThemedActivity.rootMode && outputStream == null) {
                 // try loading stream associated using root
                 try {
 
@@ -649,7 +649,7 @@ public class TextReader extends BaseActivity implements TextWatcher, View.OnClic
 
         if (uri.toString().contains("file://")) {
             // dealing with files
-            if (!file.canWrite() && BaseActivity.rootMode) {
+            if (!file.canWrite() && ThemedActivity.rootMode) {
                 // try loading stream associated using root
 
                 try {

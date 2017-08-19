@@ -3,11 +3,11 @@ package com.amaze.filemanager.activities;
 import android.support.v7.app.AppCompatActivity;
 
 import com.amaze.filemanager.utils.AppConfig;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.amaze.filemanager.utils.theme.AppThemeManagerInterface;
+import com.amaze.filemanager.utils.theme.AppThemeManager;
 
 /**
  * Created by rpiotaix on 17/10/16.
@@ -50,7 +50,7 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
     }
 
     @Override
-    public AppThemeManagerInterface getThemeManager() {
+    public AppThemeManager getThemeManager() {
         if (!initialized)
             initialize();
 

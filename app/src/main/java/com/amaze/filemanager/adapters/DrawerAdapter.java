@@ -35,8 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
@@ -45,25 +45,22 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
     private UtilitiesProviderInterface utilsProvider;
     private final ArrayList<Item> values;
     private MainActivity m;
-    private Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    //TODO queried but never updated
-    private HashMap<String, Float[]> colors = new HashMap<>();
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public void toggleChecked(int position) {
@@ -80,7 +77,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     private LayoutInflater inflater;
-    private int fabskin;
 
     public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
                          ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
@@ -94,11 +90,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             myChecked.put(i, false);
         }
         this.m = m;
-        fabskin = Color.parseColor(BaseActivity.accentSkin);
-        color = colors.get(BaseActivity.accentSkin);
-        if (color == null) {
-            color = colors.get("#e91e63");
-        }
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -194,12 +185,16 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
+
             if (myChecked.get(position)) {
-                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
-                else view.setBackgroundColor(Color.parseColor("#ff424242"));
-                imageView.setColorFilter(fabskin);
-                txtTitle.setTextColor(Color.parseColor(BaseActivity.accentSkin));
+                } else {
+                    view.setBackgroundColor(Color.parseColor("#ff424242"));
+                }
+                imageView.setColorFilter(accentColor);
+                txtTitle.setTextColor(accentColor);
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     imageView.setColorFilter(Color.parseColor("#666666"));
@@ -225,7 +220,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         if (!new File(path).exists()) {
             Toast.makeText(getContext(), getContext().getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
             Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), getContext(),
-                    BaseActivity.rootMode, new Operations.ErrorCallBack() {
+                    ThemedActivity.rootMode, new Operations.ErrorCallBack() {
                         //TODO empty
                         @Override
                         public void exists(HFile file) {

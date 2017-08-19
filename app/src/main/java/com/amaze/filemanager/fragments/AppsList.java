@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;
@@ -86,7 +86,7 @@ public class AppsList extends ListFragment implements LoaderManager.LoaderCallba
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
 
-        adapter = new AppsAdapter(getContext(), (BaseActivity) getActivity(), utilsProvider,
+        adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider,
                 R.layout.rowlayout, app);
         setListAdapter(adapter);
         setListShown(false);

@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +23,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
+import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -41,9 +41,9 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public class MainActivityHelper {
     private MainActivity mainActivity;
     private Futils utils;
     private DataUtils dataUtils = DataUtils.getInstance();
+    private int accentColor;
 
     /*
      * A static string which saves the last searched query. Used to retain search task after
@@ -68,14 +69,14 @@ public class MainActivityHelper {
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         this.utils = mainActivity.getFutils();
+        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move,
-                                          Context contextc) {
+    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
-        mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        mat.positiveColor(accentColor);
         mat.positiveText(R.string.cancel);
         String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
@@ -226,8 +227,8 @@ public class MainActivityHelper {
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        x.positiveColor(accentColor);
+        x.negativeColor(accentColor);
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -395,7 +396,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkfile(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
@@ -468,7 +469,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkdir(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
@@ -630,7 +631,7 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, BaseActivity.rootMode,
+        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, ThemedActivity.rootMode,
                 mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                 mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }
@@ -686,7 +687,7 @@ public class MainActivityHelper {
         return true;
     }
 
-    public static void requestAccountsPermission(final Activity activity) {
+    public static void requestAccountsPermission(final BasicActivity activity) {
         final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
                 Manifest.permission.INTERNET};
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -696,9 +697,7 @@ public class MainActivityHelper {
             // and the user would benefit from additional context for the use of the permission.
             // For example, if the request has been denied previously.
 
-            String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(activity, fab_skin,
-                    ((UtilitiesProviderInterface) activity).getAppTheme(),
+            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(activity,
                     new String[] {
                             activity.getResources().getString(R.string.grantgplus),
                             activity.getResources().getString(R.string.grantper),

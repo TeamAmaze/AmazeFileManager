@@ -36,7 +36,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -50,13 +49,10 @@ import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-
-import java.util.ArrayList;
 
 import static com.amaze.filemanager.R.string.feedback;
 
@@ -207,12 +203,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        utilsProvider.getThemeManager()
-                                .setAppTheme(AppTheme.fromIndex(which))
-                                .save();
-
-                        Log.d("theme", AppTheme.fromIndex(which).name());
-
+                        utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
                         dialog.dismiss();
                         restartPC(getActivity());
                         return true;
@@ -241,7 +232,7 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
             case "plus_pic":
                 if(gplus.isChecked()){
                     boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
-                    if(!b) MainActivityHelper.requestAccountsPermission(getActivity());
+                    if(!b) MainActivityHelper.requestAccountsPermission((PreferencesActivity) getActivity());
                 }
                 return false;
             /*FROM HERE BE FRAGMENTS*/

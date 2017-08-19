@@ -2081,7 +2081,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         });
 
         //    searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-        //     searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
+        //     searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
     }
 
     /**

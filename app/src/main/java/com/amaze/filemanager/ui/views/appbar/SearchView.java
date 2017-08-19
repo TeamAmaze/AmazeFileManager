@@ -78,7 +78,7 @@ public class SearchView {
         });
 
         //searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-        //searchViewEditText.setHintTextColor(Color.parseColor(BaseActivity.accentSkin));
+        //searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
     }
 
     /**

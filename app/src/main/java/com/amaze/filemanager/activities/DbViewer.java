@@ -56,7 +56,7 @@ import static android.os.Build.VERSION.SDK_INT;
 /**
  * Created by Vishal on 02-02-2015.
  */
-public class DbViewer extends BaseActivity {
+public class DbViewer extends ThemedActivity {
 
     private String path;
     private ListView listView;
@@ -151,7 +151,7 @@ public class DbViewer extends BaseActivity {
 
                 // if the db can't be read, and we have root enabled, try reading it by
                 // first copying it in cache dir
-                if (!file.canRead() && BaseActivity.rootMode) {
+                if (!file.canRead() && ThemedActivity.rootMode) {
 
                     try {
                         RootUtils.copy(pathFile.getPath(),
