@@ -28,7 +28,7 @@
         android:layout_toRightOf="@+id/img_view_back"
         android:hint="@string/search_hint"
         android:inputType="textAutoComplete"
-        android:singleLine="true"
+        android:imeOptions="actionSearch"
         android:maxLines="1"
         android:layout_toLeftOf="@+id/search_close_btn"
         android:theme="@style/appCompatLight"

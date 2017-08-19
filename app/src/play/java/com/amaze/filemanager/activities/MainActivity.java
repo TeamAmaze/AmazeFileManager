@@ -312,7 +312,9 @@ public class MainActivity extends ThemedActivity implements
         appbar = new AppBar(this, sharedPref, new SearchView.SearchListener() {
             @Override
             public void onSearch(String queue) {
-                mainActivityHelper.search(queue);
+                if(!queue.isEmpty()) {
+                    mainActivityHelper.search(queue);
+                }
             }
         });
         initialiseViews();
