@@ -65,6 +65,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -104,8 +105,8 @@ public class GeneralDialogCreation {
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false, new
-                MaterialDialog.InputCallback() {
+        a.input(texts[0], texts[1], false,
+                new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
 
@@ -115,10 +116,14 @@ public class GeneralDialogCreation {
 
         a.theme(m.getAppTheme().getMaterialDialogTheme());
         a.title(texts[2]);
+
         a.positiveText(texts[3]);
-        a.positiveColor(accentColor);
-        a.neutralText(texts[4]);
-        if (texts[5] != (null)) {
+
+        if(texts[4] != null) {
+            a.neutralText(texts[4]);
+        }
+
+        if (texts[5] != null) {
             a.negativeText(texts[5]);
             a.negativeColor(accentColor);
         }
@@ -1068,6 +1073,46 @@ public class GeneralDialogCreation {
 
             }
         });
+    }
+
+    public static void showChangePathsDialog(final WeakReference<MainActivity> m, final SharedPreferences prefs) {
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.get());
+        a.input(null, m.get().getCurrentMainFragment().getCurrentPath(), false,
+                new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence charSequence) {
+                        boolean isAccessible = Futils.isPathAccesible(charSequence.toString(), prefs);
+                        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccessible);
+                    }
+                });
+
+        a.alwaysCallInputCallback();
+
+        MainActivity mainActivity = m.get();
+
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+
+        a.widgetColor(accentColor);
+
+        a.theme(m.get().getAppTheme().getMaterialDialogTheme());
+        a.title(R.string.enterpath);
+
+        a.positiveText(R.string.go);
+        a.positiveColor(accentColor);
+
+        a.negativeText(R.string.cancel);
+        a.negativeColor(accentColor);
+
+        a.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                m.get().getCurrentMainFragment().loadlist(dialog.getInputEditText().getText().toString(),
+                        false, OpenMode.UNKNOWN);
+            }
+
+        });
+
+        a.show();
     }
 
 }
