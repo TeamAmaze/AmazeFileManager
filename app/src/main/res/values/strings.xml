@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -683,4 +683,8 @@
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
     <string name="local_inet_addr_error">Error getting local inet address</string>
     <string name="intent_save_as">Save as&#8230;</string>
+    <string name="go">Go</string>
+    <string name="advanced">Advanced</string>
+    <string name="typeablepaths_title">Custom paths</string>
+    <string name="typeablepaths_summary">Long press path bar type a custom path</string>
 </resources>
