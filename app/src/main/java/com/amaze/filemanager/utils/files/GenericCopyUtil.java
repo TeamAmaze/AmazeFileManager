@@ -2,7 +2,6 @@ package com.amaze.filemanager.utils.files;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -46,8 +45,6 @@ public class GenericCopyUtil {
     private DataUtils dataUtils = DataUtils.getInstance();
     public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
-    private ContentResolver contentResolver;
-
     public static final int DEFAULT_BUFFER_SIZE =  8192;
 
     public GenericCopyUtil(Context context) {
@@ -72,8 +69,6 @@ public class GenericCopyUtil {
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
 
-        contentResolver = mContext.getContentResolver();
-
         try {
 
             // initializing the input channels based on file types
@@ -88,13 +83,13 @@ public class GenericCopyUtil {
             } else if (mSourceFile.isSmb()) {
 
                 // source is in smb
-                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
+                bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isDropBoxFile()) {
 
                 CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                 bufferedInputStream = new BufferedInputStream(cloudStorageDropbox
                         .download(CloudUtil.stripPath(OpenMode.DROPBOX,
-                        mSourceFile.getPath())));
+                                mSourceFile.getPath())));
             } else if (mSourceFile.isBoxFile()) {
 
                 CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
@@ -131,20 +126,12 @@ public class GenericCopyUtil {
                         inChannel = new RandomAccessFile(file, "r").getChannel();
                     }
                 } else {
+                    ContentResolver contentResolver = mContext.getContentResolver();
+                    DocumentFile documentSourceFile = FileUtil.getDocumentFile(file,
+                            mSourceFile.isDirectory(), mContext);
 
-                    Uri uriFromPath = Uri.parse(mSourceFile.getPath());
-                    if (!uriFromPath.isRelative()) {
-
-                        DocumentFile documentSourceFile = FileUtil.getDocumentFile(file,
-                                mSourceFile.isDirectory(), mContext);
-
-                        bufferedInputStream = new BufferedInputStream(contentResolver
-                                .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
-                    } else {
-
-                        bufferedInputStream = new BufferedInputStream(contentResolver
-                                .openInputStream(uriFromPath), DEFAULT_BUFFER_SIZE);
-                    }
+                    bufferedInputStream = new BufferedInputStream(contentResolver
+                            .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
                 }
             }
 
@@ -234,20 +221,12 @@ public class GenericCopyUtil {
                         outChannel = new RandomAccessFile(file, "rw").getChannel();
                     }
                 } else {
+                    ContentResolver contentResolver = mContext.getContentResolver();
+                    DocumentFile documentTargetFile = FileUtil.getDocumentFile(file,
+                            mTargetFile.isDirectory(), mContext);
 
-                    Uri uriFromPath = Uri.parse(mTargetFile.getPath());
-                    if (!uriFromPath.isRelative()) {
-
-                        DocumentFile documentTargetFile = FileUtil.getDocumentFile(file,
-                                mTargetFile.isDirectory(mContext), mContext);
-
-                        bufferedOutputStream = new BufferedOutputStream(contentResolver
-                                .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
-                    } else {
-
-                        bufferedOutputStream = new BufferedOutputStream(contentResolver
-                                .openOutputStream(uriFromPath), DEFAULT_BUFFER_SIZE);
-                    }
+                    bufferedOutputStream = new BufferedOutputStream(contentResolver
+                            .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
                 }
             }
 

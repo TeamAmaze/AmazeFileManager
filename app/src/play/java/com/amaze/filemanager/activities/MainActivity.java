@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -139,6 +140,7 @@ import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -158,7 +160,12 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -344,52 +351,62 @@ public class MainActivity extends ThemedActivity implements
 
         path = getIntent().getStringExtra("path");
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
-        try {
-            intent = getIntent();
+        intent = getIntent();
 
-            String actionIntent = intent.getAction();
-            String typeIntent = intent.getType();
-            if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
-                if (failedOps != null) {
-                    mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
-                }
+        String actionIntent = intent.getAction();
+        String typeIntent = intent.getType();
+        if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+            ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            if (failedOps != null) {
+                mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
             }
-            if (actionIntent != null) {
-                if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+        }
+        if (actionIntent != null) {
+            if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
 
-                    // file picker intent
-                    mReturnIntent = true;
-                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-                    // ringtone picker intent
-                    mReturnIntent = true;
-                    mRingtonePickerIntent = true;
-                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
+                // file picker intent
+                mReturnIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-                    // zip viewer intent
-                    Uri uri = intent.getData();
-                    openzip = true;
-                    zippath = uri.toString();
-                } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
-                    // save a single file to filesystem
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+                // ringtone picker intent
+                mReturnIntent = true;
+                mRingtonePickerIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                    ArrayList<Uri> uris = new ArrayList<>();
-                    uris.add(uri);
-                    initFabToSave(uris);
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
 
-                } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && typeIntent != null) {
-                    // save multiple files to filesystem
+                // zip viewer intent
+                Uri uri = intent.getData();
+                openzip = true;
+                zippath = uri.toString();
+            } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
+                // save a single file to filesystem
 
-                    ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                    initFabToSave(arrayList);
-                }
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                ArrayList<Uri> uris = new ArrayList<>();
+                uris.add(uri);
+                initFabToSave(uris);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && typeIntent != null) {
+                // save multiple files to filesystem
+
+                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                initFabToSave(arrayList);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
             }
-        } catch (Exception e) {
-
-            e.printStackTrace();
         }
 
         if (savedInstanceState != null) {
@@ -576,20 +593,8 @@ public class MainActivity extends ThemedActivity implements
             @Override
             public void onClick(View v) {
 
-                MainFragment mainFragment = getCurrentMainFragment();
-                String path = mainFragment.getCurrentPath();
-                ArrayList<BaseFile> baseUris = new ArrayList<>();
-
-                for (Uri uri : uris) {
-                    // iterate all uri's and add them to list for them to be downloaded
-                    BaseFile baseFile = new BaseFile(uri.getPath());
-                    baseUris.add(baseFile);
-                }
-
-                new CopyFileCheck(mainFragment, path, false, mainActivity, ThemedActivity.rootMode)
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, baseUris);
-                COPY_PATH = null;
-                MOVE_PATH = null;
+                FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
                 finish();
             }
         });

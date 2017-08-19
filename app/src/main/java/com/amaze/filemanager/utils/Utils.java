@@ -1,7 +1,9 @@
 package com.amaze.filemanager.utils;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -25,6 +28,7 @@ import java.text.SimpleDateFormat;
  */
 
 public class Utils {
+
     private static final int INDEX_NOT_FOUND = -1;
     private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
     private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
@@ -189,4 +193,20 @@ public class Utils {
         return INDEX_NOT_FOUND;
     }
 
+    /**
+     * Force disables screen rotation. Useful when we're temporarily in activity because of external intent,
+     * and don't have to really deal much with filesystem.
+     * @param mainActivity
+     */
+    public static void disableScreenRotation(MainActivity mainActivity) {
+        int screenOrientation = mainActivity.getResources().getConfiguration().orientation;
+
+        if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
 }

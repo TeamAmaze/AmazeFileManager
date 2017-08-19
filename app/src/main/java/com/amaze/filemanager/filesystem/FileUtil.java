@@ -16,12 +16,21 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -158,6 +167,140 @@ public abstract class FileUtil {
             throw new Exception();
         }
         return outStream;
+    }
+
+    /**
+     * Writes uri stream from external application to the specified path
+     * @param uris
+     * @param contentResolver
+     * @param currentPath
+     */
+    public static final void writeUriToStorage(final MainActivity mainActivity, final ArrayList<Uri> uris,
+                                               final ContentResolver contentResolver, final String currentPath) {
+
+        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+
+            @Override
+            public <E> E doInBackground() {
+
+                for (Uri uri : uris) {
+
+                    BufferedInputStream bufferedInputStream = null;
+                    try {
+                        bufferedInputStream = new BufferedInputStream(contentResolver.openInputStream(uri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    BufferedOutputStream bufferedOutputStream = null;
+
+                    try {
+
+                        DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+                        String finalFilePath = currentPath + "/" + documentFile.getName();
+                        DataUtils dataUtils = DataUtils.getInstance();
+
+                        HFile hFile = new HFile(OpenMode.UNKNOWN, currentPath);
+                        hFile.generateMode(mainActivity);
+
+                        switch (hFile.getMode()) {
+                            case FILE:
+                            case ROOT:
+                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(finalFilePath));
+                                break;
+                            case SMB:
+                                OutputStream outputStream = new SmbFile(finalFilePath).getOutputStream();
+                                bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                break;
+                            case DROPBOX:
+                                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                                cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case BOX:
+                                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                                cloudStorageBox.upload(CloudUtil.stripPath(OpenMode.BOX, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case ONEDRIVE:
+                                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                                cloudStorageOneDrive.upload(CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case GDRIVE:
+                                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                                cloudStorageGDrive.upload(CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case OTG:
+                                DocumentFile documentTargetFile = OTGUtil.getDocumentFile(finalFilePath,
+                                        mainActivity, true);
+
+                                bufferedOutputStream = new BufferedOutputStream(contentResolver
+                                        .openOutputStream(documentTargetFile.getUri()),
+                                        GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+                                break;
+                            default:
+                                return null;
+                        }
+
+                        int count = 0;
+                        byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+
+                        while (count != -1) {
+
+                            count = bufferedInputStream.read(buffer);
+                            if (count != -1) {
+
+                                bufferedOutputStream.write(buffer, 0, count);
+                            }
+                        }
+                        bufferedOutputStream.flush();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+
+                        try {
+
+                            if (bufferedInputStream != null) {
+                                bufferedInputStream.close();
+                            }
+                            if (bufferedOutputStream != null) {
+                                bufferedOutputStream.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public Void onPostExecute(Object result) {
+                return null;
+            }
+
+            @Override
+            public Void onPreExecute() {
+                return null;
+            }
+
+            @Override
+            public Void publishResult(Object... result) {
+                return null;
+            }
+
+            @Override
+            public <T> T[] params() {
+                return null;
+            }
+        });
     }
 
     /**
