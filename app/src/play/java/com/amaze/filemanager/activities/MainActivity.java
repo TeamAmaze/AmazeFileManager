@@ -977,7 +977,7 @@ public class MainActivity extends ThemedActivity implements
                 appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count);
             } catch (Exception e) {}
 
-            appbar.getBottomBar().initiatebbar();
+            appbar.getBottomBar().setClickListener();
 
             invalidatePasteButton(paste);
             search.setVisible(true);
@@ -1013,7 +1013,7 @@ public class MainActivity extends ThemedActivity implements
         } else if (fragmentName.contains("ZipViewer")) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
-            getAppbar().getBottomBar().resetClickListeners();
+            getAppbar().getBottomBar().resetClickListener();
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
