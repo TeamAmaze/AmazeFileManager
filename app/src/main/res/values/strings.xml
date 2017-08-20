@@ -318,7 +318,7 @@
     <string name="sd_card_grant_next">sd_card_grant_next</string>
     <string name="sd_card_grant_first">sd_card_grant_first</string>
     <string name="fab_skin">FAB skin</string>
-    <string name="gplus_pic_title">Sign-In with G+</string>
+    <string name="gplus_pic_title">Sign-in with G+</string>
     <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
     <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
@@ -687,4 +687,5 @@
     <string name="advanced">Advanced</string>
     <string name="typeablepaths_title">Custom paths</string>
     <string name="typeablepaths_summary">Long press path bar type a custom path</string>
+    <string name="send_email_to">Send an e-mail to</string>
 </resources>

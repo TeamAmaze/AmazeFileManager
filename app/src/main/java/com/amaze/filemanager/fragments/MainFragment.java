@@ -92,6 +92,7 @@ import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericFileProvider;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -634,42 +635,28 @@ public class MainFragment extends android.support.v4.app.Fragment {
             ArrayList<LayoutElement> checkedItems = adapter.getCheckedItems();
             switch (item.getItemId()) {
                 case R.id.openmulti:
-                    if (Build.VERSION.SDK_INT >= 16) {
-                        Intent intentresult = new Intent();
+
+                    try {
+
+                        Intent intent_result = new Intent(Intent.ACTION_SEND_MULTIPLE);
                         ArrayList<Uri> resulturis = new ArrayList<>();
+
                         for (LayoutElement element : checkedItems) {
-                            try {
-                                BaseFile baseFile = element.generateBaseFile();
-                                switch (baseFile.getMode()) {
-                                    case FILE:
-                                    case ROOT:
-                                        resulturis.add(Uri.fromFile(new File(baseFile.getPath())));
-                                        break;
-                                    case OTG:
-                                        resulturis.add(OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri());
-                                        break;
-                                    case SMB:
-                                    case DROPBOX:
-                                    case GDRIVE:
-                                    case ONEDRIVE:
-                                    case BOX:
-                                        Toast.makeText(getActivity(),
-                                                getActivity().getResources().getString(R.string.smb_launch_error),
-                                                Toast.LENGTH_LONG).show();
-                                        return true;
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            BaseFile baseFile = element.generateBaseFile();
+                            Uri resultUri = getUriForBaseFile(baseFile);
+
+                            if (resultUri != null) {
+                                resulturis.add(resultUri);
                             }
                         }
 
-                        intentresult.setAction(Intent.ACTION_SEND_MULTIPLE);
-                        intentresult.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
-                        intentresult.setType("*/*");
-                        intentresult.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        mode.finish();
-                        getActivity().setResult(FragmentActivity.RESULT_OK, intentresult);
+                        intent_result.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        getActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
+                        intent_result.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
                         getActivity().finish();
+                        //mode.finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     return true;
                 case R.id.about:
@@ -677,48 +664,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
                             x.getPermissions(), (ThemedActivity) getActivity(), ThemedActivity.rootMode,
                             utilsProvider.getAppTheme());
-                    /*
-                    PropertiesSheet propertiesSheet = new PropertiesSheet();
-                    Bundle arguments = new Bundle();
-                    arguments.putParcelable(PropertiesSheet.KEY_FILE, x.generateBaseFile());
-                    arguments.putString(PropertiesSheet.KEY_PERMISSION, x.getPermissions());
-                    arguments.putBoolean(PropertiesSheet.KEY_ROOT, ThemedActivity.rootMode);
-                    propertiesSheet.setArguments(arguments);
-                    propertiesSheet.show(getFragmentManager(), PropertiesSheet.TAG_FRAGMENT);
-                    */
                     mode.finish();
                     return true;
-                /*
-                case R.id.setringtone:
-                    File fx;
-                    if(results)
-                        fx=new File(slist.get((plist.get(0))).getDesc());
-                        else
-                        fx=new File(list.get((plist.get(0))).getDesc());
-
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.MediaColumns.DATA, fx.getAbsolutePath());
-                    values.put(MediaStore.MediaColumns.TITLE, "Amaze");
-                    values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
-                    //values.put(MediaStore.MediaColumns.SIZE, fx.);
-                    values.put(MediaStore.Audio.Media.ARTIST, R.string.app_name);
-                    values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-                    values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-                    values.put(MediaStore.Audio.Media.IS_ALARM, false);
-                    values.put(MediaStore.Audio.Media.IS_MUSIC, false);
-
-                    Uri uri = MediaStore.Audio.Media.getContentUriForPath(fx.getAbsolutePath());
-                    Uri newUri = getActivity().getContentResolver().insert(uri, values);
-                    try {
-                        RingtoneManager.setActualDefaultRingtoneUri(getActivity(), RingtoneManager.TYPE_RINGTONE, newUri);
-                        //Settings.System.putString(getActivity().getContentResolver(), Settings.System.RINGTONE, newUri.toString());
-                        Toast.makeText(getActivity(), "Successful" + fx.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                    } catch (Throwable t) {
-
-                        Log.d("ringtone", "failed");
-                    }
-                    return true;
-                */
                 case R.id.delete:
                     GeneralDialogCreation.deleteFilesDialog(getContext(), getLayoutElements(),
                             getMainActivity(), checkedItems, utilsProvider.getAppTheme());
@@ -1010,6 +957,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
         loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
     }
 
+    /**
+     * Returns the intent with uri corresponding to specific {@link BaseFile} back to external app
+     * @param baseFile
+     */
     public void returnIntentResults(BaseFile baseFile) {
 
         getMainActivity().mReturnIntent = false;
@@ -1018,7 +969,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         if (getMainActivity().mRingtonePickerIntent) {
 
             Uri mediaStoreUri = MediaStoreHack.getUriFromFile(baseFile.getPath(), getActivity());
-            System.out.println(mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(new File(baseFile.getPath())));
+            Log.d(getClass().getSimpleName(), mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(new File(baseFile.getPath())));
             intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(new File(baseFile.getPath())));
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
             getActivity().setResult(FragmentActivity.RESULT_OK, intent);
@@ -1027,29 +978,51 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
             Log.d("pickup", "file");
 
-            switch (baseFile.getMode()) {
-                case FILE:
-                case ROOT:
-                    intent.setData(Uri.fromFile(new File(baseFile.getPath())));
-                    break;
-                case OTG:
-                    intent.setData(OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri());
-                    break;
-                case SMB:
-                case DROPBOX:
-                case GDRIVE:
-                case ONEDRIVE:
-                case BOX:
-                    Toast.makeText(getActivity(),
-                            getActivity().getResources().getString(R.string.smb_launch_error),
-                            Toast.LENGTH_LONG).show();
+            Intent intentresult = new Intent();
 
-                    getMainActivity().mReturnIntent = true;
-                    return;
-            }
+            Uri resultUri = getUriForBaseFile(baseFile);
+            intentresult.setAction(Intent.ACTION_SEND);
+            intentresult.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            getActivity().setResult(FragmentActivity.RESULT_OK, intent);
+            if (resultUri != null)
+                intentresult.setDataAndType(resultUri, MimeTypes.getExtension(baseFile.getPath()));
+
+            getActivity().setResult(FragmentActivity.RESULT_OK, intentresult);
             getActivity().finish();
+            //mode.finish();
+        }
+    }
+
+    /**
+     * Returns uri associated to specific basefile
+     * @param baseFile
+     * @return
+     */
+    private Uri getUriForBaseFile(BaseFile baseFile) {
+
+        switch (baseFile.getMode()) {
+            case FILE:
+            case ROOT:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                    return GenericFileProvider.getUriForFile(getActivity(), GenericFileProvider.PROVIDER_NAME,
+                            new File(baseFile.getPath()));
+                } else {
+                    return Uri.fromFile(new File(baseFile.getPath()));
+                }
+            case OTG:
+                return OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri();
+            case SMB:
+            case DROPBOX:
+            case GDRIVE:
+            case ONEDRIVE:
+            case BOX:
+                Toast.makeText(getActivity(),
+                        getActivity().getResources().getString(R.string.smb_launch_error),
+                        Toast.LENGTH_LONG).show();
+                return null;
+            default:
+                return null;
         }
     }
 

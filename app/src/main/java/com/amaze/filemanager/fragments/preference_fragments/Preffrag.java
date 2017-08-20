@@ -54,6 +54,8 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.util.List;
+
 import static com.amaze.filemanager.R.string.feedback;
 
 public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
@@ -226,7 +228,17 @@ public class Preffrag extends PreferenceFragment implements Preference.OnPrefere
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-                startActivity(Intent.createChooser(emailIntent, getResources().getString(feedback)));
+
+                PackageManager packageManager = getActivity().getPackageManager();
+                List activities = packageManager.queryIntentActivities(emailIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                boolean isIntentSafe = activities.size() > 0;
+
+                if (isIntentSafe)
+                    startActivity(Intent.createChooser(emailIntent, getResources().getString(feedback)));
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.send_email_to)
+                            + " vishalmeham2@gmail.com", Toast.LENGTH_LONG).show();
                 return false;
             case PREFERENCE_KEY_ABOUT:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
