@@ -23,15 +23,12 @@ package com.amaze.filemanager.activities;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -49,7 +46,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -112,7 +108,6 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -140,7 +135,6 @@ import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -160,20 +154,13 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
-import jcifs.smb.SmbFile;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
@@ -296,8 +283,6 @@ public class MainActivity extends ThemedActivity implements
     public static Handler handler;
 
     private static HandlerThread handlerThread;
-    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
-    public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -1250,9 +1235,6 @@ public class MainActivity extends ThemedActivity implements
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            unbindService(mEncryptServiceConnection);
-
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
         }
@@ -1281,55 +1263,7 @@ public class MainActivity extends ThemedActivity implements
             otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
             registerReceiver(mOtgReceiver, otgFilter);
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // let's register encryption service to know when we've decrypted
-            Intent encryptIntent = new Intent(this, EncryptService.class);
-            bindService(encryptIntent, mEncryptServiceConnection, 0);
-
-            if (!isEncryptOpen && encryptBaseFile != null) {
-                // we've opened the file and are ready to delete it
-                // don't move this to ondestroy as we'll be getting destroyed and starting
-                // an async task just before it is not a good idea
-                ArrayList<BaseFile> baseFiles = new ArrayList<>();
-                baseFiles.add(encryptBaseFile);
-                new DeleteTask(getContentResolver(), this).execute(baseFiles);
-            }
-        }
     }
-
-    ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-            if (isEncryptOpen && encryptBaseFile != null) {
-                if (getCurrentMainFragment() != null) {
-                    switch (getCurrentMainFragment().openMode) {
-                        case OTG:
-                            getFutils().openFile(OTGUtil.getDocumentFile(encryptBaseFile.getPath(),
-                                    MainActivity.this, false), MainActivity.this);
-                            break;
-                        case SMB:
-                            try {
-                                MainFragment.launchSMB(new SmbFile(encryptBaseFile.getPath()),
-                                        encryptBaseFile.getSize(), MainActivity.this);
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-                        default:
-                            getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
-                    }
-                } else
-                    getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
-                isEncryptOpen = false;
-            }
-        }
-    };
 
     /**
      * Receiver to check if a USB device is connected at the runtime of application

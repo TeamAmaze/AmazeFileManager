@@ -23,6 +23,7 @@ import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ public class EncryptService extends Service {
     public static final String TAG_OPEN_MODE = "open_mode";
     public static final String TAG_CRYPT_MODE = "crypt_mode";   // ordinal of type of service
                                                                 // expected (encryption or decryption)
+    public static final String TAG_BROADCAST_RESULT = "broadcast_result";
 
     private static final int ID_NOTIFICATION = 27978;
 
@@ -57,6 +59,7 @@ public class EncryptService extends Service {
     private CryptEnum cryptEnum;
     private ArrayList<HFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
+    private boolean broadcastResult = false;
 
     @Override
     public void onCreate() {
@@ -71,6 +74,7 @@ public class EncryptService extends Service {
 
         baseFile = intent.getParcelableExtra(TAG_SOURCE);
         cryptEnum = CryptEnum.values()[intent.getIntExtra(TAG_CRYPT_MODE, CryptEnum.ENCRYPT.ordinal())];
+        broadcastResult = intent.getBooleanExtra(TAG_BROADCAST_RESULT, false);
 
         openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -167,8 +171,15 @@ public class EncryptService extends Service {
 
             serviceWatcherUtil.stopWatch();
             generateNotification(failedOps, cryptEnum==CryptEnum.ENCRYPT ? false : true);
-            Intent intent = new Intent("loadlist");
-            sendBroadcast(intent);
+
+            if (!broadcastResult) {
+
+                Intent intent = new Intent("loadlist");
+                sendBroadcast(intent);
+            } else {
+                Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
+                sendBroadcast(intent);
+            }
             stopSelf();
         }
     }

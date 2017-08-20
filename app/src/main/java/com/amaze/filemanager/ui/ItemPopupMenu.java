@@ -201,7 +201,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.decrypt:
                 EncryptDecryptUtils.decryptFile(context, mainActivity, mainFragment,
                         mainFragment.openMode, rowItem.generateBaseFile(),
-                        rowItem.generateBaseFile().getParent(context), utilitiesProvider);
+                        rowItem.generateBaseFile().getParent(context), utilitiesProvider, false);
                 return true;
             case R.id.return_select:
                 mainFragment.returnIntentResults(rowItem.generateBaseFile());

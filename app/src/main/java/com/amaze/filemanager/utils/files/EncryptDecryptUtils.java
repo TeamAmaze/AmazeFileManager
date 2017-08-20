@@ -31,6 +31,7 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 public class EncryptDecryptUtils {
 
+    public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
     /**
      * Queries database to map path and password.
      * Starts the encryption process after database query
@@ -52,7 +53,8 @@ public class EncryptDecryptUtils {
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
                                    BaseFile sourceFile, String decryptPath,
-                                   UtilitiesProviderInterface utilsProvider) {
+                                   UtilitiesProviderInterface utilsProvider,
+                                   boolean broadcastResult) {
 
         Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
         decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
@@ -60,6 +62,7 @@ public class EncryptDecryptUtils {
                 EncryptService.CryptEnum.DECRYPT.ordinal());
         decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
         decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
+        decryptIntent.putExtra(EncryptService.TAG_BROADCAST_RESULT, broadcastResult);
         SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
 
         EncryptedEntry encryptedEntry = null;

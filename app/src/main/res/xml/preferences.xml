@@ -153,14 +153,14 @@
             android:title="@string/rootPref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
-            android:key="rootmode"
-            android:summary="@string/rootmodesummary"
-            android:title="@string/rootmode"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
             android:key="typeablepaths"
             android:summary="@string/typeablepaths_summary"
             android:title="@string/typeablepaths_title"/>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="rootmode"
+            android:summary="@string/rootmodesummary"
+            android:title="@string/rootmode"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">

@@ -81,6 +81,7 @@ import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -171,6 +172,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private Bitmap mFolderBitmap;
     private CustomFileObserver customFileObserver;
     private DataUtils dataUtils = DataUtils.getInstance();
+    private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
+    private BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -798,10 +801,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 case FILE:
                     // local file system don't need an explicit load, we've set an observer to
                     // take actions on creation/moving/deletion/modification of file on current path
-                    break;
+                    //break;
                 default:
                     updateList();
                     break;
+            }
+        }
+    };
+
+    private BroadcastReceiver decryptReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (isEncryptOpen && encryptBaseFile != null) {
+                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity());
+                isEncryptOpen = false;
             }
         }
     };
@@ -871,15 +885,15 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 if (!e.isDirectory() &&
                         e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
-                    getMainActivity().isEncryptOpen = true;
+                    isEncryptOpen = true;
 
-                    getMainActivity().encryptBaseFile = new BaseFile(getActivity().getExternalCacheDir().getPath()
+                    encryptBaseFile = new BaseFile(getActivity().getExternalCacheDir().getPath()
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
-                            utilsProvider);
+                            utilsProvider, true);
                     return;
                 }
 
@@ -1467,6 +1481,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            (getActivity()).registerReceiver(decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
+        }
         //startFileObserver();
         fixIcons(false);
     }
@@ -1475,6 +1493,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
     public void onPause() {
         super.onPause();
         (getActivity()).unregisterReceiver(receiver2);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            (getActivity()).unregisterReceiver(decryptReceiver);
+        }
     }
 
     @Override
@@ -1583,6 +1606,16 @@ public class MainFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            if (!isEncryptOpen && encryptBaseFile != null) {
+                // we've opened the file and are ready to delete it
+                ArrayList<BaseFile> baseFiles = new ArrayList<>();
+                baseFiles.add(encryptBaseFile);
+                new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(baseFiles);
+            }
+        }
     }
 
     public void hide(String path) {
