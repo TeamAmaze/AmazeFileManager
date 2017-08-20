@@ -26,14 +26,12 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -65,6 +63,7 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -78,7 +77,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ZipViewer extends Fragment {
+public class ZipViewer extends Fragment implements BottomBarButtonPath {
 
     private UtilitiesProviderInterface utilsProvider;
     public String s;
@@ -245,36 +244,6 @@ public class ZipViewer extends Fragment {
                 SetupZip(savedInstanceState);
             }
 
-        }
-        String fileName = null;
-        try {
-            if (uri.getScheme().equals(KEY_FILE)) {
-                fileName = uri.getLastPathSegment();
-            } else {
-                Cursor cursor = null;
-                try {
-                    cursor = getActivity().getContentResolver().query(uri, new String[]{
-                            MediaStore.Images.ImageColumns.DISPLAY_NAME
-                    }, null, null, null);
-
-                    if (cursor != null && cursor.moveToFirst()) {
-                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-                    }
-                } finally {
-
-                    if (cursor != null) {
-                        cursor.close();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (fileName == null || fileName.trim().length() == 0) fileName = f.getName();
-        try {
-            mainActivity.getAppbar().setTitle(fileName);
-        } catch (Exception e) {
-            mainActivity.getAppbar().setTitle(getResources().getString(R.string.zip_viewer));
         }
         mainActivity.supportInvalidateOptionsMenu();
         mToolbarHeight = getToolbarHeight(getActivity());
@@ -548,12 +517,9 @@ public class ZipViewer extends Fragment {
     }
 
 
-    public void bbar() {
-        if (current != null && current.length() != 0)
-            mainActivity.getAppbar().getBottomBar().updatePath("/" + current, false, null, OpenMode.FILE, folder, file);
-        else mainActivity.getAppbar().getBottomBar().updatePath("/", false, null, OpenMode.FILE, folder, file);
-
-
+    public void updateBottomBar() {
+        String path = current != null && current.length() != 0? f.getName() + "/" + current:f.getName();
+        mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file);
     }
 
     int file = 0, folder = 0;
@@ -612,12 +578,33 @@ public class ZipViewer extends Fragment {
         });
         listView.stopScroll();
         zipViewer.current = dir;
-        zipViewer.bbar();
+        zipViewer.updateBottomBar();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     public void loadlist(String path) {
         new ZipHelperTask(this, "").execute(path);
 
+    }
+
+    @Override
+    public void changePath(String path) {
+        if(path.equals("/")) path = "";
+        if (openmode == 0) {
+            new ZipHelperTask(this, new File(path).getParent()).execute(s);
+        } else {
+            new RarHelperTask(this, path).execute(f);
+        }
+    }
+
+    @Override
+    public String getPath() {
+        if(current != null && current.length() != 0) return "/" + current;
+        else return "";
+    }
+
+    @Override
+    public int getRootDrawable() {
+        return R.drawable.ic_compressed_white_24dp;
     }
 }

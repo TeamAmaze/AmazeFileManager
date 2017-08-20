@@ -70,8 +70,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
@@ -91,6 +91,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericFileProvider;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -118,7 +119,7 @@ import java.util.List;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class MainFragment extends android.support.v4.app.Fragment {
+public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
     public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
@@ -1783,6 +1784,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     public synchronized void removeLayoutElement(int index) {
         this.LIST_ELEMENTS.remove(index);
+    }
+
+    @Override
+    public void changePath(String path) {
+        loadlist(path, false, openMode);
+    }
+
+    @Override
+    public String getPath() {
+        return getCurrentPath();
+    }
+
+    @Override
+    public int getRootDrawable() {
+        return R.drawable.root;
     }
 
     /**

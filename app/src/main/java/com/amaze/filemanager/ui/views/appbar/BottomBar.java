@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -26,8 +27,11 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -97,16 +101,7 @@ public class BottomBar implements View.OnTouchListener{
         buttonParams.gravity = Gravity.CENTER_VERTICAL;
 
         buttonRoot = new ImageButton(a);
-        buttonRoot.setImageDrawable(a.getResources().getDrawable(R.drawable.root));
         buttonRoot.setBackgroundColor(Color.TRANSPARENT);
-        buttonRoot.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View p1) {
-                MainFragment m = mainActivity.get().getCurrentMainFragment();
-                m.loadlist(("/"), false, m.openMode);
-                timer.cancel();
-                timer.start();
-            }
-        });
         buttonRoot.setLayoutParams(buttonParams);
 
         buttonStorage = new ImageButton(a);
@@ -136,12 +131,20 @@ public class BottomBar implements View.OnTouchListener{
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                MainFragment m = mainActivity.get().getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
+                Fragment fragmentAtFrame = mainActivity.get().getFragmentAtFrame();
+                if(fragmentAtFrame instanceof TabFragment) {
+                    MainFragment m = mainActivity.get().getCurrentMainFragment();
+                    if (m.openMode == OpenMode.FILE) {
+                        Futils.crossfade(buttons, pathLayout);
+                        timer.cancel();
+                        timer.start();
+                        showButtons(m);
+                    }
+                } else if (fragmentAtFrame instanceof ZipViewer) {
                     Futils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
-                    showButtons(m);
+                    showButtons((BottomBarButtonPath) fragmentAtFrame);
                 }
                 return false;
             }
@@ -185,13 +188,22 @@ public class BottomBar implements View.OnTouchListener{
         return buttons.getVisibility() == View.VISIBLE;
     }
 
-    public void showButtons(final MainFragment mainFrag) {
-        final String path = mainFrag.getCurrentPath();
+    public void showButtons(final BottomBarButtonPath buttonPathInterface) {
+        final String path = buttonPathInterface.getPath();
         if (buttons.getVisibility() == View.VISIBLE) {
             lastUsedArrowButton = 0;
             lastUsedFolderButton = 0;
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathLayout.getHeight());
+
+            buttonRoot.setImageDrawable(mainActivity.get().getResources().getDrawable(buttonPathInterface.getRootDrawable()));
+            buttonRoot.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View p1) {
+                    buttonPathInterface.changePath("/");
+                    timer.cancel();
+                    timer.start();
+                }
+            });
 
             Bundle bundle = Futils.getPaths(path, mainActivity.get());
             ArrayList<String> names = bundle.getStringArrayList("names");
@@ -214,7 +226,7 @@ public class BottomBar implements View.OnTouchListener{
                 } else if (Futils.isStorage(rpaths.get(i))) {
                     buttonStorage.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
+                            buttonPathInterface.changePath(rpaths.get(k));
                             timer.cancel();
                             timer.start();
                         }
