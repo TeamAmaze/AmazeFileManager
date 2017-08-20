@@ -275,6 +275,11 @@ public class FTPServerFragment extends Fragment {
                         if (mSecureCheckBox.isChecked()) {
                             setSecurePreference(true);
                         } else setSecurePreference(false);
+
+                        // TODO: Fix secure connection certification
+                        mSecureCheckBox.setEnabled(false);
+                        setSecurePreference(false);
+                        // TODO: Fix secure connection certification
                     }
                 });
 
@@ -476,14 +481,14 @@ public class FTPServerFragment extends Fragment {
      */
     private void updateSpans() {
 
-        String ftpAddress = "";
+        String ftpAddress;
 
         try{
             ftpAddress = getFTPAddressString();
         } catch (NullPointerException npe){
             npe.printStackTrace();
+            ftpAddress = "";
             Toast.makeText(getContext(), getResources().getString(R.string.local_inet_addr_error), Toast.LENGTH_SHORT).show();
-            mainActivity.onBackPressed();
         }
 
         String statusHead = getResources().getString(R.string.ftp_status_title) + ": ";
