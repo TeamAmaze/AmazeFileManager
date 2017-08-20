@@ -20,19 +20,14 @@
 
 package com.amaze.filemanager.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -40,22 +35,22 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -65,30 +60,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -124,7 +106,6 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -137,6 +118,8 @@ import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
+import com.amaze.filemanager.ui.views.appbar.AppBar;
+import com.amaze.filemanager.ui.views.appbar.SearchView;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
@@ -166,20 +149,18 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
-import jcifs.smb.SmbFile;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
-public class MainActivity extends BaseActivity implements OnRequestPermissionsResultCallback,
+public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -195,13 +176,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public DrawerLayout mDrawerLayout;
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
-    public String path = "";
+    public String path = "", launchPath;
     public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
-    public Toolbar toolbar;
     public int skinStatusBar;
 
     public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
@@ -234,9 +214,11 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     private static final int image_selector_request_code = 31;
 
+    private AppBar appbar;
     //private HistoryManager history, grid;
     private Futils utils;
     private MainActivity mainActivity = this;
+    private Context con = this;
     private String zippath;
     private FragmentTransaction pending_fragmentTransaction;
     private String pendingPath;
@@ -254,10 +236,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     private ImageLoader mImageLoader;
 
     private TextView mGoogleName, mGoogleId;
-    private LinearLayout buttons;
-    private HorizontalScrollView scroll, scroll1;
-    private CountDownTimer timer;
-    private IconUtils icons;
     private TabHandler tabHandler;
     // Check for user interaction for Google+ api only once
     private boolean mGoogleApiKey = false;
@@ -267,21 +245,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     private boolean mIntentInProgress, showHidden = false;
     private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
-    // string builder object variables for pathBar animations
-    private StringBuffer newPathBuilder, oldPathBuilder;
     private AppBarLayout appBarLayout;
-
-    private static final int PATH_ANIM_START_DELAY = 0;
-    private static final int PATH_ANIM_END_DELAY = 0;
 
     //TODO make var names meaningful
     private static final int SELECT_MINUS_2 = -2, NO_VALUE = -1, SELECT_0 = 0, SELECT_102 = 102;
     private int selectedStorage;
 
-    private int TOOLBAR_START_INSET;
-    private RelativeLayout searchViewLayout;
-    private AppCompatEditText searchViewEditText;
-    private int[] searchCoords = new int[2];
     private CoordinatorLayout mScreenLayout;
     private View fabBgView;
     private UtilsHandler utilsHandler;
@@ -301,13 +270,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     // the current visible tab, either 0 or 1
     public static int currentTab;
 
-    public static boolean isSearchViewEnabled = false;
     public static Shell.Interactive shellInteractive;
     public static Handler handler;
 
     private static HandlerThread handlerThread;
-    public boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
-    public BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -326,6 +292,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         dataUtils.registerOnDataChangedListener(this);
 
         setContentView(R.layout.main_toolbar);
+        appbar = new AppBar(this, sharedPref, new SearchView.SearchListener() {
+            @Override
+            public void onSearch(String queue) {
+                if(!queue.isEmpty()) {
+                    mainActivityHelper.search(queue);
+                }
+            }
+        });
         initialiseViews();
         tabHandler = new TabHandler(this);
         utilsHandler = new UtilsHandler(this);
@@ -341,52 +315,68 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
-        icons = new IconUtils(sharedPref, this);
-
-        timer = new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long l) {
-            }
-
-            @Override
-            public void onFinish() {
-                utils.crossfadeInverse(buttons, pathbar);
-            }
-        };
         path = getIntent().getStringExtra("path");
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
-        try {
-            intent = getIntent();
-            if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-                ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
-                if (failedOps != null) {
-                    mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
-                }
-            }
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+        intent = getIntent();
 
-                    // file picker intent
-                    mReturnIntent = true;
-                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-                    // ringtone picker intent
-                    mReturnIntent = true;
-                    mRingtonePickerIntent = true;
-                    Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-                } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
-
-                    // zip viewer intent
-                    Uri uri = intent.getData();
-                    openzip = true;
-                    zippath = uri.toString();
-                }
+        String actionIntent = intent.getAction();
+        String typeIntent = intent.getType();
+        if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
+            ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            if (failedOps != null) {
+                mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        if (actionIntent != null) {
+            if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+
+                // file picker intent
+                mReturnIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+                // ringtone picker intent
+                mReturnIntent = true;
+                mRingtonePickerIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
+
+                // zip viewer intent
+                Uri uri = intent.getData();
+                openzip = true;
+                zippath = uri.toString();
+            } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
+                // save a single file to filesystem
+
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                ArrayList<Uri> uris = new ArrayList<>();
+                uris.add(uri);
+                initFabToSave(uris);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && typeIntent != null) {
+                // save multiple files to filesystem
+
+                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                initFabToSave(arrayList);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
+            }
         }
 
         if (savedInstanceState != null) {
+
             selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
         }
 
@@ -476,7 +466,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                 if (savedInstanceState == null) {
                     if (openProcesses) {
-                        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
                         selectedStorage = SELECT_102;
@@ -489,9 +479,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                             intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
                         // tile preferences, open ftp fragment
 
-                        android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                         selectedStorage = SELECT_MINUS_2;
                         adapter.toggleChecked(false);
@@ -538,6 +528,40 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public <T> T[] params() {
                 return null;
+            }
+        });
+    }
+
+    /**
+     * Initializes the floating action button to act as to save data from an external intent
+     */
+    private void initFabToSave(final ArrayList<Uri> uris) {
+
+        floatingActionButton.setVisibility(View.VISIBLE);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_file_download_black_24dp);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawable vectorDrawable = (VectorDrawable) drawable;
+            vectorDrawable.setTint(getResources().getColor(android.R.color.white));
+
+            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawable);
+        } else {
+
+            VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
+            vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
+
+            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawableCompat);
+        }
+
+
+        floatingActionButton.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
@@ -638,7 +662,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     rv.add(s);
             }
         }
-        if (BaseActivity.rootMode)
+        if (ThemedActivity.rootMode)
             rv.add("/");
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
@@ -681,55 +705,51 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     void onbackpressed() {
-        try {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            String name = fragment.getClass().getName();
-            if (searchViewLayout.isShown()) {
-                // hide search view if visible, with an animation
-                hideSearchView();
-            } else if (name.contains("TabFragment")) {
-                if (floatingActionButton.isOpened()) {
-                    floatingActionButton.close(true);
+        Fragment fragment = getFragmentAtFrame();
+        if (getAppbar().getSearchView().isShown()) {
+            // hide search view if visible, with an animation
+            getAppbar().getSearchView().hideSearchView();
+        } else if (fragment instanceof TabFragment) {
+            if (floatingActionButton.isOpened()) {
+                floatingActionButton.close(true);
+            } else {
+                getCurrentMainFragment().goBack();
+            }
+        } else if (fragment instanceof ZipViewer) {
+            ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (zipViewer.mActionMode == null) {
+                if (zipViewer.canGoBack()) {
+                    zipViewer.goBack();
+                } else if (openzip) {
+                    openzip = false;
+                    finish();
                 } else {
-                    getCurrentMainFragment().goBack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
+                    fragmentTransaction.remove(zipViewer);
+                    fragmentTransaction.commit();
+                    supportInvalidateOptionsMenu();
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.showMenuButton(true);
                 }
-            } else if (name.contains("ZipViewer")) {
-                ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (zipViewer.mActionMode == null) {
-                    if (zipViewer.canGoBack()) {
-                        zipViewer.goBack();
-                    } else if (openzip) {
-                        openzip = false;
-                        finish();
-                    } else {
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                        fragmentTransaction.remove(zipViewer);
-                        fragmentTransaction.commit();
-                        supportInvalidateOptionsMenu();
-                        floatingActionButton.setVisibility(View.VISIBLE);
-                        floatingActionButton.showMenuButton(true);
-                    }
-                } else {
-                    zipViewer.mActionMode.finish();
-                }
-            } else if (name.contains("FTPServerFragment")) {
-                //returning back from FTP server
-                if (path != null && path.length() > 0) {
-                    HFile file = new HFile(OpenMode.UNKNOWN, path);
-                    file.generateMode(this);
-                    if (file.isDirectory(this))
-                        goToMain(path);
-                    else {
-                        goToMain("");
-                        utils.openFile(new File(path), this);
-                    }
-                } else {
+            } else {
+                zipViewer.mActionMode.finish();
+            }
+        } else if (fragment instanceof FTPServerFragment) {
+            //returning back from FTP server
+            if (path != null && path.length() > 0) {
+                HFile file = new HFile(OpenMode.UNKNOWN, path);
+                file.generateMode(this);
+                if (file.isDirectory(this))
+                    goToMain(path);
+                else {
                     goToMain("");
+                    utils.openFile(new File(path), this);
                 }
-            } else
+            } else {
                 goToMain("");
-        } catch (ClassCastException e) {
+            }
+        } else {
             goToMain("");
         }
     }
@@ -745,7 +765,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     public void exit() {
         if (backPressedToExitOnce) {
             finish();
-            if (BaseActivity.rootMode) {
+            if (ThemedActivity.rootMode) {
                 // TODO close all shells
             }
         } else {
@@ -815,7 +835,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         selectedStorage = SELECT_0;
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
-        setActionBarTitle(null);
+        appbar.setTitle(null);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.showMenuButton(true);
         if (openzip && zippath != null) {
@@ -900,11 +920,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void setActionBarTitle(String title) {
-        if (toolbar != null)
-            toolbar.setTitle(title);
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem s = menu.findItem(R.id.view);
@@ -919,21 +934,22 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             return true;
         }
         if (fragmentName.contains("TabFragment")) {
-            setActionBarTitle("Amaze");
+            appbar.setTitle("Amaze");
             if (useGridView) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
             }
-            MainFragment ma = getCurrentMainFragment();
-            if(ma != null) {
+            try {
+                TabFragment tabFragment = (TabFragment) fragment;
+                MainFragment ma = getCurrentMainFragment();
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                updatePath(ma.getCurrentPath(), ma.results, ma.openMode, ma.folder_count, ma.file_count);
-            }
+                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count);
+            } catch (Exception e) {}
 
-            initiatebbar();
-            if (SDK_INT >= 21) toolbar.setElevation(0);
+            appbar.getBottomBar().setClickListener();
+
             invalidatePasteButton(paste);
             search.setVisible(true);
             if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
@@ -968,17 +984,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         } else if (fragmentName.contains("ZipViewer")) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
-            TextView textView = (TextView) mainActivity.pathbar.findViewById(R.id.fullpath);
-            pathbar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
+            getAppbar().getBottomBar().resetClickListener();
             menu.findItem(R.id.search).setVisible(false);
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
@@ -1039,7 +1045,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     break;
                 }
-                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity, BaseActivity.accentSkin, getAppTheme(),
+                final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
                         new String[]{getResources().getString(R.string.questionset),
                                 getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -1140,7 +1146,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 String path = ma.getCurrentPath();
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, BaseActivity.rootMode)
+                new CopyFileCheck(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
@@ -1152,95 +1158,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
                 break;
             case R.id.search:
-                View searchItem = toolbar.findViewById(R.id.search);
-                searchViewEditText.setText("");
-                searchItem.getLocationOnScreen(searchCoords);
-                revealSearchView();
+                getAppbar().getSearchView().revealSearchView();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * show search view with a circular reveal animation
-     */
-    void revealSearchView() {
-        final int START_RADIUS = 16;
-        int endRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
-
-        Animator animator;
-        if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0] + 32, searchCoords[1] - 16, START_RADIUS, endRadius);
-        } else {
-            // TODO:ViewAnimationUtils.createCircularReveal
-            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-        }
-
-        utils.revealShow(fabBgView, true);
-
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(600);
-        searchViewLayout.setVisibility(View.VISIBLE);
-        animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                searchViewEditText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
-                isSearchViewEnabled = true;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
-    }
-
-    /**
-     * hide search view with a circular reveal animation
-     */
-    public void hideSearchView() {
-        final int END_RADIUS = 16;
-        int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
-        Animator animator;
-        if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            animator = ViewAnimationUtils.createCircularReveal(searchViewLayout,
-                    searchCoords[0] + 32, searchCoords[1] - 16, startRadius, END_RADIUS);
-        } else {
-            // TODO: ViewAnimationUtils.createCircularReveal
-            animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 1f, 0f);
-        }
-
-        // removing background fade view
-        utils.revealShow(fabBgView, false);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(600);
-        animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {}
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                searchViewLayout.setVisibility(View.GONE);
-                isSearchViewEnabled = false;
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
     }
 
     /*@Override
@@ -1295,9 +1216,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            unbindService(mEncryptServiceConnection);
-
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
             unregisterReceiver(mOtgReceiver);
         }
@@ -1326,55 +1244,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
             registerReceiver(mOtgReceiver, otgFilter);
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // let's register encryption service to know when we've decrypted
-            Intent encryptIntent = new Intent(this, EncryptService.class);
-            bindService(encryptIntent, mEncryptServiceConnection, 0);
-
-            if (!isEncryptOpen && encryptBaseFile != null) {
-                // we've opened the file and are ready to delete it
-                // don't move this to ondestroy as we'll be getting destroyed and starting
-                // an async task just before it is not a good idea
-                ArrayList<BaseFile> baseFiles = new ArrayList<>();
-                baseFiles.add(encryptBaseFile);
-                new DeleteTask(getContentResolver(), this).execute(baseFiles);
-            }
-        }
     }
-
-    ServiceConnection mEncryptServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-            if (isEncryptOpen && encryptBaseFile != null) {
-                if (mainFragment != null) {
-                    switch (mainFragment.openMode) {
-                        case OTG:
-                            getFutils().openFile(OTGUtil.getDocumentFile(encryptBaseFile.getPath(),
-                                    MainActivity.this, false), MainActivity.this);
-                            break;
-                        case SMB:
-                            try {
-                                MainFragment.launchSMB(new SmbFile(encryptBaseFile.getPath()),
-                                        encryptBaseFile.getSize(), MainActivity.this);
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-                        default:
-                            getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
-                    }
-                } else
-                    getFutils().openFile(new File(encryptBaseFile.getPath()), MainActivity.this);
-                isEncryptOpen = false;
-            }
-        }
-    };
 
     /**
      * Receiver to check if a USB device is connected at the runtime of application
@@ -1451,7 +1321,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     public void openZip(String path) {
-        findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipViewer();
@@ -1473,6 +1343,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             return (MainFragment) tab.getCurrentTabFragment();
         } else return null;
     }
+
     public TabFragment getTabFragment() {
         Fragment fragment = getFragmentAtFrame();
 
@@ -1515,17 +1386,17 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         for (String file : storageDirectories) {
             File f = new File(file);
             String name;
-            Drawable icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_sd_storage_white_56dp);
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
             } else if ("/storage/sdcard1".equals(file)) {
                 name = getResources().getString(R.string.extstorage);
             } else if ("/".equals(file)) {
                 name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_drawer_root_white);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                 name = "OTG";
-                icon1 = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_usb_white_48dp);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -1538,25 +1409,23 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (dataUtils.getServers().size() > 0) {
             Collections.sort(dataUtils.getServers(), new BookSorter());
             synchronized (dataUtils.getServers()) {
-
-                for (String[] file : dataUtils.getServers())
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
+                for (String[] file : dataUtils.getServers()) {
+                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this,
                             R.drawable.ic_settings_remote_white_48dp)));
+                }
             }
             sectionItems.add(new SectionItem());
         }
 
         ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
 
-        if (CloudSheetFragment.isCloudProviderAvailable(MainActivity.this)) {
-
+        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
             for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
-
                 if (cloudStorage instanceof Dropbox) {
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
                             CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_dropbox_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_DROPBOX,
@@ -1566,7 +1435,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
                             CloudHandler.CLOUD_PREFIX_BOX + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_box_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_BOX,
@@ -1576,7 +1445,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_onedrive_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_ONE_DRIVE,
@@ -1586,7 +1455,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
                     sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                            ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_google_drive_white_24dp)));
+                            ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
@@ -1606,10 +1475,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                 Collections.sort(dataUtils.getBooks(), new BookSorter());
 
                 synchronized (dataUtils.getBooks()) {
-
                     for (String[] file : dataUtils.getBooks()) {
                         sectionItems.add(new EntryItem(file[0], file[1],
-                                ContextCompat.getDrawable(MainActivity.this, R.drawable.folder_fab)));
+                                ContextCompat.getDrawable(this, R.drawable.folder_fab)));
                     }
                 }
                 sectionItems.add(new SectionItem());
@@ -1622,37 +1490,41 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_star_white_18dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
             if (quickAccessPref[1])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_history_white_48dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
             if (quickAccessPref[2])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_image)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
             if (quickAccessPref[3])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_video_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
             if (quickAccessPref[4])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_audio_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
             if (quickAccessPref[5])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_doc_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
             if (quickAccessPref[6])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
-                        ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_doc_apk_grid)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         } else {
             sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
         }
 
         dataUtils.setList(sectionItems);
 
-        adapter = new DrawerAdapter(MainActivity.this, MainActivity.this, sectionItems,
-                MainActivity.this, sharedPref);
+        adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
         mDrawerList.setAdapter(adapter);
     }
 
+    public AppBar getAppbar() {
+        return appbar;
+    }
+
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+
         if (requestCode == image_selector_request_code) {
             if (sharedPref != null && intent != null && intent.getData() != null) {
                 if (SDK_INT >= 19)
@@ -1697,7 +1569,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         oppathe = "";
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
-                        Intent intent1 = new Intent(this, CopyService.class);
+                        Intent intent1 = new Intent(con, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
@@ -1714,15 +1586,19 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                         oppathe = "";
                     }
 
-                    new MoveFiles(oparrayListList, getCurrentMainFragment(), getCurrentMainFragment().getActivity(), OpenMode.FILE)
+                    new MoveFiles(oparrayListList, getCurrentMainFragment(),
+                            getCurrentMainFragment().getActivity(), OpenMode.FILE)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                     break;
                 case DataUtils.NEW_FOLDER://mkdir
-                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true), getCurrentMainFragment());
+                    mainActivityHelper.mkDir(RootHelper.generateBaseFile(new File(oppathe), true),
+                            getCurrentMainFragment());
                     break;
                 case DataUtils.RENAME:
-                    mainActivityHelper.rename(getCurrentMainFragment().openMode, (oppathe), (oppathe1), mainActivity, BaseActivity.rootMode);
-                    getCurrentMainFragment().updateList();
+                    MainFragment ma = getCurrentMainFragment();
+                    mainActivityHelper.rename(ma.openMode, (oppathe),
+                            (oppathe1), mainActivity, ThemedActivity.rootMode);
+                    ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
                     mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
@@ -1747,142 +1623,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
     }
 
-    public void bbar(final MainFragment mainFrag) {
-        final String path = mainFrag.getCurrentPath();
-        try {
-            buttons.removeAllViews();
-            buttons.setMinimumHeight(pathbar.getHeight());
-            Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
-            Bundle bundle = utils.getPaths(path, this);
-            ArrayList<String> names = bundle.getStringArrayList("names");
-            ArrayList<String> rnames = bundle.getStringArrayList("names");
-            Collections.reverse(rnames);
-
-            ArrayList<String> paths = bundle.getStringArrayList("paths");
-            final ArrayList<String> rpaths = bundle.getStringArrayList("paths");
-            Collections.reverse(rpaths);
-
-            View view = new View(this);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                    toolbar.getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(params1);
-            buttons.addView(view);
-            for (int i = 0; i < names.size(); i++) {
-                final int k = i;
-                ImageView v = new ImageView(this);
-                v.setImageDrawable(arrow);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.gravity = Gravity.CENTER_VERTICAL;
-                v.setLayoutParams(params);
-                final int index = i;
-                if (rpaths.get(i).equals("/")) {
-                    ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getRootDrawable());
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist(("/"), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                } else if (isStorage(rpaths.get(i))) {
-                    ImageButton ib = new ImageButton(this);
-                    ib.setImageDrawable(icons.getSdDrawable());
-                    ib.setBackgroundColor(Color.TRANSPARENT);
-                    ib.setOnClickListener(new View.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    ib.setLayoutParams(params);
-                    buttons.addView(ib);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                } else {
-                    Button b = new Button(this);
-                    b.setText(rnames.get(index));
-                    b.setTextColor(Utils.getColor(this, android.R.color.white));
-                    b.setTextSize(13);
-                    b.setLayoutParams(params);
-                    b.setBackgroundResource(0);
-                    b.setOnClickListener(new Button.OnClickListener() {
-
-                        public void onClick(View p1) {
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            mainFrag.loadlist((rpaths.get(k)), false, mainFrag.openMode);
-                            timer.cancel();
-                            timer.start();
-                        }
-                    });
-                    b.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-
-                            File file1 = new File(rpaths.get(index));
-                            copyToClipboard(MainActivity.this, file1.getPath());
-                            Toast.makeText(MainActivity.this, getResources().getString(R.string.pathcopied), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    });
-
-                    buttons.addView(b);
-                    if (names.size() - i != 1)
-                        buttons.addView(v);
-                }
-            }
-
-            scroll.post(new Runnable() {
-                @Override
-                public void run() {
-                    sendScroll(scroll);
-                    sendScroll(scroll1);
-                }
-            });
-
-            if (buttons.getVisibility() == View.VISIBLE) {
-                timer.cancel();
-                timer.start();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("BBar", "button view not available");
-        }
-    }
-
-    boolean isStorage(String path) {
-        for (String s : dataUtils.getStorages())
-            if (s.equals(path)) return true;
-        return false;
-    }
-
-    void sendScroll(final HorizontalScrollView scrollView) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {}
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollView.fullScroll(View.FOCUS_RIGHT);
-                    }
-                });
-            }
-        }).start();
-    }
-
     void initialisePreferences() {
         hidemode = sharedPref.getInt("hidemode", 0);
         showHidden = sharedPref.getBoolean("showHidden", false);
@@ -1893,7 +1633,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     void initialiseViews() {
-        appBarLayout = (AppBarLayout) findViewById(R.id.lin);
+        appBarLayout = getAppbar().getAppbarLayout();
 
         mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
         buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
@@ -1922,10 +1662,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
         mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
         mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
-        toolbar = (Toolbar) findViewById(R.id.action_bar);
-        /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
-        TOOLBAR_START_INSET = toolbar.getContentInsetStart();
-        setSupportActionBar(toolbar);
+        setSupportActionBar(getAppbar().getToolbar());
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
@@ -1958,16 +1695,10 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             @Override
             public void onClick(View view) {
                 floatingActionButton.close(true);
-                if (isSearchViewEnabled) hideSearchView();
+                if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
             }
         });
 
-        pathbar = (LinearLayout) findViewById(R.id.pathbar);
-        buttons = (LinearLayout) findViewById(R.id.buttons);
-        scroll = (HorizontalScrollView) findViewById(R.id.scroll);
-        scroll1 = (HorizontalScrollView) findViewById(R.id.scroll1);
-        scroll.setSmoothScrollingEnabled(true);
-        scroll1.setSmoothScrollingEnabled(true);
         ImageView divider = (ImageView) findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
@@ -2001,7 +1732,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new AppsList());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
@@ -2022,7 +1753,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                 transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                findViewById(R.id.lin).animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
@@ -2050,38 +1781,6 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             if (colourednavigation)
                 window.setNavigationBarColor(skinStatusBar);
         }
-
-        searchViewLayout = (RelativeLayout) findViewById(R.id.search_view);
-        searchViewEditText = (AppCompatEditText) findViewById(R.id.search_edit_text);
-        ImageView clear = (ImageView) findViewById(R.id.search_close_btn);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchViewEditText.setText("");
-            }
-        });
-        findViewById(R.id.img_view_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSearchView();
-            }
-        });
-        searchViewEditText.setOnKeyListener(new TextView.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Perform action on key press
-                    mainActivityHelper.search(searchViewEditText.getText().toString());
-                    hideSearchView();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        //    searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-        //     searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
     }
 
     /**
@@ -2115,13 +1814,12 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
     }
 
     void initialiseFab() {
-        String folder_skin = getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
-        int fabSkinPressed = PreferenceUtils.getStatusColor(BaseActivity.accentSkin);
-        int folderskin = Color.parseColor(folder_skin);
-        int fabskinpressed = (PreferenceUtils.getStatusColor(folder_skin));
+        int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
+
         floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(Color.parseColor(BaseActivity.accentSkin));
-        floatingActionButton.setMenuButtonColorPressed(fabSkinPressed);
+        floatingActionButton.setMenuButtonColorNormal(colorAccent);
+        floatingActionButton.setMenuButtonColorPressed(colorAccent);
 
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
@@ -2132,8 +1830,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         });
 
         FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
-        fabNewFolder.setColorNormal(folderskin);
-        fabNewFolder.setColorPressed(fabskinpressed);
+        fabNewFolder.setColorNormal(iconSkin);
+        fabNewFolder.setColorPressed(iconSkin);
         fabNewFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2144,8 +1842,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         });
         FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
-        fabNewFile.setColorNormal(folderskin);
-        fabNewFile.setColorPressed(fabskinpressed);
+        fabNewFile.setColorNormal(iconSkin);
+        fabNewFile.setColorPressed(iconSkin);
         fabNewFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -2155,281 +1853,14 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
             }
         });
         final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
-        floatingActionButton3.setColorNormal(folderskin);
-        floatingActionButton3.setColorPressed(fabskinpressed);
+        floatingActionButton3.setColorNormal(iconSkin);
+        floatingActionButton3.setColorPressed(iconSkin);
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
                 //utils.revealShow(fabBgView, false);
                 floatingActionButton.close(true);
-            }
-        });
-    }
-
-    public void updatePath(@NonNull final String news, boolean results, OpenMode openmode,
-                           int folder_count, int file_count) {
-
-        if (news.length() == 0) return;
-
-        switch (openmode) {
-            case SMB:
-                newPath = mainActivityHelper.parseSmbPath(news);
-                break;
-            case OTG:
-                newPath = mainActivityHelper.parseOTGPath(news);
-                break;
-            case CUSTOM:
-                newPath = mainActivityHelper.getIntegralNames(news);
-                break;
-            case DROPBOX:
-            case BOX:
-            case ONEDRIVE:
-            case GDRIVE:
-                newPath = mainActivityHelper.parseCloudPath(openmode, news);
-                break;
-            default:
-                newPath = news;
-        }
-
-        final TextView bapath = (TextView) pathbar.findViewById(R.id.fullpath);
-        final TextView animPath = (TextView) pathbar.findViewById(R.id.fullpath_anim);
-        TextView textView = (TextView) pathbar.findViewById(R.id.pathname);
-        if (!results) {
-            textView.setText(folder_count + " " + getResources().getString(R.string.folders) + "" +
-                    " " + file_count + " " + getResources().getString(R.string.files));
-        } else {
-            bapath.setText(R.string.searchresults);
-            textView.setText(R.string.empty);
-            return;
-        }
-        final String oldPath = bapath.getText().toString();
-        if (oldPath.equals(newPath)) return;
-
-        // implement animation while setting text
-        newPathBuilder = new StringBuffer().append(newPath);
-        oldPathBuilder = new StringBuffer().append(oldPath);
-
-        final Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
-        Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
-
-        if (newPath.length() > oldPath.length() &&
-                newPathBuilder.delete(oldPath.length(), newPath.length()).toString().equals(oldPath) &&
-                oldPath.length() != 0) {
-
-            // navigate forward
-            newPathBuilder.delete(0, newPathBuilder.length());
-            newPathBuilder.append(newPath);
-            newPathBuilder.delete(0, oldPath.length());
-            animPath.setAnimation(slideIn);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-                    }, PATH_ANIM_END_DELAY);
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(newPathBuilder.toString());
-                    //bapath.setText(oldPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else if (newPath.length() < oldPath.length() &&
-                oldPathBuilder.delete(newPath.length(), oldPath.length()).toString().equals(newPath)) {
-
-            // navigate backwards
-            oldPathBuilder.delete(0, oldPathBuilder.length());
-            oldPathBuilder.append(oldPath);
-            oldPathBuilder.delete(0, newPath.length());
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    animPath.setVisibility(View.GONE);
-                    bapath.setText(newPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPathBuilder.toString());
-                    bapath.setText(newPath);
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else if (oldPath.isEmpty()) {
-
-            // case when app starts
-            animPath.setAnimation(slideIn);
-            animPath.setText(newPath);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    animPath.setVisibility(View.VISIBLE);
-                    bapath.setText("");
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_RIGHT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            animPath.setVisibility(View.GONE);
-                            bapath.setText(newPath);
-                        }
-                    }, PATH_ANIM_END_DELAY);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        } else {
-            // completely different path
-            // first slide out of old path followed by slide in of new path
-            animPath.setAnimation(slideOut);
-            animPath.animate().setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-                    super.onAnimationStart(animator);
-                    animPath.setVisibility(View.VISIBLE);
-                    animPath.setText(oldPath);
-                    bapath.setText("");
-
-                    scroll.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scroll1.fullScroll(View.FOCUS_LEFT);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    super.onAnimationEnd(animator);
-
-                    //animPath.setVisibility(View.GONE);
-                    animPath.setText(newPath);
-                    bapath.setText("");
-                    animPath.setAnimation(slideIn);
-
-                    animPath.animate().setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    animPath.setVisibility(View.GONE);
-                                    bapath.setText(newPath);
-                                }
-                            }, PATH_ANIM_END_DELAY);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            // we should not be having anything here in path bar
-                            animPath.setVisibility(View.VISIBLE);
-                            bapath.setText("");
-                            scroll.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scroll1.fullScroll(View.FOCUS_RIGHT);
-                                }
-                            });
-                        }
-                    }).start();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    super.onAnimationCancel(animation);
-                    //onAnimationEnd(animation);
-                }
-            }).setStartDelay(PATH_ANIM_START_DELAY).start();
-        }
-    }
-
-    public int dpToPx(double dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return Math.round(Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
-    }
-
-    public void initiatebbar() {
-        final View pathbar = findViewById(R.id.pathbar);
-        TextView textView = (TextView) findViewById(R.id.fullpath);
-
-        pathbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainFragment m = getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
-                    utils.crossfade(buttons, pathbar);
-                    timer.cancel();
-                    timer.start();
-                }
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainFragment m = getCurrentMainFragment();
-                if (m.openMode == OpenMode.FILE) {
-                    bbar(m);
-                    utils.crossfade(buttons, pathbar);
-                    timer.cancel();
-                    timer.start();
-                }
             }
         });
     }
@@ -2460,7 +1891,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     public void renameBookmark(final String title, final String path) {
         if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, BaseActivity.accentSkin);
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getColorPreference().getColor(ColorUsage.ACCENT));
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }
@@ -2473,24 +1904,20 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         }
 
         if (pendingPath != null) {
-            try {
-                HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
-                hFile.generateMode(this);
-                if (hFile.isSimpleFile()) {
-                    utils.openFile(new File(pendingPath), mainActivity);
-                    pendingPath = null;
-                    return;
-                }
-                TabFragment m = getTabFragment();
-                if (m == null) {
-                    goToMain(pendingPath);
-                    return;
-                }
-                MainFragment mainFrag = getCurrentMainFragment();
-                if (mainFrag != null) mainFrag.loadlist(pendingPath, false, OpenMode.UNKNOWN);
-            } catch (ClassCastException e) {
-                selectedStorage = NO_VALUE;
-                goToMain("");
+            HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
+            hFile.generateMode(this);
+            if (hFile.isSimpleFile()) {
+                utils.openFile(new File(pendingPath), mainActivity);
+                pendingPath = null;
+                return;
+            }
+
+            MainFragment mainFrag = getCurrentMainFragment();
+            if (mainFrag != null) {
+                mainFrag.loadlist(pendingPath, false, OpenMode.UNKNOWN);
+            } else {
+                goToMain(pendingPath);
+                return;
             }
             pendingPath = null;
         }
@@ -2505,9 +1932,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         if (path != null) {
             if (new File(path).isDirectory()) {
-                Fragment f = getFragmentAtFrame();
-                if ((f.getClass().getName().contains("TabFragment"))) {
-                    getCurrentMainFragment().loadlist(path, false, OpenMode.FILE);
+                MainFragment ma = getCurrentMainFragment();
+                if (ma != null) {
+                    ma.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
             } else utils.openFile(new File(path), mainActivity);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
@@ -2662,6 +2089,18 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
     }
 
+    /**
+     * Shows a view that goes from white at it's lowest part to transparent a the top.
+     * It covers the fragment.
+     */
+    public void showSmokeScreen() {
+        Futils.revealShow(fabBgView, true);
+    }
+
+    public void hideSmokeScreen() {
+        Futils.revealShow(fabBgView, false);
+    }
+
     @Override
     public void addConnection(boolean edit, final String name, final String path, final String encryptedPath,
                               final String oldname, final String oldPath) {
@@ -2679,8 +2118,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
                     }
                 });
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-                MainFragment mainFrag = getCurrentMainFragment();
-                if (mainFrag != null) mainFrag.loadlist(path, false, OpenMode.UNKNOWN);
+                MainFragment ma = getCurrentMainFragment();
+                if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
             } else {
                 Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
             }
