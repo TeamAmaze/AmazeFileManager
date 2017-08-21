@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Sarkana</string>
-  <string name="blue">Zila</string>
-  <string name="cyan">Ciānzila</string>
-  <string name="green">Zaļa</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Izmēri</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Dzeltena</string>
-  <string name="version">Versija</string>
+    <string name="version">Versija</string>
   <string name="details">Detalizēta informācija</string>
   <string name="color_title">Krāsa</string>
-  <string name="none">Nav</string>
-  <string name="password">Parole</string>
+    <string name="password">Parole</string>
   <string name="path">Ceļš</string>
   <string name="information">Informācija</string>
   <!-- reference to file accessed date -->

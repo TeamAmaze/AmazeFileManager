@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Nyekundu</string>
-  <string name="blue">Samawati</string>
-  <string name="cyan">Samawati-Kijani</string>
-  <string name="green">Kijani</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Ukubwa</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Manjano</string>
-  <string name="version">Toleo</string>
+    <string name="version">Toleo</string>
   <string name="details">Maelezo</string>
   <string name="color_title">Rangi</string>
-  <string name="none">Umekamilisha</string>
-  <string name="path">Njia</string>
+    <string name="path">Njia</string>
   <string name="information">Habari</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

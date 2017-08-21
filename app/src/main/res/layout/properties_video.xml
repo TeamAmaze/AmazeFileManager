@@ -51,7 +51,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_video_dimensions_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_dimensions_title"
@@ -84,7 +83,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_video_codec_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_codec_title"
@@ -117,7 +115,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_video_frame_rate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_frame_rate_title"
@@ -150,7 +147,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_video_bitrate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_bitrate_title"

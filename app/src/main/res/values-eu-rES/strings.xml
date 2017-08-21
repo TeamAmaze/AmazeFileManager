@@ -27,23 +27,17 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Gorria</string>
-  <string name="blue">Urdina</string>
-  <string name="cyan">Ziana</string>
-  <string name="green">Berdea</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Tamaina</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Horia</string>
-  <string name="version">Bertsioa</string>
+    <string name="version">Bertsioa</string>
   <string name="warning">Abisua</string>
   <string name="text">Testua</string>
   <string name="other">Beste bat</string>
   <string name="color_title">Kolorea</string>
-  <string name="none">Bat ere ez</string>
-  <string name="password">Pasahitza</string>
+    <string name="password">Pasahitza</string>
   <string name="defualt">Lehenetsia</string>
   <string name="information">Informazioa</string>
   <!-- reference to file accessed date -->
@@ -51,8 +45,7 @@
   <!-- reference to audio/video file -->
   <string name="exposure_time">Esposizio-denbora</string>
   <string name="focal_length">Foku-distantzia</string>
-  <string name="document">Dokumentua</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

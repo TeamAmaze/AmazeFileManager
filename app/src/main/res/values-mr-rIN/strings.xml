@@ -25,29 +25,22 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">लाल</string>
-  <string name="blue">निळा</string>
-  <string name="cyan">निळसर</string>
-  <string name="green">हिरवा</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">आकार</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">पिवळा</string>
-  <string name="version">आवृत्ती</string>
+    <string name="version">आवृत्ती</string>
   <string name="text">मजकूर</string>
   <string name="color_title">रंग</string>
-  <string name="none">काहीही नाही</string>
-  <string name="password">संकेतशब्द</string>
+    <string name="password">संकेतशब्द</string>
   <string name="information">माहिती</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->
   <string name="exposure_time">एक्सपोजर वेळ</string>
   <string name="focal_length">फोकल लेंथः</string>
-  <string name="document">दस्तऐवज</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

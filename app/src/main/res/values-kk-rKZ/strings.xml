@@ -25,20 +25,14 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Қызыл</string>
-  <string name="blue">Көк</string>
-  <string name="cyan">Көкшіл</string>
-  <string name="green">Жасыл</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Өлшем</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Сары</string>
-  <string name="version">Нұсқа</string>
+    <string name="version">Нұсқа</string>
   <string name="color_title">Түс</string>
-  <string name="none">Ешқандай</string>
-  <string name="information">Ақпарат</string>
+    <string name="information">Ақпарат</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->

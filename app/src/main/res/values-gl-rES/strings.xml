@@ -26,30 +26,23 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Vermello</string>
-  <string name="blue">Azul</string>
-  <string name="cyan">Ciano</string>
-  <string name="green">Verde</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Tamaño</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Amarelo</string>
-  <string name="version">Versión</string>
+    <string name="version">Versión</string>
   <string name="warning">Aviso</string>
   <string name="text">Texto</string>
   <string name="color_title">Cor</string>
-  <string name="none">Ningún</string>
-  <string name="password">Contrasinal</string>
+    <string name="password">Contrasinal</string>
   <string name="information">Información</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->
   <string name="exposure_time">Tempo de exposición</string>
   <string name="focal_length">Distancia focal</string>
-  <string name="document">Documento</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

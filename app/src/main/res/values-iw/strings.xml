@@ -30,33 +30,25 @@
   <string name="no">לא</string>
   <string name="dialog_delete_title">אשר</string>
   <string name="home">בית</string>
-  <string name="close">סגור</string>
-  <string name="history">היסטוריה</string>
-  <string name="refresh">רענן</string>
-  <string name="delete">מחק</string>
+    <string name="history">היסטוריה</string>
+    <string name="delete">מחק</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">אדום</string>
-  <string name="blue">כחול</string>
-  <string name="cyan">ציאן</string>
-  <string name="green">ירוק</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">גודל</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">צהוב</string>
-  <string name="skip">דלג</string>
+    <string name="skip">דלג</string>
   <string name="done">בצע</string>
   <string name="exit">יציאה</string>
   <string name="changelog">יומן שינויים</string>
   <string name="ok">אישור</string>
   <string name="version">גרסה</string>
-  <string name="new_string">חדש</string>
-  <string name="install">התקן</string>
+    <string name="install">התקן</string>
   <string name="archive">ארכיון</string>
   <string name="details">פרטים</string>
   <string name="warning">אזהרה</string>
@@ -64,8 +56,7 @@
   <string name="text">טקסט</string>
   <string name="other">אחר</string>
   <string name="color_title">צבע</string>
-  <string name="none">ללא</string>
-  <string name="password">סיסמה</string>
+    <string name="password">סיסמה</string>
   <string name="defualt">ברירת מחדל</string>
   <string name="edit">ערוך</string>
   <string name="path">נתיב</string>
@@ -79,8 +70,7 @@
   <string name="height">גובה</string>
   <string name="exposure_time">זמן חשיפה</string>
   <string name="focal_length">רוחק מוקד</string>
-  <string name="document">מסמך</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

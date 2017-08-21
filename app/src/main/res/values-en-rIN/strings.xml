@@ -19,10 +19,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="close">Close</string>
-  <string name="history">History</string>
-  <string name="refresh">Refresh</string>
-  <!-- New -->
+    <string name="history">History</string>
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
@@ -34,8 +32,7 @@
   <string name="skip">Skip</string>
   <string name="exit">Exit</string>
   <string name="ok">OK</string>
-  <string name="new_string">New</string>
-  <string name="install">Install</string>
+    <string name="install">Install</string>
   <string name="donate">Donate</string>
   <string name="color_title">Colour</string>
   <string name="defualt">Default</string>

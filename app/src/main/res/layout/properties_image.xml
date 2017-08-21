@@ -51,7 +51,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_type_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_type_title"
@@ -84,7 +83,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_width_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_width_title"
@@ -117,7 +115,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_height_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_height_title"
@@ -152,7 +149,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_date_modified_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_date_modified_title"
@@ -187,7 +183,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_software_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_software_title"
@@ -222,7 +217,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_creator_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_creator_title"
@@ -257,7 +251,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_camera_brand_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_camera_brand_title"
@@ -292,7 +285,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_camera_model_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_camera_model_title"
@@ -327,7 +319,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_date_taken_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_date_taken_title"
@@ -362,7 +353,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_exposure_time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_exposure_time_title"
@@ -397,7 +387,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_aperture_value_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_aperture_value_title"
@@ -432,7 +421,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_iso_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_iso_title"
@@ -467,7 +455,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_flash_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_flash_title"
@@ -502,7 +489,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_image_focal_length_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_image_focal_length_title"

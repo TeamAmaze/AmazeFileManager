@@ -6,7 +6,6 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/text_input_dialog_encrypt_password"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatEditText
@@ -22,7 +21,6 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/text_input_dialog_encrypt_password_confirm"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatEditText
