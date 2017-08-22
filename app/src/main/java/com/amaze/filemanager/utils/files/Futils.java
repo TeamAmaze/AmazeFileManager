@@ -327,31 +327,32 @@ public class Futils {
      * @param forcechooser force the chooser to show up even when set default by user
      */
     public static void openunknown(File f, Context c, boolean forcechooser) {
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
+        Intent chooserIntent = new Intent();
+        chooserIntent.setAction(Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f);
-        if(type!=null && type.trim().length()!=0 && !type.equals("*/*")) {
+        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+            Uri uri = fileToContentUri(c, f);
+            if (uri == null) uri = Uri.fromFile(f);
+            chooserIntent.setDataAndType(uri, type);
 
-            Uri uri=fileToContentUri(c, f);
-            if(uri==null) uri=Uri.fromFile(f);
-            intent.setDataAndType(uri, type);
-
-            Intent startintent;
+            Intent activityIntent;
             if (forcechooser) {
-                startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
+                applyNewDocFlag(chooserIntent);
+                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
             } else {
-                startintent=intent;
+                activityIntent = chooserIntent;
+                applyNewDocFlag(activityIntent);
             }
+
             try {
-                c.startActivity(startintent);
+                c.startActivity(activityIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-                openWith(f,c);
+                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                openWith(f, c);
             }
         } else {
-
             // failed to load mime type
             openWith(f, c);
         }
@@ -364,28 +365,40 @@ public class Futils {
      * @param forcechooser
      */
     public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent chooserIntent = new Intent();
+        chooserIntent.setAction(Intent.ACTION_VIEW);
+        chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         String type = f.getType();
-        if(type!=null && type.trim().length()!=0 && !type.equals("*/*")) {
-            intent.setDataAndType(f.getUri(), type);
-            Intent startintent;
-            if (forcechooser) startintent=Intent.createChooser(intent, c.getResources().getString(R.string.openwith));
-            else startintent=intent;
+        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+            chooserIntent.setDataAndType(f.getUri(), type);
+            Intent activityIntent;
+            if (forcechooser) {
+                applyNewDocFlag(chooserIntent);
+                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+            } else {
+                activityIntent = chooserIntent;
+                applyNewDocFlag(chooserIntent);
+            }
+
             try {
-                c.startActivity(startintent);
+                c.startActivity(activityIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(c,R.string.noappfound,Toast.LENGTH_SHORT).show();
-                openWith(f,c);
+                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                openWith(f, c);
             }
         } else {
             openWith(f, c);
         }
+    }
 
+    private static void applyNewDocFlag(Intent i) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        } else {
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
     }
 
     private static final String INTERNAL_VOLUME = "internal";
@@ -494,6 +507,7 @@ public class Futils {
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 switch (i) {
                     case 0:
+                        applyNewDocFlag(intent);
                         intent.setDataAndType(uri, "text/*");
                         break;
                     case 1:
@@ -529,9 +543,9 @@ public class Futils {
     }
 
     public void openWith(final DocumentFile f,final Context c) {
-        MaterialDialog.Builder a=new MaterialDialog.Builder(c);
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
-        String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
+        String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
 
         a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
             @Override
@@ -542,6 +556,7 @@ public class Futils {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 switch (i) {
                     case 0:
+                        applyNewDocFlag(intent);
                         intent.setDataAndType(f.getUri(), "text/*");
                         break;
                     case 1:
@@ -569,11 +584,8 @@ public class Futils {
                 }
             }
         });
-        try {
-            a.build().show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        a.build().show();
     }
 
     /**
