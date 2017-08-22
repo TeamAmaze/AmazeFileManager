@@ -24,7 +24,6 @@ package com.amaze.filemanager.fragments;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -71,8 +70,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
@@ -840,9 +839,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
             SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-
                 if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-
                     fragment.mSearchAsyncTask.cancel(true);
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
@@ -856,34 +853,30 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
 
         if (selection) {
-            if (!isBackButton) {
-                // the first {goback} item if back navigation is enabled
-                adapter.toggleChecked(position, imageView);
-            } else {
+            if (isBackButton) {
                 selection = false;
                 if (mActionMode != null)
                     mActionMode.finish();
                 mActionMode = null;
+            } else {
+                // the first {goback} item if back navigation is enabled
+                adapter.toggleChecked(position, imageView);
             }
         } else {
-            if (!isBackButton) {
+            if(isBackButton) {
+                goBackItemClick();
+            } else {
                 // hiding search view if visible
                 if (getMainActivity().getAppbar().getSearchView().isEnabled()) {
                     getMainActivity().getAppbar().getSearchView().hideSearchView();
                 }
 
-                String path;
-                if (!e.hasSymlink()) {
+                String path = !e.hasSymlink()? e.getDesc():e.getSymlink();
 
-                    path = e.getDesc();
-                } else {
-
-                    path = e.getSymlink();
-                }
-
-                // check if we're trying to click on encrypted file
-                if (!e.isDirectory() &&
-                        e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                if (e.isDirectory()) {
+                    computeScroll();
+                    loadlist(path, false, openMode);
+                } else if (e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
                     isEncryptOpen = true;
 
@@ -894,50 +887,39 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
                             utilsProvider, true);
-                    return;
-                }
-
-                if (e.isDirectory()) {
-
-                    computeScroll();
-                    loadlist(path, false, openMode);
                 } else {
-
                     if (getMainActivity().mReturnIntent) {
                         // are we here to return an intent to another app
                         returnIntentResults(e.generateBaseFile());
-                        return;
-                    }
+                    } else {
+                        switch (e.getMode()) {
+                            case SMB:
+                                try {
+                                    SmbFile smbFile = new SmbFile(e.getDesc());
+                                    launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                                } catch (MalformedURLException ex) {
+                                    ex.printStackTrace();
+                                }
+                                break;
+                            case OTG:
+                                utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                        (MainActivity) getActivity());
+                                break;
+                            case DROPBOX:
+                            case BOX:
+                            case GDRIVE:
+                            case ONEDRIVE:
+                                Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                                CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
+                                break;
+                            default:
+                                utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
+                                break;
+                        }
 
-                    switch (e.getMode()) {
-                        case SMB:
-                            try {
-                                SmbFile smbFile = new SmbFile(e.getDesc());
-                                launchSMB(smbFile, e.getlongSize(), getMainActivity());
-                            } catch (MalformedURLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case OTG:
-                            utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
-                                    (MainActivity) getActivity());
-                            break;
-                        case DROPBOX:
-                        case BOX:
-                        case GDRIVE:
-                        case ONEDRIVE:
-                            Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
-                            CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
-                            break;
-                        default:
-                            utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
-                            break;
+                        dataUtils.addHistoryFile(e.getDesc());
                     }
-
-                    dataUtils.addHistoryFile(e.getDesc());
                 }
-            } else {
-                goBackItemClick();
             }
         }
     }
