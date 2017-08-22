@@ -527,6 +527,7 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
 
+    <string name="sidebar_preferences">Sidebar</string>
     <string name="sidebarfolders_title">Sidebar shortcuts</string>
     <string name="sidebarquickaccess_title">Sidebar quick access</string>
     <string name="showfolders_pref_title">Show shortcuts</string>
