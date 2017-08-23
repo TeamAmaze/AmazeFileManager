@@ -19,8 +19,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 62
-        versionName "3.2.0"
+        versionCode 63
+        versionName "3.2.1"
 
         vectorDrawables.useSupportLibrary = true;
     }
@@ -39,7 +39,7 @@ android {
         release {
             signingConfig signingConfigs.release
 
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
         }
     }

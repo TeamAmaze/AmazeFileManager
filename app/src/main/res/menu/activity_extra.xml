@@ -23,7 +23,7 @@
         android:id="@+id/paste"
         android:title="@string/paste"
         android:icon="@drawable/ic_content_paste_white_24dp"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom|withText"
         android:visible="false" />
     <item
         android:id="@+id/search"

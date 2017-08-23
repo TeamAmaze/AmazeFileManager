@@ -22,8 +22,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager"
-    android:versionCode="62"
-    android:versionName="3.2.0">
+    android:versionCode="63"
+    android:versionName="3.2.1">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
