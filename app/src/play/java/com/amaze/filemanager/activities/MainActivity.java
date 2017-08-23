@@ -513,7 +513,7 @@ public class MainActivity extends ThemedActivity implements
                                 goToMain(path);
                             else {
                                 goToMain("");
-                                utils.openFile(new File(path), MainActivity.this);
+                                utils.openFile(new File(path), MainActivity.this, sharedPref);
                             }
                         } else {
                             goToMain("");
@@ -763,7 +763,7 @@ public class MainActivity extends ThemedActivity implements
                     goToMain(path);
                 else {
                     goToMain("");
-                    utils.openFile(new File(path), this);
+                    utils.openFile(new File(path), this, sharedPref);
                 }
             } else {
                 goToMain("");
@@ -1055,7 +1055,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1112,7 +1112,7 @@ public class MainActivity extends ThemedActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;
@@ -2059,7 +2059,7 @@ public class MainActivity extends ThemedActivity implements
             HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
             hFile.generateMode(this);
             if (hFile.isSimpleFile()) {
-                utils.openFile(new File(pendingPath), mainActivity);
+                utils.openFile(new File(pendingPath), mainActivity, sharedPref);
                 pendingPath = null;
                 return;
             }
@@ -2088,7 +2088,7 @@ public class MainActivity extends ThemedActivity implements
                 if (ma != null) {
                     ma.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
-            } else utils.openFile(new File(path), mainActivity);
+            } else utils.openFile(new File(path), mainActivity, sharedPref);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {

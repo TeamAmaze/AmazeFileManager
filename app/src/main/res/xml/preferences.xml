@@ -107,9 +107,16 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno"/>
-
-
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/text_editor">
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="texteditor_newstack"
+            android:title="@string/texteditor_newstack_title"
+            android:summary="@string/texteditor_newstack_summary"/>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/archive_preferences">
         <EditTextPreference
             android:key="extractpath"

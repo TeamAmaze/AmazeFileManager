@@ -455,7 +455,7 @@ public class ZipViewer extends Fragment {
                 // open most recent entry added to files to be deleted from cache
                 File cacheFile = new File(files.get(files.size() - 1).getPath());
                 if (cacheFile != null && cacheFile.exists())
-                    utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity);
+                    utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity, mainActivity.sharedPref);
 
                 // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;

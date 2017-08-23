@@ -80,6 +80,7 @@ import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -756,7 +757,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true);
+                    boolean useNewStack = sharedPref.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -813,7 +815,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         public void onReceive(Context context, Intent intent) {
 
             if (isEncryptOpen && encryptBaseFile != null) {
-                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity());
+                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity(), sharedPref);
                 isEncryptOpen = false;
             }
         }
@@ -903,7 +905,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                                 break;
                             case OTG:
                                 utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
-                                        (MainActivity) getActivity());
+                                        (MainActivity) getActivity(), sharedPref);
                                 break;
                             case DROPBOX:
                             case BOX:
@@ -913,7 +915,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                                 CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                                 break;
                             default:
-                                utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
+                                utils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
                                 break;
                         }
 
@@ -1135,7 +1137,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null) {
-                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity(), SHOW_HEADERS);
+                    adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, bitmap, ma.getActivity(), SHOW_HEADERS);
                 } else {
                     adapter.setItems(getLayoutElements());
                 }

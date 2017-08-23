@@ -20,10 +20,12 @@
 package com.amaze.filemanager.activities;
 
 import android.app.ActivityManager;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +43,7 @@ import android.widget.ListView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
@@ -75,6 +78,7 @@ public class DbViewer extends ThemedActivity {
         this.checkStorage = false;
         super.onCreate(savedInstanceState);
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (getAppTheme().equals(AppTheme.DARK)) {
             setTheme(R.style.appCompatDark);
@@ -93,7 +97,11 @@ public class DbViewer extends ThemedActivity {
         }
         getSupportActionBar()
                 .setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        boolean useNewStack = sharedPref.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
+
         if (SDK_INT == 20 || SDK_INT == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);

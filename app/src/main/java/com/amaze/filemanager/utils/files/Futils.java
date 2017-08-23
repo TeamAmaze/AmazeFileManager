@@ -326,7 +326,7 @@ public class Futils {
      * @param c
      * @param forcechooser force the chooser to show up even when set default by user
      */
-    public static void openunknown(File f, Context c, boolean forcechooser) {
+    public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {
         Intent chooserIntent = new Intent();
         chooserIntent.setAction(Intent.ACTION_VIEW);
 
@@ -338,11 +338,11 @@ public class Futils {
 
             Intent activityIntent;
             if (forcechooser) {
-                applyNewDocFlag(chooserIntent);
+                if(useNewStack) applyNewDocFlag(chooserIntent);
                 activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
-                applyNewDocFlag(activityIntent);
+                if(useNewStack) applyNewDocFlag(activityIntent);
             }
 
             try {
@@ -350,11 +350,11 @@ public class Futils {
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                openWith(f, c);
+                openWith(f, c, useNewStack);
             }
         } else {
             // failed to load mime type
-            openWith(f, c);
+            openWith(f, c, useNewStack);
         }
     }
 
@@ -364,7 +364,7 @@ public class Futils {
      * @param c
      * @param forcechooser
      */
-    public void openunknown(DocumentFile f, Context c, boolean forcechooser) {
+    public void openunknown(DocumentFile f, Context c, boolean forcechooser, boolean useNewStack) {
         Intent chooserIntent = new Intent();
         chooserIntent.setAction(Intent.ACTION_VIEW);
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -374,11 +374,11 @@ public class Futils {
             chooserIntent.setDataAndType(f.getUri(), type);
             Intent activityIntent;
             if (forcechooser) {
-                applyNewDocFlag(chooserIntent);
+                if(useNewStack) applyNewDocFlag(chooserIntent);
                 activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
-                applyNewDocFlag(chooserIntent);
+                if(useNewStack) applyNewDocFlag(chooserIntent);
             }
 
             try {
@@ -386,10 +386,10 @@ public class Futils {
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                openWith(f, c);
+                openWith(f, c, useNewStack);
             }
         } else {
-            openWith(f, c);
+            openWith(f, c, useNewStack);
         }
     }
 
@@ -493,7 +493,7 @@ public class Futils {
      * @param f
      * @param c
      */
-    public static void openWith(final File f,final Context c) {
+    public static void openWith(final File f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
         String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
@@ -507,7 +507,7 @@ public class Futils {
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 switch (i) {
                     case 0:
-                        applyNewDocFlag(intent);
+                        if(useNewStack) applyNewDocFlag(intent);
                         intent.setDataAndType(uri, "text/*");
                         break;
                     case 1:
@@ -531,7 +531,7 @@ public class Futils {
                     c.startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                    openWith(f, c);
+                    openWith(f, c, useNewStack);
                 }
             }
         });
@@ -542,7 +542,7 @@ public class Futils {
         }
     }
 
-    public void openWith(final DocumentFile f,final Context c) {
+    public void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
         String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
@@ -556,7 +556,7 @@ public class Futils {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 switch (i) {
                     case 0:
-                        applyNewDocFlag(intent);
+                        if(useNewStack) applyNewDocFlag(intent);
                         intent.setDataAndType(f.getUri(), "text/*");
                         break;
                     case 1:
@@ -580,7 +580,7 @@ public class Futils {
                     c.startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                    openWith(f, c);
+                    openWith(f, c, useNewStack);
                 }
             }
         });
@@ -757,7 +757,8 @@ public class Futils {
         }
     }
 
-    public void openFile(final File f, final MainActivity m) {
+    public void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
+        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
@@ -767,7 +768,7 @@ public class Futils {
                 f.getName().toLowerCase().endsWith(".tar.gz")) {
             GeneralDialogCreation.showArchiveDialog(f, m);
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
-            GeneralDialogCreation.showPackageDialog(f, m);
+            GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DbViewer.class);
             intent.putExtra("path", f.getPath());
@@ -805,10 +806,10 @@ public class Futils {
                 m.startActivity(intent);
         } else {
             try {
-                openunknown(f, m, false);
+                openunknown(f, m, false, useNewStack);
             } catch (Exception e) {
                 Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
-                openWith(f, m);
+                openWith(f, m, useNewStack);
             }
         }
     }
@@ -829,13 +830,13 @@ public class Futils {
      * @param f
      * @param m
      */
-    public void openFile(final DocumentFile f, final MainActivity m) {
-        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(m);
+    public void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
+        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
-            openunknown(f, m, false);
+            openunknown(f, m, false, useNewStack);
         } catch (Exception e) {
             Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
-            openWith(f, m);
+            openWith(f, m, useNewStack);
         }
 
         // not supporting inbuilt activities for now

@@ -2,6 +2,7 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.ViewHolder> {
 
     private Futils utils;
+    private SharedPreferences sharedPrefs;
 
     private MainFragment context;
     private Context c;
@@ -41,12 +43,14 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
     private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context context, MainFragment mainFrag, Futils utils, @LayoutRes int layoutId,
-                         ArrayList<HFile> items, MaterialDialog materialDialog, boolean hide) {
+    public HiddenAdapter(Context context, MainFragment mainFrag, Futils utils, SharedPreferences sharedPreferences,
+                         @LayoutRes int layoutId, ArrayList<HFile> items, MaterialDialog materialDialog,
+                         boolean hide) {
         addAll(items);
         this.utils = utils;
         this.c = context;
         this.context = mainFrag;
+        sharedPrefs = sharedPreferences;
         this.items = items;
         this.hide = hide;
         this.materialDialog = materialDialog;
@@ -124,7 +128,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                                     context.getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            utils.openFile(new File(file.getPath()), (MainActivity) context.getActivity());
+                                            utils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
                                         }
                                     });
                                 }
