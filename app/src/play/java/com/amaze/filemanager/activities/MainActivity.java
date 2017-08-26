@@ -952,15 +952,8 @@ public class MainActivity extends ThemedActivity implements
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-        String fragmentName;
-        Fragment fragment;
-        try {
-            fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            fragmentName = fragment.getClass().getName();
-        } catch (Exception e) {
-            return true;
-        }
-        if (fragmentName.contains("TabFragment")) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (fragment instanceof TabFragment) {
             appbar.setTitle("Amaze");
             if (useGridView) {
                 s.setTitle(getResources().getString(R.string.gridview));
@@ -991,8 +984,8 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if (fragmentName.contains("AppsListFragment") || fragmentName.contains("ProcessViewerFragment") ||
-                fragmentName.contains(FTPServerFragment.class.getName())) {
+        } else if (fragment instanceof AppsListFragment || fragment instanceof ProcessViewerFragment
+                || fragment instanceof FTPServerFragment) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
@@ -1001,15 +994,16 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.extract).setVisible(false);
-            if (fragmentName.contains("ProcessViewerFragment")) menu.findItem(R.id.sort).setVisible(false);
-            else {
+            if (fragment instanceof ProcessViewerFragment) {
+                menu.findItem(R.id.sort).setVisible(false);
+            } else {
                 menu.findItem(R.id.dsort).setVisible(false);
                 menu.findItem(R.id.sortby).setVisible(false);
             }
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (fragmentName.contains("ZipExplorerFragment")) {
+        } else if (fragment instanceof ZipExplorerFragment) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
             getAppbar().getBottomBar().resetClickListener();
@@ -1091,8 +1085,9 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.sort:
                 Fragment fragment = getFragmentAtFrame();
-                if (fragment.getClass().getName().contains("AppsListFragment"))
+                if (fragment instanceof AppsListFragment) {
                     GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
+                }
                 break;
             case R.id.sortby:
                 if (ma != null)
@@ -1182,8 +1177,9 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.extract:
                 Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (fragment1.getClass().getName().contains("ZipExplorerFragment"))
+                if (fragment1 instanceof ZipExplorerFragment) {
                     mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).f);
+                }
                 break;
             case R.id.search:
                 getAppbar().getSearchView().revealSearchView();
