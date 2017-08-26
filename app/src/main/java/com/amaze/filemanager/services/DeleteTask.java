@@ -33,8 +33,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
@@ -50,7 +49,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
     private ArrayList<BaseFile> files;
     private Context cd;
     private boolean rootMode;
-    private ZipViewer zipViewer;
+    private ZipExplorerFragment zipExplorerFragment;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public DeleteTask(ContentResolver c, Context cd) {
@@ -58,10 +57,10 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
     }
 
-    public DeleteTask(ContentResolver c, Context cd, ZipViewer zipViewer) {
+    public DeleteTask(ContentResolver c, Context cd, ZipExplorerFragment zipExplorerFragment) {
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
-        this.zipViewer = zipViewer;
+        this.zipExplorerFragment = zipExplorerFragment;
     }
 
     @Override
@@ -167,12 +166,12 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
 
         if (!b) {
             Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-        } else if (zipViewer==null) {
+        } else if (zipExplorerFragment ==null) {
             Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
 
-        if (zipViewer!=null) {
-            zipViewer.files.clear();
+        if (zipExplorerFragment !=null) {
+            zipExplorerFragment.files.clear();
         }
     }
 

@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.services.ExtractService;
 import com.amaze.filemanager.services.asynctasks.RarHelperTask;
 import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
@@ -50,12 +50,12 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     private Drawable folder, unknown;
     private ArrayList<FileHeader> enter;
     private ArrayList<ZipObj> enter1;
-    private ZipViewer zipViewer;
+    private ZipExplorerFragment zipExplorerFragment;
     private LayoutInflater mInflater;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private boolean zipMode = false;  // flag specify whether adapter is based on a Rar file or not
 
-    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<FileHeader> enter, ZipViewer zipViewer) {
+    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<FileHeader> enter, ZipExplorerFragment zipExplorerFragment) {
         this.utilsProvider = utilsProvider;
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++)
@@ -65,10 +65,10 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         this.c = c;
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
-        this.zipViewer = zipViewer;
+        this.zipExplorerFragment = zipExplorerFragment;
     }
 
-    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObj> enter, ZipViewer zipViewer, boolean l) {
+    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObj> enter, ZipExplorerFragment zipExplorerFragment, boolean l) {
         this.utilsProvider = utilsProvider;
         this.enter1 = enter;
         for (int i = 0; i < enter.size(); i++) {
@@ -79,7 +79,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         if (c == null) return;
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         unknown = c.getResources().getDrawable(R.drawable.ic_doc_generic_am);
-        this.zipViewer = zipViewer;
+        this.zipExplorerFragment = zipExplorerFragment;
         mInflater = (LayoutInflater) c.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -90,7 +90,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
      * @param imageView the circular {@link CircleGradientDrawable} that is to be animated
      */
     private void toggleChecked(int position, ImageView imageView) {
-        zipViewer.stopAnim();
+        zipExplorerFragment.stopAnim();
         stoppedAnimation = true;
         if (myChecked.get(position)) {
             // if the view at position is checked, un-check it
@@ -116,17 +116,17 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
 
         notifyDataSetChanged();
-        if (!zipViewer.selection || zipViewer.mActionMode == null) {
-            zipViewer.selection = true;
-            /*zipViewer.mActionMode = zipViewer.getActivity().startActionMode(
-                   zipViewer.mActionModeCallback);*/
-            zipViewer.mActionMode = zipViewer.mainActivity.getAppbar().getToolbar().startActionMode(zipViewer.mActionModeCallback);
+        if (!zipExplorerFragment.selection || zipExplorerFragment.mActionMode == null) {
+            zipExplorerFragment.selection = true;
+            /*zipExplorerFragment.mActionMode = zipExplorerFragment.getActivity().startActionMode(
+                   zipExplorerFragment.mActionModeCallback);*/
+            zipExplorerFragment.mActionMode = zipExplorerFragment.mainActivity.getAppbar().getToolbar().startActionMode(zipExplorerFragment.mActionModeCallback);
         }
-        zipViewer.mActionMode.invalidate();
+        zipExplorerFragment.mActionMode.invalidate();
         if (getCheckedItemPositions().size() == 0) {
-            zipViewer.selection = false;
-            zipViewer.mActionMode.finish();
-            zipViewer.mActionMode = null;
+            zipExplorerFragment.selection = false;
+            zipExplorerFragment.mActionMode.finish();
+            zipExplorerFragment.mActionMode = null;
         }
     }
 
@@ -209,7 +209,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     private void animate(RarAdapter.ViewHolder holder) {
         holder.rl.clearAnimation();
-        localAnimation = AnimationUtils.loadAnimation(zipViewer.getActivity(), R.anim.fade_in_top);
+        localAnimation = AnimationUtils.loadAnimation(zipExplorerFragment.getActivity(), R.anim.fade_in_top);
         localAnimation.setStartOffset(this.offset);
         holder.rl.startAnimation(localAnimation);
         this.offset = (30 + this.offset);
@@ -244,26 +244,26 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
+            holder.checkImageView.setBackground(new CircleGradientDrawable(zipExplorerFragment.accentColor,
+                    utilsProvider.getAppTheme(), zipExplorerFragment.getResources().getDisplayMetrics()));
         } else
-            holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
+            holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipExplorerFragment.accentColor,
+                    utilsProvider.getAppTheme(), zipExplorerFragment.getResources().getDisplayMetrics()));
 
         if (rowItem.getEntry() == null) {
-            holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.ic_arrow_left_white_24dp));
+            holder.genericIcon.setImageDrawable(zipExplorerFragment.getResources().getDrawable(R.drawable.ic_arrow_left_white_24dp));
             gradientDrawable.setColor(Utils.getColor(c, R.color.goback_item));
             holder.txtTitle.setText("..");
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, zipViewer.res));
+            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, zipExplorerFragment.res));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-            if (zipViewer.showLastModified)
-                holder.date.setText(Utils.getDate(rowItem.getTime(), zipViewer.year));
+            if (zipExplorerFragment.showLastModified)
+                holder.date.setText(Utils.getDate(rowItem.getTime(), zipExplorerFragment.year));
             if (rowItem.isDirectory()) {
                 holder.genericIcon.setImageDrawable(folder);
-                gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+                gradientDrawable.setColor(Color.parseColor(zipExplorerFragment.iconskin));
                 if (stringBuilder.toString().length() > 0) {
                     stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
                     try {
@@ -273,13 +273,13 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     }
                 }
             } else {
-                if (zipViewer.showSize)
+                if (zipExplorerFragment.showSize)
                     holder.txtDesc.setText(Formatter.formatFileSize(c, rowItem.getSize()));
                 holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
-                if (zipViewer.coloriseIcons) {
+                if (zipExplorerFragment.coloriseIcons) {
                     ColorUtils.colorizeIcons(c, Icons.getTypeOfFile(rowItem.getName()),
-                            gradientDrawable, Color.parseColor(zipViewer.iconskin));
-                } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+                            gradientDrawable, Color.parseColor(zipExplorerFragment.iconskin));
+                } else gradientDrawable.setColor(Color.parseColor(zipExplorerFragment.iconskin));
             }
         }
 
@@ -315,7 +315,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             }
             holder.rl.setSelected(false);
             if (checked) {
-                //holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                //holder.genericIcon.setImageDrawable(zipExplorerFragment.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                 holder.checkImageView.setVisibility(View.VISIBLE);
                 gradientDrawable.setColor(Utils.getColor(c, R.color.goback_item));
                 holder.rl.setSelected(true);
@@ -325,9 +325,9 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
             public void onClick(View p1) {
                 if (rowItem.getEntry() == null)
-                    zipViewer.goBack();
+                    zipExplorerFragment.goBack();
                 else {
-                    if (zipViewer.selection) {
+                    if (zipExplorerFragment.selection) {
 
                         toggleChecked(position1, holder.checkImageView);
                     } else {
@@ -337,36 +337,36 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
                         if (rowItem.isDirectory()) {
 
-                            new ZipHelperTask(zipViewer, stringBuilder.toString()).execute(zipViewer.s);
+                            new ZipHelperTask(zipExplorerFragment, stringBuilder.toString()).execute(zipExplorerFragment.s);
 
                         } else {
 
-                            String fileName = zipViewer.f.getName().substring(0,
-                                    zipViewer.f.getName().lastIndexOf("."));
-                            String archiveCacheDirPath = zipViewer.getActivity().getExternalCacheDir().getPath() +
+                            String fileName = zipExplorerFragment.f.getName().substring(0,
+                                    zipExplorerFragment.f.getName().lastIndexOf("."));
+                            String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                     "/" + fileName;
 
                             BaseFile file = new BaseFile(archiveCacheDirPath + "/"
                                     + rowItem.getName().replaceAll("\\\\", "/"));
                             file.setMode(OpenMode.FILE);
                             // this file will be opened once service finishes up it's extraction
-                            zipViewer.files.add(file);
+                            zipExplorerFragment.files.add(file);
                             // setting flag for binder to know
-                            zipViewer.isOpen = true;
+                            zipExplorerFragment.isOpen = true;
 
-                            Toast.makeText(zipViewer.getContext(),
-                                    zipViewer.getContext().getResources().getString(R.string.please_wait),
+                            Toast.makeText(zipExplorerFragment.getContext(),
+                                    zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
                                     Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(zipViewer.getContext(), ExtractService.class);
+                            Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
                             ArrayList<String> a = new ArrayList<>();
 
                             // adding name of entry to extract from zip, before opening it
                             a.add(rowItem.getName());
-                            intent.putExtra(ExtractService.KEY_PATH_ZIP, zipViewer.f.getPath());
+                            intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.f.getPath());
                             intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
                             intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
-                                    zipViewer.getActivity().getExternalCacheDir().getPath());
-                            ServiceWatcherUtil.runService(zipViewer.getContext(), intent);
+                                    zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
+                            ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
                         }
                     }
                 }
@@ -386,28 +386,28 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         }
         if (position1 < 0) return;
         final FileHeader rowItem = enter.get(position1);
-        zipViewer.elementsRar.add(position1, headerRequired(rowItem));
+        zipExplorerFragment.elementsRar.add(position1, headerRequired(rowItem));
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
-        holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getFileNameString(), false, zipViewer.res));
+        holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getFileNameString(), false, zipExplorerFragment.res));
         holder.txtTitle.setText(rowItem.getFileNameString().substring(rowItem.getFileNameString().lastIndexOf("\\") + 1));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.checkImageView.setBackground(new CircleGradientDrawable(zipViewer.accentColor,
-                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
+            holder.checkImageView.setBackground(new CircleGradientDrawable(zipExplorerFragment.accentColor,
+                    utilsProvider.getAppTheme(), zipExplorerFragment.getResources().getDisplayMetrics()));
         } else
-            holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipViewer.accentColor,
-                    utilsProvider.getAppTheme(), zipViewer.getResources().getDisplayMetrics()));
+            holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipExplorerFragment.accentColor,
+                    utilsProvider.getAppTheme(), zipExplorerFragment.getResources().getDisplayMetrics()));
 
         if (rowItem.isDirectory()) {
             holder.genericIcon.setImageDrawable(folder);
-            gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+            gradientDrawable.setColor(Color.parseColor(zipExplorerFragment.iconskin));
         } else {
-            if (zipViewer.coloriseIcons) {
+            if (zipExplorerFragment.coloriseIcons) {
                 ColorUtils.colorizeIcons(c, Icons.getTypeOfFile(rowItem.getFileNameString()),
-                        gradientDrawable, Color.parseColor(zipViewer.iconskin));
-            } else gradientDrawable.setColor(Color.parseColor(zipViewer.iconskin));
+                        gradientDrawable, Color.parseColor(zipExplorerFragment.iconskin));
+            } else gradientDrawable.setColor(Color.parseColor(zipExplorerFragment.iconskin));
         }
 
 
@@ -438,7 +438,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             }
             holder.rl.setSelected(false);
             if (checked) {
-                //holder.genericIcon.setImageDrawable(zipViewer.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                //holder.genericIcon.setImageDrawable(zipExplorerFragment.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                 holder.checkImageView.setVisibility(View.VISIBLE);
                 gradientDrawable.setColor(Utils.getColor(c, R.color.goback_item));
                 holder.rl.setSelected(true);
@@ -447,21 +447,21 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         holder.rl.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View p1) {
-                if (zipViewer.selection) {
+                if (zipExplorerFragment.selection) {
 
                     toggleChecked(position1, holder.checkImageView);
                 } else {
 
                     if (rowItem.isDirectory()) {
 
-                        zipViewer.elementsRar.clear();
-                        new RarHelperTask(zipViewer, rowItem.getFileNameString()).execute
-                                (zipViewer.f);
+                        zipExplorerFragment.elementsRar.clear();
+                        new RarHelperTask(zipExplorerFragment, rowItem.getFileNameString()).execute
+                                (zipExplorerFragment.f);
 
                     } else {
-                        String fileName = zipViewer.f.getName().substring(0,
-                                zipViewer.f.getName().lastIndexOf("."));
-                        String archiveCacheDirPath = zipViewer.getActivity().getExternalCacheDir().getPath() +
+                        String fileName = zipExplorerFragment.f.getName().substring(0,
+                                zipExplorerFragment.f.getName().lastIndexOf("."));
+                        String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 "/" + fileName;
 
                         BaseFile file1 = new BaseFile(archiveCacheDirPath + "/"
@@ -469,23 +469,23 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         file1.setMode(OpenMode.FILE);
 
                         // this file will be opened once service finishes up it's extraction
-                        zipViewer.files.add(file1);
+                        zipExplorerFragment.files.add(file1);
                         // setting flag for binder to know
-                        zipViewer.isOpen = true;
+                        zipExplorerFragment.isOpen = true;
 
-                        Toast.makeText(zipViewer.getContext(),
-                                zipViewer.getContext().getResources().getString(R.string.please_wait),
+                        Toast.makeText(zipExplorerFragment.getContext(),
+                                zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(zipViewer.getContext(), ExtractService.class);
+                        Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
                         ArrayList<String> a = new ArrayList<>();
 
                         // adding name of entry to extract from zip, before opening it
                         a.add(rowItem.getFileNameString());
-                        intent.putExtra(ExtractService.KEY_PATH_ZIP, zipViewer.f.getPath());
+                        intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.f.getPath());
                         intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
                         intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
-                                zipViewer.getActivity().getExternalCacheDir().getPath());
-                        ServiceWatcherUtil.runService(zipViewer.getContext(), intent);
+                                zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
+                        ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
                     }
                 }
             }
@@ -510,7 +510,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
 
     private FileHeader headerRequired(FileHeader rowItem) {
 
-        for (FileHeader fileHeader : zipViewer.archive.getFileHeaders()) {
+        for (FileHeader fileHeader : zipExplorerFragment.archive.getFileHeaders()) {
             String req = fileHeader.getFileNameString();
             if (rowItem.getFileNameString().equals(req))
                 return fileHeader;

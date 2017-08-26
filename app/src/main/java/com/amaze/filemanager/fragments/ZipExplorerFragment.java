@@ -73,7 +73,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ZipViewer extends Fragment implements BottomBarButtonPath {
+public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath {
 
     private static final int ZIP_FILE = 0, RAR_FILE = 1;
 
@@ -101,6 +101,7 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
+    ZipExplorerFragment zipExplorerFragment = this;
     public Archive archive;
     public ArrayList<FileHeader> wholelistRar = new ArrayList<>();
     public ArrayList<FileHeader> elementsRar = new ArrayList<>();

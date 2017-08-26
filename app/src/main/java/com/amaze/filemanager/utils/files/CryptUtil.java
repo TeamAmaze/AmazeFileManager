@@ -14,6 +14,7 @@ import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -63,8 +64,8 @@ import javax.security.auth.x500.X500Principal;
  * The service then calls the constructor which fires up the subsequent encryption/decryption process.
  *
  * We differentiate between already encrypted files from <i>new ones</i> by encrypting the plaintext
- * {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_MASTER}
- * and {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_FINGERPRINT}
+ * {@link PrefFrag#ENCRYPT_PASSWORD_MASTER}
+ * and {@link PrefFrag#ENCRYPT_PASSWORD_FINGERPRINT}
  * against the path in database. At the time of decryption, we check for these values
  * and either retrieve master password from preferences or fire up the fingerprint sensor authentication.
  *

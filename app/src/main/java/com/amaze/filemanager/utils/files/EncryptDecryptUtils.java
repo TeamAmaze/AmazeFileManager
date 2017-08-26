@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -15,7 +14,7 @@ import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
@@ -98,7 +97,7 @@ public class EncryptDecryptUtils {
         }
 
         switch (encryptedEntry.getPassword()) {
-            case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
+            case PrefFrag.ENCRYPT_PASSWORD_FINGERPRINT:
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
@@ -112,12 +111,12 @@ public class EncryptDecryptUtils {
                             Toast.LENGTH_LONG).show();
                 }
                 break;
-            case Preffrag.ENCRYPT_PASSWORD_MASTER:
+            case PrefFrag.ENCRYPT_PASSWORD_MASTER:
                 try {
                     GeneralDialogCreation.showDecryptDialog(c,
                             mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                            CryptUtil.decryptPassword(c, preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
+                            CryptUtil.decryptPassword(c, preferences1.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
                 } catch (CryptException e) {
                     e.printStackTrace();
 

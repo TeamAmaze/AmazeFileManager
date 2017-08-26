@@ -64,7 +64,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class ProcessViewer extends Fragment {
+public class ProcessViewerFragment extends Fragment {
 
     boolean isInitialized = false;
     SharedPreferences sharedPrefs;

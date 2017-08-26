@@ -6,7 +6,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 
@@ -20,16 +20,16 @@ import java.util.Comparator;
  */
 public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> {
 
-    ZipViewer zipViewer;
+    ZipExplorerFragment zipExplorerFragment;
     String dir;
 
     /**
      * AsyncTask to load RAR file items.
-     * @param zipViewer the zipViewer fragment instance
+     * @param zipExplorerFragment the zipExplorerFragment fragment instance
      * @param dir
      */
-    public RarHelperTask(ZipViewer zipViewer, String dir) {
-        this.zipViewer = zipViewer;
+    public RarHelperTask(ZipExplorerFragment zipExplorerFragment, String dir) {
+        this.zipExplorerFragment = zipExplorerFragment;
         this.dir = dir;
     }
 
@@ -37,7 +37,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     protected void onPreExecute() {
         super.onPreExecute();
 
-        zipViewer.swipeRefreshLayout.setRefreshing(true);
+        zipExplorerFragment.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -45,18 +45,18 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
         ArrayList<FileHeader> elements = new ArrayList<>();
         try {
             Archive zipfile = new Archive(params[0]);
-            zipViewer.archive = zipfile;
-            if (zipViewer.wholelistRar.size() == 0) {
+            zipExplorerFragment.archive = zipfile;
+            if (zipExplorerFragment.wholelistRar.size() == 0) {
 
                 FileHeader fh = zipfile.nextFileHeader();
                 while (fh != null) {
-                    zipViewer.wholelistRar.add(fh);
+                    zipExplorerFragment.wholelistRar.add(fh);
                     fh = zipfile.nextFileHeader();
                 }
             }
             if (dir == null || dir.trim().length() == 0 || dir.equals("")) {
 
-                for (FileHeader header : zipViewer.wholelistRar) {
+                for (FileHeader header : zipExplorerFragment.wholelistRar) {
                     String name = header.getFileNameString();
 
                     if (!name.contains("\\")) {
@@ -65,7 +65,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
                     }
                 }
             } else {
-                for (FileHeader header : zipViewer.wholelistRar) {
+                for (FileHeader header : zipExplorerFragment.wholelistRar) {
                     String name = header.getFileNameString();
                     if (name.substring(0, name.lastIndexOf("\\")).equals(dir)) {
                         elements.add(header);
@@ -82,8 +82,8 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     @Override
     protected void onPostExecute(ArrayList<FileHeader> zipEntries) {
         super.onPostExecute(zipEntries);
-        zipViewer.swipeRefreshLayout.setRefreshing(false);
-        zipViewer.createRarViews(zipEntries, dir);
+        zipExplorerFragment.swipeRefreshLayout.setRefreshing(false);
+        zipExplorerFragment.createRarViews(zipEntries, dir);
     }
 
     private class FileListSorter implements Comparator<FileHeader> {

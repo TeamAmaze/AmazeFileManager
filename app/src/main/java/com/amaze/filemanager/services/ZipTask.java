@@ -38,6 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -330,10 +331,10 @@ public class ZipTask extends Service {
 
     /**
      * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * data to be transferred to {@link ProcessViewerFragment}
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @return
      */
@@ -349,7 +350,7 @@ public class ZipTask extends Service {
      * Puts a {@link DataPackage} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
      */

@@ -58,7 +58,7 @@ import java.util.List;
 
 import static com.amaze.filemanager.R.string.feedback;
 
-public class Preffrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     private static final String PREFERENCE_KEY_ABOUT = "about";
     private static final String[] PREFERENCE_KEYS =

@@ -97,15 +97,15 @@ import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
@@ -164,8 +164,8 @@ import java.util.regex.Pattern;
 import eu.chainfire.libsuperuser.Shell;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
+import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
 public class MainActivity extends ThemedActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -487,7 +487,7 @@ public class MainActivity extends ThemedActivity implements
                 if (savedInstanceState == null) {
                     if (openProcesses) {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
+                        transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
                         selectedStorage = SELECT_102;
                         openProcesses = false;
@@ -742,25 +742,25 @@ public class MainActivity extends ThemedActivity implements
             } else {
                 getCurrentMainFragment().goBack();
             }
-        } else if (fragment instanceof ZipViewer) {
-            ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (zipViewer.mActionMode == null) {
-                if (zipViewer.canGoBack()) {
-                    zipViewer.goBack();
+        } else if (fragment instanceof ZipExplorerFragment) {
+            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (zipExplorerFragment.mActionMode == null) {
+                if (zipExplorerFragment.canGoBack()) {
+                    zipExplorerFragment.goBack();
                 } else if (openzip) {
                     openzip = false;
                     finish();
                 } else {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipViewer);
+                    fragmentTransaction.remove(zipExplorerFragment);
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.showMenuButton(true);
                 }
             } else {
-                zipViewer.mActionMode.finish();
+                zipExplorerFragment.mActionMode.finish();
             }
         } else if (fragment instanceof FTPServerFragment) {
             //returning back from FTP server
@@ -991,7 +991,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if (fragmentName.contains("AppsList") || fragmentName.contains("ProcessViewer") ||
+        } else if (fragmentName.contains("AppsListFragment") || fragmentName.contains("ProcessViewerFragment") ||
                 fragmentName.contains(FTPServerFragment.class.getName())) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
@@ -1001,7 +1001,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.extract).setVisible(false);
-            if (fragmentName.contains("ProcessViewer")) menu.findItem(R.id.sort).setVisible(false);
+            if (fragmentName.contains("ProcessViewerFragment")) menu.findItem(R.id.sort).setVisible(false);
             else {
                 menu.findItem(R.id.dsort).setVisible(false);
                 menu.findItem(R.id.sortby).setVisible(false);
@@ -1009,7 +1009,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (fragmentName.contains("ZipViewer")) {
+        } else if (fragmentName.contains("ZipExplorerFragment")) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
             getAppbar().getBottomBar().resetClickListener();
@@ -1091,8 +1091,8 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.sort:
                 Fragment fragment = getFragmentAtFrame();
-                if (fragment.getClass().getName().contains("AppsList"))
-                    GeneralDialogCreation.showSortDialog((AppsList) fragment, getAppTheme());
+                if (fragment.getClass().getName().contains("AppsListFragment"))
+                    GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
                 break;
             case R.id.sortby:
                 if (ma != null)
@@ -1182,8 +1182,8 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.extract:
                 Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (fragment1.getClass().getName().contains("ZipViewer"))
-                    mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
+                if (fragment1.getClass().getName().contains("ZipExplorerFragment"))
+                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).f);
                 break;
             case R.id.search:
                 getAppbar().getSearchView().revealSearchView();
@@ -1352,7 +1352,7 @@ public class MainActivity extends ThemedActivity implements
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new ZipViewer();
+        Fragment zipFragment = new ZipExplorerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         zipFragment.setArguments(bundle);
@@ -1892,7 +1892,7 @@ public class MainActivity extends ThemedActivity implements
             @Override
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
+                transaction2.replace(R.id.content_frame, new AppsListFragment());
                 appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -2110,7 +2110,7 @@ public class MainActivity extends ThemedActivity implements
 
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
+            transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             selectedStorage = SELECT_102;
             openProcesses = false;

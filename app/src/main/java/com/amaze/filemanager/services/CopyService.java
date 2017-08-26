@@ -46,6 +46,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.files.Futils;
@@ -444,7 +445,7 @@ public class CopyService extends Service {
 
     /**
      * Publish the results of the progress to notification and {@link DataPackage}
-     * and eventually to {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * and eventually to {@link ProcessViewerFragment}
      *
      * @param id             id of current service
      * @param fileName       file name of current file being copied
@@ -592,10 +593,10 @@ public class CopyService extends Service {
 
     /**
      * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * data to be transferred to {@link ProcessViewerFragment}
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @return
      */
@@ -611,7 +612,7 @@ public class CopyService extends Service {
      * Puts a {@link DataPackage} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link com.amaze.filemanager.fragments.ProcessViewer}
+     * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
      */

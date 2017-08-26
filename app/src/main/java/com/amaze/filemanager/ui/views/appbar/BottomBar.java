@@ -28,8 +28,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipViewer;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -121,7 +121,7 @@ public class BottomBar implements View.OnTouchListener{
             }
         };
 
-        allowChangePaths = mainActivity.get().sharedPref.getBoolean(Preffrag.PREFERENCE_CHANGEPATHS, false);
+        allowChangePaths = mainActivity.get().sharedPref.getBoolean(PrefFrag.PREFERENCE_CHANGEPATHS, false);
 
         gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -140,7 +140,7 @@ public class BottomBar implements View.OnTouchListener{
                         timer.start();
                         showButtons(m);
                     }
-                } else if (fragmentAtFrame instanceof ZipViewer) {
+                } else if (fragmentAtFrame instanceof ZipExplorerFragment) {
                     Futils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();

@@ -44,10 +44,10 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.List;
 
-public class AppsList extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElement>> {
+public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElement>> {
 
     UtilitiesProviderInterface utilsProvider;
-    AppsList app = this;
+    AppsListFragment app = this;
     AppsAdapter adapter;
 
     public SharedPreferences Sp;

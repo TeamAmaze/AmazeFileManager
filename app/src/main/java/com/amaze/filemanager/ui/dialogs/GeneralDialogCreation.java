@@ -39,9 +39,9 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.services.asynctasks.CountItemsOrAndSize;
 import com.amaze.filemanager.services.asynctasks.GenerateHashes;
 import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
@@ -615,7 +615,7 @@ public class GeneralDialogCreation {
         builder.onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                preferences.edit().putBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
+                preferences.edit().putBoolean(PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
                 try {
                     encryptButtonCallbackInterface.onButtonPressed(intent);
                 } catch (Exception e) {
@@ -909,7 +909,7 @@ public class GeneralDialogCreation {
         a.build().show();
     }
 
-    public static void showSortDialog(final AppsList m, AppTheme appTheme) {
+    public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
         int accentColor = ((ThemedActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
@@ -930,7 +930,7 @@ public class GeneralDialogCreation {
 
                 m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
                 m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
+                m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });
@@ -941,7 +941,7 @@ public class GeneralDialogCreation {
 
                 m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
                 m.getSortModes();
-                m.getLoaderManager().restartLoader(AppsList.ID_LOADER_APP_LIST, null, m);
+                m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
                 dialog.dismiss();
             }
         });

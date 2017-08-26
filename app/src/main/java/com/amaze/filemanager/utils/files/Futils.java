@@ -52,7 +52,7 @@ import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -1032,9 +1032,9 @@ public class Futils {
 
     public static boolean isPathAccesible(String dir, SharedPreferences pref) {
         File f = new File(dir);
-        boolean showIfHidden = pref.getBoolean(Preffrag.PREFERENCE_SHOW_HIDDENFILES, false),
+        boolean showIfHidden = pref.getBoolean(PrefFrag.PREFERENCE_SHOW_HIDDENFILES, false),
                 isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
-                showIfRoot = pref.getBoolean(Preffrag.PREFERENCE_ROOTMODE, false);
+                showIfRoot = pref.getBoolean(PrefFrag.PREFERENCE_ROOTMODE, false);
 
         return f.exists() && f.isDirectory()
                 && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))

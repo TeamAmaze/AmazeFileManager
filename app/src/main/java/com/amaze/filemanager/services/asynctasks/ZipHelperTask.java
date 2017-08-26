@@ -3,7 +3,7 @@ package com.amaze.filemanager.services.asynctasks;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.ui.ZipObj;
 
 import java.io.File;
@@ -20,44 +20,44 @@ import java.util.zip.ZipInputStream;
  */
 public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
 
-    ZipViewer zipViewer;
+    ZipExplorerFragment zipExplorerFragment;
     String dir;
 
     /**
      * AsyncTask to load ZIP file items.
-     * @param zipViewer the zipViewer fragment instance
+     * @param zipExplorerFragment the zipExplorerFragment fragment instance
      * @param dir
      */
-    public ZipHelperTask(ZipViewer zipViewer, String dir) {
-        this.zipViewer = zipViewer;
+    public ZipHelperTask(ZipExplorerFragment zipExplorerFragment, String dir) {
+        this.zipExplorerFragment = zipExplorerFragment;
         this.dir = dir;
-        zipViewer.swipeRefreshLayout.setRefreshing(true);
+        zipExplorerFragment.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        zipViewer.swipeRefreshLayout.setRefreshing(true);
+        zipExplorerFragment.swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
     protected ArrayList<ZipObj> doInBackground(String... params) {
         ArrayList<ZipObj> elements = new ArrayList<>();
         try {
-            if (zipViewer.wholelist.size() == 0) {
+            if (zipExplorerFragment.wholelist.size() == 0) {
                 Uri uri = Uri.parse(params[0]);
                 if (new File(uri.getPath()).canRead()) {
                     ZipFile zipfile = new ZipFile(uri.getPath());
                     for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                         ZipEntry entry = (ZipEntry) e.nextElement();
-                        zipViewer.wholelist.add(new ZipObj(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
+                        zipExplorerFragment.wholelist.add(new ZipObj(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
                     }
                 } else {
                     ZipEntry entry1;
-                    if (zipViewer.wholelist.size() == 0) {
-                        ZipInputStream zipfile1 = new ZipInputStream(zipViewer.getActivity().getContentResolver().openInputStream(uri));
+                    if (zipExplorerFragment.wholelist.size() == 0) {
+                        ZipInputStream zipfile1 = new ZipInputStream(zipExplorerFragment.getActivity().getContentResolver().openInputStream(uri));
                         while ((entry1 = zipfile1.getNextEntry()) != null) {
-                            zipViewer.wholelist.add(new ZipObj(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
+                            zipExplorerFragment.wholelist.add(new ZipObj(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
                         }
                     }
                 }
@@ -65,7 +65,7 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
             ArrayList<String> strings = new ArrayList<>();
             //  int fileCount = zipfile.size();
 
-            for (ZipObj entry : zipViewer.wholelist) {
+            for (ZipObj entry : zipExplorerFragment.wholelist) {
 
                 String s = entry.getName();
                 //  System.out.println(s);
@@ -120,17 +120,17 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
         }
 
         Collections.sort(elements, new FileListSorter());
-        if (zipViewer.gobackitem && dir != null && dir.trim().length() != 0)
+        if (zipExplorerFragment.gobackitem && dir != null && dir.trim().length() != 0)
             elements.add(0, new ZipObj(null, 0, 0, true));
-        zipViewer.elements = elements;
+        zipExplorerFragment.elements = elements;
         return elements;
     }
 
     @Override
     protected void onPostExecute(ArrayList<ZipObj> zipEntries) {
         super.onPostExecute(zipEntries);
-        zipViewer.swipeRefreshLayout.setRefreshing(false);
-        zipViewer.createZipViews(zipEntries, dir);
+        zipExplorerFragment.swipeRefreshLayout.setRefreshing(false);
+        zipExplorerFragment.createZipViews(zipEntries, dir);
     }
 
     private class FileListSorter implements Comparator<ZipObj> {

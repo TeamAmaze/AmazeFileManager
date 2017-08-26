@@ -3,12 +3,14 @@ package com.amaze.filemanager.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
+
 /**
  * Created by Arpit on 01-08-2015.
  *
  * Class stores the {@link com.amaze.filemanager.services.CopyService} progress variables.
  * This class also acts as a middle layer to communicate with
- * {@link com.amaze.filemanager.fragments.ProcessViewer}
+ * {@link ProcessViewerFragment}
  */
 public class DataPackage implements Parcelable {
 

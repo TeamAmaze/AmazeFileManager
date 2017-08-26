@@ -14,7 +14,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
@@ -159,18 +159,18 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                             @Override
                             public void onButtonPressed(Intent intent) throws Exception {
                                 // check if a master password or fingerprint is set
-                                if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+                                if (!preferences.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                        PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
                                     EncryptDecryptUtils.startEncryption(context,
                                             rowItem.generateBaseFile().getPath(),
-                                            Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
-                                } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
-                                        Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+                                            PrefFrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                } else if (preferences.getBoolean(PrefFrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                        PrefFrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
                                     EncryptDecryptUtils.startEncryption(context,
                                             rowItem.generateBaseFile().getPath(),
-                                            Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                            PrefFrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                 } else {
                                     // let's ask a password from user
                                     GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
@@ -184,8 +184,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                             }
                         };
 
-                if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
-                        Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
+                if (preferences.getBoolean(PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
+                        PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
                     // let's skip warning dialog call
                     try {
                         encryptButtonCallbackInterface.onButtonPressed(encryptIntent);

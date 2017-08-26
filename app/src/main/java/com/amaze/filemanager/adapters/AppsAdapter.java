@@ -45,7 +45,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.services.CopyService;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -67,12 +67,12 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
     Context context;
     List<LayoutElement> items;
     public SparseBooleanArray myChecked = new SparseBooleanArray();
-    AppsList app;
+    AppsListFragment app;
 
     private ThemedActivity themedActivity;
 
     public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProviderInterface utilsProvider,
-                       int resourceId, AppsList app) {
+                       int resourceId, AppsListFragment app) {
         super(context, resourceId);
         themedActivity = ba;
         this.utilsProvider = utilsProvider;
