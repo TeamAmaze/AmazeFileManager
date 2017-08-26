@@ -36,16 +36,16 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/domainTIL"
+        android:id="@+id/portTIL"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textUri"
-            android:hint="@string/domain"
-            android:id="@+id/domainET"
+            android:inputType="number"
+            android:hint="@string/scp_port"
+            android:id="@+id/portET"
             android:layout_gravity="center_horizontal" />
     </android.support.design.widget.TextInputLayout>
 
@@ -82,10 +82,5 @@
         android:text="@string/anonymous"
         android:id="@+id/checkBox2"
         android:layout_gravity="center_horizontal" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/wanthelp"
-        android:layout_height="wrap_content"
-        android:text="@string/wanthelp"
-        />
+
 </LinearLayout>

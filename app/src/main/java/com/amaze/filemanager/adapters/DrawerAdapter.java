@@ -161,8 +161,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                             String path = (item).getPath();
                             if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
                                 m.renameBookmark((item).getTitle(), path);
-                            } else if (path.startsWith("scp:/") || path.startsWith("sftp:/")) {
-                                m.showSftpDialog(item.getTitle(), path, true);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
