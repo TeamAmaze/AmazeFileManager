@@ -113,7 +113,7 @@
         </activity>
         <activity
             android:label="@string/textreader"
-            android:name=".activities.TextReader"
+            android:name=".activities.TextEditorActivity"
             android:theme="@style/appCompatLight">
             <intent-filter
                 android:label="Amaze Text Editor">
@@ -128,7 +128,7 @@
         </activity>
         <activity
             android:label="@string/databasereader"
-            android:name=".activities.DbViewer"
+            android:name=".activities.DatabaseViewerActivity"
             android:theme="@style/appCompatLight"
             android:screenOrientation="locked">
             <intent-filter

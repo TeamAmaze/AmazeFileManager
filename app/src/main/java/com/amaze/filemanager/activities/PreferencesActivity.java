@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.fragments.preference_fragments.AdvancedSearchPref;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;

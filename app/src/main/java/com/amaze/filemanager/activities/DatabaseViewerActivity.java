@@ -41,6 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
@@ -59,7 +60,7 @@ import static android.os.Build.VERSION.SDK_INT;
 /**
  * Created by Vishal on 02-02-2015.
  */
-public class DbViewer extends ThemedActivity {
+public class DatabaseViewerActivity extends ThemedActivity {
 
     private String path;
     private ListView listView;
@@ -177,7 +178,7 @@ public class DbViewer extends ThemedActivity {
                     c = sqLiteDatabase.rawQuery(
                             "SELECT name FROM sqlite_master WHERE type='table'", null);
                     arrayList = getDbTableNames(c);
-                    arrayAdapter = new ArrayAdapter(DbViewer.this, android.R.layout.simple_list_item_1, arrayList);
+                    arrayAdapter = new ArrayAdapter(DatabaseViewerActivity.this, android.R.layout.simple_list_item_1, arrayList);
                 } catch (Exception e) {
                     e.printStackTrace();
                     finish();

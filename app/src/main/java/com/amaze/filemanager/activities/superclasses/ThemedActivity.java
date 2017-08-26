@@ -1,4 +1,4 @@
-package com.amaze.filemanager.activities;
+package com.amaze.filemanager.activities.superclasses;
 
 import android.Manifest;
 import android.content.SharedPreferences;
@@ -24,7 +24,7 @@ public class ThemedActivity extends BasicActivity {
     public SharedPreferences sharedPref;
 
     public static boolean rootMode;
-    boolean checkStorage = true;
+    public boolean checkStorage = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class ThemedActivity extends BasicActivity {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    void requestStoragePermission() {
+    public void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 

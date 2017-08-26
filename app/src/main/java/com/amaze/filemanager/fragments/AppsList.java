@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.services.asynctasks.AppListLoader;

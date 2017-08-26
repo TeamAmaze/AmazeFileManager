@@ -8,7 +8,7 @@ import android.text.style.BackgroundColorSpan;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.amaze.filemanager.activities.TextReader;
+import com.amaze.filemanager.activities.TextEditorActivity;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -27,25 +27,25 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
     private ArrayList<MapEntry> nodes;
     private int searchTextLength;
     private ImageButton upButton, downButton;
-    private TextReader textReader;
+    private TextEditorActivity textEditorActivity;
     private Editable editText;
     private String searchSubString;
     private StringReader stringReader;
     private LineNumberReader lineNumberReader;
 
-    public SearchTextTask(TextReader textReader) {
-        this.textReader = textReader;
+    public SearchTextTask(TextEditorActivity textEditorActivity) {
+        this.textEditorActivity = textEditorActivity;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
 
-        this.searchEditText = textReader.searchEditText;
-        this.nodes = textReader.nodes;
-        this.upButton = textReader.upButton;
-        this.downButton = textReader.downButton;
-        this.mInput = textReader.mInput;
+        this.searchEditText = textEditorActivity.searchEditText;
+        this.nodes = textEditorActivity.nodes;
+        this.upButton = textEditorActivity.upButton;
+        this.downButton = textEditorActivity.downButton;
+        this.mInput = textEditorActivity.mInput;
         searchTextLength = searchEditText.length();
         editText = mInput.getText();
         stringReader = new StringReader(editText.toString());
@@ -85,7 +85,7 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
         for (Map.Entry mapEntry : mapEntries) {
 
             Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
-            mInput.getText().setSpan(textReader.getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
+            mInput.getText().setSpan(textEditorActivity.getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
                             new BackgroundColorSpan(Color.LTGRAY),
                     (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -96,7 +96,7 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
             downButton.setEnabled(true);
 
             // downButton
-            textReader.onClick(downButton);
+            textEditorActivity.onClick(downButton);
         } else {
             upButton.setEnabled(false);
             downButton.setEnabled(false);

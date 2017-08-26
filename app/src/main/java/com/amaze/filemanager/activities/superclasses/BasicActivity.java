@@ -1,4 +1,4 @@
-package com.amaze.filemanager.activities;
+package com.amaze.filemanager.activities.superclasses;
 
 import android.support.v7.app.AppCompatActivity;
 

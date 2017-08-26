@@ -35,7 +35,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        if (dbViewerFragment.dbViewer.getAppTheme().equals(AppTheme.DARK)) {
+        if (dbViewerFragment.databaseViewerActivity.getAppTheme().equals(AppTheme.DARK)) {
 
             htmlInit = "<html><body>" +
                     "<table border='1' style='width:100%;color:#ffffff'>";

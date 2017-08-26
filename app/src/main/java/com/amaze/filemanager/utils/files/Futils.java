@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.DbViewer;
+import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
@@ -522,7 +522,7 @@ public class Futils {
                         intent.setDataAndType(uri, "audio/*");
                         break;
                     case 4:
-                        intent = new Intent(c, DbViewer.class);
+                        intent = new Intent(c, DatabaseViewerActivity.class);
                         intent.putExtra("path", f.getPath());
                         break;
                     case 5:
@@ -571,7 +571,7 @@ public class Futils {
                         intent.setDataAndType(f.getUri(), "audio/*");
                         break;
                     case 4:
-                        intent = new Intent(c, DbViewer.class);
+                        intent = new Intent(c, DatabaseViewerActivity.class);
                         intent.putExtra("path", f.getUri());
                         break;
                     case 5:
@@ -767,7 +767,7 @@ public class Futils {
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
             GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
-            Intent intent = new Intent(m, DbViewer.class);
+            Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
         }  else if (Icons.isAudio(f.getPath())) {
@@ -846,7 +846,7 @@ public class Futils {
         } else if(f.getName().toLowerCase().endsWith(".apk")) {
             //showPackageDialog(f, m);
         } else if (f.getName().toLowerCase().endsWith(".db")) {
-            Intent intent = new Intent(m, DbViewer.class);
+            Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getUri());
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             m.startActivity(intent);

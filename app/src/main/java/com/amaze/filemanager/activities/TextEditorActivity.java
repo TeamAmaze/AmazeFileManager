@@ -60,6 +60,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.BaseFile;
@@ -90,7 +91,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TextReader extends ThemedActivity implements TextWatcher, View.OnClickListener {
+public class TextEditorActivity extends ThemedActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
     private BaseFile mFile;

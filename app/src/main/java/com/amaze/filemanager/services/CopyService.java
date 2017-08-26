@@ -36,7 +36,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;

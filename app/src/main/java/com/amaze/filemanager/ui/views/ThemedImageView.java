@@ -6,7 +6,7 @@ import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.util.AttributeSet;
 
-import com.amaze.filemanager.activities.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
