@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.services.asynctasks.SearchAsyncTask;
+import com.amaze.filemanager.asyncronious.asynctasks.SearchAsyncTask;
 import com.amaze.filemanager.utils.OpenMode;
 
 /**

@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,14 +16,14 @@ import com.amaze.filemanager.utils.OnProgressUpdate;
  *         on 12/5/2017, at 19:40.
  */
 
-public class CountItemsOrAndSize extends AsyncTask<Void, Pair<Integer, Long>, String> {
+public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>, String> {
 
     private Context context;
     private TextView itemsText;
     private BaseFile file;
     private boolean isStorage;
 
-    public CountItemsOrAndSize(Context c, TextView itemsText, BaseFile f, boolean storage) {
+    public CountItemsOrAndSizeTask(Context c, TextView itemsText, BaseFile f, boolean storage) {
         this.context = c;
         this.itemsText = itemsText;
         file = f;

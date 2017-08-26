@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.services.CopyService;
+import com.amaze.filemanager.asyncronious.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
@@ -41,7 +41,7 @@ import java.util.Set;
  *  If the process is cancelled (via the button in the dialog) the dialog closes without any more code
  *  to be executed, finishCopying() is never executed so no changes are made.
  */
-public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFileCheck.CopyNode> {
+public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, PrepareCopyTask.CopyNode> {
 
     private enum DO_FOR_ALL_ELEMENTS {
         DO_NOT_REPLACE,
@@ -65,7 +65,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
     private ArrayList<BaseFile> filesToCopy;    // a copy of params sent to this
 
-    public CopyFileCheck(MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
+    public PrepareCopyTask(MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
         mainFrag = ma;
         this.move = move;
         mainActivity = con;

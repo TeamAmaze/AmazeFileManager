@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -62,7 +62,7 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>> {
+public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<LayoutElement>> {
 
     private UtilitiesProviderInterface utilsProvider;
     private String path;
@@ -73,8 +73,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     private boolean grid;
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
-                    MainFragment ma, OpenMode openmode) {
+    public LoadFilesListTask(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
+                             MainFragment ma, OpenMode openmode) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;

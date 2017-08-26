@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.loaders;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

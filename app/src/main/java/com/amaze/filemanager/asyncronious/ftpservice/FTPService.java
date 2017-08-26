@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.ftpservice;
+package com.amaze.filemanager.asyncronious.ftpservice;
 
 /**
  * Created by yashwanthreddyg on 09-06-2016.

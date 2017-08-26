@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -32,7 +32,7 @@ import static com.amaze.filemanager.utils.Utils.getColor;
  *         on 12/5/2017, at 00:07.
  */
 
-public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List<PieEntry>>> {
+public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, List<PieEntry>>> {
 
     private static int[] COLORS;
     private static String[] LEGENDS;
@@ -42,7 +42,7 @@ public class LoadFolderSpaceData extends AsyncTask<Void, Long, Pair<String, List
     private PieChart chart;
     private BaseFile file;
 
-    public LoadFolderSpaceData(Context c, AppTheme appTheme, PieChart chart, BaseFile f) {
+    public LoadFolderSpaceDataTask(Context c, AppTheme appTheme, PieChart chart, BaseFile f) {
         context = c;
         this.appTheme = appTheme;
         this.chart = chart;

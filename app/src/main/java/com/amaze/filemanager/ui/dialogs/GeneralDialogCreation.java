@@ -42,9 +42,9 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.services.asynctasks.CountItemsOrAndSize;
-import com.amaze.filemanager.services.asynctasks.GenerateHashes;
-import com.amaze.filemanager.services.asynctasks.LoadFolderSpaceData;
+import com.amaze.filemanager.asyncronious.asynctasks.CountItemsOrAndSizeTask;
+import com.amaze.filemanager.asyncronious.asynctasks.GenerateHashesTask;
+import com.amaze.filemanager.asyncronious.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
@@ -408,11 +408,11 @@ public class GeneralDialogCreation {
             });
         }
 
-        CountItemsOrAndSize countItemsOrAndSize = new CountItemsOrAndSize(c, itemsText, baseFile, forStorage);
-        countItemsOrAndSize.executeOnExecutor(executor);
+        CountItemsOrAndSizeTask countItemsOrAndSizeTask = new CountItemsOrAndSizeTask(c, itemsText, baseFile, forStorage);
+        countItemsOrAndSizeTask.executeOnExecutor(executor);
 
 
-        GenerateHashes hashGen = new GenerateHashes(baseFile, c, v);
+        GenerateHashesTask hashGen = new GenerateHashesTask(baseFile, c, v);
         hashGen.executeOnExecutor(executor);
 
         /*Chart creation and data loading*/ {
@@ -466,8 +466,8 @@ public class GeneralDialogCreation {
                 chart.setCenterText(new SpannableString(c.getString(R.string.total) + "\n" + totalSpaceFormatted));
                 chart.setData(pieData);
             } else {
-                LoadFolderSpaceData loadFolderSpaceData = new LoadFolderSpaceData(c, appTheme, chart, baseFile);
-                loadFolderSpaceData.executeOnExecutor(executor);
+                LoadFolderSpaceDataTask loadFolderSpaceDataTask = new LoadFolderSpaceDataTask(c, appTheme, chart, baseFile);
+                loadFolderSpaceDataTask.executeOnExecutor(executor);
             }
 
             chart.invalidate();
@@ -779,7 +779,7 @@ public class GeneralDialogCreation {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
                         Futils.openunknown(f, m, false, useNewStack);
                     }
 

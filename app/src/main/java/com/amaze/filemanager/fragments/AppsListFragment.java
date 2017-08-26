@@ -35,7 +35,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
-import com.amaze.filemanager.services.asynctasks.AppListLoader;
+import com.amaze.filemanager.asyncronious.loaders.AppListLoader;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.Utils;

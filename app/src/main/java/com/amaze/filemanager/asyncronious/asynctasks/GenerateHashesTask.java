@@ -1,4 +1,4 @@
-package com.amaze.filemanager.services.asynctasks;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * Created by Vishal on 05-02-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class GenerateHashes extends AsyncTask<Void, String, String[]> {
+public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
 
     private BaseFile file;
     private Context context;
@@ -30,7 +30,7 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
     private TextView sha256Text;
     private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
 
-    public GenerateHashes(BaseFile f, final Context c, final View view) {
+    public GenerateHashesTask(BaseFile f, final Context c, final View view) {
         this.context = c;
         this.file = f;
 

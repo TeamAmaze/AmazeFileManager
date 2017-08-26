@@ -755,7 +755,7 @@ public class Futils {
     }
 
     public void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
-        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
@@ -828,7 +828,7 @@ public class Futils {
      * @param m
      */
     public void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
-        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
             openunknown(f, m, false, useNewStack);
         } catch (Exception e) {

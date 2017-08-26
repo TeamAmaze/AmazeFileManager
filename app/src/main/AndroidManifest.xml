@@ -146,31 +146,31 @@
             />
 
         <service
-            android:name = ".services.ExtractService"
+            android:name = ".asyncronious.services.ExtractService"
             android:label = "Extracting"
             >
         </service>
         <service
-            android:name = ".services.ZipTask"
+            android:name = ".asyncronious.services.ZipService"
             android:label = "Compressing"
             >
         </service>
         <service
-            android:name = ".services.CopyService"
+            android:name = ".asyncronious.services.CopyService"
             android:label = "Copying"
             >
         </service>
 
-        <service android:name=".services.EncryptService"
+        <service android:name=".asyncronious.services.EncryptService"
             android:label="@string/crypt_encrypting"
             />
 
         <service
-            android:name="com.amaze.filemanager.services.ftpservice.FTPService"
+            android:name="com.amaze.filemanager.asyncronious.ftpservice.FTPService"
             android:enabled="true"
             android:exported="true" />
 
-        <service android:name=".services.ftpservice.FTPTileService"
+        <service android:name=".asyncronious.ftpservice.FTPTileService"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -181,7 +181,7 @@
         </service>
 
         <receiver
-            android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver"
+            android:name="com.amaze.filemanager.asyncronious.ftpservice.FTPReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER" />

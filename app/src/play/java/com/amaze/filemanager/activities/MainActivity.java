@@ -107,10 +107,10 @@ import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
-import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.asyncronious.services.CopyService;
+import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
+import com.amaze.filemanager.asyncronious.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asyncronious.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -1174,7 +1174,7 @@ public class MainActivity extends ThemedActivity implements
                 String path = ma.getCurrentPath();
                 ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, ThemedActivity.rootMode)
+                new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;

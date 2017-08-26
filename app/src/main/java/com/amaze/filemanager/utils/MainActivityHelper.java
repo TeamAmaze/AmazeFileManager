@@ -37,9 +37,9 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
+import com.amaze.filemanager.asyncronious.services.ExtractService;
+import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -384,9 +384,9 @@ public class MainActivityHelper {
             mainActivity.operation = DataUtils.COMPRESS;
             mainActivity.oparrayList = baseFiles;
         } else if (mode == 1) {
-            Intent intent2 = new Intent(mainActivity, ZipTask.class);
-            intent2.putExtra(ZipTask.KEY_COMPRESS_PATH, file.getPath());
-            intent2.putExtra(ZipTask.KEY_COMPRESS_FILES, baseFiles);
+            Intent intent2 = new Intent(mainActivity, ZipService.class);
+            intent2.putExtra(ZipService.KEY_COMPRESS_PATH, file.getPath());
+            intent2.putExtra(ZipService.KEY_COMPRESS_FILES, baseFiles);
             ServiceWatcherUtil.runService(mainActivity, intent2);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }

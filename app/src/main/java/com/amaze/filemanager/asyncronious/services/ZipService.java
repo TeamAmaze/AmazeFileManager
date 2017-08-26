@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services;
+package com.amaze.filemanager.asyncronious.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipTask extends Service {
+public class ZipService extends Service {
 
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
@@ -119,9 +119,9 @@ public class ZipTask extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public ZipTask getService() {
+        public ZipService getService() {
             // Return this instance of LocalService so clients can call public methods
-            return ZipTask.this;
+            return ZipService.this;
         }
     }
 

@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.services.ftpservice.FTPService;
+import com.amaze.filemanager.asyncronious.ftpservice.FTPService;
 
 import java.net.InetAddress;
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
-import com.amaze.filemanager.services.asynctasks.DbViewerTask;
+import com.amaze.filemanager.asyncronious.asynctasks.DbViewerTask;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 

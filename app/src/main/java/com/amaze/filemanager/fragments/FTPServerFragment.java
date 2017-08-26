@@ -36,7 +36,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.services.ftpservice.FTPService;
+import com.amaze.filemanager.asyncronious.ftpservice.FTPService;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -45,7 +45,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import java.io.File;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.util.Objects;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.

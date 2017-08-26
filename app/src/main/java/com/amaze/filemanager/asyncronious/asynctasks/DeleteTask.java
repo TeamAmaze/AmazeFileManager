@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services;
+package com.amaze.filemanager.asyncronious.asynctasks;
 
 import android.content.ContentResolver;
 import android.content.Context;

@@ -44,10 +44,10 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.EncryptService;
-import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.ZipTask;
+import com.amaze.filemanager.asyncronious.services.CopyService;
+import com.amaze.filemanager.asyncronious.services.EncryptService;
+import com.amaze.filemanager.asyncronious.services.ExtractService;
+import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -217,18 +217,18 @@ public class ProcessViewerFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ZipTask.LocalBinder localBinder = (ZipTask.LocalBinder) service;
-            ZipTask zipTask = localBinder.getService();
+            ZipService.LocalBinder localBinder = (ZipService.LocalBinder) service;
+            ZipService zipService = localBinder.getService();
 
-            for (int i=0; i<zipTask.getDataPackageSize(); i++) {
+            for (int i = 0; i< zipService.getDataPackageSize(); i++) {
 
-                processResults(zipTask.getDataPackage(i), ServiceType.COMPRESS);
+                processResults(zipService.getDataPackage(i), ServiceType.COMPRESS);
             }
 
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            zipTask.setProgressListener(new ZipTask.ProgressListener() {
+            zipService.setProgressListener(new ZipService.ProgressListener() {
                 @Override
                 public void onUpdate(final DataPackage dataPackage) {
                     if (getActivity() == null) {
@@ -311,7 +311,7 @@ public class ProcessViewerFragment extends Fragment {
         Intent intent1 = new Intent(getActivity(), ExtractService.class);
         getActivity().bindService(intent1, mExtractConnection, 0);
 
-        Intent intent2 = new Intent(getActivity(), ZipTask.class);
+        Intent intent2 = new Intent(getActivity(), ZipService.class);
         getActivity().bindService(intent2, mCompressConnection, 0);
 
         Intent intent3 = new Intent(getActivity(), EncryptService.class);
@@ -442,7 +442,7 @@ public class ProcessViewerFragment extends Fragment {
                             .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
                 }
                 mProgressTypeText.setText(getResources().getString(R.string.compressing));
-                cancelBroadcast(new Intent(ZipTask.KEY_COMPRESS_BROADCAST_CANCEL));
+                cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
             case ENCRYPT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
