@@ -743,7 +743,7 @@ public class MainActivity extends ThemedActivity implements
                 getCurrentMainFragment().goBack();
             }
         } else if (fragment instanceof ZipExplorerFragment) {
-            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment)  getFragmentAtFrame();
             if (zipExplorerFragment.mActionMode == null) {
                 if (zipExplorerFragment.canGoBack()) {
                     zipExplorerFragment.goBack();
@@ -952,7 +952,7 @@ public class MainActivity extends ThemedActivity implements
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        Fragment fragment = getFragmentAtFrame();
         if (fragment instanceof TabFragment) {
             appbar.setTitle("Amaze");
             if (useGridView) {
@@ -1176,7 +1176,7 @@ public class MainActivity extends ThemedActivity implements
                 invalidatePasteButton(item);
                 break;
             case R.id.extract:
-                Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                Fragment fragment1 = getFragmentAtFrame();
                 if (fragment1 instanceof ZipExplorerFragment) {
                     mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).f);
                 }
