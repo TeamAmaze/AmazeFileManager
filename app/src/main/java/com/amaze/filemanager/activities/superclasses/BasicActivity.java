@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorPreference;
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.amaze.filemanager.utils.theme.AppThemeManager;
@@ -24,14 +23,6 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
 
     protected AppConfig getAppConfig() {
         return (AppConfig) getApplication();
-    }
-
-    @Override
-    public Futils getFutils() {
-        if (!initialized)
-            initialize();
-
-        return utilsProvider.getFutils();
     }
 
     public ColorPreference getColorPreference() {

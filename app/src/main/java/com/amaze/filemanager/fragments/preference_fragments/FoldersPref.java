@@ -22,7 +22,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,7 +179,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setEnabled(Futils.isPathAccesible(editText2.getText().toString(), sharedPrefs));
+                .setEnabled(FileUtils.isPathAccesible(editText2.getText().toString(), sharedPrefs));
 
         disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
@@ -259,7 +259,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(Futils.isPathAccesible(s.toString(), sharedPrefs));
+                        .setEnabled(FileUtils.isPathAccesible(s.toString(), sharedPrefs));
             }
         });
     }

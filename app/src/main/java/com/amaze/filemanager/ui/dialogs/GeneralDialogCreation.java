@@ -53,7 +53,7 @@ import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -74,7 +74,7 @@ import java.util.concurrent.Executors;
 import eu.chainfire.libsuperuser.Shell;
 
 import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.utils.files.Futils.toHFileArray;
+import static com.amaze.filemanager.utils.files.FileUtils.toHFileArray;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -373,7 +373,7 @@ public class GeneralDialogCreation {
             mNameLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, name);
+                    FileUtils.copyToClipboard(c, name);
                     Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
                             c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
@@ -382,7 +382,7 @@ public class GeneralDialogCreation {
             mLocationLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, parent);
+                    FileUtils.copyToClipboard(c, parent);
                     Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
                             c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
@@ -391,7 +391,7 @@ public class GeneralDialogCreation {
             mSizeLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, items);
+                    FileUtils.copyToClipboard(c, items);
                     Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
                             c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
@@ -400,7 +400,7 @@ public class GeneralDialogCreation {
             mDateLinearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Futils.copyToClipboard(c, date);
+                    FileUtils.copyToClipboard(c, date);
                     Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
                             c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
@@ -780,7 +780,7 @@ public class GeneralDialogCreation {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
                         boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                        Futils.openunknown(f, m, false, useNewStack);
+                        FileUtils.openunknown(f, m, false, useNewStack);
                     }
 
                     @Override
@@ -951,7 +951,7 @@ public class GeneralDialogCreation {
     }
 
 
-    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, SharedPreferences sharedPrefs,
+    public static void showHistoryDialog(final DataUtils dataUtils, SharedPreferences sharedPrefs,
                                          final MainFragment m, AppTheme appTheme) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -969,7 +969,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, sharedPrefs, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
                 toHFileArray(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
@@ -978,7 +978,7 @@ public class GeneralDialogCreation {
         x.show();
     }
 
-    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, SharedPreferences sharedPrefs,
+    public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
                                         final MainFragment m, AppTheme appTheme) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -987,7 +987,7 @@ public class GeneralDialogCreation {
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, sharedPrefs, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
                 toHFileArray(dataUtils.getHiddenfiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
@@ -1015,7 +1015,7 @@ public class GeneralDialogCreation {
             Toast.makeText(context, R.string.not_allowed, Toast.LENGTH_SHORT).show();
             return;
         }
-        ArrayList<Boolean[]> arrayList = Futils.parse(perm);
+        ArrayList<Boolean[]> arrayList = FileUtils.parse(perm);
         Boolean[] read = arrayList.get(0);
         Boolean[] write = arrayList.get(1);
         final Boolean[] exe = arrayList.get(2);
@@ -1084,7 +1084,7 @@ public class GeneralDialogCreation {
                 new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence charSequence) {
-                        boolean isAccessible = Futils.isPathAccesible(charSequence.toString(), prefs);
+                        boolean isAccessible = FileUtils.isPathAccesible(charSequence.toString(), prefs);
                         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccessible);
                     }
                 });

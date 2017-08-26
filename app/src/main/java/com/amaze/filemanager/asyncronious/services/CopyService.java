@@ -50,7 +50,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DataPackage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -144,7 +144,7 @@ public class CopyService extends Service {
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalSize = Futils.getTotalBytes(sourceFiles, c);
+            totalSize = FileUtils.getTotalBytes(sourceFiles, c);
             totalSourceFiles = sourceFiles.size();
             progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
@@ -361,7 +361,7 @@ public class CopyService extends Service {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
                 }
-                Futils.scanFile(targetFile.getPath(), c);
+                FileUtils.scanFile(targetFile.getPath(), c);
             }
 
             private void copyFiles(final BaseFile sourceFile, final HFile targetFile,

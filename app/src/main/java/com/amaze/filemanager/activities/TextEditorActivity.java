@@ -73,6 +73,7 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -551,7 +552,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             case R.id.openwith:
                 if (mFile.exists()) {
                     boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    getFutils().openunknown(new File(mFile.getPath()), this, false, useNewStack);
+                    FileUtils.openunknown(new File(mFile.getPath()), this, false, useNewStack);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:

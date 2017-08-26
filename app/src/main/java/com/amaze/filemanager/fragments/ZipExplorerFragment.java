@@ -51,11 +51,11 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RarAdapter;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
-import com.amaze.filemanager.asyncronious.services.ExtractService;
 import com.amaze.filemanager.asyncronious.asynctasks.RarHelperTask;
 import com.amaze.filemanager.asyncronious.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.asyncronious.services.ExtractService;
+import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
@@ -64,6 +64,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
@@ -407,7 +408,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
                 // open most recent entry added to files to be deleted from cache
                 File cacheFile = new File(files.get(files.size() - 1).getPath());
                 if (cacheFile != null && cacheFile.exists())
-                    utilsProvider.getFutils().openFile(cacheFile, mainActivity, mainActivity.sharedPref);
+                    FileUtils.openFile(cacheFile, mainActivity,  mainActivity.sharedPref);
 
                 // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;

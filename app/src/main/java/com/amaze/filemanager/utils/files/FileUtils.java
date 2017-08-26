@@ -78,16 +78,11 @@ import jcifs.smb.SmbFile;
 /**
  * Functions that deal with files
  */
-public class Futils {
+public class FileUtils {
 
     public static final int READ = 4;
     public static final int WRITE = 2;
     public static final int EXECUTE = 1;
-    private Toast studioCount;
-    private DataUtils dataUtils = DataUtils.getInstance();
-
-    public Futils() {
-    }
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
@@ -266,13 +261,13 @@ public class Futils {
         // participate in layout passes, etc.)
     }
 
-    public void shareCloudFile(String path, final OpenMode openMode, final Context context) {
+    public static void shareCloudFile(String path, final OpenMode openMode, final Context context) {
         new AsyncTask<String, Void, String>() {
 
             @Override
             protected String doInBackground(String... params) {
                 String shareFilePath = params[0];
-                CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+                CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
                 return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
             }
 
@@ -280,14 +275,14 @@ public class Futils {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
 
-                Futils.copyToClipboard(context, s);
+                FileUtils.copyToClipboard(context, s);
                 Toast.makeText(context,
                         context.getResources().getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
             }
         }.execute(path);
     }
 
-    public void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
+    public static void shareFiles(ArrayList<File> a, Activity c,AppTheme appTheme,int fab_skin) {
 
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
@@ -364,7 +359,7 @@ public class Futils {
      * @param c
      * @param forcechooser
      */
-    public void openunknown(DocumentFile f, Context c, boolean forcechooser, boolean useNewStack) {
+    public static void openunknown(DocumentFile f, Context c, boolean forcechooser, boolean useNewStack) {
         Intent chooserIntent = new Intent();
         chooserIntent.setAction(Intent.ACTION_VIEW);
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -544,7 +539,7 @@ public class Futils {
         }
     }
 
-    public void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
+    public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(c.getResources().getString(R.string.openas));
         String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
@@ -596,7 +591,7 @@ public class Futils {
      * @param context
      * @return
      */
-    public boolean canGoBack(Context context, HFile currentFile) {
+    public static boolean canGoBack(Context context, HFile currentFile) {
         switch (currentFile.getMode()) {
 
             // we're on main thread and can't list the cloud files
@@ -615,85 +610,6 @@ public class Futils {
     }
 
     public static long[] getSpaces(HFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
-        /*if(hFile.isSmb()) {
-            if (hFile.isDirectory(context)) {
-
-            }
-            return new long[]{-1, -1, -1};
-        } else if (hFile.isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            CloudMetaData fileMetaDataDropbox = cloudStorageDropbox.getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX,
-                    hFile.getPath()));
-
-            return new long[]{cloudStorageDropbox.getAllocation().getTotal(),
-                    (cloudStorageDropbox.getAllocation().getTotal() - cloudStorageDropbox.getAllocation().getUsed()),
-                    folderSizeCloud(OpenMode.DROPBOX, fileMetaDataDropbox)
-            };
-        } else if (hFile.isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            CloudMetaData fileMetaDataBox = cloudStorageBox.getMetadata(CloudUtil.stripPath(OpenMode.BOX,
-                    hFile.getPath()));
-
-            return new long[]{cloudStorageBox.getAllocation().getTotal(),
-                    (cloudStorageBox.getAllocation().getTotal() - cloudStorageBox.getAllocation().getUsed()),
-                    folderSizeCloud(OpenMode.BOX, fileMetaDataBox)
-            };
-        } else if (hFile.isGoogleDriveFile()) {
-            CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-
-            CloudMetaData fileMetaDataGDrive = cloudStorageGDrive.getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE,
-                    hFile.getPath()));
-
-            return new long[]{cloudStorageGDrive.getAllocation().getTotal(),
-                    (cloudStorageGDrive.getAllocation().getTotal() - cloudStorageGDrive.getAllocation().getUsed()),
-                    folderSizeCloud(OpenMode.GDRIVE, fileMetaDataGDrive)
-            };
-        } else if (hFile.isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-
-            CloudMetaData fileMetaDataOneDrive = cloudStorageOneDrive.getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE,
-                    hFile.getPath()));
-            return new long[]{cloudStorageOneDrive.getAllocation().getTotal(),
-                    (cloudStorageOneDrive.getAllocation().getTotal() - cloudStorageOneDrive.getAllocation().getUsed()),
-                    folderSizeCloud(OpenMode.ONEDRIVE, fileMetaDataOneDrive)
-            };
-        } else if (!hFile.isOtgFile() && !hFile.isCustomPath()
-                && !android.util.Patterns.EMAIL_ADDRESS.matcher(hFile.getPath()).matches()) {
-            try {
-                File file = new File(hFile.getPath());
-                final long totalSpace = file.getTotalSpace(),
-                        freeSpace = file.getFreeSpace(),
-                        folderSize = folderSize(hFile,
-                                new OnProgressUpdate<Long>() {
-                                    @Override
-                                    public void onUpdate(Long data) {
-                                        if(updateState != null)
-                                            updateState.onUpdate(new Long[] {totalSpace, freeSpace, data});
-                                    }
-                                });
-
-                final long totalSpace = hFile.length(context);
-                final long freeSpace = hFile.getUsableSpace();
-                long folderSize = 0l;
-
-                if (hFile.isDirectory(context)) {
-                    folderSize = folderSize(new File(hFile.getPath()),
-                            new OnProgressUpdate<Long>() {
-                                @Override
-                                public void onUpdate(Long data) {
-                                    if(updateState != null)
-                                        updateState.onUpdate(new Long[] {totalSpace, freeSpace, data});
-                                }
-                    });
-                }
-                return new long[] {totalSpace, freeSpace, folderSize};
-            } catch (Exception e) {
-                return new long[]{-1, -1, -1};
-            }
-        } else {
-            return new long[]{-1, -1, -1};
-        }*/
-
         long totalSpace = hFile.getTotal(context);
         long freeSpace = hFile.getUsableSpace();
         long fileSize = 0l;
@@ -734,18 +650,6 @@ public class Futils {
         return new Pair<>(names, paths);
     }
 
-    public boolean deletedirectory(File f){
-        boolean b=true;
-        for(File file:f.listFiles()){
-            boolean c;
-            if(file.isDirectory()){c=deletedirectory(file);}
-            else {c=file.delete();}
-            if(!c)b=false;
-
-        }if(b)b=f.delete();
-        return b;
-    }
-
     public static boolean canListFiles(File f) {
         try {
             return f.canRead() && f.isDirectory();
@@ -754,10 +658,12 @@ public class Futils {
         }
     }
 
-    public void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
+    public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
+        final Toast[] studioCount = {null};
+
         if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
                 f.getName().toLowerCase().endsWith(".jar") ||
                 f.getName().toLowerCase().endsWith(".rar")||
@@ -783,19 +689,19 @@ public class Futils {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         int sec = (int)millisUntilFinished/1000;
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-                        studioCount.show();
+                        if (studioCount[0] !=null)
+                            studioCount[0].cancel();
+                        studioCount[0] = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
+                        studioCount[0].show();
                     }
 
                     @Override
                     public void onFinish() {
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, m.getString(R.string.opening),
+                        if (studioCount[0] !=null)
+                            studioCount[0].cancel();
+                        studioCount[0] = Toast.makeText(m, m.getString(R.string.opening),
                                 Toast.LENGTH_LONG);
-                        studioCount.show();
+                        studioCount[0].show();
                         m.startActivity(intent);
                     }
                 }.start();
@@ -811,7 +717,7 @@ public class Futils {
         }
     }
 
-    private boolean isSelfDefault(File f, Context c){
+    private static boolean isSelfDefault(File f, Context c){
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
@@ -827,7 +733,7 @@ public class Futils {
      * @param f
      * @param m
      */
-    public void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
+    public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
             openunknown(f, m, false, useNewStack);
@@ -891,7 +797,6 @@ public class Futils {
     }
 
     /**
-     *
      * @deprecated use new LayoutElement()
      */
     public static LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,

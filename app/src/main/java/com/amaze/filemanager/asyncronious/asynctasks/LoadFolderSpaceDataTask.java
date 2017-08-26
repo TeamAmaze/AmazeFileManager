@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
@@ -26,7 +26,7 @@ import java.util.List;
 import static com.amaze.filemanager.utils.Utils.getColor;
 
 /**
- * Loads data for chart in Futils.showPropertiesDialog()
+ * Loads data for chart in FileUtils.showPropertiesDialog()
  *
  * @author Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *         on 12/5/2017, at 00:07.
@@ -54,7 +54,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
 
     @Override
     protected Pair<String, List<PieEntry>> doInBackground(Void... params) {
-        long[] dataArray = Futils.getSpaces(file, context, new OnProgressUpdate<Long[]>() {
+        long[] dataArray = FileUtils.getSpaces(file, context, new OnProgressUpdate<Long[]>() {
             @Override
             public void onUpdate(Long[] data) {
                 publishProgress(data);

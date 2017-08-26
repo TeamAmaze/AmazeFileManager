@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    Futils.copyToClipboard(context, hashes[0]);
+                    FileUtils.copyToClipboard(context, hashes[0]);
                     Toast.makeText(context, context.getResources().getString(R.string.md5).toUpperCase() + " " +
                             context.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;
@@ -79,7 +79,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                 @Override
                 public boolean onLongClick(View v) {
 
-                    Futils.copyToClipboard(context, hashes[1]);
+                    FileUtils.copyToClipboard(context, hashes[1]);
                     Toast.makeText(context, context.getResources().getString(R.string.hash_sha256) + " " +
                             context.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                     return false;

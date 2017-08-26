@@ -51,7 +51,7 @@ import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.utils.DataPackage;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -358,8 +358,8 @@ public class ProcessViewerFragment extends Fragment {
                 isInitialized = true;
             }
 
-            addEntry(Futils.readableFileSizeFloat(doneBytes),
-                    Futils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
+            addEntry(FileUtils.readableFileSizeFloat(doneBytes),
+                    FileUtils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
 
             mProgressFileNameText.setText(name);
 
@@ -555,7 +555,7 @@ public class ProcessViewerFragment extends Fragment {
         yAxisLeft.setTypeface(Typeface.DEFAULT_BOLD);
         yAxisLeft.setGridColor(Utils.getColor(getContext(), R.color.white_translucent));
 
-        xAxis.setAxisMaximum(Futils.readableFileSizeFloat(totalBytes));
+        xAxis.setAxisMaximum(FileUtils.readableFileSizeFloat(totalBytes));
         xAxis.setAxisMinimum(0.0f);
         xAxis.setAxisLineColor(Color.TRANSPARENT);
         xAxis.setGridColor(Color.TRANSPARENT);

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -35,7 +36,7 @@ import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class BottomBar implements View.OnTouchListener{
 
             @Override
             public void onFinish() {
-                Futils.crossfadeInverse(buttons, pathLayout);
+                FileUtils.crossfadeInverse(buttons, pathLayout);
             }
         };
 
@@ -135,13 +136,13 @@ public class BottomBar implements View.OnTouchListener{
                 if(fragmentAtFrame instanceof TabFragment) {
                     MainFragment m = mainActivity.get().getCurrentMainFragment();
                     if (m.openMode == OpenMode.FILE) {
-                        Futils.crossfade(buttons, pathLayout);
+                        FileUtils.crossfade(buttons, pathLayout);
                         timer.cancel();
                         timer.start();
                         showButtons(m);
                     }
                 } else if (fragmentAtFrame instanceof ZipExplorerFragment) {
-                    Futils.crossfade(buttons, pathLayout);
+                    FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
                     showButtons((BottomBarButtonPath) fragmentAtFrame);
@@ -205,10 +206,9 @@ public class BottomBar implements View.OnTouchListener{
                 }
             });
 
-            Pair<ArrayList<String>, ArrayList<String>> nameAndPathPair = Futils.getPaths(path);
+            Pair<ArrayList<String>, ArrayList<String>> nameAndPathPair = FileUtils.getPaths(path);
             ArrayList<String> names = nameAndPathPair.first;
             ArrayList<String> rnames = new ArrayList<>(nameAndPathPair.first);//clone it
-            Collections.reverse(rnames);
             
             final ArrayList<String> rpaths = nameAndPathPair.second;
             Collections.reverse(rpaths);
@@ -223,7 +223,7 @@ public class BottomBar implements View.OnTouchListener{
                 final int k = i;
                 if (rpaths.get(i).equals("/")) {
                     buttons.addView(buttonRoot);
-                } else if (Futils.isStorage(rpaths.get(i))) {
+                } else if (FileUtils.isStorage(rpaths.get(i))) {
                     buttonStorage.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View p1) {
                             buttonPathInterface.changePath(rpaths.get(k));

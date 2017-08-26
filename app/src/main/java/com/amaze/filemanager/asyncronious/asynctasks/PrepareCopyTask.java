@@ -24,7 +24,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
             return null;
         }
 
-        totalBytes = Futils.getTotalBytes(filesToCopy, context);
+        totalBytes = FileUtils.getTotalBytes(filesToCopy, context);
 
         HFile destination = new HFile(openMode, path);
         if (destination.getUsableSpace() < totalBytes) {

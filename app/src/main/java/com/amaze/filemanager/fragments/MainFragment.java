@@ -105,7 +105,7 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -164,7 +164,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     private android.support.v7.widget.RecyclerView listView;
     private UtilitiesProviderInterface utilsProvider;
-    private Futils utils;
     private HashMap<String, Bundle> scrolls = new HashMap<>();
     private MainFragment ma = this;
     private View rootView;
@@ -192,7 +191,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         setRetainInstance(true);
 
         utilsProvider = getMainActivity();
-        utils = utilsProvider.getFutils();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         res = getResources();
 
@@ -689,11 +687,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
-                                utils.shareCloudFile(getLayoutElement(0).getDesc(),
+                                FileUtils.shareCloudFile(getLayoutElement(0).getDesc(),
                                         getLayoutElement(0).getMode(), getContext());
                                 break;
                             default:
-                                utils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), accentColor);
+                                FileUtils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), accentColor);
                                 break;
                         }
                     }
@@ -759,7 +757,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.openwith:
                     boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
+                    FileUtils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -816,7 +814,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         public void onReceive(Context context, Intent intent) {
 
             if (isEncryptOpen && encryptBaseFile != null) {
-                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity(), sharedPref);
+                FileUtils.openFile(new File(encryptBaseFile.getPath()), getMainActivity(), sharedPref);
                 isEncryptOpen = false;
             }
         }
@@ -905,7 +903,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 }
                                 break;
                             case OTG:
-                                utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                FileUtils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
                                         (MainActivity) getActivity(), sharedPref);
                                 break;
                             case DROPBOX:
@@ -916,7 +914,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                                 break;
                             default:
-                                utils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
+                                FileUtils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
                                 break;
                         }
 
@@ -1337,7 +1335,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
                             )
                         getMainActivity().exit();
-                    else if (utils.canGoBack(getContext(), currentFile)) {
+                    else if (FileUtils.canGoBack(getContext(), currentFile)) {
                         loadlist(currentFile.getParent(getContext()), true, openMode);
                     } else getMainActivity().exit();
                 }
@@ -1422,7 +1420,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
                     getMainActivity().exit();
-                } else if (utils.canGoBack(getContext(), currentFile)) {
+                } else if (FileUtils.canGoBack(getContext(), currentFile)) {
                     loadlist(currentFile.getParent(getContext()), true, openMode);
                 } else getMainActivity().exit();
             }
@@ -1611,7 +1609,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     e.printStackTrace();
                 }
             }
-            Futils.scanFile(path, getActivity());
+            FileUtils.scanFile(path, getActivity());
         }
 
     }

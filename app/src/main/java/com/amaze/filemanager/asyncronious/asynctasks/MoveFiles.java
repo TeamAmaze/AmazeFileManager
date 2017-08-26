@@ -34,7 +34,7 @@ import com.amaze.filemanager.asyncronious.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -156,8 +156,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
 
             for (int i = 0; i < paths.size(); i++) {
                 for (BaseFile f : files.get(i)) {
-                    Futils.scanFile(f.getPath(), context);
-                    Futils.scanFile(paths.get(i) + "/" + f.getName(), context);
+                    FileUtils.scanFile(f.getPath(), context);
+                    FileUtils.scanFile(paths.get(i) + "/" + f.getName(), context);
                 }
             }
 

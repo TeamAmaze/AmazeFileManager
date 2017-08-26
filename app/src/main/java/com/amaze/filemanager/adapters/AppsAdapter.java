@@ -53,7 +53,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -211,7 +211,6 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
         return view;
     }
     void showPopup(View v,final LayoutElement rowItem){
-        final Futils utils = utilsProvider.getFutils();
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,7 +232,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
                                 themedActivity.getColorPreference();
-                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
+                                FileUtils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
                                 return true;
                             case R.id.unins:
                                 final BaseFile f1 = new BaseFile(rowItem.getDesc());

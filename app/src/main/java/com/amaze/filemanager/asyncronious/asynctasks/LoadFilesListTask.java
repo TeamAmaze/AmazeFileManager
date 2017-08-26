@@ -48,6 +48,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -269,9 +270,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                     Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(), R.drawable.ic_folder_lock_white_36dp);
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
-                    LayoutElement layoutElement = utilsProvider.getFutils()
-                            .newElement(baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable
-                                            : ma.folder,
+                    LayoutElement layoutElement = FileUtils.newElement(
+                            baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable:ma.folder,
                                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
                                     baseFile.getDate() + "");
                     layoutElement.setMode(baseFile.getMode());
@@ -291,7 +291,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                         //e.printStackTrace();
                     }
                     try {
-                        LayoutElement layoutElement = utilsProvider.getFutils().newElement(Icons.loadMimeIcon(
+                        LayoutElement layoutElement = FileUtils.newElement(Icons.loadMimeIcon(
                                 baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
                         layoutElement.setMode(baseFile.getMode());

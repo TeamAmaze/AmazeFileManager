@@ -38,7 +38,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -143,7 +143,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
                 }
             } catch (Exception e) {
                 for (BaseFile f : files) {
-                    Futils.scanFile(f.getPath(), cd);
+                    FileUtils.scanFile(f.getPath(), cd);
                 }
             }
         }

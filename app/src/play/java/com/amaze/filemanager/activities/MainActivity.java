@@ -135,7 +135,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -225,7 +225,6 @@ public class MainActivity extends ThemedActivity implements
 
     private AppBar appbar;
     //private HistoryManager history, grid;
-    private Futils utils;
     private MainActivity mainActivity = this;
     private Context con = this;
     private String zippath;
@@ -316,7 +315,6 @@ public class MainActivity extends ThemedActivity implements
         cloudHandler = new CloudHandler(this);
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
-        utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -514,7 +512,7 @@ public class MainActivity extends ThemedActivity implements
                                 goToMain(path);
                             else {
                                 goToMain("");
-                                utils.openFile(new File(path), MainActivity.this, sharedPref);
+                                FileUtils.openFile(new File(path), MainActivity.this, sharedPref);
                             }
                         } else {
                             goToMain("");
@@ -685,7 +683,7 @@ public class MainActivity extends ThemedActivity implements
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && Futils.canListFiles(f))
+                if (!rv.contains(s) && FileUtils.canListFiles(f))
                     rv.add(s);
             }
         }
@@ -771,7 +769,7 @@ public class MainActivity extends ThemedActivity implements
                     goToMain(path);
                 else {
                     goToMain("");
-                    utils.openFile(new File(path), this, sharedPref);
+                    FileUtils.openFile(new File(path), this, sharedPref);
                 }
             } else {
                 goToMain("");
@@ -1058,7 +1056,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1116,7 +1114,7 @@ public class MainActivity extends ThemedActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;
@@ -1981,8 +1979,8 @@ public class MainActivity extends ThemedActivity implements
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean b) {
-                if (b) utils.revealShow(fabBgView, true);
-                else utils.revealShow(fabBgView, false);
+                if (b) FileUtils.revealShow(fabBgView, true);
+                else FileUtils.revealShow(fabBgView, false);
             }
         });
 
@@ -2064,7 +2062,7 @@ public class MainActivity extends ThemedActivity implements
             HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
             hFile.generateMode(this);
             if (hFile.isSimpleFile()) {
-                utils.openFile(new File(pendingPath), mainActivity, sharedPref);
+                FileUtils.openFile(new File(pendingPath), mainActivity, sharedPref);
                 pendingPath = null;
                 return;
             }
@@ -2093,7 +2091,7 @@ public class MainActivity extends ThemedActivity implements
                 if (ma != null) {
                     ma.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
-            } else utils.openFile(new File(path), mainActivity, sharedPref);
+            } else FileUtils.openFile(new File(path), mainActivity, sharedPref);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
@@ -2251,11 +2249,11 @@ public class MainActivity extends ThemedActivity implements
      * It covers the fragment.
      */
     public void showSmokeScreen() {
-        Futils.revealShow(fabBgView, true);
+        FileUtils.revealShow(fabBgView, true);
     }
 
     public void hideSmokeScreen() {
-        Futils.revealShow(fabBgView, false);
+        FileUtils.revealShow(fabBgView, false);
     }
 
     @Override

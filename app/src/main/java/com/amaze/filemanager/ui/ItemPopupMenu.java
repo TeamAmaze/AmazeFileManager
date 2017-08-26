@@ -20,7 +20,7 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
@@ -82,12 +82,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     case BOX:
                     case GDRIVE:
                     case ONEDRIVE:
-                        utilitiesProvider.getFutils().shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
+                        FileUtils.shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
                         break;
                     default:
                         ArrayList<File> arrayList = new ArrayList<>();
                         arrayList.add(new File(rowItem.getDesc()));
-                        utilitiesProvider.getFutils().shareFiles(arrayList,
+                        FileUtils.shareFiles(arrayList,
                                 mainFragment.getMainActivity(), utilitiesProvider.getAppTheme(),
                                 accentColor);
                         break;
@@ -129,7 +129,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.open_with:
                 boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                Futils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
+                FileUtils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
                 return true;
             case R.id.encrypt:
                 final Intent encryptIntent = new Intent(context, EncryptService.class);

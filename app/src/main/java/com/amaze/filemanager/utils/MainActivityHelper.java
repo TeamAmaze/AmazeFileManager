@@ -23,9 +23,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
+import com.amaze.filemanager.asyncronious.services.ExtractService;
+import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -37,13 +40,9 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
-import com.amaze.filemanager.asyncronious.services.ExtractService;
-import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ public class MainActivityHelper {
     public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
 
     private MainActivity mainActivity;
-    private Futils utils;
     private DataUtils dataUtils = DataUtils.getInstance();
     private int accentColor;
 
@@ -68,7 +66,6 @@ public class MainActivityHelper {
 
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.utils = mainActivity.getFutils();
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 

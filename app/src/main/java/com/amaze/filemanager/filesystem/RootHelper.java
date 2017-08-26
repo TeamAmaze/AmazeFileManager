@@ -19,16 +19,11 @@
 
 package com.amaze.filemanager.filesystem;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
-import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.File;
@@ -252,7 +247,7 @@ public class RootHelper {
             for (String s : ls) {
                 if (contains(s.split(" "), name)) {
                     try {
-                        BaseFile path = Futils.parseName(s);
+                        BaseFile path = FileUtils.parseName(s);
                         if (path.getPermission().trim().startsWith("d")) return true;
                         else if (path.getPermission().trim().startsWith("l")) {
                             if (count > 5)
@@ -311,7 +306,7 @@ public class RootHelper {
                         String file = ls.get(i);
                         if (!file.contains("Permission denied"))
                             try {
-                                BaseFile array = Futils.parseName(file);
+                                BaseFile array = FileUtils.parseName(file);
                                 array.setMode(OpenMode.ROOT);
                                 if (array != null) {
                                     array.setName(array.getPath());
@@ -329,7 +324,7 @@ public class RootHelper {
                     }
                     mode = OpenMode.ROOT;
                 }
-            } else if (Futils.canListFiles(new File(path))) {
+            } else if (FileUtils.canListFiles(new File(path))) {
                 // we might as well not require root to load files
                 files = getFilesList(path, showHidden);
                 mode = OpenMode.FILE;
@@ -339,7 +334,7 @@ public class RootHelper {
                 mode = OpenMode.FILE;
                 files = new ArrayList<>();
             }
-        } else if (Futils.canListFiles(new File(path))) {
+        } else if (FileUtils.canListFiles(new File(path))) {
             // we don't have root, so we're taking a chance to load files using basic java filesystem
             files = getFilesList(path, showHidden);
             mode = OpenMode.FILE;

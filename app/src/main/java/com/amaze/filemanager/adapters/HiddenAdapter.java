@@ -20,7 +20,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.File;
@@ -32,9 +32,7 @@ import java.util.ArrayList;
  */
 public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.ViewHolder> {
 
-    private Futils utils;
     private SharedPreferences sharedPrefs;
-
     private MainFragment context;
     private Context c;
     public ArrayList<HFile> items;
@@ -43,11 +41,10 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
     private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context context, MainFragment mainFrag, Futils utils, SharedPreferences sharedPreferences,
+    public HiddenAdapter(Context context, MainFragment mainFrag, SharedPreferences sharedPreferences,
                          @LayoutRes int layoutId, ArrayList<HFile> items, MaterialDialog materialDialog,
                          boolean hide) {
         addAll(items);
-        this.utils = utils;
         this.c = context;
         this.context = mainFrag;
         sharedPrefs = sharedPreferences;
@@ -128,7 +125,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
                                     context.getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            utils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
+                                            FileUtils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
                                         }
                                     });
                                 }

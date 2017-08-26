@@ -15,7 +15,7 @@ import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -506,14 +506,14 @@ public class HFile {
         switch (mode) {
             case SMB:
                 try {
-                    size = Futils.folderSize(new SmbFile(path));
+                    size = FileUtils.folderSize(new SmbFile(path));
                 } catch (MalformedURLException e) {
                     size = 0L;
                     e.printStackTrace();
                 }
                 break;
             case FILE:
-                size = Futils.folderSize(new File(path), null);
+                size = FileUtils.folderSize(new File(path), null);
                 break;
             case ROOT:
                 BaseFile baseFile = generateBaseFileFromParent();
@@ -538,27 +538,27 @@ public class HFile {
         switch (mode){
             case SMB:
                 try {
-                    size = Futils.folderSize(new SmbFile(path));
+                    size = FileUtils.folderSize(new SmbFile(path));
                 } catch (MalformedURLException e) {
                     size = 0l;
                     e.printStackTrace();
                 }
                 break;
             case FILE:
-                size = Futils.folderSize(new File(path), null);
+                size = FileUtils.folderSize(new File(path), null);
                 break;
             case ROOT:
                 BaseFile baseFile=generateBaseFileFromParent();
                 if(baseFile!=null) size = baseFile.getSize();
                 break;
             case OTG:
-                size = Futils.folderSize(path, context);
+                size = FileUtils.folderSize(path, context);
                 break;
             case DROPBOX:
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
-                size = Futils.folderSizeCloud(mode,
+                size = FileUtils.folderSizeCloud(mode,
                         dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
                 break;
             default:
@@ -1059,13 +1059,12 @@ public class HFile {
                 LayoutElement layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = utilitiesProvider.getFutils()
-                            .newElement(mainFragment.folder,
+                    layoutElement = FileUtils.newElement(mainFragment.folder,
                                     path, RootHelper.parseFilePermission(file),
                                     "", folderSize() + "", 0, true, false,
                                     file.lastModified() + "");
                 } else {
-                    layoutElement = utilitiesProvider.getFutils().newElement(Icons.loadMimeIcon(
+                    layoutElement = FileUtils.newElement(Icons.loadMimeIcon(
                             file.getPath(), !mainFragment.IS_LIST, mainFragment.getResources()),
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 
 /**
@@ -42,7 +42,7 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
             if(isStorage) {
                 folderSize = file.getUsableSpace();
             } else {
-                folderSize = Futils.folderSize(file, new OnProgressUpdate<Long>() {
+                folderSize = FileUtils.folderSize(file, new OnProgressUpdate<Long>() {
                     @Override
                     public void onUpdate(Long data) {
                         publishProgress(new Pair<>(x, data));
