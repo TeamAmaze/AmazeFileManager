@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">लाल</string>
-  <string name="blue">नीला</string>
-  <string name="cyan">हरिताभ नीला</string>
-  <string name="green">हरा</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">आकार</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">पीला</string>
-  <string name="version">वर्शन</string>
+    <string name="version">वर्शन</string>
   <string name="details">विवरण</string>
   <string name="color_title">रंग</string>
-  <string name="none">कुछ नहीं</string>
-  <string name="password">पासवर्ड</string>
+    <string name="password">पासवर्ड</string>
   <string name="path">पथ</string>
   <string name="information">जानकारी</string>
   <!-- reference to file accessed date -->

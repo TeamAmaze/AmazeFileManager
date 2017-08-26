@@ -54,7 +54,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="SideBar">
+    <PreferenceCategory android:title="@string/sidebar_preferences">
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="sidebar_folders_enable"

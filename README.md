@@ -37,7 +37,7 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
         
     A lot.
     
-See our [Privacy Policy](https://github.com/arpitkh96/AmazeFileManager/wiki/Privacy-Policy)
+See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
 
 Contributors
 -----
@@ -49,7 +49,7 @@ Also, take a look at [this guide](https://source.android.com/source/code-style.h
 
 The source code has two flavours, fDroid and play. Both of these include their own MainActivity.
 fDroid's MainAcitivity is generally outdated and is only updated during new release.  
-Any changes made to [fDroid's MainActivity](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/fdroid/java/com/amaze/filemanager/activities/MainActivity.java) will be overwritten. So please make sure to compile and work on [play's MainAcitivty](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/play/java/com/amaze/filemanager/activities/MainActivity.java).
+Any changes made to [fDroid's MainActivity](https://github.com/TeamAmaze/AmazeFileManager/blob/master/app/src/fdroid/java/com/amaze/filemanager/activities/MainActivity.java) will be overwritten. So please make sure to compile and work on [play's MainAcitivty](https://github.com/TeamAmaze/AmazeFileManager/blob/master/app/src/play/java/com/amaze/filemanager/activities/MainActivity.java).
 
 Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
 

@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Կարմիր</string>
-  <string name="blue">Կապույտ</string>
-  <string name="cyan">Երկնագույն</string>
-  <string name="green">Կանաչ</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Չափը</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Դեղին</string>
-  <string name="version">Տարբերակը</string>
+    <string name="version">Տարբերակը</string>
   <string name="details">Մանրամասներ</string>
   <string name="color_title">Գույն</string>
-  <string name="none">Ոչ մեկը</string>
-  <string name="path">Ուղի</string>
+    <string name="path">Ուղի</string>
   <string name="information">Տեղեկություններ</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

@@ -51,7 +51,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_audio_codec_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_audio_codec_title"
@@ -84,7 +83,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_audio_channels_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_audio_channels_title"
@@ -117,7 +115,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_audio_sample_rate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_audio_sample_rate_title"
@@ -150,7 +147,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_audio_bitrate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_audio_bitrate_title"

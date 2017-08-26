@@ -22,15 +22,11 @@
   <string name="app_name">Amaze</string>
   <string name="drawer_open">فتح نافذة التنقل</string>
   <string name="drawer_close">إغلاق نافذة التنقل</string>
-  <string name="books">الملفضلات</string>
-  <string name="icon">أيقونة</string>
-  <string name="efn">ادخل اسم الملف</string>
-  <string name="storage">التخزين</string>
-  <string name="gallery">المعرض</string>
-  <string name="apps">مدير التطبيقات</string>
+    <string name="icon">أيقونة</string>
+    <string name="storage">التخزين</string>
+    <string name="apps">مدير التطبيقات</string>
   <string name="ftp">خادم بروتوكول نقل الملفات</string>
-  <string name="bookmanag">مدير المفضلات</string>
-  <string name="setting">الإعدادات</string>
+    <string name="setting">الإعدادات</string>
   <string name="select">تحديد عنصر</string>
   <string name="pressagain">اضغط مرة أخرى للخروج</string>
   <string name="open">فتح</string>
@@ -39,54 +35,33 @@
   <string name="play">متجر قوقل</string>
   <string name="properties">خصائص</string>
   <string name="copyingapk">جاري نسخ ملفات apk إلى</string>
-  <string name="addbook">إضافة مفضلة</string>
-  <string name="delbook">حذف الإشارة المرجعية</string>
+    <string name="delbook">حذف الإشارة المرجعية</string>
   <string name="addtobook">إضافة للمفضلة</string>
   <string name="enterpath">أدخل المسار</string>
   <string name="cancel">إلغاء</string>
   <string name="create">إنشاء</string>
-  <string name="success">تم</string>
-  <string name="filenotexists">الملف غير موجود</string>
-  <string name="loading">جاري التحميل&#8230;</string>
+    <string name="loading">جاري التحميل&#8230;</string>
   <string name="error">خطأ</string>
-  <string name="cantlistfiles">لا يمكن سرد الملفات بدون صلاحيات الجذر</string>
-  <string name="itemsselected">تم تحديد العناصر</string>
-  <string name="newhomedirectory">دليل أساسي جديد</string>
-  <string name="rename">إعادة تسمية</string>
+    <string name="rename">إعادة تسمية</string>
   <string name="save">حفظ</string>
-  <string name="renameerror">لم تنجح إعادة التسمية</string>
-  <string name="renamed">تمت إعادة التسمية بنجاح</string>
-  <string name="bookmarksadded">تمت الإضافة للمفضلة</string>
+    <string name="bookmarksadded">تمت الإضافة للمفضلة</string>
   <string name="fileexist">يوجد ملف بنفس الإسم</string>
-  <string name="filecreated">تم إنشاء الملف</string>
-  <string name="searchpath">مسار البحث</string>
-  <string name="enterfile">ادخل اسم الملف</string>
-  <string name="name">الإسم:</string>
+    <string name="name">الإسم:</string>
   <string name="date">تاريخ:</string>
   <string name="location">يوجد في:</string>
   <string name="size_capitalized">الحجم</string>
   <string name="size">حجم المجلد</string>
-  <string name="totalitems">العناصر الكلية:</string>
-  <string name="enterzipname">أدخل إسم الملف المضغوط</string>
+    <string name="enterzipname">أدخل إسم الملف المضغوط</string>
   <string name="noappfound">لم يتم إيجاد تطبيق لفتح هذا الملف</string>
   <string name="copying">جاري النسخ</string>
   <string name="moving">جاري النقل</string>
-  <string name="add">إضافة</string>
-  <string name="tab">الضغط</string>
-  <string name="file">ملف</string>
+    <string name="file">ملف</string>
   <string name="folder">مجلد</string>
   <string name="newfolder">مجلد جديد</string>
   <string name="entername">ادخل الإسم</string>
   <string name="extracting">جاري الإستخراج</string>
   <string name="stopping">جاري الإيقاف</string>
-  <string name="guide1">مرحبًا بك في مدير الملفات Amaze</string>
-  <string name="guide2">ألمس مرتين الشريط العلوي لعرض أو إخفاء شريط المسار</string>
-  <string name="guide3">اضغط مطولًا على الملف أو المجلد لإظهار المزيد من الخيارات</string>
-  <string name="guide4">مثل النسخ ، اللصق ، النقل ، الخصائص ، إلخ</string>
-  <string name="guide5">استخدم زر الرجوع للخلف في جهازك للخروج من التطبيق في أي وقت</string>
-  <string name="guide6">واستخدم زر السهل الأيسر للتنقل في مدير الملفات</string>
-  <string name="maintab">لا يمكن إزالة التبويب الرئيسي</string>
-  <string name="openparent">فتح الدليل الرئيسي</string>
+    <string name="openparent">فتح الدليل الرئيسي</string>
   <string name="openwith">فتح بـ</string>
   <string name="share">مشاركة</string>
   <string name="about">حول</string>
@@ -98,65 +73,31 @@
   <string name="dialog_delete_disclaimer">هل تريد حقًا حذف الملفات التالية ؟</string>
   <string name="dialog_delete_title">تأكيد</string>
   <string name="deleting">جاري الحذف</string>
-  <string name="viewmode">نمط العرض</string>
-  <string name="uimode">نمط واجهة المستخدم</string>
-  <string name="sortby">ترتيب حسب</string>
+    <string name="sortby">ترتيب حسب</string>
   <string name="theme">السمة</string>
-  <string name="skin">لون المظهر</string>
-  <string name="random">لون مظهر عشوائي</string>
+    <string name="random">لون مظهر عشوائي</string>
   <string name="random_summary">عيّن لون مظهر عشوائي عند كل تشغيل</string>
   <string name="colorize">تلوين الأيقونات</string>
   <string name="colorize_summary">تعيين لون ثابث للأيقونات</string>
-  <string name="back">الخلف</string>
-  <string name="home">الرئيسية</string>
+    <string name="home">الرئيسية</string>
   <string name="paste">لصق</string>
-  <string name="close">إغلاق</string>
-  <string name="history">المحفوظات</string>
-  <string name="refresh">تحديث</string>
-  <string name="copy">نسخ</string>
+    <string name="history">المحفوظات</string>
+    <string name="copy">نسخ</string>
   <string name="rootmode">متصفح الجذر</string>
   <string name="rootmodesummary">للأجهزة التي بها صلاحيات الروت ( الجذر ) اضغط للتأكد من توفر الروت.</string>
-  <string name="mountsystemsummary">فعل هذا الخيار لو كنت تريد تعديل ملفات النظام</string>
-  <string name="mountsystem">جعل مجلدات النظام قابلة للكتابة</string>
-  <string name="rootfailure">لم يتم منح الوصول للجذر</string>
+    <string name="rootfailure">لم يتم منح الوصول للجذر</string>
   <string name="selectall">تحديد الكل</string>
   <string name="delete">حذف</string>
   <string name="setashome">تعيين كمجلد رئيسي</string>
-  <string name="sethome">تعيين المسار الرئيسي</string>
-  <string name="foldercolor">لون المجلد</string>
-  <string name="imagegallery">معرض الصور</string>
-  <string name="fileexplorer">متصفح الملفات</string>
-  <string name="changegallerypath">تغيير مسار المعرض</string>
-  <string name="usedefaultgallerypath">استخدم مسار معرض الصور الإفتراضي</string>
-  <!-- New -->
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
-  <string name="simple">واجهة مستخدم بسيطة</string>
-  <string name="card">واجهة مستخدم بطابع البطاقات</string>
-  <!-- Theme -->
+    <!-- Theme -->
   <string name="light">ساطع</string>
   <string name="dark">مظلم</string>
   <string name="daytime">نهاري</string>
   <!--Skin-->
-  <string name="red">أحمر</string>
-  <string name="pink">وردي</string>
-  <string name="purple">أرجواني</string>
-  <string name="deep_purple">أرجواني مشبّع</string>
-  <string name="indigo">نيلي</string>
-  <string name="blue">أزرق</string>
-  <string name="light_blue">أزرق فاتح</string>
-  <string name="cyan">الأزرق السماوي</string>
-  <string name="teal">أزرق مخضّر</string>
-  <string name="green">أخضر</string>
-  <string name="light_green">أخضر فاتح</string>
-  <string name="amber">أصفر</string>
-  <string name="orange">برتقالي</string>
-  <string name="deep_orange">برتقالي مشبّع</string>
-  <string name="brown">بني</string>
-  <string name="black">أسود</string>
-  <string name="blue_grey">رمادي</string>
-  <string name="supersu">سوبر اس يو</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <string name="foldersOnTop">المجلدات أولًا</string>
   <string name="filesOnTop">الملفات أولًا</string>
   <string name="noneOnTop">بدون ترتيب</string>
@@ -164,52 +105,33 @@
   <string name="sortName">الإسم</string>
   <string name="lastModified">حسب أخر تعديل</string>
   <string name="sortSize">الحجم</string>
-  <string name="sortNameDesc">الإسم ( تنازلي )</string>
-  <string name="lastModifiedDesc">أخر تعديل ( تنازلي )</string>
-  <string name="sortSizeDesc">الحجم ( تنازلي )</string>
-  <!--ListMode-->
-  <string name="simpleView">عرض بسيط</string>
-  <!--Folder-->
-  <string name="Yellow">أصفر</string>
-  <string name="pick_a_file">إختيار ملف</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">إختيار ملف</string>
   <string name="process_viewer">مستعرض العمليات</string>
   <string name="in_safe">المساحة غير كافية</string>
   <string name="no_file_overwrite">لا يوجد ملف للكتابة عليه</string>
   <string name="skip">تخطي</string>
   <string name="overwrite">الكتابة عليه</string>
-  <string name="cant_read_file">تعذر قراءة الملف</string>
-  <string name="not_allowed">غير مسموح</string>
-  <string name="processes">العمليات</string>
-  <string name="copying_fles">جاري نسخ الملفات</string>
-  <string name="done">تم</string>
-  <string name="Extracting_fles">جاري إستخراج الملفات</string>
-  <string name="set">تعيين</string>
+    <string name="not_allowed">غير مسموح</string>
+    <string name="done">تم</string>
+    <string name="set">تعيين</string>
   <string name="enablerootmde">تفعيل وضع الروت</string>
   <string name="goback">عد للخلف</string>
-  <string name="foldercreated">تم إنشاء المجلد</string>
-  <string name="newfile">ملف جديد</string>
+    <string name="newfile">ملف جديد</string>
   <string name="nofiles">لا توجد ملفات</string>
-  <string name="tapnhold">اضغط مطولًا على الملف أو المجلد لإظهار المزيد من الخيارات</string>
-  <string name="pathcopied">تم نسخ المسار إلى الحافظة</string>
-  <string name="atroot">أنت بداخل الجذر</string>
-  <string name="listview">عرض قائمة</string>
+    <string name="listview">عرض قائمة</string>
   <string name="gridview">عرض شبكي</string>
-  <string name="setlistview">إعداد عرض القائمة</string>
-  <string name="setgridview">إعداد العرض الشبكي</string>
-  <string name="permission">الأذونات</string>
+    <string name="permission">الأذونات</string>
   <string name="hide">إخفاء</string>
   <string name="exit">خروج</string>
-  <string name="enternewname">ادخل إسم جديد</string>
-  <string name="doforall">قم بالأمر لكل العناصر</string>
+    <string name="doforall">قم بالأمر لكل العناصر</string>
   <string name="gridcolumnno">عدد الأعمدة في العرض الشبكي</string>
-  <string name="randomDialog">عشوائي</string>
-  <string name="setRandom">سيتم إجراء التغيرات بعد إعادة تشغيل التطبيق</string>
+    <string name="setRandom">سيتم إجراء التغيرات بعد إعادة تشغيل التطبيق</string>
   <string name="authors">المؤلفون</string>
   <string name="changelog">سجل التغيرات</string>
-  <string name="fullChangelog">سجل التغيرات الكامل</string>
-  <string name="ok">موافق</string>
-  <string name="chooseUI">اختر عنصر واجهة المستخدم</string>
-  <string name="ui">واجهة المستخدم</string>
+    <string name="ok">موافق</string>
+    <string name="ui">واجهة المستخدم</string>
   <string name="general">عام</string>
   <string name="thumbSummary">عرض مصغرات للتطبيقات والصور</string>
   <string name="thumb">عرض مصغرات</string>
@@ -228,12 +150,8 @@
   <string name="feedback">أرسل ملاحظاتك</string>
   <string name="hiddenfiles">الملفات المخفية</string>
   <string name="type">النوع</string>
-  <string name="typeDesc">النوع ( تنازلي )</string>
-  <string name="rootdirectory">الجذر</string>
-  <string name="new_string">جديد</string>
-  <string name="setringtone">تعيين كنغمة رنين</string>
-  <string name="copy_path">نسخ المسار</string>
-  <string name="addshortcut">إضافة إختصار</string>
+    <string name="rootdirectory">الجذر</string>
+    <string name="addshortcut">إضافة إختصار</string>
   <string name="unsavedchanges">لم يتم حفظ التغيرات</string>
   <string name="unsavedchangesdesc">لم تقم بحفظ التغيرات ، هل تريد حفظها قبل الخروج ؟</string>
   <string name="saving">جاري الحفظ</string>
@@ -245,8 +163,7 @@
   <string name="pitext">هذا مثبت الحزم ، ماهو الأمر الذي تريد تأديته ؟</string>
   <string name="xda_title">منتدى المطورين</string>
   <string name="xda_summary">الأسئلة المتكررة ، المساعدة</string>
-  <string name="invalid_dir">مسار غير صالح</string>
-  <string name="circularimages">إستخدام أيقونات دائرة للصور والفيديو</string>
+    <string name="circularimages">إستخدام أيقونات دائرة للصور والفيديو</string>
   <string name="circularicons">إستخدام أيقونات دائرية</string>
   <string name="back_title">زر رجوع</string>
   <string name="back_summary">تفعيل زر رجوع مخصص بأعلى القائمة</string>
@@ -273,8 +190,7 @@
   <string name="savepaths">تذكر المسارات</string>
   <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
   <string name="color_title">اللون</string>
-  <string name="none">لا شيء</string>
-  <string name="files">الملفات</string>
+    <string name="files">الملفات</string>
   <string name="password">كلمة المرور</string>
   <string name="images">الصّور</string>
   <string name="clear">مسح</string>
@@ -295,13 +211,11 @@
   <string name="height">الارتفاع</string>
   <string name="exposure_time">مدة التعرض للضوء</string>
   <string name="focal_length">البعد البؤري</string>
-  <string name="document">مستند</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
-  <string name="tap_and_hold_tips">اضغط مطولًا على الملف أو المجلد لإظهار المزيد من الخيارات</string>
-  <string name="permission_read">اقرأ</string>
+    <string name="permission_read">اقرأ</string>
   <string name="permission_other">آخرى</string>
   <string name="clipboard_path_copy">تم نسخ المسار إلى الحافظة</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->

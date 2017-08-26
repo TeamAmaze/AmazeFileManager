@@ -25,14 +25,10 @@
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="books">Bookmarks</string>
     <string name="icon">icon</string>
-    <string name="efn">Enter File Name</string>
     <string name="storage">Storage</string>
-    <string name="gallery">Gallery</string>
     <string name="apps">App Manager</string>
     <string name="ftp">FTP Server</string>
-    <string name="bookmanag">Bookmarks Manager</string>
     <string name="setting">Settings</string>
     <string name="select">Select Item</string>
     <string name="pressagain">Press  again to exit</string>
@@ -42,55 +38,34 @@
     <string name="play">Play store</string>
     <string name="properties">Properties</string>
     <string name="copyingapk">Copying apk to </string>
-    <string name="addbook">Add Bookmark</string>
     <string name="delbook">Delete Bookmark</string>
     <string name="addtobook">Add to Bookmark</string>
     <string name="enterpath">Enter Path</string>
     <string name="cancel">CANCEL</string>
     <string name="create">CREATE</string>
-    <string name="success">Success</string>
-    <string name="filenotexists">File Not Exists</string>
     <string name="loading">Loading&#8230;</string>
     <string name="file_empty">File is empty</string>
     <string name="error">Error</string>
-    <string name="cantlistfiles">Can\'t list files without root</string>
     <string name="searchresults">Search results of %s</string>
-    <string name="itemsselected">Items Selected</string>
-    <string name="newhomedirectory">New Home Directory</string>
     <string name="rename">Rename</string>
     <string name="save">Save</string>
-    <string name="renameerror">Rename Unsuccessful</string>
-    <string name="renamed">Rename Successful</string>
     <string name="bookmarksadded">Bookmarks Added</string>
     <string name="fileexist">File with same name already exists </string>
-    <string name="filecreated">File Created</string>
-    <string name="searchpath">Search Path</string>
-    <string name="enterfile">Enter File Name</string>
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="location">Location</string>
     <string name="size_capitalized">Size</string>
     <string name="size">size of folder</string>
-    <string name="totalitems">Total Items</string>
     <string name="enterzipname">Enter Zip Name</string>
     <string name="noappfound">No App found to open this file</string>
     <string name="copying">Copying</string>
     <string name="moving">Moving</string>
-    <string name="add">Add</string>
-    <string name="tab">Tab</string>
     <string name="file">File</string>
     <string name="folder">Folder</string>
     <string name="newfolder">New Folder</string>
     <string name="entername">Enter Name</string>
     <string name="extracting">Extracting</string>
     <string name="stopping">Stopping</string>
-    <string name="guide1">Welcome to Amaze File Manager</string>
-    <string name="guide2">Touch the blue strip to show or hide PathBar</string>
-    <string name="guide3">Touch and hold any file for more options</string>
-    <string name="guide4">Like copy,move,properties etc</string>
-    <string name="guide5">Use Back Button of your device to exit app anytime&#8230;</string>
-    <string name="guide6">..And use left arrow button for navigation in file manager</string>
-    <string name="maintab">Main Tab can\'t be removed</string>
     <string name="openparent">Open Parent Directory</string>
     <string name="openwith">Open with</string>
     <string name="share">Share</string>
@@ -105,68 +80,33 @@
     <string name="dialog_delete_title">Delete items permanently?</string>
     <string name="deleting">Deleting</string>
     <string name="questionset">Do you want to set current path as home for this tab?</string>
-    <string name="viewmode">View Mode</string>
-    <string name="uimode">UI Mode</string>
     <string name="directorysort">Directory Sort Mode</string>
     <string name="sortby">Sort By</string>
     <string name="theme">Theme</string>
-    <string name="skin">Skin</string>
     <string name="random">Random Skin</string>
     <string name="random_summary">Sets random primary color at startup</string>
     <string name="colorize">Colorize Icons</string>
     <string name="colorize_summary">Sets static icon color. Doesn\'t override directory icon color preference.</string>
-    <string name="back">Back</string>
     <string name="home">Home</string>
     <string name="paste">Paste</string>
-    <string name="close">Close</string>
     <string name="history">History</string>
-    <string name="refresh">Refresh</string>
     <string name="copy">Copy</string>
     <string name="rootmode">Root Explorer</string>
     <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
-    <string name="mountsystemsummary">Enable this if you want to edit System Files</string>
-    <string name="mountsystem">Mount System Folders as Writable</string>
     <string name="rootfailure">Root Access not granted</string>
-    <string name="hiddenfailure">Can\'t access hidden files</string>
     <string name="selectall">Select All</string>
     <string name="delete">Delete</string>
     <string name="setashome">Set As Home</string>
-    <string name="sethome">Set Home Directory</string>
-    <string name="foldercolor">Folder Color</string>
-    <string name="imagegallery">Image Gallery</string>
-    <string name="fileexplorer">File Explorer</string>
-    <string name="changegallerypath">Change Gallery Path</string>
-    <string name="usedefaultgallerypath">Use Default Image Gallery Path</string>
 
     <!-- New -->
     <!-- Array -->
 
     <!-- UI -->
-    <string name="simple">Simple UI</string>
-    <string name="card">Card UI</string>
     <!-- Theme -->
     <string name="light">Material Light</string>
     <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
     <!--Skin-->
-    <string name="red">Red</string>
-    <string name="pink">Pink</string>
-    <string name="purple">Purple</string>
-    <string name="deep_purple">Deep Purple</string>
-    <string name="indigo">Indigo</string>
-    <string name="blue">Blue</string>
-    <string name="light_blue">Light Blue</string>
-    <string name="cyan">Cyan</string>
-    <string name="teal">Teal</string>
-    <string name="green">Green</string>
-    <string name="light_green">Light Green</string>
-    <string name="amber">Amber</string>
-    <string name="orange">Orange</string>
-    <string name="deep_orange">Deep Orange</string>
-    <string name="brown">Brown</string>
-    <string name="black">Black</string>
-    <string name="blue_grey">Blue Grey</string>
-    <string name="supersu">SuperSU</string>
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>
     <string name="filesOnTop">Files On Top</string>
@@ -175,56 +115,36 @@
     <string name="sortName">Name</string>
     <string name="lastModified">Last Modified</string>
     <string name="sortSize">Size</string>
-    <string name="sortNameDesc">Name (Desc)</string>
-    <string name="lastModifiedDesc">Last Modified (Desc)</string>
-    <string name="sortSizeDesc">Size (Desc)</string>
     <!--ListMode-->
-    <string name="detailedView">Detailed View</string>
-    <string name="simpleView">Simple View</string>
     <!--Folder-->
-    <string name="Yellow">Yellow</string>
     <string name="pick_a_file">Pick a file</string>
     <string name="process_viewer">Process Viewer</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
     <string name="skip">Skip</string>
     <string name="overwrite">Overwrite</string>
-    <string name="cant_read_file">Can\'t read file</string>
     <string name="not_allowed">Not Allowed</string>
-    <string name="processes">Processes</string>
     <string name="searching">Searching %s</string>
-    <string name="copying_fles">Copying Files</string>
     <string name="done">Done</string>
-    <string name="Extracting_fles">Extracting Files</string>
     <string name="set">Set</string>
     <string name="enablerootmde">Enable Root Mode</string>
     <string name="goback">Go Back</string>
-    <string name="foldercreated">Folder Created</string>
     <string name="newfile">New File</string>
     <string name="nofiles">No Files</string>
-    <string name="tapnhold">Tap and hold on a File or Folder for more options</string>
-    <string name="pathcopied">Path copied to clipboard</string>
     <string name="used">used space</string>
     <string name="used_by_others">used by others</string>
     <string name="free">free space</string>
-    <string name="atroot">You are at the root</string>
     <string name="listview">List View</string>
     <string name="gridview">Grid View</string>
-    <string name="setlistview">Setting ListView</string>
-    <string name="setgridview">Setting GridView</string>
     <string name="permission">Permissions</string>
     <string name="hide">Hide</string>
     <string name="exit">Exit</string>
-    <string name="enternewname">Enter new name</string>
     <string name="doforall">Do for all items</string>
     <string name="gridcolumnno">Number of columns in grid view</string>
-    <string name="randomDialog">Random</string>
     <string name="setRandom">Changes will take place after you restart the app</string>
     <string name="authors">Authors</string>
     <string name="changelog">Changelog</string>
-    <string name="fullChangelog">Full Changelog</string>
     <string name="ok">OK</string>
-    <string name="chooseUI">Choose Item UI</string>
     <string name="ui">Interface</string>
     <string name="general">General</string>
     <string name="thumbSummary">Show Thumbnails of apps and images</string>
@@ -244,11 +164,7 @@
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
-    <string name="typeDesc">Type (Desc)</string>
     <string name="rootdirectory">Root</string>
-    <string name="new_string">New</string>
-    <string name="setringtone">Set as ringtone</string>
-    <string name="copy_path">Copy Path</string>
     <string name="addshortcut">Add Shortcut</string>
     <string name="unsavedchanges">Unsaved Changes</string>
     <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
@@ -261,7 +177,6 @@
     <string name="pitext">This is a package installer. What action would you like to perform?</string>
     <string name="xda_title">XDA thread</string>
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
-    <string name="invalid_dir">Invalid Directory</string>
     <string name="circularimages">Use circular icons for images and videos</string>
     <string name="circularicons">Use circular icons</string>
     <string name="back_title">Back navigation</string>
@@ -286,7 +201,6 @@
     <string name="romanian_translation_title">Romanian</string>
     <string name="vietnamese_translation_title">Vietnamese</string>
     <string name="japanese_translation_title">Japanese</string>
-    <string name="brazilian_portuguese_translation_title">Brazilian portuguese</string>
     <string name="tamil_translation_title">Tamil</string>
 
     <string name="zip_viewer">Zip Viewer</string>
@@ -308,19 +222,12 @@
     <string name="savepaths">Remember paths</string>
     <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
     <string name="select_intent">Select</string>
-    <string name="md5copied">MD5 copied to clipboard</string>
-    <string name="generating">Generating..</string>
-    <string name="tables">Table(s)</string>
     <string name="database">Database</string>
     <string name="colourednavigation">Colored Navigation bar</string>
     <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
 
-    <string name="sd_card_grant_next">sd_card_grant_next</string>
-    <string name="sd_card_grant_first">sd_card_grant_first</string>
-    <string name="fab_skin">FAB skin</string>
     <string name="gplus_pic_title">Sign-in with G+</string>
     <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
-    <string name="icon_credits">Graphics by &lt;a href="http://cookicons.co/">CookIcons&lt;/a></string>
 
     <string name="color_title">Color</string>
     <string name="color_summary">Set color to various UI components</string>
@@ -330,23 +237,13 @@
     <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
     <string name="icon_color_title">Icon Color</string>
     <string name="icon_color_summary">Set color to icons</string>
-    <string name="hide_mode_title">Hide Mode</string>
-    <string name="none">None</string>
-    <string name="hide_toolbar">Hide Toolbar</string>
-    <string name="hide_appbar">Hide whole App bar</string>
     <string name="choose_color">Choose color</string>
     <string name="g_plus_community_title">Join G+ Community</string>
-    <string name="hide_mode_nothing">App bar remains intact</string>
-    <string name="hide_mode_toolbar">Toolbar hides on scroll</string>
-    <string name="hide_mode_app_bar">App bar hides on scroll</string>
     <string name="no_cover_photo">No cover photo</string>
     <string name="files">Files</string>
-    <string name="directories">Directories</string>
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
     <string name="showDividers">Show Dividers</string>
-    <string name="topFab">FAB on App bar</string>
-    <string name="topFabS">Whether + button should be at the top or bottom. Only applicable if app bar doesn\'t hide.</string>
     <string name="needsaccess">Write Access Required</string>
     <string name="needsaccesssummary">Please choose the root directory of \t</string>
     <string name="needsaccesssummary1">\tto grant write access to operate </string>
@@ -365,7 +262,6 @@
     <string name="images">Images</string>
     <string name="clear">Clear</string>
     <string name="md5">MD5</string>
-    <string name="md5_2">Copy md5</string>
     <string name="total">Total:</string>
     <string name="calculating"> calculating </string>
     <string name="sort">Sort</string>
@@ -522,7 +418,6 @@
     <string name="image_iso">ISO Speed Rating</string>
     <string name="flash_fired">Flash Fired</string>
     <string name="focal_length">Focal Length</string>
-    <string name="document">Document</string>
     <string name="subject">Subject</string>
     <string name="author">Author</string>
     <string name="keywords">Keywords</string>
@@ -535,15 +430,11 @@
     <string name="security">Security</string>
     <string name="paper_size">Paper Size</string>
 
-    <string name="root_error">Error starting an interactive root shell</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Some files weren\'t successfully %s</string>
     <string name="copied">copied</string>
     <string name="moved">moved</string>
-    <string name="process_chart_description">Progress</string>
     <string name="copy_complete">Copy Complete</string>
-    <string name="move_complete">Move Complete</string>
     <string name="waiting_title">Waiting</string>
     <string name="waiting_content">Waiting for operation to complete</string>
     <string name="extract_complete">Extraction complete</string>
@@ -560,9 +451,7 @@
     <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
     <string name="error_file_not_found">Error: File Not Found</string>
     <string name="error_io">I/O Error</string>
-    <string name="error_root_not_permitted">Error: Root permission not granted</string>
     <string name="medium_text">Medium Text</string>
-    <string name="tap_and_hold_tips">Tap and hold on a File or Folder for more options</string>
     <string name="permission_read">Read</string>
     <string name="permission_write">Write</string>
     <string name="permission_execute">Execute</string>
@@ -570,7 +459,6 @@
     <string name="permission_group">Group</string>
     <string name="permission_other">Other</string>
     <string name="clipboard_path_copy">Path copied to clipboard</string>
-    <string name="error_busybox">Busybox not found. Closing interactive shell.</string>
     <string name="service_timer">Time Elapsed</string>
     <string name="please_wait">Please Wait</string>
 
@@ -582,13 +470,10 @@
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get Cloud plugin</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
-    <string name="cloud_error_email">E-mail address</string>
-    <string name="cloud_email">E-mail ID</string>
 
     <string name="no_applications">No applications</string>
     <string name="ftp_path">Shared Path</string>
     <string name="ftp_path_hint">Path to the root of directory to share</string>
-    <string name="error_ftp_path_file">Path not a directory</string>
     <string name="change">Change</string>
     <string name="unknown_error">Oops, something went wrong!</string>
 
@@ -642,6 +527,7 @@
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
 
+    <string name="sidebar_preferences">Sidebar</string>
     <string name="sidebarfolders_title">Sidebar shortcuts</string>
     <string name="sidebarquickaccess_title">Sidebar quick access</string>
     <string name="showfolders_pref_title">Show shortcuts</string>
@@ -653,7 +539,6 @@
     <string name="directory">Directory</string>
     <string name="questiondelete_shortcut">Delete shortcut?</string>
 
-    <string name="cloud_error_new_account">Failed to add new account</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
         Please open Amaze Cloud once.</string>
@@ -662,8 +547,6 @@
     <string name="cloud_share_copied">Sharable link copied to clipboard</string>
     <string name="copy_low_memory">Running out of memory, please clear some RAM</string>
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
-    <string name="cloud_plugin_not_supported">Cloud plug-in is not supported for Fdroid build.
-        Please download Amaze from Play Store.</string>
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Show Headers</string>
 	

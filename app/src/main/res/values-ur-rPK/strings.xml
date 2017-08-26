@@ -25,20 +25,14 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">سرخ</string>
-  <string name="blue">نیلا</string>
-  <string name="cyan">سبزی مائل نیلا</string>
-  <string name="green">سبز</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">سائز</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">زرد</string>
-  <string name="version">ورژن</string>
+    <string name="version">ورژن</string>
   <string name="color_title">رنگ</string>
-  <string name="none">کوئی نہیں</string>
-  <string name="information">معلومات</string>
+    <string name="information">معلومات</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->

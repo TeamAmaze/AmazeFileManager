@@ -21,7 +21,6 @@
             >
 
             <ImageView
-                android:id="@+id/image_view_about_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/about_header"
@@ -53,7 +52,6 @@
 
     <!-- content view -->
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
@@ -149,7 +147,6 @@
                             >
 
                             <TextView
-                                android:id="@+id/text_view_changelog_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/changelog"
@@ -184,7 +181,6 @@
                             >
 
                             <TextView
-                                android:id="@+id/text_view_license_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/license"
@@ -592,7 +588,6 @@
                             android:gravity="center_vertical"
                             >
                             <TextView
-                                android:id="@+id/text_view_dev_5_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/rate"

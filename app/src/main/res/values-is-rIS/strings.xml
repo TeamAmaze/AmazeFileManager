@@ -25,20 +25,14 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Rauður</string>
-  <string name="blue">Blár</string>
-  <string name="cyan">Blágrænn</string>
-  <string name="green">Grænn</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Stærð</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Gulur</string>
-  <string name="version">Útgáfa</string>
+    <string name="version">Útgáfa</string>
   <string name="color_title">Litur</string>
-  <string name="none">Engin</string>
-  <string name="information">Upplýsingar</string>
+    <string name="information">Upplýsingar</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->

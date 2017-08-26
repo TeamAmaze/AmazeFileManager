@@ -106,7 +106,6 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/line2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/properties"
