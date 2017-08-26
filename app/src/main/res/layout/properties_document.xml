@@ -51,7 +51,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_type_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_type_title"
@@ -84,7 +83,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_location_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_location_title"
@@ -117,7 +115,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_subject_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_subject_title"
@@ -150,7 +147,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_author_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_author_title"
@@ -183,7 +179,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_keywords_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_keywords_title"
@@ -216,7 +211,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_producer_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_producer_title"
@@ -249,7 +243,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_creator_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_creator_title"
@@ -282,7 +275,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_created_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_created_title"
@@ -315,7 +307,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_modified_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_modified_title"
@@ -348,7 +339,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_format_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_format_title"
@@ -381,7 +371,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_pages_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_pages_title"
@@ -414,7 +403,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_optimized_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_optimized_title"
@@ -447,7 +435,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_security_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_security_title"
@@ -480,7 +467,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_paper_size_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_paper_size_title"
@@ -513,7 +499,6 @@
                     android:textSize="@dimen/material_generic_title"
                     />
                 <TextView
-                    android:id="@+id/text_view_document_size_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_size_title"

@@ -21,13 +21,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="drawer_open">Deschideţi sertarul de navigare</string>
   <string name="drawer_close">Închideţi sertarul de navigare</string>
-  <string name="books">Marcaje</string>
   <string name="icon">pictogramă</string>
-  <string name="efn">Introduceţi numele fişierului</string>
   <string name="storage">Stocare</string>
-  <string name="gallery">Galerie</string>
   <string name="apps">Gestionare aplicaţii</string>
-  <string name="bookmanag">Gestionare marcaje</string>
   <string name="setting">Setări</string>
   <string name="select">Selectaţi elementele</string>
   <string name="pressagain">Apăsați din nou pentru a ieși</string>
@@ -36,52 +32,31 @@
   <string name="play">Magazin Play</string>
   <string name="properties">Proprietăţi</string>
   <string name="copyingapk">Copiere apk în </string>
-  <string name="addbook">Adăugaţi marcaj</string>
   <string name="addtobook">Adăugaţi în marcaje</string>
   <string name="enterpath">Introduceţi calea</string>
   <string name="cancel">ANULAŢI</string>
   <string name="create">CREAŢI</string>
-  <string name="success">Succes</string>
-  <string name="filenotexists">Fişier inexistent</string>
   <string name="loading">Încărcare...</string>
   <string name="file_empty">Fişier gol</string>
   <string name="error">Eroare</string>
-  <string name="cantlistfiles">Nu se pot lista fișierele fără acces root</string>
-  <string name="itemsselected">Elemente selectate</string>
-  <string name="newhomedirectory">Dosar Acasă nou</string>
   <string name="rename">Redenumiţi</string>
   <string name="save">Salvaţi</string>
-  <string name="renameerror">Redenumire nereuşită</string>
-  <string name="renamed">Redenumire reuşită</string>
   <string name="bookmarksadded">Marcaje adăugate</string>
   <string name="fileexist">Un fișier cu același nume există deja </string>
-  <string name="filecreated">Fişier creat</string>
-  <string name="searchpath">Cale de căutare</string>
-  <string name="enterfile">Introduceţi numele fişierului</string>
   <string name="name">Nume: </string>
   <string name="date">Dată: </string>
   <string name="location">Locaţie: </string>
   <string name="size_capitalized">Dimensiune</string>
-  <string name="totalitems">Elemente: </string>
   <string name="enterzipname">Introduceţi numele fişierului Zip</string>
   <string name="noappfound">Nu s-a găsit nicio aplicaţie pentru a deschide acest fișier</string>
   <string name="copying">Copiere</string>
   <string name="moving">Mutare</string>
-  <string name="add">Adăugaţi</string>
-  <string name="tab">Filă</string>
   <string name="file">Fişier</string>
   <string name="folder">Dosar</string>
   <string name="newfolder">Dosar nou</string>
   <string name="entername">Introduceţi numele</string>
   <string name="extracting">Extragere</string>
   <string name="stopping">Oprire</string>
-  <string name="guide1">Bun venit la Amaze File Manager</string>
-  <string name="guide2">Atingeți banda albastră a afișa sau a ascunde Bara de cale</string>
-  <string name="guide3">Atingeți și mențineți orice fișier pentru mai multe opțiuni</string>
-  <string name="guide4">Ca copiere, mutare, proprietăți etc.</string>
-  <string name="guide5">Utilizați butonul Înapoi al dispozitivului pentru a ieși oricând din aplicație...</string>
-  <string name="guide6">..Și utilizaţi butonul săgeată spre stânga pentru navigare în managerul de fișiere</string>
-  <string name="maintab">Fila principală nu poate fi eliminată</string>
   <string name="openparent">Deschideţi dosarul primar</string>
   <string name="openwith">Deschideţi cu</string>
   <string name="share">Distribuiţi</string>
@@ -96,8 +71,6 @@
   <string name="dialog_delete_title">Confirmaţi</string>
   <string name="deleting">Ştergere</string>
   <string name="questionset">Doriţi să setați calea actuală ca Dosar Acasă pentru această filă?</string>
-  <string name="viewmode">Mod vizualizare</string>
-  <string name="uimode">Mod UI</string>
   <string name="directorysort">Mod sortare</string>
   <string name="sortby">Sortare după</string>
   <string name="theme">Temă</string>
@@ -105,46 +78,20 @@
   <string name="random_summary">Setare culoare primară aleatorie la pornire</string>
   <string name="colorize">Colorare pictograme</string>
   <string name="colorize_summary">Setare culoare statică pentru pictograme. Nu se suprascrie preferinţa de culoare pentru pictograma dosarului.</string>
-  <string name="back">Înapoi</string>
   <string name="home">Acasă</string>
   <string name="paste">Lipire</string>
-  <string name="close">Închidere</string>
   <string name="history">Istoric</string>
-  <string name="refresh">Reîmprospătare</string>
   <string name="copy">Copiere</string>
   <string name="rootmodesummary">Doar pentru dispozitive cu acces root. Bifaţi numai dacă sunteți sigur.</string>
-  <string name="mountsystemsummary">Activați această opțiune dacă doriți să editați fișierele de sistem</string>
-  <string name="mountsystem">Montare dosare de sistem pentru scriere</string>
   <string name="rootfailure">Accesul root nu a fost acordat</string>
   <string name="selectall">Selectaţi tot</string>
   <string name="delete">Ştergere</string>
   <string name="setashome">Setaţi ca Acasă</string>
-  <string name="sethome">Setaţi Dosarul Acasă</string>
-  <string name="foldercolor">Culoare dosar</string>
-  <string name="imagegallery">Galerie</string>
-  <string name="changegallerypath">Schimbaţi calea galeriei</string>
-  <string name="usedefaultgallerypath">Utilizaţi calea implicită a Galeriei</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
-  <string name="simple">UI simplu</string>
-  <string name="card">UI card</string>
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Roşu</string>
-  <string name="pink">Roz</string>
-  <string name="purple">Violet</string>
-  <string name="deep_purple">Mov închis</string>
-  <string name="blue">Albastru</string>
-  <string name="light_blue">Albastru deschis</string>
-  <string name="green">Verde</string>
-  <string name="light_green">Verde deschis</string>
-  <string name="amber">Chihlimbar</string>
-  <string name="orange">Portocaliu</string>
-  <string name="deep_orange">Portocaliu închis</string>
-  <string name="brown">Maro</string>
-  <string name="black">Negru</string>
-  <string name="blue_grey">Albastru gri</string>
   <!--DirectorySortMode-->
   <string name="foldersOnTop">Dosarele sus</string>
   <string name="filesOnTop">Fişierele sus</string>
@@ -153,52 +100,32 @@
   <string name="sortName">Nume</string>
   <string name="lastModified">Ultima modificare</string>
   <string name="sortSize">Dimensiune</string>
-  <string name="sortNameDesc">Nume (Desc)</string>
-  <string name="lastModifiedDesc">Ultima modificare (Desc)</string>
-  <string name="sortSizeDesc">Dimensiune (Desc)</string>
   <!--ListMode-->
-  <string name="detailedView">Vizualizare detaliată</string>
-  <string name="simpleView">Vizualizare Simplă</string>
   <!--Folder-->
-  <string name="Yellow">Galben</string>
   <string name="pick_a_file">Selectaţi un fişier</string>
   <string name="process_viewer">Vizualizare proces</string>
   <string name="in_safe">Spaţiu insuficient</string>
   <string name="no_file_overwrite">Nu s-a suprascris fişierul</string>
   <string name="skip">Omiteţi</string>
   <string name="overwrite">Suprascriere</string>
-  <string name="cant_read_file">Nu se poate citi fişierul</string>
   <string name="not_allowed">Nu este permis</string>
-  <string name="processes">Procesat</string>
-  <string name="copying_fles">Copiere fişiere</string>
   <string name="done">Finalizat</string>
-  <string name="Extracting_fles">Extragere fişiere</string>
   <string name="set">Setare</string>
   <string name="enablerootmde">Activaţi modul Root</string>
   <string name="goback">Înapoi</string>
-  <string name="foldercreated">Dosar creat</string>
   <string name="newfile">Fişier nou</string>
   <string name="nofiles">Niciun fişier</string>
-  <string name="tapnhold">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
-  <string name="pathcopied">Cale copiată în clipboard</string>
-  <string name="atroot">Sunteți în root</string>
   <string name="listview">Listă</string>
   <string name="gridview">Grilă</string>
-  <string name="setlistview">Setare listă</string>
-  <string name="setgridview">Setare grilă</string>
   <string name="permission">Permisiuni</string>
   <string name="hide">Ascundeţi</string>
   <string name="exit">Ieşire</string>
-  <string name="enternewname">Introduceţi numele nou</string>
   <string name="doforall">Se execută pentru toate elementele</string>
   <string name="gridcolumnno">Numărul de coloane din grilă</string>
-  <string name="randomDialog">Aleator</string>
   <string name="setRandom">Modificările vor intra în vigoare după repornirea aplicației</string>
   <string name="authors">Autori</string>
   <string name="changelog">Istoric modificări</string>
-  <string name="fullChangelog">Istoric deplin al modificărilor</string>
   <string name="ok">OK</string>
-  <string name="chooseUI">Selectaţi elementul UI</string>
   <string name="ui">Interfaţă</string>
   <string name="thumbSummary">Se afişează miniaturile aplicațiilor și imaginilor</string>
   <string name="thumb">Afişare miniaturi</string>
@@ -217,10 +144,6 @@
   <string name="feedback">Trimiteţi Feedback</string>
   <string name="hiddenfiles">Fişiere ascunse</string>
   <string name="type">Tip</string>
-  <string name="typeDesc">Tip (Desc)</string>
-  <string name="new_string">Nou</string>
-  <string name="setringtone">Setaţi ca ton de apel</string>
-  <string name="copy_path">Copiaţi calea</string>
   <string name="addshortcut">Adăugaţi o comandă rapidă</string>
   <string name="unsavedchanges">Modificări nesalvate</string>
   <string name="unsavedchangesdesc">Aveți modificări nesalvate, doriţi să le salvați înainte de a ieși?</string>
@@ -233,7 +156,6 @@
   <string name="pitext">Acesta este un pachet de instalare. Ce doriţi să faceţi?</string>
   <string name="xda_title">XDA</string>
   <string name="xda_summary">Î. şi R., Ajutor şi Depanare</string>
-  <string name="invalid_dir">Dosar nevalid</string>
   <string name="circularimages">Utilizați pictograme circulare pentru imagini și videoclipuri</string>
   <string name="circularicons">Utilizați pictograme circulare</string>
   <string name="back_title">Înapoi</string>
@@ -273,16 +195,11 @@
   <string name="savepaths">Memorizare căi</string>
   <string name="savepathsummary">La pornire, dosarul cel mai recent văzut pentru fiecare filă va fi afișat</string>
   <string name="select_intent">Selectaţi</string>
-  <string name="md5copied">MD5 copiat în clipboard</string>
-  <string name="generating">Generare...</string>
-  <string name="tables">Tabele</string>
   <string name="database">Bază de date</string>
   <string name="colourednavigation">Bară de navigare colorată</string>
   <string name="colourednavigationsum">Colorarea sau nu a barei de navigare de sistem împreună cu skin-ul</string>
-  <string name="fab_skin">Skin FAB</string>
   <string name="gplus_pic_title">Conectare cu G+</string>
   <string name="gplus_pic_summary">Se afişează imaginea de copertă G+ în sertar</string>
-  <string name="icon_credits">Grafică de &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
   <string name="color_title">Culoare</string>
   <string name="color_summary">Setaţi culoarea diferitelor componente UI</string>
   <string name="primary_color_title">Culoare primară</string>
@@ -291,23 +208,13 @@
   <string name="accent_color_summary">Setaţi culoarea FAB şi a altor elemente UI mici</string>
   <string name="icon_color_title">Culoarea pictogramelor</string>
   <string name="icon_color_summary">Setaţi culoarea pictogramelor</string>
-  <string name="hide_mode_title">Mod ascundere</string>
-  <string name="none">Nimic</string>
-  <string name="hide_toolbar">Se ascunde bara de instrumente</string>
-  <string name="hide_appbar">Se ascunde toată bara aplicaţiei</string>
   <string name="choose_color">Selectaţi culoarea</string>
   <string name="g_plus_community_title">Comunitatea G+</string>
-  <string name="hide_mode_nothing">Bara aplicaţiei rămâne intactă</string>
-  <string name="hide_mode_toolbar">Bara de instrumente se ascunde la derulare</string>
-  <string name="hide_mode_app_bar">Bara aplicaţiei se ascunde la derulare</string>
   <string name="no_cover_photo">Nici o fotografie de copertă</string>
   <string name="files">Fişiere</string>
-  <string name="directories">Dosare</string>
   <string name="textreader">Reader text</string>
   <string name="databasereader">Reader baze de date</string>
   <string name="showDividers">Afişare divizoare</string>
-  <string name="topFab">FAB pe bara aplicaţiei</string>
-  <string name="topFabS">Dacă butonul + ar trebui să fie în partea de sus sau de jos. Aplicabil numai în cazul în care bara aplicaţiei nu se ascunde.</string>
   <string name="needsaccess">Acces pentru scriere necesar</string>
   <string name="needsaccesssummary">Selectaţi dosarul rădăcină pentru \t</string>
   <string name="needsaccesssummary1">\tpt. a acorda acces de scriere pentru a funcționa </string>
@@ -323,7 +230,6 @@
   <string name="documents">Documente</string>
   <string name="images">Imagini</string>
   <string name="clear">Ştergeţi</string>
-  <string name="md5_2">Copiere md5</string>
   <string name="calculating"> calculare </string>
   <string name="sort">Sortare</string>
   <string name="ascending">Ascendent</string>
@@ -367,7 +273,6 @@
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->
-  <string name="tap_and_hold_tips">Apăsați și țineți apăsat pe un fișier sau un dosar pentru mai multe opțiuni</string>
   <string name="permission_read">Citește</string>
   <string name="clipboard_path_copy">Cale copiată în clipboard</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->

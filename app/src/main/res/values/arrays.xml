@@ -22,17 +22,6 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string-array name="uimode">
-        <item>@string/simple</item>
-        <item>@string/card</item>
-
-    </string-array>
-    <string-array name="hidemode">
-        <item>@string/none</item>
-        <item>@string/hide_toolbar</item>
-        <item>@string/hide_appbar</item>
-
-    </string-array>
 
     <string-array name="theme">
         <item>@string/light</item>
@@ -65,36 +54,6 @@
         <item>@string/sortName</item>
         <item>@string/lastModified</item>
         <item>@string/sortSize</item>
-    </string-array>
-
-    <string-array name="ints2">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-    </string-array>
-    <string-array name="ints1">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    <string-array name="listmode">
-        <item>@string/detailedView</item>
-        <item>@string/simpleView</item>
-    </string-array>
-    <string-array name="folder">
-        <item>@string/orange</item>
-        <item>@string/Yellow</item>
-        <item>@string/blue</item>
-    </string-array>
-
-    <string-array name="ints">
-        <item>0</item>
-        <item>1</item>
     </string-array>
 
 </resources>

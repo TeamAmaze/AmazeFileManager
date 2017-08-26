@@ -28,40 +28,32 @@
   <string name="no">Nei</string>
   <string name="dialog_delete_title">Bekreft</string>
   <string name="home">Hjem</string>
-  <string name="close">Lukk</string>
-  <string name="history">Logg</string>
-  <string name="refresh">Oppdater</string>
-  <string name="delete">Slett</string>
+    <string name="history">Logg</string>
+    <string name="delete">Slett</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Rød</string>
-  <string name="blue">Blå</string>
-  <string name="green">Grønn</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Størrelse</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Gul</string>
-  <string name="skip">Hopp over</string>
+    <string name="skip">Hopp over</string>
   <string name="done">Ferdig</string>
   <string name="exit">Lukk</string>
   <string name="changelog">Endringslogg</string>
   <string name="ok">OK</string>
   <string name="version">Versjon</string>
-  <string name="new_string">Ny</string>
-  <string name="install">Installer</string>
+    <string name="install">Installer</string>
   <string name="details">Detaljer</string>
   <string name="warning">Advarsel</string>
   <string name="donate">Donere</string>
   <string name="text">Tekst</string>
   <string name="other">Annet</string>
   <string name="color_title">Farge</string>
-  <string name="none">Ingen</string>
-  <string name="password">Passord</string>
+    <string name="password">Passord</string>
   <string name="defualt">Standard</string>
   <string name="path">Bane</string>
   <string name="information">Informasjon</string>
@@ -73,8 +65,7 @@
   <string name="height">Høyde</string>
   <string name="exposure_time">Eksponeringstid</string>
   <string name="focal_length">Brennvidde</string>
-  <string name="document">Dokument</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

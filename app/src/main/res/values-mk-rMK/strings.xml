@@ -25,20 +25,14 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Црвена</string>
-  <string name="blue">Сина</string>
-  <string name="cyan">Цијан</string>
-  <string name="green">Зелена</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Големина</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Жолта</string>
-  <string name="version">Верзија</string>
+    <string name="version">Верзија</string>
   <string name="color_title">Боја</string>
-  <string name="none">Нема</string>
-  <string name="information">Информации</string>
+    <string name="information">Информации</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->

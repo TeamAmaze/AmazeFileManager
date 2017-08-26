@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">წითელი</string>
-  <string name="blue">ლურჯი</string>
-  <string name="cyan">ციანი</string>
-  <string name="green">მწვანე</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">ზომა</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">ყვითელი</string>
-  <string name="version">ვერსია</string>
+    <string name="version">ვერსია</string>
   <string name="details">დეტალები</string>
   <string name="color_title">ფერი</string>
-  <string name="none">არც ერთი</string>
-  <string name="path">მდებარეობა</string>
+    <string name="path">მდებარეობა</string>
   <string name="information">ინფორმაცია</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

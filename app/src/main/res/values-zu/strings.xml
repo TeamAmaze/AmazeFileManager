@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Okubomvu</string>
-  <string name="blue">Okuluhlaza okwesibhakabhaka</string>
-  <string name="cyan">I-Cyan</string>
-  <string name="green">Okuluhlaza okotshani</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Usayizi</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Okuliphuzi</string>
-  <string name="version">Inguqulo</string>
+    <string name="version">Inguqulo</string>
   <string name="details">Imininingwane</string>
   <string name="color_title">Umbala</string>
-  <string name="none">Akunalutho</string>
-  <string name="path">Indlela</string>
+    <string name="path">Indlela</string>
   <string name="information">Ulwazi</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

@@ -26,23 +26,17 @@
   <string name="no">না</string>
   <string name="dialog_delete_title">নিশ্চিত করুন</string>
   <string name="history">ইতিহাস</string>
-  <string name="refresh">রিফ্রেশ</string>
-  <!-- New -->
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">লাল</string>
-  <string name="blue">নীল</string>
-  <string name="cyan">সবজে নীল</string>
-  <string name="green">সবুজ</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">আকার</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">হলুদ</string>
-  <string name="skip">Skip</string>
+    <string name="skip">Skip</string>
   <string name="done">সম্পন্ন হয়েছে</string>
   <string name="exit">প্রস্থান</string>
   <string name="changelog">Changelog</string>
@@ -52,8 +46,7 @@
   <string name="donate">দান করুন</string>
   <string name="other">অন্যান্য</string>
   <string name="color_title">রঙ</string>
-  <string name="none">কোনো কিছুই নয়</string>
-  <string name="password">পাসওয়ার্ড</string>
+    <string name="password">পাসওয়ার্ড</string>
   <string name="defualt">Default</string>
   <string name="edit">Edit</string>
   <string name="start_ftp">Start</string>

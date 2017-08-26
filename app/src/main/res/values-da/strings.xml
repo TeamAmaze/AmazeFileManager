@@ -32,31 +32,24 @@
   <string name="no">Nej</string>
   <string name="dialog_delete_title">Bekræft</string>
   <string name="home">Hjemme</string>
-  <string name="close">Luk</string>
-  <string name="history">Historik</string>
-  <string name="refresh">Opfrisk</string>
-  <string name="delete">Slet</string>
+    <string name="history">Historik</string>
+    <string name="delete">Slet</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Rød</string>
-  <string name="blue">Blå</string>
-  <string name="green">Grøn</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Størrelse</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Gul</string>
-  <string name="skip">Spring over</string>
+    <string name="skip">Spring over</string>
   <string name="done">Udført</string>
   <string name="exit">Afslut</string>
   <string name="changelog">Ændringsoversigt</string>
   <string name="ok">OK</string>
-  <string name="new_string">Ny</string>
-  <string name="install">Installér</string>
+    <string name="install">Installér</string>
   <string name="archive">Arkiv</string>
   <string name="details">Detaljer</string>
   <string name="warning">Advarsel</string>
@@ -64,8 +57,7 @@
   <string name="text">Tekst</string>
   <string name="other">Andet</string>
   <string name="color_title">Farve</string>
-  <string name="none">Ingen</string>
-  <string name="password">Adgangskode</string>
+    <string name="password">Adgangskode</string>
   <string name="bluetooth">Bluetooth</string>
   <string name="defualt">Standard</string>
   <string name="edit">Redigér</string>
@@ -80,8 +72,7 @@
   <string name="height">Højde</string>
   <string name="exposure_time">Eksponeringstid</string>
   <string name="focal_length">Fokuslængde</string>
-  <string name="document">Dokument</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

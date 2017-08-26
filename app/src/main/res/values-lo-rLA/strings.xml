@@ -30,20 +30,14 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">ແດງ</string>
-  <string name="blue">ຟ້າ</string>
-  <string name="cyan">ຟ້າຂຽວ</string>
-  <string name="green">ຂຽວ</string>
   <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">ຂະໜາດ</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">ເຫຼືອງ</string>
   <string name="version">ເວີຊັນ</string>
   <string name="details">ລາຍລະອຽດ</string>
   <string name="color_title">ສີ</string>
-  <string name="none">ບໍ່ໃຊ້</string>
   <string name="path">ເສັ້ນທາງ</string>
   <string name="information">ຂໍ້​ມູນ​ຂ່າວ​ສານ</string>
   <!-- reference to file accessed date -->

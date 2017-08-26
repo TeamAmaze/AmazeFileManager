@@ -33,24 +33,18 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Rooi</string>
-  <string name="blue">Blou</string>
-  <string name="cyan">Groen-blou</string>
-  <string name="green">Groen</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Grootte</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Geel</string>
-  <string name="skip">Slaan oor</string>
+    <string name="skip">Slaan oor</string>
   <string name="version">Weergawe</string>
   <string name="details">Besonderhede</string>
   <string name="warning">Waarskuwing</string>
   <string name="text">Teks</string>
   <string name="color_title">Kleur</string>
-  <string name="none">Geen</string>
-  <string name="password">Wagwoord</string>
+    <string name="password">Wagwoord</string>
   <string name="path">Pad</string>
   <string name="start_ftp">Begin</string>
   <string name="information">Inligting</string>
@@ -62,8 +56,7 @@
   <string name="height">Hoogte</string>
   <string name="exposure_time">Beligtingstyd</string>
   <string name="focal_length">Fokuslengte</string>
-  <string name="document">Dokument</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

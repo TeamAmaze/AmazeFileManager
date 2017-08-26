@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">රතු</string>
-  <string name="blue">නිල්</string>
-  <string name="cyan">මයුර නිල්</string>
-  <string name="green">කොළ</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">ප්‍රමාණය</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">කහ</string>
-  <string name="version">අනුවාදය</string>
+    <string name="version">අනුවාදය</string>
   <string name="details">විස්තර</string>
   <string name="color_title">වර්ණය</string>
-  <string name="none">කිසිවක් නැත</string>
-  <string name="password">මුරපදය</string>
+    <string name="password">මුරපදය</string>
   <string name="path">මග</string>
   <string name="information">තොරතුරු</string>
   <!-- reference to file accessed date -->

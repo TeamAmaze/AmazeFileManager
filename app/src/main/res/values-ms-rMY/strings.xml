@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Merah</string>
-  <string name="blue">Biru</string>
-  <string name="cyan">Biru kehijauan</string>
-  <string name="green">Hijau</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Saiz</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Kuning</string>
-  <string name="version">Versi</string>
+    <string name="version">Versi</string>
   <string name="details">Butiran</string>
   <string name="color_title">Warna</string>
-  <string name="none">Tiada</string>
-  <string name="path">Laluan</string>
+    <string name="path">Laluan</string>
   <string name="information">Maklumat</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

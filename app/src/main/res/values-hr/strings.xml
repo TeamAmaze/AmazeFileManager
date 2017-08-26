@@ -30,22 +30,16 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Crvena</string>
-  <string name="blue">Plava</string>
-  <string name="cyan">Cijan</string>
-  <string name="green">Zelena</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Veličina</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Žuta</string>
-  <string name="version">Verzija</string>
+    <string name="version">Verzija</string>
   <string name="details">Pojedinosti</string>
   <string name="text">Tekst</string>
   <string name="color_title">Boja</string>
-  <string name="none">Ništa</string>
-  <string name="password">Lozinka</string>
+    <string name="password">Lozinka</string>
   <string name="path">Putanja</string>
   <string name="information">Informacije</string>
   <!-- reference to file accessed date -->
@@ -56,8 +50,7 @@
   <string name="height">Visina</string>
   <string name="exposure_time">Vrijeme ekspozicije</string>
   <string name="focal_length">Žarišna duljina</string>
-  <string name="document">Dokument</string>
-  <!-- reference to a document file -->
+    <!-- reference to a document file -->
   <!-- %s will be replaced with either copied or moved -->
   <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
   <!-- reference to - 'Processing file # of #' in process viewer -->

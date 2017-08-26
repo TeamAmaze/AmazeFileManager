@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Улаан</string>
-  <string name="blue">Цэнхэр</string>
-  <string name="cyan">Шар хөх</string>
-  <string name="green">Ногоон</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Хэмжээ</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Шар</string>
-  <string name="version">Хувилбар</string>
+    <string name="version">Хувилбар</string>
   <string name="details">Дэлгэрэнгүй</string>
   <string name="color_title">Өнгө</string>
-  <string name="none">Байхгүй</string>
-  <string name="path">Зам</string>
+    <string name="path">Зам</string>
   <string name="information">Мэдээлэл</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

@@ -22,15 +22,11 @@
   <string name="app_name">Amaze</string>
   <string name="drawer_open">Apri pannello di navigazione</string>
   <string name="drawer_close">Chiudi pannello di navigazione</string>
-  <string name="books">Segnalibri</string>
-  <string name="icon">icona</string>
-  <string name="efn">Inserisci nome file</string>
-  <string name="storage">Archiviazione</string>
-  <string name="gallery">Galleria</string>
-  <string name="apps">Gestione app</string>
+    <string name="icon">icona</string>
+    <string name="storage">Archiviazione</string>
+    <string name="apps">Gestione app</string>
   <string name="ftp">Server FTP</string>
-  <string name="bookmanag">Gestione segnalibri</string>
-  <string name="setting">Impostazioni</string>
+    <string name="setting">Impostazioni</string>
   <string name="select">Seleziona elemento</string>
   <string name="pressagain">Premi di nuovo per uscire</string>
   <string name="open">Apri</string>
@@ -39,61 +35,34 @@
   <string name="play">Play Store</string>
   <string name="properties">Proprietà</string>
   <string name="copyingapk">Copia APK in corso in</string>
-  <string name="addbook">Aggiungi segnalibro</string>
-  <string name="delbook">Elimina Preferito</string>
+    <string name="delbook">Elimina Preferito</string>
   <string name="addtobook">Aggiungi a segnalibro</string>
   <string name="enterpath">Inserisci percorso</string>
   <string name="cancel">ANNULLA</string>
   <string name="create">CREA</string>
-  <string name="success">Completato con successo</string>
-  <string name="filenotexists">Il file non esiste</string>
-  <string name="loading">Caricamento in corso&#8230;</string>
+    <string name="loading">Caricamento in corso&#8230;</string>
   <string name="file_empty">Il file è vuoto</string>
   <string name="error">Errore</string>
-  <string name="cantlistfiles">Non è possibile elencare i file senza il percorso root</string>
-  <string name="itemsselected">Elementi selezionati</string>
-  <string name="newhomedirectory">Nuova home directory</string>
-  <string name="rename">Rinomina</string>
+    <string name="rename">Rinomina</string>
   <string name="save">Salva</string>
-  <string name="renameerror">Rinominazione non riuscita</string>
-  <string name="renamed">Rinominazione riuscita</string>
-  <string name="bookmarksadded">Segnalibri aggiunti</string>
+    <string name="bookmarksadded">Segnalibri aggiunti</string>
   <string name="fileexist">Un file con quel nome esiste già</string>
-  <string name="filecreated">File creato</string>
-  <string name="searchpath">Cerca percorso</string>
-  <string name="enterfile">Nome file</string>
-  <string name="name">Nome</string>
+    <string name="name">Nome</string>
   <string name="date">Data</string>
   <string name="location">Percorso</string>
   <string name="size_capitalized">Dimensioni</string>
   <string name="size">dimensione della Cartella</string>
-  <string name="totalitems">Elementi totali</string>
-  <string name="enterzipname">Inserisci nome file ZIP</string>
+    <string name="enterzipname">Inserisci nome file ZIP</string>
   <string name="noappfound">Nessuna app trovata per aprire questo file</string>
   <string name="copying">Copia in corso</string>
   <string name="moving">Spostamento in corso</string>
-  <string name="add">Aggiungi</string>
-  <string name="tab">Scheda</string>
-  <string name="file">File</string>
+    <string name="file">File</string>
   <string name="folder">Cartella</string>
   <string name="newfolder">Nuova cartella</string>
   <string name="entername">Inserisci nome</string>
   <string name="extracting">Estrazione</string>
   <string name="stopping">Interruzione</string>
-  <string name="guide1">Benvenuto in Amaze File Manager</string>
-  <string name="guide2">
-Tocca la striscia blu per mostrare o nascondere la barra del percorso
-</string>
-  <string name="guide3">
-Tocca e tieni premuto qualsiasi file per ulteriori opzioni
-</string>
-  <string name="guide4">Come copia, spostamento, proprietà, eccetera</string>
-  <string name="guide5">Utilizza il pulsante Indietro del tuo dispositivo per uscire dall\'app in qualunque momento&#8230;</string>
-  <string name="guide6">
-...e la freccia sinistra per la navigazione nel file manager
-</string>
-  <string name="maintab">La scheda principale non può essere rimossa</string>
-  <string name="openparent">Apri cartella superiore</string>
+    <string name="openparent">Apri cartella superiore</string>
   <string name="openwith">Apri con</string>
   <string name="share">Condividi</string>
   <string name="about">Info</string>
@@ -107,67 +76,32 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="dialog_delete_title">Conferma</string>
   <string name="deleting">Eliminazione</string>
   <string name="questionset">Vuoi impostare il percorso corrente come home per questa scheda?</string>
-  <string name="viewmode">Modalità visualizzazione</string>
-  <string name="uimode">Modalità interfaccia utente</string>
-  <string name="directorysort">Modalità ordinamento cartelle</string>
+    <string name="directorysort">Modalità ordinamento cartelle</string>
   <string name="sortby">Ordina per</string>
   <string name="theme">Tema</string>
-  <string name="skin">Aspetto</string>
-  <string name="random">Skin casuale</string>
+    <string name="random">Skin casuale</string>
   <string name="random_summary">Imposta colore primario casuale all\'avvio</string>
   <string name="colorize">Colora icone</string>
   <string name="colorize_summary">Imposta il colore delle icone statiche. Quest\'impostazione non prevale sulla preferenza relativa al colore delle icone delle cartelle.</string>
-  <string name="back">Indietro</string>
-  <string name="home">Casa</string>
+    <string name="home">Casa</string>
   <string name="paste">Incolla</string>
-  <string name="close">Chiudi</string>
-  <string name="history">Cronologia</string>
-  <string name="refresh">Aggiorna</string>
-  <string name="copy">Copia</string>
+    <string name="history">Cronologia</string>
+    <string name="copy">Copia</string>
   <string name="rootmode">Sfoglia root</string>
   <string name="rootmodesummary">Solo per dispositivi con root. Abilita quest\'opzione solo se sai quello che stai facendo.</string>
-  <string name="mountsystemsummary">Abilita se vuoi modificare i file di sistema</string>
-  <string name="mountsystem">Monta le cartelle di sistema come scrivibili</string>
-  <string name="rootfailure">Accesso root non abilitato</string>
-  <string name="hiddenfailure">Non è possibile accedere ai file nascosti</string>
-  <string name="selectall">Seleziona tutto</string>
+    <string name="rootfailure">Accesso root non abilitato</string>
+    <string name="selectall">Seleziona tutto</string>
   <string name="delete">Elimina</string>
   <string name="setashome">Imposta come home</string>
-  <string name="sethome">Imposta cartella principale</string>
-  <string name="foldercolor">Colore cartella</string>
-  <string name="imagegallery">Galleria immagini</string>
-  <string name="fileexplorer">Sfoglia file</string>
-  <string name="changegallerypath">Cambia percorso galleria</string>
-  <string name="usedefaultgallerypath">Usa percorso galleria predefinito</string>
-  <!-- New -->
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
-  <string name="simple">Interfaccia utente di base</string>
-  <string name="card">Interfaccia utente a schede</string>
-  <!-- Theme -->
+    <!-- Theme -->
   <string name="light">Material (chiaro)</string>
   <string name="dark">Material (scuro)</string>
   <string name="daytime">Luce del giorno</string>
   <!--Skin-->
-  <string name="red">Rosso</string>
-  <string name="pink">Rosa</string>
-  <string name="purple">Viola</string>
-  <string name="deep_purple">Viola scuro</string>
-  <string name="indigo">Indaco</string>
-  <string name="blue">Blu</string>
-  <string name="light_blue">Azzurro</string>
-  <string name="cyan">Ciano</string>
-  <string name="teal">Celeste</string>
-  <string name="green">Verde</string>
-  <string name="light_green">Verde chiaro</string>
-  <string name="amber">Ambra</string>
-  <string name="orange">Arancione</string>
-  <string name="deep_orange">Arancione scuro</string>
-  <string name="brown">Marrone</string>
-  <string name="black">Nero</string>
-  <string name="blue_grey">Blu grigio</string>
-  <string name="supersu">SuperSU</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <string name="foldersOnTop">Prima le cartelle</string>
   <string name="filesOnTop">Prima i file</string>
   <string name="noneOnTop">Non mettere nulla per primo</string>
@@ -175,60 +109,38 @@ Tocca e tieni premuto qualsiasi file per ulteriori opzioni
   <string name="sortName">Nome</string>
   <string name="lastModified">Ultima modifica</string>
   <string name="sortSize">Dimensioni</string>
-  <string name="sortNameDesc">Nome (decrescente)</string>
-  <string name="lastModifiedDesc">Ultima modifica (decrescente)</string>
-  <string name="sortSizeDesc">Dimensioni (decrescente)</string>
-  <!--ListMode-->
-  <string name="detailedView">Vista dettagliata</string>
-  <string name="simpleView">Vista semplice</string>
-  <!--Folder-->
-  <string name="Yellow">Giallo</string>
-  <string name="pick_a_file">Seleziona un file</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">Seleziona un file</string>
   <string name="process_viewer">Visualizza processi</string>
   <string name="in_safe">Spazio insufficiente</string>
   <string name="no_file_overwrite">Nessuna sovrascrittura</string>
   <string name="skip">Salta</string>
   <string name="overwrite">Sovrascrivi</string>
-  <string name="cant_read_file">Impossibile leggere il file</string>
-  <string name="not_allowed">Non permesso</string>
-  <string name="processes">Processi</string>
-  <string name="copying_fles">Copia file in corso</string>
-  <string name="done">Fatto</string>
-  <string name="Extracting_fles">Estrazione file in corso</string>
-  <string name="set">Imposta</string>
+    <string name="not_allowed">Non permesso</string>
+    <string name="done">Fatto</string>
+    <string name="set">Imposta</string>
   <string name="enablerootmde">Abilità modalità root</string>
   <string name="goback">Indietro</string>
-  <string name="foldercreated">Cartella creata</string>
-  <string name="newfile">Nuovo file</string>
+    <string name="newfile">Nuovo file</string>
   <string name="nofiles">Nessun file</string>
-  <string name="tapnhold">
-Tieni premuto un file od una cartella per altre opzioni
-</string>
-  <string name="pathcopied">Percorso copiato</string>
-  <string name="used">spazio utilizzato</string>
+    <string name="used">spazio utilizzato</string>
   <string name="used_by_others">utilizzato da altri utenti</string>
   <string name="free">spazio libero</string>
-  <string name="atroot">Sei alla root</string>
-  <string name="listview">Visualizzazione lista</string>
+    <string name="listview">Visualizzazione lista</string>
   <string name="gridview">Visualizzazione griglia</string>
-  <string name="setlistview">Impostazioni lista</string>
-  <string name="setgridview">Impostazioni griglia</string>
-  <string name="permission">Permessi</string>
+    <string name="permission">Permessi</string>
   <string name="hide">Nascondi</string>
   <string name="exit">Esci</string>
-  <string name="enternewname">Inserisci nuovo nome</string>
-  <string name="doforall">Per tutti gli elementi</string>
+    <string name="doforall">Per tutti gli elementi</string>
   <string name="gridcolumnno">Numero di colonne nella vista griglia</string>
-  <string name="randomDialog">Casuale</string>
-  <string name="setRandom">
+    <string name="setRandom">
 I cambiamenti saranno effettivi dopo il riavvio dell\'app
 </string>
   <string name="authors">Autori</string>
   <string name="changelog">Cronologia modifiche</string>
-  <string name="fullChangelog">Cronologia modifiche completa</string>
-  <string name="ok">OK</string>
-  <string name="chooseUI">Seleziona interfaccia utente elemento</string>
-  <string name="ui">Interfaccia</string>
+    <string name="ok">OK</string>
+    <string name="ui">Interfaccia</string>
   <string name="general">Generale</string>
   <string name="thumbSummary">Mostra anteprime di app ed immagini</string>
   <string name="thumb">Mostra anteprime</string>
@@ -247,12 +159,8 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="feedback">Invia feedback</string>
   <string name="hiddenfiles">File nascosti</string>
   <string name="type">Tipo</string>
-  <string name="typeDesc">Tipo (decrescente)</string>
-  <string name="rootdirectory">Root</string>
-  <string name="new_string">Nuova</string>
-  <string name="setringtone">Imposta come suoneria</string>
-  <string name="copy_path">Copia percorso</string>
-  <string name="addshortcut">Aggiungi collegamento</string>
+    <string name="rootdirectory">Root</string>
+    <string name="addshortcut">Aggiungi collegamento</string>
   <string name="unsavedchanges">Modifiche non salvate</string>
   <string name="unsavedchangesdesc">Hai delle modifiche non salvate, vuoi salvarle prima di uscire?</string>
   <string name="saving">Salvataggio in corso</string>
@@ -264,8 +172,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="pitext">Questo è un package installer. Quale operazione vorresti effettuare?</string>
   <string name="xda_title">Thread XDA</string>
   <string name="xda_summary">Q&amp;A, aiuto e risoluzione problemi</string>
-  <string name="invalid_dir">Cartella non valida</string>
-  <string name="circularimages">Usa icone circolari per immagini e video</string>
+    <string name="circularimages">Usa icone circolari per immagini e video</string>
   <string name="circularicons">Usa icone circolari</string>
   <string name="back_title">Naviga indietro</string>
   <string name="back_summary">Abilita navigazione personalizzata in cima alle liste</string>
@@ -289,8 +196,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="romanian_translation_title">Rumeno</string>
   <string name="vietnamese_translation_title">Vietnamita</string>
   <string name="japanese_translation_title">Giapponese</string>
-  <string name="brazilian_portuguese_translation_title">Portoghese brasiliano</string>
-  <string name="tamil_translation_title">Tamil</string>
+    <string name="tamil_translation_title">Tamil</string>
   <string name="zip_viewer">Visualizzatore file ZIP</string>
   <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.\\nProcedere?</string>
   <string name="warning">Attenzione</string>
@@ -310,19 +216,12 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="savepaths">Ricorda percorsi</string>
   <string name="savepathsummary">All\'avvio sarà mostrata la cartella vista più di recente per ogni scheda</string>
   <string name="select_intent">Seleziona</string>
-  <string name="md5copied">MD5 copiato negli Appunti</string>
-  <string name="generating">Generazione in corso...</string>
-  <string name="tables">Tabella/e</string>
-  <string name="database">Database</string>
+    <string name="database">Database</string>
   <string name="colourednavigation">Barra di navigazione colorata</string>
   <string name="colourednavigationsum">Specifica se la barra di navigazione di sistema sarà colorata o meno insieme alla ski</string>
-  <string name="sd_card_grant_next">sd_card_grant_next</string>
-  <string name="sd_card_grant_first">sd_card_grant_first</string>
-  <string name="fab_skin">Aspetto bottone</string>
-  <string name="gplus_pic_title">Accedi con Google+</string>
+    <string name="gplus_pic_title">Accedi con Google+</string>
   <string name="gplus_pic_summary">Mostra immagine di copertina G+ nel pannello di navigazione</string>
-  <string name="icon_credits">Grafica di &lt;a href=\"http://cookicons.co/\"&gt;CookIcons&lt;/a&gt;</string>
-  <string name="color_title">Colori</string>
+    <string name="color_title">Colori</string>
   <string name="color_summary">Imposta i colori dei vari componenti dell\'interfaccia utente</string>
   <string name="primary_color_title">Colore primario (scheda di sinistra)</string>
   <string name="primary_color_summary">Imposta il colore degli elementi grandi dell\'interfaccia utente per la scheda di sinistra</string>
@@ -330,24 +229,14 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="accent_color_summary">Imposta il colore dei componenti più piccoli</string>
   <string name="icon_color_title">Colore icone</string>
   <string name="icon_color_summary">Imposta il colore delle icone</string>
-  <string name="hide_mode_title">Modalità Nascondi</string>
-  <string name="none">Nulla</string>
-  <string name="hide_toolbar">Nascondi barra degli strumenti</string>
-  <string name="hide_appbar">Nascondi l\'intera barra dell\'app</string>
-  <string name="choose_color">Scegli colore</string>
+    <string name="choose_color">Scegli colore</string>
   <string name="g_plus_community_title">Unisciti alla community G+</string>
-  <string name="hide_mode_nothing">La barra dell\'app rimane intatta</string>
-  <string name="hide_mode_toolbar">La barra degli strumenti viene nascosta durante lo scorrimento</string>
-  <string name="hide_mode_app_bar">La barra dell\'app viene nascosta durante lo scorrimento</string>
-  <string name="no_cover_photo">Nessuna immagine di copertina</string>
+    <string name="no_cover_photo">Nessuna immagine di copertina</string>
   <string name="files">File</string>
-  <string name="directories">Cartelle</string>
-  <string name="textreader">Visualizzatore testo</string>
+    <string name="textreader">Visualizzatore testo</string>
   <string name="databasereader">Visualizzatore database</string>
   <string name="showDividers">Mostra divisori</string>
-  <string name="topFab">Bottone sulla barra dell\'app</string>
-  <string name="topFabS">Specifica se il pulsante + dev\'essere collocato in alto o in basso. Applicabile solo se la barra dell\'app non è nascosta.</string>
-  <string name="needsaccess">Permessi di scrittura richiesti</string>
+    <string name="needsaccess">Permessi di scrittura richiesti</string>
   <string name="needsaccesssummary">Seleziona la cartella root di \t</string>
   <string name="needsaccesssummary1">\tper permettere la scrittura</string>
   <string name="smb_con">Connessione SMB</string>
@@ -364,8 +253,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="images">Immagini</string>
   <string name="clear">Pulisci</string>
   <string name="md5">md5:</string>
-  <string name="md5_2">Copia md5</string>
-  <string name="total">Totale:</string>
+    <string name="total">Totale:</string>
   <string name="calculating">calcolo in corso</string>
   <string name="sort">Ordina</string>
   <string name="ascending">Crescente</string>
@@ -472,8 +360,7 @@ relative allo sviluppo</string>
   <string name="image_iso">Classificazione velocità ISO</string>
   <string name="flash_fired">Flash utilizzato</string>
   <string name="focal_length">Lunghezza focale</string>
-  <string name="document">Documento</string>
-  <string name="subject">Oggetto</string>
+    <string name="subject">Oggetto</string>
   <string name="author">Autore</string>
   <string name="keywords">Parole chiave</string>
   <string name="producer">Produttore</string>
@@ -484,15 +371,12 @@ relative allo sviluppo</string>
   <string name="optimized">Ottimizzato</string>
   <string name="security">Sicurezza</string>
   <string name="paper_size">Dimensioni carta</string>
-  <string name="root_error">Errore nell\'avvio di una shell root interattiva</string>
-  <!-- %s will be replaced with either copied or moved -->
+    <!-- %s will be replaced with either copied or moved -->
   <string name="copy_error">Alcuni file non sono stati correttamente %s</string>
   <string name="copied">copiato</string>
   <string name="moved">spostato</string>
-  <string name="process_chart_description">Stato</string>
-  <string name="copy_complete">Copia Completata</string>
-  <string name="move_complete">Spostamento Completato</string>
-  <string name="waiting_title">Attendere</string>
+    <string name="copy_complete">Copia Completata</string>
+    <string name="waiting_title">Attendere</string>
   <string name="waiting_content">Attendi il completamento dell\'operazione</string>
   <string name="extract_complete">Estrazione completata</string>
   <string name="compression_complete">Compressione Completata</string>
@@ -508,20 +392,15 @@ relative allo sviluppo</string>
   <string name="smb_launch_error">Sarà necessario copiare questo file nella memoria per aprirlo</string>
   <string name="error_file_not_found">Errore: File Non Trovato</string>
   <string name="error_io">Errore I/O</string>
-  <string name="error_root_not_permitted">Errore: Permessi di root non concessi</string>
-  <string name="medium_text">Testo Medio</string>
-  <string name="tap_and_hold_tips">
-Tieni premuto un file od una cartella per altre opzioni
-</string>
-  <string name="permission_read">Letto</string>
+    <string name="medium_text">Testo Medio</string>
+    <string name="permission_read">Letto</string>
   <string name="permission_write">Scrittura</string>
   <string name="permission_execute">Esecuzione</string>
   <string name="permission_owner">Proprietario</string>
   <string name="permission_group">Gruppo</string>
   <string name="permission_other">Altro</string>
   <string name="clipboard_path_copy">Percorso copiato</string>
-  <string name="error_busybox">Busybox non trovato. Chiusura shell interattiva.</string>
-  <string name="service_timer">Tempo Trascorso</string>
+    <string name="service_timer">Tempo Trascorso</string>
   <string name="please_wait">Attendere, per favore</string>
   <string name="cloud_connection">Connessione cloud</string>
   <string name="cloud_connection_new">Nuova connessione Cloud</string>
@@ -531,13 +410,10 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="cloud_box">Box</string>
   <string name="cloud_get">Scarica Cloud plugin</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
-  <string name="cloud_error_email">Indirizzo E-mail</string>
-  <string name="cloud_email">ID e-mail</string>
-  <string name="no_applications">Nessuna applicazione</string>
+    <string name="no_applications">Nessuna applicazione</string>
   <string name="ftp_path">Percorso condiviso</string>
   <string name="ftp_path_hint">Percorso dell\'origine della directory da condividere</string>
-  <string name="error_ftp_path_file">Errore del percorso della directory</string>
-  <string name="change">Cambia</string>
+    <string name="change">Cambia</string>
   <string name="unknown_error">Oops, qualcosa è andato storto!</string>
   <string name="ftp_path_change_success">Percorso FTP modificato con successo</string>
   <string name="ftp_path_change_error_invalid">Percorso invalido</string>
@@ -595,8 +471,7 @@ Tieni premuto un file od una cartella per altre opzioni
   <string name="edit_shortcut">Modificare la scelta rapida</string>
   <string name="directory">Directory</string>
   <string name="questiondelete_shortcut">Eliminare il collegamento?</string>
-  <string name="cloud_error_new_account">Impossibile aggiungere il nuovo account</string>
-  <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
+    <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
   <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>
   <string name="cloud_remove">Si desidera rimuovere la connessione cloud?</string>
   <string name="cloud_fail_authenticate">Autenticazione non riuscita</string>
