@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.utils.OpenMode;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *         on 15/8/2017, at 19:47.
  */
 
-public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
+public class SearchAsyncTask extends AsyncTask<String, BaseFileParcelable, Void> {
 
     private static final String TAG = "SearchAsyncTask";
 
@@ -89,7 +89,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
     }
 
     @Override
-    public void onProgressUpdate(BaseFile... val) {
+    public void onProgressUpdate(BaseFileParcelable... val) {
         if (!isCancelled() && mCallbacks != null) {
             mCallbacks.onProgressUpdate(val[0], mInput);
         }
@@ -102,8 +102,8 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
      */
     private void search(HybridFile directory, SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
-            ArrayList<BaseFile> filesInDirectory = directory.listFiles(activity.get(), mRootMode);
-            for (BaseFile file : filesInDirectory) {
+            ArrayList<BaseFileParcelable> filesInDirectory = directory.listFiles(activity.get(), mRootMode);
+            for (BaseFileParcelable file : filesInDirectory) {
                 if (!isCancelled()) {
                     if (filter.searchFilter(file.getName())) {
                         publishProgress(file);

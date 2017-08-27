@@ -42,14 +42,14 @@ import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -71,7 +71,7 @@ public class CopyService extends Service {
     public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
     // list of data packages, to initiate chart in process viewer fragment
-    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private Context c;
@@ -95,7 +95,7 @@ public class CopyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
         Bundle b = new Bundle();
-        ArrayList<BaseFile> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
+        ArrayList<BaseFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, OpenMode.UNKNOWN.ordinal());
         final boolean move = intent.getBooleanExtra(TAG_COPY_MOVE, false);
@@ -131,7 +131,7 @@ public class CopyService extends Service {
     }
 
     private class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
-        ArrayList<BaseFile> sourceFiles;
+        ArrayList<BaseFileParcelable> sourceFiles;
         boolean move;
         Copy copy;
         private String targetPath;
@@ -160,7 +160,7 @@ public class CopyService extends Service {
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            DataPackage intent1 = new DataPackage();
+            CopyDataParcelable intent1 = new CopyDataParcelable();
             intent1.setName(sourceFiles.get(0).getName());
             intent1.setSourceFiles(sourceFiles.size());
             intent1.setSourceProgress(0);
@@ -180,7 +180,7 @@ public class CopyService extends Service {
             if (copy.failedFOps.size() == 0) {
 
                 // adding/updating new encrypted db entry if any encrypted file was copied/moved
-                for (BaseFile sourceFile : sourceFiles) {
+                for (BaseFileParcelable sourceFile : sourceFiles) {
                     findAndReplaceEncryptedEntry(sourceFile);
                 }
             }
@@ -206,12 +206,12 @@ public class CopyService extends Service {
          * metadata in the database
          * @param sourceFile the file which is to be iterated
          */
-        private void findAndReplaceEncryptedEntry(BaseFile sourceFile) {
+        private void findAndReplaceEncryptedEntry(BaseFileParcelable sourceFile) {
 
             // even directories can end with CRYPT_EXTENSION
             if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
 
-                for (BaseFile file : sourceFile.listFiles(getApplicationContext(), ThemedActivity.rootMode)) {
+                for (BaseFileParcelable file : sourceFile.listFiles(getApplicationContext(), ThemedActivity.rootMode)) {
                     // iterating each file inside source files which were copied to find instance of
                     // any copied / moved encrypted file
 
@@ -250,7 +250,7 @@ public class CopyService extends Service {
         class Copy {
 
             ArrayList<HybridFile> failedFOps;
-            ArrayList<BaseFile> toDelete;
+            ArrayList<BaseFileParcelable> toDelete;
 
             Copy() {
                 failedFOps = new ArrayList<>();
@@ -265,7 +265,7 @@ public class CopyService extends Service {
              * @param move
              * @param mode        target file open mode (current path's open mode)
              */
-            public void execute(final ArrayList<BaseFile> sourceFiles, final String targetPath,
+            public void execute(final ArrayList<BaseFileParcelable> sourceFiles, final String targetPath,
                                 final boolean move, OpenMode mode) {
 
                 // initial start of copy, initiate the watcher
@@ -274,7 +274,7 @@ public class CopyService extends Service {
                 if (FileUtil.checkFolder((targetPath), c) == 1) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         sourceProgress = i;
-                        BaseFile f1 = (sourceFiles.get(i));
+                        BaseFileParcelable f1 = (sourceFiles.get(i));
 
                         try {
 
@@ -335,15 +335,15 @@ public class CopyService extends Service {
 
 
                 } else {
-                    for (BaseFile f : sourceFiles) failedFOps.add(f);
+                    for (BaseFileParcelable f : sourceFiles) failedFOps.add(f);
                     return;
                 }
 
                 // making sure to delete files after copy operation is done
                 // and not if the copy was cancelled
                 if (move && !progressHandler.getCancelled()) {
-                    ArrayList<BaseFile> toDelete = new ArrayList<>();
-                    for (BaseFile a : sourceFiles) {
+                    ArrayList<BaseFileParcelable> toDelete = new ArrayList<>();
+                    for (BaseFileParcelable a : sourceFiles) {
                         if (!failedFOps.contains(a))
                             toDelete.add(a);
                     }
@@ -351,7 +351,7 @@ public class CopyService extends Service {
                 }
             }
 
-            void copyRoot(BaseFile sourceFile, HybridFile targetFile, boolean move) {
+            void copyRoot(BaseFileParcelable sourceFile, HybridFile targetFile, boolean move) {
 
                 try {
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
@@ -364,7 +364,7 @@ public class CopyService extends Service {
                 FileUtils.scanFile(targetFile.getPath(), c);
             }
 
-            private void copyFiles(final BaseFile sourceFile, final HybridFile targetFile,
+            private void copyFiles(final BaseFileParcelable sourceFile, final HybridFile targetFile,
                                    ProgressHandler progressHandler) throws IOException {
 
                 if (sourceFile.isDirectory()) {
@@ -383,8 +383,8 @@ public class CopyService extends Service {
                     targetFile.setLastModified(sourceFile.lastModified());
 
                     if(progressHandler.getCancelled()) return;
-                    ArrayList<BaseFile> filePaths = sourceFile.listFiles(c, false);
-                    for (BaseFile file : filePaths) {
+                    ArrayList<BaseFileParcelable> filePaths = sourceFile.listFiles(c, false);
+                    for (BaseFileParcelable file : filePaths) {
                         HybridFile destFile = new HybridFile(targetFile.getMode(), targetFile.getPath(),
                                 file.getName(), file.isDirectory());
                         copyFiles(file, destFile, progressHandler);
@@ -445,7 +445,7 @@ public class CopyService extends Service {
     }
 
     /**
-     * Publish the results of the progress to notification and {@link DataPackage}
+     * Publish the results of the progress to notification and {@link CopyDataParcelable}
      * and eventually to {@link ProcessViewerFragment}
      *
      * @param id             id of current service
@@ -493,7 +493,7 @@ public class CopyService extends Service {
             }
 
             //for processviewer
-            DataPackage intent = new DataPackage();
+            CopyDataParcelable intent = new CopyDataParcelable();
             intent.setName(fileName);
             intent.setSourceFiles(sourceFiles);
             intent.setSourceProgress(sourceProgress);
@@ -524,10 +524,10 @@ public class CopyService extends Service {
     boolean checkFiles(HybridFile hFile1, HybridFile hFile2) throws RootNotPermittedException {
         if (RootHelper.isDirectory(hFile1.getPath(), ThemedActivity.rootMode, 5)) {
             if (RootHelper.fileExists(hFile2.getPath())) return false;
-            ArrayList<BaseFile> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
+            ArrayList<BaseFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
             if (baseFiles.size() > 0) {
                 boolean b = true;
-                for (BaseFile baseFile : baseFiles) {
+                for (BaseFileParcelable baseFile : baseFiles) {
                     if (!checkFiles(new HybridFile(baseFile.getMode(), baseFile.getPath()),
                             new HybridFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName()))))
                         b = false;
@@ -536,20 +536,20 @@ public class CopyService extends Service {
             }
             return RootHelper.fileExists(hFile2.getPath());
         } else {
-            ArrayList<BaseFile> baseFiles = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+            ArrayList<BaseFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
             int i = -1;
             int index = -1;
-            for (BaseFile b : baseFiles) {
+            for (BaseFileParcelable b : baseFiles) {
                 i++;
                 if (b.getPath().equals(hFile1.getPath())) {
                     index = i;
                     break;
                 }
             }
-            ArrayList<BaseFile> baseFiles1 = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+            ArrayList<BaseFileParcelable> baseFiles1 = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
             int i1 = -1;
             int index1 = -1;
-            for (BaseFile b : baseFiles1) {
+            for (BaseFileParcelable b : baseFiles1) {
                 i1++;
                 if (b.getPath().equals(hFile1.getPath())) {
                     index1 = i1;
@@ -583,7 +583,7 @@ public class CopyService extends Service {
     }
 
     public interface ProgressListener {
-        void onUpdate(DataPackage dataPackage);
+        void onUpdate(CopyDataParcelable dataPackage);
 
         void refresh();
     }
@@ -601,7 +601,7 @@ public class CopyService extends Service {
      *
      * @return
      */
-    public synchronized DataPackage getDataPackage(int index) {
+    public synchronized CopyDataParcelable getDataPackage(int index) {
         return this.dataPackages.get(index);
     }
 
@@ -610,14 +610,14 @@ public class CopyService extends Service {
     }
 
     /**
-     * Puts a {@link DataPackage} into a list
+     * Puts a {@link CopyDataParcelable} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
      */
-    private synchronized void putDataPackage(DataPackage dataPackage) {
+    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
         this.dataPackages.add(dataPackage);
     }
 

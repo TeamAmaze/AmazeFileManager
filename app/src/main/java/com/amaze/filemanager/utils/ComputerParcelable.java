@@ -6,25 +6,25 @@ import android.os.Parcelable;
 /**
  * Created by arpitkh996 on 16-01-2016.
  */
-public class Computer implements Parcelable {
+public class ComputerParcelable implements Parcelable {
 
     public String addr;
     public String name;
 
-    public Computer(String str, String str2) {
+    public ComputerParcelable(String str, String str2) {
         this.name = str;
         this.addr = str2;
     }
 
-    public static final Creator<Computer> CREATOR = new Creator<Computer>() {
+    public static final Creator<ComputerParcelable> CREATOR = new Creator<ComputerParcelable>() {
         @Override
-        public Computer createFromParcel(Parcel in) {
-            return new Computer(in);
+        public ComputerParcelable createFromParcel(Parcel in) {
+            return new ComputerParcelable(in);
         }
 
         @Override
-        public Computer[] newArray(int size) {
-            return new Computer[size];
+        public ComputerParcelable[] newArray(int size) {
+            return new ComputerParcelable[size];
         }
     };
 
@@ -42,16 +42,16 @@ public class Computer implements Parcelable {
     }
 
     public boolean equals(Object obj) {
-        return obj instanceof Computer
-                && (this == obj || (this.name.equals(((Computer) obj).name)
-                && this.addr.equals(((Computer) obj).addr)));
+        return obj instanceof ComputerParcelable
+                && (this == obj || (this.name.equals(((ComputerParcelable) obj).name)
+                && this.addr.equals(((ComputerParcelable) obj).addr)));
     }
 
     public int hashCode() {
         return this.name.hashCode() + this.addr.hashCode();
     }
 
-    private Computer(Parcel parcel) {
+    private ComputerParcelable(Parcel parcel) {
         this.name = parcel.readString();
         this.addr = parcel.readString();
     }

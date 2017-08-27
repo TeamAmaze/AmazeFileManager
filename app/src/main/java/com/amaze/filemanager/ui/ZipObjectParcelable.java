@@ -8,14 +8,14 @@ import java.util.zip.ZipEntry;
 /**
  * Created by Arpit on 11-12-2014.
  */
-public class ZipObj implements Parcelable {
+public class ZipObjectParcelable implements Parcelable {
 
     private boolean directory;
     private ZipEntry entry;
     private String name;
     private long date, size;
 
-    public ZipObj(ZipEntry entry, long date, long size, boolean directory) {
+    public ZipObjectParcelable(ZipEntry entry, long date, long size, boolean directory) {
         this.directory = directory;
         this.entry = entry;
         if (entry != null) {
@@ -58,18 +58,18 @@ public class ZipObj implements Parcelable {
         p1.writeInt(isDirectory() ? 1 : 0);
     }
 
-    public static final Parcelable.Creator<ZipObj> CREATOR =
-            new Parcelable.Creator<ZipObj>() {
-                public ZipObj createFromParcel(Parcel in) {
-                    return new ZipObj(in);
+    public static final Parcelable.Creator<ZipObjectParcelable> CREATOR =
+            new Parcelable.Creator<ZipObjectParcelable>() {
+                public ZipObjectParcelable createFromParcel(Parcel in) {
+                    return new ZipObjectParcelable(in);
                 }
 
-                public ZipObj[] newArray(int size) {
-                    return new ZipObj[size];
+                public ZipObjectParcelable[] newArray(int size) {
+                    return new ZipObjectParcelable[size];
                 }
             };
 
-    public ZipObj(Parcel im) {
+    public ZipObjectParcelable(Parcel im) {
         name = im.readString();
         size = im.readLong();
         date = im.readLong();

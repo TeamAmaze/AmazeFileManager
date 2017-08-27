@@ -50,10 +50,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -149,15 +149,15 @@ public class FileUtils {
     /**
      * Helper method to calculate source files size
      */
-    public static long getTotalBytes(ArrayList<BaseFile> files, Context context) {
+    public static long getTotalBytes(ArrayList<BaseFileParcelable> files, Context context) {
         long totalBytes = 0L;
-        for (BaseFile file : files) {
+        for (BaseFileParcelable file : files) {
             totalBytes += getBaseFileSize(file, context);
         }
         return totalBytes;
     }
 
-    private static long getBaseFileSize(BaseFile baseFile, Context context) {
+    private static long getBaseFileSize(BaseFileParcelable baseFile, Context context) {
         if (baseFile.isDirectory(context)) {
             return baseFile.folderSize(context);
         } else {
@@ -603,7 +603,7 @@ public class FileUtils {
                 return true;
             default:
                 HybridFile parentFile = new HybridFile(currentFile.getMode(), currentFile.getParent(context));
-                ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
+                ArrayList<BaseFileParcelable> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
                 if (parentFiles == null) return false;
                 else return true;
         }
@@ -797,12 +797,12 @@ public class FileUtils {
     }
 
     /**
-     * @deprecated use new LayoutElement()
+     * @deprecated use new LayoutElementParcelable()
      */
-    public static LayoutElement newElement(BitmapDrawable i, String d, String permissions, String symlink,
-                                           String size, long longSize, boolean directorybool, boolean b,
-                                           String date) {
-        return new LayoutElement(i, new File(d).getName(), d, permissions, symlink,
+    public static LayoutElementParcelable newElement(BitmapDrawable i, String d, String permissions, String symlink,
+                                                     String size, long longSize, boolean directorybool, boolean b,
+                                                     String date) {
+        return new LayoutElementParcelable(i, new File(d).getName(), d, permissions, symlink,
                 size, longSize, b, date, directorybool);
     }
 
@@ -821,7 +821,7 @@ public class FileUtils {
      * @param line must be the line returned from a 'ls' command
      * @return
      */
-    public static BaseFile parseName(String line) {
+    public static BaseFileParcelable parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
@@ -855,11 +855,11 @@ public class FileUtils {
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
             Date stringDate = simpledateformat.parse(date, pos);
-            BaseFile baseFile=new BaseFile(name,array[0],stringDate.getTime(),Size,true);
+            BaseFileParcelable baseFile=new BaseFileParcelable(name,array[0],stringDate.getTime(),Size,true);
             baseFile.setLink(link);
             return baseFile;
         }else {
-            BaseFile baseFile= new BaseFile(name,array[0],new File("/").lastModified(),Size,true);
+            BaseFileParcelable baseFile= new BaseFileParcelable(name,array[0],new File("/").lastModified(),Size,true);
             baseFile.setLink(link);
             return baseFile;
         }

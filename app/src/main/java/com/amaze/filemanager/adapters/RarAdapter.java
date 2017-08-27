@@ -21,12 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.asyncronious.services.ExtractService;
 import com.amaze.filemanager.asyncronious.asynctasks.RarHelperTask;
 import com.amaze.filemanager.asyncronious.asynctasks.ZipHelperTask;
-import com.amaze.filemanager.ui.ZipObj;
+import com.amaze.filemanager.ui.ZipObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
@@ -49,7 +49,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     private UtilitiesProviderInterface utilsProvider;
     private Drawable folder, unknown;
     private ArrayList<FileHeader> enter;
-    private ArrayList<ZipObj> enter1;
+    private ArrayList<ZipObjectParcelable> enter1;
     private ZipExplorerFragment zipExplorerFragment;
     private LayoutInflater mInflater;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
@@ -68,7 +68,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         this.zipExplorerFragment = zipExplorerFragment;
     }
 
-    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObj> enter, ZipExplorerFragment zipExplorerFragment, boolean l) {
+    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObjectParcelable> enter, ZipExplorerFragment zipExplorerFragment, boolean l) {
         this.utilsProvider = utilsProvider;
         this.enter1 = enter;
         for (int i = 0; i < enter.size(); i++) {
@@ -222,7 +222,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         enter = arrayList;
     }
 
-    public void generate(ArrayList<ZipObj> arrayList, boolean zipMode) {
+    public void generate(ArrayList<ZipObjectParcelable> arrayList, boolean zipMode) {
         offset = 0;
         stoppedAnimation = false;
         notifyDataSetChanged();
@@ -240,7 +240,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         if (!this.stoppedAnimation) {
             animate(holder);
         }
-        final ZipObj rowItem = enter1.get(position1);
+        final ZipObjectParcelable rowItem = enter1.get(position1);
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -346,7 +346,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                     "/" + fileName;
 
-                            BaseFile file = new BaseFile(archiveCacheDirPath + "/"
+                            BaseFileParcelable file = new BaseFileParcelable(archiveCacheDirPath + "/"
                                     + rowItem.getName().replaceAll("\\\\", "/"));
                             file.setMode(OpenMode.FILE);
                             // this file will be opened once service finishes up it's extraction
@@ -464,7 +464,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 "/" + fileName;
 
-                        BaseFile file1 = new BaseFile(archiveCacheDirPath + "/"
+                        BaseFileParcelable file1 = new BaseFileParcelable(archiveCacheDirPath + "/"
                                 + rowItem.getFileNameString().replaceAll("\\\\", "/"));
                         file1.setMode(OpenMode.FILE);
 

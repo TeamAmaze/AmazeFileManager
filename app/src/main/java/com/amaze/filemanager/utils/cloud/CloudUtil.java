@@ -7,14 +7,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -33,10 +32,10 @@ import java.util.List;
 
 public class CloudUtil {
 
-    public static ArrayList<BaseFile> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
+    public static ArrayList<BaseFileParcelable> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
             throws CloudPluginException {
 
-        ArrayList<BaseFile> baseFiles = new ArrayList<>();
+        ArrayList<BaseFileParcelable> baseFiles = new ArrayList<>();
 
         String strippedPath = stripPath(openMode, path);
 
@@ -44,7 +43,7 @@ public class CloudUtil {
 
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
 
-                BaseFile baseFile = new BaseFile(path + "/" + cloudMetaData.getName(),
+                BaseFileParcelable baseFile = new BaseFileParcelable(path + "/" + cloudMetaData.getName(),
                         "", (cloudMetaData.getModifiedAt() == null)
                         ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
                         cloudMetaData.getFolder());
@@ -109,7 +108,7 @@ public class CloudUtil {
         return strippedPath;
     }
 
-    public static void launchCloud(final BaseFile baseFile, final OpenMode serviceType, final Activity activity) {
+    public static void launchCloud(final BaseFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
         final CloudStreamer streamer = CloudStreamer.getInstance();
 
         new Thread(new Runnable() {

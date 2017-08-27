@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
@@ -95,8 +95,8 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
                 @Override
                 public void onClick(View view) {
                     if (!file.isSmb() && file.isDirectory()) {
-                        ArrayList<BaseFile> a = new ArrayList<>();
-                        BaseFile baseFile = new BaseFile(items.get(position).getPath() + "/.nomedia");
+                        ArrayList<BaseFileParcelable> a = new ArrayList<>();
+                        BaseFileParcelable baseFile = new BaseFileParcelable(items.get(position).getPath() + "/.nomedia");
                         baseFile.setMode(OpenMode.FILE);
                         a.add(baseFile);
                         new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));

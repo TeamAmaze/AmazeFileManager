@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.Utils;
 
@@ -28,7 +28,7 @@ import java.io.File;
 public class PropertiesSheet extends BottomSheetDialogFragment {
 
     private Bundle mBundle;
-    private BaseFile mFile;
+    private BaseFileParcelable mFile;
     private String mPermission;
     private boolean mIsRoot;
     private CollapsingToolbarLayout mToolbar;

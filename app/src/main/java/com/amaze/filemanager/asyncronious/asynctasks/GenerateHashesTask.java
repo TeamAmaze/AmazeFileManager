@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -24,13 +24,13 @@ import java.security.NoSuchAlgorithmException;
  */
 public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
 
-    private BaseFile file;
+    private BaseFileParcelable file;
     private Context context;
     private TextView md5HashText;
     private TextView sha256Text;
     private LinearLayout mMD5LinearLayout, mSHA256LinearLayout;
 
-    public GenerateHashesTask(BaseFile f, final Context c, final View view) {
+    public GenerateHashesTask(BaseFileParcelable f, final Context c, final View view) {
         this.context = c;
         this.file = f;
 

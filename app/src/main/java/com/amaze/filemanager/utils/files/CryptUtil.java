@@ -11,7 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
@@ -105,7 +105,7 @@ public class CryptUtil {
      * @param context
      * @param sourceFile the file to encrypt
      */
-    public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler,
+    public CryptUtil(Context context, BaseFileParcelable sourceFile, ProgressHandler progressHandler,
                      ArrayList<HybridFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
@@ -136,7 +136,7 @@ public class CryptUtil {
      * @param targetPath the directory in which file is to be decrypted
      *                   the source's parent in normal case
      */
-    public CryptUtil(Context context, BaseFile baseFile, String targetPath,
+    public CryptUtil(Context context, BaseFileParcelable baseFile, String targetPath,
                      ProgressHandler progressHandler, ArrayList<HybridFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
@@ -175,7 +175,7 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void decrypt(Context context, BaseFile sourceFile, HybridFile targetDirectory) throws IOException,
+    private void decrypt(Context context, BaseFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
@@ -186,7 +186,7 @@ public class CryptUtil {
                     sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
+            for (BaseFileParcelable baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
                 decrypt(context, baseFile, hFile);
             }
         } else {
@@ -235,7 +235,7 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void encrypt(Context context, BaseFile sourceFile, HybridFile targetDirectory) throws IOException,
+    private void encrypt(Context context, BaseFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
@@ -248,7 +248,7 @@ public class CryptUtil {
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
+            for (BaseFileParcelable baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
                 encrypt(context, baseFile, hFile);
             }
         } else {

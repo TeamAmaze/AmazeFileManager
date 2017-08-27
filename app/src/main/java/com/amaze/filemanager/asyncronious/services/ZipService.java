@@ -36,10 +36,10 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -66,7 +66,7 @@ public class ZipService extends Service {
     long totalBytes = 0L;
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
-    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -83,7 +83,7 @@ public class ZipService extends Service {
         Bundle b = new Bundle();
         String path = intent.getStringExtra(KEY_COMPRESS_PATH);
 
-        ArrayList<BaseFile> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
+        ArrayList<BaseFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
         File zipFile = new File(path);
         mZipPath = PreferenceManager.getDefaultSharedPreferences(this)
@@ -130,7 +130,7 @@ public class ZipService extends Service {
     }
 
     public interface ProgressListener {
-        void onUpdate(DataPackage dataPackage);
+        void onUpdate(CopyDataParcelable dataPackage);
 
         void refresh();
     }
@@ -145,7 +145,7 @@ public class ZipService extends Service {
         public DoWork() {
         }
 
-        public ArrayList<File> toFileArray(ArrayList<BaseFile> a) {
+        public ArrayList<File> toFileArray(ArrayList<BaseFileParcelable> a) {
             ArrayList<File> b = new ArrayList<>();
             for (int i = 0; i < a.size(); i++) {
                 b.add(new File(a.get(i).getPath()));
@@ -155,7 +155,7 @@ public class ZipService extends Service {
 
         protected Integer doInBackground(Bundle... p1) {
             final int id = p1[0].getInt("id");
-            ArrayList<BaseFile> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
+            ArrayList<BaseFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
@@ -170,7 +170,7 @@ public class ZipService extends Service {
                 }
             });
 
-            DataPackage intent1 = new DataPackage();
+            CopyDataParcelable intent1 = new CopyDataParcelable();
             intent1.setName(baseFiles.get(0).getName());
             intent1.setSourceFiles(baseFiles.size());
             intent1.setSourceProgress(0);
@@ -277,7 +277,7 @@ public class ZipService extends Service {
                 isCompleted = true;
             }
 
-            DataPackage intent = new DataPackage();
+            CopyDataParcelable intent = new CopyDataParcelable();
             intent.setName(fileName);
             intent.setSourceFiles(sourceFiles);
             intent.setSourceProgress(sourceProgress);
@@ -338,7 +338,7 @@ public class ZipService extends Service {
      *
      * @return
      */
-    public synchronized DataPackage getDataPackage(int index) {
+    public synchronized CopyDataParcelable getDataPackage(int index) {
         return this.dataPackages.get(index);
     }
 
@@ -347,14 +347,14 @@ public class ZipService extends Service {
     }
 
     /**
-     * Puts a {@link DataPackage} into a list
+     * Puts a {@link CopyDataParcelable} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
      */
-    private synchronized void putDataPackage(DataPackage dataPackage) {
+    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
         this.dataPackages.add(dataPackage);
     }
 

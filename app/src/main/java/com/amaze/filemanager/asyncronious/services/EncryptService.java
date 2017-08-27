@@ -15,12 +15,12 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -46,7 +46,7 @@ public class EncryptService extends Service {
     public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
     // list of data packages which contains progress
-    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private Context context;
@@ -56,7 +56,7 @@ public class EncryptService extends Service {
     private long totalSize = 0l;
     private OpenMode openMode;
     private String decryptPath;
-    private BaseFile baseFile;
+    private BaseFileParcelable baseFile;
     private CryptEnum cryptEnum;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
@@ -126,7 +126,7 @@ public class EncryptService extends Service {
             });
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            DataPackage dataPackage = new DataPackage();
+            CopyDataParcelable dataPackage = new CopyDataParcelable();
             dataPackage.setName(baseFile.getName());
             dataPackage.setSourceFiles(1);
             dataPackage.setSourceProgress(1);
@@ -212,7 +212,7 @@ public class EncryptService extends Service {
             }
 
             //for processviewer
-            DataPackage intent = new DataPackage();
+            CopyDataParcelable intent = new CopyDataParcelable();
             intent.setName(fileName);
             intent.setSourceFiles(sourceFiles);
             intent.setSourceProgress(sourceProgress);
@@ -313,7 +313,7 @@ public class EncryptService extends Service {
 
 
     public interface ProgressListener {
-        void onUpdate(DataPackage dataPackage);
+        void onUpdate(CopyDataParcelable dataPackage);
         void refresh();
     }
 
@@ -329,7 +329,7 @@ public class EncryptService extends Service {
      * is executing the callbacks in {@link ProcessViewerFragment}
      * @return
      */
-    public synchronized DataPackage getDataPackage(int index) {
+    public synchronized CopyDataParcelable getDataPackage(int index) {
         return this.dataPackages.get(index);
     }
 
@@ -338,13 +338,13 @@ public class EncryptService extends Service {
     }
 
     /**
-     * Puts a {@link DataPackage} into a list
+     * Puts a {@link CopyDataParcelable} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      * @param dataPackage
      */
-    private synchronized void putDataPackage(DataPackage dataPackage) {
+    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
         this.dataPackages.add(dataPackage);
     }
 }

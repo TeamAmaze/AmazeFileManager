@@ -24,18 +24,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;
 import java.util.Calendar;
 
-public class LayoutElement implements Parcelable {
+public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    public LayoutElement(Parcel im) {
+    public LayoutElementParcelable(Parcel im) {
         title = im.readString();
         desc = im.readString();
         permissions = im.readString();
@@ -88,8 +88,8 @@ public class LayoutElement implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElement(BitmapDrawable imageId, String title, String desc, String permissions,
-                         String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
+    public LayoutElementParcelable(BitmapDrawable imageId, String title, String desc, String permissions,
+                                   String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
         this.desc = desc;
@@ -105,20 +105,20 @@ public class LayoutElement implements Parcelable {
         }
     }
 
-    public LayoutElement(BitmapDrawable drawable, String path, String permissions, String symlink,
-                                           String size, long longSize, boolean isDirectory, boolean header,
-                                           String date) {
+    public LayoutElementParcelable(BitmapDrawable drawable, String path, String permissions, String symlink,
+                                   String size, long longSize, boolean isDirectory, boolean header,
+                                   String date) {
         this(drawable, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
     }
 
-    public static final Parcelable.Creator<LayoutElement> CREATOR =
-            new Parcelable.Creator<LayoutElement>() {
-                public LayoutElement createFromParcel(Parcel in) {
-                    return new LayoutElement(in);
+    public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =
+            new Parcelable.Creator<LayoutElementParcelable>() {
+                public LayoutElementParcelable createFromParcel(Parcel in) {
+                    return new LayoutElementParcelable(in);
                 }
 
-                public LayoutElement[] newArray(int size) {
-                    return new LayoutElement[size];
+                public LayoutElementParcelable[] newArray(int size) {
+                    return new LayoutElementParcelable[size];
                 }
             };
 
@@ -148,8 +148,8 @@ public class LayoutElement implements Parcelable {
         return isDirectory;
     }
 
-    public BaseFile generateBaseFile() {
-        BaseFile baseFile=new BaseFile(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
+    public BaseFileParcelable generateBaseFile() {
+        BaseFileParcelable baseFile=new BaseFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
         baseFile.setMode(mode);
         baseFile.setName(title);
         return baseFile;

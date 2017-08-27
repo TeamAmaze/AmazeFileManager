@@ -64,7 +64,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asyncronious.asynctasks.SearchTextTask;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -95,7 +95,7 @@ import java.util.TimerTask;
 public class TextEditorActivity extends ThemedActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
-    private BaseFile mFile;
+    private BaseFileParcelable mFile;
     private String mOriginal;
     private Timer mTimer;
     private boolean mModified, isEditAllowed = true;
@@ -203,7 +203,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             // getting uri from external source
             uri = getIntent().getData();
 
-            mFile = new BaseFile(getIntent().getData().getPath());
+            mFile = new BaseFileParcelable(getIntent().getData().getPath());
         }
 
         String fileName;
@@ -450,7 +450,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * @param uri
      * @param mFile
      */
-    private void load(final Uri uri, final BaseFile mFile) {
+    private void load(final Uri uri, final BaseFileParcelable mFile) {
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint(R.string.loading);
@@ -634,7 +634,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     }
 
     /**
-     * Helper method to {@link #load(Uri, BaseFile)}
+     * Helper method to {@link #load(Uri, BaseFileParcelable)}
      * Tries to find an input stream associated with file/uri
      *
      * @param uri
@@ -643,7 +643,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * @throws StreamNotFoundException exception thrown when we couldn't find a stream
      *                                 after all the attempts
      */
-    private InputStream getInputStream(Uri uri, BaseFile baseFile) throws StreamNotFoundException {
+    private InputStream getInputStream(Uri uri, BaseFileParcelable baseFile) throws StreamNotFoundException {
         InputStream stream = null;
 
         File file = new File(baseFile.getPath());

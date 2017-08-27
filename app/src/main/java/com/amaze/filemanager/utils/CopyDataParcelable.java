@@ -13,7 +13,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
  * This class also acts as a middle layer to communicate with
  * {@link ProcessViewerFragment}
  */
-public class DataPackage implements Parcelable {
+public class CopyDataParcelable implements Parcelable {
 
     // which file is being copied from total number of files
     int sourceProgress;
@@ -35,9 +35,9 @@ public class DataPackage implements Parcelable {
     // name of source file being copied
     String name;
 
-    public DataPackage(){}
+    public CopyDataParcelable(){}
 
-    protected DataPackage(Parcel in) {
+    protected CopyDataParcelable(Parcel in) {
         sourceProgress = in.readInt();
         byteProgress = in.readLong();
         sourceFiles = in.readInt();
@@ -48,15 +48,15 @@ public class DataPackage implements Parcelable {
         speedRaw = in.readInt();
     }
 
-    public static final Creator<DataPackage> CREATOR = new Creator<DataPackage>() {
+    public static final Creator<CopyDataParcelable> CREATOR = new Creator<CopyDataParcelable>() {
         @Override
-        public DataPackage createFromParcel(Parcel in) {
-            return new DataPackage(in);
+        public CopyDataParcelable createFromParcel(Parcel in) {
+            return new CopyDataParcelable(in);
         }
 
         @Override
-        public DataPackage[] newArray(int size) {
-            return new DataPackage[size];
+        public CopyDataParcelable[] newArray(int size) {
+            return new CopyDataParcelable[size];
         }
     };
 

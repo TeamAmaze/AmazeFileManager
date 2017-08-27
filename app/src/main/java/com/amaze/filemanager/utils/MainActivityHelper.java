@@ -32,7 +32,7 @@ import com.amaze.filemanager.asyncronious.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
@@ -69,7 +69,7 @@ public class MainActivityHelper {
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc) {
+    public void showFailedOperationDialog(ArrayList<BaseFileParcelable> failedOps, boolean move, Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
@@ -77,7 +77,7 @@ public class MainActivityHelper {
         mat.positiveText(R.string.cancel);
         String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
-        for(BaseFile s:failedOps){
+        for(BaseFileParcelable s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
             k++;
         }
@@ -372,9 +372,9 @@ public class MainActivityHelper {
      * Helper method to start Compress service
      *
      * @param file the new compressed file
-     * @param baseFiles list of {@link BaseFile} to be compressed
+     * @param baseFiles list of {@link BaseFileParcelable} to be compressed
      */
-    public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
+    public void compressFiles(File file, ArrayList<BaseFileParcelable> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
@@ -532,7 +532,7 @@ public class MainActivityHelper {
         });
     }
 
-    public void deleteFiles(ArrayList<BaseFile> files) {
+    public void deleteFiles(ArrayList<BaseFileParcelable> files) {
         if (files == null || files.size() == 0) return;
         if (files.get(0).isSmb()) {
             new DeleteTask(null, mainActivity).execute((files));

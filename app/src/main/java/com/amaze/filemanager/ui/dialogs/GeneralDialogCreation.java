@@ -36,7 +36,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -45,7 +45,7 @@ import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.asyncronious.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asyncronious.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asyncronious.asynctasks.LoadFolderSpaceDataTask;
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
@@ -131,11 +131,11 @@ public class GeneralDialogCreation {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static void deleteFilesDialog(final Context c, final ArrayList<LayoutElement> layoutElements,
-                                         final MainActivity mainActivity, final List<LayoutElement> positions,
+    public static void deleteFilesDialog(final Context c, final ArrayList<LayoutElementParcelable> layoutElements,
+                                         final MainActivity mainActivity, final List<LayoutElementParcelable> positions,
                                          AppTheme appTheme) {
 
-        final ArrayList<BaseFile> itemsToDelete = new ArrayList<>();
+        final ArrayList<BaseFileParcelable> itemsToDelete = new ArrayList<>();
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         // Build dialog with custom view layout and accent color.
@@ -186,7 +186,7 @@ public class GeneralDialogCreation {
             protected Void doInBackground(Void... params) {
 
                 for (int i = 0; i < positions.size(); i++) {
-                    final LayoutElement layoutElement = positions.get(i);
+                    final LayoutElementParcelable layoutElement = positions.get(i);
                     itemsToDelete.add(layoutElement.generateBaseFile());
 
                     // Build list of directories to delete.
@@ -309,19 +309,19 @@ public class GeneralDialogCreation {
         dialog.show();
     }
 
-    public static void showPropertiesDialogWithPermissions(BaseFile baseFile, final String permissions,
+    public static void showPropertiesDialogWithPermissions(BaseFileParcelable baseFile, final String permissions,
                                                            ThemedActivity activity, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
     }
 
-    public static void showPropertiesDialogWithoutPermissions(final BaseFile f, ThemedActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogWithoutPermissions(final BaseFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
-    public static void showPropertiesDialogForStorage(final BaseFile f, ThemedActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogForStorage(final BaseFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
 
-    private static void showPropertiesDialog(final BaseFile baseFile, final String permissions,
+    private static void showPropertiesDialog(final BaseFileParcelable baseFile, final String permissions,
                                              ThemedActivity base, boolean isRoot, AppTheme appTheme,
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
@@ -828,7 +828,7 @@ public class GeneralDialogCreation {
         b.show();
     }
 
-    public static void showCompressDialog(final MainActivity m, final ArrayList<BaseFile> b, final String current) {
+    public static void showCompressDialog(final MainActivity m, final ArrayList<BaseFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, new

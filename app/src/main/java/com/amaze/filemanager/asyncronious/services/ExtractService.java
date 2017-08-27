@@ -40,7 +40,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -65,7 +65,7 @@ public class ExtractService extends Service {
     Context cd;
 
     // list of data packages,// to initiate chart in process viewer fragment
-    private ArrayList<DataPackage> dataPackages = new ArrayList<>();
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
     // total size of file, can change later
     private long totalSize = 0L;
@@ -161,7 +161,7 @@ public class ExtractService extends Service {
     ProgressListener progressListener;
 
     public interface ProgressListener {
-        void onUpdate(DataPackage dataPackage);
+        void onUpdate(CopyDataParcelable dataPackage);
 
         void refresh();
     }
@@ -186,7 +186,7 @@ public class ExtractService extends Service {
                 publishCompletedResult("", id1);
             }
 
-            DataPackage intent = new DataPackage();
+            CopyDataParcelable intent = new CopyDataParcelable();
             intent.setName(fileName);
             intent.setSourceFiles(sourceFiles);
             intent.setSourceProgress(sourceProgress);
@@ -644,7 +644,7 @@ public class ExtractService extends Service {
      */
     private void setInitDataPackage(long totalSize, String fileName, int sourceTotal) {
 
-        DataPackage intent1 = new DataPackage();
+        CopyDataParcelable intent1 = new CopyDataParcelable();
         intent1.setName(fileName);
         intent1.setSourceFiles(sourceTotal);
         intent1.setSourceProgress(0);
@@ -688,7 +688,7 @@ public class ExtractService extends Service {
      *
      * @return
      */
-    public synchronized DataPackage getDataPackage(int index) {
+    public synchronized CopyDataParcelable getDataPackage(int index) {
         return this.dataPackages.get(index);
     }
 
@@ -697,14 +697,14 @@ public class ExtractService extends Service {
     }
 
     /**
-     * Puts a {@link DataPackage} into a list
+     * Puts a {@link CopyDataParcelable} into a list
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
      */
-    private synchronized void putDataPackage(DataPackage dataPackage) {
+    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
         this.dataPackages.add(dataPackage);
     }
 

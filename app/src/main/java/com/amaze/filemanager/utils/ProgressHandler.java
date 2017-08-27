@@ -8,7 +8,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
  * Base class to handle progress of services operation
  * Utilized for generation of notification,
  * talking to {@link ProcessViewerFragment} through
- * {@link com.amaze.filemanager.utils.DataPackage}
+ * {@link CopyDataParcelable}
  *
  */
 public class ProgressHandler {

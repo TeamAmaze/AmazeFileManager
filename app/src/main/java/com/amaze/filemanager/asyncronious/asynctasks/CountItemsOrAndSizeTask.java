@@ -7,7 +7,7 @@ import android.text.format.Formatter;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 
@@ -20,10 +20,10 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
 
     private Context context;
     private TextView itemsText;
-    private BaseFile file;
+    private BaseFileParcelable file;
     private boolean isStorage;
 
-    public CountItemsOrAndSizeTask(Context c, TextView itemsText, BaseFile f, boolean storage) {
+    public CountItemsOrAndSizeTask(Context c, TextView itemsText, BaseFileParcelable f, boolean storage) {
         this.context = c;
         this.itemsText = itemsText;
         file = f;

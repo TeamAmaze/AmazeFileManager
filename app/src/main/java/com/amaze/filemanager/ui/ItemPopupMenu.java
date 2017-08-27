@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.asyncronious.services.EncryptService;
@@ -40,11 +40,11 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
     private UtilitiesProviderInterface utilitiesProvider;
     private MainFragment mainFragment;
     private SharedPreferences sharedPrefs;
-    private LayoutElement rowItem;
+    private LayoutElementParcelable rowItem;
     private int accentColor;
 
     public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProviderInterface up, MainFragment mainFragment,
-                         LayoutElement ri, View anchor, SharedPreferences sharedPreferences) {
+                         LayoutElementParcelable ri, View anchor, SharedPreferences sharedPreferences) {
         super(c, anchor);
 
         context = c;
@@ -98,14 +98,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.cpy:
                 mainFragment.getMainActivity().MOVE_PATH = null;
-                ArrayList<BaseFile> copies = new ArrayList<>();
+                ArrayList<BaseFileParcelable> copies = new ArrayList<>();
                 copies.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().COPY_PATH = copies;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();
                 return true;
             case R.id.cut:
                 mainFragment.getMainActivity().COPY_PATH = null;
-                ArrayList<BaseFile> copie = new ArrayList<>();
+                ArrayList<BaseFileParcelable> copie = new ArrayList<>();
                 copie.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().MOVE_PATH = copie;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();
@@ -120,7 +120,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
-                ArrayList<LayoutElement> positions = new ArrayList<>();
+                ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
                 positions.add(rowItem);
                 GeneralDialogCreation.deleteFilesDialog(context,
                         mainFragment.getLayoutElements(),

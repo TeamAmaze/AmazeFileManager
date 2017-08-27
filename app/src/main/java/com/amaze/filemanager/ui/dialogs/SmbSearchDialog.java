@@ -23,7 +23,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
-import com.amaze.filemanager.utils.Computer;
+import com.amaze.filemanager.utils.ComputerParcelable;
 import com.amaze.filemanager.utils.SubnetScanner;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -39,7 +39,7 @@ public class SmbSearchDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
     listViewAdapter listViewAdapter;
-    ArrayList<Computer> computers = new ArrayList<>();
+    ArrayList<ComputerParcelable> computers = new ArrayList<>();
     int accentColor;
     SubnetScanner subnetScanner;
 
@@ -86,12 +86,12 @@ public class SmbSearchDialog extends DialogFragment {
         });
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(accentColor);
-        computers.add(new Computer("-1", "-1"));
+        computers.add(new ComputerParcelable("-1", "-1"));
         listViewAdapter = new listViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
         subnetScanner = new SubnetScanner(getActivity());
         subnetScanner.setObserver(new SubnetScanner.ScanObserver() {
             @Override
-            public void computerFound(final Computer computer) {
+            public void computerFound(final ComputerParcelable computer) {
                 if (getActivity() != null)
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -129,14 +129,14 @@ public class SmbSearchDialog extends DialogFragment {
         return builder.build();
     }
 
-    private class listViewAdapter extends RecyclerArrayAdapter<Computer, listViewAdapter.ViewHolder> {
+    private class listViewAdapter extends RecyclerArrayAdapter<ComputerParcelable, listViewAdapter.ViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
         LayoutInflater mInflater;
         Context context;
 
-        public listViewAdapter(Context context, @LayoutRes int resource, List<Computer> objects) {
+        public listViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
             this.context = context;
             addAll(objects);
             mInflater = (LayoutInflater) context
@@ -170,7 +170,7 @@ public class SmbSearchDialog extends DialogFragment {
                 super(itemView);
             }
 
-            public void render(final int p, Computer f) {
+            public void render(final int p, ComputerParcelable f) {
 
             }
         }
@@ -193,7 +193,7 @@ public class SmbSearchDialog extends DialogFragment {
             }
 
             @Override
-            public void render(final int p, Computer f) {
+            public void render(final int p, ComputerParcelable f) {
                 rootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -217,7 +217,7 @@ public class SmbSearchDialog extends DialogFragment {
 
         @Override
         public int getItemViewType(int position) {
-            Computer f = getItem(position);
+            ComputerParcelable f = getItem(position);
             if (f.addr.equals("-1")) {
                 return VIEW_PROGRESSBAR;
             } else {

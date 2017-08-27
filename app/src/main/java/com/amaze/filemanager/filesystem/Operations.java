@@ -498,7 +498,7 @@ public class Operations {
      * @param targetFile
      * @return true when copy loop is possible
      */
-    public static boolean isCopyLoopPossible(BaseFile sourceFile, HybridFile targetFile) {
+    public static boolean isCopyLoopPossible(BaseFileParcelable sourceFile, HybridFile targetFile) {
         return targetFile.getPath().contains(sourceFile.getPath());
     }
 

@@ -8,7 +8,7 @@ import com.amaze.filemanager.utils.OpenMode;
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
-public class BaseFile extends HybridFile implements Parcelable {
+public class BaseFileParcelable extends HybridFile implements Parcelable {
 
     private long date, size;
     private boolean isDirectory;
@@ -16,12 +16,12 @@ public class BaseFile extends HybridFile implements Parcelable {
     private String name;
     private String link = "";
 
-    public BaseFile(String path) {
+    public BaseFileParcelable(String path) {
         super(OpenMode.FILE, path);
         this.path = path;
     }
 
-    public BaseFile(String path, String permission, long date, long size, boolean isDirectory) {
+    public BaseFileParcelable(String path, String permission, long date, long size, boolean isDirectory) {
         super(OpenMode.FILE, path);
         this.date = date;
         this.size = size;
@@ -93,7 +93,7 @@ public class BaseFile extends HybridFile implements Parcelable {
         this.permission = permission;
     }
 
-    protected BaseFile(Parcel in) {
+    protected BaseFileParcelable(Parcel in) {
         super(OpenMode.getOpenMode(in.readInt()), in.readString());
         permission = in.readString();
         name = in.readString();
@@ -103,15 +103,15 @@ public class BaseFile extends HybridFile implements Parcelable {
 
     }
 
-    public static final Creator<BaseFile> CREATOR = new Creator<BaseFile>() {
+    public static final Creator<BaseFileParcelable> CREATOR = new Creator<BaseFileParcelable>() {
         @Override
-        public BaseFile createFromParcel(Parcel in) {
-            return new BaseFile(in);
+        public BaseFileParcelable createFromParcel(Parcel in) {
+            return new BaseFileParcelable(in);
         }
 
         @Override
-        public BaseFile[] newArray(int size) {
-            return new BaseFile[size];
+        public BaseFileParcelable[] newArray(int size) {
+            return new BaseFileParcelable[size];
         }
     };
 

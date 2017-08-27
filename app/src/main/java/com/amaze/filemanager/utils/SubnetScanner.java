@@ -28,35 +28,35 @@ public class SubnetScanner extends Thread {
     public static final int RETRY_COUNT = 5;
     private Thread bdThread;
     private final Object mLock;
-    private List<Computer> mResults;
+    private List<ComputerParcelable> mResults;
     private ScanObserver observer;
     ExecutorService pool;
-    private List<Future<Computer>> tasks;
+    private List<Future<ComputerParcelable>> tasks;
 
     public interface ScanObserver {
-        void computerFound(Computer computer);
+        void computerFound(ComputerParcelable computer);
 
         void searchFinished();
     }
 
 
 
-    class Task implements Callable<Computer> {
+    class Task implements Callable<ComputerParcelable> {
         String addr;
 
         public Task(String str) {
             this.addr = str;
         }
 
-        public Computer call() throws Exception {
+        public ComputerParcelable call() throws Exception {
             try {
                 NbtAddress[] allByAddress = NbtAddress.getAllByAddress(this.addr);
                 if (allByAddress == null || allByAddress.length <= 0) {
-                    return new Computer(null, this.addr);
+                    return new ComputerParcelable(null, this.addr);
                 }
-                return new Computer(allByAddress[0].getHostName(), this.addr);
+                return new ComputerParcelable(allByAddress[0].getHostName(), this.addr);
             } catch (UnknownHostException e) {
-                return new Computer(null, this.addr);
+                return new ComputerParcelable(null, this.addr);
             }
         }
     }
@@ -101,7 +101,7 @@ public class SubnetScanner extends Thread {
                     while (i < size) {
                         if (!isInterrupted()) {
                             try {
-                                Computer computer = (Computer) ((Future) this.tasks.get(i)).get(1, TimeUnit.MILLISECONDS);
+                                ComputerParcelable computer = (ComputerParcelable) ((Future) this.tasks.get(i)).get(1, TimeUnit.MILLISECONDS);
                                 this.tasks.remove(i);
                                 size--;
                                 if (computer.name != null) {
@@ -158,7 +158,7 @@ public class SubnetScanner extends Thread {
                                     String substring = listFiles2[i2].getName().substring(0, listFiles2[i2].getName().length() - 1);
                                     UniAddress byName = UniAddress.getByName(substring);
                                     if (byName != null) {
-                                        SubnetScanner.this.onFound(new Computer(substring, byName.getHostAddress()));
+                                        SubnetScanner.this.onFound(new ComputerParcelable(substring, byName.getHostAddress()));
                                     }
                                 } catch (Throwable e) {
                                 }
@@ -173,7 +173,7 @@ public class SubnetScanner extends Thread {
         this.bdThread.start();
     }
 
-    void onFound(Computer computer) {
+    void onFound(ComputerParcelable computer) {
         this.mResults.add(computer);
         synchronized (this.mLock) {
             if (this.observer != null) {
@@ -197,7 +197,7 @@ public class SubnetScanner extends Thread {
         }
     }
 
-    public List<Computer> getResults() {
+    public List<ComputerParcelable> getResults() {
         return new ArrayList(this.mResults);
     }
 

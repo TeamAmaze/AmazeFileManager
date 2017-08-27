@@ -14,7 +14,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asyncronious.services.CopyService;
@@ -41,7 +41,7 @@ import java.util.Set;
  *  If the process is cancelled (via the button in the dialog) the dialog closes without any more code
  *  to be executed, finishCopying() is never executed so no changes are made.
  */
-public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, PrepareCopyTask.CopyNode> {
+public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFileParcelable>, String, PrepareCopyTask.CopyNode> {
 
     private enum DO_FOR_ALL_ELEMENTS {
         DO_NOT_REPLACE,
@@ -62,8 +62,8 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
     private ArrayList<File> deleteCopiedFolder = null;
     private CopyNode copyFolder;
     private final ArrayList<String> paths = new ArrayList<>();
-    private final ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder = new ArrayList<>();
-    private ArrayList<BaseFile> filesToCopy;    // a copy of params sent to this
+    private final ArrayList<ArrayList<BaseFileParcelable>> filesToCopyPerFolder = new ArrayList<>();
+    private ArrayList<BaseFileParcelable> filesToCopy;    // a copy of params sent to this
 
     public PrepareCopyTask(MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
         mainFrag = ma;
@@ -82,7 +82,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
     }
 
     @Override
-    protected CopyNode doInBackground(ArrayList<BaseFile>... params) {
+    protected CopyNode doInBackground(ArrayList<BaseFileParcelable>... params) {
         filesToCopy = params[0];
         long totalBytes = 0;
 
@@ -109,11 +109,11 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         return copyFolder;
     }
 
-    private ArrayList<BaseFile> checkConflicts(ArrayList<BaseFile> filesToCopy, HybridFile destination) {
-        ArrayList<BaseFile> conflictingFiles = new ArrayList<>();
+    private ArrayList<BaseFileParcelable> checkConflicts(ArrayList<BaseFileParcelable> filesToCopy, HybridFile destination) {
+        ArrayList<BaseFileParcelable> conflictingFiles = new ArrayList<>();
 
-        for (BaseFile k1 : destination.listFiles(rootMode)) {
-            for (BaseFile j : filesToCopy) {
+        for (BaseFileParcelable k1 : destination.listFiles(rootMode)) {
+            for (BaseFileParcelable j : filesToCopy) {
                 if (k1.getName().equals((j).getName())) {
                     conflictingFiles.add(j);
                 }
@@ -144,7 +144,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         }
     }
 
-    private void startService(ArrayList<BaseFile> sourceFiles, String target, OpenMode openmode) {
+    private void startService(ArrayList<BaseFileParcelable> sourceFiles, String target, OpenMode openmode) {
         Intent intent = new Intent(context, CopyService.class);
         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles);
         intent.putExtra(CopyService.TAG_COPY_TARGET, target);
@@ -153,8 +153,8 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         ServiceWatcherUtil.runService(context, intent);
     }
 
-    private void showDialog(final String path, final ArrayList<BaseFile> filesToCopy,
-                            final ArrayList<BaseFile> conflictingFiles) {
+    private void showDialog(final String path, final ArrayList<BaseFileParcelable> filesToCopy,
+                            final ArrayList<BaseFileParcelable> conflictingFiles) {
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
         LayoutInflater layoutInflater =
@@ -201,8 +201,8 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         }
     }
 
-    private void onEndDialog(String path, ArrayList<BaseFile> filesToCopy,
-                             ArrayList<BaseFile> conflictingFiles) {
+    private void onEndDialog(String path, ArrayList<BaseFileParcelable> filesToCopy,
+                             ArrayList<BaseFileParcelable> conflictingFiles) {
         if (conflictingFiles != null && counter != conflictingFiles.size() && conflictingFiles.size() > 0) {
             if (dialogState == null)
                 showDialog(path, filesToCopy, conflictingFiles);
@@ -231,7 +231,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         }
     }
 
-    private void doNotReplaceFiles(String path, ArrayList<BaseFile> filesToCopy, ArrayList<BaseFile> conflictingFiles) {
+    private void doNotReplaceFiles(String path, ArrayList<BaseFileParcelable> filesToCopy, ArrayList<BaseFileParcelable> conflictingFiles) {
         if (counter < conflictingFiles.size()) {
             if (dialogState != null) {
                 filesToCopy.remove(conflictingFiles.get(counter));
@@ -247,7 +247,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         onEndDialog(path, filesToCopy, conflictingFiles);
     }
 
-    private void replaceFiles(String path, ArrayList<BaseFile> filesToCopy, ArrayList<BaseFile> conflictingFiles) {
+    private void replaceFiles(String path, ArrayList<BaseFileParcelable> filesToCopy, ArrayList<BaseFileParcelable> conflictingFiles) {
         if (counter < conflictingFiles.size()) {
             if (dialogState != null) {
                 counter++;
@@ -259,7 +259,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
         onEndDialog(path, filesToCopy, conflictingFiles);
     }
 
-    private void finishCopying(ArrayList<String> paths, ArrayList<ArrayList<BaseFile>> filesToCopyPerFolder) {
+    private void finishCopying(ArrayList<String> paths, ArrayList<ArrayList<BaseFileParcelable>> filesToCopyPerFolder) {
         for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
             if (filesToCopyPerFolder.get(i) == null || filesToCopyPerFolder.get(i).size() == 0) {
                 filesToCopyPerFolder.remove(i);
@@ -295,10 +295,10 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
 
     class CopyNode {
         private String path;
-        private ArrayList<BaseFile> filesToCopy, conflictingFiles;
+        private ArrayList<BaseFileParcelable> filesToCopy, conflictingFiles;
         private ArrayList<CopyNode> nextNodes = new ArrayList<>();
 
-        CopyNode(String p, ArrayList<BaseFile> filesToCopy) {
+        CopyNode(String p, ArrayList<BaseFileParcelable> filesToCopy) {
             path = p;
             this.filesToCopy = filesToCopy;
 
@@ -366,11 +366,11 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<BaseFile>, String, Prep
             return path;
         }
 
-        ArrayList<BaseFile> getFilesToCopy() {
+        ArrayList<BaseFileParcelable> getFilesToCopy() {
             return filesToCopy;
         }
 
-        ArrayList<BaseFile> getConflictingFiles() {
+        ArrayList<BaseFileParcelable> getConflictingFiles() {
             return conflictingFiles;
         }
 

@@ -55,8 +55,8 @@ import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
 import com.amaze.filemanager.asyncronious.asynctasks.RarHelperTask;
 import com.amaze.filemanager.asyncronious.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asyncronious.services.ExtractService;
-import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.ui.ZipObj;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.ui.ZipObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -95,7 +95,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      * with a Map maintaining key - the root of directory created (for deletion purposes after we exit out of here
      * and value - the path of file to open
      */
-    public ArrayList<BaseFile> files;
+    public ArrayList<BaseFileParcelable> files;
     public Boolean selection = false;
     public String current;
     public String skin, accentColor, iconskin, year;
@@ -106,8 +106,8 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public Archive archive;
     public ArrayList<FileHeader> wholelistRar = new ArrayList<>();
     public ArrayList<FileHeader> elementsRar = new ArrayList<>();
-    public ArrayList<ZipObj> wholelist = new ArrayList<>();
-    public ArrayList<ZipObj> elements = new ArrayList<>();
+    public ArrayList<ZipObjectParcelable> wholelist = new ArrayList<>();
+    public ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
     public MainActivity mainActivity;
     public RecyclerView listView;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -215,7 +215,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-            files.add(new BaseFile(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
+            files.add(new BaseFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
             if (f.getPath().endsWith(".rar")) {
                 openmode = RAR_FILE;
                 loadFileList(f.getPath());
@@ -462,14 +462,14 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    public void createZipViews(ArrayList<ZipObj> zipEntries, String dir) {
+    public void createZipViews(ArrayList<ZipObjectParcelable> zipEntries, String dir) {
         if (rarAdapter == null) {
             rarAdapter = new RarAdapter(getActivity(), utilsProvider, zipEntries, this, true);
             listView.setAdapter(rarAdapter);
         } else rarAdapter.generate(zipEntries, true);
         folder = 0;
         file = 0;
-        for (ZipObj zipEntry : zipEntries)
+        for (ZipObjectParcelable zipEntry : zipEntries)
             if (zipEntry.isDirectory()) folder++;
             else file++;
         openmode = ZIP_FILE;

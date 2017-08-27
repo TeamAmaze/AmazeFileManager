@@ -48,7 +48,7 @@ import com.amaze.filemanager.asyncronious.services.CopyService;
 import com.amaze.filemanager.asyncronious.services.EncryptService;
 import com.amaze.filemanager.asyncronious.services.ExtractService;
 import com.amaze.filemanager.asyncronious.services.ZipService;
-import com.amaze.filemanager.utils.DataPackage;
+import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -141,7 +141,7 @@ public class ProcessViewerFragment extends Fragment {
 
             copyService.setProgressListener(new CopyService.ProgressListener() {
                 @Override
-                public void onUpdate(final DataPackage dataPackage) {
+                public void onUpdate(final CopyDataParcelable dataPackage) {
                     if (getActivity() == null || getActivity().getSupportFragmentManager().
                             findFragmentByTag(MainActivity.KEY_INTENT_PROCESS_VIEWER) == null) {
                         // callback called when we're not inside the app
@@ -187,7 +187,7 @@ public class ProcessViewerFragment extends Fragment {
 
             extractService.setProgressListener(new ExtractService.ProgressListener() {
                 @Override
-                public void onUpdate(final DataPackage dataPackage) {
+                public void onUpdate(final CopyDataParcelable dataPackage) {
                     if (getActivity()==null) {
                         // callback called when we're not inside the app
                         return;
@@ -230,7 +230,7 @@ public class ProcessViewerFragment extends Fragment {
 
             zipService.setProgressListener(new ZipService.ProgressListener() {
                 @Override
-                public void onUpdate(final DataPackage dataPackage) {
+                public void onUpdate(final CopyDataParcelable dataPackage) {
                     if (getActivity() == null) {
                         // callback called when we're not inside the app
                         return;
@@ -263,7 +263,7 @@ public class ProcessViewerFragment extends Fragment {
             EncryptService encryptService = binder.getService();
 
             for (int i=0; i<encryptService.getDataPackageSize(); i++) {
-                DataPackage dataPackage = encryptService.getDataPackage(i);
+                CopyDataParcelable dataPackage = encryptService.getDataPackage(i);
                 processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
                         : ServiceType.ENCRYPT);
             }
@@ -273,7 +273,7 @@ public class ProcessViewerFragment extends Fragment {
 
             encryptService.setProgressListener(new EncryptService.ProgressListener() {
                 @Override
-                public void onUpdate(final DataPackage dataPackage) {
+                public void onUpdate(final CopyDataParcelable dataPackage) {
                     if (getActivity() == null) {
                         // callback called when we're not inside the app
                         return;
@@ -333,7 +333,7 @@ public class ProcessViewerFragment extends Fragment {
     }
 
     /**
-     * Enum helps defining the result type for {@link #processResults(DataPackage, ServiceType)}
+     * Enum helps defining the result type for {@link #processResults(CopyDataParcelable, ServiceType)}
      * to process
      */
     enum ServiceType {
@@ -341,7 +341,7 @@ public class ProcessViewerFragment extends Fragment {
         COPY, EXTRACT, COMPRESS, ENCRYPT, DECRYPT
     }
 
-    public void processResults(final DataPackage dataPackage, ServiceType serviceType) {
+    public void processResults(final CopyDataParcelable dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
             String name = dataPackage.getName();
             long total = dataPackage.getTotal();

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.ItemPopupMenu;
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -71,9 +72,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
 
-
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
-                           ArrayList<LayoutElement> itemsRaw, Context context, boolean showHeaders) {
+                           ArrayList<LayoutElementParcelable> itemsRaw, Context context, boolean showHeaders) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
@@ -194,8 +194,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
     }
 
-    public ArrayList<LayoutElement> getCheckedItems() {
-        ArrayList<LayoutElement> selected = new ArrayList<>();
+    public ArrayList<LayoutElementParcelable> getCheckedItems() {
+        ArrayList<LayoutElementParcelable> selected = new ArrayList<>();
 
         for (int i = 0; i < itemsDigested.size(); i++) {
             if (itemsDigested.get(i).getChecked() == ListItem.CHECKED) {
@@ -258,7 +258,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
      * after you are finished you must call createHeaders
      * @param e
      */
-    public void addItem(LayoutElement e) {
+    public void addItem(LayoutElementParcelable e) {
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
             itemsDigested.add(itemsDigested.size()-1, new ListItem(e));
         } else if(mainFrag.IS_LIST) {
@@ -271,17 +271,17 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         notifyItemInserted(getItemCount());
     }
 
-    public void setItems(ArrayList<LayoutElement> arrayList) {
+    public void setItems(ArrayList<LayoutElementParcelable> arrayList) {
         setItems(arrayList, true);
     }
 
-    private void setItems(ArrayList<LayoutElement> arrayList, boolean invalidate) {
+    private void setItems(ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
         synchronized (arrayList) {
             itemsDigested.clear();
             offset = 0;
             stoppedAnimation = false;
 
-            for (LayoutElement e : arrayList) {
+            for (LayoutElementParcelable e : arrayList) {
                 itemsDigested.add(new ListItem(e));
             }
 
@@ -305,7 +305,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         for (int i = 0; i < itemsDigested.size(); i++) {
             
                 if (itemsDigested.get(i).elem != null) {
-                    LayoutElement nextItem = itemsDigested.get(i).elem;
+                    LayoutElementParcelable nextItem = itemsDigested.get(i).elem;
 
                     if (!headers[0] && nextItem.isDirectory()) {
                         headers[0] = true;
@@ -396,7 +396,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                 animate(holder);
                 itemsDigested.get(p).setAnimate(true);
             }
-            final LayoutElement rowItem = itemsDigested.get(p).elem;
+            final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
             if (mainFrag.IS_LIST) {
                 holder.rl.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -740,7 +740,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         }
     }
 
-    private void showPopup(View v, final LayoutElement rowItem, final int position) {
+    private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -779,12 +779,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private static class ListItem {
         public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
 
-        private LayoutElement elem;
+        private LayoutElementParcelable elem;
         private int specialType;
         private boolean checked;
         private boolean animate;
 
-        ListItem(LayoutElement elem) {
+        ListItem(LayoutElementParcelable elem) {
             this.elem = elem;
             specialType = TYPE_ITEM;
         }

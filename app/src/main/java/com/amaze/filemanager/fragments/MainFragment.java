@@ -79,11 +79,11 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -140,14 +140,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
-    public ArrayList<BaseFile> searchHelper = new ArrayList<>();
+    public ArrayList<BaseFileParcelable> searchHelper = new ArrayList<>();
     public int no;
 
     private String CURRENT_PATH = "";
     /**
      * This is not an exact copy of the elements in the adapter
      */
-    private ArrayList<LayoutElement> LIST_ELEMENTS;
+    private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
     private RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
     private Resources res;
@@ -173,7 +173,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private CustomFileObserver customFileObserver;
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
-    private BaseFile encryptBaseFile;            // the cached base file which we're to open, delete it later
+    private BaseFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -456,7 +456,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             openMode = OpenMode.getOpenMode(savedInstanceState.getInt("openMode", 0));
             if (openMode == OpenMode.SMB)
                 smbPath = savedInstanceState.getString("SmbPath");
-            putLayoutElements(savedInstanceState.<LayoutElement>getParcelableArrayList("list"));
+            putLayoutElements(savedInstanceState.<LayoutElementParcelable>getParcelableArrayList("list"));
             CURRENT_PATH = cur;
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
@@ -533,7 +533,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
          * may be called multiple times if the mode is invalidated.
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<LayoutElement> positions = adapter.getCheckedItems();
+            ArrayList<LayoutElementParcelable> positions = adapter.getCheckedItems();
             TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
@@ -574,7 +574,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         showOption(R.id.share, menu);
                         if (getMainActivity().mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-                        for (LayoutElement e : adapter.getCheckedItems()) {
+                        for (LayoutElementParcelable e : adapter.getCheckedItems()) {
                             File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
@@ -612,7 +612,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         if (Build.VERSION.SDK_INT >= 16)
                             showOption(R.id.openmulti, menu);
                     try {
-                        for (LayoutElement e : adapter.getCheckedItems()) {
+                        for (LayoutElementParcelable e : adapter.getCheckedItems()) {
                             File x = new File(e.getDesc());
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
@@ -634,7 +634,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             computeScroll();
-            ArrayList<LayoutElement> checkedItems = adapter.getCheckedItems();
+            ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
             switch (item.getItemId()) {
                 case R.id.openmulti:
 
@@ -643,8 +643,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         Intent intent_result = new Intent(Intent.ACTION_SEND_MULTIPLE);
                         ArrayList<Uri> resulturis = new ArrayList<>();
 
-                        for (LayoutElement element : checkedItems) {
-                            BaseFile baseFile = element.generateBaseFile();
+                        for (LayoutElementParcelable element : checkedItems) {
+                            BaseFileParcelable baseFile = element.generateBaseFile();
                             Uri resultUri = getUriForBaseFile(baseFile);
 
                             if (resultUri != null) {
@@ -662,7 +662,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     }
                     return true;
                 case R.id.about:
-                    LayoutElement x = checkedItems.get(0);
+                    LayoutElementParcelable x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
                             x.getPermissions(), (ThemedActivity) getActivity(), ThemedActivity.rootMode,
                             utilsProvider.getAppTheme());
@@ -674,7 +674,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<>();
-                    for (LayoutElement e: checkedItems) {
+                    for (LayoutElementParcelable e: checkedItems) {
                         arrayList.add(new File(e.getDesc()));
                     }
                     if (arrayList.size() > 100)
@@ -711,7 +711,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.rename:
 
                     final ActionMode m = mode;
-                    final BaseFile f;
+                    final BaseFileParcelable f;
                     f = checkedItems.get(0).generateBaseFile();
                     rename(f);
                     mode.finish();
@@ -729,7 +729,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.cpy:
                     getMainActivity().MOVE_PATH = null;
-                    ArrayList<BaseFile> copies = new ArrayList<>();
+                    ArrayList<BaseFileParcelable> copies = new ArrayList<>();
                     for (int i2 = 0; i2 < checkedItems.size(); i2++) {
                         copies.add(checkedItems.get(i2).generateBaseFile());
                     }
@@ -739,7 +739,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.cut:
                     getMainActivity().COPY_PATH = null;
-                    ArrayList<BaseFile> copie = new ArrayList<>();
+                    ArrayList<BaseFileParcelable> copie = new ArrayList<>();
                     for (int i3 = 0; i3 < checkedItems.size(); i3++) {
                         copie.add(checkedItems.get(i3).generateBaseFile());
                     }
@@ -748,7 +748,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.compress:
-                    ArrayList<BaseFile> copies1 = new ArrayList<>();
+                    ArrayList<BaseFileParcelable> copies1 = new ArrayList<>();
                     for (int i4 = 0; i4 < checkedItems.size(); i4++) {
                         copies1.add(checkedItems.get(i4).generateBaseFile());
                     }
@@ -832,7 +832,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param e the list item
      * @param imageView the check {@link RoundedImageView} that is to be animated
      */
-    public void onListItemClicked(boolean isBackButton, int position, LayoutElement e, ImageView imageView) {
+    public void onListItemClicked(boolean isBackButton, int position, LayoutElementParcelable e, ImageView imageView) {
         if (results) {
             // check to initialize search results
             // if search task is been running, cancel it
@@ -881,7 +881,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     // decrypt the file
                     isEncryptOpen = true;
 
-                    encryptBaseFile = new BaseFile(getActivity().getExternalCacheDir().getPath()
+                    encryptBaseFile = new BaseFileParcelable(getActivity().getExternalCacheDir().getPath()
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
@@ -955,10 +955,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     /**
-     * Returns the intent with uri corresponding to specific {@link BaseFile} back to external app
+     * Returns the intent with uri corresponding to specific {@link BaseFileParcelable} back to external app
      * @param baseFile
      */
-    public void returnIntentResults(BaseFile baseFile) {
+    public void returnIntentResults(BaseFileParcelable baseFile) {
 
         getMainActivity().mReturnIntent = false;
 
@@ -995,7 +995,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param baseFile
      * @return
      */
-    private Uri getUriForBaseFile(BaseFile baseFile) {
+    private Uri getUriForBaseFile(BaseFileParcelable baseFile) {
 
         switch (baseFile.getMode()) {
             case FILE:
@@ -1101,7 +1101,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param results  is the list of elements a result from search
      * @param grid     whether to set grid view or list view
      */
-    public void createViews(ArrayList<LayoutElement> bitmap, boolean back, String path,
+    public void createViews(ArrayList<LayoutElementParcelable> bitmap, boolean back, String path,
                             final OpenMode openMode, boolean results, boolean grid) {
         if (bitmap != null && isAdded()) {
             synchronized (bitmap) {
@@ -1117,7 +1117,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
                     //create the "go to parent" button (aka '..')
                     Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                    bitmap.add(0, new LayoutElement(new BitmapDrawable(res, iconBitmap), "..", "",
+                    bitmap.add(0, new LayoutElementParcelable(new BitmapDrawable(res, iconBitmap), "..", "",
                             "", goToParentText, 0, false, true, ""));
                 }
               
@@ -1235,7 +1235,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      *
      * @param f the file to rename
      */
-    public void rename(final BaseFile f) {
+    public void rename(final BaseFileParcelable f) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         String name = f.getName();
         builder.input("", name, false, new MaterialDialog.InputCallback() {
@@ -1492,7 +1492,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         BitmapDrawable iconDrawable;
 
         synchronized (getLayoutElements()) {
-            for (LayoutElement layoutElement : getLayoutElements()) {
+            for (LayoutElementParcelable layoutElement : getLayoutElements()) {
                 if (forceReload || layoutElement.getImageId() == null) {
                     iconDrawable = layoutElement.isDirectory() ?
                             folder : Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
@@ -1502,8 +1502,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
     }
 
-    public ArrayList<LayoutElement> addToSmb(SmbFile[] mFile, String path) throws SmbException {
-        ArrayList<LayoutElement> a = new ArrayList<>();
+    public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path) throws SmbException {
+        ArrayList<LayoutElementParcelable> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (SmbFile aMFile : mFile) {
             if (dataUtils.getHiddenfiles().contains(aMFile.getPath()))
@@ -1515,7 +1515,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
             if (aMFile.isDirectory()) {
                 folder_count++;
-                LayoutElement layoutElement = new LayoutElement(folder, name, aMFile.getPath(),
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, name, aMFile.getPath(),
                         "", "", "", 0, false, aMFile.lastModified() + "", true);
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
@@ -1523,7 +1523,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             } else {
                 file_count++;
                 try {
-                    LayoutElement layoutElement = new LayoutElement(
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                             Icons.loadMimeIcon(aMFile.getPath(), !IS_LIST, res), name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
                             aMFile.length()), aMFile.length(), false,
@@ -1540,13 +1540,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     // method to add search result entry to the LIST_ELEMENT arrayList
-    private LayoutElement addTo(BaseFile mFile) {
+    private LayoutElementParcelable addTo(BaseFileParcelable mFile) {
         File f = new File(mFile.getPath());
         String size = "";
         if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                LayoutElement layoutElement = new LayoutElement(folder, f.getPath(), mFile.getPermission(),
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
 
                 layoutElement.setMode(mFile.getMode());
@@ -1567,7 +1567,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     //e.printStackTrace();
                 }
                 try {
-                    LayoutElement layoutElement = new LayoutElement(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
                             f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
                     layoutElement.setMode(mFile.getMode());
                     addLayoutElement(layoutElement);
@@ -1590,7 +1590,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (!isEncryptOpen && encryptBaseFile != null) {
                 // we've opened the file and are ready to delete it
-                ArrayList<BaseFile> baseFiles = new ArrayList<>();
+                ArrayList<BaseFileParcelable> baseFiles = new ArrayList<>();
                 baseFiles.add(encryptBaseFile);
                 new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(baseFiles);
             }
@@ -1618,7 +1618,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         return CURRENT_PATH;
     }
 
-    private void addShortcut(LayoutElement path) {
+    private void addShortcut(LayoutElementParcelable path) {
         //Adding shortcut for MainActivity
         //on Home screen
         Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
@@ -1644,7 +1644,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     // adds search results based on result boolean. If false, the adapter is initialised with initial
     // values, if true, new values are added to the adapter.
-    public void addSearchResult(BaseFile a, String query) {
+    public void addSearchResult(BaseFileParcelable a, String query) {
         if (listView != null) {
 
             // initially clearing the array for new result set
@@ -1655,7 +1655,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
 
             // adding new value to LIST_ELEMENTS
-            LayoutElement layoutElementAdded = addTo(a);
+            LayoutElementParcelable layoutElementAdded = addTo(a);
             if (!results) {
                 createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
@@ -1741,19 +1741,19 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         return (MainActivity) getActivity();
     }
 
-    public synchronized void addLayoutElement(LayoutElement layoutElement) {
+    public synchronized void addLayoutElement(LayoutElementParcelable layoutElement) {
         this.LIST_ELEMENTS.add(layoutElement);
     }
 
-    public synchronized LayoutElement getLayoutElement(int index) {
+    public synchronized LayoutElementParcelable getLayoutElement(int index) {
         return this.LIST_ELEMENTS.get(index);
     }
 
-    public synchronized void putLayoutElements(ArrayList<LayoutElement> layoutElements) {
+    public synchronized void putLayoutElements(ArrayList<LayoutElementParcelable> layoutElements) {
         this.LIST_ELEMENTS = layoutElements;
     }
 
-    public synchronized ArrayList<LayoutElement> getLayoutElements() {
+    public synchronized ArrayList<LayoutElementParcelable> getLayoutElements() {
         return this.LIST_ELEMENTS;
     }
 

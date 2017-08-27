@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.BaseFileParcelable;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -44,9 +44,9 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.ArrayList;
 
-public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> {
+public class DeleteTask extends AsyncTask<ArrayList<BaseFileParcelable>, String, Boolean> {
 
-    private ArrayList<BaseFile> files;
+    private ArrayList<BaseFileParcelable> files;
     private Context cd;
     private boolean rootMode;
     private ZipExplorerFragment zipExplorerFragment;
@@ -69,20 +69,20 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
     }
 
-    protected Boolean doInBackground(ArrayList<BaseFile>... p1) {
+    protected Boolean doInBackground(ArrayList<BaseFileParcelable>... p1) {
         files = p1[0];
         boolean b = true;
         if(files.size()==0)return true;
 
         if (files.get(0).isOtgFile()) {
-            for (BaseFile a : files) {
+            for (BaseFileParcelable a : files) {
 
                 DocumentFile documentFile = OTGUtil.getDocumentFile(a.getPath(), cd, false);
                  b = documentFile.delete();
             }
         } else if (files.get(0).isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            for (BaseFile baseFile : files) {
+            for (BaseFileParcelable baseFile : files) {
                 try {
                     cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
                 } catch (Exception e) {
@@ -93,7 +93,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             }
         } else if (files.get(0).isBoxFile()) {
             CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            for (BaseFile baseFile : files) {
+            for (BaseFileParcelable baseFile : files) {
                 try {
                     cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
                 } catch (Exception e) {
@@ -104,7 +104,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             }
         } else if (files.get(0).isGoogleDriveFile()) {
             CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-            for (BaseFile baseFile : files) {
+            for (BaseFileParcelable baseFile : files) {
                 try {
                     cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
                 } catch (Exception e) {
@@ -115,7 +115,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             }
         } else if (files.get(0).isOneDriveFile()) {
             CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-            for (BaseFile baseFile : files) {
+            for (BaseFileParcelable baseFile : files) {
                 try {
                     cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
                 } catch (Exception e) {
@@ -126,7 +126,7 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
             }
         } else {
 
-            for(BaseFile a : files)
+            for(BaseFileParcelable a : files)
                 try {
                     (a).delete(cd, rootMode);
                 } catch (RootNotPermittedException e) {
@@ -138,18 +138,18 @@ public class DeleteTask extends AsyncTask<ArrayList<BaseFile>, String, Boolean> 
         // delete file from media database
         if(!files.get(0).isSmb()) {
             try {
-                for (BaseFile f : files) {
+                for (BaseFileParcelable f : files) {
                     delete(cd,f.getPath());
                 }
             } catch (Exception e) {
-                for (BaseFile f : files) {
+                for (BaseFileParcelable f : files) {
                     FileUtils.scanFile(f.getPath(), cd);
                 }
             }
         }
 
         // delete file entry from encrypted database
-        for (BaseFile file : files) {
+        for (BaseFileParcelable file : files) {
             if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                 CryptHandler handler = new CryptHandler(cd);
                 handler.clear(file.getPath());
