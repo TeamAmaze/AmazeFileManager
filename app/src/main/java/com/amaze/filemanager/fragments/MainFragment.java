@@ -462,7 +462,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
-            getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count);
+            getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count, this);
             createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
@@ -1207,10 +1207,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         }
                     }
                 });
-
-                if (getMainActivity().getAppbar().getBottomBar().areButtonsShowing()) {
-                    getMainActivity().getAppbar().getBottomBar().showButtons(this);
-                }
 
                 startFileObserver();
                 //getMainActivity().invalidateFab(openMode);

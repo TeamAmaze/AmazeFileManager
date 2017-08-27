@@ -20,12 +20,10 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -46,7 +44,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -172,8 +169,8 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         super.onActivityCreated(savedInstanceState);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         s = getArguments().getString(KEY_PATH);
-        Uri uri = Uri.parse(s);
-        f = new File(uri.getPath());
+        f = new File(Uri.parse(s).getPath());
+
         mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -183,29 +180,29 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
                         stopAnim();
                     }
                     rarAdapter.stoppedAnimation = true;
-
                 }
                 stopAnims = false;
                 return false;
             }
         });
+
         listView.setVisibility(View.VISIBLE);
         mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
         res = getResources();
-        mainActivity.supportInvalidateOptionsMenu();
-        if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
+
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
             rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-        else
+        } else {
             listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
+        }
 
         gobackitem = sp.getBoolean("goBack_checkbox", false);
         coloriseIcons = sp.getBoolean("coloriseIcons", true);
-        Calendar calendar = Calendar.getInstance();
         showSize = sp.getBoolean("showFileSize", false);
         showLastModified = sp.getBoolean("showLastModified", true);
         showDividers = sp.getBoolean("showDividers", true);
-        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
+        year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
         skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
         iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
@@ -213,57 +210,21 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         if (savedInstanceState == null && f != null) {
-
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
             files.add(new BaseFile(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
             if (f.getPath().endsWith(".rar")) {
                 openmode = RAR_FILE;
-                setupRar(null);
+                loadFileList(f.getPath());
             } else {
                 openmode = ZIP_FILE;
-                setupZip(null);
+                loadFileList(s);
             }
         } else {
-
-            f = new File(savedInstanceState.getString(KEY_FILE));
-            s = savedInstanceState.getString(KEY_URI);
-            uri = Uri.parse(s);
-            f = new File(uri.getPath());
-            files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
-            isOpen = savedInstanceState.getBoolean(KEY_OPEN);
-            if (f.getPath().endsWith(".rar")) {
-                openmode = RAR_FILE;
-                setupRar(savedInstanceState);
-            } else {
-                openmode = ZIP_FILE;
-                setupZip(savedInstanceState);
-            }
-
+            onRestoreInstanceState(savedInstanceState);
         }
         mainActivity.supportInvalidateOptionsMenu();
-        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-
-        });
-
-    }
-
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
     }
 
     @Override
@@ -274,12 +235,39 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
             outState.putParcelableArrayList(KEY_WHOLE_LIST, wholelist);
             outState.putParcelableArrayList(KEY_ELEMENTS, elements);
         }
+
         outState.putInt(KEY_OPEN_MODE, openmode);
         outState.putString(KEY_PATH, current);
         outState.putString(KEY_URI, s);
         outState.putString(KEY_FILE, f.getPath());
         outState.putParcelableArrayList(KEY_CACHE_FILES, files);
         outState.putBoolean(KEY_OPEN, isOpen);
+    }
+
+    private void onRestoreInstanceState(Bundle savedInstanceState) {
+        f = new File(savedInstanceState.getString(KEY_FILE));
+        s = savedInstanceState.getString(KEY_URI);
+        f = new File(Uri.parse(s).getPath());
+        files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
+        isOpen = savedInstanceState.getBoolean(KEY_OPEN);
+        if (f.getPath().endsWith(".rar")) {
+            openmode = RAR_FILE;
+            String path = savedInstanceState.getString(KEY_FILE);
+            if (path != null && path.length() > 0) {
+                f = new File(path);
+                current = savedInstanceState.getString(KEY_PATH);
+                new RarHelperTask(this, current).execute(f);
+            } else {
+                loadFileList(f.getPath());
+            }
+        } else {
+            openmode = ZIP_FILE;
+            wholelist = savedInstanceState.getParcelableArrayList(KEY_WHOLE_LIST);
+            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
+            current = savedInstanceState.getString(KEY_PATH);
+            f = new File(savedInstanceState.getString(KEY_FILE));
+            createZipViews(elements, current);
+        }
     }
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -386,8 +374,7 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         // in case of opening any unknown file inside the zip
 
         if (files.get(0).exists()) {
-
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(files);
         }
     }
 
@@ -408,7 +395,6 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
         }
@@ -429,36 +415,14 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         }
     };
 
-    private void setupRar(Bundle savedInstanceState) {
+    private void loadFileList(String path) {
+        if(openmode == ZIP_FILE) {
+            new ZipHelperTask(this, "").execute(path);
 
-        if (savedInstanceState == null)
-            loadRarList(f.getPath());
-        else {
-            String path = savedInstanceState.getString(KEY_FILE);
-            if (path != null && path.length() > 0) {
-                f = new File(path);
-                current = savedInstanceState.getString(KEY_PATH);
-                new RarHelperTask(this, current).execute(f);
-            } else loadRarList(f.getPath());
+        } else {
+            File f = new File(path);
+            new RarHelperTask(this, "").execute(f);
         }
-    }
-
-    private void setupZip(Bundle savedInstanceState) {
-        if (savedInstanceState == null)
-            loadlist(s);
-        else {
-            wholelist = savedInstanceState.getParcelableArrayList(KEY_WHOLE_LIST);
-            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
-            current = savedInstanceState.getString(KEY_PATH);
-            f = new File(savedInstanceState.getString(KEY_FILE));
-            createviews(elements, current);
-        }
-    }
-
-    private void loadRarList(String path) {
-        File f = new File(path);
-        new RarHelperTask(this, "").execute(f);
-
     }
 
     public boolean canGoBack() {
@@ -482,10 +446,10 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
 
     private void refresh() {
         switch (openmode) {
-            case 0:
+            case ZIP_FILE:
                 new ZipHelperTask(this, current).execute(s);
                 break;
-            case 1:
+            case RAR_FILE:
                 new RarHelperTask(this, current).execute(f);
                 break;
         }
@@ -493,10 +457,10 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
 
     private void updateBottomBar() {
         String path = current != null && current.length() != 0? f.getName() + "/" + current:f.getName();
-        mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file);
+        mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
+    public void createZipViews(ArrayList<ZipObj> zipEntries, String dir) {
         if (rarAdapter == null) {
             rarAdapter = new RarAdapter(getActivity(), utilsProvider, zipEntries, this, true);
             listView.setAdapter(rarAdapter);
@@ -506,11 +470,11 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         for (ZipObj zipEntry : zipEntries)
             if (zipEntry.isDirectory()) folder++;
             else file++;
-        createViews(dir);
         openmode = ZIP_FILE;
+        createViews(dir);
     }
 
-    public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
+    public void createRarViews(ArrayList<FileHeader> zipEntries, String dir) {
         if (rarAdapter == null) {
             rarAdapter = new RarAdapter(getActivity(), utilsProvider, zipEntries, this);
             listView.setAdapter(rarAdapter);
@@ -554,19 +518,17 @@ public class ZipViewer extends Fragment implements BottomBarButtonPath {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void loadlist(String path) {
-        new ZipHelperTask(this, "").execute(path);
-
-    }
-
     @Override
     public void changePath(String path) {
-        if(path.equals("/")) path = "";
+        if(path.startsWith("/")) path = path.substring(1);
+
         if (openmode == ZIP_FILE) {
-            new ZipHelperTask(this, new File(current).getParent()).execute(s);
+            new ZipHelperTask(this, path).execute(s);
         } else {
             new RarHelperTask(this, path).execute(f);
         }
+
+        updateBottomBar();
     }
 
     @Override
