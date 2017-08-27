@@ -80,7 +80,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -285,7 +285,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
         DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
         this.setRetainInstance(false);
-        HFile f = new HFile(OpenMode.UNKNOWN, CURRENT_PATH);
+        HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         getMainActivity().getAppbar().getBottomBar().setClickListener();
         ic = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
@@ -1309,7 +1309,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             return;
         }
 
-        HFile currentFile = new HFile(openMode, CURRENT_PATH);
+        HybridFile currentFile = new HybridFile(openMode, CURRENT_PATH);
         if (!results) {
             if (!mRetainSearchTask) {
                 // normal case
@@ -1350,7 +1350,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
                     // getting parent path to resume search from there
-                    String parentPath = new HFile(openMode, CURRENT_PATH).getParent(getActivity());
+                    String parentPath = new HybridFile(openMode, CURRENT_PATH).getParent(getActivity());
                     // don't fuckin' remove this line, we need to change
                     // the path back to parent on back press
                     CURRENT_PATH = parentPath;
@@ -1400,7 +1400,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             loadlist(home, false, OpenMode.FILE);
             return;
         }
-        HFile currentFile = new HFile(openMode, CURRENT_PATH);
+        HybridFile currentFile = new HybridFile(openMode, CURRENT_PATH);
         if (!results) {
             if (selection) {
                 adapter.toggleChecked(false);
@@ -1604,7 +1604,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    getMainActivity().mainActivityHelper.mkFile(new HFile(OpenMode.FILE, f1.getPath()), this);
+                    getMainActivity().mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, f1.getPath()), this);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1839,7 +1839,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         // add path for this event first
                         pathsAdded.add(path);
                         for (String pathAdded : pathsAdded) {
-                            HFile fileCreated = new HFile(openMode, CURRENT_PATH + "/" + pathAdded);
+                            HybridFile fileCreated = new HybridFile(openMode, CURRENT_PATH + "/" + pathAdded);
                             addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
                         }
                         // reset the buffer after every threshold time

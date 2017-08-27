@@ -95,7 +95,7 @@ import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
@@ -506,7 +506,7 @@ public class MainActivity extends ThemedActivity implements
                         transaction2.commit();
                     } else {
                         if (path != null && path.length() > 0) {
-                            HFile file = new HFile(OpenMode.UNKNOWN, path);
+                            HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
                             file.generateMode(MainActivity.this);
                             if (file.isDirectory(MainActivity.this))
                                 goToMain(path);
@@ -763,7 +763,7 @@ public class MainActivity extends ThemedActivity implements
         } else if (fragment instanceof FTPServerFragment) {
             //returning back from FTP server
             if (path != null && path.length() > 0) {
-                HFile file = new HFile(OpenMode.UNKNOWN, path);
+                HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
                 file.generateMode(this);
                 if (file.isDirectory(this))
                     goToMain(path);
@@ -1756,7 +1756,7 @@ public class MainActivity extends ThemedActivity implements
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
-                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
+                    mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
 
                     break;
                 case DataUtils.EXTRACT:
@@ -2059,7 +2059,7 @@ public class MainActivity extends ThemedActivity implements
         }
 
         if (pendingPath != null) {
-            HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
             hFile.generateMode(this);
             if (hFile.isSimpleFile()) {
                 FileUtils.openFile(new File(pendingPath), mainActivity, sharedPref);

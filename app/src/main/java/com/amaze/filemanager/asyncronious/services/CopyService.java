@@ -44,7 +44,7 @@ import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
@@ -249,7 +249,7 @@ public class CopyService extends Service {
 
         class Copy {
 
-            ArrayList<HFile> failedFOps;
+            ArrayList<HybridFile> failedFOps;
             ArrayList<BaseFile> toDelete;
 
             Copy() {
@@ -278,16 +278,16 @@ public class CopyService extends Service {
 
                         try {
 
-                            HFile hFile;
+                            HybridFile hFile;
                             if (targetPath.contains(getExternalCacheDir().getPath())) {
                                 // the target open mode is not the one we're currently in!
                                 // we're processing the file for cache
-                                hFile = new HFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(),
+                                hFile = new HybridFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(),
                                         f1.isDirectory());
                             } else {
 
                                 // the target open mode is where we're currently at
-                                hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(),
                                         f1.isDirectory());
                             }
 
@@ -321,13 +321,13 @@ public class CopyService extends Service {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         if (!progressHandler.getCancelled()) {
 
-                            HFile hFile = new HFile(mode, targetPath, sourceFiles.get(i).getName(),
+                            HybridFile hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(),
                                     sourceFiles.get(i).isDirectory());
                             progressHandler.setSourceFilesProcessed(++sourceProgress);
                             progressHandler.setFileName(sourceFiles.get(i).getName());
                             copyRoot(sourceFiles.get(i), hFile, move);
-                            /*if(checkFiles(new HFile(sourceFiles.get(i).getMode(),path),
-                            new HFile(OpenMode.ROOT,targetPath+"/"+name))){
+                            /*if(checkFiles(new HybridFile(sourceFiles.get(i).getMode(),path),
+                            new HybridFile(OpenMode.ROOT,targetPath+"/"+name))){
                                 failedFOps.add(sourceFiles.get(i));
                             }*/
                         }
@@ -351,7 +351,7 @@ public class CopyService extends Service {
                 }
             }
 
-            void copyRoot(BaseFile sourceFile, HFile targetFile, boolean move) {
+            void copyRoot(BaseFile sourceFile, HybridFile targetFile, boolean move) {
 
                 try {
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
@@ -364,7 +364,7 @@ public class CopyService extends Service {
                 FileUtils.scanFile(targetFile.getPath(), c);
             }
 
-            private void copyFiles(final BaseFile sourceFile, final HFile targetFile,
+            private void copyFiles(final BaseFile sourceFile, final HybridFile targetFile,
                                    ProgressHandler progressHandler) throws IOException {
 
                 if (sourceFile.isDirectory()) {
@@ -385,7 +385,7 @@ public class CopyService extends Service {
                     if(progressHandler.getCancelled()) return;
                     ArrayList<BaseFile> filePaths = sourceFile.listFiles(c, false);
                     for (BaseFile file : filePaths) {
-                        HFile destFile = new HFile(targetFile.getMode(), targetFile.getPath(),
+                        HybridFile destFile = new HybridFile(targetFile.getMode(), targetFile.getPath(),
                                 file.getName(), file.isDirectory());
                         copyFiles(file, destFile, progressHandler);
                     }
@@ -412,7 +412,7 @@ public class CopyService extends Service {
      * @param failedOps
      * @param move
      */
-    void generateNotification(ArrayList<HFile> failedOps, boolean move) {
+    void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
 
         mNotifyManager.cancelAll();
 
@@ -521,15 +521,15 @@ public class CopyService extends Service {
     //check if copy is successful
     // avoid using the method as there is no way to know when we would be returning from command callbacks
     // rather confirm from the command result itself, inside it's callback
-    boolean checkFiles(HFile hFile1, HFile hFile2) throws RootNotPermittedException {
+    boolean checkFiles(HybridFile hFile1, HybridFile hFile2) throws RootNotPermittedException {
         if (RootHelper.isDirectory(hFile1.getPath(), ThemedActivity.rootMode, 5)) {
             if (RootHelper.fileExists(hFile2.getPath())) return false;
             ArrayList<BaseFile> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
             if (baseFiles.size() > 0) {
                 boolean b = true;
                 for (BaseFile baseFile : baseFiles) {
-                    if (!checkFiles(new HFile(baseFile.getMode(), baseFile.getPath()),
-                            new HFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName()))))
+                    if (!checkFiles(new HybridFile(baseFile.getMode(), baseFile.getPath()),
+                            new HybridFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName()))))
                         b = false;
                 }
                 return b;

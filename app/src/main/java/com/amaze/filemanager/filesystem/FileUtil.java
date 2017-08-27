@@ -201,7 +201,7 @@ public abstract class FileUtil {
                         String finalFilePath = currentPath + "/" + documentFile.getName();
                         DataUtils dataUtils = DataUtils.getInstance();
 
-                        HFile hFile = new HFile(OpenMode.UNKNOWN, currentPath);
+                        HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
                         hFile.generateMode(mainActivity);
 
                         switch (hFile.getMode()) {
@@ -425,7 +425,7 @@ public abstract class FileUtil {
     /**
      * Create a folder. The folder may even be on external SD card for Kitkat.
      *
-     * @deprecated use {@link #mkdirs(Context, HFile)}
+     * @deprecated use {@link #mkdirs(Context, HybridFile)}
      * @param file  The folder to be created.
      * @return True if creation was successful.
      */
@@ -461,7 +461,7 @@ public abstract class FileUtil {
         return false;
     }
 
-    public static boolean mkdirs(Context context, HFile file) {
+    public static boolean mkdirs(Context context, HybridFile file) {
         boolean isSuccessful = true;
         switch (file.mode) {
             case SMB:

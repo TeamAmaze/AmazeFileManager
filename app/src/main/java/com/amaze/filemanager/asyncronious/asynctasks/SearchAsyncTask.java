@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -58,7 +58,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
     protected Void doInBackground(String... params) {
 
         String path = params[0];
-        HFile file = new HFile(mOpenMode, path);
+        HybridFile file = new HybridFile(mOpenMode, path);
         file.generateMode(activity.get());
         if (file.isSmb()) return null;
 
@@ -100,7 +100,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
      *
      * @param directory the current path
      */
-    private void search(HFile directory, SearchFilter filter) {
+    private void search(HybridFile directory, SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
             ArrayList<BaseFile> filesInDirectory = directory.listFiles(activity.get(), mRootMode);
             for (BaseFile file : filesInDirectory) {
@@ -125,7 +125,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
      * @param file  the current path
      * @param query the searched text
      */
-    private void search(HFile file, final String query) {
+    private void search(HybridFile file, final String query) {
         search(file, new SearchFilter() {
             @Override
             public boolean searchFilter(String fileName) {
@@ -140,7 +140,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
      * @param file    the current file
      * @param pattern the compiled java regex
      */
-    private void searchRegExFind(HFile file, final Pattern pattern) {
+    private void searchRegExFind(HybridFile file, final Pattern pattern) {
         search(file, new SearchFilter() {
             @Override
             public boolean searchFilter(String fileName) {
@@ -155,7 +155,7 @@ public class SearchAsyncTask extends AsyncTask<String, BaseFile, Void> {
      * @param file    the current file
      * @param pattern the compiled java regex
      */
-    private void searchRegExMatch(HFile file, final Pattern pattern) {
+    private void searchRegExMatch(HybridFile file, final Pattern pattern) {
         search(file, new SearchFilter() {
             @Override
             public boolean searchFilter(String fileName) {

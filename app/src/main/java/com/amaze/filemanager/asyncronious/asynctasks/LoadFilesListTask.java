@@ -36,7 +36,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -96,7 +96,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         ma.folder_count = 0;
         ma.file_count = 0;
         if (openmode == OpenMode.UNKNOWN) {
-            HFile hFile = new HFile(OpenMode.UNKNOWN, path);
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
 
             if (hFile.isLocal()) {
@@ -123,7 +123,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
 
         switch (openmode) {
             case SMB:
-                HFile hFile = new HFile(OpenMode.SMB, path);
+                HybridFile hFile = new HybridFile(OpenMode.SMB, path);
                 try {
                     SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
                     list = ma.addToSmb(smbFile, path);

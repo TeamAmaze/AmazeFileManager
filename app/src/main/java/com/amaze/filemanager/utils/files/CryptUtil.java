@@ -13,7 +13,7 @@ import android.util.Base64;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -91,7 +91,7 @@ public class CryptUtil {
     public static final String CRYPT_EXTENSION = ".aze";
 
     private ProgressHandler progressHandler;
-    private ArrayList<HFile> failedOps;
+    private ArrayList<HybridFile> failedOps;
 
     /**
      * Constructor will start encryption process serially. Make sure to call with background thread.
@@ -106,13 +106,13 @@ public class CryptUtil {
      * @param sourceFile the file to encrypt
      */
     public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler,
-                     ArrayList<HFile> failedOps) throws CryptException {
+                     ArrayList<HybridFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
         // target encrypted file
-        HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
+        HybridFile hFile = new HybridFile(sourceFile.getMode(), sourceFile.getParent(context));
 
         try {
 
@@ -137,12 +137,12 @@ public class CryptUtil {
      *                   the source's parent in normal case
      */
     public CryptUtil(Context context, BaseFile baseFile, String targetPath,
-                     ProgressHandler progressHandler, ArrayList<HFile> failedOps) throws CryptException {
+                     ProgressHandler progressHandler, ArrayList<HybridFile> failedOps) throws CryptException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
-        HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
+        HybridFile targetDirectory = new HybridFile(OpenMode.FILE, targetPath);
         if (!targetPath.equals(context.getExternalCacheDir())) {
 
             // same file system as of base file
@@ -175,14 +175,14 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void decrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
+    private void decrypt(Context context, BaseFile sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         if (sourceFile.isDirectory()) {
 
-            HFile hFile = new HFile(targetDirectory.getMode(), targetDirectory.getPath(),
+            HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
                     sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
@@ -199,7 +199,7 @@ public class CryptUtil {
             BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-            HFile targetFile = new HFile(targetDirectory.getMode(),
+            HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName().replace(CRYPT_EXTENSION, ""),
                     sourceFile.isDirectory());
 
@@ -235,7 +235,7 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void encrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
+    private void encrypt(Context context, BaseFile sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
@@ -243,7 +243,7 @@ public class CryptUtil {
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
-            HFile hFile = new HFile(targetDirectory.getMode(),
+            HybridFile hFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
@@ -262,7 +262,7 @@ public class CryptUtil {
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
-            HFile targetFile = new HFile(targetDirectory.getMode(),
+            HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
 

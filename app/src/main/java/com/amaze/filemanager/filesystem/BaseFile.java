@@ -8,7 +8,7 @@ import com.amaze.filemanager.utils.OpenMode;
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
-public class BaseFile extends HFile implements Parcelable {
+public class BaseFile extends HybridFile implements Parcelable {
 
     private long date, size;
     private boolean isDirectory;

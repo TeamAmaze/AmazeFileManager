@@ -544,7 +544,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 break;
             case R.id.details:
                 if (mFile.exists()) {
-                    //HFile hFile = new HFile(OpenMode.FILE, mFile.getPath());
+                    //HybridFile hFile = new HybridFile(OpenMode.FILE, mFile.getPath());
                     //hFile.generateMode(this);
                     GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile, this, getAppTheme());
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();

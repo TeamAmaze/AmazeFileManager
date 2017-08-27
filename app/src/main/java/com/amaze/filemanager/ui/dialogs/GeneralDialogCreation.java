@@ -37,7 +37,7 @@ import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -997,7 +997,7 @@ public class GeneralDialogCreation {
 
     }
 
-    public static void setPermissionsDialog(final View v, View but, final HFile file,
+    public static void setPermissionsDialog(final View v, View but, final HybridFile file,
                                      final String f, final Context context, final MainFragment mainFrag) {
         final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
         final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);

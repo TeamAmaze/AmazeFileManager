@@ -51,7 +51,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -102,7 +102,7 @@ public class FileUtils {
         return length;
     }
 
-    public static long folderSize(HFile directory, OnProgressUpdate<Long> updateState) {
+    public static long folderSize(HybridFile directory, OnProgressUpdate<Long> updateState) {
         return folderSize(new File(directory.getPath()), updateState);
     }
 
@@ -591,7 +591,7 @@ public class FileUtils {
      * @param context
      * @return
      */
-    public static boolean canGoBack(Context context, HFile currentFile) {
+    public static boolean canGoBack(Context context, HybridFile currentFile) {
         switch (currentFile.getMode()) {
 
             // we're on main thread and can't list the cloud files
@@ -602,14 +602,14 @@ public class FileUtils {
             case OTG:
                 return true;
             default:
-                HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));
+                HybridFile parentFile = new HybridFile(currentFile.getMode(), currentFile.getParent(context));
                 ArrayList<BaseFile> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
                 if (parentFiles == null) return false;
                 else return true;
         }
     }
 
-    public static long[] getSpaces(HFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
+    public static long[] getSpaces(HybridFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
         long totalSpace = hFile.getTotal(context);
         long freeSpace = hFile.getUsableSpace();
         long fileSize = 0l;
@@ -806,10 +806,10 @@ public class FileUtils {
                 size, longSize, b, date, directorybool);
     }
 
-    public static ArrayList<HFile> toHFileArray(ArrayList<String> a) {
-        ArrayList<HFile> b = new ArrayList<>();
+    public static ArrayList<HybridFile> toHFileArray(ArrayList<String> a) {
+        ArrayList<HybridFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
-            HFile hFile=new HFile(OpenMode.UNKNOWN,a.get(i));
+            HybridFile hFile=new HybridFile(OpenMode.UNKNOWN,a.get(i));
             hFile.generateMode(null);
             b.add(hFile);
         }

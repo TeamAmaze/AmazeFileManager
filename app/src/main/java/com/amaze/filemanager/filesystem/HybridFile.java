@@ -40,7 +40,7 @@ import jcifs.smb.SmbFile;
  * Created by Arpit on 07-07-2015.
  */
 //Hybrid file for handeling all types of files
-public class HFile {
+public class HybridFile {
 
     String path;
     //public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
@@ -48,12 +48,12 @@ public class HFile {
 
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public HFile(OpenMode mode, String path) {
+    public HybridFile(OpenMode mode, String path) {
         this.path = path;
         this.mode = mode;
     }
 
-    public HFile(OpenMode mode, String path, String name, boolean isDirectory) {
+    public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
         this.mode = mode;
         if (path.startsWith("smb://") || isSmb()) {
             if (!isDirectory) this.path = path + name;

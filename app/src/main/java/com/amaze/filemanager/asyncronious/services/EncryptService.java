@@ -17,7 +17,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DataPackage;
@@ -58,7 +58,7 @@ public class EncryptService extends Service {
     private String decryptPath;
     private BaseFile baseFile;
     private CryptEnum cryptEnum;
-    private ArrayList<HFile> failedOps = new ArrayList<>();
+    private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
     private boolean broadcastResult = false;
 
@@ -261,7 +261,7 @@ public class EncryptService extends Service {
      * @param failedOps
      * @param move
      */
-    void generateNotification(ArrayList<HFile> failedOps, boolean move) {
+    void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
         notificationManager.cancelAll();
 
         if(failedOps.size()==0)return;

@@ -38,7 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -223,27 +223,27 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     ThemedActivity.rootMode, new Operations.ErrorCallBack() {
                         //TODO empty
                         @Override
-                        public void exists(HFile file) {
+                        public void exists(HybridFile file) {
 
                         }
 
                         @Override
-                        public void launchSAF(HFile file) {
+                        public void launchSAF(HybridFile file) {
 
                         }
 
                         @Override
-                        public void launchSAF(HFile file, HFile file1) {
+                        public void launchSAF(HybridFile file, HybridFile file1) {
 
                         }
 
                         @Override
-                        public void done(HFile hFile, boolean b) {
+                        public void done(HybridFile hFile, boolean b) {
 
                         }
 
                         @Override
-                        public void invalidName(HFile file) {
+                        public void invalidName(HybridFile file) {
 
                         }
                     });

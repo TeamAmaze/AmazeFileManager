@@ -16,7 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
 import com.amaze.filemanager.utils.DataUtils;
@@ -30,20 +30,20 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 16-11-2014.
  */
-public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.ViewHolder> {
+public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapter.ViewHolder> {
 
     private SharedPreferences sharedPrefs;
     private MainFragment context;
     private Context c;
-    public ArrayList<HFile> items;
+    public ArrayList<HybridFile> items;
     private MaterialDialog materialDialog;
     private boolean hide;
     private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context context, MainFragment mainFrag, SharedPreferences sharedPreferences,
-                         @LayoutRes int layoutId, ArrayList<HFile> items, MaterialDialog materialDialog,
-                         boolean hide) {
+    public HiddenAdapter(Context context, MainFragment mainFrag,  SharedPreferences sharedPreferences,
+                                @LayoutRes int layoutId, ArrayList<HybridFile> items,
+                                MaterialDialog materialDialog, boolean hide) {
         addAll(items);
         this.c = context;
         this.context = mainFrag;
@@ -82,7 +82,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HFile, HiddenAdapter.Vie
             row = (LinearLayout) view.findViewById(R.id.bookmarkrow);
         }
 
-        void render(final int position, final HFile file) {
+        void render(final int position, final HybridFile file) {
             txtTitle.setText(file.getName());
             String a = file.getReadablePath(file.getPath());
             txtDesc.setText(a);
