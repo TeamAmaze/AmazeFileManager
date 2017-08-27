@@ -1797,7 +1797,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         }
 
         private long lastArrivalTime = 0l;
-        private static final int DEFER_CONSTANT = 5;
+        private static final int DEFER_CONSTANT = 5000;
 
         @Override
         public void onEvent(int event, String path) {
