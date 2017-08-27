@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.asyncronious.services.EncryptService;
@@ -98,14 +98,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.cpy:
                 mainFragment.getMainActivity().MOVE_PATH = null;
-                ArrayList<BaseFileParcelable> copies = new ArrayList<>();
+                ArrayList<HybridFileParcelable> copies = new ArrayList<>();
                 copies.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().COPY_PATH = copies;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();
                 return true;
             case R.id.cut:
                 mainFragment.getMainActivity().COPY_PATH = null;
-                ArrayList<BaseFileParcelable> copie = new ArrayList<>();
+                ArrayList<HybridFileParcelable> copie = new ArrayList<>();
                 copie.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().MOVE_PATH = copie;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();

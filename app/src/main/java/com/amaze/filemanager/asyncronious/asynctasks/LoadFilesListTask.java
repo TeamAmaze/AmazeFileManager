@@ -35,7 +35,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
@@ -138,7 +138,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 }
                 break;
             case CUSTOM:
-                ArrayList<BaseFileParcelable> arrayList = null;
+                ArrayList<HybridFileParcelable> arrayList = null;
                 switch (Integer.parseInt(path)) {
                     case 0:
                         arrayList = listImages();
@@ -217,7 +217,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 try {
-                    ArrayList<BaseFileParcelable> arrayList1;
+                    ArrayList<HybridFileParcelable> arrayList1;
                     arrayList1 = RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
                             new RootHelper.GetModeCallBack() {
                                 @Override
@@ -256,11 +256,11 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
     }
 
-    private ArrayList<LayoutElementParcelable> addTo(ArrayList<BaseFileParcelable> baseFiles) {
+    private ArrayList<LayoutElementParcelable> addTo(ArrayList<HybridFileParcelable> baseFiles) {
         ArrayList<LayoutElementParcelable> items = new ArrayList<>();
 
         for (int i = 0; i < baseFiles.size(); i++) {
-            BaseFileParcelable baseFile = baseFiles.get(i);
+            HybridFileParcelable baseFile = baseFiles.get(i);
             //File f = new File(ele.getPath());
             String size = "";
             if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
@@ -306,7 +306,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return items;
     }
 
-    private ArrayList<BaseFileParcelable> listaudio() {
+    private ArrayList<HybridFileParcelable> listaudio() {
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         String[] projection = {
                 MediaStore.Audio.Media.DATA
@@ -319,12 +319,12 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 null,
                 null);
 
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                 if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
@@ -332,8 +332,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listImages() {
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+    private ArrayList<HybridFileParcelable> listImages() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = c.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection, null, null, null);
@@ -341,7 +341,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                 if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
@@ -349,8 +349,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listVideos() {
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+    private ArrayList<HybridFileParcelable> listVideos() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Images.Media.DATA};
         final Cursor cursor = c.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 projection, null, null, null);
@@ -358,7 +358,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                 if (strings != null) songs.add(strings);
             } while (cursor.moveToNext());
         }
@@ -366,8 +366,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listRecentFiles() {
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+    private ArrayList<HybridFileParcelable> listRecentFiles() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
@@ -383,15 +383,15 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                         (MediaStore.Files.FileColumns.DATA));
                 File f = new File(path);
                 if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
-                    BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, new Comparator<BaseFileParcelable>() {
+        Collections.sort(songs, new Comparator<HybridFileParcelable>() {
             @Override
-            public int compare(BaseFileParcelable lhs, BaseFileParcelable rhs) {
+            public int compare(HybridFileParcelable lhs, HybridFileParcelable rhs) {
                 return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
 
             }
@@ -403,8 +403,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listApks() {
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+    private ArrayList<HybridFileParcelable> listApks() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
         Cursor cursor = c.getContentResolver()
@@ -414,7 +414,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if (path != null && path.endsWith(".apk")) {
-                    BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
@@ -423,13 +423,13 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listRecent() {
+    private ArrayList<HybridFileParcelable> listRecent() {
         UtilsHandler utilsHandler = new UtilsHandler(c);
         final ArrayList<String> paths = utilsHandler.getHistoryList();
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         for (String f : paths) {
             if (!f.equals("/")) {
-                BaseFileParcelable a = RootHelper.generateBaseFile(new File(f), ma.SHOW_HIDDEN);
+                HybridFileParcelable a = RootHelper.generateBaseFile(new File(f), ma.SHOW_HIDDEN);
                 a.generateMode(ma.getActivity());
                 if (a != null && !a.isSmb() && !(a).isDirectory() && a.exists())
                     songs.add(a);
@@ -438,8 +438,8 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return songs;
     }
 
-    private ArrayList<BaseFileParcelable> listDocs() {
-        ArrayList<BaseFileParcelable> songs = new ArrayList<>();
+    private ArrayList<HybridFileParcelable> listDocs() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         final String[] projection = {MediaStore.Files.FileColumns.DATA};
         Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
                 projection, null, null, null);
@@ -451,7 +451,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if (path != null && contains(types, path)) {
-                    BaseFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
@@ -467,7 +467,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
      *             Independent of URI (or mount point) for the OTG
      * @return a list of files loaded
      */
-    private ArrayList<BaseFileParcelable> listOtg(String path) {
+    private ArrayList<HybridFileParcelable> listOtg(String path) {
 
         return OTGUtil.getDocumentFilesList(path, c);
     }
@@ -479,7 +479,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
         return false;
     }
 
-    private ArrayList<BaseFileParcelable> listCloud(String path, CloudStorage cloudStorage, OpenMode openMode)
+    private ArrayList<HybridFileParcelable> listCloud(String path, CloudStorage cloudStorage, OpenMode openMode)
             throws CloudPluginException {
         if (!CloudSheetFragment.isCloudProviderAvailable(c))
             throw new CloudPluginException();

@@ -50,7 +50,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
@@ -149,15 +149,15 @@ public class FileUtils {
     /**
      * Helper method to calculate source files size
      */
-    public static long getTotalBytes(ArrayList<BaseFileParcelable> files, Context context) {
+    public static long getTotalBytes(ArrayList<HybridFileParcelable> files, Context context) {
         long totalBytes = 0L;
-        for (BaseFileParcelable file : files) {
+        for (HybridFileParcelable file : files) {
             totalBytes += getBaseFileSize(file, context);
         }
         return totalBytes;
     }
 
-    private static long getBaseFileSize(BaseFileParcelable baseFile, Context context) {
+    private static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
         if (baseFile.isDirectory(context)) {
             return baseFile.folderSize(context);
         } else {
@@ -603,7 +603,7 @@ public class FileUtils {
                 return true;
             default:
                 HybridFile parentFile = new HybridFile(currentFile.getMode(), currentFile.getParent(context));
-                ArrayList<BaseFileParcelable> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
+                ArrayList<HybridFileParcelable> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
                 if (parentFiles == null) return false;
                 else return true;
         }
@@ -821,7 +821,7 @@ public class FileUtils {
      * @param line must be the line returned from a 'ls' command
      * @return
      */
-    public static BaseFileParcelable parseName(String line) {
+    public static HybridFileParcelable parseName(String line) {
         boolean linked = false;
         String name = "", link = "", size = "-1", date = "";
         String[] array = line.split(" ");
@@ -855,11 +855,11 @@ public class FileUtils {
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
             Date stringDate = simpledateformat.parse(date, pos);
-            BaseFileParcelable baseFile=new BaseFileParcelable(name,array[0],stringDate.getTime(),Size,true);
+            HybridFileParcelable baseFile=new HybridFileParcelable(name,array[0],stringDate.getTime(),Size,true);
             baseFile.setLink(link);
             return baseFile;
         }else {
-            BaseFileParcelable baseFile= new BaseFileParcelable(name,array[0],new File("/").lastModified(),Size,true);
+            HybridFileParcelable baseFile= new HybridFileParcelable(name,array[0],new File("/").lastModified(),Size,true);
             baseFile.setLink(link);
             return baseFile;
         }

@@ -112,15 +112,15 @@ public class RootHelper {
      * @param showHidden
      * @return
      */
-    public static ArrayList<BaseFileParcelable> getFilesList(String path, boolean showHidden) {
+    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden) {
         File f = new File(path);
-        ArrayList<BaseFileParcelable> files = new ArrayList<>();
+        ArrayList<HybridFileParcelable> files = new ArrayList<>();
         try {
             if (f.exists() && f.isDirectory()) {
                 for (File x : f.listFiles()) {
                     long size = 0;
                     if (!x.isDirectory()) size = x.length();
-                    BaseFileParcelable baseFile = new BaseFileParcelable(x.getPath(), parseFilePermission(x),
+                    HybridFileParcelable baseFile = new HybridFileParcelable(x.getPath(), parseFilePermission(x),
                             x.lastModified(), size, x.isDirectory());
                     baseFile.setName(x.getName());
                     baseFile.setMode(OpenMode.FILE);
@@ -138,11 +138,11 @@ public class RootHelper {
         return files;
     }
 
-    public static BaseFileParcelable generateBaseFile(File x, boolean showHidden) {
+    public static HybridFileParcelable generateBaseFile(File x, boolean showHidden) {
         long size = 0;
         if (!x.isDirectory())
             size = x.length();
-        BaseFileParcelable baseFile = new BaseFileParcelable(x.getPath(), parseFilePermission(x), x.lastModified(), size, x.isDirectory());
+        HybridFileParcelable baseFile = new HybridFileParcelable(x.getPath(), parseFilePermission(x), x.lastModified(), size, x.isDirectory());
         baseFile.setName(x.getName());
         baseFile.setMode(OpenMode.FILE);
         if (showHidden) {
@@ -153,11 +153,11 @@ public class RootHelper {
         return null;
     }
 
-    public static BaseFileParcelable generateBaseFile(DocumentFile file, boolean showHidden) {
+    public static HybridFileParcelable generateBaseFile(DocumentFile file, boolean showHidden) {
         long size = 0;
         if (!file.isDirectory())
             size = file.length();
-        BaseFileParcelable baseFile = new BaseFileParcelable(file.getName(), parseDocumentFilePermission(file),
+        HybridFileParcelable baseFile = new HybridFileParcelable(file.getName(), parseDocumentFilePermission(file),
                 file.lastModified(), size, file.isDirectory());
         baseFile.setName(file.getName());
         baseFile.setMode(OpenMode.OTG);
@@ -205,13 +205,13 @@ public class RootHelper {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<BaseFileParcelable> ls = getFilesList(p, true, true, new GetModeCallBack() {
+            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, new GetModeCallBack() {
                 @Override
                 public void getMode(OpenMode mode) {
 
                 }
             });
-            for (BaseFileParcelable strings : ls) {
+            for (HybridFileParcelable strings : ls) {
                 if (strings.getPath() != null && strings.getPath().equals(path)) {
                     return true;
                 }
@@ -247,7 +247,7 @@ public class RootHelper {
             for (String s : ls) {
                 if (contains(s.split(" "), name)) {
                     try {
-                        BaseFileParcelable path = FileUtils.parseName(s);
+                        HybridFileParcelable path = FileUtils.parseName(s);
                         if (path.getPermission().trim().startsWith("d")) return true;
                         else if (path.getPermission().trim().startsWith("l")) {
                             if (count > 5)
@@ -266,7 +266,7 @@ public class RootHelper {
         return f.isDirectory();
     }
 
-    private static boolean isDirectory(BaseFileParcelable path) {
+    private static boolean isDirectory(HybridFileParcelable path) {
         return path.getPermission().startsWith("d") || new File(path.getPath()).isDirectory();
     }
 
@@ -286,13 +286,13 @@ public class RootHelper {
      * @param getModeCallBack callback to set the type of file
      * @return TODO: Avoid parsing ls
      */
-    public static ArrayList<BaseFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
-                                                             GetModeCallBack getModeCallBack)
+    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
+                                                               GetModeCallBack getModeCallBack)
             throws RootNotPermittedException {
         //String p = " ";
         OpenMode mode = OpenMode.FILE;
         //if (showHidden) p = "a ";
-        ArrayList<BaseFileParcelable> files = new ArrayList<>();
+        ArrayList<HybridFileParcelable> files = new ArrayList<>();
         ArrayList<String> ls;
         if (root) {
             // we're rooted and we're trying to load file with superuser
@@ -306,7 +306,7 @@ public class RootHelper {
                         String file = ls.get(i);
                         if (!file.contains("Permission denied"))
                             try {
-                                BaseFileParcelable array = FileUtils.parseName(file);
+                                HybridFileParcelable array = FileUtils.parseName(file);
                                 array.setMode(OpenMode.ROOT);
                                 if (array != null) {
                                     array.setName(array.getPath());

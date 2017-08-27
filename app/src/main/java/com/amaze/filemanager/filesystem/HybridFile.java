@@ -147,15 +147,15 @@ public class HybridFile {
         return new File(path);
     }
 
-    BaseFileParcelable generateBaseFileFromParent() {
-        ArrayList<BaseFileParcelable> arrayList = null;
+    HybridFileParcelable generateBaseFileFromParent() {
+        ArrayList<HybridFileParcelable> arrayList = null;
         try {
             arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
         } catch (RootNotPermittedException e) {
             e.printStackTrace();
             return null;
         }
-        for (BaseFileParcelable baseFile : arrayList) {
+        for (HybridFileParcelable baseFile : arrayList) {
             if (baseFile.getPath().equals(path))
                 return baseFile;
         }
@@ -173,7 +173,7 @@ public class HybridFile {
                 new File(path).lastModified();
                 break;
             case ROOT:
-                BaseFileParcelable baseFile = generateBaseFileFromParent();
+                HybridFileParcelable baseFile = generateBaseFileFromParent();
                 if (baseFile != null)
                     return baseFile.getDate();
         }
@@ -199,7 +199,7 @@ public class HybridFile {
                 s = new File(path).length();
                 return s;
             case ROOT:
-                BaseFileParcelable baseFile = generateBaseFileFromParent();
+                HybridFileParcelable baseFile = generateBaseFileFromParent();
                 if (baseFile != null) return baseFile.getSize();
                 break;
         }
@@ -227,7 +227,7 @@ public class HybridFile {
                 s = new File(path).length();
                 return s;
             case ROOT:
-                BaseFileParcelable baseFile=generateBaseFileFromParent();
+                HybridFileParcelable baseFile=generateBaseFileFromParent();
                 if(baseFile!=null) return baseFile.getSize();
                 break;
             case OTG:
@@ -516,7 +516,7 @@ public class HybridFile {
                 size = FileUtils.folderSize(new File(path), null);
                 break;
             case ROOT:
-                BaseFileParcelable baseFile = generateBaseFileFromParent();
+                HybridFileParcelable baseFile = generateBaseFileFromParent();
                 if (baseFile != null) size = baseFile.getSize();
                 break;
             default:
@@ -548,7 +548,7 @@ public class HybridFile {
                 size = FileUtils.folderSize(new File(path), null);
                 break;
             case ROOT:
-                BaseFileParcelable baseFile=generateBaseFileFromParent();
+                HybridFileParcelable baseFile=generateBaseFileFromParent();
                 if(baseFile!=null) size = baseFile.getSize();
                 break;
             case OTG:
@@ -648,13 +648,13 @@ public class HybridFile {
      * @param rootmode
      * @return
      */
-    public ArrayList<BaseFileParcelable> listFiles(boolean rootmode) {
-        ArrayList<BaseFileParcelable> arrayList = new ArrayList<>();
+    public ArrayList<HybridFileParcelable> listFiles(boolean rootmode) {
+        ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
         if (isSmb()) {
             try {
                 SmbFile smbFile = new SmbFile(path);
                 for (SmbFile smbFile1 : smbFile.listFiles()) {
-                    BaseFileParcelable baseFile = new BaseFileParcelable(smbFile1.getPath());
+                    HybridFileParcelable baseFile = new HybridFileParcelable(smbFile1.getPath());
                     baseFile.setName(smbFile1.getName());
                     baseFile.setMode(OpenMode.SMB);
                     baseFile.setDirectory(smbFile1.isDirectory());
@@ -687,14 +687,14 @@ public class HybridFile {
      * @param context
      * @return
      */
-    public ArrayList<BaseFileParcelable> listFiles(Context context, boolean isRoot) {
-        ArrayList<BaseFileParcelable> arrayList = new ArrayList<>();
+    public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
+        ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
         switch (mode) {
             case SMB:
                 try {
                     SmbFile smbFile = new SmbFile(path);
                     for (SmbFile smbFile1 : smbFile.listFiles()) {
-                        BaseFileParcelable baseFile=new BaseFileParcelable(smbFile1.getPath());
+                        HybridFileParcelable baseFile=new HybridFileParcelable(smbFile1.getPath());
                         baseFile.setName(smbFile1.getName());
                         baseFile.setMode(OpenMode.SMB);
                         baseFile.setDirectory(smbFile1.isDirectory());

@@ -55,7 +55,7 @@ import com.amaze.filemanager.asyncronious.asynctasks.DeleteTask;
 import com.amaze.filemanager.asyncronious.asynctasks.RarHelperTask;
 import com.amaze.filemanager.asyncronious.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asyncronious.services.ExtractService;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.ZipObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
@@ -95,7 +95,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      * with a Map maintaining key - the root of directory created (for deletion purposes after we exit out of here
      * and value - the path of file to open
      */
-    public ArrayList<BaseFileParcelable> files;
+    public ArrayList<HybridFileParcelable> files;
     public Boolean selection = false;
     public String current;
     public String skin, accentColor, iconskin, year;
@@ -215,7 +215,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
-            files.add(new BaseFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
+            files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
             if (f.getPath().endsWith(".rar")) {
                 openmode = RAR_FILE;
                 loadFileList(f.getPath());

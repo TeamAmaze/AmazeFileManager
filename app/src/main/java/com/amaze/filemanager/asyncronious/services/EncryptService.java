@@ -15,7 +15,7 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
@@ -56,7 +56,7 @@ public class EncryptService extends Service {
     private long totalSize = 0l;
     private OpenMode openMode;
     private String decryptPath;
-    private BaseFileParcelable baseFile;
+    private HybridFileParcelable baseFile;
     private CryptEnum cryptEnum;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;

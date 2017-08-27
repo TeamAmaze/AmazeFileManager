@@ -79,7 +79,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
@@ -140,7 +140,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
-    public ArrayList<BaseFileParcelable> searchHelper = new ArrayList<>();
+    public ArrayList<HybridFileParcelable> searchHelper = new ArrayList<>();
     public int no;
 
     private String CURRENT_PATH = "";
@@ -173,7 +173,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private CustomFileObserver customFileObserver;
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
-    private BaseFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
+    private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -644,7 +644,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         ArrayList<Uri> resulturis = new ArrayList<>();
 
                         for (LayoutElementParcelable element : checkedItems) {
-                            BaseFileParcelable baseFile = element.generateBaseFile();
+                            HybridFileParcelable baseFile = element.generateBaseFile();
                             Uri resultUri = getUriForBaseFile(baseFile);
 
                             if (resultUri != null) {
@@ -711,7 +711,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.rename:
 
                     final ActionMode m = mode;
-                    final BaseFileParcelable f;
+                    final HybridFileParcelable f;
                     f = checkedItems.get(0).generateBaseFile();
                     rename(f);
                     mode.finish();
@@ -729,7 +729,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.cpy:
                     getMainActivity().MOVE_PATH = null;
-                    ArrayList<BaseFileParcelable> copies = new ArrayList<>();
+                    ArrayList<HybridFileParcelable> copies = new ArrayList<>();
                     for (int i2 = 0; i2 < checkedItems.size(); i2++) {
                         copies.add(checkedItems.get(i2).generateBaseFile());
                     }
@@ -739,7 +739,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.cut:
                     getMainActivity().COPY_PATH = null;
-                    ArrayList<BaseFileParcelable> copie = new ArrayList<>();
+                    ArrayList<HybridFileParcelable> copie = new ArrayList<>();
                     for (int i3 = 0; i3 < checkedItems.size(); i3++) {
                         copie.add(checkedItems.get(i3).generateBaseFile());
                     }
@@ -748,7 +748,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.compress:
-                    ArrayList<BaseFileParcelable> copies1 = new ArrayList<>();
+                    ArrayList<HybridFileParcelable> copies1 = new ArrayList<>();
                     for (int i4 = 0; i4 < checkedItems.size(); i4++) {
                         copies1.add(checkedItems.get(i4).generateBaseFile());
                     }
@@ -881,7 +881,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     // decrypt the file
                     isEncryptOpen = true;
 
-                    encryptBaseFile = new BaseFileParcelable(getActivity().getExternalCacheDir().getPath()
+                    encryptBaseFile = new HybridFileParcelable(getActivity().getExternalCacheDir().getPath()
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
 
@@ -955,10 +955,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     /**
-     * Returns the intent with uri corresponding to specific {@link BaseFileParcelable} back to external app
+     * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to external app
      * @param baseFile
      */
-    public void returnIntentResults(BaseFileParcelable baseFile) {
+    public void returnIntentResults(HybridFileParcelable baseFile) {
 
         getMainActivity().mReturnIntent = false;
 
@@ -995,7 +995,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param baseFile
      * @return
      */
-    private Uri getUriForBaseFile(BaseFileParcelable baseFile) {
+    private Uri getUriForBaseFile(HybridFileParcelable baseFile) {
 
         switch (baseFile.getMode()) {
             case FILE:
@@ -1235,7 +1235,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      *
      * @param f the file to rename
      */
-    public void rename(final BaseFileParcelable f) {
+    public void rename(final HybridFileParcelable f) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         String name = f.getName();
         builder.input("", name, false, new MaterialDialog.InputCallback() {
@@ -1540,7 +1540,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     // method to add search result entry to the LIST_ELEMENT arrayList
-    private LayoutElementParcelable addTo(BaseFileParcelable mFile) {
+    private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
         File f = new File(mFile.getPath());
         String size = "";
         if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
@@ -1590,7 +1590,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (!isEncryptOpen && encryptBaseFile != null) {
                 // we've opened the file and are ready to delete it
-                ArrayList<BaseFileParcelable> baseFiles = new ArrayList<>();
+                ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
                 baseFiles.add(encryptBaseFile);
                 new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(baseFiles);
             }
@@ -1644,7 +1644,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     // adds search results based on result boolean. If false, the adapter is initialised with initial
     // values, if true, new values are added to the adapter.
-    public void addSearchResult(BaseFileParcelable a, String query) {
+    public void addSearchResult(HybridFileParcelable a, String query) {
         if (listView != null) {
 
             // initially clearing the array for new result set

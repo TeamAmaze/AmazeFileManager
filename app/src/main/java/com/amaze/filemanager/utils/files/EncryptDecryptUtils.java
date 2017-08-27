@@ -12,7 +12,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.asyncronious.services.EncryptService;
@@ -51,7 +51,7 @@ public class EncryptDecryptUtils {
 
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
-                                   BaseFileParcelable sourceFile, String decryptPath,
+                                   HybridFileParcelable sourceFile, String decryptPath,
                                    UtilitiesProviderInterface utilsProvider,
                                    boolean broadcastResult) {
 

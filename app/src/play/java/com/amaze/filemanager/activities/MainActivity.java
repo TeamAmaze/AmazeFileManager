@@ -93,7 +93,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -186,7 +186,7 @@ public class MainActivity extends ThemedActivity implements
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String path = "", launchPath;
-    public ArrayList<BaseFileParcelable> COPY_PATH = null, MOVE_PATH = null;
+    public ArrayList<HybridFileParcelable> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
@@ -204,8 +204,8 @@ public class MainActivity extends ThemedActivity implements
     public MainActivityHelper mainActivityHelper;
 
     public int operation = -1;
-    public ArrayList<BaseFileParcelable> oparrayList;
-    public ArrayList<ArrayList<BaseFileParcelable>> oparrayListList;
+    public ArrayList<HybridFileParcelable> oparrayList;
+    public ArrayList<ArrayList<HybridFileParcelable>> oparrayListList;
 
     // oppathe - the path at which certain operation needs to be performed
     // oppathe1 - the new path which user wants to create/modify
@@ -340,7 +340,7 @@ public class MainActivity extends ThemedActivity implements
         String actionIntent = intent.getAction();
         String typeIntent = intent.getType();
         if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-            ArrayList<BaseFileParcelable> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            ArrayList<HybridFileParcelable> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
             }
@@ -1165,7 +1165,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.paste:
                 String path = ma.getCurrentPath();
-                ArrayList<BaseFileParcelable> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
+                ArrayList<HybridFileParcelable> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
                 new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
@@ -2093,7 +2093,7 @@ public class MainActivity extends ThemedActivity implements
                 } else goToMain(path);
             } else FileUtils.openFile(new File(path), mainActivity, sharedPref);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-            ArrayList<BaseFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
@@ -2173,7 +2173,7 @@ public class MainActivity extends ThemedActivity implements
         @Override
         public void onReceive(Context context, Intent i) {
             if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-                ArrayList<BaseFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+                ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }
@@ -2377,7 +2377,7 @@ public class MainActivity extends ThemedActivity implements
     }
 
     @Override
-    public void onProgressUpdate(BaseFileParcelable val , String query) {
+    public void onProgressUpdate(HybridFileParcelable val , String query) {
         mainFragment.addSearchResult(val,query);
     }
 

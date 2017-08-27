@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
@@ -148,8 +148,8 @@ public class LayoutElementParcelable implements Parcelable {
         return isDirectory;
     }
 
-    public BaseFileParcelable generateBaseFile() {
-        BaseFileParcelable baseFile=new BaseFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
+    public HybridFileParcelable generateBaseFile() {
+        HybridFileParcelable baseFile=new HybridFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
         baseFile.setMode(mode);
         baseFile.setName(title);
         return baseFile;

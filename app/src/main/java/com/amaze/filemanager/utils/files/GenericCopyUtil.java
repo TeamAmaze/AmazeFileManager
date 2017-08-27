@@ -6,7 +6,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -38,7 +38,7 @@ import java.nio.channels.ReadableByteChannel;
 
 public class GenericCopyUtil {
 
-    private BaseFileParcelable mSourceFile;
+    private HybridFileParcelable mSourceFile;
     private HybridFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
     private DataUtils dataUtils = DataUtils.getInstance();
@@ -271,7 +271,7 @@ public class GenericCopyUtil {
      * @param sourceFile the source file, which is to be copied
      * @param targetFile the target file
      */
-    public void copy(BaseFileParcelable sourceFile, HybridFile targetFile) throws IOException {
+    public void copy(HybridFileParcelable sourceFile, HybridFile targetFile) throws IOException {
 
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;

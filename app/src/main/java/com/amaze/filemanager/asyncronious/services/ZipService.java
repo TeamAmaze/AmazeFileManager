@@ -36,7 +36,7 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.CopyDataParcelable;
@@ -83,7 +83,7 @@ public class ZipService extends Service {
         Bundle b = new Bundle();
         String path = intent.getStringExtra(KEY_COMPRESS_PATH);
 
-        ArrayList<BaseFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
+        ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
         File zipFile = new File(path);
         mZipPath = PreferenceManager.getDefaultSharedPreferences(this)
@@ -145,7 +145,7 @@ public class ZipService extends Service {
         public DoWork() {
         }
 
-        public ArrayList<File> toFileArray(ArrayList<BaseFileParcelable> a) {
+        public ArrayList<File> toFileArray(ArrayList<HybridFileParcelable> a) {
             ArrayList<File> b = new ArrayList<>();
             for (int i = 0; i < a.size(); i++) {
                 b.add(new File(a.get(i).getPath()));
@@ -155,7 +155,7 @@ public class ZipService extends Service {
 
         protected Integer doInBackground(Bundle... p1) {
             final int id = p1[0].getInt("id");
-            ArrayList<BaseFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
+            ArrayList<HybridFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)

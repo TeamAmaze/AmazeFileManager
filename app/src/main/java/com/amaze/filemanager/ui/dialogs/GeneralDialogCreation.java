@@ -36,7 +36,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -135,7 +135,7 @@ public class GeneralDialogCreation {
                                          final MainActivity mainActivity, final List<LayoutElementParcelable> positions,
                                          AppTheme appTheme) {
 
-        final ArrayList<BaseFileParcelable> itemsToDelete = new ArrayList<>();
+        final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         // Build dialog with custom view layout and accent color.
@@ -309,19 +309,19 @@ public class GeneralDialogCreation {
         dialog.show();
     }
 
-    public static void showPropertiesDialogWithPermissions(BaseFileParcelable baseFile, final String permissions,
+    public static void showPropertiesDialogWithPermissions(HybridFileParcelable baseFile, final String permissions,
                                                            ThemedActivity activity, boolean isRoot, AppTheme appTheme) {
         showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
     }
 
-    public static void showPropertiesDialogWithoutPermissions(final BaseFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogWithoutPermissions(final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
-    public static void showPropertiesDialogForStorage(final BaseFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
+    public static void showPropertiesDialogForStorage(final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
 
-    private static void showPropertiesDialog(final BaseFileParcelable baseFile, final String permissions,
+    private static void showPropertiesDialog(final HybridFileParcelable baseFile, final String permissions,
                                              ThemedActivity base, boolean isRoot, AppTheme appTheme,
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
@@ -828,7 +828,7 @@ public class GeneralDialogCreation {
         b.show();
     }
 
-    public static void showCompressDialog(final MainActivity m, final ArrayList<BaseFileParcelable> b, final String current) {
+    public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, new

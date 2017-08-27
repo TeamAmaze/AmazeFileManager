@@ -13,7 +13,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -32,10 +32,10 @@ import java.util.List;
 
 public class CloudUtil {
 
-    public static ArrayList<BaseFileParcelable> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
+    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
             throws CloudPluginException {
 
-        ArrayList<BaseFileParcelable> baseFiles = new ArrayList<>();
+        ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
 
         String strippedPath = stripPath(openMode, path);
 
@@ -43,7 +43,7 @@ public class CloudUtil {
 
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
 
-                BaseFileParcelable baseFile = new BaseFileParcelable(path + "/" + cloudMetaData.getName(),
+                HybridFileParcelable baseFile = new HybridFileParcelable(path + "/" + cloudMetaData.getName(),
                         "", (cloudMetaData.getModifiedAt() == null)
                         ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
                         cloudMetaData.getFolder());
@@ -108,7 +108,7 @@ public class CloudUtil {
         return strippedPath;
     }
 
-    public static void launchCloud(final BaseFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
+    public static void launchCloud(final HybridFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
         final CloudStreamer streamer = CloudStreamer.getInstance();
 
         new Thread(new Runnable() {

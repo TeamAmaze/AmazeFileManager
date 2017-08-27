@@ -8,7 +8,7 @@ import com.amaze.filemanager.utils.OpenMode;
 /**
  * Created by arpitkh996 on 11-01-2016.
  */
-public class BaseFileParcelable extends HybridFile implements Parcelable {
+public class HybridFileParcelable extends HybridFile implements Parcelable {
 
     private long date, size;
     private boolean isDirectory;
@@ -16,12 +16,12 @@ public class BaseFileParcelable extends HybridFile implements Parcelable {
     private String name;
     private String link = "";
 
-    public BaseFileParcelable(String path) {
+    public HybridFileParcelable(String path) {
         super(OpenMode.FILE, path);
         this.path = path;
     }
 
-    public BaseFileParcelable(String path, String permission, long date, long size, boolean isDirectory) {
+    public HybridFileParcelable(String path, String permission, long date, long size, boolean isDirectory) {
         super(OpenMode.FILE, path);
         this.date = date;
         this.size = size;
@@ -93,7 +93,7 @@ public class BaseFileParcelable extends HybridFile implements Parcelable {
         this.permission = permission;
     }
 
-    protected BaseFileParcelable(Parcel in) {
+    protected HybridFileParcelable(Parcel in) {
         super(OpenMode.getOpenMode(in.readInt()), in.readString());
         permission = in.readString();
         name = in.readString();
@@ -103,15 +103,15 @@ public class BaseFileParcelable extends HybridFile implements Parcelable {
 
     }
 
-    public static final Creator<BaseFileParcelable> CREATOR = new Creator<BaseFileParcelable>() {
+    public static final Creator<HybridFileParcelable> CREATOR = new Creator<HybridFileParcelable>() {
         @Override
-        public BaseFileParcelable createFromParcel(Parcel in) {
-            return new BaseFileParcelable(in);
+        public HybridFileParcelable createFromParcel(Parcel in) {
+            return new HybridFileParcelable(in);
         }
 
         @Override
-        public BaseFileParcelable[] newArray(int size) {
-            return new BaseFileParcelable[size];
+        public HybridFileParcelable[] newArray(int size) {
+            return new HybridFileParcelable[size];
         }
     };
 

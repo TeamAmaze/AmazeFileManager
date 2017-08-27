@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.asyncronious.services.ExtractService;
 import com.amaze.filemanager.asyncronious.asynctasks.RarHelperTask;
@@ -346,7 +346,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                     "/" + fileName;
 
-                            BaseFileParcelable file = new BaseFileParcelable(archiveCacheDirPath + "/"
+                            HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
                                     + rowItem.getName().replaceAll("\\\\", "/"));
                             file.setMode(OpenMode.FILE);
                             // this file will be opened once service finishes up it's extraction
@@ -464,7 +464,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                         String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 "/" + fileName;
 
-                        BaseFileParcelable file1 = new BaseFileParcelable(archiveCacheDirPath + "/"
+                        HybridFileParcelable file1 = new HybridFileParcelable(archiveCacheDirPath + "/"
                                 + rowItem.getFileNameString().replaceAll("\\\\", "/"));
                         file1.setMode(OpenMode.FILE);
 

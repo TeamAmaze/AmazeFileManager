@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
@@ -40,9 +40,9 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
     private Context context;
     private AppTheme appTheme;
     private PieChart chart;
-    private BaseFileParcelable file;
+    private HybridFileParcelable file;
 
-    public LoadFolderSpaceDataTask(Context c, AppTheme appTheme, PieChart chart, BaseFileParcelable f) {
+    public LoadFolderSpaceDataTask(Context c, AppTheme appTheme, PieChart chart, HybridFileParcelable f) {
         context = c;
         this.appTheme = appTheme;
         this.chart = chart;

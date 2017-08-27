@@ -27,7 +27,7 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.BaseFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.asyncronious.services.CopyService;
@@ -54,13 +54,13 @@ import jcifs.smb.SmbFile;
  */
 public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
 
-    private ArrayList<ArrayList<BaseFileParcelable>> files;
+    private ArrayList<ArrayList<HybridFileParcelable>> files;
     private MainFragment mainFrag;
     private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
 
-    public MoveFiles(ArrayList<ArrayList<BaseFileParcelable>> files, MainFragment ma, Context context, OpenMode mode) {
+    public MoveFiles(ArrayList<ArrayList<HybridFileParcelable>> files, MainFragment ma, Context context, OpenMode mode) {
         mainFrag = ma;
         this.context = context;
         this.files = files;
@@ -76,7 +76,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
         switch (mode) {
             case SMB:
                 for (int i = 0; i < paths.size(); i++) {
-                    for (BaseFileParcelable f : files.get(i)) {
+                    for (HybridFileParcelable f : files.get(i)) {
                         try {
                             SmbFile source = new SmbFile(f.getPath());
                             SmbFile dest = new SmbFile(paths.get(i) + "/" + f.getName());
@@ -93,7 +93,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                 break;
             case FILE:
                 for (int i = 0; i < paths.size(); i++) {
-                    for (BaseFileParcelable f : files.get(i)) {
+                    for (HybridFileParcelable f : files.get(i)) {
                         File dest = new File(paths.get(i) + "/" + f.getName());
                         File source = new File(f.getPath());
                         if (!source.renameTo(dest)) {
@@ -117,7 +117,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
             case ONEDRIVE:
             case GDRIVE:
                 for (int i=0; i<paths.size(); i++) {
-                    for (BaseFileParcelable baseFile : files.get(i)) {
+                    for (HybridFileParcelable baseFile : files.get(i)) {
 
                         DataUtils dataUtils = DataUtils.getInstance();
 
@@ -155,7 +155,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
             }
 
             for (int i = 0; i < paths.size(); i++) {
-                for (BaseFileParcelable f : files.get(i)) {
+                for (HybridFileParcelable f : files.get(i)) {
                     FileUtils.scanFile(f.getPath(), context);
                     FileUtils.scanFile(paths.get(i) + "/" + f.getName(), context);
                 }
@@ -166,7 +166,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                 @Override
                 public void run() {
                     for (int i=0; i<paths.size(); i++) {
-                        for (BaseFileParcelable file : files.get(i)) {
+                        for (HybridFileParcelable file : files.get(i)) {
                             if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                                 try {
 
