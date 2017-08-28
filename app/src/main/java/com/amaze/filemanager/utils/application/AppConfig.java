@@ -18,10 +18,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by vishal on 7/12/16.
+ * Created by vishal on 7/12/16 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 
-public class AppConfig extends Application {
+public class AppConfig extends LeakCanaryApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
 
