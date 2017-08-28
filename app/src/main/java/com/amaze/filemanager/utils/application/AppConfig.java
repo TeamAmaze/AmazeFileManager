@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.application;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.android.volley.Request;
