@@ -2,7 +2,7 @@ package com.amaze.filemanager.activities;
 
 import android.support.v7.app.AppCompatActivity;
 
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;

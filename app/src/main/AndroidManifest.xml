@@ -45,7 +45,7 @@
         android:required="false" />
 
     <application
-        android:name=".utils.AppConfig"
+        android:name=".utils.application.AppConfig"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"

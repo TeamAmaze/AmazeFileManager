@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils.application;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.android.volley.Request;
@@ -17,10 +18,10 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by vishal on 7/12/16.
+ * Created by vishal on 7/12/16 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 
-public class AppConfig extends Application {
+public class AppConfig extends LeakCanaryApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
 
