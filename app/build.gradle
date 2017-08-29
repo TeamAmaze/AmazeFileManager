@@ -4,6 +4,10 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
 
+    dexOptions {
+        jumboMode = true
+    }
+
     packagingOptions {
         exclude 'proguard-project.txt'
         exclude 'project.properties'
