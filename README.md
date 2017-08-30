@@ -39,20 +39,6 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
     
 See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
 
-Contributors
------
-Make sure to write your name and email id in format `Name<email>` in the license declaration above every file you make change to. 
-
-You won't be able to claim the license for changes made by you unless you do that.
-
-Also, take a look at [this guide](https://source.android.com/source/code-style.html) before making changes in code.  
-
-The source code has two flavours, fDroid and play. Both of these include their own MainActivity.
-fDroid's MainAcitivity is generally outdated and is only updated during new release.  
-Any changes made to [fDroid's MainActivity](https://github.com/TeamAmaze/AmazeFileManager/blob/master/app/src/fdroid/java/com/amaze/filemanager/activities/MainActivity.java) will be overwritten. So please make sure to compile and work on [play's MainAcitivty](https://github.com/TeamAmaze/AmazeFileManager/blob/master/app/src/play/java/com/amaze/filemanager/activities/MainActivity.java).
-
-Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
-
 Translators
 ----
 Want to help translate Amaze to your language? Head over to [this link](https://www.transifex.com/amaze/amaze-file-manager-1/).  
