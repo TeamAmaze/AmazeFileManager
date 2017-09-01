@@ -273,7 +273,6 @@ public class CopyService extends Service {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         sourceProgress = i;
                         BaseFile f1 = (sourceFiles.get(i));
-                        Log.e("Copy", "basefile\t" + f1.getPath());
 
                         try {
 
@@ -307,7 +306,7 @@ public class CopyService extends Service {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.e("Copy", "Got exception checkout");
+                            Log.e("CopyService", "Got exception checkout: " + f1.getPath());
 
                             failedFOps.add(sourceFiles.get(i));
                             for (int j = i + 1; j < sourceFiles.size(); j++)
