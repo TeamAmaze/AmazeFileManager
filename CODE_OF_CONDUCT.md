@@ -75,4 +75,4 @@ available at [http://contributor-covenant.org/version/1/4][version]
 
 ## Contact
 
-Should you find any violation, please report by writing to us [here](mailto://vishalmeham2@gmail.com).
+Should you find any violation, please report by writing to us [here](mailto:vishalmeham2@gmail.com).
