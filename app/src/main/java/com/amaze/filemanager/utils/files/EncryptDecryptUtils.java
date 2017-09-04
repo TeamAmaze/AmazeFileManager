@@ -65,7 +65,7 @@ public class EncryptDecryptUtils {
         decryptIntent.putExtra(EncryptService.TAG_BROADCAST_RESULT, broadcastResult);
         SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
 
-        EncryptedEntry encryptedEntry = null;
+        EncryptedEntry encryptedEntry;
 
         try {
             encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
@@ -89,6 +89,13 @@ public class EncryptDecryptUtils {
                         Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail_password), Toast.LENGTH_LONG).show();
                     }
                 };
+
+        if (encryptedEntry == null) {
+            // couldn't find the matching path in database, we lost the password
+
+            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         switch (encryptedEntry.getPassword()) {
             case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
