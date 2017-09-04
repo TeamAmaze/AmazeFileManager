@@ -36,12 +36,12 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.provider.DocumentFile;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -705,12 +705,10 @@ public class Futils {
         }
     }
 
-    public static Bundle getPaths(String path, Context c) {
+    public static Pair<ArrayList<String>, ArrayList<String>> getPaths(String path) {
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> paths = new ArrayList<>();
-        Bundle b = new Bundle();
         while (path.contains("/")) {
-
             paths.add(path);
             names.add(path.substring(1 + path.lastIndexOf("/"), path.length()));
             path = path.substring(0, path.lastIndexOf("/"));
@@ -719,10 +717,7 @@ public class Futils {
         paths.remove("/");
         names.add("root");
         paths.add("/");
-        // Toast.makeText(c,paths.get(0)+"\n"+paths.get(1)+"\n"+paths.get(2),Toast.LENGTH_LONG).show();
-        b.putStringArrayList("names", names);
-        b.putStringArrayList("paths", paths);
-        return b;
+        return new Pair<>(names, paths);
     }
 
     public boolean deletedirectory(File f){

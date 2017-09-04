@@ -83,7 +83,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
     protected void onPostExecute(ArrayList<FileHeader> zipEntries) {
         super.onPostExecute(zipEntries);
         zipViewer.swipeRefreshLayout.setRefreshing(false);
-        zipViewer.createRarviews(zipEntries, dir);
+        zipViewer.createRarViews(zipEntries, dir);
     }
 
     private class FileListSorter implements Comparator<FileHeader> {

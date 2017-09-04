@@ -964,7 +964,8 @@ public class MainActivity extends ThemedActivity implements
                 MainFragment ma = getCurrentMainFragment();
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
-                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count);
+                appbar.getBottomBar().updatePath(ma.getCurrentPath(), ma.results,
+                        MainActivityHelper.SEARCH_TEXT, ma.openMode, ma.folder_count, ma.file_count, ma);
             } catch (Exception e) {}
 
             appbar.getBottomBar().setClickListener();

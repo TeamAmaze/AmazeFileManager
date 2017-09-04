@@ -20,27 +20,22 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,7 +44,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +59,7 @@ import com.amaze.filemanager.services.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObj;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -78,9 +73,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ZipViewer extends Fragment {
+public class ZipViewer extends Fragment implements BottomBarButtonPath {
 
-    private UtilitiesProviderInterface utilsProvider;
+    private static final int ZIP_FILE = 0, RAR_FILE = 1;
+
+    private static final String KEY_CACHE_FILES = "cache_files";
+    private static final String KEY_PATH = "path";
+    private static final String KEY_URI = "uri";
+    private static final String KEY_OPEN_MODE = "open_mode";
+    private static final String KEY_FILE = "file";
+    private static final String KEY_WHOLE_LIST = "whole_list";
+    private static final String KEY_ELEMENTS = "elements";
+    private static final String KEY_OPEN = "is_open";
+
     public String s;
     public File f;
 
@@ -96,8 +101,6 @@ public class ZipViewer extends Fragment {
     public RarAdapter rarAdapter;
     public ActionMode mActionMode;
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
-    SharedPreferences Sp;
-    ZipViewer zipViewer = this;
     public Archive archive;
     public ArrayList<FileHeader> wholelistRar = new ArrayList<>();
     public ArrayList<FileHeader> elementsRar = new ArrayList<>();
@@ -105,29 +108,20 @@ public class ZipViewer extends Fragment {
     public ArrayList<ZipObj> elements = new ArrayList<>();
     public MainActivity mainActivity;
     public RecyclerView listView;
-    View rootView;
-    boolean addheader = true;
     public SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayoutManager mLayoutManager;
-    DividerItemDecoration dividerItemDecoration;
-    boolean showDividers;
-    public int paddingTop;
-    int mToolbarHeight, hidemode;
-    View mToolbarContainer;
     public Resources res;
-    int openmode;   //0 for zip 1 for rar
-    boolean stopAnims = true;
-
     public boolean isOpen = false;  // flag states whether to open file after service extracts it
 
-    public static final String KEY_CACHE_FILES = "cache_files";
-    public static final String KEY_PATH = "path";
-    public static final String KEY_URI = "uri";
-    public static final String KEY_OPEN_MODE = "open_mode";
-    public static final String KEY_FILE = "file";
-    public static final String KEY_WHOLE_LIST = "whole_list";
-    public static final String KEY_ELEMENTS = "elements";
-    public static final String KEY_OPEN = "is_open";
+    private UtilitiesProviderInterface utilsProvider;
+    private View rootView;
+    private boolean addheader = true;
+    private LinearLayoutManager mLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+    private boolean showDividers;
+    private View mToolbarContainer;
+    private int openmode;   //0 for zip 1 for rar
+    private boolean stopAnims = true;
+    private int file = 0, folder = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,10 +167,10 @@ public class ZipViewer extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         s = getArguments().getString(KEY_PATH);
-        Uri uri = Uri.parse(s);
-        f = new File(uri.getPath());
+        f = new File(Uri.parse(s).getPath());
+
         mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
         mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -186,30 +180,29 @@ public class ZipViewer extends Fragment {
                         stopAnim();
                     }
                     rarAdapter.stoppedAnimation = true;
-
                 }
                 stopAnims = false;
                 return false;
             }
         });
-        hidemode = Sp.getInt("hidemode", 0);
+
         listView.setVisibility(View.VISIBLE);
         mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
         res = getResources();
-        mainActivity.supportInvalidateOptionsMenu();
-        if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
-            rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-        else
-            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
 
-        gobackitem = Sp.getBoolean("goBack_checkbox", false);
-        coloriseIcons = Sp.getBoolean("coloriseIcons", true);
-        Calendar calendar = Calendar.getInstance();
-        showSize = Sp.getBoolean("showFileSize", false);
-        showLastModified = Sp.getBoolean("showLastModified", true);
-        showDividers = Sp.getBoolean("showDividers", true);
-        year = ("" + calendar.get(Calendar.YEAR)).substring(2, 4);
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+            rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        } else {
+            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
+        }
+
+        gobackitem = sp.getBoolean("goBack_checkbox", false);
+        coloriseIcons = sp.getBoolean("coloriseIcons", true);
+        showSize = sp.getBoolean("showFileSize", false);
+        showLastModified = sp.getBoolean("showLastModified", true);
+        showDividers = sp.getBoolean("showDividers", true);
+        year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
         skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
         iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
@@ -217,104 +210,64 @@ public class ZipViewer extends Fragment {
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
         if (savedInstanceState == null && f != null) {
-
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
             files.add(new BaseFile(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
             if (f.getPath().endsWith(".rar")) {
-                openmode = 1;
-                SetupRar(null);
+                openmode = RAR_FILE;
+                loadFileList(f.getPath());
             } else {
-                openmode = 0;
-                SetupZip(null);
+                openmode = ZIP_FILE;
+                loadFileList(s);
             }
         } else {
-
-            f = new File(savedInstanceState.getString(KEY_FILE));
-            s = savedInstanceState.getString(KEY_URI);
-            uri = Uri.parse(s);
-            f = new File(uri.getPath());
-            files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
-            isOpen = savedInstanceState.getBoolean(KEY_OPEN);
-            if (f.getPath().endsWith(".rar")) {
-                openmode = 1;
-                SetupRar(savedInstanceState);
-            } else {
-                openmode = 0;
-                SetupZip(savedInstanceState);
-            }
-
-        }
-        String fileName = null;
-        try {
-            if (uri.getScheme().equals(KEY_FILE)) {
-                fileName = uri.getLastPathSegment();
-            } else {
-                Cursor cursor = null;
-                try {
-                    cursor = getActivity().getContentResolver().query(uri, new String[]{
-                            MediaStore.Images.ImageColumns.DISPLAY_NAME
-                    }, null, null, null);
-
-                    if (cursor != null && cursor.moveToFirst()) {
-                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-                    }
-                } finally {
-
-                    if (cursor != null) {
-                        cursor.close();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (fileName == null || fileName.trim().length() == 0) fileName = f.getName();
-        try {
-            mainActivity.getAppbar().setTitle(fileName);
-        } catch (Exception e) {
-            mainActivity.getAppbar().setTitle(getResources().getString(R.string.zip_viewer));
+            onRestoreInstanceState(savedInstanceState);
         }
         mainActivity.supportInvalidateOptionsMenu();
-        mToolbarHeight = getToolbarHeight(getActivity());
-        paddingTop = (mToolbarHeight) + dpToPx(72);
-        mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                paddingTop = mToolbarContainer.getHeight();
-                mToolbarHeight = mainActivity.getAppbar().getToolbar().getHeight();
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-
-        });
-
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-    public static int getToolbarHeight(Context context) {
-        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[]{android.R.attr.actionBarSize});
-        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
-
-        return toolbarHeight;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        putDatatoSavedInstance(outState);
+
+        if (openmode == ZIP_FILE) {
+            outState.putParcelableArrayList(KEY_WHOLE_LIST, wholelist);
+            outState.putParcelableArrayList(KEY_ELEMENTS, elements);
+        }
+
+        outState.putInt(KEY_OPEN_MODE, openmode);
+        outState.putString(KEY_PATH, current);
+        outState.putString(KEY_URI, s);
+        outState.putString(KEY_FILE, f.getPath());
+        outState.putParcelableArrayList(KEY_CACHE_FILES, files);
+        outState.putBoolean(KEY_OPEN, isOpen);
+    }
+
+    private void onRestoreInstanceState(Bundle savedInstanceState) {
+        f = new File(savedInstanceState.getString(KEY_FILE));
+        s = savedInstanceState.getString(KEY_URI);
+        f = new File(Uri.parse(s).getPath());
+        files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
+        isOpen = savedInstanceState.getBoolean(KEY_OPEN);
+        if (f.getPath().endsWith(".rar")) {
+            openmode = RAR_FILE;
+            String path = savedInstanceState.getString(KEY_FILE);
+            if (path != null && path.length() > 0) {
+                f = new File(path);
+                current = savedInstanceState.getString(KEY_PATH);
+                new RarHelperTask(this, current).execute(f);
+            } else {
+                loadFileList(f.getPath());
+            }
+        } else {
+            openmode = ZIP_FILE;
+            wholelist = savedInstanceState.getParcelableArrayList(KEY_WHOLE_LIST);
+            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
+            current = savedInstanceState.getString(KEY_PATH);
+            f = new File(savedInstanceState.getString(KEY_FILE));
+            createZipViews(elements, current);
+        }
     }
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -386,7 +339,7 @@ public class ZipViewer extends Fragment {
                     Intent intent = new Intent(getActivity(), ExtractService.class);
                     ArrayList<String> a = new ArrayList<>();
                     for (int i : rarAdapter.getCheckedItemPositions()) {
-                        a.add(openmode == 0 ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
+                        a.add(openmode == ZIP_FILE ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
                     }
                     intent.putExtra(ExtractService.KEY_PATH_ZIP, f.getPath());
                     intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
@@ -421,8 +374,7 @@ public class ZipViewer extends Fragment {
         // in case of opening any unknown file inside the zip
 
         if (files.get(0).exists()) {
-
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute((files));
+            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(files);
         }
     }
 
@@ -443,7 +395,6 @@ public class ZipViewer extends Fragment {
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
         }
@@ -455,7 +406,7 @@ public class ZipViewer extends Fragment {
                 // open most recent entry added to files to be deleted from cache
                 File cacheFile = new File(files.get(files.size() - 1).getPath());
                 if (cacheFile != null && cacheFile.exists())
-                    utilsProvider.getFutils().openFile(cacheFile, zipViewer.mainActivity);
+                    utilsProvider.getFutils().openFile(cacheFile, mainActivity);
 
                 // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;
@@ -464,118 +415,69 @@ public class ZipViewer extends Fragment {
         }
     };
 
-    void putDatatoSavedInstance(Bundle outState) {
-        if (openmode == 0) {
-            outState.putParcelableArrayList(KEY_WHOLE_LIST, wholelist);
-            outState.putParcelableArrayList(KEY_ELEMENTS, elements);
+    private void loadFileList(String path) {
+        if(openmode == ZIP_FILE) {
+            new ZipHelperTask(this, "").execute(path);
+
+        } else {
+            File f = new File(path);
+            new RarHelperTask(this, "").execute(f);
         }
-        outState.putInt(KEY_OPEN_MODE, openmode);
-        outState.putString(KEY_PATH, current);
-        outState.putString(KEY_URI, s);
-        outState.putString(KEY_FILE, f.getPath());
-        outState.putParcelableArrayList(KEY_CACHE_FILES, files);
-        outState.putBoolean(KEY_OPEN, isOpen);
-    }
-
-    void SetupRar(Bundle savedInstanceState) {
-
-        if (savedInstanceState == null)
-            loadRarlist(f.getPath());
-        else {
-            String path = savedInstanceState.getString(KEY_FILE);
-            if (path != null && path.length() > 0) {
-                f = new File(path);
-                current = savedInstanceState.getString(KEY_PATH);
-                new RarHelperTask(this, current).execute(f);
-            } else loadRarlist(f.getPath());
-        }
-    }
-
-    void SetupZip(Bundle savedInstanceState) {
-        if (savedInstanceState == null)
-            loadlist(s);
-        else {
-            wholelist = savedInstanceState.getParcelableArrayList(KEY_WHOLE_LIST);
-            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
-            current = savedInstanceState.getString(KEY_PATH);
-            f = new File(savedInstanceState.getString(KEY_FILE));
-            createviews(elements, current);
-        }
-    }
-
-    public void loadRarlist(String path) {
-        File f = new File(path);
-        new RarHelperTask(this, "").execute(f);
-
-    }
-
-    public boolean cangoBackRar() {
-        return !(current == null || current.trim().length() == 0);
-    }
-
-    public void goBackRar() {
-        String path;
-        try {
-            path = current.substring(0, current.lastIndexOf("\\"));
-        } catch (Exception e) {
-            path = "";
-        }
-        new RarHelperTask(this, path).execute(f);
     }
 
     public boolean canGoBack() {
-        if (openmode == 1) return cangoBackRar();
+        if (openmode == RAR_FILE) return !(current == null || current.trim().length() == 0);
         else return !(current == null || current.trim().length() == 0);
     }
 
     public void goBack() {
-        if (openmode == 1) {
-            goBackRar();
-            return;
+        if (openmode == RAR_FILE) {
+            String path;
+            try {
+                path = current.substring(0, current.lastIndexOf("\\"));
+            } catch (Exception e) {
+                path = "";
+            }
+            new RarHelperTask(this, path).execute(f);
+        } else {
+            new ZipHelperTask(this, new File(current).getParent()).execute(s);
         }
-        new ZipHelperTask(this, new File(current).getParent()).execute(s);
     }
 
-    void refresh() {
+    private void refresh() {
         switch (openmode) {
-            case 0:
+            case ZIP_FILE:
                 new ZipHelperTask(this, current).execute(s);
                 break;
-            case 1:
+            case RAR_FILE:
                 new RarHelperTask(this, current).execute(f);
                 break;
         }
     }
 
-
-    public void bbar() {
-        if (current != null && current.length() != 0)
-            mainActivity.getAppbar().getBottomBar().updatePath("/" + current, false, null, OpenMode.FILE, folder, file);
-        else mainActivity.getAppbar().getBottomBar().updatePath("/", false, null, OpenMode.FILE, folder, file);
-
-
+    private void updateBottomBar() {
+        String path = current != null && current.length() != 0? f.getName() + "/" + current:f.getName();
+        mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    int file = 0, folder = 0;
-
-    public void createviews(ArrayList<ZipObj> zipEntries, String dir) {
+    public void createZipViews(ArrayList<ZipObj> zipEntries, String dir) {
         if (rarAdapter == null) {
-            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer, true);
-            zipViewer.listView.setAdapter(zipViewer.rarAdapter);
+            rarAdapter = new RarAdapter(getActivity(), utilsProvider, zipEntries, this, true);
+            listView.setAdapter(rarAdapter);
         } else rarAdapter.generate(zipEntries, true);
         folder = 0;
         file = 0;
         for (ZipObj zipEntry : zipEntries)
             if (zipEntry.isDirectory()) folder++;
             else file++;
+        openmode = ZIP_FILE;
         createViews(dir);
-        openmode = 0;
     }
 
-    public void createRarviews(ArrayList<FileHeader> zipEntries, String dir) {
+    public void createRarViews(ArrayList<FileHeader> zipEntries, String dir) {
         if (rarAdapter == null) {
-            zipViewer.rarAdapter = new RarAdapter(zipViewer.getActivity(), utilsProvider, zipEntries, zipViewer);
-            zipViewer.listView.setAdapter(zipViewer.rarAdapter);
+            rarAdapter = new RarAdapter(getActivity(), utilsProvider, zipEntries, this);
+            listView.setAdapter(rarAdapter);
         } else
             rarAdapter.generate(zipEntries);
         folder = 0;
@@ -583,11 +485,11 @@ public class ZipViewer extends Fragment {
         for (FileHeader zipEntry : zipEntries)
             if (zipEntry.isDirectory()) folder++;
             else file++;
-        openmode = 1;
+        openmode = RAR_FILE;
         createViews(dir);
     }
 
-    void createViews(String dir) {
+    private void createViews(String dir) {
         stopAnims = true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
@@ -611,13 +513,32 @@ public class ZipViewer extends Fragment {
             }
         });
         listView.stopScroll();
-        zipViewer.current = dir;
-        zipViewer.bbar();
+        current = dir;
+        updateBottomBar();
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    public void loadlist(String path) {
-        new ZipHelperTask(this, "").execute(path);
+    @Override
+    public void changePath(String path) {
+        if(path.startsWith("/")) path = path.substring(1);
 
+        if (openmode == ZIP_FILE) {
+            new ZipHelperTask(this, path).execute(s);
+        } else {
+            new RarHelperTask(this, path).execute(f);
+        }
+
+        updateBottomBar();
+    }
+
+    @Override
+    public String getPath() {
+        if(current != null && current.length() != 0) return "/" + current;
+        else return "";
+    }
+
+    @Override
+    public int getRootDrawable() {
+        return R.drawable.ic_compressed_white_24dp;
     }
 }
