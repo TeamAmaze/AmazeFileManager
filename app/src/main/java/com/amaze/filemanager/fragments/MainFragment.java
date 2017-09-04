@@ -1809,6 +1809,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         private long lastArrivalTime = 0l;
         private static final int DEFER_CONSTANT = 5000;
+        private ArrayList<String> pathsAdded = new ArrayList<>();
+        private ArrayList<String> pathsRemoved = new ArrayList<>();
 
         @Override
         public void onEvent(int event, String path) {
@@ -1819,6 +1821,30 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 if (currentArrivalTime-lastArrivalTime < DEFER_CONSTANT) {
                     // defer the observer until unless it reports a change after at least 5 secs of last one
+                    // keep adding files added, if there were any, to the buffer
+
+                    switch (event) {
+                        case CREATE:
+                        case MOVED_TO:
+                            pathsAdded.add(path);
+                            break;
+                        case DELETE:
+                        case MOVED_FROM:
+                            pathsRemoved.add(path);
+                            break;
+                        case DELETE_SELF:
+                        case MOVE_SELF:
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    goBack();
+                                }
+                            });
+                            return;
+                        default:
+                            return;
+                    }
                     return;
                 }
 
@@ -1827,10 +1853,30 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 switch (event) {
                     case CREATE:
                     case MOVED_TO:
+                        // add path for this event first
+                        pathsAdded.add(path);
+                        for (String pathAdded : pathsAdded) {
+                            HFile fileCreated = new HFile(openMode, CURRENT_PATH + "/" + pathAdded);
+                            addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
+                        }
+                        // reset the buffer after every threshold time
+                        pathsAdded = new ArrayList<>();
+                        break;
                     case DELETE:
                     case MOVED_FROM:
-                    case ATTRIB:
-                    case MODIFY:
+                        pathsRemoved.add(path);
+                        for (int i = 0; i < getLayoutElementSize(); i++) {
+                            File currentFile = new File(getLayoutElement(i).getDesc());
+
+                            for (String pathRemoved : pathsRemoved) {
+
+                                if (currentFile.getName().equals(pathRemoved)) {
+                                    removeLayoutElement(i);
+                                    break;
+                                }
+                            }
+                        }
+                        pathsRemoved = new ArrayList<>();
                         break;
                     case DELETE_SELF:
                     case MOVE_SELF:
@@ -1850,8 +1896,22 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     @Override
                     public void run() {
 
+                        if (listView.getVisibility() == View.VISIBLE) {
+                            if (getLayoutElements().size() == 0) {
+
+                                // no item left in list, recreate views
+                                createViews(getLayoutElements(), true, CURRENT_PATH, openMode, results, !IS_LIST);
+                            } else {
+
+                                // we already have some elements in list view, invalidate the adapter
+                                adapter.setItems(getLayoutElements());
+                            }
+                        } else {
+                            // there was no list view, means the directory was empty
+                            loadlist(CURRENT_PATH, true, openMode);
+                        }
+
                         computeScroll();
-                        loadlist(CURRENT_PATH, true, openMode);
                     }
                 });
             }
