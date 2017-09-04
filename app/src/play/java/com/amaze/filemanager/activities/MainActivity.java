@@ -561,16 +561,23 @@ public class MainActivity extends ThemedActivity implements
         Drawable drawable = getResources().getDrawable(R.drawable.ic_file_download_black_24dp);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            VectorDrawable vectorDrawable = (VectorDrawable) drawable;
-            vectorDrawable.setTint(getResources().getColor(android.R.color.white));
 
-            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawable);
+            if (drawable instanceof VectorDrawable) {
+
+                VectorDrawable vectorDrawable = (VectorDrawable) drawable;
+                vectorDrawable.setTint(getResources().getColor(android.R.color.white));
+
+                floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawable);
+            }
         } else {
 
-            VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
-            vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
+            if (drawable instanceof VectorDrawableCompat) {
 
-            floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawableCompat);
+                VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
+                vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
+
+                floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawableCompat);
+            }
         }
 
 

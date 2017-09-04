@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -206,6 +207,10 @@ public abstract class FileUtil {
                         switch (hFile.getMode()) {
                             case FILE:
                             case ROOT:
+                                if (!FileUtil.isWritable(new File(currentPath))) {
+                                    AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
+                                    return null;
+                                }
                                 bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(finalFilePath));
                                 break;
                             case SMB:
