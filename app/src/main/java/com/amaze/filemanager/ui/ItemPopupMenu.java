@@ -10,12 +10,13 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -97,19 +98,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 mainFragment.rename(rowItem.generateBaseFile());
                 return true;
             case R.id.cpy:
-                mainFragment.getMainActivity().MOVE_PATH = null;
-                ArrayList<HybridFileParcelable> copies = new ArrayList<>();
-                copies.add(rowItem.generateBaseFile());
-                mainFragment.getMainActivity().COPY_PATH = copies;
-                mainFragment.getMainActivity().supportInvalidateOptionsMenu();
+            case R.id.cut: {
+                int op = item.getItemId() == R.id.cpy? PasteHelper.OPERATION_COPY:PasteHelper.OPERATION_CUT;
+                PasteHelper pasteHelper = new PasteHelper(op, new HybridFileParcelable[]{rowItem.generateBaseFile()});
+                mainFragment.getMainActivity().setPaste(pasteHelper);
                 return true;
-            case R.id.cut:
-                mainFragment.getMainActivity().COPY_PATH = null;
-                ArrayList<HybridFileParcelable> copie = new ArrayList<>();
-                copie.add(rowItem.generateBaseFile());
-                mainFragment.getMainActivity().MOVE_PATH = copie;
-                mainFragment.getMainActivity().supportInvalidateOptionsMenu();
-                return true;
+            }
             case R.id.ex:
                 mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.getDesc()));
                 return true;

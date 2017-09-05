@@ -85,6 +85,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
+import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
@@ -93,9 +97,10 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
@@ -107,10 +112,6 @@ import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
-import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
-import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -123,7 +124,6 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.appbar.SearchView;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
@@ -134,6 +134,7 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -157,6 +158,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -186,7 +188,6 @@ public class MainActivity extends ThemedActivity implements
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String path = "", launchPath;
-    public ArrayList<HybridFileParcelable> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
@@ -288,6 +289,8 @@ public class MainActivity extends ThemedActivity implements
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
     private static final String KEY_PREFERENCE_BOOKMARKS_ADDED = "books_added";
+
+    private PasteHelper pasteHelper;
 
     /**
      * Called when the activity is first created.
@@ -520,8 +523,13 @@ public class MainActivity extends ThemedActivity implements
                         }
                     }
                 } else {
-                    COPY_PATH = savedInstanceState.getParcelableArrayList("COPY_PATH");
-                    MOVE_PATH = savedInstanceState.getParcelableArrayList("MOVE_PATH");
+
+                    if(savedInstanceState.containsKey("pasteHelperOperation")) {
+                        int op = savedInstanceState.getInt("pasteHelperOperation");
+                        HybridFileParcelable[] paths = (HybridFileParcelable[]) savedInstanceState.getParcelableArray("pasteHelperPaths");
+                        pasteHelper = new PasteHelper(op, paths);
+                    }
+
                     oppathe = savedInstanceState.getString("oppathe");
                     oppathe1 = savedInstanceState.getString("oppathe1");
                     oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
@@ -780,7 +788,7 @@ public class MainActivity extends ThemedActivity implements
     }
 
     public void invalidatePasteButton(MenuItem paste) {
-        if (MOVE_PATH != null || COPY_PATH != null) {
+        if (pasteHelper != null) {
             paste.setVisible(true);
         } else {
             paste.setVisible(false);
@@ -1166,12 +1174,11 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.paste:
                 String path = ma.getCurrentPath();
-                ArrayList<HybridFileParcelable> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
-                boolean move = MOVE_PATH != null;
+                ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(pasteHelper.paths));
+                boolean move = pasteHelper.operation == PasteHelper.OPERATION_CUT;
                 new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-                COPY_PATH = null;
-                MOVE_PATH = null;
+                pasteHelper = null;
                 invalidatePasteButton(item);
                 break;
             case R.id.extract:
@@ -1218,10 +1225,11 @@ public class MainActivity extends ThemedActivity implements
         super.onSaveInstanceState(outState);
         if (selectedStorage != NO_VALUE)
             outState.putInt("selectitem", selectedStorage);
-        if (COPY_PATH != null)
-            outState.putParcelableArrayList("COPY_PATH", COPY_PATH);
-        if (MOVE_PATH != null)
-            outState.putParcelableArrayList("MOVE_PATH", MOVE_PATH);
+        if(pasteHelper != null) {
+            outState.putInt("pasteHelperOperation", pasteHelper.operation);
+            outState.putParcelableArray("pasteHelperPaths", pasteHelper.paths);
+        }
+
         if (oppathe != null) {
             outState.putString("oppathe", oppathe);
             outState.putString("oppathe1", oppathe1);
@@ -2080,6 +2088,14 @@ public class MainActivity extends ThemedActivity implements
         supportInvalidateOptionsMenu();
     }
 
+    public PasteHelper getPaste() {
+        return pasteHelper;
+    }
+
+    public void setPaste(PasteHelper p) {
+        pasteHelper = p;
+        supportInvalidateOptionsMenu();
+    }
 
     @Override
     public void onNewIntent(Intent i) {
