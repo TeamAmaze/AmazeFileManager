@@ -766,7 +766,7 @@ public class GeneralDialogCreation {
         b.build().show();
     }
 
-    public static void showPackageDialog(final File f, final MainActivity m) {
+    public static void showPackageDialog(final SharedPreferences sharedPrefs, final File f, final MainActivity m) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
@@ -779,7 +779,8 @@ public class GeneralDialogCreation {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        Futils.openunknown(f, m, false);
+                        boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                        Futils.openunknown(f, m, false, useNewStack);
                     }
 
                     @Override
@@ -950,7 +951,8 @@ public class GeneralDialogCreation {
     }
 
 
-    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHistoryDialog(final DataUtils dataUtils, Futils utils, SharedPreferences sharedPrefs,
+                                         final MainFragment m, AppTheme appTheme) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -967,7 +969,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, sharedPrefs, R.layout.bookmarkrow,
                 toHFileArray(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
@@ -976,7 +978,8 @@ public class GeneralDialogCreation {
         x.show();
     }
 
-    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, final MainFragment m, AppTheme appTheme) {
+    public static void showHiddenDialog(DataUtils dataUtils, Futils utils, SharedPreferences sharedPrefs,
+                                        final MainFragment m, AppTheme appTheme) {
         int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
@@ -984,7 +987,7 @@ public class GeneralDialogCreation {
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, utils, sharedPrefs, R.layout.bookmarkrow,
                 toHFileArray(dataUtils.getHiddenfiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);

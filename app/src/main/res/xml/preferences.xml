@@ -107,9 +107,11 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno"/>
-
-
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/text_editor">
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/archive_preferences">
         <EditTextPreference
             android:key="extractpath"
@@ -143,6 +145,18 @@
         <Preference
             android:key="advancedsearch"
             android:title="@string/advanced_search"/>
+
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="typeablepaths"
+            android:summary="@string/typeablepaths_summary"
+            android:title="@string/typeablepaths_title"/>
+
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="texteditor_newstack"
+            android:title="@string/preference_newstack_title"
+            android:summary="@string/preference_newstack_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/advanced">
@@ -151,11 +165,6 @@
             android:key="showPermissions"
             android:summary="@string/rootPrefSummary"
             android:title="@string/rootPref"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
-            android:key="typeablepaths"
-            android:summary="@string/typeablepaths_summary"
-            android:title="@string/typeablepaths_title"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="rootmode"
