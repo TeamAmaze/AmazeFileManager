@@ -574,6 +574,6 @@
 
     <string name="text_editor">Text editor settings</string>
     <string name="preference_newstack_title">Open files as new task</string>
-    <string name="preference_newstack_summary">You\'ll be able to open multiple instances when opening files. Access them from system recents screen.</string>
+    <string name="preference_newstack_summary">Allows you to open files in separate tasks. Access them from system recents screen.</string>
 
 </resources>
