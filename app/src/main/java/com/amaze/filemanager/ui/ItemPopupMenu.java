@@ -39,17 +39,19 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
     private MainActivity mainActivity;
     private UtilitiesProviderInterface utilitiesProvider;
     private MainFragment mainFragment;
+    private SharedPreferences sharedPrefs;
     private LayoutElement rowItem;
     private int accentColor;
 
     public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProviderInterface up, MainFragment mainFragment,
-                         LayoutElement ri, View anchor) {
+                         LayoutElement ri, View anchor, SharedPreferences sharedPreferences) {
         super(c, anchor);
 
         context = c;
         mainActivity = ma;
         utilitiesProvider = up;
         this.mainFragment = mainFragment;
+        sharedPrefs = sharedPreferences;
         rowItem = ri;
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
@@ -126,7 +128,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                         positions, utilitiesProvider.getAppTheme());
                 return true;
             case R.id.open_with:
-                Futils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity());
+                boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                Futils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
                 return true;
             case R.id.encrypt:
                 final Intent encryptIntent = new Intent(context, EncryptService.class);

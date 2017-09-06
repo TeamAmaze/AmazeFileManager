@@ -80,6 +80,7 @@ import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.asynctasks.LoadList;
 import com.amaze.filemanager.ui.LayoutElement;
@@ -757,7 +758,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true);
+                    boolean useNewStack = sharedPref.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    Futils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -814,7 +816,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         public void onReceive(Context context, Intent intent) {
 
             if (isEncryptOpen && encryptBaseFile != null) {
-                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity());
+                getMainActivity().getFutils().openFile(new File(encryptBaseFile.getPath()), getMainActivity(), sharedPref);
                 isEncryptOpen = false;
             }
         }
@@ -840,9 +842,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-
                 if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-
                     fragment.mSearchAsyncTask.cancel(true);
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
@@ -856,34 +856,30 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
 
         if (selection) {
-            if (!isBackButton) {
-                // the first {goback} item if back navigation is enabled
-                adapter.toggleChecked(position, imageView);
-            } else {
+            if (isBackButton) {
                 selection = false;
                 if (mActionMode != null)
                     mActionMode.finish();
                 mActionMode = null;
+            } else {
+                // the first {goback} item if back navigation is enabled
+                adapter.toggleChecked(position, imageView);
             }
         } else {
-            if (!isBackButton) {
+            if(isBackButton) {
+                goBackItemClick();
+            } else {
                 // hiding search view if visible
                 if (getMainActivity().getAppbar().getSearchView().isEnabled()) {
                     getMainActivity().getAppbar().getSearchView().hideSearchView();
                 }
 
-                String path;
-                if (!e.hasSymlink()) {
+                String path = !e.hasSymlink()? e.getDesc():e.getSymlink();
 
-                    path = e.getDesc();
-                } else {
-
-                    path = e.getSymlink();
-                }
-
-                // check if we're trying to click on encrypted file
-                if (!e.isDirectory() &&
-                        e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                if (e.isDirectory()) {
+                    computeScroll();
+                    loadlist(path, false, openMode);
+                } else if (e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
                     isEncryptOpen = true;
 
@@ -894,50 +890,39 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
                             utilsProvider, true);
-                    return;
-                }
-
-                if (e.isDirectory()) {
-
-                    computeScroll();
-                    loadlist(path, false, openMode);
                 } else {
-
                     if (getMainActivity().mReturnIntent) {
                         // are we here to return an intent to another app
                         returnIntentResults(e.generateBaseFile());
-                        return;
-                    }
+                    } else {
+                        switch (e.getMode()) {
+                            case SMB:
+                                try {
+                                    SmbFile smbFile = new SmbFile(e.getDesc());
+                                    launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                                } catch (MalformedURLException ex) {
+                                    ex.printStackTrace();
+                                }
+                                break;
+                            case OTG:
+                                utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                        (MainActivity) getActivity(), sharedPref);
+                                break;
+                            case DROPBOX:
+                            case BOX:
+                            case GDRIVE:
+                            case ONEDRIVE:
+                                Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                                CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
+                                break;
+                            default:
+                                utils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
+                                break;
+                        }
 
-                    switch (e.getMode()) {
-                        case SMB:
-                            try {
-                                SmbFile smbFile = new SmbFile(e.getDesc());
-                                launchSMB(smbFile, e.getlongSize(), getMainActivity());
-                            } catch (MalformedURLException ex) {
-                                ex.printStackTrace();
-                            }
-                            break;
-                        case OTG:
-                            utils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
-                                    (MainActivity) getActivity());
-                            break;
-                        case DROPBOX:
-                        case BOX:
-                        case GDRIVE:
-                        case ONEDRIVE:
-                            Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
-                            CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
-                            break;
-                        default:
-                            utils.openFile(new File(e.getDesc()), (MainActivity) getActivity());
-                            break;
+                        dataUtils.addHistoryFile(e.getDesc());
                     }
-
-                    dataUtils.addHistoryFile(e.getDesc());
                 }
-            } else {
-                goBackItemClick();
             }
         }
     }
@@ -1153,7 +1138,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     switchToGrid();
                 else if (!grid && !IS_LIST) switchToList();
                 if (adapter == null) {
-                    adapter = new RecyclerAdapter(ma, utilsProvider, bitmap, ma.getActivity(), SHOW_HEADERS);
+                    adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, bitmap, ma.getActivity(), SHOW_HEADERS);
                 } else {
                     adapter.setItems(getLayoutElements());
                 }

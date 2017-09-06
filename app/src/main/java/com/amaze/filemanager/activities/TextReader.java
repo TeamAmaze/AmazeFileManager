@@ -64,6 +64,7 @@ import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
 import com.amaze.filemanager.services.asynctasks.SearchTextTask;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -171,10 +172,12 @@ public class TextReader extends ThemedActivity implements TextWatcher, View.OnCl
         closeButton.setOnClickListener(this);
 
         getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        int sdk = Build.VERSION.SDK_INT;
 
-        if (sdk == Build.VERSION_CODES.KITKAT_WATCH || sdk == Build.VERSION_CODES.KITKAT) {
+        boolean useNewStack = sharedPref.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -244,13 +247,8 @@ public class TextReader extends ThemedActivity implements TextWatcher, View.OnCl
         getSupportActionBar().setTitle(fileName);
 
         mInput.addTextChangedListener(this);
-        try {
-            if (getAppTheme().equals(AppTheme.DARK))
-                mInput.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (Exception e) {
-
-        }
+        if (getAppTheme().equals(AppTheme.DARK))
+            mInput.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
 
         mInputTypefaceDefault = mInput.getTypeface();
         mInputTypefaceMono = Typeface.MONOSPACE;
@@ -551,7 +549,8 @@ public class TextReader extends ThemedActivity implements TextWatcher, View.OnCl
                 break;
             case R.id.openwith:
                 if (mFile.exists()) {
-                    getFutils().openunknown(new File(mFile.getPath()), this, false);
+                    boolean useNewStack = sharedPref.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    getFutils().openunknown(new File(mFile.getPath()), this, false, useNewStack);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.find:

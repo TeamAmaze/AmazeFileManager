@@ -2,6 +2,7 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -60,6 +61,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
 
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
+    private SharedPreferences sharedPrefs;
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -70,11 +72,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private int offset = 0;
 
 
-    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider,
+    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
                            ArrayList<LayoutElement> itemsRaw, Context context, boolean showHeaders) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
+        this.sharedPrefs = sharedPrefs;
         this.showHeaders = showHeaders;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -742,7 +745,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             @Override
             public void onClick(View view) {
                 PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
-                        utilsProvider, mainFrag, rowItem, view);
+                        utilsProvider, mainFrag, rowItem, view, sharedPrefs);
                 popupMenu.inflate(R.menu.item_extras);
                 String description = rowItem.getDesc().toLowerCase();
 
