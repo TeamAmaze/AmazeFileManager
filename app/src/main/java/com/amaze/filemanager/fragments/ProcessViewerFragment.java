@@ -44,10 +44,10 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.asyncronious.services.CopyService;
-import com.amaze.filemanager.asyncronious.services.EncryptService;
-import com.amaze.filemanager.asyncronious.services.ExtractService;
-import com.amaze.filemanager.asyncronious.services.ZipService;
+import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.asynchronous.services.ExtractService;
+import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;

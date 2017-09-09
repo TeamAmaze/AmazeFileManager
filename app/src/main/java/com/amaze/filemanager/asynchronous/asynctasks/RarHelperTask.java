@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks;
 
 /**
  * Created by Arpit on 25-01-2015.

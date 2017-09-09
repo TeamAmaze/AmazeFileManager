@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.asyncronious.services.CopyService;
+import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;

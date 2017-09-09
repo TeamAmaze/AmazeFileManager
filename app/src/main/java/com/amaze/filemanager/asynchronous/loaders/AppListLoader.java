@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.loaders;
+package com.amaze.filemanager.asynchronous.loaders;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

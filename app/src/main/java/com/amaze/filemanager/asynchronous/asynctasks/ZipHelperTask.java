@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.net.Uri;
 import android.os.AsyncTask;

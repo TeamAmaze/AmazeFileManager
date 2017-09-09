@@ -3,7 +3,7 @@ package com.amaze.filemanager.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amaze.filemanager.asyncronious.services.CopyService;
+import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 
 /**

@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.ftpservice;
+package com.amaze.filemanager.asynchronous.ftpservice;
 
 import android.annotation.TargetApi;
 import android.content.Intent;

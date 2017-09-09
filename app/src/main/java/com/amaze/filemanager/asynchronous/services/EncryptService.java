@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.services;
+package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

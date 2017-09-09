@@ -15,7 +15,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.asyncronious.services.EncryptService;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;

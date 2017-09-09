@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asyncronious.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
