@@ -39,10 +39,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.fragments.preference_fragments.AdvancedSearchPref;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -176,7 +177,7 @@ public class PreferencesActivity extends ThemedActivity implements ActivityCompa
         selectedItem = i;
         switch (i) {
             case START_PREFERENCE:
-                loadPrefFragment(new Preffrag(), R.string.setting);
+                loadPrefFragment(new PrefFrag(), R.string.setting);
                 break;
             case COLORS_PREFERENCE:
                 loadPrefFragment(new ColorPref(), R.string.color_title);
@@ -197,11 +198,11 @@ public class PreferencesActivity extends ThemedActivity implements ActivityCompa
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == 66) {
-            Preffrag preffrag = (Preffrag) getFragmentManager().findFragmentById(R.id.prefsfragment);
+            PrefFrag prefFrag = (PrefFrag) getFragmentManager().findFragmentById(R.id.prefsfragment);
 
-            if (preffrag != null) {
+            if (prefFrag != null) {
 
-                preffrag.invalidateGplus();
+                prefFrag.invalidateGplus();
             }
         }
 

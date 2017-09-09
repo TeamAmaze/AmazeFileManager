@@ -1,12 +1,14 @@
 package com.amaze.filemanager.utils;
 
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
+
 /**
  * Created by arpitkh96 on 18/8/16.
  *
  * Base class to handle progress of services operation
  * Utilized for generation of notification,
- * talking to {@link com.amaze.filemanager.fragments.ProcessViewer} through
- * {@link com.amaze.filemanager.utils.DataPackage}
+ * talking to {@link ProcessViewerFragment} through
+ * {@link CopyDataParcelable}
  *
  */
 public class ProgressHandler {

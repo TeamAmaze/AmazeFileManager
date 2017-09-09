@@ -83,6 +83,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.DrawerAdapter;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
@@ -92,24 +93,24 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
+import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.ProcessViewer;
+import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipViewer;
+import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
-import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -134,7 +135,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -163,8 +164,8 @@ import java.util.regex.Pattern;
 import eu.chainfire.libsuperuser.Shell;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.Preffrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
+import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
 public class MainActivity extends ThemedActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -185,7 +186,7 @@ public class MainActivity extends ThemedActivity implements
     public ListView mDrawerList;
     public ScrimInsetsRelativeLayout mDrawerLinear;
     public String path = "", launchPath;
-    public ArrayList<BaseFile> COPY_PATH = null, MOVE_PATH = null;
+    public ArrayList<HybridFileParcelable> COPY_PATH = null, MOVE_PATH = null;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
@@ -203,8 +204,8 @@ public class MainActivity extends ThemedActivity implements
     public MainActivityHelper mainActivityHelper;
 
     public int operation = -1;
-    public ArrayList<BaseFile> oparrayList;
-    public ArrayList<ArrayList<BaseFile>> oparrayListList;
+    public ArrayList<HybridFileParcelable> oparrayList;
+    public ArrayList<ArrayList<HybridFileParcelable>> oparrayListList;
 
     // oppathe - the path at which certain operation needs to be performed
     // oppathe1 - the new path which user wants to create/modify
@@ -224,7 +225,6 @@ public class MainActivity extends ThemedActivity implements
 
     private AppBar appbar;
     //private HistoryManager history, grid;
-    private Futils utils;
     private MainActivity mainActivity = this;
     private Context con = this;
     private String zippath;
@@ -315,7 +315,6 @@ public class MainActivity extends ThemedActivity implements
         cloudHandler = new CloudHandler(this);
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
-        utils = getFutils();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
 
@@ -341,7 +340,7 @@ public class MainActivity extends ThemedActivity implements
         String actionIntent = intent.getAction();
         String typeIntent = intent.getType();
         if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-            ArrayList<BaseFile> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            ArrayList<HybridFileParcelable> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
             }
@@ -486,7 +485,7 @@ public class MainActivity extends ThemedActivity implements
                 if (savedInstanceState == null) {
                     if (openProcesses) {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
+                        transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
                         selectedStorage = SELECT_102;
                         openProcesses = false;
@@ -507,13 +506,13 @@ public class MainActivity extends ThemedActivity implements
                         transaction2.commit();
                     } else {
                         if (path != null && path.length() > 0) {
-                            HFile file = new HFile(OpenMode.UNKNOWN, path);
+                            HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
                             file.generateMode(MainActivity.this);
                             if (file.isDirectory(MainActivity.this))
                                 goToMain(path);
                             else {
                                 goToMain("");
-                                utils.openFile(new File(path), MainActivity.this, sharedPref);
+                                FileUtils.openFile(new File(path), MainActivity.this, sharedPref);
                             }
                         } else {
                             goToMain("");
@@ -684,7 +683,7 @@ public class MainActivity extends ThemedActivity implements
             String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
             for (String s : strings) {
                 File f = new File(s);
-                if (!rv.contains(s) && Futils.canListFiles(f))
+                if (!rv.contains(s) && FileUtils.canListFiles(f))
                     rv.add(s);
             }
         }
@@ -741,36 +740,36 @@ public class MainActivity extends ThemedActivity implements
             } else {
                 getCurrentMainFragment().goBack();
             }
-        } else if (fragment instanceof ZipViewer) {
-            ZipViewer zipViewer = (ZipViewer) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (zipViewer.mActionMode == null) {
-                if (zipViewer.canGoBack()) {
-                    zipViewer.goBack();
+        } else if (fragment instanceof ZipExplorerFragment) {
+            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment)  getFragmentAtFrame();
+            if (zipExplorerFragment.mActionMode == null) {
+                if (zipExplorerFragment.canGoBack()) {
+                    zipExplorerFragment.goBack();
                 } else if (openzip) {
                     openzip = false;
                     finish();
                 } else {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipViewer);
+                    fragmentTransaction.remove(zipExplorerFragment);
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.showMenuButton(true);
                 }
             } else {
-                zipViewer.mActionMode.finish();
+                zipExplorerFragment.mActionMode.finish();
             }
         } else if (fragment instanceof FTPServerFragment) {
             //returning back from FTP server
             if (path != null && path.length() > 0) {
-                HFile file = new HFile(OpenMode.UNKNOWN, path);
+                HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
                 file.generateMode(this);
                 if (file.isDirectory(this))
                     goToMain(path);
                 else {
                     goToMain("");
-                    utils.openFile(new File(path), this, sharedPref);
+                    FileUtils.openFile(new File(path), this, sharedPref);
                 }
             } else {
                 goToMain("");
@@ -951,15 +950,8 @@ public class MainActivity extends ThemedActivity implements
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
         MenuItem paste = menu.findItem(R.id.paste);
-        String fragmentName;
-        Fragment fragment;
-        try {
-            fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            fragmentName = fragment.getClass().getName();
-        } catch (Exception e) {
-            return true;
-        }
-        if (fragmentName.contains("TabFragment")) {
+        Fragment fragment = getFragmentAtFrame();
+        if (fragment instanceof TabFragment) {
             appbar.setTitle("Amaze");
             if (useGridView) {
                 s.setTitle(getResources().getString(R.string.gridview));
@@ -990,8 +982,8 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
-        } else if (fragmentName.contains("AppsList") || fragmentName.contains("ProcessViewer") ||
-                fragmentName.contains(FTPServerFragment.class.getName())) {
+        } else if (fragment instanceof AppsListFragment || fragment instanceof ProcessViewerFragment
+                || fragment instanceof FTPServerFragment) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
@@ -1000,15 +992,16 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.home).setVisible(false);
             menu.findItem(R.id.history).setVisible(false);
             menu.findItem(R.id.extract).setVisible(false);
-            if (fragmentName.contains("ProcessViewer")) menu.findItem(R.id.sort).setVisible(false);
-            else {
+            if (fragment instanceof ProcessViewerFragment) {
+                menu.findItem(R.id.sort).setVisible(false);
+            } else {
                 menu.findItem(R.id.dsort).setVisible(false);
                 menu.findItem(R.id.sortby).setVisible(false);
             }
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (fragmentName.contains("ZipViewer")) {
+        } else if (fragment instanceof ZipExplorerFragment) {
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
             getAppbar().getBottomBar().resetClickListener();
@@ -1063,7 +1056,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1090,8 +1083,9 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.sort:
                 Fragment fragment = getFragmentAtFrame();
-                if (fragment.getClass().getName().contains("AppsList"))
-                    GeneralDialogCreation.showSortDialog((AppsList) fragment, getAppTheme());
+                if (fragment instanceof AppsListFragment) {
+                    GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
+                }
                 break;
             case R.id.sortby:
                 if (ma != null)
@@ -1120,7 +1114,7 @@ public class MainActivity extends ThemedActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, utils, sharedPref, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, sharedPref, ma, getAppTheme());
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;
@@ -1171,18 +1165,19 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.paste:
                 String path = ma.getCurrentPath();
-                ArrayList<BaseFile> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
+                ArrayList<HybridFileParcelable> arrayList = COPY_PATH != null? COPY_PATH:MOVE_PATH;
                 boolean move = MOVE_PATH != null;
-                new CopyFileCheck(ma, path, move, mainActivity, ThemedActivity.rootMode)
+                new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 COPY_PATH = null;
                 MOVE_PATH = null;
                 invalidatePasteButton(item);
                 break;
             case R.id.extract:
-                Fragment fragment1 = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                if (fragment1.getClass().getName().contains("ZipViewer"))
-                    mainActivityHelper.extractFile(((ZipViewer) fragment1).f);
+                Fragment fragment1 = getFragmentAtFrame();
+                if (fragment1 instanceof ZipExplorerFragment) {
+                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).f);
+                }
                 break;
             case R.id.search:
                 getAppbar().getSearchView().revealSearchView();
@@ -1351,7 +1346,7 @@ public class MainActivity extends ThemedActivity implements
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new ZipViewer();
+        Fragment zipFragment = new ZipExplorerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("path", path);
         zipFragment.setArguments(bundle);
@@ -1761,7 +1756,7 @@ public class MainActivity extends ThemedActivity implements
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
-                    mainActivityHelper.mkFile(new HFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
+                    mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
 
                     break;
                 case DataUtils.EXTRACT:
@@ -1891,7 +1886,7 @@ public class MainActivity extends ThemedActivity implements
             @Override
             public void onClick(View v) {
                 android.support.v4.app.FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new AppsList());
+                transaction2.replace(R.id.content_frame, new AppsListFragment());
                 appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 pending_fragmentTransaction = transaction2;
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
@@ -1984,8 +1979,8 @@ public class MainActivity extends ThemedActivity implements
         floatingActionButton.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean b) {
-                if (b) utils.revealShow(fabBgView, true);
-                else utils.revealShow(fabBgView, false);
+                if (b) FileUtils.revealShow(fabBgView, true);
+                else FileUtils.revealShow(fabBgView, false);
             }
         });
 
@@ -2064,10 +2059,10 @@ public class MainActivity extends ThemedActivity implements
         }
 
         if (pendingPath != null) {
-            HFile hFile = new HFile(OpenMode.UNKNOWN, pendingPath);
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
             hFile.generateMode(this);
             if (hFile.isSimpleFile()) {
-                utils.openFile(new File(pendingPath), mainActivity, sharedPref);
+                FileUtils.openFile(new File(pendingPath), mainActivity, sharedPref);
                 pendingPath = null;
                 return;
             }
@@ -2096,9 +2091,9 @@ public class MainActivity extends ThemedActivity implements
                 if (ma != null) {
                     ma.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
-            } else utils.openFile(new File(path), mainActivity, sharedPref);
+            } else FileUtils.openFile(new File(path), mainActivity, sharedPref);
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-            ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+            ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
             }
@@ -2109,7 +2104,7 @@ public class MainActivity extends ThemedActivity implements
 
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, new ProcessViewer(), KEY_INTENT_PROCESS_VIEWER);
+            transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
             selectedStorage = SELECT_102;
             openProcesses = false;
@@ -2178,7 +2173,7 @@ public class MainActivity extends ThemedActivity implements
         @Override
         public void onReceive(Context context, Intent i) {
             if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
-                ArrayList<BaseFile> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
+                ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
                     mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
                 }
@@ -2254,11 +2249,11 @@ public class MainActivity extends ThemedActivity implements
      * It covers the fragment.
      */
     public void showSmokeScreen() {
-        Futils.revealShow(fabBgView, true);
+        FileUtils.revealShow(fabBgView, true);
     }
 
     public void hideSmokeScreen() {
-        Futils.revealShow(fabBgView, false);
+        FileUtils.revealShow(fabBgView, false);
     }
 
     @Override
@@ -2382,7 +2377,7 @@ public class MainActivity extends ThemedActivity implements
     }
 
     @Override
-    public void onProgressUpdate(BaseFile val , String query) {
+    public void onProgressUpdate(HybridFileParcelable val , String query) {
         mainFragment.addSearchResult(val,query);
     }
 

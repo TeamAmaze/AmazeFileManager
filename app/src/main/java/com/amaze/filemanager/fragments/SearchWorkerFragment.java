@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.amaze.filemanager.filesystem.BaseFile;
-import com.amaze.filemanager.services.asynctasks.SearchAsyncTask;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.SearchAsyncTask;
 import com.amaze.filemanager.utils.OpenMode;
 
 /**
@@ -33,7 +33,7 @@ public class SearchWorkerFragment extends Fragment {
     public interface HelperCallbacks {
         void onPreExecute(String query);
         void onPostExecute(String query);
-        void onProgressUpdate(BaseFile val,String query);
+        void onProgressUpdate(HybridFileParcelable val, String query);
         void onCancelled();
     }
 

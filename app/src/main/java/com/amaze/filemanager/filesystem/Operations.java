@@ -50,7 +50,7 @@ public class Operations {
          *
          * @param file
          */
-        void exists(HFile file);
+        void exists(HybridFile file);
 
         /**
          * Callback fired when creating new file/directory and required storage access framework permission
@@ -58,7 +58,7 @@ public class Operations {
          *
          * @param file
          */
-        void launchSAF(HFile file);
+        void launchSAF(HybridFile file);
 
         /**
          * Callback fired when renaming file and required storage access framework permission to access
@@ -67,7 +67,7 @@ public class Operations {
          * @param file
          * @param file1
          */
-        void launchSAF(HFile file, HFile file1);
+        void launchSAF(HybridFile file, HybridFile file1);
 
         /**
          * Callback fired when we're done processing the operation
@@ -75,17 +75,17 @@ public class Operations {
          * @param hFile
          * @param b     defines whether operation was successful
          */
-        void done(HFile hFile, boolean b);
+        void done(HybridFile hFile, boolean b);
 
         /**
          * Callback fired when an invalid file name is found.
          *
          * @param file
          */
-        void invalidName(HFile file);
+        void invalidName(HybridFile file);
     }
 
-    public static void mkdir(@NonNull final HFile file, final Context context, final boolean rootMode,
+    public static void mkdir(@NonNull final HybridFile file, final Context context, final boolean rootMode,
                              @NonNull final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -196,7 +196,7 @@ public class Operations {
 
     }
 
-    public static void mkfile(@NonNull final HFile file, final Context context, final boolean rootMode,
+    public static void mkfile(@NonNull final HybridFile file, final Context context, final boolean rootMode,
                               @NonNull final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -322,7 +322,7 @@ public class Operations {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void rename(final HFile oldFile, final HFile newFile, final boolean rootMode,
+    public static void rename(final HybridFile oldFile, final HybridFile newFile, final boolean rootMode,
                               final Context context, final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -498,7 +498,7 @@ public class Operations {
      * @param targetFile
      * @return true when copy loop is possible
      */
-    public static boolean isCopyLoopPossible(BaseFile sourceFile, HFile targetFile) {
+    public static boolean isCopyLoopPossible(HybridFileParcelable sourceFile, HybridFile targetFile) {
         return targetFile.getPath().contains(sourceFile.getPath());
     }
 

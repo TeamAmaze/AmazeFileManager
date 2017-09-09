@@ -19,11 +19,11 @@
 
 package com.amaze.filemanager.utils.files;
 
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 
 import java.util.Comparator;
 
-public class FileListSorter implements Comparator<LayoutElement> {
+public class FileListSorter implements Comparator<LayoutElementParcelable> {
 
     private int dirsOnTop = 0;
     private int asc = 1;
@@ -35,7 +35,7 @@ public class FileListSorter implements Comparator<LayoutElement> {
         this.sort = sort;
     }
 
-    private boolean isDirectory(LayoutElement path) {
+    private boolean isDirectory(LayoutElementParcelable path) {
         return path.isDirectory();
     }
 
@@ -47,7 +47,7 @@ public class FileListSorter implements Comparator<LayoutElement> {
      * @return
      */
     @Override
-    public int compare(LayoutElement file1, LayoutElement file2) {
+    public int compare(LayoutElementParcelable file1, LayoutElementParcelable file2) {
 
         /*File f1;
 

@@ -23,27 +23,26 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BasicActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.ThemedActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.services.ExtractService;
+import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ public class MainActivityHelper {
     public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
 
     private MainActivity mainActivity;
-    private Futils utils;
     private DataUtils dataUtils = DataUtils.getInstance();
     private int accentColor;
 
@@ -68,11 +66,10 @@ public class MainActivityHelper {
 
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.utils = mainActivity.getFutils();
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move, Context contextc) {
+    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, boolean move, Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
@@ -80,7 +77,7 @@ public class MainActivityHelper {
         mat.positiveText(R.string.cancel);
         String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
-        for(BaseFile s:failedOps){
+        for(HybridFileParcelable s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
             k++;
         }
@@ -121,7 +118,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode, path + "/" + a), ma);
+                mkDir(new HybridFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
@@ -139,7 +136,7 @@ public class MainActivityHelper {
             @Override
             public void onClick(MaterialDialog materialDialog) {
                 String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HFile(openMode, path + "/" + a), ma);
+                mkFile(new HybridFile(openMode, path + "/" + a), ma);
                 materialDialog.dismiss();
             }
         });
@@ -254,9 +251,9 @@ public class MainActivityHelper {
         final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.rename(new HFile(mode, oldPath), new HFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
+        Operations.rename(new HybridFile(mode, oldPath), new HybridFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
             @Override
-            public void exists(HFile file) {
+            public void exists(HybridFile file) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -268,12 +265,12 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void launchSAF(HFile file) {
+            public void launchSAF(HybridFile file) {
 
             }
 
             @Override
-            public void launchSAF(final HFile file, final HFile file1) {
+            public void launchSAF(final HybridFile file, final HybridFile file1) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -287,7 +284,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void done(HFile hFile, final boolean b) {
+            public void done(HybridFile hFile, final boolean b) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -321,7 +318,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void invalidName(final HFile file) {
+            public void invalidName(final HybridFile file) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -375,30 +372,30 @@ public class MainActivityHelper {
      * Helper method to start Compress service
      *
      * @param file the new compressed file
-     * @param baseFiles list of {@link BaseFile} to be compressed
+     * @param baseFiles list of {@link HybridFileParcelable} to be compressed
      */
-    public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
+    public void compressFiles(File file, ArrayList<HybridFileParcelable> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.COMPRESS;
             mainActivity.oparrayList = baseFiles;
         } else if (mode == 1) {
-            Intent intent2 = new Intent(mainActivity, ZipTask.class);
-            intent2.putExtra(ZipTask.KEY_COMPRESS_PATH, file.getPath());
-            intent2.putExtra(ZipTask.KEY_COMPRESS_FILES, baseFiles);
+            Intent intent2 = new Intent(mainActivity, ZipService.class);
+            intent2.putExtra(ZipService.KEY_COMPRESS_PATH, file.getPath());
+            intent2.putExtra(ZipService.KEY_COMPRESS_FILES, baseFiles);
             ServiceWatcherUtil.runService(mainActivity, intent2);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
 
-    public void mkFile(final HFile path, final MainFragment ma) {
+    public void mkFile(final HybridFile path, final MainFragment ma) {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
-            public void exists(final HFile file) {
+            public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -415,7 +412,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void launchSAF(HFile file) {
+            public void launchSAF(HybridFile file) {
 
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -430,12 +427,12 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void launchSAF(HFile file, HFile file1) {
+            public void launchSAF(HybridFile file, HybridFile file1) {
 
             }
 
             @Override
-            public void done(HFile hFile, final boolean b) {
+            public void done(HybridFile hFile, final boolean b) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -451,7 +448,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void invalidName(final HFile file) {
+            public void invalidName(final HybridFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -465,13 +462,13 @@ public class MainActivityHelper {
         });
     }
 
-    public void mkDir(final HFile path, final MainFragment ma) {
+    public void mkDir(final HybridFile path, final MainFragment ma) {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
         Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
-            public void exists(final HFile file) {
+            public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -487,7 +484,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void launchSAF(HFile file) {
+            public void launchSAF(HybridFile file) {
                 if (toast != null) toast.cancel();
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -501,12 +498,12 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void launchSAF(HFile file, HFile file1) {
+            public void launchSAF(HybridFile file, HybridFile file1) {
 
             }
 
             @Override
-            public void done(HFile hFile, final boolean b) {
+            public void done(HybridFile hFile, final boolean b) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -521,7 +518,7 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void invalidName(final HFile file) {
+            public void invalidName(final HybridFile file) {
                 ma.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -535,7 +532,7 @@ public class MainActivityHelper {
         });
     }
 
-    public void deleteFiles(ArrayList<BaseFile> files) {
+    public void deleteFiles(ArrayList<HybridFileParcelable> files) {
         if (files == null || files.size() == 0) return;
         if (files.get(0).isSmb()) {
             new DeleteTask(null, mainActivity).execute((files));
@@ -671,7 +668,7 @@ public class MainActivityHelper {
      * @param file
      * @return
      */
-    public static boolean isNewDirectoryRecursive(HFile file) {
+    public static boolean isNewDirectoryRecursive(HybridFile file) {
         return file.getName().equals(file.getParentName());
     }
 

@@ -8,7 +8,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ public class OTGUtil {
      * @param context context for loading
      * @return an array of list of files at the path
      */
-    public static ArrayList<BaseFile> getDocumentFilesList(String path, Context context) {
+    public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context) {
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
         String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
-        ArrayList<BaseFile> files = new ArrayList<>();
+        ArrayList<HybridFileParcelable> files = new ArrayList<>();
 
         String[] parts = path.split("/");
         for (int i = 0; i < parts.length; i++) {
@@ -55,7 +55,7 @@ public class OTGUtil {
                     long size = 0;
                     if (!file.isDirectory()) size = file.length();
                     Log.d(context.getClass().getSimpleName(), "Found file: " + file.getName());
-                    BaseFile baseFile = new BaseFile(path + "/" + file.getName(),
+                    HybridFileParcelable baseFile = new HybridFileParcelable(path + "/" + file.getName(),
                             RootHelper.parseDocumentFilePermission(file), file.lastModified(), size, file.isDirectory());
                     baseFile.setName(file.getName());
                     baseFile.setMode(OpenMode.OTG);

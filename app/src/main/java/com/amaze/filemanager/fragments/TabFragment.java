@@ -201,7 +201,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         tabHandler.clear();
         for (Fragment fragment : fragments) {
-            if (fragment.getClass().getName().contains("MainFragment")) {
+            if (fragment instanceof MainFragment) {
                 MainFragment m = (MainFragment) fragment;
                 items.add(parsePathForName(m.getCurrentPath(), m.openMode));
                 if (i - 1 == MainActivity.currentTab && i == pos) {
@@ -286,16 +286,13 @@ public class TabFragment extends android.support.v4.app.Fragment
         Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
 
         Fragment fragment = fragments.get(p1);
-        if (fragment != null) {
-            String name = fragments.get(p1).getClass().getName();
-            if (name != null && name.contains("Main")) {
-                MainFragment ma = ((MainFragment) fragments.get(p1));
-                if (ma.getCurrentPath() != null) {
-                    mainActivity.updateDrawer(ma.getCurrentPath());
-                    mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(),
-                            ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
-                            ma.folder_count, ma.file_count, ma);
-                }
+        if (fragment != null && fragment instanceof MainFragment) {
+            MainFragment ma = (MainFragment) fragment;
+            if (ma.getCurrentPath() != null) {
+                mainActivity.updateDrawer(ma.getCurrentPath());
+                mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(),
+                        ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
+                        ma.folder_count, ma.file_count, ma);
             }
         }
 

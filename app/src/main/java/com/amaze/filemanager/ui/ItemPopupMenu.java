@@ -10,17 +10,17 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.EncryptService;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
@@ -40,11 +40,11 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
     private UtilitiesProviderInterface utilitiesProvider;
     private MainFragment mainFragment;
     private SharedPreferences sharedPrefs;
-    private LayoutElement rowItem;
+    private LayoutElementParcelable rowItem;
     private int accentColor;
 
     public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProviderInterface up, MainFragment mainFragment,
-                         LayoutElement ri, View anchor, SharedPreferences sharedPreferences) {
+                         LayoutElementParcelable ri, View anchor, SharedPreferences sharedPreferences) {
         super(c, anchor);
 
         context = c;
@@ -82,12 +82,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     case BOX:
                     case GDRIVE:
                     case ONEDRIVE:
-                        utilitiesProvider.getFutils().shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
+                        FileUtils.shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
                         break;
                     default:
                         ArrayList<File> arrayList = new ArrayList<>();
                         arrayList.add(new File(rowItem.getDesc()));
-                        utilitiesProvider.getFutils().shareFiles(arrayList,
+                        FileUtils.shareFiles(arrayList,
                                 mainFragment.getMainActivity(), utilitiesProvider.getAppTheme(),
                                 accentColor);
                         break;
@@ -98,14 +98,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.cpy:
                 mainFragment.getMainActivity().MOVE_PATH = null;
-                ArrayList<BaseFile> copies = new ArrayList<>();
+                ArrayList<HybridFileParcelable> copies = new ArrayList<>();
                 copies.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().COPY_PATH = copies;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();
                 return true;
             case R.id.cut:
                 mainFragment.getMainActivity().COPY_PATH = null;
-                ArrayList<BaseFile> copie = new ArrayList<>();
+                ArrayList<HybridFileParcelable> copie = new ArrayList<>();
                 copie.add(rowItem.generateBaseFile());
                 mainFragment.getMainActivity().MOVE_PATH = copie;
                 mainFragment.getMainActivity().supportInvalidateOptionsMenu();
@@ -120,7 +120,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
-                ArrayList<LayoutElement> positions = new ArrayList<>();
+                ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
                 positions.add(rowItem);
                 GeneralDialogCreation.deleteFilesDialog(context,
                         mainFragment.getLayoutElements(),
@@ -128,8 +128,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                         positions, utilitiesProvider.getAppTheme());
                 return true;
             case R.id.open_with:
-                boolean useNewStack = sharedPrefs.getBoolean(Preffrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                Futils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
+                boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                FileUtils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
                 return true;
             case R.id.encrypt:
                 final Intent encryptIntent = new Intent(context, EncryptService.class);
@@ -159,18 +159,18 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                             @Override
                             public void onButtonPressed(Intent intent) throws Exception {
                                 // check if a master password or fingerprint is set
-                                if (!preferences.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                        Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
+                                if (!preferences.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                        PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
                                     EncryptDecryptUtils.startEncryption(context,
                                             rowItem.generateBaseFile().getPath(),
-                                            Preffrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
-                                } else if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_FINGERPRINT,
-                                        Preffrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+                                            PrefFrag.ENCRYPT_PASSWORD_MASTER, encryptIntent);
+                                } else if (preferences.getBoolean(PrefFrag.PREFERENCE_CRYPT_FINGERPRINT,
+                                        PrefFrag.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
                                     EncryptDecryptUtils.startEncryption(context,
                                             rowItem.generateBaseFile().getPath(),
-                                            Preffrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
+                                            PrefFrag.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                 } else {
                                     // let's ask a password from user
                                     GeneralDialogCreation.showEncryptAuthenticateDialog(context, encryptIntent,
@@ -184,8 +184,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                             }
                         };
 
-                if (preferences.getBoolean(Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
-                        Preffrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
+                if (preferences.getBoolean(PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER,
+                        PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
                     // let's skip warning dialog call
                     try {
                         encryptButtonCallbackInterface.onButtonPressed(encryptIntent);

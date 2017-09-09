@@ -42,18 +42,18 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.ThemedActivity;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.AppsList;
-import com.amaze.filemanager.services.CopyService;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.ui.LayoutElement;
+import com.amaze.filemanager.fragments.AppsListFragment;
+import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.Futils;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -61,18 +61,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppsAdapter extends ArrayAdapter<LayoutElement> {
+public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
     Context context;
-    List<LayoutElement> items;
+    List<LayoutElementParcelable> items;
     public SparseBooleanArray myChecked = new SparseBooleanArray();
-    AppsList app;
+    AppsListFragment app;
 
     private ThemedActivity themedActivity;
 
     public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProviderInterface utilsProvider,
-                       int resourceId, AppsList app) {
+                       int resourceId, AppsListFragment app) {
         super(context, resourceId);
         themedActivity = ba;
         this.utilsProvider = utilsProvider;
@@ -127,7 +127,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
         return b;
     }
 
-    public void setData(List<LayoutElement> data) {
+    public void setData(List<LayoutElementParcelable> data) {
         clear();
 
         if (data != null) {
@@ -146,7 +146,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
 
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final LayoutElement rowItem = getItem(position);
+        final LayoutElementParcelable rowItem = getItem(position);
 
         View view;
         final int p = position;
@@ -210,8 +210,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
         }
         return view;
     }
-    void showPopup(View v,final LayoutElement rowItem){
-        final Futils utils = utilsProvider.getFutils();
+    void showPopup(View v,final LayoutElementParcelable rowItem){
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,10 +232,10 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                                 ArrayList<File> arrayList2=new ArrayList<File>();
                                 arrayList2.add(new File(rowItem.getDesc()));
                                 themedActivity.getColorPreference();
-                                utils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
+                                FileUtils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
                                 return true;
                             case R.id.unins:
-                                final BaseFile f1 = new BaseFile(rowItem.getDesc());
+                                final HybridFileParcelable f1 = new HybridFileParcelable(rowItem.getDesc());
                                 f1.setMode(OpenMode.ROOT);
 
                                 if ((Integer.valueOf(rowItem.getSymlink().substring(0,
@@ -261,11 +260,11 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                                                     @Override
                                                     public void onPositive(MaterialDialog materialDialog) {
 
-                                                        ArrayList<BaseFile> files = new ArrayList<>();
+                                                        ArrayList<HybridFileParcelable> files = new ArrayList<>();
                                                         if (Build.VERSION.SDK_INT >= 21) {
                                                             String parent = f1.getParent();
                                                             if (!parent.equals("app") && !parent.equals("priv-app")) {
-                                                                BaseFile baseFile=new BaseFile(f1.getParent());
+                                                                HybridFileParcelable baseFile=new HybridFileParcelable(f1.getParent());
                                                                 baseFile.setMode(OpenMode.ROOT);
                                                                 files.add(baseFile);
                                                             }
@@ -297,11 +296,11 @@ public class AppsAdapter extends ArrayAdapter<LayoutElement> {
                             case R.id.backup:
                                 Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                                 File f = new File(rowItem.getDesc());
-                                ArrayList<BaseFile> ab = new ArrayList<>();
+                                ArrayList<HybridFileParcelable> ab = new ArrayList<>();
                                 File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                                 if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                                 Intent intent = new Intent(app.getActivity(), CopyService.class);
-                                BaseFile baseFile=RootHelper.generateBaseFile(f,true);
+                                HybridFileParcelable baseFile=RootHelper.generateBaseFile(f,true);
                                 baseFile.setName(rowItem.getTitle() + "_" +
                                         rowItem.getSymlink().substring(rowItem.getSymlink().indexOf("_")+1) + ".apk");
                                 ab.add(baseFile);
