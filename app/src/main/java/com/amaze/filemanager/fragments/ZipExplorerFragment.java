@@ -408,8 +408,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
                 // open most recent entry added to files to be deleted from cache
                 File cacheFile = new File(files.get(files.size() - 1).getPath());
                 if (cacheFile != null && cacheFile.exists())
-                    FileUtils.openFile(cacheFile, mainActivity,  mainActivity.sharedPref);
-
+                    FileUtils.openFile(cacheFile, mainActivity,  mainActivity.getPrefs());
                 // reset the flag and cache file, as it's root is already in the list for deletion
                 isOpen = false;
                 files.remove(files.size() - 1);

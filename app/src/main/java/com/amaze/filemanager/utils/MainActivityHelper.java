@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -606,7 +607,7 @@ public class MainActivityHelper {
      *
      * @param query the text query entered the by user
      */
-    public void search(String query) {
+    public void search(SharedPreferences sharedPrefs, String query) {
         TabFragment tabFragment = mainActivity.getTabFragment();
         if (tabFragment == null) return;
         final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
@@ -629,8 +630,8 @@ public class MainActivityHelper {
         }
 
         addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, ThemedActivity.rootMode,
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+                sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
+                sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }
 
     /**

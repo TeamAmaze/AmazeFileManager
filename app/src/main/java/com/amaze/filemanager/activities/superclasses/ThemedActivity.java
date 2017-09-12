@@ -1,11 +1,9 @@
 package com.amaze.filemanager.activities.superclasses;
 
 import android.Manifest;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
@@ -20,8 +18,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
-public class ThemedActivity extends BasicActivity {
-    public SharedPreferences sharedPref;
+public class ThemedActivity extends PreferenceActivity {
 
     public static boolean rootMode;
     public boolean checkStorage = true;
@@ -29,31 +26,23 @@ public class ThemedActivity extends BasicActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         // checking if theme should be set light/dark or automatic
-        if (sharedPref.getBoolean("random_checkbox", false)) {
-            getColorPreference().randomize()
-                    .saveToPreferences(sharedPref);
+        if (getPrefs().getBoolean("random_checkbox", false)) {
+            getColorPreference().randomize().saveToPreferences(getPrefs());
         }
 
         setTheme();
 
-        rootMode = sharedPref.getBoolean(PreferenceUtils.KEY_ROOT, false);
+        rootMode = getPrefs().getBoolean(PreferenceUtils.KEY_ROOT, false);
 
         //requesting storage permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage)
-            if (!checkStoragePermission())
-                requestStoragePermission();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage && !checkStoragePermission()) {
+            requestStoragePermission();
+        }
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
     public boolean checkStoragePermission() {
-
         // Verify that all required contact permissions have been granted.
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED;
