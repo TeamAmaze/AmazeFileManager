@@ -21,11 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
-import com.amaze.filemanager.asynchronous.services.ExtractService;
-import com.amaze.filemanager.asynchronous.asynctasks.RarHelperTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.ui.ZipObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -43,7 +41,7 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 25-01-2015.
  */
-public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
+public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
 
     private Context c;
     private UtilitiesProviderInterface utilsProvider;
@@ -55,7 +53,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private boolean zipMode = false;  // flag specify whether adapter is based on a Rar file or not
 
-    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<FileHeader> enter, ZipExplorerFragment zipExplorerFragment) {
+    public ZipExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<FileHeader> enter, ZipExplorerFragment zipExplorerFragment) {
         this.utilsProvider = utilsProvider;
         this.enter = enter;
         for (int i = 0; i < enter.size(); i++)
@@ -68,7 +66,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         this.zipExplorerFragment = zipExplorerFragment;
     }
 
-    public RarAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObjectParcelable> enter, ZipExplorerFragment zipExplorerFragment, boolean l) {
+    public ZipExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider, ArrayList<ZipObjectParcelable> enter, ZipExplorerFragment zipExplorerFragment, boolean l) {
         this.utilsProvider = utilsProvider;
         this.enter1 = enter;
         for (int i = 0; i < enter.size(); i++) {
@@ -207,7 +205,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
         return super.onFailedToRecycleView(holder);
     }
 
-    private void animate(RarAdapter.ViewHolder holder) {
+    private void animate(ZipExplorerAdapter.ViewHolder holder) {
         holder.rl.clearAnimation();
         localAnimation = AnimationUtils.loadAnimation(zipExplorerFragment.getActivity(), R.anim.fade_in_top);
         localAnimation.setStartOffset(this.offset);
@@ -236,7 +234,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
      * @param position1 the position of the view to bind
      */
     private void onBindView(RecyclerView.ViewHolder vholder, final int position1) {
-        final RarAdapter.ViewHolder holder = ((RarAdapter.ViewHolder) vholder);
+        final ZipExplorerAdapter.ViewHolder holder = ((ZipExplorerAdapter.ViewHolder) vholder);
         if (!this.stoppedAnimation) {
             animate(holder);
         }
@@ -328,7 +326,6 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                     zipExplorerFragment.goBack();
                 else {
                     if (zipExplorerFragment.selection) {
-
                         toggleChecked(position1, holder.checkImageView);
                     } else {
                         final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
@@ -336,11 +333,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                             stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
 
                         if (rowItem.isDirectory()) {
-
-                            new ZipHelperTask(zipExplorerFragment, stringBuilder.toString()).execute(zipExplorerFragment.s);
-
+                            zipExplorerFragment.changeZipPath(stringBuilder.toString());
                         } else {
-
                             String fileName = zipExplorerFragment.f.getName().substring(0,
                                     zipExplorerFragment.f.getName().lastIndexOf("."));
                             String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
@@ -380,7 +374,7 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
             onBindView(vholder, position1);
             return;
         }
-        final RarAdapter.ViewHolder holder = ((RarAdapter.ViewHolder) vholder);
+        final ZipExplorerAdapter.ViewHolder holder = ((ZipExplorerAdapter.ViewHolder) vholder);
         if (!this.stoppedAnimation) {
             animate(holder);
         }
@@ -453,11 +447,8 @@ public class RarAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHo
                 } else {
 
                     if (rowItem.isDirectory()) {
-
                         zipExplorerFragment.elementsRar.clear();
-                        new RarHelperTask(zipExplorerFragment, rowItem.getFileNameString()).execute
-                                (zipExplorerFragment.f);
-
+                        zipExplorerFragment.changeRarPath(rowItem.getFileNameString());
                     } else {
                         String fileName = zipExplorerFragment.f.getName().substring(0,
                                 zipExplorerFragment.f.getName().lastIndexOf("."));
