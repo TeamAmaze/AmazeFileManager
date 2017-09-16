@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -517,6 +516,7 @@ public class BottomBar implements View.OnTouchListener{
             }
         } else {
             showButtons(buttonPathInterface);
+            fullPathText.setText(newPath);
         }
     }
 
