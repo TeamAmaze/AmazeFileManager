@@ -1176,7 +1176,7 @@ public class MainActivity extends ThemedActivity implements
             case R.id.extract:
                 Fragment fragment1 = getFragmentAtFrame();
                 if (fragment1 instanceof ZipExplorerFragment) {
-                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).f);
+                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).realZipFile);
                 }
                 break;
             case R.id.search:
@@ -1348,7 +1348,7 @@ public class MainActivity extends ThemedActivity implements
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
         Fragment zipFragment = new ZipExplorerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("path", path);
+        bundle.putString(ZipExplorerFragment.KEY_PATH, path);
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commitAllowingStateLoss();

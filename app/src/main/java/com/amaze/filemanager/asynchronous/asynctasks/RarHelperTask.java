@@ -43,12 +43,13 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
         try {
             ArrayList<FileHeader> elements = new ArrayList<>();
             Archive zipfile = new Archive(new File(fileLocation));
+            String relativeDirDiffSeparator = relativeDirectory.replace("/", "\\");
 
             for (FileHeader header : zipfile.getFileHeaders()) {
-                String name = header.getFileNameString().replace("\\", "/");
-                boolean isInBaseDir = (relativeDirectory == null || relativeDirectory.equals("")) && !name.contains("/");
-                boolean isInRelativeDir = relativeDirectory != null && name.contains("/")
-                        && name.substring(0, name.lastIndexOf("/")).equals(relativeDirectory);
+                String name = header.getFileNameString();//This uses \ as separator, not /
+                boolean isInBaseDir = (relativeDirDiffSeparator == null || relativeDirDiffSeparator.equals("")) && !name.contains("\\");
+                boolean isInRelativeDir = relativeDirDiffSeparator != null && name.contains("\\")
+                        && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
                     elements.add(header);
