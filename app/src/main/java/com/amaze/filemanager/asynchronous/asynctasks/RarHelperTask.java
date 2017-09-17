@@ -41,18 +41,14 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
     @Override
     protected Pair<Archive, ArrayList<FileHeader>> doInBackground(Void... params) {
         try {
-            ArrayList<FileHeader> wholelistRar = new ArrayList<>();
             ArrayList<FileHeader> elements = new ArrayList<>();
             Archive zipfile = new Archive(new File(fileLocation));
-            for (FileHeader fh = zipfile.nextFileHeader(); fh != null; fh = zipfile.nextFileHeader()) {
-                wholelistRar.add(fh);
-            }
 
-            for (FileHeader header : wholelistRar) {
-                String name = header.getFileNameString();
-                boolean isInBaseDir = (relativeDirectory == null || relativeDirectory.equals("")) && !name.contains("\\");
-                boolean isInRelativeDir = relativeDirectory != null && name.contains("\\")
-                        && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirectory);
+            for (FileHeader header : zipfile.getFileHeaders()) {
+                String name = header.getFileNameString().replace("\\", "/");
+                boolean isInBaseDir = (relativeDirectory == null || relativeDirectory.equals("")) && !name.contains("/");
+                boolean isInRelativeDir = relativeDirectory != null && name.contains("/")
+                        && name.substring(0, name.lastIndexOf("/")).equals(relativeDirectory);
 
                 if (isInBaseDir || isInRelativeDir) {
                     elements.add(header);

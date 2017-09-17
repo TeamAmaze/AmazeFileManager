@@ -42,21 +42,20 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
 
     @Override
     protected ArrayList<ZipObjectParcelable> doInBackground(Void... params) {
-        ArrayList<ZipObjectParcelable> wholelist = new ArrayList<>();
         ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
+
         try {
+            ArrayList<ZipObjectParcelable> wholelist = new ArrayList<>();
             if (new File(fileLocation.getPath()).canRead()) {
                 ZipFile zipfile = new ZipFile(fileLocation.getPath());
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    wholelist.add(new ZipObjectParcelable(entry,
-                            entry.getTime(), entry.getSize(), entry.isDirectory()));
+                    wholelist.add(new ZipObjectParcelable(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             } else {
-                ZipEntry entry1;
                 ZipInputStream zipfile1 = new ZipInputStream(context.get().getContentResolver().openInputStream(fileLocation));
-                while ((entry1 = zipfile1.getNextEntry()) != null) {
-                    wholelist.add(new ZipObjectParcelable(entry1, entry1.getTime(), entry1.getSize(), entry1.isDirectory()));
+                for (ZipEntry entry = zipfile1.getNextEntry(); entry != null; entry = zipfile1.getNextEntry()) {
+                    wholelist.add(new ZipObjectParcelable(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             }
 
@@ -107,11 +106,12 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
 
                 }
             }
+
+            Collections.sort(elements, new FileListSorter());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Collections.sort(elements, new FileListSorter());
         return elements;
     }
 

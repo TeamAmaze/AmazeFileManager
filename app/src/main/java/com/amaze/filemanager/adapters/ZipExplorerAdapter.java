@@ -500,11 +500,12 @@ public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerVie
 
 
     private FileHeader headerRequired(FileHeader rowItem) {
-
-        for (FileHeader fileHeader : zipExplorerFragment.archive.getFileHeaders()) {
-            String req = fileHeader.getFileNameString();
-            if (rowItem.getFileNameString().equals(req))
-                return fileHeader;
+        if(zipExplorerFragment.archive != null) {
+            for (FileHeader fileHeader : zipExplorerFragment.archive.getFileHeaders()) {
+                String req = fileHeader.getFileNameString();
+                if (rowItem.getFileNameString().equals(req))
+                    return fileHeader;
+            }
         }
         return null;
     }

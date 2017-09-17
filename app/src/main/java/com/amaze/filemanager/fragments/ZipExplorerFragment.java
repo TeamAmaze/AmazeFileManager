@@ -550,7 +550,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
             @Override
             public void onAsyncTaskFinished(Pair<Archive, ArrayList<FileHeader>> data) {
                 archive = data.first;
-                createRarViews(data.second, folder);
+                if(data.second != null) createRarViews(data.second, folder);
 
                 swipeRefreshLayout.setRefreshing(false);
                 updateBottomBar();
