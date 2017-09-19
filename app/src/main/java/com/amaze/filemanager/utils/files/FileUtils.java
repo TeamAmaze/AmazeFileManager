@@ -41,7 +41,6 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.provider.DocumentFile;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -50,8 +49,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -71,6 +70,7 @@ import java.io.File;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import jcifs.smb.SmbFile;
@@ -635,19 +635,25 @@ public class FileUtils {
         }
     }
 
-    public static Pair<ArrayList<String>, ArrayList<String>> getPaths(String path) {
-        ArrayList<String> names = new ArrayList<>();
+    public static String[] getFolderNamesInPath(String path) {
+        if(!path.endsWith("/")) path += "/";
+        return ("root" + path).split("/");
+    }
+
+    public static String[] getPathsInPath(String path) {
+        if(path.endsWith("/")) path = path.substring(0, path.length()-1);
+
         ArrayList<String> paths = new ArrayList<>();
-        while (path.contains("/")) {
+
+        while (path.length() > 0) {
             paths.add(path);
-            names.add(path.substring(1 + path.lastIndexOf("/"), path.length()));
             path = path.substring(0, path.lastIndexOf("/"));
         }
-        names.remove("");
-        paths.remove("/");
-        names.add("root");
+
         paths.add("/");
-        return new Pair<>(names, paths);
+        Collections.reverse(paths);
+
+        return paths.toArray(new String[paths.size()]);
     }
 
     public static boolean canListFiles(File f) {
