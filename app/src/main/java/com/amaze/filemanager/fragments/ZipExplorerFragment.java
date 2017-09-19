@@ -431,8 +431,6 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public void changePath(String path) {
         if(path.startsWith("/")) path = path.substring(1);
 
-        swipeRefreshLayout.setRefreshing(true);
-
         if (openmode == ZIP_FILE) {// TODO: 15/9/2017 put switch
             changeZipPath(path);
         } else {
@@ -457,6 +455,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      * The folders's path separator must be "/"
      */
     public void changeZipPath(final String folder) {
+        swipeRefreshLayout.setRefreshing(true);
         new ZipHelperTask(getContext(), realZipFile.getPath(), folder, new OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>>() {
             @Override
             public void onAsyncTaskFinished(ArrayList<ZipObjectParcelable> data) {
@@ -475,6 +474,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      * The folders's path separator must be "/"
      */
     public void changeRarPath(final String folder) {
+        swipeRefreshLayout.setRefreshing(true);
         new RarHelperTask(getContext(), realZipFile.getPath(), folder,
                 new OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>>() {
             @Override
