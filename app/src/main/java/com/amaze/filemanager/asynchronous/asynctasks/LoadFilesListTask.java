@@ -54,6 +54,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -408,7 +409,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                if (path != null && contains(types, path)) {
+                if (path != null && Arrays.asList(types).contains(path)) {
                     HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
@@ -427,13 +428,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
      */
     private ArrayList<HybridFileParcelable> listOtg(String path) {
         return OTGUtil.getDocumentFilesList(path, c);
-    }
-
-    private boolean contains(String[] types, String path) {
-        for (String string : types) {
-            if (path.endsWith(string)) return true;
-        }
-        return false;
     }
 
     private ArrayList<HybridFileParcelable> listCloud(String path, CloudStorage cloudStorage, OpenMode openMode)
