@@ -122,7 +122,7 @@ public class BottomBar implements View.OnTouchListener{
             }
         };
 
-        allowChangePaths = mainActivity.get().sharedPref.getBoolean(PrefFrag.PREFERENCE_CHANGEPATHS, false);
+        allowChangePaths = mainActivity.get().getPrefs().getBoolean(PrefFrag.PREFERENCE_CHANGEPATHS, false);
 
         gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -154,7 +154,7 @@ public class BottomBar implements View.OnTouchListener{
             public void onLongPress(MotionEvent e) {
                 if(allowChangePaths &&
                         (!mainActivity.get().getCurrentMainFragment().results || buttons.getVisibility() == View.VISIBLE)) {
-                    GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.get().sharedPref);
+                    GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.get().getPrefs());
                 }
             }
         });

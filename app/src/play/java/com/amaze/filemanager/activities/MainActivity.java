@@ -301,11 +301,11 @@ public class MainActivity extends ThemedActivity implements
         dataUtils.registerOnDataChangedListener(this);
 
         setContentView(R.layout.main_toolbar);
-        appbar = new AppBar(this, sharedPref, new SearchView.SearchListener() {
+        appbar = new AppBar(this, getPrefs(), new SearchView.SearchListener() {
             @Override
             public void onSearch(String queue) {
                 if(!queue.isEmpty()) {
-                    mainActivityHelper.search(queue);
+                    mainActivityHelper.search(getPrefs(), queue);
                 }
             }
         });
@@ -319,7 +319,7 @@ public class MainActivity extends ThemedActivity implements
         initialiseFab();
 
         // initialize g+ api client as per preferences
-        if (sharedPref.getBoolean("plus_pic", false)) {
+        if (getPrefs().getBoolean("plus_pic", false)) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
@@ -459,9 +459,9 @@ public class MainActivity extends ThemedActivity implements
 
 
 
-        if (!sharedPref.getBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, false)) {
+        if (!getPrefs().getBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, false)) {
             utilsHandler.addCommonBookmarks();
-            sharedPref.edit().putBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, true).commit();
+            getPrefs().edit().putBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, true).commit();
         }
 
         AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
@@ -512,7 +512,7 @@ public class MainActivity extends ThemedActivity implements
                                 goToMain(path);
                             else {
                                 goToMain("");
-                                FileUtils.openFile(new File(path), MainActivity.this, sharedPref);
+                                FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
                             }
                         } else {
                             goToMain("");
@@ -710,10 +710,10 @@ public class MainActivity extends ThemedActivity implements
             // in that case the uri will obviously change
             // other wise we could persist the uri even after reopening the app by not writing
             // this preference when it's not null
-            sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+            getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
             return true;
         } else {
-            sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
+            getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
             return false;
         }
     }
@@ -769,7 +769,7 @@ public class MainActivity extends ThemedActivity implements
                     goToMain(path);
                 else {
                     goToMain("");
-                    FileUtils.openFile(new File(path), this, sharedPref);
+                    FileUtils.openFile(new File(path), this, getPrefs());
                 }
             } else {
                 goToMain("");
@@ -900,7 +900,7 @@ public class MainActivity extends ThemedActivity implements
                 adapter.toggleChecked(selectedStorage);
 
                 if (((EntryItem) directoryItems.get(i)).getPath().contains(OTGUtil.PREFIX_OTG) &&
-                        sharedPref.getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
+                        getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(getApplicationContext(),
@@ -1056,7 +1056,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, sharedPref, ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(dataUtils, getPrefs(), ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1089,7 +1089,7 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.sortby:
                 if (ma != null)
-                    GeneralDialogCreation.showSortDialog(ma, getAppTheme(), sharedPref);
+                    GeneralDialogCreation.showSortDialog(ma, getAppTheme(), getPrefs());
                 break;
             case R.id.dsort:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -1097,14 +1097,14 @@ public class MainActivity extends ThemedActivity implements
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
                 builder.theme(getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.directorysort);
-                int current = Integer.parseInt(sharedPref.getString("dirontop", "0"));
+                int current = Integer.parseInt(getPrefs().getString("dirontop", "0"));
 
                 final MainFragment mainFrag = ma;
 
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("dirontop", "" + which).commit();
+                        getPrefs().edit().putString("dirontop", "" + which).commit();
                         mainFrag.getSortModes();
                         mainFrag.updateList();
                         dialog.dismiss();
@@ -1114,7 +1114,7 @@ public class MainActivity extends ThemedActivity implements
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, sharedPref, ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(dataUtils, getPrefs(), ma, getAppTheme());
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;
@@ -1278,10 +1278,10 @@ public class MainActivity extends ThemedActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
                 refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
+                getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
                 refreshDrawer();
                 goToMain("");
             }
@@ -1491,7 +1491,7 @@ public class MainActivity extends ThemedActivity implements
                 sectionItems.add(new SectionItem());
         }
 
-        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+        if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
             if (dataUtils.getBooks().size() > 0) {
 
                 Collections.sort(dataUtils.getBooks(), new BookSorter());
@@ -1506,10 +1506,10 @@ public class MainActivity extends ThemedActivity implements
             }
         }
 
-        Boolean[] quickAccessPref = TinyDB.getBooleanArray(sharedPref, QuickAccessPref.KEY,
+        Boolean[] quickAccessPref = TinyDB.getBooleanArray(getPrefs(), QuickAccessPref.KEY,
                 QuickAccessPref.DEFAULT);
 
-        if (sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+        if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
                 sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
                         ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
@@ -1537,7 +1537,7 @@ public class MainActivity extends ThemedActivity implements
 
         dataUtils.setList(sectionItems);
 
-        adapter = new DrawerAdapter(this, this, sectionItems, this, sharedPref);
+        adapter = new DrawerAdapter(this, this, sectionItems, this, getPrefs());
         mDrawerList.setAdapter(adapter);
     }
 
@@ -1681,11 +1681,11 @@ public class MainActivity extends ThemedActivity implements
                 }
             }).run();
         } else if (requestCode == image_selector_request_code) {
-            if (sharedPref != null && intent != null && intent.getData() != null) {
+            if (getPrefs() != null && intent != null && intent.getData() != null) {
                 if (SDK_INT >= 19)
                     getContentResolver().takePersistableUriPermission(intent.getData(),
                             Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                sharedPref.edit().putString("drawer_header_path", intent.getData().toString()).commit();
+                getPrefs().edit().putString("drawer_header_path", intent.getData().toString()).commit();
                 setDrawerHeaderBackground();
             }
         } else if (requestCode == 3) {
@@ -1694,7 +1694,7 @@ public class MainActivity extends ThemedActivity implements
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
                 // Persist URI - this is required for verification of writability.
-                if (treeUri != null) sharedPref.edit().putString("URI", treeUri.toString()).commit();
+                if (treeUri != null) getPrefs().edit().putString("URI", treeUri.toString()).commit();
             } else {
                 // If not confirmed SAF, or if still not writable, then revert settings.
                 /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
@@ -1768,7 +1768,7 @@ public class MainActivity extends ThemedActivity implements
             operation = -1;
         } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
             // otg access
-            sharedPref.edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
+            getPrefs().edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
 
             if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
             else onDrawerClosed();
@@ -1779,12 +1779,12 @@ public class MainActivity extends ThemedActivity implements
     }
 
     void initialisePreferences() {
-        hidemode = sharedPref.getInt("hidemode", 0);
-        showHidden = sharedPref.getBoolean("showHidden", false);
-        useGridView = sharedPref.getBoolean("view", true);
-        currentTab = sharedPref.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        hidemode = getPrefs().getInt("hidemode", 0);
+        showHidden = getPrefs().getBoolean("showHidden", false);
+        useGridView = getPrefs().getBoolean("view", true);
+        currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-        colourednavigation = sharedPref.getBoolean("colorednavigation", false);
+        colourednavigation = getPrefs().getBoolean("colorednavigation", false);
     }
 
     void initialiseViews() {
@@ -2062,7 +2062,7 @@ public class MainActivity extends ThemedActivity implements
             HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
             hFile.generateMode(this);
             if (hFile.isSimpleFile()) {
-                FileUtils.openFile(new File(pendingPath), mainActivity, sharedPref);
+                FileUtils.openFile(new File(pendingPath), mainActivity, getPrefs());
                 pendingPath = null;
                 return;
             }
@@ -2091,7 +2091,7 @@ public class MainActivity extends ThemedActivity implements
                 if (ma != null) {
                     ma.loadlist(path, false, OpenMode.FILE);
                 } else goToMain(path);
-            } else FileUtils.openFile(new File(path), mainActivity, sharedPref);
+            } else FileUtils.openFile(new File(path), mainActivity, getPrefs());
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
@@ -2131,12 +2131,12 @@ public class MainActivity extends ThemedActivity implements
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                    if (sharedPref.getString(KEY_PREF_OTG, null) == null) {
-                        sharedPref.edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                    if (getPrefs().getString(KEY_PREF_OTG, null) == null) {
+                        getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
                         refreshDrawer();
                     }
                 } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                    sharedPref.edit().putString(KEY_PREF_OTG, null).apply();
+                    getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
                     refreshDrawer();
                 }
             }
@@ -2146,8 +2146,8 @@ public class MainActivity extends ThemedActivity implements
     void setDrawerHeaderBackground() {
         new Thread(new Runnable() {
             public void run() {
-                if (sharedPref.getBoolean("plus_pic", false)) return;
-                String path = sharedPref.getString("drawer_header_path", null);
+                if (getPrefs().getBoolean("plus_pic", false)) return;
+                String path = getPrefs().getString("drawer_header_path", null);
                 if (path == null) return;
                 try {
                     final ImageView headerImageView = new ImageView(MainActivity.this);
@@ -2189,7 +2189,7 @@ public class MainActivity extends ThemedActivity implements
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 refreshDrawer();
                 TabFragment tabFragment = getTabFragment();
-                boolean b = sharedPref.getBoolean("needtosethome", true);
+                boolean b = getPrefs().getBoolean("needtosethome", true);
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
@@ -2210,7 +2210,7 @@ public class MainActivity extends ThemedActivity implements
                         if (main1 != null)
                             ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
-                    sharedPref.edit().putBoolean("needtosethome", false).commit();
+                    getPrefs().edit().putBoolean("needtosethome", false).commit();
                 } else {
                     //just refresh list
                     if (tabFragment != null) {

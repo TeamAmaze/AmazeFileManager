@@ -62,13 +62,11 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
 
     private static final String PREFERENCE_KEY_ABOUT = "about";
     private static final String[] PREFERENCE_KEYS =
-            {"columns", "theme", "sidebar_folders_enable", "sidebar_quickaccess_enable",
-                    "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT, "plus_pic", "colors",
-                    "sidebar_folders", "sidebar_quickaccess", "texteditor_newstack", "advancedsearch", "typeablepaths"};
+            {"columns", "theme", "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT,
+                    "plus_pic", "colors", "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
 
-
-    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "show_sidebar_folders";
-    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "show_sidebar_quickaccesses";
+    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "sidebar_folders_enable";
+    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "sidebar_quickaccess_enable";
 
     public static final String PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack";
 
@@ -76,7 +74,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
 
     public static final String PREFERENCE_ROOTMODE = "rootmode";
 
-    public static final String PREFERENCE_CHANGEPATHS = "changeablepaths";
+    public static final String PREFERENCE_CHANGEPATHS = "typeablepaths";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -218,14 +216,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 builder.title(R.string.theme);
                 builder.build().show();
                 return true;
-            case "sidebar_folders_enable":
-                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS,
-                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)).apply();
-                return true;
-            case "sidebar_quickaccess_enable":
-                sharedPref.edit().putBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES,
-                        !sharedPref.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)).apply();
-                return true;
             case "feedback":
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
@@ -251,10 +241,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                     if(!b) MainActivityHelper.requestAccountsPermission((PreferencesActivity) getActivity());
                 }
                 return false;
-            case "typeablepaths":
-                sharedPref.edit().putBoolean(PREFERENCE_CHANGEPATHS,
-                        !sharedPref.getBoolean(PREFERENCE_CHANGEPATHS, false)).apply();
-                return true;
             /*FROM HERE BE FRAGMENTS*/
             case "colors":
                 ((PreferencesActivity) getActivity())

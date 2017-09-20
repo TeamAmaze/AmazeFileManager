@@ -141,7 +141,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (getAppTheme().equals(AppTheme.DARK))
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
@@ -175,7 +174,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
         getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
 
-        boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = getPrefs().getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
@@ -187,7 +186,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boolean colourednavigation = sharedPref.getBoolean("colorednavigation", true);
+            boolean colourednavigation = getPrefs().getBoolean("colorednavigation", true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -551,7 +550,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 break;
             case R.id.openwith:
                 if (mFile.exists()) {
-                    boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    boolean useNewStack = getPrefs().getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
                     FileUtils.openunknown(new File(mFile.getPath()), this, false, useNewStack);
                 } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
