@@ -111,7 +111,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
         ma.folder_count = 0;
         ma.file_count = 0;
-        ArrayList<LayoutElementParcelable> list = null;
+        ArrayList<LayoutElementParcelable> list;
 
         switch (openmode) {
             case SMB:
@@ -131,7 +131,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 }
                 break;
             case CUSTOM:
-                ArrayList<HybridFileParcelable> arrayList = null;
+                ArrayList<HybridFileParcelable> arrayList;
                 switch (Integer.parseInt(path)) {
                     case 0:
                         arrayList = listImages();
@@ -154,13 +154,11 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     case 6:
                         arrayList = listRecentFiles();
                         break;
+                    default:
+                        throw new IllegalStateException();
                 }
 
-                path = String.valueOf(Integer.parseInt(path));
-
-                if (arrayList != null)
-                    list = addTo(arrayList);
-                else return new Pair<>(openmode, new ArrayList<LayoutElementParcelable>());
+                list = addTo(arrayList);
                 break;
             case OTG:
                 list = addTo(listOtg(path));
