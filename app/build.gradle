@@ -115,6 +115,8 @@ dependencies {
     compile 'com.cloudrail:cloudrail-si-android:2.17.0'
 
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
+
+    compile 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
 }
 
 def Properties props = new Properties()

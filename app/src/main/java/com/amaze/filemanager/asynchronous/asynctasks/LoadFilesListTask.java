@@ -215,7 +215,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         Drawable lockBitmapDrawable = ma.getResources().getDrawable(R.drawable.ic_folder_lock_white_36dp);
 
         for (HybridFileParcelable baseFile : baseFiles) {
-            if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
+            if (!dataUtils.isFileHidden(baseFile.getPath())) {
                 String size = "";
                 Drawable drawable;
                 long longSize= 0;

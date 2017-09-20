@@ -65,6 +65,8 @@ import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
 import java.text.ParsePosition;
@@ -810,7 +812,17 @@ public class FileUtils {
         }*/
     }
 
-    public static ArrayList<HybridFile> toHFileArray(ArrayList<String> a) {
+    public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(ConcurrentRadixTree<VoidValue> a) {
+        ArrayList<HybridFile> b = new ArrayList<>();
+        for (CharSequence o : a.getKeysStartingWith("")) {
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, o.toString());
+            hFile.generateMode(null);
+            b.add(hFile);
+        }
+        return b;
+    }
+
+    public static ArrayList<HybridFile> toHybridFileArrayList(ArrayList<String> a) {
         ArrayList<HybridFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
             HybridFile hFile=new HybridFile(OpenMode.UNKNOWN,a.get(i));

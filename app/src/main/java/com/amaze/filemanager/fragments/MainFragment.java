@@ -1522,7 +1522,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         ArrayList<LayoutElementParcelable> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (SmbFile aMFile : mFile) {
-            if (dataUtils.getHiddenfiles().contains(aMFile.getPath()))
+            if (dataUtils.isFileHidden(aMFile.getPath()))
                 continue;
             String name = aMFile.getName();
             name = (aMFile.isDirectory() && name.endsWith("/")) ? name.substring(0, name.length() - 1) : name;
@@ -1559,7 +1559,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
         File f = new File(mFile.getPath());
         String size = "";
-        if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
+        if (!dataUtils.isFileHidden(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, f.getPath(), mFile.getPermission(),
