@@ -22,8 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -229,7 +227,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(), R.drawable.ic_folder_lock_white_36dp);
                     BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
-                    LayoutElementParcelable layoutElement = FileUtils.newElement(
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                             baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable:ma.folder,
                                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
                                     baseFile.getDate() + "");
