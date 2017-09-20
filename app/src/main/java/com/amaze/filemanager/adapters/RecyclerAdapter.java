@@ -504,13 +504,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                                 holder.apkIcon.setVisibility(View.GONE);
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
                                 holder.pictureIcon.setImageDrawable(mainFrag.DARK_IMAGE);
-                                mainFrag.ic.cancelLoad(holder.pictureIcon);
-                                mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                                mainFrag.iconHolder.cancelLoad(holder.pictureIcon);
+                                mainFrag.iconHolder.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
                                 holder.apkIcon.setImageDrawable(mainFrag.DARK_IMAGE);
-                                mainFrag.ic.cancelLoad(holder.apkIcon);
-                                mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                                mainFrag.iconHolder.cancelLoad(holder.apkIcon);
+                                mainFrag.iconHolder.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                             }
                         }
                         break;
@@ -520,8 +520,8 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             holder.pictureIcon.setVisibility(View.GONE);
                             holder.apkIcon.setVisibility(View.VISIBLE);
                             holder.apkIcon.setImageDrawable(mainFrag.apk);
-                            mainFrag.ic.cancelLoad(holder.apkIcon);
-                            mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                            mainFrag.iconHolder.cancelLoad(holder.apkIcon);
+                            mainFrag.iconHolder.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                         }
                         break;
                     case VIDEO_FILETYPE:
@@ -530,13 +530,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
                                 holder.pictureIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                                mainFrag.ic.cancelLoad(holder.pictureIcon);
-                                mainFrag.ic.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
+                                mainFrag.iconHolder.cancelLoad(holder.pictureIcon);
+                                mainFrag.iconHolder.loadDrawable(holder.pictureIcon, (rowItem.getDesc()), null);
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
                                 holder.apkIcon.setImageDrawable(mainFrag.DARK_VIDEO);
-                                mainFrag.ic.cancelLoad(holder.apkIcon);
-                                mainFrag.ic.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
+                                mainFrag.iconHolder.cancelLoad(holder.apkIcon);
+                                mainFrag.iconHolder.loadDrawable(holder.apkIcon, (rowItem.getDesc()), null);
                             }
                         }
                         break;
@@ -659,12 +659,12 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                     holder.imageView1.setImageDrawable(null);
                     if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
                         holder.imageView1.setBackgroundColor(Color.BLACK);
-                    mainFrag.ic.cancelLoad(holder.imageView1);
-                    mainFrag.ic.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
+                    mainFrag.iconHolder.cancelLoad(holder.imageView1);
+                    mainFrag.iconHolder.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);
                 } else if (Icons.isApk((rowItem.getDesc()))) {
                     holder.genericIcon.setColorFilter(null);
-                    mainFrag.ic.cancelLoad(holder.genericIcon);
-                    mainFrag.ic.loadDrawable(holder.genericIcon, (rowItem.getDesc()), null);
+                    mainFrag.iconHolder.cancelLoad(holder.genericIcon);
+                    mainFrag.iconHolder.loadDrawable(holder.genericIcon, (rowItem.getDesc()), null);
                 }
 
                 if (rowItem.isDirectory()) {
