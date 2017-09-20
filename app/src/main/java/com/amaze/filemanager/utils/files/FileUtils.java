@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -53,7 +52,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -810,16 +808,6 @@ public class FileUtils {
                 openWith(f, m);
             }
         }*/
-    }
-
-    /**
-     * @deprecated use new LayoutElementParcelable()
-     */
-    public static LayoutElementParcelable newElement(BitmapDrawable i, String d, String permissions, String symlink,
-                                                     String size, long longSize, boolean directorybool, boolean b,
-                                                     String date) {
-        return new LayoutElementParcelable(i, new File(d).getName(), d, permissions, symlink,
-                size, longSize, b, date, directorybool);
     }
 
     public static ArrayList<HybridFile> toHFileArray(ArrayList<String> a) {

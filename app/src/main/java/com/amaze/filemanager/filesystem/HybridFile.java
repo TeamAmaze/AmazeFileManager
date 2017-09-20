@@ -1059,12 +1059,12 @@ public class HybridFile {
                 LayoutElementParcelable layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = FileUtils.newElement(mainFragment.folder,
+                    layoutElement = new LayoutElementParcelable(mainFragment.folder,
                                     path, RootHelper.parseFilePermission(file),
                                     "", folderSize() + "", 0, true, false,
                                     file.lastModified() + "");
                 } else {
-                    layoutElement = FileUtils.newElement(Icons.loadMimeIcon(
+                    layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
                             file.getPath(), !mainFragment.IS_LIST, mainFragment.getResources()),
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");

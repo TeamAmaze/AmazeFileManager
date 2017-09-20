@@ -32,11 +32,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -126,7 +126,7 @@ import jcifs.smb.SmbFile;
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
-    public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
+    public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public int sortby, dsort, asc;
     public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
@@ -267,7 +267,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-        apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
+        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
@@ -283,11 +283,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         initNoFileLayout();
         SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
         COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
-        mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
-        folder = new BitmapDrawable(res, mFolderBitmap);
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
-        DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
-        DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
+        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
+        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
@@ -1131,9 +1130,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
                         && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
                     //create the "go to parent" button (aka '..')
-                    Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                    bitmap.add(0, new LayoutElementParcelable(new BitmapDrawable(res, iconBitmap), "..", "",
-                            "", goToParentText, 0, false, true, ""));
+                    Drawable iconDrawable = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
+                    bitmap.add(0, new LayoutElementParcelable(iconDrawable, "..", "", "", goToParentText, 0, false, true, ""));
                 }
               
                 if (bitmap.size() == 0 && !results) {
@@ -1507,7 +1505,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     void fixIcons(boolean forceReload) {
         if (getLayoutElements() == null) return;
-        BitmapDrawable iconDrawable;
+        Drawable iconDrawable;
 
         synchronized (getLayoutElements()) {
             for (LayoutElementParcelable layoutElement : getLayoutElements()) {

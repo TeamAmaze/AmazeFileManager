@@ -19,7 +19,6 @@
 
 package com.amaze.filemanager.ui;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -75,7 +74,7 @@ public class LayoutElementParcelable implements Parcelable {
         // TODO: Implement this method
     }
 
-    private BitmapDrawable imageId;
+    private Drawable imageId;
     private String title;
     private String desc;
     private String permissions;
@@ -88,7 +87,7 @@ public class LayoutElementParcelable implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElementParcelable(BitmapDrawable imageId, String title, String desc, String permissions,
+    public LayoutElementParcelable(Drawable imageId, String title, String desc, String permissions,
                                    String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
@@ -105,7 +104,7 @@ public class LayoutElementParcelable implements Parcelable {
         }
     }
 
-    public LayoutElementParcelable(BitmapDrawable drawable, String path, String permissions, String symlink,
+    public LayoutElementParcelable(Drawable drawable, String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
                                    String date) {
         this(drawable, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
@@ -126,7 +125,7 @@ public class LayoutElementParcelable implements Parcelable {
         return imageId;
     }
 
-    public void setImageId(BitmapDrawable imageId){this.imageId=imageId;}
+    public void setImageId(Drawable imageId){this.imageId=imageId;}
     public String getDesc() {
         return desc;
     }

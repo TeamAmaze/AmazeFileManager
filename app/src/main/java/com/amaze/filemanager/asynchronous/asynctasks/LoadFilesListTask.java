@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.util.Pair;
@@ -47,7 +47,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
-import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -215,6 +214,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
     private ArrayList<LayoutElementParcelable> addTo(ArrayList<HybridFileParcelable> baseFiles) {
         ArrayList<LayoutElementParcelable> items = new ArrayList<>();
+        Drawable lockBitmapDrawable = ma.getResources().getDrawable(R.drawable.ic_folder_lock_white_36dp);
 
         for (int i = 0; i < baseFiles.size(); i++) {
             HybridFileParcelable baseFile = baseFiles.get(i);
@@ -223,9 +223,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
                 if (baseFile.isDirectory()) {
                     size = "";
-
-                    Bitmap lockBitmap = BitmapFactory.decodeResource(ma.getResources(), R.drawable.ic_folder_lock_white_36dp);
-                    BitmapDrawable lockBitmapDrawable = new BitmapDrawable(ma.getResources(), lockBitmap);
 
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                             baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable:ma.folder,
@@ -248,7 +245,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         //e.printStackTrace();
                     }
                     try {
-                        LayoutElementParcelable layoutElement = FileUtils.newElement(Icons.loadMimeIcon(
+                        LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
                                 baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
                                 baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
                         layoutElement.setMode(baseFile.getMode());
