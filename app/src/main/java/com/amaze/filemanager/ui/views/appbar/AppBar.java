@@ -1,6 +1,7 @@
 package com.amaze.filemanager.ui.views.appbar;
 
 import android.content.SharedPreferences;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 
@@ -64,6 +65,10 @@ public class AppBar {
     }
 
     public void setTitle(String title) {
+        if (toolbar != null) toolbar.setTitle(title);
+    }
+
+    public void setTitle(@StringRes int title) {
         if (toolbar != null) toolbar.setTitle(title);
     }
 
