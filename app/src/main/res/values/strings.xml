@@ -576,4 +576,5 @@
     <string name="preference_newstack_title">Open files as new task</string>
     <string name="preference_newstack_summary">Allows you to open files in separate tasks. Access them from system recents screen.</string>
 
+    <string name="appbar_name" translatable="false">Amaze</string>
 </resources>

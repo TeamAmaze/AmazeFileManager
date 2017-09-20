@@ -952,7 +952,7 @@ public class MainActivity extends ThemedActivity implements
         MenuItem paste = menu.findItem(R.id.paste);
         Fragment fragment = getFragmentAtFrame();
         if (fragment instanceof TabFragment) {
-            appbar.setTitle("Amaze");
+            appbar.setTitle(R.string.appbar_name);
             if (useGridView) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
