@@ -214,45 +214,33 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         ArrayList<LayoutElementParcelable> items = new ArrayList<>();
         Drawable lockBitmapDrawable = ma.getResources().getDrawable(R.drawable.ic_folder_lock_white_36dp);
 
-        for (int i = 0; i < baseFiles.size(); i++) {
-            HybridFileParcelable baseFile = baseFiles.get(i);
-            //File f = new File(ele.getPath());
-            String size = "";
+        for (HybridFileParcelable baseFile : baseFiles) {
             if (!dataUtils.getHiddenfiles().contains(baseFile.getPath())) {
-                if (baseFile.isDirectory()) {
-                    size = "";
+                String size = "";
+                Drawable drawable;
+                long longSize= 0;
 
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(
-                            baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION) ? lockBitmapDrawable:ma.folder,
-                                    baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size, 0, true, false,
-                                    baseFile.getDate() + "");
-                    layoutElement.setMode(baseFile.getMode());
-                    items.add(layoutElement);
+                if (baseFile.isDirectory()) {
+                    drawable = baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)? lockBitmapDrawable:ma.folder;
                     ma.folder_count++;
                 } else {
-                    long longSize = 0;
-                    try {
-                        if (baseFile.getSize() != -1) {
+                    if (baseFile.getSize() != -1) {
+                        try {
                             longSize = baseFile.getSize();
                             size = Formatter.formatFileSize(c, longSize);
-                        } else {
-                            size = "";
-                            longSize = 0;
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
                         }
-                    } catch (NumberFormatException e) {
-                        //e.printStackTrace();
                     }
-                    try {
-                        LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
-                                baseFile.getPath(), !ma.IS_LIST, ma.getResources()), baseFile.getPath(), baseFile.getPermission(),
-                                baseFile.getLink(), size, longSize, false, false, baseFile.getDate() + "");
-                        layoutElement.setMode(baseFile.getMode());
-                        items.add(layoutElement);
-                        ma.file_count++;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    drawable = Icons.loadMimeIcon(baseFile.getPath(), !ma.IS_LIST, ma.getResources());
+                    ma.file_count++;
                 }
+
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(drawable,
+                        baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
+                        longSize, baseFile.isDirectory(), false, baseFile.getDate() + "");
+                layoutElement.setMode(baseFile.getMode());
+                items.add(layoutElement);
             }
         }
         return items;
