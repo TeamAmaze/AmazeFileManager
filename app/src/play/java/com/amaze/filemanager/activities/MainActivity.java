@@ -1002,6 +1002,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
         } else if (fragment instanceof ZipExplorerFragment) {
+            appbar.setTitle(R.string.appbar_name);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
             getAppbar().getBottomBar().resetClickListener();
