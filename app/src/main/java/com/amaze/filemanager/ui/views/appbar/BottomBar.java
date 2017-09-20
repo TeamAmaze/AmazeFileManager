@@ -4,12 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -40,7 +38,6 @@ import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * layout_appbar.xml contains the layout for AppBar and BottomBar
@@ -206,12 +203,8 @@ public class BottomBar implements View.OnTouchListener{
                 }
             });
 
-            Pair<ArrayList<String>, ArrayList<String>> nameAndPathPair = FileUtils.getPaths(path);
-            ArrayList<String> names = nameAndPathPair.first;
-            ArrayList<String> rnames = new ArrayList<>(nameAndPathPair.first);//clone it
-            
-            final ArrayList<String> rpaths = nameAndPathPair.second;
-            Collections.reverse(rpaths);
+            String[] names = FileUtils.getFolderNamesInPath(path);
+            final String[] paths = FileUtils.getPathsInPath(path);
 
             View view = new View(mainActivity.get());
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
@@ -219,24 +212,24 @@ public class BottomBar implements View.OnTouchListener{
             view.setLayoutParams(params1);
             buttons.addView(view);
 
-            for (int i = 0; i < names.size(); i++) {
+            for (int i = 0; i < names.length; i++) {
                 final int k = i;
-                if (rpaths.get(i).equals("/")) {
+                if (paths[i].equals("/")) {
                     buttons.addView(buttonRoot);
-                } else if (FileUtils.isStorage(rpaths.get(i))) {
+                } else if (FileUtils.isStorage(paths[i])) {
                     buttonStorage.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View p1) {
-                            buttonPathInterface.changePath(rpaths.get(k));
+                            buttonPathInterface.changePath(paths[k]);
                             timer.cancel();
                             timer.start();
                         }
                     });
                     buttons.addView(buttonStorage);
                 } else {
-                    Button button = createFolderButton(rnames.get(i));
+                    Button button = createFolderButton(names[i]);
                     button.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View p1) {
-                            buttonPathInterface.changePath(rpaths.get(k));
+                            buttonPathInterface.changePath(paths[k]);
                             timer.cancel();
                             timer.start();
                         }
@@ -244,7 +237,7 @@ public class BottomBar implements View.OnTouchListener{
                     buttons.addView(button);
                 }
 
-                if (names.size() - i != 1) {
+                if (names.length - i != 1) {
                     buttons.addView(createArrow());
                 }
             }
@@ -517,6 +510,7 @@ public class BottomBar implements View.OnTouchListener{
             }
         } else {
             showButtons(buttonPathInterface);
+            fullPathText.setText(newPath);
         }
     }
 
