@@ -29,7 +29,6 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.util.Pair;
 import android.text.format.Formatter;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
@@ -64,7 +63,7 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
+public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
     private String path;
     private MainFragment ma;
@@ -82,10 +81,9 @@ public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, Ar
         this.listener = l;
     }
 
+    @Override
     protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
-            ma.folder_count = 0;
-            ma.file_count = 0;
-            if (openmode == OpenMode.UNKNOWN) {
+        if (openmode == OpenMode.UNKNOWN) {
             HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
 
@@ -113,6 +111,8 @@ public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, Ar
 
         if(isCancelled()) return null;
 
+        ma.folder_count = 0;
+        ma.file_count = 0;
         ArrayList<LayoutElementParcelable> list = null;
 
         switch (openmode) {
@@ -123,12 +123,13 @@ public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, Ar
                     list = ma.addToSmb(smbFile, path);
                     openmode = OpenMode.SMB;
                 } catch (SmbAuthException e) {
-                    if (!e.getMessage().toLowerCase().contains("denied"))
+                    if (!e.getMessage().toLowerCase().contains("denied")) {
                         ma.reauthenticateSmb();
-                    publishProgress(e.getLocalizedMessage());
+                    }
+                    return null;
                 } catch (SmbException | NullPointerException e) {
-                    publishProgress(e.getLocalizedMessage());
                     e.printStackTrace();
+                    return null;
                 }
                 break;
             case CUSTOM:
@@ -239,11 +240,6 @@ public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, Ar
     protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
         super.onPostExecute(list);
         listener.onAsyncTaskFinished(list);
-    }
-
-    @Override
-    public void onProgressUpdate(String... message) {
-        Toast.makeText(c, message[0], Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList<LayoutElementParcelable> addTo(ArrayList<HybridFileParcelable> baseFiles) {
