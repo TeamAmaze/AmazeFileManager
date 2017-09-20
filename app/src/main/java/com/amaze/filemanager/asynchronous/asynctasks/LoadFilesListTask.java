@@ -169,41 +169,13 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 openmode = OpenMode.OTG;
                 break;
             case DROPBOX:
-
-                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-
-                try {
-                    list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-                break;
             case BOX:
-                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-
-                try {
-                    list = addTo(listCloud(path, cloudStorageBox, OpenMode.BOX));
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-                break;
             case GDRIVE:
-                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-
-                try {
-                    list = addTo(listCloud(path, cloudStorageGDrive, OpenMode.GDRIVE));
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-                break;
             case ONEDRIVE:
-                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                CloudStorage cloudStorage = dataUtils.getAccount(openmode);
 
                 try {
-                    list = addTo(listCloud(path, cloudStorageOneDrive, OpenMode.ONEDRIVE));
+                    list = addTo(listCloud(path, cloudStorage, openmode));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
                     return null;
