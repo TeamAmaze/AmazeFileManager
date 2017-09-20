@@ -27,6 +27,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 import android.widget.Toast;
 
@@ -35,8 +36,8 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -44,12 +45,12 @@ import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -63,39 +64,28 @@ import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<LayoutElementParcelable>> {
+public class LoadFilesListTask extends AsyncTask<Void, String, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
-    private UtilitiesProviderInterface utilsProvider;
     private String path;
-    private boolean back;
     private MainFragment ma;
     private Context c;
     private OpenMode openmode;
-    private boolean grid;
     private DataUtils dataUtils = DataUtils.getInstance();
+    private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
 
-    public LoadFilesListTask(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
-                             MainFragment ma, OpenMode openmode) {
-        this.utilsProvider = utilsProvider;
-        this.back = back;
+    public LoadFilesListTask(Context c, String path, MainFragment ma, OpenMode openmode,
+                             OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
+        this.path = path;
         this.ma = ma;
         this.openmode = openmode;
         this.c = c;
+        this.listener = l;
     }
 
-    @Override
-    protected void onPreExecute() {
-        ma.mSwipeRefreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    protected ArrayList<LayoutElementParcelable> doInBackground(String... params) {// params[0] is the url.
-        ArrayList<LayoutElementParcelable> list = null;
-        path = params[0];
-        grid = ma.checkPathIsGrid(path);
-        ma.folder_count = 0;
-        ma.file_count = 0;
-        if (openmode == OpenMode.UNKNOWN) {
+    protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+            ma.folder_count = 0;
+            ma.file_count = 0;
+            if (openmode == OpenMode.UNKNOWN) {
             HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
 
@@ -120,6 +110,10 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 openmode = OpenMode.ROOT;
             }
         }
+
+        if(isCancelled()) return null;
+
+        ArrayList<LayoutElementParcelable> list = null;
 
         switch (openmode) {
             case SMB:
@@ -167,7 +161,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
 
                 if (arrayList != null)
                     list = addTo(arrayList);
-                else return new ArrayList<>();
+                else return new Pair<>(openmode, new ArrayList<LayoutElementParcelable>());
                 break;
             case OTG:
                 list = addTo(listOtg(path));
@@ -181,7 +175,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                     list = addTo(listCloud(path, cloudStorageDropbox, OpenMode.DROPBOX));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-                    return new ArrayList<>();
+                    return null;
                 }
                 break;
             case BOX:
@@ -191,7 +185,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                     list = addTo(listCloud(path, cloudStorageBox, OpenMode.BOX));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-                    return new ArrayList<>();
+                    return null;
                 }
                 break;
             case GDRIVE:
@@ -201,7 +195,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                     list = addTo(listCloud(path, cloudStorageGDrive, OpenMode.GDRIVE));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-                    return new ArrayList<>();
+                    return null;
                 }
                 break;
             case ONEDRIVE:
@@ -211,7 +205,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                     list = addTo(listCloud(path, cloudStorageOneDrive, OpenMode.ONEDRIVE));
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-                    return new ArrayList<>();
+                    return null;
                 }
                 break;
             default:
@@ -238,17 +232,13 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
             Collections.sort(list, new FileListSorter(ma.dsort, ma.sortby, ma.asc));
         }
 
-        return list;
+        return new Pair<>(openmode, list);
     }
 
     @Override
-    protected void onPostExecute(ArrayList<LayoutElementParcelable> list) {
-        if (isCancelled()) {
-            list = null;
-        }
-
-        ma.createViews(list, back, path, openmode, false, grid);
-        ma.mSwipeRefreshLayout.setRefreshing(false);
+    protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
+        super.onPostExecute(list);
+        listener.onAsyncTaskFinished(list);
     }
 
     @Override
@@ -468,7 +458,6 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
      * @return a list of files loaded
      */
     private ArrayList<HybridFileParcelable> listOtg(String path) {
-
         return OTGUtil.getDocumentFilesList(path, c);
     }
 

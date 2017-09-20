@@ -48,6 +48,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -97,6 +98,7 @@ import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
@@ -1022,16 +1024,32 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     LoadFilesListTask loadFilesListTask;
 
-    public void loadlist(String path, boolean back, OpenMode openMode) {
+    /**
+     * This loads a path into the MainFragment.
+     * @param path the path to be loaded
+     * @param back if we're coming back from any directory and want the scroll to be restored
+     * @param openMode the mode in which the directory should be opened
+     */
+    public void loadlist(final String path, final boolean back, final OpenMode openMode) {
+        if (mActionMode != null) mActionMode.finish();
 
-        if (mActionMode != null) {
-            mActionMode.finish();
+        mSwipeRefreshLayout.setRefreshing(true);
+
+        if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING) {
+            loadFilesListTask.cancel(true);
         }
 
-        if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING)
-            loadFilesListTask.cancel(true);
-        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), utilsProvider, back, ma, openMode);
-        loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,
+                new OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>>() {
+            @Override
+            public void onAsyncTaskFinished(Pair<OpenMode, ArrayList<LayoutElementParcelable>> data) {
+                if(data.second != null) {
+                    createViews(data.second, back, path, data.first, false, checkPathIsGrid(path));
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
