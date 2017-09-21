@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +45,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
     private AppBarLayout mAppBarLayout;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private Toolbar mToolbar;
-    private TextView mTitleTextView, mAuthor1Gplus, mAuthor1Donate, mAuthor2Gplus, mAuthor2Donate;
-    private RelativeLayout mVersion, mChangelog, mLicenses, mIssues, mTranslate, mGplusCommunity;
-    private RelativeLayout mXda, mRate;
-    private ImageView mLicensesIcon;
+    private TextView mTitleTextView;
     private int mCount=0;
     private Toast mToast;
     private SharedPreferences mSharedPref;
@@ -89,37 +84,12 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         mTitleTextView = (TextView) findViewById(R.id.text_view_title);
-        mVersion = (RelativeLayout) findViewById(R.id.relative_layout_version);
-        mChangelog = (RelativeLayout) findViewById(R.id.relative_layout_changelog);
-        mLicenses = (RelativeLayout) findViewById(R.id.relative_layout_licenses);
-        mIssues = (RelativeLayout) findViewById(R.id.relative_layout_issues);
-        mTranslate = (RelativeLayout) findViewById(R.id.relative_layout_translate);
-        mAuthor1Gplus = (TextView) findViewById(R.id.text_view_author_1_g_plus);
-        mAuthor1Donate = (TextView) findViewById(R.id.text_view_author_1_donate);
-        mAuthor2Gplus = (TextView) findViewById(R.id.text_view_author_2_g_plus);
-        mAuthor2Donate = (TextView) findViewById(R.id.text_view_author_2_donate);
+        ImageView mLicensesIcon = (ImageView) findViewById(R.id.image_view_license);;
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
-        mGplusCommunity = (RelativeLayout) findViewById(R.id.relative_layout_g_plus_community);
-        mXda = (RelativeLayout) findViewById(R.id.relative_layout_xda);
-        mRate = (RelativeLayout) findViewById(R.id.relative_layout_rate);
-        mLicensesIcon = (ImageView) findViewById(R.id.image_view_license);
-
-        mVersion.setOnClickListener(this);
-        mChangelog.setOnClickListener(this);
-        mLicenses.setOnClickListener(this);
-        mAuthor1Gplus.setOnClickListener(this);
-        mAuthor1Donate.setOnClickListener(this);
-        mAuthor2Gplus.setOnClickListener(this);
-        mAuthor2Donate.setOnClickListener(this);
-        mIssues.setOnClickListener(this);
-        mTranslate.setOnClickListener(this);
-        mGplusCommunity.setOnClickListener(this);
-        mXda.setOnClickListener(this);
-        mRate.setOnClickListener(this);
 
         mAppBarLayout.setLayoutParams(calculateHeaderViewParams());
 
-        mToolbar = (Toolbar)findViewById(R.id.toolBar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.md_nav_back));
