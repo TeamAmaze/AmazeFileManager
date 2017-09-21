@@ -77,24 +77,26 @@ public class HybridFile {
             mode = OpenMode.GDRIVE;
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
             mode = OpenMode.DROPBOX;
+        } else if(context == null) {
+            mode = OpenMode.FILE;
         } else {
-            if (context == null) {
-                mode = OpenMode.FILE;
-                return;
-            }
             boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode", false);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 mode = OpenMode.FILE;
-                if (rootmode) {
-                    if (!getFile().canRead()) mode = OpenMode.ROOT;
+                if (rootmode && !getFile().canRead()) {
+                    mode = OpenMode.ROOT;
                 }
-                return;
+            } else {
+                if (FileUtil.isOnExtSdCard(getFile(), context)) {
+                    mode = OpenMode.FILE;
+                } else if (rootmode && !getFile().canRead()) {
+                    mode = OpenMode.ROOT;
+                }
+
+                if (mode == OpenMode.UNKNOWN) {
+                    mode = OpenMode.FILE;
+                }
             }
-            if (FileUtil.isOnExtSdCard(getFile(), context)) mode = OpenMode.FILE;
-            else if (rootmode) {
-                if (!getFile().canRead()) mode = OpenMode.ROOT;
-            }
-            if (mode == OpenMode.UNKNOWN) mode = OpenMode.FILE;
         }
 
     }
