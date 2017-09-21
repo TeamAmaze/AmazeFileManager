@@ -230,31 +230,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         return items;
     }
 
-    private ArrayList<HybridFileParcelable> listaudio() {
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-        String[] projection = {
-                MediaStore.Audio.Media.DATA
-        };
 
-        Cursor cursor = c.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
-
-        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
-        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-            do {
-                String path = cursor.getString(cursor.getColumnIndex
-                        (MediaStore.Files.FileColumns.DATA));
-                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
-                if (strings != null) songs.add(strings);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return songs;
-    }
 
     private ArrayList<HybridFileParcelable> listImages() {
         ArrayList<HybridFileParcelable> songs = new ArrayList<>();
@@ -290,40 +266,51 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         return songs;
     }
 
-    private ArrayList<HybridFileParcelable> listRecentFiles() {
-        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
-        final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
-        Date d = c.getTime();
-        Cursor cursor = this.c.getContentResolver().query(MediaStore.Files
-                        .getContentUri("external"), projection,
+    private ArrayList<HybridFileParcelable> listaudio() {
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+        String[] projection = {
+                MediaStore.Audio.Media.DATA
+        };
+
+        Cursor cursor = c.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
                 null,
-                null, null);
-        if (cursor == null) return songs;
+                null);
+
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                File f = new File(path);
-                if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                if (strings != null) songs.add(strings);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return songs;
+    }
+
+    private ArrayList<HybridFileParcelable> listDocs() {
+        ArrayList<HybridFileParcelable> songs = new ArrayList<>();
+        final String[] projection = {MediaStore.Files.FileColumns.DATA};
+        Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
+                projection, null, null, null);
+        String[] types = new String[]{".pdf", ".xml", ".html", ".asm", ".text/x-asm", ".def", ".in", ".rc",
+                ".list", ".log", ".pl", ".prop", ".properties", ".rc",
+                ".doc", ".docx", ".msg", ".odt", ".pages", ".rtf", ".txt", ".wpd", ".wps"};
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+            do {
+                String path = cursor.getString(cursor.getColumnIndex
+                        (MediaStore.Files.FileColumns.DATA));
+                if (path != null && Arrays.asList(types).contains(path)) {
                     HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, new Comparator<HybridFileParcelable>() {
-            @Override
-            public int compare(HybridFileParcelable lhs, HybridFileParcelable rhs) {
-                return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
-
-            }
-        });
-        if (songs.size() > 20)
-            for (int i = songs.size() - 1; i > 20; i--) {
-                songs.remove(i);
-            }
         return songs;
     }
 
@@ -362,25 +349,40 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         return songs;
     }
 
-    private ArrayList<HybridFileParcelable> listDocs() {
+    private ArrayList<HybridFileParcelable> listRecentFiles() {
         ArrayList<HybridFileParcelable> songs = new ArrayList<>();
-        final String[] projection = {MediaStore.Files.FileColumns.DATA};
-        Cursor cursor = c.getContentResolver().query(MediaStore.Files.getContentUri("external"),
-                projection, null, null, null);
-        String[] types = new String[]{".pdf", ".xml", ".html", ".asm", ".text/x-asm", ".def", ".in", ".rc",
-                ".list", ".log", ".pl", ".prop", ".properties", ".rc",
-                ".doc", ".docx", ".msg", ".odt", ".pages", ".rtf", ".txt", ".wpd", ".wps"};
+        final String[] projection = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED};
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
+        Date d = c.getTime();
+        Cursor cursor = this.c.getContentResolver().query(MediaStore.Files
+                        .getContentUri("external"), projection,
+                null,
+                null, null);
+        if (cursor == null) return songs;
         if (cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                if (path != null && Arrays.asList(types).contains(path)) {
+                File f = new File(path);
+                if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
                     HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
                     if (strings != null) songs.add(strings);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
+        Collections.sort(songs, new Comparator<HybridFileParcelable>() {
+            @Override
+            public int compare(HybridFileParcelable lhs, HybridFileParcelable rhs) {
+                return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
+
+            }
+        });
+        if (songs.size() > 20)
+            for (int i = songs.size() - 1; i > 20; i--) {
+                songs.remove(i);
+            }
         return songs;
     }
 
