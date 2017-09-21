@@ -84,25 +84,11 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         if (openmode == OpenMode.UNKNOWN) {
             HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
+            openmode = hFile.getMode();
 
-            if (hFile.isLocal()) {
-                openmode = OpenMode.FILE;
-            } else if (hFile.isSmb()) {
-                openmode = OpenMode.SMB;
+            if (hFile.isSmb()) {
                 ma.smbPath = path;
-            } else if (hFile.isOtgFile()) {
-                openmode = OpenMode.OTG;
-            } else if (hFile.isBoxFile()) {
-                openmode = OpenMode.BOX;
-            } else if (hFile.isDropBoxFile()) {
-                openmode = OpenMode.DROPBOX;
-            } else if (hFile.isGoogleDriveFile()) {
-                openmode = OpenMode.GDRIVE;
-            } else if (hFile.isOneDriveFile()) {
-                openmode = OpenMode.ONEDRIVE;
-            } else if (hFile.isCustomPath())
-                openmode = OpenMode.CUSTOM;
-            else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
+            } else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
                 openmode = OpenMode.ROOT;
             }
         }
