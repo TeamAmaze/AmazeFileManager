@@ -55,7 +55,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
     private static final String URL_AUTHOR_1_PAYPAL = "arpitkh96@gmail.com";
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
-    private static final String URL_AUTHOR_2_PAYPAL = "vishalmeham2@gmail.com";
+    private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
     private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
@@ -65,7 +65,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_REPO_XDA = "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
     private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
     private static final String TAG_CLIPBOARD_DONATE = "donate_id";
-    private static final String URL_DONATE_2 = "https://www.paypal.me/vishalnehra";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -235,7 +234,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
             case R.id.text_view_author_2_donate:
                 dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_DONATE_2));
+                dummyIntent.setData(Uri.parse(URL_AUTHOR_2_PAYPAL));
                 startActivity(dummyIntent);
                 break;
 
