@@ -173,8 +173,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Intent dummyIntent;
-
         switch (v.getId()) {
             case R.id.relative_layout_version:
                 mCount++;
@@ -192,15 +190,11 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_issues:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_ISSUES));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_ISSUES);
                 break;
 
             case R.id.relative_layout_changelog:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_CHANGELOG));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_CHANGELOG);
                 break;
 
             case R.id.relative_layout_licenses:
@@ -214,9 +208,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.text_view_author_1_g_plus:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_AUTHOR_1_G_PLUS));
-                startActivity(dummyIntent);
+                openURL(URL_AUTHOR_1_G_PLUS);
                 break;
 
             case R.id.text_view_author_1_donate:
@@ -227,56 +219,47 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.text_view_author_2_g_plus:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_AUTHOR_2_G_PLUS));
-                startActivity(dummyIntent);
+                openURL(URL_AUTHOR_2_G_PLUS);
                 break;
 
             case R.id.text_view_author_2_donate:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_AUTHOR_2_PAYPAL));
-                startActivity(dummyIntent);
+                openURL(URL_AUTHOR_2_PAYPAL);
                 break;
 
             case R.id.text_view_developer_1_github:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_DEVELOPER1_GITHUB));
-                startActivity(dummyIntent);
+                openURL(URL_DEVELOPER1_GITHUB);
                 break;
 
             case R.id.text_view_developer_1_donate:
                 try {
-                    dummyIntent = new Intent(Intent.ACTION_VIEW);
-                    dummyIntent.setData(Uri.parse(URL_DEVELOPER1_BITCOIN));
-                    startActivity(dummyIntent);
+                    openURL(URL_DEVELOPER1_BITCOIN);
                 } catch (ActivityNotFoundException e) {
                     Snackbar.make(v, R.string.nobitcoinapp, Snackbar.LENGTH_LONG).show();
                 }
                 break;
 
             case R.id.relative_layout_translate:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_TRANSLATE));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_TRANSLATE);
                 break;
 
             case R.id.relative_layout_g_plus_community:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_G_PLUS_COMMUNITY));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_G_PLUS_COMMUNITY);
                 break;
 
             case R.id.relative_layout_xda:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_XDA));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_XDA);
                 break;
 
             case R.id.relative_layout_rate:
-                dummyIntent = new Intent(Intent.ACTION_VIEW);
-                dummyIntent.setData(Uri.parse(URL_REPO_RATE));
-                startActivity(dummyIntent);
+                openURL(URL_REPO_RATE);
                 break;
         }
     }
+
+    private void openURL(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
 }
