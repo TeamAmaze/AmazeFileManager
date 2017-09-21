@@ -16,6 +16,7 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
@@ -32,7 +33,8 @@ import java.util.List;
 
 public class CloudUtil {
 
-    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
+    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
+                                                            OpenMode openMode, OnFileFound fileFoundCallback)
             throws CloudPluginException {
 
         ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
@@ -50,6 +52,7 @@ public class CloudUtil {
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
                 baseFiles.add(baseFile);
+                if(fileFoundCallback != null) fileFoundCallback.onFileFound(baseFile);
             }
         } catch (Exception e) {
             e.printStackTrace();

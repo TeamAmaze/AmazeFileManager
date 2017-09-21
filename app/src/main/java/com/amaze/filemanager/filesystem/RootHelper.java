@@ -23,8 +23,9 @@ import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class RootHelper {
      * @param showHidden
      * @return
      */
-    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden) {
+    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden, OnFileFound listener) {
         File f = new File(path);
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
         try {
@@ -126,9 +127,11 @@ public class RootHelper {
                     baseFile.setMode(OpenMode.FILE);
                     if (showHidden) {
                         files.add(baseFile);
+                        if(listener != null) listener.onFileFound(baseFile);
                     } else {
                         if (!x.isHidden()) {
                             files.add(baseFile);
+                            if(listener != null) listener.onFileFound(baseFile);
                         }
                     }
                 }
@@ -205,12 +208,7 @@ public class RootHelper {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, new GetModeCallBack() {
-                @Override
-                public void getMode(OpenMode mode) {
-
-                }
-            });
+            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null, null);
             for (HybridFileParcelable strings : ls) {
                 if (strings.getPath() != null && strings.getPath().equals(path)) {
                     return true;
@@ -287,7 +285,7 @@ public class RootHelper {
      * @return TODO: Avoid parsing ls
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
-                                                               GetModeCallBack getModeCallBack) {
+                                                               GetModeCallBack getModeCallBack, OnFileFound fileCallback) {
         OpenMode mode = OpenMode.FILE;
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
@@ -312,6 +310,7 @@ public class RootHelper {
                                     array.setDirectory(isdirectory);
                                 } else array.setDirectory(isDirectory(array));
                                 files.add(array);
+                                if(fileCallback != null) fileCallback.onFileFound(array);
                             }
                         }
 
@@ -328,7 +327,7 @@ public class RootHelper {
 
         if (FileUtils.canListFiles(new File(path))) {
             // we're taking a chance to load files using basic java filesystem
-            files = getFilesList(path, showHidden);
+            files = getFilesList(path, showHidden, fileCallback);
             mode = OpenMode.FILE;
         } else {
             // we couldn't load files using native java filesystem callbacks

@@ -30,7 +30,7 @@ public class OTGUtil {
      * @param context context for loading
      * @return an array of list of files at the path
      */
-    public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context) {
+    public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context, OnFileFound fileFound) {
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
         String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
@@ -60,6 +60,7 @@ public class OTGUtil {
                     baseFile.setName(file.getName());
                     baseFile.setMode(OpenMode.OTG);
                     files.add(baseFile);
+                    if(fileFound != null) fileFound.onFileFound(baseFile);
                 }
             } catch (Exception e) {
             }
