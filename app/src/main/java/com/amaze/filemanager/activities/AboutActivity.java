@@ -1,6 +1,7 @@
 package com.amaze.filemanager.activities;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -59,6 +61,8 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_AUTHOR_1_PAYPAL = "arpitkh96@gmail.com";
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
     private static final String URL_AUTHOR_2_PAYPAL = "vishalmeham2@gmail.com";
+    private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
+    private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
@@ -200,14 +204,16 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        Intent dummyIntent;
+
         switch (v.getId()) {
             case R.id.relative_layout_version:
                 mCount++;
                 if (mCount >= 5) {
-                    if (mToast!=null)
+                    if (mToast != null)
                         mToast.cancel();
                     mToast = Toast.makeText(this, getResources().getString(R.string.easter_egg_title) +
-                                    " : " + mCount, Toast.LENGTH_SHORT);
+                            " : " + mCount, Toast.LENGTH_SHORT);
                     mToast.show();
 
                     mSharedPref.edit().putInt(KEY_PREF_STUDIO, Integer.parseInt(Integer.toString(mCount) + "000")).apply();
@@ -217,15 +223,15 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_issues:
-                Intent issuesIntent = new Intent(Intent.ACTION_VIEW);
-                issuesIntent.setData(Uri.parse(URL_REPO_ISSUES));
-                startActivity(issuesIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_ISSUES));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.relative_layout_changelog:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(URL_REPO_CHANGELOG));
-                startActivity(intent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_CHANGELOG));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.relative_layout_licenses:
@@ -239,9 +245,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.text_view_author_1_g_plus:
-                Intent author1GplusIntent = new Intent(Intent.ACTION_VIEW);
-                author1GplusIntent.setData(Uri.parse(URL_AUTHOR_1_G_PLUS));
-                startActivity(author1GplusIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_AUTHOR_1_G_PLUS));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.text_view_author_1_donate:
@@ -252,40 +258,55 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.text_view_author_2_g_plus:
-                Intent author2GplusIntent = new Intent(Intent.ACTION_VIEW);
-                author2GplusIntent.setData(Uri.parse(URL_AUTHOR_2_G_PLUS));
-                startActivity(author2GplusIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_AUTHOR_2_G_PLUS));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.text_view_author_2_donate:
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_DONATE_2));
+                startActivity(dummyIntent);
+                break;
 
-                Intent donate2Intent = new Intent(Intent.ACTION_VIEW);
-                donate2Intent.setData(Uri.parse(URL_DONATE_2));
-                startActivity(donate2Intent);
+            case R.id.text_view_developer_1_github:
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_DEVELOPER1_GITHUB));
+                startActivity(dummyIntent);
+                break;
+
+            case R.id.text_view_developer_1_donate:
+                try {
+                    dummyIntent = new Intent(Intent.ACTION_VIEW);
+                    dummyIntent.setData(Uri.parse(URL_DEVELOPER1_BITCOIN));
+                    startActivity(dummyIntent);
+                } catch (ActivityNotFoundException e) {
+                    Snackbar.make(v, R.string.nobitcoinapp, Snackbar.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.relative_layout_translate:
-                Intent translateIntent = new Intent(Intent.ACTION_VIEW);
-                translateIntent.setData(Uri.parse(URL_REPO_TRANSLATE));
-                startActivity(translateIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_TRANSLATE));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.relative_layout_g_plus_community:
-                Intent communityIntent = new Intent(Intent.ACTION_VIEW);
-                communityIntent.setData(Uri.parse(URL_REPO_G_PLUS_COMMUNITY));
-                startActivity(communityIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_G_PLUS_COMMUNITY));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.relative_layout_xda:
-                Intent xdaIntent = new Intent(Intent.ACTION_VIEW);
-                xdaIntent.setData(Uri.parse(URL_REPO_XDA));
-                startActivity(xdaIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_XDA));
+                startActivity(dummyIntent);
                 break;
 
             case R.id.relative_layout_rate:
-                Intent rateIntent = new Intent(Intent.ACTION_VIEW);
-                rateIntent.setData(Uri.parse(URL_REPO_RATE));
-                startActivity(rateIntent);
+                dummyIntent = new Intent(Intent.ACTION_VIEW);
+                dummyIntent.setData(Uri.parse(URL_REPO_RATE));
+                startActivity(dummyIntent);
                 break;
         }
     }
