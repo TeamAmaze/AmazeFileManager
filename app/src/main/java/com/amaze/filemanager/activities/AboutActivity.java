@@ -25,7 +25,6 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -47,7 +46,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private TextView mTitleTextView;
     private int mCount=0;
-    private Toast mToast;
+    private Snackbar snackbar;
     private SharedPreferences mSharedPref;
     private View mAuthorsDivider;
 
@@ -177,12 +176,15 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
             case R.id.relative_layout_version:
                 mCount++;
                 if (mCount >= 5) {
-                    if (mToast != null)
-                        mToast.cancel();
-                    mToast = Toast.makeText(this, getResources().getString(R.string.easter_egg_title) +
-                            " : " + mCount, Toast.LENGTH_SHORT);
-                    mToast.show();
+                    String text = getResources().getString(R.string.easter_egg_title) + " : " + mCount;
 
+                    if(snackbar != null && snackbar.isShown()) {
+                        snackbar.setText(text);
+                    } else {
+                        snackbar = Snackbar.make(v, text, Snackbar.LENGTH_SHORT);
+                    }
+
+                    snackbar.show();
                     mSharedPref.edit().putInt(KEY_PREF_STUDIO, Integer.parseInt(Integer.toString(mCount) + "000")).apply();
                 } else {
                     mSharedPref.edit().putInt(KEY_PREF_STUDIO, 0).apply();
@@ -215,7 +217,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 ClipboardManager clipManager1 = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clip1 = ClipData.newPlainText(TAG_CLIPBOARD_DONATE, URL_AUTHOR_1_PAYPAL);
                 clipManager1.setPrimaryClip(clip1);
-                Toast.makeText(this, R.string.paypal_copy_message, Toast.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.paypal_copy_message, Snackbar.LENGTH_LONG).show();
                 break;
 
             case R.id.text_view_author_2_g_plus:
