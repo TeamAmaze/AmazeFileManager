@@ -81,8 +81,10 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
     @Override
     protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+        HybridFile hFile = null;
+
         if (openmode == OpenMode.UNKNOWN) {
-            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, path);
+            hFile = new HybridFile(OpenMode.UNKNOWN, path);
             hFile.generateMode(ma.getActivity());
             openmode = hFile.getMode();
 
@@ -101,7 +103,10 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
         switch (openmode) {
             case SMB:
-                HybridFile hFile = new HybridFile(OpenMode.SMB, path);
+                if(hFile == null){
+                    hFile = new HybridFile(OpenMode.SMB, path);
+                }
+
                 try {
                     SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
                     list = ma.addToSmb(smbFile, path);
