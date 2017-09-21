@@ -287,63 +287,56 @@ public class RootHelper {
      * @return TODO: Avoid parsing ls
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
-                                                               GetModeCallBack getModeCallBack)
-            throws RootNotPermittedException {
-        //String p = " ";
+                                                               GetModeCallBack getModeCallBack) {
         OpenMode mode = OpenMode.FILE;
-        //if (showHidden) p = "a ";
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        ArrayList<String> ls;
-        if (root) {
-            // we're rooted and we're trying to load file with superuser
-            if (!path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+        if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+            try {
+                // we're rooted and we're trying to load file with superuser
                 // we're at the root directories, superuser is required!
+                ArrayList<String> ls;
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
                 ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
                 if (ls != null) {
                     for (int i = 0; i < ls.size(); i++) {
                         String file = ls.get(i);
-                        if (!file.contains("Permission denied"))
-                            try {
-                                HybridFileParcelable array = FileUtils.parseName(file);
+                        if (!file.contains("Permission denied")) {
+                            HybridFileParcelable array = FileUtils.parseName(file);
+                            if (array != null) {
                                 array.setMode(OpenMode.ROOT);
-                                if (array != null) {
-                                    array.setName(array.getPath());
-                                    array.setPath(path + "/" + array.getPath());
-                                    if (array.getLink().trim().length() > 0) {
-                                        boolean isdirectory = isDirectory(array.getLink(), root, 0);
-                                        array.setDirectory(isdirectory);
-                                    } else array.setDirectory(isDirectory(array));
-                                    files.add(array);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                array.setName(array.getPath());
+                                array.setPath(path + "/" + array.getPath());
+                                if (array.getLink().trim().length() > 0) {
+                                    boolean isdirectory = isDirectory(array.getLink(), root, 0);
+                                    array.setDirectory(isdirectory);
+                                } else array.setDirectory(isDirectory(array));
+                                files.add(array);
                             }
+                        }
 
                     }
                     mode = OpenMode.ROOT;
                 }
-            } else if (FileUtils.canListFiles(new File(path))) {
-                // we might as well not require root to load files
-                files = getFilesList(path, showHidden);
-                mode = OpenMode.FILE;
-            } else {
-                // couldn't load files using native java filesystem callbacks
-                // maybe the access is not allowed due to android system restrictions, we'll see later
-                mode = OpenMode.FILE;
-                files = new ArrayList<>();
+
+                if (getModeCallBack != null) getModeCallBack.getMode(mode);
+                return files;
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
             }
-        } else if (FileUtils.canListFiles(new File(path))) {
-            // we don't have root, so we're taking a chance to load files using basic java filesystem
+        }
+
+        if (FileUtils.canListFiles(new File(path))) {
+            // we're taking a chance to load files using basic java filesystem
             files = getFilesList(path, showHidden);
             mode = OpenMode.FILE;
         } else {
-            // couldn't load files using native java filesystem callbacks
+            // we couldn't load files using native java filesystem callbacks
             // maybe the access is not allowed due to android system restrictions, we'll see later
             mode = OpenMode.FILE;
             files = new ArrayList<>();
         }
+
         if (getModeCallBack != null) getModeCallBack.getMode(mode);
         return files;
     }

@@ -667,11 +667,7 @@ public class FileUtils {
     }
 
     public static boolean canListFiles(File f) {
-        try {
-            return f.canRead() && f.isDirectory();
-        } catch (Exception e) {
-            return false;
-        }
+        return f.canRead() && f.isDirectory();
     }
 
     public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {

@@ -32,7 +32,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -103,7 +102,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
         switch (openmode) {
             case SMB:
-                if(hFile == null){
+                if (hFile == null) {
                     hFile = new HybridFile(OpenMode.SMB, path);
                 }
 
@@ -170,21 +169,15 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 break;
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
-                try {
-                    ArrayList<HybridFileParcelable> arrayList1;
-                    arrayList1 = RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
-                            new RootHelper.GetModeCallBack() {
-                                @Override
-                                public void getMode(OpenMode mode) {
-                                    openmode = mode;
-                                }
-                            });
-                    list = addTo(arrayList1);
-
-                } catch (RootNotPermittedException e) {
-                    //AppConfig.toast(c, c.getString(R.string.rootfailure));
-                    return null;
-                }
+                ArrayList<HybridFileParcelable> arrayList1;
+                arrayList1 = RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
+                        new RootHelper.GetModeCallBack() {
+                            @Override
+                            public void getMode(OpenMode mode) {
+                                openmode = mode;
+                            }
+                        });
+                list = addTo(arrayList1);
                 break;
         }
 

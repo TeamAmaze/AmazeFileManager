@@ -150,13 +150,7 @@ public class HybridFile {
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
-        ArrayList<HybridFileParcelable> arrayList = null;
-        try {
-            arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
-        } catch (RootNotPermittedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrayList<HybridFileParcelable> arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
         for (HybridFileParcelable baseFile : arrayList) {
             if (baseFile.getPath().equals(path))
                 return baseFile;
@@ -674,11 +668,7 @@ public class HybridFile {
         } else if (isOtgFile()) {
 
         } else {
-            try {
-                arrayList = RootHelper.getFilesList(path, rootmode, true, null);
-            } catch (RootNotPermittedException e) {
-                e.printStackTrace();
-            }
+            arrayList = RootHelper.getFilesList(path, rootmode, true, null);
         }
         return arrayList;
     }
@@ -755,11 +745,8 @@ public class HybridFile {
                 }
                 break;
             default:
-                try {
-                    arrayList = RootHelper.getFilesList(path, isRoot, true, null);
-                } catch (RootNotPermittedException e) {
-                    e.printStackTrace();
-                }
+                arrayList = RootHelper.getFilesList(path, isRoot, true, null);
+
         }
 
         return arrayList;
