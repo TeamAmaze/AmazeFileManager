@@ -33,32 +33,40 @@ import java.util.List;
 
 public class CloudUtil {
 
+    /**
+     * @deprecated use getCloudFiles()
+     */
     public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
-                                                            OpenMode openMode, OnFileFound fileFoundCallback)
-            throws CloudPluginException {
+                                                            OpenMode openMode) throws CloudPluginException {
+        final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+        getCloudFiles(path, cloudStorage, openMode, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                baseFiles.add(file);
+            }
+        });
+        return baseFiles;
+    }
 
-        ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
-
+    public static void getCloudFiles(String path, CloudStorage cloudStorage, OpenMode openMode,
+                                     OnFileFound fileFoundCallback) throws CloudPluginException {
         String strippedPath = stripPath(openMode, path);
-
         try {
-
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
-
-                HybridFileParcelable baseFile = new HybridFileParcelable(path + "/" + cloudMetaData.getName(),
-                        "", (cloudMetaData.getModifiedAt() == null)
-                        ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
+                HybridFileParcelable baseFile = new HybridFileParcelable(
+                        path + "/" + cloudMetaData.getName(),
+                        "",
+                        (cloudMetaData.getModifiedAt() == null) ? 0l : cloudMetaData.getModifiedAt(),
+                        cloudMetaData.getSize(),
                         cloudMetaData.getFolder());
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
-                baseFiles.add(baseFile);
-                if(fileFoundCallback != null) fileFoundCallback.onFileFound(baseFile);
+                fileFoundCallback.onFileFound(baseFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new CloudPluginException();
         }
-        return baseFiles;
     }
 
     /**

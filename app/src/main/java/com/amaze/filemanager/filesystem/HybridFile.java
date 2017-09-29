@@ -150,7 +150,7 @@ public class HybridFile {
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
-        ArrayList<HybridFileParcelable> arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null, null);
+        ArrayList<HybridFileParcelable> arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
         for (HybridFileParcelable baseFile : arrayList) {
             if (baseFile.getPath().equals(path))
                 return baseFile;
@@ -668,7 +668,7 @@ public class HybridFile {
         } else if (isOtgFile()) {
 
         } else {
-            arrayList = RootHelper.getFilesList(path, rootmode, true, null, null);
+            arrayList = RootHelper.getFilesList(path, rootmode, true, null);
         }
         return arrayList;
     }
@@ -703,11 +703,11 @@ public class HybridFile {
                 }
                 break;
             case OTG:
-                arrayList = OTGUtil.getDocumentFilesList(path, context, null);
+                arrayList = OTGUtil.getDocumentFilesList(path, context);
                 break;
             case DROPBOX:
                 try {
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX, null);
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -716,7 +716,7 @@ public class HybridFile {
                 break;
             case BOX:
                 try {
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.BOX), OpenMode.BOX, null);
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
                     arrayList = new ArrayList<>();
@@ -724,7 +724,7 @@ public class HybridFile {
                 break;
             case GDRIVE:
                 try {
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE, null);
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -734,7 +734,7 @@ public class HybridFile {
             case ONEDRIVE:
                 try {
 
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE, null);
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
 
@@ -742,7 +742,7 @@ public class HybridFile {
                 }
                 break;
             default:
-                arrayList = RootHelper.getFilesList(path, isRoot, true, null, null);
+                arrayList = RootHelper.getFilesList(path, isRoot, true, null);
 
         }
 

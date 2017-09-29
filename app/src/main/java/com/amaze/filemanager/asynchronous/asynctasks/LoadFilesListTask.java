@@ -182,7 +182,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 list = new ArrayList<>();
-                RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
+                RootHelper.getFiles(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
                         new RootHelper.GetModeCallBack() {
                             @Override
                             public void getMode(OpenMode mode) {
@@ -427,18 +427,17 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
      *
      * @param path the path to the directory tree, starts with prefix {@link com.amaze.filemanager.utils.OTGUtil#PREFIX_OTG}
      *             Independent of URI (or mount point) for the OTG
-     * @return a list of files loaded
      */
-    private ArrayList<HybridFileParcelable> listOtg(String path, OnFileFound fileFound) {
-        return OTGUtil.getDocumentFilesList(path, c, fileFound);
+    private void listOtg(String path, OnFileFound fileFound) {
+        OTGUtil.getDocumentFiles(path, c, fileFound);
     }
 
-    private ArrayList<HybridFileParcelable> listCloud(String path, CloudStorage cloudStorage,
-                                                      OpenMode openMode, OnFileFound fileFoundCallback)
-            throws CloudPluginException {
-        if (!CloudSheetFragment.isCloudProviderAvailable(c))
+    private void listCloud(String path, CloudStorage cloudStorage, OpenMode openMode,
+                           OnFileFound fileFoundCallback) throws CloudPluginException {
+        if (!CloudSheetFragment.isCloudProviderAvailable(c)) {
             throw new CloudPluginException();
+        }
 
-        return CloudUtil.listFiles(path, cloudStorage, openMode, fileFoundCallback);
+        CloudUtil.getCloudFiles(path, cloudStorage, openMode, fileFoundCallback);
     }
 }

@@ -525,7 +525,7 @@ public class CopyService extends Service {
     boolean checkFiles(HybridFile hFile1, HybridFile hFile2) throws RootNotPermittedException {
         if (RootHelper.isDirectory(hFile1.getPath(), ThemedActivity.rootMode, 5)) {
             if (RootHelper.fileExists(hFile2.getPath())) return false;
-            ArrayList<HybridFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null, null);
+            ArrayList<HybridFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
             if (baseFiles.size() > 0) {
                 boolean b = true;
                 for (HybridFileParcelable baseFile : baseFiles) {
@@ -537,7 +537,7 @@ public class CopyService extends Service {
             }
             return RootHelper.fileExists(hFile2.getPath());
         } else {
-            ArrayList<HybridFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getParent(), true, true, null, null);
+            ArrayList<HybridFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
             int i = -1;
             int index = -1;
             for (HybridFileParcelable b : baseFiles) {
@@ -547,7 +547,7 @@ public class CopyService extends Service {
                     break;
                 }
             }
-            ArrayList<HybridFileParcelable> baseFiles1 = RootHelper.getFilesList(hFile1.getParent(), true, true, null, null);
+            ArrayList<HybridFileParcelable> baseFiles1 = RootHelper.getFilesList(hFile1.getParent(), true, true, null);
             int i1 = -1;
             int index1 = -1;
             for (HybridFileParcelable b : baseFiles1) {

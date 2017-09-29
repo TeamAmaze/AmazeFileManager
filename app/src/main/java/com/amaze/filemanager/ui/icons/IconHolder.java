@@ -327,7 +327,7 @@ public class IconHolder {
                 bit = BitmapFactory.decodeStream(cloudStorageOneDrive.getThumbnail(CloudUtil
                         .stripPath(OpenMode.ONEDRIVE, path)));
             } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
-                bit = BitmapFactory.decodeStream(OTGUtil.getDocumentFilesList(path, mContext, null).get(0).getInputStream(mContext));
+                bit = BitmapFactory.decodeStream(OTGUtil.getDocumentFilesList(path, mContext).get(0).getInputStream(mContext));
             }
             else bit= BitmapFactory.decodeFile(path, options);
 

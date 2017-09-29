@@ -127,11 +127,11 @@ public class RootHelper {
                     baseFile.setMode(OpenMode.FILE);
                     if (showHidden) {
                         files.add(baseFile);
-                        if(listener != null) listener.onFileFound(baseFile);
+                        listener.onFileFound(baseFile);
                     } else {
                         if (!x.isHidden()) {
                             files.add(baseFile);
-                            if(listener != null) listener.onFileFound(baseFile);
+                            listener.onFileFound(baseFile);
                         }
                     }
                 }
@@ -208,7 +208,7 @@ public class RootHelper {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null, null);
+            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null);
             for (HybridFileParcelable strings : ls) {
                 if (strings.getPath() != null && strings.getPath().equals(path)) {
                     return true;
@@ -283,9 +283,31 @@ public class RootHelper {
      * @param showHidden      to show hidden files
      * @param getModeCallBack callback to set the type of file
      * @return TODO: Avoid parsing ls
+     * @deprecated use getFiles()
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
-                                                               GetModeCallBack getModeCallBack, OnFileFound fileCallback) {
+                                                               GetModeCallBack getModeCallBack) {
+        final ArrayList<HybridFileParcelable> files = new ArrayList<>();
+        getFiles(path, root, showHidden, getModeCallBack, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                files.add(file);
+            }
+        });
+        return files;
+    }
+
+    /**
+     * Get files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images)
+     *
+     * @param path
+     * @param root            whether root is available or not
+     * @param showHidden      to show hidden files
+     * @param getModeCallBack callback to set the type of file
+     * @return TODO: Avoid parsing ls
+     */
+    public static void getFiles(String path, boolean root, boolean showHidden,
+                                GetModeCallBack getModeCallBack, OnFileFound fileCallback) {
         OpenMode mode = OpenMode.FILE;
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
@@ -310,7 +332,7 @@ public class RootHelper {
                                     array.setDirectory(isdirectory);
                                 } else array.setDirectory(isDirectory(array));
                                 files.add(array);
-                                if(fileCallback != null) fileCallback.onFileFound(array);
+                                fileCallback.onFileFound(array);
                             }
                         }
 
@@ -319,7 +341,6 @@ public class RootHelper {
                 }
 
                 if (getModeCallBack != null) getModeCallBack.getMode(mode);
-                return files;
             } catch (RootNotPermittedException e) {
                 e.printStackTrace();
             }
@@ -327,17 +348,15 @@ public class RootHelper {
 
         if (FileUtils.canListFiles(new File(path))) {
             // we're taking a chance to load files using basic java filesystem
-            files = getFilesList(path, showHidden, fileCallback);
+            getFilesList(path, showHidden, fileCallback);
             mode = OpenMode.FILE;
         } else {
             // we couldn't load files using native java filesystem callbacks
             // maybe the access is not allowed due to android system restrictions, we'll see later
             mode = OpenMode.FILE;
-            files = new ArrayList<>();
         }
 
         if (getModeCallBack != null) getModeCallBack.getMode(mode);
-        return files;
     }
 
 }
