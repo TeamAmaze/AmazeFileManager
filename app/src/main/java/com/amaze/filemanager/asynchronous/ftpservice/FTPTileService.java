@@ -54,7 +54,9 @@ public class FTPTileService extends TileService {
             if (FTPService.isConnectedToWifi(getApplicationContext())
                     || FTPService.isConnectedToLocalNetwork(getApplicationContext())
                     || FTPService.isEnabledWifiHotspot(getApplicationContext())) {
-                getApplicationContext().sendBroadcast(new Intent(FTPService.ACTION_START_FTPSERVER));
+                Intent i = new Intent(FTPService.ACTION_START_FTPSERVER);
+                i.putExtra(FTPService.TAG_STARTED_BY_TILE, true);
+                getApplicationContext().sendBroadcast(i);
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.ftp_no_wifi), Toast.LENGTH_LONG).show();
             }
