@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.OnProgressUpdate;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Emmanuel
@@ -36,7 +39,14 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
         long fileLength = file.length(context);
 
         if (file.isDirectory(context)) {
-            final int x = file.listFiles(context, false).size();
+            final AtomicInteger x = new AtomicInteger(0);
+            file.forEachChildrenFile(context, false, new OnFileFound() {
+                @Override
+                public void onFileFound(HybridFileParcelable file) {
+                    x.incrementAndGet();
+                }
+            });
+            final int folderLength = x.intValue();
             long folderSize;
 
             if(isStorage) {
@@ -45,12 +55,12 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
                 folderSize = FileUtils.folderSize(file, new OnProgressUpdate<Long>() {
                     @Override
                     public void onUpdate(Long data) {
-                        publishProgress(new Pair<>(x, data));
+                        publishProgress(new Pair<>(folderLength, data));
                     }
                 });
             }
 
-            items = getText(x, folderSize, false);
+            items = getText(folderLength, folderSize, false);
         } else {
             items = Formatter.formatFileSize(context, fileLength) + (" (" + fileLength + " "
                     + context.getResources().getQuantityString(R.plurals.bytes, (int) fileLength) //truncation is insignificant

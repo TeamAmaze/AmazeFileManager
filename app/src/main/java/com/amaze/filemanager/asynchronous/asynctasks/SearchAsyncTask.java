@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -100,19 +100,21 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      *
      * @param directory the current path
      */
-    private void search(HybridFile directory, SearchFilter filter) {
+    private void search(HybridFile directory, final SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
-            ArrayList<HybridFileParcelable> filesInDirectory = directory.listFiles(activity.get(), mRootMode);
-            for (HybridFileParcelable file : filesInDirectory) {
-                if (!isCancelled()) {
-                    if (filter.searchFilter(file.getName())) {
-                        publishProgress(file);
+            directory.forEachChildrenFile(activity.get(), mRootMode, new OnFileFound() {
+                @Override
+                public void onFileFound(HybridFileParcelable file) {
+                    if (!isCancelled()) {
+                        if (filter.searchFilter(file.getName())) {
+                            publishProgress(file);
+                        }
+                        if (file.isDirectory() && !isCancelled()) {
+                            search(file, filter);
+                        }
                     }
-                    if (file.isDirectory() && !isCancelled()) {
-                        search(file, filter);
-                    }
-                } else return;
-            }
+                }
+            });
         } else {
             Log.d(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
         }

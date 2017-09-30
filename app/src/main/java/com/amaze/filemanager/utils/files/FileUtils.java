@@ -57,6 +57,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -74,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jcifs.smb.SmbFile;
 
@@ -144,8 +146,15 @@ public class FileUtils {
     /**
      * Helper method to get size of an otg folder
      */
-    public static long folderSize(String path, Context context) {
-        return getTotalBytes(OTGUtil.getDocumentFilesList(path, context), context);
+    public static long otgFolderSize(String path, final Context context) {
+        final AtomicLong totalBytes = new AtomicLong(0);
+        OTGUtil.getDocumentFiles(path, context, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                totalBytes.addAndGet(getBaseFileSize(file, context));
+            }
+        });
+        return totalBytes.longValue();
     }
 
     /**
@@ -612,10 +621,7 @@ public class FileUtils {
             case OTG:
                 return true;
             default:
-                HybridFile parentFile = new HybridFile(currentFile.getMode(), currentFile.getParent(context));
-                ArrayList<HybridFileParcelable> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
-                if (parentFiles == null) return false;
-                else return true;
+                return true;// TODO: 29/9/2017 there might be nothing to go back to (check parent)
         }
     }
 

@@ -15,6 +15,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -175,20 +176,27 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void decrypt(Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
+    private void decrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
 
         if (sourceFile.isDirectory()) {
 
-            HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
+            final HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
                     sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (HybridFileParcelable baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
-                decrypt(context, baseFile, hFile);
-            }
+            sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), new OnFileFound() {
+                @Override
+                public void onFileFound(HybridFileParcelable file) {
+                    try {
+                        decrypt(context, file, hFile);
+                    } catch (IOException | BadPaddingException | CertificateException | UnrecoverableEntryException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | KeyStoreException e) {
+                        throw new IllegalStateException(e); //throw unchecked exception, no throws needed
+                    }
+                }
+            });
         } else {
 
             if (!sourceFile.getPath().endsWith(CRYPT_EXTENSION)) {
@@ -235,7 +243,7 @@ public class CryptUtil {
      * @throws KeyStoreException
      * @throws IllegalBlockSizeException
      */
-    private void encrypt(Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
+    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory) throws IOException,
             CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
             InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
             NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
@@ -243,14 +251,21 @@ public class CryptUtil {
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
-            HybridFile hFile = new HybridFile(targetDirectory.getMode(),
+            final HybridFile hFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (HybridFileParcelable baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
-                encrypt(context, baseFile, hFile);
-            }
+            sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), new OnFileFound() {
+                @Override
+                public void onFileFound(HybridFileParcelable file) {
+                    try {
+                        encrypt(context, file, hFile);
+                    } catch (IOException | IllegalBlockSizeException | KeyStoreException | CertificateException | UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException | NoSuchProviderException e) {
+                        throw new IllegalStateException(e);//throw unchecked exception, no throws needed
+                    }
+                }
+            });
         } else {
 
             if (sourceFile.getName().endsWith(CRYPT_EXTENSION)) {
