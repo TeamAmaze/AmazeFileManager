@@ -80,14 +80,19 @@ public class FTPService extends Service implements Runnable {
     static public final String ACTION_START_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER";
     static public final String ACTION_STOP_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
 
+    static public final String TAG_STARTED_BY_TILE = "started_by_tile";  // attribute of action_started, used by notification
+
     private String username, password;
     private boolean isPasswordProtected = false;
 
     private FtpServer server;
     protected static Thread serverThread = null;
 
+    private boolean isStartedByTile = false;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false);
         int attempts = 10;
         while (serverThread != null) {
             if (attempts > 0) {
@@ -189,7 +194,7 @@ public class FTPService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
-            sendBroadcast(new Intent(FTPService.ACTION_STARTED));
+            sendBroadcast(new Intent(FTPService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
             sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART));
         }
