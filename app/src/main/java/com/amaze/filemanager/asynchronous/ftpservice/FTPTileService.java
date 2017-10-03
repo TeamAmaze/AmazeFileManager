@@ -34,7 +34,9 @@ public class FTPTileService extends TileService {
         mTile = getQsTile();
 
         if (!FTPService.isRunning()) {
-            if (FTPService.isConnectedToWifi(getApplicationContext())) {
+            if (FTPService.isConnectedToWifi(getApplicationContext())
+                    || FTPService.isConnectedToLocalNetwork(getApplicationContext())
+                    || FTPService.isEnabledWifiHotspot(getApplicationContext())) {
                 startServer();
                 mTile.setState(Tile.STATE_ACTIVE);
                 mTile.updateTile();
