@@ -42,6 +42,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +73,7 @@ import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -202,7 +204,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             // getting uri from external source
             uri = getIntent().getData();
 
-            mFile = new HybridFileParcelable(getIntent().getData().getPath());
+
+            mFile = new HybridFileParcelable(Utils.sanitizeInput(getIntent().getData().getPath()));
+            Log.d(getClass().getSimpleName(), "External path - " + getIntent().getData().getPath());
         }
 
         String fileName;

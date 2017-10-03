@@ -209,4 +209,14 @@ public class Utils {
             mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
+
+    /**
+     * Sanitizes input from external application to avoid any attempt of command injection
+     * @param input
+     * @return
+     */
+    public static String sanitizeInput(String input) {
+        String sanitizedInput = input.replaceAll("[;|.\\.\\.&\\&]", "");
+        return sanitizedInput;
+    }
 }
