@@ -86,6 +86,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
                         <ImageView
                             android:id="@+id/image_version"
@@ -128,6 +129,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
                         <ImageView
                             android:id="@+id/image_view_changelog"
@@ -162,6 +164,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
                         <ImageView
                             android:id="@+id/image_view_license"
@@ -270,6 +273,7 @@
                                     android:textColor="@color/accent_red"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"
                                     />
                                 <TextView
                                     android:id="@+id/text_view_author_1_donate"
@@ -281,6 +285,7 @@
                                     android:layout_toRightOf="@+id/text_view_author_1_g_plus"
                                     android:layout_marginLeft="@dimen/material_generic_medium"
                                     android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"
                                     />
                             </RelativeLayout>
                         </RelativeLayout>
@@ -345,6 +350,7 @@
                                     android:textColor="@color/accent_red"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"
                                     />
                                 <TextView
                                     android:id="@+id/text_view_author_2_donate"
@@ -356,7 +362,70 @@
                                     android:layout_toRightOf="@+id/text_view_author_2_g_plus"
                                     android:layout_marginLeft="@dimen/material_generic_medium"
                                     android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"
                                     />
+                            </RelativeLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_large"
+                        android:paddingLeft="@dimen/material_generic">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/developers"
+                            android:textColor="@android:color/darker_gray"/>
+                    </RelativeLayout>
+                    <!-- dev 1 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="72dp"
+                        android:layout_marginLeft="72dp">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/text_view_developer_1_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/developer_1"
+                                android:textSize="@dimen/material_generic_title"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_developer_1_title"
+                                android:layout_marginTop="@dimen/material_generic">
+                                <TextView
+                                    android:id="@+id/text_view_developer_1_github"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/github"
+                                    android:textColor="@color/accent_red"
+                                    android:layout_alignParentLeft="true"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                                <TextView
+                                    android:id="@+id/text_view_developer_1_donate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/donate"
+                                    android:textColor="@color/accent_blue"
+                                    android:layout_toRightOf="@+id/text_view_developer_1_github"
+                                    android:layout_marginLeft="@dimen/material_generic_medium"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
                             </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
@@ -400,6 +469,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
 
                         <ImageView
@@ -442,6 +512,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
 
                         <ImageView
@@ -484,6 +555,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
 
                         <ImageView
@@ -526,6 +598,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
 
                         <ImageView
@@ -568,6 +641,7 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
+                        android:onClick="onClick"
                         >
 
                         <ImageView

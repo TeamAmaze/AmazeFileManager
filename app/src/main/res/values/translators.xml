@@ -45,6 +45,7 @@
     <string name="app_version" translatable="false">v3.2.1</string>
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
+    <string name="developer_1" translatable="false">Emmanuel Messulam</string>
 
     <string name="contributor_1_title" translatable="false">Team MoKee</string>
     <string name="contributor_2_title" translatable="false">CookIcons.co</string>

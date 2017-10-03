@@ -1,6 +1,7 @@
 package com.amaze.filemanager.activities;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,9 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -44,13 +44,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
     private AppBarLayout mAppBarLayout;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private Toolbar mToolbar;
-    private TextView mTitleTextView, mAuthor1Gplus, mAuthor1Donate, mAuthor2Gplus, mAuthor2Donate;
-    private RelativeLayout mVersion, mChangelog, mLicenses, mIssues, mTranslate, mGplusCommunity;
-    private RelativeLayout mXda, mRate;
-    private ImageView mLicensesIcon;
+    private TextView mTitleTextView;
     private int mCount=0;
-    private Toast mToast;
+    private Snackbar snackbar;
     private SharedPreferences mSharedPref;
     private View mAuthorsDivider;
 
@@ -58,7 +54,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
     private static final String URL_AUTHOR_1_PAYPAL = "arpitkh96@gmail.com";
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
-    private static final String URL_AUTHOR_2_PAYPAL = "vishalmeham2@gmail.com";
+    private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
+    private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
+    private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
@@ -66,7 +64,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_REPO_XDA = "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
     private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
     private static final String TAG_CLIPBOARD_DONATE = "donate_id";
-    private static final String URL_DONATE_2 = "https://www.paypal.me/vishalnehra";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,37 +82,12 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         mTitleTextView = (TextView) findViewById(R.id.text_view_title);
-        mVersion = (RelativeLayout) findViewById(R.id.relative_layout_version);
-        mChangelog = (RelativeLayout) findViewById(R.id.relative_layout_changelog);
-        mLicenses = (RelativeLayout) findViewById(R.id.relative_layout_licenses);
-        mIssues = (RelativeLayout) findViewById(R.id.relative_layout_issues);
-        mTranslate = (RelativeLayout) findViewById(R.id.relative_layout_translate);
-        mAuthor1Gplus = (TextView) findViewById(R.id.text_view_author_1_g_plus);
-        mAuthor1Donate = (TextView) findViewById(R.id.text_view_author_1_donate);
-        mAuthor2Gplus = (TextView) findViewById(R.id.text_view_author_2_g_plus);
-        mAuthor2Donate = (TextView) findViewById(R.id.text_view_author_2_donate);
+        ImageView mLicensesIcon = (ImageView) findViewById(R.id.image_view_license);;
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
-        mGplusCommunity = (RelativeLayout) findViewById(R.id.relative_layout_g_plus_community);
-        mXda = (RelativeLayout) findViewById(R.id.relative_layout_xda);
-        mRate = (RelativeLayout) findViewById(R.id.relative_layout_rate);
-        mLicensesIcon = (ImageView) findViewById(R.id.image_view_license);
-
-        mVersion.setOnClickListener(this);
-        mChangelog.setOnClickListener(this);
-        mLicenses.setOnClickListener(this);
-        mAuthor1Gplus.setOnClickListener(this);
-        mAuthor1Donate.setOnClickListener(this);
-        mAuthor2Gplus.setOnClickListener(this);
-        mAuthor2Donate.setOnClickListener(this);
-        mIssues.setOnClickListener(this);
-        mTranslate.setOnClickListener(this);
-        mGplusCommunity.setOnClickListener(this);
-        mXda.setOnClickListener(this);
-        mRate.setOnClickListener(this);
 
         mAppBarLayout.setLayoutParams(calculateHeaderViewParams());
 
-        mToolbar = (Toolbar)findViewById(R.id.toolBar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.md_nav_back));
@@ -204,12 +176,15 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
             case R.id.relative_layout_version:
                 mCount++;
                 if (mCount >= 5) {
-                    if (mToast!=null)
-                        mToast.cancel();
-                    mToast = Toast.makeText(this, getResources().getString(R.string.easter_egg_title) +
-                                    " : " + mCount, Toast.LENGTH_SHORT);
-                    mToast.show();
+                    String text = getResources().getString(R.string.easter_egg_title) + " : " + mCount;
 
+                    if(snackbar != null && snackbar.isShown()) {
+                        snackbar.setText(text);
+                    } else {
+                        snackbar = Snackbar.make(v, text, Snackbar.LENGTH_SHORT);
+                    }
+
+                    snackbar.show();
                     mSharedPref.edit().putInt(KEY_PREF_STUDIO, Integer.parseInt(Integer.toString(mCount) + "000")).apply();
                 } else {
                     mSharedPref.edit().putInt(KEY_PREF_STUDIO, 0).apply();
@@ -217,15 +192,11 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_issues:
-                Intent issuesIntent = new Intent(Intent.ACTION_VIEW);
-                issuesIntent.setData(Uri.parse(URL_REPO_ISSUES));
-                startActivity(issuesIntent);
+                openURL(URL_REPO_ISSUES);
                 break;
 
             case R.id.relative_layout_changelog:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(URL_REPO_CHANGELOG));
-                startActivity(intent);
+                openURL(URL_REPO_CHANGELOG);
                 break;
 
             case R.id.relative_layout_licenses:
@@ -239,54 +210,58 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.text_view_author_1_g_plus:
-                Intent author1GplusIntent = new Intent(Intent.ACTION_VIEW);
-                author1GplusIntent.setData(Uri.parse(URL_AUTHOR_1_G_PLUS));
-                startActivity(author1GplusIntent);
+                openURL(URL_AUTHOR_1_G_PLUS);
                 break;
 
             case R.id.text_view_author_1_donate:
                 ClipboardManager clipManager1 = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clip1 = ClipData.newPlainText(TAG_CLIPBOARD_DONATE, URL_AUTHOR_1_PAYPAL);
                 clipManager1.setPrimaryClip(clip1);
-                Toast.makeText(this, R.string.paypal_copy_message, Toast.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.paypal_copy_message, Snackbar.LENGTH_LONG).show();
                 break;
 
             case R.id.text_view_author_2_g_plus:
-                Intent author2GplusIntent = new Intent(Intent.ACTION_VIEW);
-                author2GplusIntent.setData(Uri.parse(URL_AUTHOR_2_G_PLUS));
-                startActivity(author2GplusIntent);
+                openURL(URL_AUTHOR_2_G_PLUS);
                 break;
 
             case R.id.text_view_author_2_donate:
+                openURL(URL_AUTHOR_2_PAYPAL);
+                break;
 
-                Intent donate2Intent = new Intent(Intent.ACTION_VIEW);
-                donate2Intent.setData(Uri.parse(URL_DONATE_2));
-                startActivity(donate2Intent);
+            case R.id.text_view_developer_1_github:
+                openURL(URL_DEVELOPER1_GITHUB);
+                break;
+
+            case R.id.text_view_developer_1_donate:
+                try {
+                    openURL(URL_DEVELOPER1_BITCOIN);
+                } catch (ActivityNotFoundException e) {
+                    Snackbar.make(v, R.string.nobitcoinapp, Snackbar.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.relative_layout_translate:
-                Intent translateIntent = new Intent(Intent.ACTION_VIEW);
-                translateIntent.setData(Uri.parse(URL_REPO_TRANSLATE));
-                startActivity(translateIntent);
+                openURL(URL_REPO_TRANSLATE);
                 break;
 
             case R.id.relative_layout_g_plus_community:
-                Intent communityIntent = new Intent(Intent.ACTION_VIEW);
-                communityIntent.setData(Uri.parse(URL_REPO_G_PLUS_COMMUNITY));
-                startActivity(communityIntent);
+                openURL(URL_REPO_G_PLUS_COMMUNITY);
                 break;
 
             case R.id.relative_layout_xda:
-                Intent xdaIntent = new Intent(Intent.ACTION_VIEW);
-                xdaIntent.setData(Uri.parse(URL_REPO_XDA));
-                startActivity(xdaIntent);
+                openURL(URL_REPO_XDA);
                 break;
 
             case R.id.relative_layout_rate:
-                Intent rateIntent = new Intent(Intent.ACTION_VIEW);
-                rateIntent.setData(Uri.parse(URL_REPO_RATE));
-                startActivity(rateIntent);
+                openURL(URL_REPO_RATE);
                 break;
         }
     }
+
+    private void openURL(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
 }
