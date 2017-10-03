@@ -17,14 +17,13 @@ public class FTPReceiver extends BroadcastReceiver {
         Log.v(TAG, "Received: " + intent.getAction());
 
         try {
-            if (intent.getAction().equals(FTPService.ACTION_START_FTPSERVER)) {
-                Intent serverService = new Intent(context, FTPService.class);
-                if (!FTPService.isRunning()) {
-                    context.startService(serverService);
-                }
+            Intent service = new Intent(context, FTPService.class);
+            service.putExtras(intent);
+            if (intent.getAction().equals(FTPService.ACTION_START_FTPSERVER) &&
+                    !FTPService.isRunning()) {
+                context.startService(service);
             } else if (intent.getAction().equals(FTPService.ACTION_STOP_FTPSERVER)) {
-                Intent serverService = new Intent(context, FTPService.class);
-                context.stopService(serverService);
+                context.stopService(service);
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to start/stop on intent " + e.getMessage());
