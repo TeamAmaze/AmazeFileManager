@@ -579,4 +579,5 @@
     <string name="developers">Developers</string>
     <string name="nobitcoinapp">Please install a bitcoin wallet</string>
 
+    <string name="appbar_name" translatable="false">Amaze</string>
 </resources>
