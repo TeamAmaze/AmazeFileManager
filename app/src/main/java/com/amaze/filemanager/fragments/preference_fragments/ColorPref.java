@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -35,8 +34,10 @@ import java.util.List;
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
-    private MaterialDialog dialog;
+    private static final String[] PREFERENCE_KEYS = {"random_checkbox", "colorednavigation", "skin",
+            "skin_two", "accent_skin", "icon_skin"};
 
+    private MaterialDialog dialog;
     SharedPreferences sharedPref;
     PreferencesActivity activity;
 
@@ -44,36 +45,18 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.color_prefs);
 
         activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final CheckBox checkBoxPreference = (CheckBox) findPreference(PreferencesConstants.PREFERENCE_RANDOM_COLOR);
-        checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (activity != null) activity.setChanged();
-                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-        CheckBox preference8 = (CheckBox) findPreference(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION);
-        preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (activity != null) activity.setChanged();
-                return true;
-            }
-        });
-        if (Build.VERSION.SDK_INT >= 21)
-            preference8.setEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21) {
+            findPreference("colorednavigation").setEnabled(true);
+        }
 
-        findPreference(ColorUsage.PRIMARY.asString()).setOnPreferenceClickListener(this);
-        findPreference(ColorUsage.PRIMARY_TWO.asString()).setOnPreferenceClickListener(this);
-        findPreference(ColorUsage.ACCENT.asString()).setOnPreferenceClickListener(this);
-        findPreference(ColorUsage.ICON_SKIN.asString()).setOnPreferenceClickListener(this);
+        for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
+            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
+        }
     }
 
     @Override
@@ -88,37 +71,51 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     public boolean onPreferenceClick(final Preference preference) {
         if (activity != null) activity.setChanged();
 
-        final ColorUsage usage = ColorUsage.fromString(preference.getKey());
-        if (usage != null) {
-            ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.availableColors, usage);
+        switch(preference.getKey()) {
+            case "random_checkbox":
+                if (activity != null) activity.setChanged();
+                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
+                return true;
+            case "colorednavigation":
+                if (activity != null) activity.setChanged();
+                return true;
+            case "skin":
+            case "skin_two":
+            case "accent_skin":
+            case "icon_skin":
+                final ColorUsage usage = ColorUsage.fromString(preference.getKey());
+                if (usage != null) {
+                    ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.availableColors, usage);
 
-            GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
-            v.setAdapter(adapter);
-            v.setOnItemClickListener(adapter);
+                    GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
+                    v.setAdapter(adapter);
+                    v.setOnItemClickListener(adapter);
 
-            int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
-            dialog = new MaterialDialog.Builder(getActivity())
-                    .positiveText(R.string.cancel)
-                    .title(R.string.choose_color)
-                    .theme(activity.getAppTheme().getMaterialDialogTheme())
-                    .autoDismiss(true)
-                    .positiveColor(fab_skin)
-                    .neutralColor(fab_skin)
-                    .neutralText(R.string.defualt)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onNeutral(MaterialDialog dialog) {
-                            super.onNeutral(dialog);
-                            activity.getColorPreference()
-                                    .setRes(usage, usage.getDefaultColor())
-                                    .saveToPreferences(sharedPref);
-                        }
-                    })
-                    .customView(v, false)
-                    .build();
+                    int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+                    dialog = new MaterialDialog.Builder(getActivity())
+                            .positiveText(R.string.cancel)
+                            .title(R.string.choose_color)
+                            .theme(activity.getAppTheme().getMaterialDialogTheme())
+                            .autoDismiss(true)
+                            .positiveColor(fab_skin)
+                            .neutralColor(fab_skin)
+                            .neutralText(R.string.defualt)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onNeutral(MaterialDialog dialog) {
+                                    super.onNeutral(dialog);
+                                    activity.getColorPreference()
+                                            .setRes(usage, usage.getDefaultColor())
+                                            .saveToPreferences(sharedPref);
+                                }
+                            })
+                            .customView(v, false)
+                            .build();
 
-            adapter.setDialog(dialog);
-            dialog.show();
+                    adapter.setDialog(dialog);
+                    dialog.show();
+                }
+            return false;
         }
 
         return false;
