@@ -65,6 +65,8 @@ public class PreferencesActivity extends ThemedActivity {
     //The preference fragment currently selected
     private int selectedItem = 0;
 
+    private PreferenceFragment currentFragment;
+
     private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
 
     @Override
@@ -116,9 +118,11 @@ public class PreferencesActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
-        if (selectedItem != START_PREFERENCE && changed)
-            restartPC(this);
-        else if (selectedItem != START_PREFERENCE) {
+        if (selectedItem != START_PREFERENCE && changed) {
+            if(currentFragment instanceof ColorPref && !((ColorPref) currentFragment).onBackPressed()) {
+                restartPC(this);
+            }
+        } else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
         } else {
             Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
@@ -133,10 +137,11 @@ public class PreferencesActivity extends ThemedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // Navigate "up" the demo structure to the launchpad activity.
-                if (selectedItem != START_PREFERENCE && changed)
-                    restartPC(this);
-                else if (selectedItem != START_PREFERENCE) {
+                if (selectedItem != START_PREFERENCE && changed) {
+                    if(!currentFragment.onOptionsItemSelected(item)) {
+                        restartPC(this);
+                    }
+                } else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
                 } else {
                     Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
@@ -153,7 +158,7 @@ public class PreferencesActivity extends ThemedActivity {
                 }
                 return true;
         }
-        return true;
+        return false;
     }
 
     public void setChanged() {
@@ -197,6 +202,8 @@ public class PreferencesActivity extends ThemedActivity {
     }
 
     private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {
+        currentFragment = fragment;
+
         FragmentTransaction t = getFragmentManager().beginTransaction();
         t.replace(R.id.prefsfragment, fragment);
         t.commit();

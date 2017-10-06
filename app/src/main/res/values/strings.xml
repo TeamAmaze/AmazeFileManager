@@ -600,5 +600,8 @@
     </string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
     <string name="addshortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
+    
+    <string name="selectcolorconfig">Select color config</string>
+    <string name="customize">Customize</string>
 </resources>
 

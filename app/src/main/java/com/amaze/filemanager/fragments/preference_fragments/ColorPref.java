@@ -12,6 +12,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,16 +31,24 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import java.util.List;
 
 /**
- * Created by Arpit on 21-06-2015.
+ * This class uses two sections, so that there doesn't need to be two different Fragments.
+ * For sections info check switchSections() below.
+ *
+ * Created by Arpit on 21-06-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
-    private static final String[] PREFERENCE_KEYS = {"random_checkbox", "colorednavigation", "skin",
-            "skin_two", "accent_skin", "icon_skin"};
+    private static final int SECTION_0 = 0, SECTION_1 = 1;
+
+    private static final String[] PREFERENCE_KEYS_SECTION_0 = {"colorednavigation",
+            "selectcolorconfig", "random_checkbox"};
+    private static final String[] PREFERENCE_KEYS_SECTION_1 = {"skin", "skin_two", "accent_skin", "icon_skin"};
+
+    private int currentSection = SECTION_0;
 
     private MaterialDialog dialog;
-    SharedPreferences sharedPref;
-    PreferencesActivity activity;
+    private SharedPreferences sharedPref;
+    private PreferencesActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,17 +63,35 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             findPreference("colorednavigation").setEnabled(true);
         }
 
-        for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
-            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
-        }
+        reloadListeners();
     }
 
     @Override
     public void onPause() {
-        if (dialog != null){
-            dialog.dismiss();
-        }
+        if (dialog != null) dialog.dismiss();
         super.onPause();
+    }
+
+    /**
+     * Deal with the "up" button going to last fragment, instead of section 0.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home && currentSection != SECTION_0) {
+            switchSections();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onBackPressed() {
+        if(currentSection != SECTION_0) {
+            switchSections();
+            return true;//dealt with click
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -116,9 +143,33 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                     dialog.show();
                 }
             return false;
+            case "selectcolorconfig":
+                switchSections();
+                return true;
         }
 
         return false;
+    }
+
+    private void switchSections() {
+        getPreferenceScreen().removeAll();
+
+        if(currentSection == SECTION_0) {
+            currentSection = SECTION_1;
+            addPreferencesFromResource(R.xml.conficolor_prefs);
+        } else if(currentSection == SECTION_1) {
+            currentSection = SECTION_0;
+            addPreferencesFromResource(R.xml.color_prefs);
+        }
+
+        reloadListeners();
+    }
+
+    private void reloadListeners() {
+        for (final String PREFERENCE_KEY :
+                (currentSection == SECTION_0? PREFERENCE_KEYS_SECTION_0:PREFERENCE_KEYS_SECTION_1)) {
+            findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
+        }
     }
 
     private class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
