@@ -222,6 +222,8 @@ public class MainActivity extends ThemedActivity implements
 
     public static final String KEY_PREF_OTG = "uri_usb_otg";
 
+    public static final String PASTEHELPER_BUNDLE = "pasteHelper";
+
     private static final int image_selector_request_code = 31;
 
     private AppBar appbar;
@@ -523,13 +525,7 @@ public class MainActivity extends ThemedActivity implements
                         }
                     }
                 } else {
-
-                    if(savedInstanceState.containsKey("pasteHelperOperation")) {
-                        int op = savedInstanceState.getInt("pasteHelperOperation");
-                        HybridFileParcelable[] paths = (HybridFileParcelable[]) savedInstanceState.getParcelableArray("pasteHelperPaths");
-                        pasteHelper = new PasteHelper(op, paths);
-                    }
-
+                    pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
                     oppathe = savedInstanceState.getString("oppathe");
                     oppathe1 = savedInstanceState.getString("oppathe1");
                     oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
@@ -1226,8 +1222,7 @@ public class MainActivity extends ThemedActivity implements
         if (selectedStorage != NO_VALUE)
             outState.putInt("selectitem", selectedStorage);
         if(pasteHelper != null) {
-            outState.putInt("pasteHelperOperation", pasteHelper.operation);
-            outState.putParcelableArray("pasteHelperPaths", pasteHelper.paths);
+            outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
         }
 
         if (oppathe != null) {
