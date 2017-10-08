@@ -79,9 +79,10 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -728,25 +729,19 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.cpy:
-                    getMainActivity().MOVE_PATH = null;
-                    ArrayList<HybridFileParcelable> copies = new ArrayList<>();
-                    for (int i2 = 0; i2 < checkedItems.size(); i2++) {
-                        copies.add(checkedItems.get(i2).generateBaseFile());
+                case R.id.cut: {
+                    HybridFileParcelable[] copies = new HybridFileParcelable[checkedItems.size()];
+                    for (int i = 0; i < checkedItems.size(); i++) {
+                        copies[i] = checkedItems.get(i).generateBaseFile();
                     }
-                    getMainActivity().COPY_PATH = copies;
-                    getMainActivity().supportInvalidateOptionsMenu();
+                    int op = item.getItemId() == R.id.cpy? PasteHelper.OPERATION_COPY:PasteHelper.OPERATION_CUT;
+
+                    PasteHelper pasteHelper = new PasteHelper(op, copies);
+                    getMainActivity().setPaste(pasteHelper);
+
                     mode.finish();
                     return true;
-                case R.id.cut:
-                    getMainActivity().COPY_PATH = null;
-                    ArrayList<HybridFileParcelable> copie = new ArrayList<>();
-                    for (int i3 = 0; i3 < checkedItems.size(); i3++) {
-                        copie.add(checkedItems.get(i3).generateBaseFile());
-                    }
-                    getMainActivity().MOVE_PATH = copie;
-                    getMainActivity().supportInvalidateOptionsMenu();
-                    mode.finish();
-                    return true;
+                }
                 case R.id.compress:
                     ArrayList<HybridFileParcelable> copies1 = new ArrayList<>();
                     for (int i4 = 0; i4 < checkedItems.size(); i4++) {
