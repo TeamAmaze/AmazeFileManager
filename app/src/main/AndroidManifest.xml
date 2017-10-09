@@ -57,23 +57,25 @@
             android:launchMode="singleInstance"
             android:name=".activities.MainActivity"
             android:theme="@style/appCompatLight">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <data android:mimeType="*/*" />
                 <category android:name="android.intent.category.OPENABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.RINGTONE_PICKER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/zip" />
@@ -81,15 +83,23 @@
                 <data android:mimeType="application/x-rar-compressed"/><!--<category android:name="android.intent.category.OPENABLE" />-->
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
-            <intent-filter>
 
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="com.amaze.filemanager" />
+                <data android:mimeType="resource/folder" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="resource/folder" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <intent-filter android:label="@string/intent_save_as">
@@ -98,8 +108,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
-
         </activity>
+
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"

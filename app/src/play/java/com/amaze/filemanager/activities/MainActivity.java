@@ -111,6 +111,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -276,6 +277,12 @@ public class MainActivity extends ThemedActivity implements
     public static final String TAG_INTENT_FILTER_GENERAL = "general_communications";
     public static final String ARGS_KEY_LOADER = "loader_cloud_args_service";
 
+    /**
+     * Mime type in intent that apps need to pass when trying to open file manager from a specific directory
+     * Should be clubbed with {@link Intent#ACTION_VIEW} and send in path to open in intent data field
+     */
+    public static final String ARGS_INTENT_ACTION_VIEW_MIME_FOLDER = "resource/folder";
+
     private static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
     private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/oauth2redirect";
 
@@ -373,8 +380,25 @@ public class MainActivity extends ThemedActivity implements
 
                 // zip viewer intent
                 Uri uri = intent.getData();
-                openzip = true;
-                zippath = uri.toString();
+                String type = intent.getType();
+
+                if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+                    // support for syncting or intents from external apps that
+                    // need to start file manager from a specific path
+
+                    if (uri != null) {
+
+                        path = uri.getPath();
+                    } else {
+                        // no data field, open home for the tab in later processing
+                        path = null;
+                    }
+                } else {
+                    // we don't have folder resource mime type set, supposed to be zip/rar
+                    openzip = true;
+                    zippath = uri.toString();
+                }
+
             } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
                 // save a single file to filesystem
 
