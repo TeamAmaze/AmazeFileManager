@@ -35,8 +35,8 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -56,7 +56,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 import jcifs.smb.SmbAuthException;
@@ -219,12 +218,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
                 try {
                     ArrayList<HybridFileParcelable> arrayList1;
                     arrayList1 = RootHelper.getFilesList(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
-                            new RootHelper.GetModeCallBack() {
-                                @Override
-                                public void getMode(OpenMode mode) {
-                                    openmode = mode;
-                                }
-                            });
+                            mode -> openmode = mode);
                     list = addTo(arrayList1);
 
                 } catch (RootNotPermittedException e) {
@@ -389,13 +383,7 @@ public class LoadFilesListTask extends AsyncTask<String, String, ArrayList<Layou
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, new Comparator<HybridFileParcelable>() {
-            @Override
-            public int compare(HybridFileParcelable lhs, HybridFileParcelable rhs) {
-                return -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate());
-
-            }
-        });
+        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.getDate()).compareTo(rhs.getDate()));
         if (songs.size() > 20)
             for (int i = songs.size() - 1; i > 20; i--) {
                 songs.remove(i);

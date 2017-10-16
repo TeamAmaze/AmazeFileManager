@@ -166,25 +166,22 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
             }
 
             // updating encrypted db entry if any encrypted file was moved
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i=0; i<paths.size(); i++) {
-                        for (HybridFileParcelable file : files.get(i)) {
-                            if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                                try {
+            AppConfig.runInBackground(() -> {
+                for (int i = 0; i < paths.size(); i++) {
+                    for (HybridFileParcelable file : files.get(i)) {
+                        if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                            try {
 
-                                    CryptHandler cryptHandler = new CryptHandler(context);
-                                    EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
-                                    EncryptedEntry newEntry = new EncryptedEntry();
-                                    newEntry.setId(oldEntry.getId());
-                                    newEntry.setPassword(oldEntry.getPassword());
-                                    newEntry.setPath(paths.get(i) + "/" + file.getName());
-                                    cryptHandler.updateEntry(oldEntry, newEntry);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    // couldn't change the entry, leave it alone
-                                }
+                                CryptHandler cryptHandler = new CryptHandler(context);
+                                EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
+                                EncryptedEntry newEntry = new EncryptedEntry();
+                                newEntry.setId(oldEntry.getId());
+                                newEntry.setPassword(oldEntry.getPassword());
+                                newEntry.setPath(paths.get(i) + "/" + file.getName());
+                                cryptHandler.updateEntry(oldEntry, newEntry);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                // couldn't change the entry, leave it alone
                             }
                         }
                     }

@@ -13,7 +13,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -54,12 +53,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
 
     @Override
     protected Pair<String, List<PieEntry>> doInBackground(Void... params) {
-        long[] dataArray = FileUtils.getSpaces(file, context, new OnProgressUpdate<Long[]>() {
-            @Override
-            public void onUpdate(Long[] data) {
-                publishProgress(data);
-            }
-        });
+        long[] dataArray = FileUtils.getSpaces(file, context, this::publishProgress);
 
         if (dataArray[0] != -1 && dataArray[0] != 0) {
             long totalSpace = dataArray[0];
