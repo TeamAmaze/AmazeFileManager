@@ -50,13 +50,9 @@ public class RootHelper {
         final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
-        MainActivity.shellInteractive.addCommand(cmd, 0, new Shell.OnCommandResultListener() {
-            @Override
-            public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-
-                for (String line : output) {
-                    result.add(line);
-                }
+        MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> {
+            for (String line : output) {
+                result.add(line);
             }
         });
         MainActivity.shellInteractive.waitForIdle();
@@ -205,12 +201,7 @@ public class RootHelper {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, new GetModeCallBack() {
-                @Override
-                public void getMode(OpenMode mode) {
-
-                }
-            });
+            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null);
             for (HybridFileParcelable strings : ls) {
                 if (strings.getPath() != null && strings.getPath().equals(path)) {
                     return true;
