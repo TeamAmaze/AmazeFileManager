@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -398,12 +397,9 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             }
             final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
             if (mainFrag.IS_LIST) {
-                holder.rl.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
-                                holder.checkImageView);
-                    }
+                holder.rl.setOnClickListener(v -> {
+                    mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
+                            holder.checkImageView);
                 });
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -414,16 +410,13 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                             utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
                 }
 
-                holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
-
-                    public boolean onLongClick(View p1) {
-                        // check if the item on which action is performed is not the first {goback} item
-                        if (!isBackButton) {
-                            toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
-                        }
-
-                        return true;
+                holder.rl.setOnLongClickListener(p1 -> {
+                    // check if the item on which action is performed is not the first {goback} item
+                    if (!isBackButton) {
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                     }
+
+                    return true;
                 });
 
                 int filetype = -1;
@@ -455,35 +448,26 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
                         holder.about.setColorFilter(grey_color);
                     showPopup(holder.about, rowItem, p);
                 }
-                holder.genericIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int id = v.getId();
-                        if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
-                            // TODO: transform icon on press to the properties dialog with animation
-                            if (!isBackButton) {
-                                toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
-                            } else mainFrag.goBack();
-                        }
-                    }
-                });
-
-                holder.pictureIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                holder.genericIcon.setOnClickListener(v -> {
+                    int id = v.getId();
+                    if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
+                        // TODO: transform icon on press to the properties dialog with animation
                         if (!isBackButton) {
                             toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
                         } else mainFrag.goBack();
                     }
                 });
 
-                holder.apkIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!isBackButton) {
-                            toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
-                        } else mainFrag.goBack();
-                    }
+                holder.pictureIcon.setOnClickListener(view -> {
+                    if (!isBackButton) {
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                    } else mainFrag.goBack();
+                });
+
+                holder.apkIcon.setOnClickListener(view -> {
+                    if (!isBackButton) {
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                    } else mainFrag.goBack();
                 });
 
                 // resetting icons visibility
@@ -630,22 +614,16 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
             } else {
                 // view is a grid view
                 holder.checkImageViewGrid.setColorFilter(accentColor);
-                holder.rl.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
-                                holder.checkImageViewGrid);
-                    }
+                holder.rl.setOnClickListener(v -> {
+                    mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
+                            holder.checkImageViewGrid);
                 });
 
-                holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
-
-                    public boolean onLongClick(View p1) {
-                        if (!isBackButton) {
-                            toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
-                        }
-                        return true;
+                holder.rl.setOnLongClickListener(p1 -> {
+                    if (!isBackButton) {
+                        toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
                     }
+                    return true;
                 });
                 holder.txtTitle.setText(rowItem.getTitle());
                 holder.imageView1.setVisibility(View.INVISIBLE);
@@ -741,38 +719,35 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
-                        utilsProvider, mainFrag, rowItem, view, sharedPrefs);
-                popupMenu.inflate(R.menu.item_extras);
-                String description = rowItem.getDesc().toLowerCase();
+        v.setOnClickListener(view -> {
+            PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
+                    utilsProvider, mainFrag, rowItem, view, sharedPrefs);
+            popupMenu.inflate(R.menu.item_extras);
+            String description = rowItem.getDesc().toLowerCase();
 
-                if (rowItem.isDirectory()) {
-                    popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
-                    popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+            if (rowItem.isDirectory()) {
+                popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+                popupMenu.getMenu().findItem(R.id.share).setVisible(false);
 
-                    if (mainFrag.getMainActivity().mReturnIntent) {
-                        popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
-                    }
-                } else {
-                    popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+                if (mainFrag.getMainActivity().mReturnIntent) {
+                    popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
                 }
-
-                if (description.endsWith(".zip") || description.endsWith(".jar")
-                        || description.endsWith(".apk") || description.endsWith(".rar")
-                        || description.endsWith(".tar") || description.endsWith(".tar.gz"))
-                    popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
-                        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-                    else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
-                }
-
-                popupMenu.show();
+            } else {
+                popupMenu.getMenu().findItem(R.id.book).setVisible(false);
             }
+
+            if (description.endsWith(".zip") || description.endsWith(".jar")
+                    || description.endsWith(".apk") || description.endsWith(".rar")
+                    || description.endsWith(".tar") || description.endsWith(".tar.gz"))
+                popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+                    popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+                else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+            }
+
+            popupMenu.show();
         });
     }
 

@@ -239,21 +239,15 @@ public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerVie
             }
         }
 
-        holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (rowItem.getEntry() != null) {
-                    toggleChecked(position, holder.checkImageView);
-                }
-                return true;
+        holder.rl.setOnLongClickListener(view -> {
+            if (rowItem.getEntry() != null) {
+                toggleChecked(position, holder.checkImageView);
             }
+            return true;
         });
-        holder.genericIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (rowItem.getEntry() != null) {
-                    toggleChecked(position, holder.checkImageView);
-                }
+        holder.genericIcon.setOnClickListener(view -> {
+            if (rowItem.getEntry() != null) {
+                toggleChecked(position, holder.checkImageView);
             }
         });
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
@@ -269,49 +263,46 @@ public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerVie
             holder.rl.setSelected(true);
         } else holder.checkImageView.setVisibility(View.INVISIBLE);
 
-        holder.rl.setOnClickListener(new View.OnClickListener() {
+        holder.rl.setOnClickListener(p1 -> {
+            if (rowItem.getEntry() == null)
+                zipExplorerFragment.goBack();
+            else {
+                if (zipExplorerFragment.selection) {
+                    toggleChecked(position, holder.checkImageView);
+                } else {
+                    final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+                    if (rowItem.isDirectory())
+                        stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
 
-            public void onClick(View p1) {
-                if (rowItem.getEntry() == null)
-                    zipExplorerFragment.goBack();
-                else {
-                    if (zipExplorerFragment.selection) {
-                        toggleChecked(position, holder.checkImageView);
+                    if (rowItem.isDirectory()) {
+                        zipExplorerFragment.changeZipPath(stringBuilder.toString());
                     } else {
-                        final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-                        if (rowItem.isDirectory())
-                            stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+                        String fileName = zipExplorerFragment.realZipFile.getName().substring(0,
+                                zipExplorerFragment.realZipFile.getName().lastIndexOf("."));
+                        String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
+                                "/" + fileName;
 
-                        if (rowItem.isDirectory()) {
-                            zipExplorerFragment.changeZipPath(stringBuilder.toString());
-                        } else {
-                            String fileName = zipExplorerFragment.realZipFile.getName().substring(0,
-                                    zipExplorerFragment.realZipFile.getName().lastIndexOf("."));
-                            String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
-                                    "/" + fileName;
+                        HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
+                                + rowItem.getName().replaceAll("\\\\", "/"));
+                        file.setMode(OpenMode.FILE);
+                        // this file will be opened once service finishes up it's extraction
+                        zipExplorerFragment.files.add(file);
+                        // setting flag for binder to know
+                        zipExplorerFragment.isOpen = true;
 
-                            HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
-                                    + rowItem.getName().replaceAll("\\\\", "/"));
-                            file.setMode(OpenMode.FILE);
-                            // this file will be opened once service finishes up it's extraction
-                            zipExplorerFragment.files.add(file);
-                            // setting flag for binder to know
-                            zipExplorerFragment.isOpen = true;
+                        Toast.makeText(zipExplorerFragment.getContext(),
+                                zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
+                        ArrayList<String> a = new ArrayList<>();
 
-                            Toast.makeText(zipExplorerFragment.getContext(),
-                                    zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
-                                    Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
-                            ArrayList<String> a = new ArrayList<>();
-
-                            // adding name of entry to extract from zip, before opening it
-                            a.add(rowItem.getName());
-                            intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.realZipFile.getPath());
-                            intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                            intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
-                                    zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
-                            ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
-                        }
+                        // adding name of entry to extract from zip, before opening it
+                        a.add(rowItem.getName());
+                        intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.realZipFile.getPath());
+                        intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
+                        intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
+                                zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
+                        ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
                     }
                 }
             }
@@ -344,19 +335,12 @@ public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerVie
             } else gradientDrawable.setColor(Color.parseColor(zipExplorerFragment.iconskin));
         }
 
-        holder.rl.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
-                return true;
-            }
+        holder.rl.setOnLongClickListener(view -> {
+            toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
+            return true;
         });
-        holder.genericIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
-            }
-
+        holder.genericIcon.setOnClickListener(view -> {
+            toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
         });
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
             holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
@@ -370,44 +354,41 @@ public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerVie
             gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
             holder.rl.setSelected(true);
         } else holder.checkImageView.setVisibility(View.INVISIBLE);
-        holder.rl.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View p1) {
-                if (zipExplorerFragment.selection) {
-                    toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
+        holder.rl.setOnClickListener(p1 -> {
+            if (zipExplorerFragment.selection) {
+                toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
+            } else {
+                if (rowItem.isDirectory()) {
+                    zipExplorerFragment.elementsRar.clear();
+                    zipExplorerFragment.changeRarPath(rowItem.getFileNameString().replace("\\", "/"));
                 } else {
-                    if (rowItem.isDirectory()) {
-                        zipExplorerFragment.elementsRar.clear();
-                        zipExplorerFragment.changeRarPath(rowItem.getFileNameString().replace("\\", "/"));
-                    } else {
-                        String fileName = zipExplorerFragment.realZipFile.getName().substring(0,
-                                zipExplorerFragment.realZipFile.getName().lastIndexOf("."));
-                        String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
-                                "/" + fileName;
+                    String fileName = zipExplorerFragment.realZipFile.getName().substring(0,
+                            zipExplorerFragment.realZipFile.getName().lastIndexOf("."));
+                    String archiveCacheDirPath = zipExplorerFragment.getActivity().getExternalCacheDir().getPath() +
+                            "/" + fileName;
 
-                        HybridFileParcelable file1 = new HybridFileParcelable(archiveCacheDirPath + "/"
-                                + rowItem.getFileNameString().replaceAll("\\\\", "/"));
-                        file1.setMode(OpenMode.FILE);
+                    HybridFileParcelable file1 = new HybridFileParcelable(archiveCacheDirPath + "/"
+                            + rowItem.getFileNameString().replaceAll("\\\\", "/"));
+                    file1.setMode(OpenMode.FILE);
 
-                        // this file will be opened once service finishes up it's extraction
-                        zipExplorerFragment.files.add(file1);
-                        // setting flag for binder to know
-                        zipExplorerFragment.isOpen = true;
+                    // this file will be opened once service finishes up it's extraction
+                    zipExplorerFragment.files.add(file1);
+                    // setting flag for binder to know
+                    zipExplorerFragment.isOpen = true;
 
-                        Toast.makeText(zipExplorerFragment.getContext(),
-                                zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
-                        ArrayList<String> a = new ArrayList<>();
+                    Toast.makeText(zipExplorerFragment.getContext(),
+                            zipExplorerFragment.getContext().getResources().getString(R.string.please_wait),
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(zipExplorerFragment.getContext(), ExtractService.class);
+                    ArrayList<String> a = new ArrayList<>();
 
-                        // adding name of entry to extract from zip, before opening it
-                        a.add(rowItem.getFileNameString());
-                        intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.realZipFile.getPath());
-                        intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                        intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
-                                zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
-                        ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
-                    }
+                    // adding name of entry to extract from zip, before opening it
+                    a.add(rowItem.getFileNameString());
+                    intent.putExtra(ExtractService.KEY_PATH_ZIP, zipExplorerFragment.realZipFile.getPath());
+                    intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
+                    intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
+                            zipExplorerFragment.getActivity().getExternalCacheDir().getPath());
+                    ServiceWatcherUtil.runService(zipExplorerFragment.getContext(), intent);
                 }
             }
         });
