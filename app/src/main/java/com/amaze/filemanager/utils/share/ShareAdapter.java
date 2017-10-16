@@ -70,12 +70,9 @@ class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder>
                 imageView.setImageDrawable(drawables.get(position));
             textView.setVisibility(View.VISIBLE);
             textView.setText(labels.get(position));
-            rootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (dialog != null && dialog.isShowing()) dialog.dismiss();
-                    context.startActivity(getItem(position));
-                }
+            rootView.setOnClickListener(v -> {
+                if (dialog != null && dialog.isShowing()) dialog.dismiss();
+                context.startActivity(getItem(position));
             });
         }
     }

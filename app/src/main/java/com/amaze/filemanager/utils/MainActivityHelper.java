@@ -115,13 +115,10 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfolder, new OnClickMaterialListener() {
-            @Override
-            public void onClick(MaterialDialog materialDialog) {
-                String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HybridFile(openMode, path + "/" + a), ma);
-                materialDialog.dismiss();
-            }
+        mk(R.string.newfolder, materialDialog -> {
+            String a = materialDialog.getInputEditText().getText().toString();
+            mkDir(new HybridFile(openMode, path + "/" + a), ma);
+            materialDialog.dismiss();
         });
     }
 
@@ -133,13 +130,10 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, new OnClickMaterialListener() {
-            @Override
-            public void onClick(MaterialDialog materialDialog) {
-                String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HybridFile(openMode, path + "/" + a), ma);
-                materialDialog.dismiss();
-            }
+        mk(R.string.newfile, materialDialog -> {
+            String a = materialDialog.getInputEditText().getText().toString();
+            mkFile(new HybridFile(openMode, path + "/" + a), ma);
+            materialDialog.dismiss();
         });
     }
 
@@ -152,12 +146,7 @@ public class MainActivityHelper {
                         mainActivity.getResources().getString(R.string.cancel),
                         null});
 
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                l.onClick(materialDialog);
-            }
-        });
+        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
         materialDialog.show();
     }
 
@@ -255,13 +244,10 @@ public class MainActivityHelper {
         Operations.rename(new HybridFile(mode, oldPath), new HybridFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
             @Override
             public void exists(HybridFile file) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, context.getString(R.string.fileexist),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, context.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -272,64 +258,52 @@ public class MainActivityHelper {
 
             @Override
             public void launchSAF(final HybridFile file, final HybridFile file1) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        mainActivity.oppathe = file.getPath();
-                        mainActivity.oppathe1 = file1.getPath();
-                        mainActivity.operation = DataUtils.RENAME;
-                        guideDialogForLEXA(mainActivity.oppathe1);
-                    }
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    mainActivity.oppathe = file.getPath();
+                    mainActivity.oppathe1 = file1.getPath();
+                    mainActivity.operation = DataUtils.RENAME;
+                    guideDialogForLEXA(mainActivity.oppathe1);
                 });
             }
 
             @Override
             public void done(final HybridFile hFile, final boolean b) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (b) {
-                            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+                context.runOnUiThread(() -> {
+                    if (b) {
+                        Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
-                            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, hFile.getParent(context));
-                            mainActivity.sendBroadcast(intent);
+                        intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, hFile.getParent(context));
+                        mainActivity.sendBroadcast(intent);
 
-                            // update the database entry to reflect rename for encrypted file
-                            if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                        // update the database entry to reflect rename for encrypted file
+                        if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                            try {
 
-                                try {
-
-                                    CryptHandler cryptHandler = new CryptHandler(context);
-                                    EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
-                                    EncryptedEntry newEntry = new EncryptedEntry();
-                                    newEntry.setId(oldEntry.getId());
-                                    newEntry.setPassword(oldEntry.getPassword());
-                                    newEntry.setPath(newPath);
-                                    cryptHandler.updateEntry(oldEntry, newEntry);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    // couldn't change the entry, leave it alone
-                                }
+                                CryptHandler cryptHandler = new CryptHandler(context);
+                                EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                                EncryptedEntry newEntry = new EncryptedEntry();
+                                newEntry.setId(oldEntry.getId());
+                                newEntry.setPassword(oldEntry.getPassword());
+                                newEntry.setPath(newPath);
+                                cryptHandler.updateEntry(oldEntry, newEntry);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                // couldn't change the entry, leave it alone
                             }
-                        } else
-                            Toast.makeText(context, context.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
-
-                    }
+                        }
+                    } else
+                        Toast.makeText(context, context.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
                 });
             }
 
             @Override
             public void invalidName(final HybridFile file) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
-                                + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
+                            + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -399,32 +373,26 @@ public class MainActivityHelper {
         Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
-                                Toast.LENGTH_SHORT).show();
-                        if (ma != null && ma.getActivity() != null) {
-                            // retry with dialog prompted again
-                            mkfile(file.getMode(), file.getParent(), ma);
-                        }
-
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
+                    if (ma != null && ma.getActivity() != null) {
+                        // retry with dialog prompted again
+                        mkfile(file.getMode(), file.getParent(), ma);
                     }
+
                 });
             }
 
             @Override
             public void launchSAF(HybridFile file) {
 
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FILE;
-                        guideDialogForLEXA(mainActivity.oppathe);
-                    }
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    mainActivity.oppathe = path.getPath();
+                    mainActivity.operation = DataUtils.NEW_FILE;
+                    guideDialogForLEXA(mainActivity.oppathe);
                 });
 
             }
@@ -436,30 +404,22 @@ public class MainActivityHelper {
 
             @Override
             public void done(HybridFile hFile, final boolean b) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (b) {
-                            ma.updateList();
-                        } else
-                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
-
+                ma.getActivity().runOnUiThread(() -> {
+                    if (b) {
+                        ma.updateList();
+                    } else {
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void invalidName(final HybridFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -472,16 +432,13 @@ public class MainActivityHelper {
         Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
-                                Toast.LENGTH_SHORT).show();
-                        if (ma != null && ma.getActivity() != null) {
-                            // retry with dialog prompted again
-                            mkdir(file.getMode(), file.getParent(), ma);
-                        }
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
+                    if (ma != null && ma.getActivity() != null) {
+                        // retry with dialog prompted again
+                        mkdir(file.getMode(), file.getParent(), ma);
                     }
                 });
             }
@@ -489,13 +446,10 @@ public class MainActivityHelper {
             @Override
             public void launchSAF(HybridFile file) {
                 if (toast != null) toast.cancel();
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FOLDER;
-                        guideDialogForLEXA(mainActivity.oppathe);
-                    }
+                ma.getActivity().runOnUiThread(() -> {
+                    mainActivity.oppathe = path.getPath();
+                    mainActivity.operation = DataUtils.NEW_FOLDER;
+                    guideDialogForLEXA(mainActivity.oppathe);
                 });
 
             }
@@ -507,29 +461,23 @@ public class MainActivityHelper {
 
             @Override
             public void done(HybridFile hFile, final boolean b) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (b) {
-                            ma.updateList();
-                        } else
-                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
+                ma.getActivity().runOnUiThread(() -> {
+                    if (b) {
+                        ma.updateList();
+                    } else {
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void invalidName(final HybridFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                ma.getActivity().runOnUiThread(() -> {
 
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -704,19 +652,11 @@ public class MainActivityHelper {
                             activity.getResources().getString(R.string.grant),
                             activity.getResources().getString(R.string.cancel), null
                     });
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat.requestPermissions(activity,PERMISSIONS, 66);
-                    materialDialog.dismiss();
-                }
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                ActivityCompat.requestPermissions(activity,PERMISSIONS, 66);
+                materialDialog.dismiss();
             });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.finish();
-                }
-            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> activity.finish());
             materialDialog.setCancelable(false);
             materialDialog.show();
 

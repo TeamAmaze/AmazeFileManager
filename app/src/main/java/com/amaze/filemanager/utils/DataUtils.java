@@ -204,13 +204,7 @@ public class DataUtils {
             books.add(i);
         }
         if (refreshdrawer && dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onBookAdded(i, true);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onBookAdded(i, true));
         }
     }
 
@@ -229,13 +223,7 @@ public class DataUtils {
             hiddenfiles.add(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHiddenFileAdded(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileAdded(i));
         }
     }
 
@@ -246,13 +234,7 @@ public class DataUtils {
             hiddenfiles.remove(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHiddenFileRemoved(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileRemoved(i));
         }
     }
 
@@ -267,13 +249,7 @@ public class DataUtils {
             history.add(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHistoryAdded(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHistoryAdded(i));
         }
     }
 
