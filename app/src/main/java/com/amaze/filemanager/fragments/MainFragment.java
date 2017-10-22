@@ -36,6 +36,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaScannerConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -79,6 +80,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
@@ -99,6 +101,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.amaze.filemanager.utils.StringParcelable;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
@@ -175,6 +178,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
+    private MediaScannerConnection mediaScannerConnection;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -646,7 +650,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                         for (LayoutElementParcelable element : checkedItems) {
                             HybridFileParcelable baseFile = element.generateBaseFile();
-                            Uri resultUri = getUriForBaseFile(baseFile);
+                            Uri resultUri = Utils.getUriForBaseFile(getActivity(), baseFile);
 
                             if (resultUri != null) {
                                 resulturis.add(resultUri);
@@ -796,6 +800,40 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case FILE:
                     // local file system don't need an explicit load, we've set an observer to
                     // take actions on creation/moving/deletion/modification of file on current path
+
+                    // run media scanner
+                    String[] path = new String[1];
+                    String arg = intent.getStringExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE);
+
+                    // run media scanner for only one context
+                    if (arg != null && getMainActivity().getCurrentMainFragment() == MainFragment.this) {
+
+                        if (Build.VERSION.SDK_INT >= 19) {
+
+                            path[0] = arg;
+
+                            MediaScannerConnection.MediaScannerConnectionClient mediaScannerConnectionClient = new MediaScannerConnection.MediaScannerConnectionClient() {
+                                @Override
+                                public void onMediaScannerConnected() {
+
+                                }
+
+                                @Override
+                                public void onScanCompleted(String path, Uri uri) {
+
+                                    Log.d("SCAN completed", path);
+                                }
+                            };
+
+                            if (mediaScannerConnection != null) {
+                                mediaScannerConnection.disconnect();
+                            }
+                            mediaScannerConnection = new MediaScannerConnection(context, mediaScannerConnectionClient);
+                            //FileUtils.scanFile(context, mediaScannerConnection, path);
+                        } else {
+                            FileUtils.scanFile(arg, context);
+                        }
+                    }
                     //break;
                 default:
                     updateList();
@@ -972,7 +1010,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             Intent intentresult = new Intent();
 
-            Uri resultUri = getUriForBaseFile(baseFile);
+            Uri resultUri = Utils.getUriForBaseFile(getActivity(), baseFile);
             intentresult.setAction(Intent.ACTION_SEND);
             intentresult.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
@@ -982,39 +1020,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getActivity().setResult(FragmentActivity.RESULT_OK, intentresult);
             getActivity().finish();
             //mode.finish();
-        }
-    }
-
-    /**
-     * Returns uri associated to specific basefile
-     * @param baseFile
-     * @return
-     */
-    private Uri getUriForBaseFile(HybridFileParcelable baseFile) {
-
-        switch (baseFile.getMode()) {
-            case FILE:
-            case ROOT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-                    return GenericFileProvider.getUriForFile(getActivity(), GenericFileProvider.PROVIDER_NAME,
-                            new File(baseFile.getPath()));
-                } else {
-                    return Uri.fromFile(new File(baseFile.getPath()));
-                }
-            case OTG:
-                return OTGUtil.getDocumentFile(baseFile.getPath(), getContext(), true).getUri();
-            case SMB:
-            case DROPBOX:
-            case GDRIVE:
-            case ONEDRIVE:
-            case BOX:
-                Toast.makeText(getActivity(),
-                        getActivity().getResources().getString(R.string.smb_launch_error),
-                        Toast.LENGTH_LONG).show();
-                return null;
-            default:
-                return null;
         }
     }
 
@@ -1453,7 +1458,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     @Override
     public void onResume() {
         super.onResume();
-        (getActivity()).registerReceiver(receiver2, new IntentFilter("loadlist"));
+        (getActivity()).registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
@@ -1480,6 +1485,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         if (customFileObserver != null)
             customFileObserver.stopWatching();
+
+        if (mediaScannerConnection != null)
+            mediaScannerConnection.disconnect();
     }
 
     void fixIcons(boolean forceReload) {

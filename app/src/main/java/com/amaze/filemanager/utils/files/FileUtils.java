@@ -25,6 +25,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,8 +41,10 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -57,9 +60,12 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericFileProvider;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.StringParcelable;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -167,19 +173,27 @@ public class FileUtils {
 
     public static void scanFile(String path, Context c) {
         System.out.println(path + " " + Build.VERSION.SDK_INT);
-        if (Build.VERSION.SDK_INT >= 19) {
-            MediaScannerConnection.scanFile(c, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
 
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
+        Uri contentUri = Uri.fromFile(new File(path));
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
+        c.sendBroadcast(mediaScanIntent);
+    }
 
-                }
-            });
-        } else {
-            Uri contentUri = Uri.fromFile(new File(path));
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
-            c.sendBroadcast(mediaScanIntent);
-        }
+    /**
+     * Starts a media scanner to let file system know changes done to files
+     */
+    public static void scanFile(final Context context, final MediaScannerConnection mediaScannerConnection, final String[] paths) {
+
+        Log.d("SCAN started", paths[0]);
+
+        AppConfig.runInBackground(new Runnable() {
+            @Override
+            public void run() {
+
+                mediaScannerConnection.connect();
+                mediaScannerConnection.scanFile(context, paths, null, null);
+            }
+        });
     }
 
     public static void crossfade(View buttons,final View pathbar) {

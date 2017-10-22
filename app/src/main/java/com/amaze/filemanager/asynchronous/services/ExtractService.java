@@ -628,7 +628,8 @@ public class ExtractService extends Service {
             // check whether watcherutil was initialized. It was not initialized when we got exception
             // in extracting the file
             if (watcherUtil != null) watcherUtil.stopWatch();
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, epath);
             sendBroadcast(intent);
             stopSelf();
         }

@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.utils.StringParcelable;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -196,7 +197,8 @@ public class CopyService extends Service {
             watcherUtil.stopWatch();
             generateNotification(copy.failedFOps, move);
 
-            Intent intent = new Intent("loadlist");
+            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, targetPath);
             sendBroadcast(intent);
             stopSelf();
         }

@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
@@ -13,9 +14,11 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -216,7 +219,40 @@ public class Utils {
      * @return
      */
     public static String sanitizeInput(String input) {
-        String sanitizedInput = input.replaceAll("[;|.\\.\\.&\\&]", "");
+        String sanitizedInput = input.replaceAll("[;|[&{2,}][.{3,}]]", "");
         return sanitizedInput;
     }
+
+    /**
+     * Returns uri associated to specific basefile
+     * @param baseFile
+     * @return
+     */
+    public static Uri getUriForBaseFile(Context context, HybridFileParcelable baseFile) {
+
+        switch (baseFile.getMode()) {
+            case FILE:
+            case ROOT:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                    return GenericFileProvider.getUriForFile(context, GenericFileProvider.PROVIDER_NAME,
+                            new File(baseFile.getPath()));
+                } else {
+                    return Uri.fromFile(new File(baseFile.getPath()));
+                }
+            case OTG:
+                return OTGUtil.getDocumentFile(baseFile.getPath(), context, true).getUri();
+            case SMB:
+            case DROPBOX:
+            case GDRIVE:
+            case ONEDRIVE:
+            case BOX:
+                Toast.makeText(context, context.getResources().getString(R.string.smb_launch_error),
+                        Toast.LENGTH_LONG).show();
+                return null;
+            default:
+                return null;
+        }
+    }
+
 }

@@ -278,6 +278,19 @@ public class MainActivity extends ThemedActivity implements
     public static final String ARGS_KEY_LOADER = "loader_cloud_args_service";
 
     /**
+     * Broadcast which will be fired after every file operation, will denote list loading
+     * Registered by {@link MainFragment}
+     */
+    public static final String KEY_INTENT_LOAD_LIST = "loadlist";
+
+    /**
+     * Extras carried by the list loading intent
+     * Contains path of parent directory in which operation took place, so that we can run
+     * media scanner on it
+     */
+    public static final String KEY_INTENT_LOAD_LIST_FILE = "loadlist_file";
+
+    /**
      * Mime type in intent that apps need to pass when trying to open file manager from a specific directory
      * Should be clubbed with {@link Intent#ACTION_VIEW} and send in path to open in intent data field
      */

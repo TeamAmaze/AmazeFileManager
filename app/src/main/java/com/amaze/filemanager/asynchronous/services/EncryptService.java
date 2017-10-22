@@ -175,7 +175,8 @@ public class EncryptService extends Service {
 
             if (!broadcastResult) {
 
-                Intent intent = new Intent("loadlist");
+                Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+                intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, decryptPath);
                 sendBroadcast(intent);
             } else {
                 Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);

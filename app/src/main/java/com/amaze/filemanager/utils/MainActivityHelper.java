@@ -285,12 +285,14 @@ public class MainActivityHelper {
             }
 
             @Override
-            public void done(HybridFile hFile, final boolean b) {
+            public void done(final HybridFile hFile, final boolean b) {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (b) {
-                            Intent intent = new Intent("loadlist");
+                            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+
+                            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, hFile.getParent(context));
                             mainActivity.sendBroadcast(intent);
 
                             // update the database entry to reflect rename for encrypted file

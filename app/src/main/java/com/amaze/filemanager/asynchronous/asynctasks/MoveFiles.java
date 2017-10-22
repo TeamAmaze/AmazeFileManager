@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -39,6 +40,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.squareup.haha.perflib.Main;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -150,7 +152,9 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
         if (movedCorrectly) {
             if (mainFrag != null && mainFrag.getCurrentPath().equals(paths.get(0))) {
                 // mainFrag.updateList();
-                Intent intent = new Intent("loadlist");
+                Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+
+                intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, paths.get(0));
                 context.sendBroadcast(intent);
             }
 

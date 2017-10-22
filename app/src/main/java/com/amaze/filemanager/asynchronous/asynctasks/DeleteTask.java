@@ -30,6 +30,7 @@ import android.support.v4.provider.DocumentFile;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -161,7 +162,10 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
 
     @Override
     public void onPostExecute(Boolean b) {
-        Intent intent = new Intent("loadlist");
+
+        Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+        //String path = files.get(0).getParent(cd);
+        //intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
         cd.sendBroadcast(intent);
 
         if (!b) {
