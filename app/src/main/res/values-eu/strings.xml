@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
     This file is part of Amaze File Manager.
 
@@ -22,47 +22,51 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="app_name">Amaze Fitxategi Kudeatzailea</string>
-    <string name="drawer_open">Nabigazio tiradera ireki</string>
-    <string name="drawer_close">Nabigazio tiradera itxi</string>
+    <string name="app_name">Amaze fitxategi-kudeatzailea</string>
+    <string name="drawer_open">Ireki nabigazio tiradera</string>
+    <string name="drawer_close">Itxi nabigazio tiradera</string>
     <string name="icon">ikonoa</string>
     <string name="storage">Biltegiratzea</string>
     <string name="apps">Aplikazio kudeatzailea</string>
+    <string name="ftp">FTP zerbitzaria</string>
     <string name="setting">Ezarpenak</string>
-    <string name="select">Elementua hautatu</string>
-    <string name="pressagain">Sakatu beste behin irteteko</string>
+    <string name="select">Hautatu elementua</string>
+    <string name="pressagain">Sakatu berriro irteteko</string>
     <string name="open">Ireki</string>
-    <string name="backup">Babes kopia</string>
+    <string name="backup">Babeskopia</string>
     <string name="uninstall">Desinstalatu</string>
     <string name="play">Play store</string>
-    <string name="properties">Xehetasunak</string>
+    <string name="properties">Propietateak</string>
     <string name="copyingapk">apk hona kopiatzen </string>
-    <string name="addtobook">Laster-markara gehitu</string>
-    <string name="enterpath">Bidea sartu</string>
+    <string name="delbook">Ezabatu laster-marka</string>
+    <string name="addtobook">Gehitu laster-marka</string>
+    <string name="enterpath">Sartu bidea</string>
     <string name="cancel">UTZI</string>
     <string name="create">SORTU</string>
-    <string name="loading">Kargatzen...</string>
+    <string name="loading">Kargatzen&#8230;</string>
     <string name="file_empty">Fitxategia hutsik dago</string>
-    <string name="error">Akatsa</string>
+    <string name="error">Errorea</string>
+    <string name="searchresults">%s(r)en bilaketaren emaitzak</string>
     <string name="rename">Berrizendatu</string>
     <string name="save">Gorde</string>
     <string name="bookmarksadded">Laster-markak gehitu dira</string>
     <string name="fileexist">Izen bereko fitxategia existitzen da </string>
-    <string name="search">Bilatu</string>
-    <string name="name">Izena: </string>
-    <string name="date">Data: </string>
-    <string name="location">Hemen dago: </string>
-    <string name="enterzipname">Zip fitxategiaren izena sartu</string>
-    <string name="noappfound">Fitxategi hau irekitzeko aplikaziorik ez da aurkitu</string>
+    <string name="name">Izena</string>
+    <string name="date">Data</string>
+    <string name="location">Kokapena</string>
+    <string name="size_capitalized">Tamaina</string>
+    <string name="size">Karpetaren tamaina</string>
+    <string name="enterzipname">Sartu zip fitxategiaren izena</string>
+    <string name="noappfound">Ez da aurkitu fitxategi hau irekitzeko aplikaziorik</string>
     <string name="copying">Kopiatzen</string>
-    <string name="moving">Mugitzen</string>
+    <string name="moving">Lekuz aldatzen</string>
     <string name="file">Fitxategia</string>
     <string name="folder">Karpeta</string>
     <string name="newfolder">Karpeta berria</string>
-    <string name="entername">Izena sartu</string>
+    <string name="entername">Sartu izena</string>
     <string name="extracting">Erauzten</string>
     <string name="stopping">Gelditzen</string>
-    <string name="openparent">Aita direktorioa ireki</string>
+    <string name="openparent">Ireki guraso direktorioa</string>
     <string name="openwith">Ireki honekin</string>
     <string name="share">Partekatu</string>
     <string name="about">Honi buruz</string>
@@ -70,35 +74,37 @@
     <string name="compress">Konprimitu</string>
     <string name="yes">Bai</string>
     <string name="no">Ez</string>
-    <string name="dialog_delete_title">Berretsi</string>
+    <string name="dialog_delete_category_directories">Direktorioak</string>
+    <string name="dialog_delete_category_files">Fitxategiak</string>
+    <string name="dialog_delete_disclaimer">Beheko elementuak ezabatzean zure gailutik behin betiko kenduko dira eta ezingo dira berreskuratu.</string>
+    <string name="dialog_delete_title">Gailuak behin betiko ezabatu?</string>
     <string name="deleting">Ezabatzen</string>
-    <string name="dialog_delete_disclaimer">Hurrengo fitxategiak benetan ezabatu nahi dituzu?</string>
+    <string name="questionset">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu?</string>
     <string name="directorysort">Direktorioa sailkatzeko modua</string>
     <string name="sortby">Sailkatu honen arabera</string>
     <string name="theme">Gaia</string>
     <string name="random">Ausazko azala</string>
     <string name="random_summary">Ausazko gaia ezartzen du abioan</string>
-    <string name="colorize">Ikonoak koloreztatu</string>
-    <string name="colorize_summary">Ikonoentzako kolore estatikoa ezartzen du</string>
+    <string name="colorize">Koloreztatu ikonoak</string>
+    <string name="colorize_summary">Ikonoentzako kolore estatikoa ezartzen du. Ez du direktorioaren ikono kolorearen hobespena gainidazten.</string>
     <string name="home">Etxea</string>
     <string name="paste">Itsatsi</string>
     <string name="history">Historia</string>
     <string name="copy">Kopiatu</string>
     <string name="rootmode">Root esploratzailea</string>
-    <string name="rootmodesummary">Root duten gailuentzat soilik. Ziur bazaude egiaztatu bakarrik.</string>
+    <string name="rootmodesummary">Root duten gailuentzat soilik. Ziur bazaude bakarrik hautatu.</string>
     <string name="rootfailure">Root baimenik ez</string>
-    <string name="cut">Moztu</string>
-    <string name="selectall">Dena hautatu</string>
+    <string name="selectall">Hautatu dena</string>
     <string name="delete">Ezabatu</string>
-    <string name="setashome"> Etxeko karpeta bezala ezarri</string>
+    <string name="setashome">Ezarri etxeko karpeta bezala</string>
 
     <!-- New -->
     <!-- Array -->
 
     <!-- UI -->
     <!-- Theme -->
-    <string name="light">Argia</string>
-    <string name="dark">Iluna</string>
+    <string name="light">Material argia</string>
+    <string name="dark">Material iluna</string>
     <string name="daytime">Egunekoa</string>
     <!--Skin-->
     <!--DirectorySortMode-->
@@ -107,30 +113,33 @@
     <string name="noneOnTop">Bat ere ez gainean</string>
     <!--SortBy-->
     <string name="sortName">Izena</string>
-    <string name="lastModified">Azkenengoz aldatua</string>
-    <string name="sortSize">Neurria</string>
+    <string name="lastModified">Azken aldaketa</string>
+    <string name="sortSize">Tamaina</string>
     <!--ListMode-->
     <!--Folder-->
-    <string name="pick_a_file">Fitxategia hartu</string>
-    <string name="process_viewer">Prozesu ikuspegia</string>
+    <string name="pick_a_file">Hautatu fitxategi bat</string>
+    <string name="process_viewer">Prozesu ikustailea</string>
     <string name="in_safe">Ez dago leku nahikorik</string>
     <string name="no_file_overwrite">Ez da fitxategirik gainidatzi</string>
-    <string name="skip">Salto egin</string>
+    <string name="skip">Saltatu</string>
     <string name="overwrite">Gainidatzi</string>
-    <string name="not_allowed">Ez baimenduta</string>
+    <string name="not_allowed">Ez da onartzen</string>
+    <string name="searching">%s bilatzen</string>
     <string name="done">Eginda</string>
-    <string name="items">elementu</string>
     <string name="set">Ezarri</string>
-    <string name="enablerootmde">Root modua gaitu</string>
-    <string name="goback">Atzera joan</string>
+    <string name="enablerootmde">Gaitu root modua</string>
+    <string name="goback">Atzera</string>
     <string name="newfile">Fitxategi berria</string>
     <string name="nofiles">Fitxategirik ez</string>
+    <string name="used">erabilita</string>
+    <string name="used_by_others">besteek erabilita</string>
+    <string name="free">libre</string>
     <string name="listview">Zerrenda ikuspegia</string>
     <string name="gridview">Sareta ikuspegia</string>
     <string name="permission">Baimenak</string>
     <string name="hide">Ezkutatu</string>
     <string name="exit">Irten</string>
-    <string name="doforall">Elementu guztietarako egin</string>
+    <string name="doforall">Egin elementu guztietarako</string>
     <string name="gridcolumnno">Zutabe kopurua sareta ikuspegian</string>
     <string name="setRandom">Aldaketak aplikazioa berrabiarazterakoan gertatuko dira</string>
     <string name="authors">Egileak</string>
@@ -138,25 +147,25 @@
     <string name="ok">ADOS</string>
     <string name="ui">Interfazea</string>
     <string name="general">Orokorra</string>
-    <string name="thumbSummary">Aplikazioen eta irudien aurre-ikuspegia erakutsi</string>
-    <string name="thumb">Aurre-ikuspegiak erakutsi</string>
+    <string name="thumbSummary">Erakutsi aplikazioen eta irudien koadro txikiak</string>
+    <string name="thumb">Erakutsi koadro txikiak</string>
     <string name="hidden">Ezkutuko fitxategi eta karpetak erakutsi</string>
-    <string name="lastModifiedSummary">Fitxategia azkenego aldiz aldatu zen data eta denbora erakutsi</string>
-    <string name="lastModifiedPref">Azkenengo aldaketa erakutsi</string>
-    <string name="sizePrefSummary">Fitxategien neurria eta kerpeten elementu kopurua erakutsi</string>
-    <string name="sizePref">Neurriak erakutsi</string>
+    <string name="lastModifiedSummary">Erakutsi fitxategia azken aldiz aldatu zen data eta ordua</string>
+    <string name="lastModifiedPref">Erakutsi azken aldaketa</string>
+    <string name="sizePrefSummary">Erakutsi fitxategien tamaina eta elementu kopurua karpetetan</string>
+    <string name="sizePref">Erakutsi tamainak</string>
     <string name="miscellaneous">Beste batzuk</string>
-    <string name="rootPrefSummary">Fitxategi eta karpeten baimenak erakutsi</string>
-    <string name="rootPref">Baimenak erakutsi</string>
-    <string name="aboutFileManager">Amaze File Manageri buruz</string>
+    <string name="rootPrefSummary">Erakutsi fitxategi eta karpeten baimenak</string>
+    <string name="rootPref">Erakutsi baimenak</string>
+    <string name="aboutFileManager">Amaze File Manager-i buruz</string>
     <string name="version">Bertsioa</string>
-    <string name="rate">aplikazioa puntuatu</string>
-    <string name="license">Iturburu Irekiko lizentziak</string>
-    <string name="feedback">Iritzia bidali</string>
+    <string name="rate">Baloratu aplikazioa</string>
+    <string name="license">Kode irekiko lizentziak</string>
+    <string name="feedback">Bidali iritzia</string>
     <string name="hiddenfiles">Ezkutuko fitxategiak</string>
     <string name="type">Mota</string>
     <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Lasterbidea sortu</string>
+    <string name="addshortcut">Gehitu lasterbidea</string>
     <string name="unsavedchanges">Gorde gabeko aldaketak</string>
     <string name="unsavedchangesdesc">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi al dituzu?</string>
     <string name="saving">Gordetzen</string>
@@ -166,12 +175,12 @@
     <string name="archive">Artxiboa</string>
     <string name="archtext">Hau artxibo bat da. Zer egin nahi duzu?</string>
     <string name="pitext">Hau pakete instalatzaile bat da. Zer egin nahi duzu?</string>
-    <string name="xda_title">XDA</string>
+    <string name="xda_title">XDA haria</string>
     <string name="xda_summary">G&amp;E, Laguntza &amp; Arazoen konponketa</string>
-    <string name="circularimages">Ikono biribilak erabili irudi eta bideoetarako</string>
-    <string name="circularicons">Ikono biribilak erabili</string>
+    <string name="circularimages">Erabili ikono zirkularrak irudi eta bideoetan</string>
+    <string name="circularicons">Erabili ikono zirkularrak</string>
     <string name="back_title">Atzerako nabigazioa</string>
-    <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendairen goikaldera</string>
+    <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendaren goiko aldera</string>
     <string name="details">Xehetasunak</string>
     <string name="translators">Itzultzaileak</string>
     <string name="german_translation_title">Alemana</string>
@@ -189,56 +198,375 @@
     <string name="korean_translation_title">Koreera</string>
     <string name="greek_translation_title">Greziera</string>
     <string name="dutch_translation_title">Nederlandera</string>
-	
-    <string name="zip_viewer">Zip bisorea</string>
+    <string name="romanian_translation_title">Errumaniera</string>
+    <string name="vietnamese_translation_title">Vietnamera</string>
+    <string name="japanese_translation_title">Japoniera</string>
+    <string name="tamil_translation_title">Tamilera</string>
+
+    <string name="zip_viewer">Zip ikustailea</string>
     <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
-    <string name="donate">Dohaintza egin</string>
+    <string name="donate">Egin dohaintza</string>
     <string name="archive_preferences">Artxiboen hobespenak</string>
     <string name="archive_extract_folder">Erauzitako artxiboen karpeta</string>
     <string name="zip_create_folder">Zip fitxategiak sortzeko karpeta</string>
     <string name="archive_summary">Artxibo fitxategiak karpeta honetara erauziko dira. Lehenetsitako balioa artxiboaren karpeta bera da</string>
     <string name="zip_summary">Zip fitxategi berriak karpeta honetan sortuko dira. Lehenetsitako balioa fitxategien karpeta bera da</string>
-    <string name="openas">Ireki hau bezala</string>
+    <string name="openas">Ireki honela</string>
     <string name="text">Testua</string>
     <string name="audio">Audioa</string>
     <string name="video">Bideoa</string>
     <string name="other">Beste bat</string>
     <string name="image">Irudia</string>
     <string name="contributors">Laguntzaileak</string>
-    <string name="savepaths">Bideak gogoratu</string>
-    <string name="savepathsummary">Abiarazterakoan, azkenengoz ikusi den karpeta erakutsiko da fitxa bakoitzean</string>
-    <string name="select_intent">Aukeratu</string>
+    <string name="savepaths">Gogoratu bideak</string>
+    <string name="savepathsummary">Abiaraztean fitxa bakoitzean azkenengoz ikusitako karpeta bistaratuko da</string>
+    <string name="select_intent">Hautatu</string>
     <string name="database">Datu-basea</string>
-	<string name="colourednavigation">Nabigazio barra koloreztatua</string>
-	<string name="colourednavigationsum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
+    <string name="colourednavigation">Nabigazio barra koloreztatua</string>
+    <string name="colourednavigationsum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
 
-    <string name="gplus_pic_title">G+rekin saioa hasi</string>
-	<string name="gplus_pic_summary">G+eko irudia tiraderan erakutsi</string>
+    <string name="gplus_pic_title">Hasi saioa G+rekin</string>
+    <string name="gplus_pic_summary">Erakutsi G+eko irudia tiraderan</string>
 
     <string name="color_title">Kolorea</string>
-	<string name="color_summary">UI osagai batzuen kolorea ezarri</string>
-	<string name="primary_color_title">Lehen kolorea</string>
-	<string name="primary_color_summary">UI elementu handien kolorea ezarri</string>
-	<string name="accent_color_title">Azentu kolorea</string>
-	<string name="accent_color_summary">FAB eta beste UI elementu txikien kolorea ezarri</string>
-	<string name="icon_color_title">Ikonoen kolorea</string>
-	<string name="icon_color_summary">Ikonoen kolorea ezarri</string>
-    <string name="choose_color">Kolorea aukeratu</string>
-	<string name="g_plus_community_title">G+ komunitatea</string>
+    <string name="color_summary">Ezarri UIko hainbat osagairen kolorea</string>
+    <string name="primary_color_title">Lehen kolorea (ezkerreko fitxa)</string>
+    <string name="primary_color_summary">Ezarri ezkerreko fitxako UI elementu handien kolorea</string>
+    <string name="accent_color_title">Azentu kolorea</string>
+    <string name="accent_color_summary">FAB eta beste UI elementu txikien kolorea ezarri</string>
+    <string name="icon_color_title">Ikonoen kolorea</string>
+    <string name="icon_color_summary">Ezarri ikonoen kolorea</string>
+    <string name="choose_color">Aukeratu kolorea</string>
+    <string name="g_plus_community_title">Batu G+ Komunitatera</string>
     <string name="no_cover_photo">Azal argazkirik ez</string>
-	<string name="files">Fitxategiak</string>
+    <string name="files">Fitxategiak</string>
     <string name="textreader">Testu irakurlea</string>
-	<string name="databasereader">Datubase irakurlea</string>
-	<string name="showDividers">Banatzaileak erakutsi</string>
+    <string name="databasereader">Datu-base irakurlea</string>
+    <string name="showDividers">Erakutsi banatzaileak</string>
     <string name="needsaccess">Idazteko baimena behar da</string>
-	<string name="needsaccesssummary">Mesedez aukera ezazu root direktorioa \t</string>
-	<string name="needsaccesssummary1">\tidazteko baimena lortzeko </string>
-	<string name="smb_con">SMB konexioa</string>
-	<string name="smb_server">Zerbitzaria: IP helb. edo IP helb./PartekatutakoKarpeta</string>
-	<string name="username">Erabiltzaile izena</string>
-	<string name="password">Pasahitza</string>
-	<string name="anonymous">Anonimoa</string>
-	<string name="bluetooth">Bluetootha</string>
-	<string name="extstorage">Kanpoko biltegia</string>
+    <string name="needsaccesssummary">Mesedez aukera ezazu honen root direktorioa: \t</string>
+    <string name="needsaccesssummary1">\thonekin jarduteko idazteko baimena emateko: </string>
+    <string name="smb_con">SMB konexioa</string>
+    <string name="smb_server">Zerbitzariaren IP helbidea</string>
+    <string name="username">Erabiltzaile-izena</string>
+    <string name="password">Pasahitza</string>
+    <string name="anonymous">Anonimoa</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Kanpoko biltegia</string>
+    <string name="folders">Karpetak</string>
+    <string name="videos">Bideoak</string>
+    <string name="apks">Apk-ak</string>
+    <string name="documents">Dokumentuak</string>
+    <string name="images">Irudiak</string>
+    <string name="clear">Garbitu</string>
+    <string name="md5">MD5</string>
+    <string name="total">Guztira:</string>
+    <string name="calculating">kalkulatzen</string>
+    <string name="sort">Ordenatu</string>
+    <string name="ascending">Goranzkoa</string>
+    <string name="descending">Beheranzkoa</string>
+    <string name="defualt">Lehenetsia</string>
+    <string name="doit">Egin</string>
+    <string name="wanthelp"><u>Laguntzarik behar?</u></string>
+    <string name="quick">Sarrera azkarra</string>
+    <string name="recent">Duela gutxiko fitxategiak</string>
+    <string name="edit">Editatu</string>
+    <string name="find">Bilatu orrian</string>
+    <string name="grant">Eman</string>
+    <string name="grantper">Eman baimena</string>
+    <string name="grantfailed">Ez da baimenik eman</string>
+    <string name="granttext">Aplikazioak biltegirako baimena behar du jarraitzeko. Leiho hau ixteak aplikazioa itxiko du.</string>
+    <string name="grantgplus">Aplikazioak baimena behar du ezaugarri honetarako. Leiho hau ixteak ezaugarri hau ezgaituko du.</string>
+    <string name="operationunsuccesful">Eragiketa ez da ongi burutu</string>
+    <string name="creatingfile">Fitxategia sortzen</string>
+    <string name="creatingfolder">Karpeta sortzen</string>
+    <string name="renaming">Berrizendatzen</string>
+    <string name="cantbeempty">%s(e)k ezin du hutsik egon</string>
+    <string name="ip">Helbidea</string>
+    <string name="connectionname">Konexioaren izena</string>
+    <string name="nodevicefound">Ez da gailurik aurkitu</string>
+    <string name="path">Bidea</string>
+    <string name="renamebookmark">Aldatu laster-marka</string>
+    <string name="cut">Moztu</string>
+    <string name="search">Bilatu</string>
+    <string name="invalid_name">Izen baliogabea</string>
+    <string name="search_hint">Idatzi bilatzeko&#8230;</string>
+    <string name="advanced_search">Bilaketa aurreratua</string>
+    <string name="regular_expression">Adierazpen erregularra</string>
+    <string name="regular_expression_summary">Bilatu BASH antzeko adierazpen erregular bat erabiliz</string>
+    <string name="match_content">Edukiarekin bat egin</string>
+    <string name="match_content_summary">Ezartzen bada, espresio erregularra fitxategiaren izen osoarekin bat egingo du, bestela agertzen den bilatuko da.</string>
+    <string name="start_ftp">Hasi</string>
+    <string name="stop_ftp">Gelditu</string>
+    <string name="ftp_status_running">Exekutatzen</string>
+    <string name="ftp_status_not_running">Ez da exekutatzen ari</string>
+    <string name="ftp_no_wifi">Egiaztatu ezazu WiFira konektatuta zaudela</string>
+    <string name="domain">Domeinua</string>
+    <string name="invalid">%s baliogabea</string>
+    <string name="ftp_notif_starting">FTP zerbitzaria hasten ari da</string>
+    <string name="ftp_notif_title">Amaze FTP zerbitzaria exekutatzen</string>
+    <string name="ftp_notif_text">%s(e)n</string>
+    <string name="ftp_notif_stop_server">GELDITU</string>
+    <string name="ftp_port_edit_menu_title">FTP ataka</string>
+    <string name="ftp_port_change_success">FTP ataka ongi aldatu da</string>
+    <string name="ftp_port_change_error_invalid">Ataka zenbaki baliogabea hautatu da</string>
+    <string name="primary_two_title">Kolore nagusia (eskuineko fitxa)</string>
+    <string name="primary_two_summary">Ezarri eskuineko fitxako UI elementu handien kolorea</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Sostengatu garapena</string>
+    <string name="report_bugs_title">Eman erroreen berri</string>
+    <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
+    <string name="translate_title">Itzuli</string>
+    <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
+    <string name="g_plus_community_summary">Parte hartu garapeneko
+beta proba eta eztabaidetan</string>
+    <string name="easter_egg_title">Studio modua</string>
+    <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
+    <string name="searchingdevices">Gailuak bilatzen</string>
+    <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
+    <string name="bookmark_lost">Ez da laster-marka aurkitu, birsortzen&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Partekatutako windows karpeta android-en atzitzeko (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Gaitu fitxategiak partekatzea</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Ireki Kontrol-panela, klikatu Sarea eta Internet ataleko Aukeratu etxeko taldea eta partekatzeko aukerak
+                        eta klikatu Aldatu partekatzeko aukera aurreratuak. Gaitu fitxategiak eta
+                        inprimagailua partekatzeko ezaugarria.\n\n
+                    </p>
+
+                    <li>
+                        <b>Fitxategiak partekatzeko aukera gehigarriak</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Partekatzeko ezarpen aurreratu gehiago konfigura ditzakezu. \n
+                        Adibidez, zure sare lokaleko gailu guztietaz fidatzen bazara fitxategiak pasahitzik gabe atzitzea gaitu dezakezu.
+                        Fitxategiak eta inprimagailuak partekatzea gaituta badaude,
+                        fitxategi-arakatzailea edo Windows arakatzailea ireki dezakezu, eskuin klik egin partekatu nahi duzun karpetan eta
+                        hautatu Propietateak. \n
+                        Klikatu Partekatu botoia eta karpetan sarean eskuragarri jarri.\n\n
+                        </p>
+
+                    <li>
+                        <b>Ziurtatu bi gailuak Wifi berean daudela</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Ezaugarri honek fitxategiak sare lokalean eskuragarri jartzen ditu, horretarako zure PCak eta gailu mugikorrek
+                        sare lokal berean egon behar dute. Ezin duzu partekatutako Windows karpeta bat
+                        Internet-en zehar atzitu edo zure mugikorra datu mugikorretara konektatuta dagoenean — Wi-Fira
+                        konektatuta egon behar du.\n\n
+                    </p>
+
+                    <li>
+                        <b>Bilatu IP helbidea</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Ireki komando-gonbita. Idatzi \'ipconfig\' eta sakatu Enter. Ikusi zein den Default Gateway
+                        zure sare-moldagailuaren azpian zure bideratzailearen IP helbidea jakiteko. Begiratu
+                        \\\"IPv4 Address\\\" moldagailu beraren azpian zure ordenagailuaren IP helbidea
+                        jakiteko.\n\n
+                    </p>
+
+                    <b>Sartu datuak smb elkarrizketa-koadroan</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">Ezin dira 100 fitxategi baino gehiago partekatu</string>
+    <string name="otg_access">Hautatu OTG gailuaren erroa</string>
+    <string name="no_profile_pic">G+ profileko argazkirik ez</string>
+    <string name="opening">Irekitzen...</string>
+    <string name="information">Informazioa</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Atzituta</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Aldatuta</string>
+
+    <string name="title">Izenburua</string>
+    <string name="artist">Artista</string>
+    <string name="album">Albuma</string>
+    <string name="year">Urtea</string>
+    <string name="duration">Iraupena</string>
+    <string name="comment">Iruzkina</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Edukiontzia</string>
+    <string name="codec">Codec-a</string>
+    <string name="channels">Kanalak</string>
+    <string name="sample_rate">Laginaren abiadura</string>
+    <string name="bitrate">Bit-emaria</string>
+    <string name="dimensions">Neurriak</string>
+    <string name="frame_rate">Fotograma-abiadura</string>
+    <string name="image_type">Irudi mota</string>
+    <string name="width">Zabalera</string>
+    <string name="height">Altuera</string>
+    <string name="date_modified">Aldatutako data</string>
+    <string name="software">Softwarea</string>
+    <string name="creator">Sortzailea</string>
+    <string name="camera_brand">Kameraren marka</string>
+    <string name="camera_model">Kameraren modeloa</string>
+    <string name="date_taken">Argazkia egindako data</string>
+    <string name="exposure_time">Esposizio denbora</string>
+    <string name="aperture_value">Irekidura balioa</string>
+    <string name="image_iso">ISO abiaduraren balorazioa</string>
+    <string name="flash_fired">Flash-a erabilita</string>
+    <string name="focal_length">Foku-distantzia</string>
+    <string name="subject">Gaia</string>
+    <string name="author">Egilea</string>
+    <string name="keywords">Gako-hitzak</string>
+    <string name="producer">Ekoizlea</string>
+    <string name="created">Sortua</string>
+    <string name="format">Formatua</string>
+    <string name="pages">Orri kopurua</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Optimizatua</string>
+    <string name="security">Segurtasuna</string>
+    <string name="paper_size">Paperaren neurria</string>
+
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Zenbait fitxategi ez dira behar bezala %s</string>
+    <string name="copied">kopiatu</string>
+    <string name="moved">lekuz aldatu</string>
+    <string name="copy_complete">Kopiatzea burutu da</string>
+    <string name="waiting_title">Itxaroten</string>
+    <string name="waiting_content">Eragiketa osatzearen zain</string>
+    <string name="extract_complete">Erauzketa burututa</string>
+    <string name="compression_complete">Konpresioa burututa</string>
+    <string name="compressing">Konprimatzen</string>
+    <string name="cancelled">Bertan behera utzita</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">Idatzia</string>
+    <string name="out_of">/</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">/</string>
+    <string name="processing_file">Fitxategia prozesatzen</string>
+    <string name="current_speed">Uneko abiadura</string>
+    <string name="smb_launch_error">Fitxategi hau irekitzeko biltegira kopiatu beharko duzu</string>
+    <string name="error_file_not_found">Errorea: fitxategia ez da aurkitu</string>
+    <string name="error_io">S/I errorea</string>
+    <string name="medium_text">Testu ertaina</string>
+    <string name="permission_read">Irakurri</string>
+    <string name="permission_write">Idatzi</string>
+    <string name="permission_execute">Exekutatu</string>
+    <string name="permission_owner">Jabea</string>
+    <string name="permission_group">Taldea</string>
+    <string name="permission_other">Beste bat</string>
+    <string name="clipboard_path_copy">Bidea arbelera kopiatu da</string>
+    <string name="service_timer">Igarotako denbora</string>
+    <string name="please_wait">Itxaron mesedez</string>
+
+    <string name="cloud_connection">Hodeiko konexioa</string>
+    <string name="cloud_connection_new">Hodeiko konexio berria</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Eskuratu hodeiko plugina</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">Aplikaziorik ez</string>
+    <string name="ftp_path">Partekatutako bidea</string>
+    <string name="ftp_path_hint">Partekatu beharreko direktorioaren erroaren bidea</string>
+    <string name="change">Aldatu</string>
+    <string name="unknown_error">Hara! Arazo bat izan da</string>
+
+    <string name="ftp_path_change_success">FTP bidea ongi aldatu da</string>
+    <string name="ftp_path_change_error_invalid">Bide baliogabea</string>
+    <string name="ftp_status_no_connection">Konexiorik ez</string>
+    <string name="ftp_status_secure_connection">Konexio segurua</string>
+    <string name="ftp_status_title">Egoera</string>
+    <string name="ftp_port">Ataka</string>
+    <string name="ftp_login">Hasi saioa</string>
+    <string name="field_empty">Eremuak ezin du hutsik egon</string>
+    <string name="ftp_timeout">Inaktibo denbora-muga</string>
+    <string name="ftp_seconds">segundo</string>
+    <string name="intellihide_toolbar_title">Ezkutatu tresna-barra adimentsuki</string>
+    <string name="intellihide_toolbar_summary">Ezkutatu tresna-barra automatikoki korritzean</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">arbelera kopiatuta</string>
+    <string name="contributors_1_summary">Itzulpena</string>
+    <string name="contributors_2_summary">Ikono eta iragarki-bandak</string>
+    <string name="contributors_3_summary">Gaiaren motorra</string>
+    <string name="contributors_4_summary">Itzaldu FABaren atzean</string>
+    <string name="contributors_5_summary">Kolore trantsizioa fitxaz aldatzean</string>
+    <string name="contributors_6_summary">FTP zerbitzaria</string>
+    <string name="contributors_7_summary">Shell interaktibo bat abiaraztea</string>
+    <string name="connection_exists">Konexioa dagoeneko existitzen da</string>
+
+    <string name="crypt_encrypting">Enkriptatzen</string>
+    <string name="crypt_decrypting">Desenkriptatzen</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Enkriptatuta</string>
+    <string name="crypt_decrypted">Desenkriptatuta</string>
+    <string name="crypt_encrypt">Enkriptatu</string>
+    <string name="crypt_decrypt">Desenkriptatu</string>
+    <string name="operation_fail_following">Eragiketak huts egin du ondorengo fitxategientzat</string>
+    <string name="crypt_pref_master_password_title">Pasahitz nagusia</string>
+    <string name="crypt_pref_master_password_summary">Ezarri pasahitz nagusi bat enkriptatzeko.
+        Hutsik utzi kentzeko.</string>
+    <string name="crypt_pref_fingerprint_title">Hatz-marka</string>
+    <string name="crypt_pref_fingerprint_summary">Erabili hatz-marka enkriptatzea autentifikatzeko</string>
+    <string name="crypt_fingerprint_no_permission">Hatz-marka baimenak falta dira</string>
+    <string name="crypt_fingerprint_not_enrolled">Hatz-markarik ez da erregistratu</string>
+    <string name="crypt_fingerprint_no_security">Ez da blokeatutako pantailako segurtasunik aurkitu</string>
+    <string name="crypt_warning_key">Kontutan izan, Sistemaren ezarpenetan segurtasun eredua
+        aldatzen duzunean, ezingo duzula eduki hau desenkriptatu.</string>
+    <string name="warning_never_show">Ez erakutsi berriro</string>
+    <string name="warning_confirm">Ulertu dut!</string>
+    <string name="crypt_encryption_fail">Huts egin du enkriptatzean</string>
+    <string name="crypt_decryption_fail">Huts egin du desenkriptatzean</string>
+    <string name="crypt_decryption_fail_password">Pasahitz okerra!</string>
+    <string name="crypt_fingerprint_authenticate">Ukitu sentsorea jarraitzeko</string>
+    <string name="authenticate_password">Sartu pasahitza</string>
+
+    <string name="sidebar_preferences">Alboko barra</string>
+    <string name="sidebarfolders_title">Alboko barrako lasterbideak</string>
+    <string name="sidebarquickaccess_title">Alboko barrara sarbide azkarra</string>
+    <string name="showfolders_pref_title">Erakutsi lasterbideak</string>
+    <string name="showfolders_pref">Lasterbideak</string>
+    <string name="showquickaccess_pref_title">Erakutsi sarbide azkarrak</string>
+    <string name="showquickaccess_pref">Sarbide azkarrak</string>
+    <string name="create_shortcut">Sortu lasterbidea</string>
+    <string name="edit_shortcut">Editatu lasterbidea</string>
+    <string name="directory">Direktorioa</string>
+    <string name="questiondelete_shortcut">Ezabatu lasterbidea?</string>
+
+    <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
+    <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.
+        Mesedez, ireki Amaze Cloud berriz.</string>
+    <string name="cloud_remove">Hodeiko konexioa kendu nahi duzu?</string>
+    <string name="cloud_fail_authenticate">Huts egin du autentifikatzean</string>
+    <string name="cloud_share_copied">Partekatu daitekeen esteka arbelera kopiatu da</string>
+    <string name="copy_low_memory">Memoriarik gabe gelditzen, mesedez garbitu RAM pixka bat</string>
+    <string name="cloud_token_lost">Token-a galdu da, mesedez hasi saioa berriro</string>
+    <string name="monofont">Monospace letra-tipoa</string>
+    <string name="showHeaders">Erakutsi goiburuak</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="noitems">Elementurik ez</string>
+	<string name="item">elementu</string>
+	<string name="items">elementu</string>
+	
+	<string name="byte_singular">byte</string>
+	<string name="bytes">byte</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Fitxategiak izen bat izan behar du</string>
+    <string name="add_item">Gehitu elementua</string>
+    <string name="failed_smb_decrypt_path">Huts egin du SMB konexioa kargatzean</string>
+    <string name="failed_cloud_new_connection">Huts egin du Cloud konexio berria gehitzean</string>
+    <string name="failed_cloud_api_key">Huts egin du Cloud plugina autentifikatzean</string>
+    <string name="local_inet_addr_error">Errorea inet helbide lokala eskuratzean</string>
+    <string name="intent_save_as">Gorde honela&#8230;</string>
+    <string name="go">Joan</string>
+    <string name="advanced">Aurreratua</string>
+    <string name="typeablepaths_title">Bide pertsonalizatuak</string>
+    <string name="typeablepaths_summary">Mantendu bide-barra sakatuta bide pertsonalizatu bat idazteko</string>
+    <string name="send_email_to">Bidali e-posta honi</string>
 </resources>
