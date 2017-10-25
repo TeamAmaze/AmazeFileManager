@@ -48,7 +48,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.utils.StringParcelable;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;

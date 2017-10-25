@@ -164,8 +164,8 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
     public void onPostExecute(Boolean b) {
 
         Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-        //String path = files.get(0).getParent(cd);
-        //intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
+        String path = files.get(0).getParent(cd);
+        intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
         cd.sendBroadcast(intent);
 
         if (!b) {
@@ -188,7 +188,6 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
         final Uri filesUri = MediaStore.Files.getContentUri("external");
         // Delete the entry from the media database. This will actually delete media files.
         contentResolver.delete(filesUri, where, selectionArgs);
-
     }
 }
 
