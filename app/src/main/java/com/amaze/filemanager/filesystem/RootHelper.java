@@ -51,13 +51,9 @@ public class RootHelper {
         final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
-        MainActivity.shellInteractive.addCommand(cmd, 0, new Shell.OnCommandResultListener() {
-            @Override
-            public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-
-                for (String line : output) {
-                    result.add(line);
-                }
+        MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> {
+            for (String line : output) {
+                result.add(line);
             }
         });
         MainActivity.shellInteractive.waitForIdle();

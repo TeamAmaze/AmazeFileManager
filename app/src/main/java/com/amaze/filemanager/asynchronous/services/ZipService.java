@@ -161,13 +161,8 @@ public class ZipService extends Service {
             // finding total size on background thread (this is necessary condition for SMB!)
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-            progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-                @Override
-                public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                         long totalSize, long writtenSize, int speed) {
-                    publishResults(id, fileName, sourceFiles, sourceProgress,
-                            totalSize, writtenSize, speed, false);
-                }
+            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
+                publishResults(id, fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
             });
 
             CopyDataParcelable intent1 = new CopyDataParcelable();

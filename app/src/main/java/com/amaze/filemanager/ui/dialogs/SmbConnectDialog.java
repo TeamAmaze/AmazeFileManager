@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
@@ -159,25 +157,19 @@ public class SmbConnectDialog extends DialogFragment {
         EditTextColorStateUtil.setTint(context, pass, accentColor);
 
         Utils.setTint(context, ch, accentColor);
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
-                GeneralDialogCreation.showSMBHelpDialog(context, accentColor);
-            }
+        help.setOnClickListener(v -> {
+            int accentColor1 = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+            GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
         });
 
-        ch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ch.isChecked()) {
-                    user.setEnabled(false);
-                    pass.setEnabled(false);
-                } else {
-                    user.setEnabled(true);
-                    pass.setEnabled(true);
+        ch.setOnClickListener(view -> {
+            if (ch.isChecked()) {
+                user.setEnabled(false);
+                pass.setEnabled(false);
+            } else {
+                user.setEnabled(true);
+                pass.setEnabled(true);
 
-                }
             }
         });
 
@@ -223,88 +215,76 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
         ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
-        ba3.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                String s[];
-                String ipa = ip.getText().toString();
-                String con_nam=conName.getText().toString();
-                String sDomain = domain.getText().toString();
-                String username = user.getText().toString();
-                TextInputLayout firstInvalidField  = null;
-                if(con_nam==null || con_nam.length()==0){
-                    connectionTIL.setError(emptyName);
-                    firstInvalidField = connectionTIL;
-                }
-                if(ipa==null || ipa.length()==0){
-                    ipTIL.setError(emptyAddress);
-                    if(firstInvalidField == null)
-                        firstInvalidField = ipTIL;
-                }
-                if(sDomain.contains(";"))
-                {
-                    domainTIL.setError(invalidDomain);
-                    if(firstInvalidField == null)
-                        firstInvalidField = domainTIL;
-                }
-                if(username.contains(":"))
-                {
-                    usernameTIL.setError(invalidUsername);
-                    if(firstInvalidField == null)
-                        firstInvalidField = usernameTIL;
-                }
-                if(firstInvalidField != null)
-                {
-                    firstInvalidField.requestFocus();
-                    return;
-                }
-                SmbFile smbFile;
-                String domaind = domain.getText().toString();
-                if (ch.isChecked())
-                    smbFile = createSMBPath(new String[]{ipa, "", "",domaind}, true);
-                else {
-                    String useraw = user.getText().toString();
-                    String useru = useraw.replaceAll(" ", "\\ ");
-                    String passp = pass.getText().toString();
-                    smbFile = createSMBPath(new String[]{ipa, useru, passp,domaind}, false);
-                }
-
-                if (smbFile == null)
-                    return;
-
-                try {
-                    s = new String[]{conName.getText().toString(), SmbUtil.getSmbEncryptedPath(getActivity(),
-                            smbFile.getPath())};
-                } catch (CryptException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if(smbConnectionListener!=null) {
-                    // encrypted path means path with encrypted pass
-                    smbConnectionListener.addConnection(edit, s[0], smbFile.getPath(), s[1], name, path);
-                }
-                dismiss();
+        ba3.onPositive((dialog, which) -> {
+            String s[];
+            String ipa = ip.getText().toString();
+            String con_nam=conName.getText().toString();
+            String sDomain = domain.getText().toString();
+            String username = user.getText().toString();
+            TextInputLayout firstInvalidField  = null;
+            if(con_nam==null || con_nam.length()==0){
+                connectionTIL.setError(emptyName);
+                firstInvalidField = connectionTIL;
             }
-        });
-        ba3.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                if(smbConnectionListener!=null){
-                    smbConnectionListener.deleteConnection(name, path);
-                }
-
-                dismiss();
+            if(ipa==null || ipa.length()==0){
+                ipTIL.setError(emptyAddress);
+                if(firstInvalidField == null)
+                    firstInvalidField = ipTIL;
             }
-        });
-        ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dismiss();
+            if(sDomain.contains(";"))
+            {
+                domainTIL.setError(invalidDomain);
+                if(firstInvalidField == null)
+                    firstInvalidField = domainTIL;
             }
+            if(username.contains(":"))
+            {
+                usernameTIL.setError(invalidUsername);
+                if(firstInvalidField == null)
+                    firstInvalidField = usernameTIL;
+            }
+            if(firstInvalidField != null)
+            {
+                firstInvalidField.requestFocus();
+                return;
+            }
+            SmbFile smbFile;
+            String domaind = domain.getText().toString();
+            if (ch.isChecked())
+                smbFile = createSMBPath(new String[]{ipa, "", "",domaind}, true);
+            else {
+                String useraw = user.getText().toString();
+                String useru = useraw.replaceAll(" ", "\\ ");
+                String passp = pass.getText().toString();
+                smbFile = createSMBPath(new String[]{ipa, useru, passp,domaind}, false);
+            }
+
+            if (smbFile == null)
+                return;
+
+            try {
+                s = new String[]{conName.getText().toString(), SmbUtil.getSmbEncryptedPath(getActivity(),
+                        smbFile.getPath())};
+            } catch (CryptException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if(smbConnectionListener!=null) {
+                // encrypted path means path with encrypted pass
+                smbConnectionListener.addConnection(edit, s[0], smbFile.getPath(), s[1], name, path);
+            }
+            dismiss();
         });
+        ba3.onNegative((dialog, which) -> {
+            if(smbConnectionListener!=null){
+                smbConnectionListener.deleteConnection(name, path);
+            }
+
+            dismiss();
+        });
+        ba3.onNeutral((dialog, which) -> dismiss());
 
         return ba3.build();
     }

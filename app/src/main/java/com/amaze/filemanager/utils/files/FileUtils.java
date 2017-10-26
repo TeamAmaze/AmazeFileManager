@@ -191,13 +191,9 @@ public class FileUtils {
 
         Log.d("SCAN started", paths[0]);
 
-        AppConfig.runInBackground(new Runnable() {
-            @Override
-            public void run() {
-
+        AppConfig.runInBackground(() -> {
                 mediaScannerConnection.connect();
                 mediaScannerConnection.scanFile(context, paths, null, null);
-            }
         });
     }
 
@@ -514,41 +510,38 @@ public class FileUtils {
         a.title(c.getResources().getString(R.string.openas));
         String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
 
-        a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                Uri uri = fileToContentUri(c, f);
-                if (uri == null) uri = Uri.fromFile(f);
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                switch (i) {
-                    case 0:
-                        if(useNewStack) applyNewDocFlag(intent);
-                        intent.setDataAndType(uri, "text/*");
-                        break;
-                    case 1:
-                        intent.setDataAndType(uri, "image/*");
-                        break;
-                    case 2:
-                        intent.setDataAndType(uri, "video/*");
-                        break;
-                    case 3:
-                        intent.setDataAndType(uri, "audio/*");
-                        break;
-                    case 4:
-                        intent = new Intent(c, DatabaseViewerActivity.class);
-                        intent.putExtra("path", f.getPath());
-                        break;
-                    case 5:
-                        intent.setDataAndType(uri, "*/*");
-                        break;
-                }
-                try {
-                    c.startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                    openWith(f, c, useNewStack);
-                }
+        a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
+            Uri uri = fileToContentUri(c, f);
+            if (uri == null) uri = Uri.fromFile(f);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            switch (i) {
+                case 0:
+                    if(useNewStack) applyNewDocFlag(intent);
+                    intent.setDataAndType(uri, "text/*");
+                    break;
+                case 1:
+                    intent.setDataAndType(uri, "image/*");
+                    break;
+                case 2:
+                    intent.setDataAndType(uri, "video/*");
+                    break;
+                case 3:
+                    intent.setDataAndType(uri, "audio/*");
+                    break;
+                case 4:
+                    intent = new Intent(c, DatabaseViewerActivity.class);
+                    intent.putExtra("path", f.getPath());
+                    break;
+                case 5:
+                    intent.setDataAndType(uri, "*/*");
+                    break;
+            }
+            try {
+                c.startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                openWith(f, c, useNewStack);
             }
         });
         try {
@@ -563,41 +556,37 @@ public class FileUtils {
         a.title(c.getResources().getString(R.string.openas));
         String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
 
-        a.items(items).itemsCallback(new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                switch (i) {
-                    case 0:
-                        if(useNewStack) applyNewDocFlag(intent);
-                        intent.setDataAndType(f.getUri(), "text/*");
-                        break;
-                    case 1:
-                        intent.setDataAndType(f.getUri(), "image/*");
-                        break;
-                    case 2:
-                        intent.setDataAndType(f.getUri(), "video/*");
-                        break;
-                    case 3:
-                        intent.setDataAndType(f.getUri(), "audio/*");
-                        break;
-                    case 4:
-                        intent = new Intent(c, DatabaseViewerActivity.class);
-                        intent.putExtra("path", f.getUri());
-                        break;
-                    case 5:
-                        intent.setDataAndType(f.getUri(), "*/*");
-                        break;
-                }
-                try {
-                    c.startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
-                    openWith(f, c, useNewStack);
-                }
+        a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            switch (i) {
+                case 0:
+                    if(useNewStack) applyNewDocFlag(intent);
+                    intent.setDataAndType(f.getUri(), "text/*");
+                    break;
+                case 1:
+                    intent.setDataAndType(f.getUri(), "image/*");
+                    break;
+                case 2:
+                    intent.setDataAndType(f.getUri(), "video/*");
+                    break;
+                case 3:
+                    intent.setDataAndType(f.getUri(), "audio/*");
+                    break;
+                case 4:
+                    intent = new Intent(c, DatabaseViewerActivity.class);
+                    intent.putExtra("path", f.getUri());
+                    break;
+                case 5:
+                    intent.setDataAndType(f.getUri(), "*/*");
+                    break;
+            }
+            try {
+                c.startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                openWith(f, c, useNewStack);
             }
         });
 

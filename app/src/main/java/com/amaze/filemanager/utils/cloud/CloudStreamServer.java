@@ -197,27 +197,23 @@ public abstract class CloudStreamServer {
         myTcpPort = port;
         this.myRootDir = wwwroot;
         myServerSocket = new ServerSocket( myTcpPort );
-        myThread = new Thread( new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
-                    while( true ){
-                        //                                                      if(session!=null){
-                        //                                                              session.interrupt();
-                        //                                                              try {
-                        //                                                                      session.join();
-                        //                                                              } catch (InterruptedException e) {
-                        //                                                                      e.printStackTrace();
-                        //                                                              }
-                        //                                                      }
-                        Socket accept = myServerSocket.accept();
-                        new HTTPSession(accept);
-                    }
+        myThread = new Thread(() -> {
+            try {
+                while (true) {
+                    /*
+                    if(session!=null){
+                        session.interrupt();
+                          try {
+                            session.join();
+                          } catch (InterruptedException e) {
+                                e.printStackTrace();
+                          }
+                      }
+                    */
+                    Socket accept = myServerSocket.accept();
+                    new HTTPSession(accept);
                 }
-                catch ( IOException ioe )
-                {}
+            } catch (IOException ioe) {
             }
         });
         myThread.setDaemon( true );
@@ -228,27 +224,23 @@ public abstract class CloudStreamServer {
     {
         this.myRootDir = wwwroot;
         myServerSocket = new ServerSocket( myTcpPort );
-        myThread = new Thread( new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
-                    while( true ){
-                        //                                                      if(session!=null){
-                        //                                                              session.interrupt();
-                        //                                                              try {
-                        //                                                                      session.join();
-                        //                                                              } catch (InterruptedException e) {
-                        //                                                                      e.printStackTrace();
-                        //                                                              }
-                        //                                                      }
-                        Socket accept = myServerSocket.accept();
-                        new HTTPSession(accept);
-                    }
+        myThread = new Thread(() -> {
+            try {
+                while (true) {
+                    /*
+                      if(session!=null){
+                              session.interrupt();
+                              try {
+                                      session.join();
+                              } catch (InterruptedException e) {
+                                      e.printStackTrace();
+                              }
+                      }
+                    */
+                    Socket accept = myServerSocket.accept();
+                    new HTTPSession(accept);
                 }
-                catch ( IOException ioe )
-                {}
+            } catch (IOException ioe) {
             }
         });
         myThread.setDaemon( true );

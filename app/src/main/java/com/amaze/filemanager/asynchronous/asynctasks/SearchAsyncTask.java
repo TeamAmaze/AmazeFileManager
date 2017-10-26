@@ -128,12 +128,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param query the searched text
      */
     private void search(HybridFile file, final String query) {
-        search(file, new SearchFilter() {
-            @Override
-            public boolean searchFilter(String fileName) {
-                return fileName.toLowerCase().contains(query.toLowerCase());
-            }
-        });
+        search(file, fileName -> fileName.toLowerCase().contains(query.toLowerCase()));
     }
 
     /**
@@ -158,12 +153,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param pattern the compiled java regex
      */
     private void searchRegExMatch(HybridFile file, final Pattern pattern) {
-        search(file, new SearchFilter() {
-            @Override
-            public boolean searchFilter(String fileName) {
-                return pattern.matcher(fileName).matches();
-            }
-        });
+        search(file, fileName -> pattern.matcher(fileName).matches());
     }
 
     /**

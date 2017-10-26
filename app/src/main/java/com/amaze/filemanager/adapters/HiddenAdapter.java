@@ -91,48 +91,33 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
                 image.setVisibility(View.GONE);
 
             // TODO: move the listeners to the constructor
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!file.isSmb() && file.isDirectory()) {
-                        ArrayList<HybridFileParcelable> a = new ArrayList<>();
-                        HybridFileParcelable baseFile = new HybridFileParcelable(items.get(position).getPath() + "/.nomedia");
-                        baseFile.setMode(OpenMode.FILE);
-                        a.add(baseFile);
-                        new DeleteTask(context.getActivity().getContentResolver(), c).execute((a));
-                    }
-                    dataUtils.removeHiddenFile(items.get(position).getPath());
-                    items.remove(items.get(position));
-                    notifyDataSetChanged();
+            image.setOnClickListener(view -> {
+                if (!file.isSmb() && file.isDirectory()) {
+                    ArrayList<HybridFileParcelable> a1 = new ArrayList<>();
+                    HybridFileParcelable baseFile = new HybridFileParcelable(items.get(position).getPath() + "/.nomedia");
+                    baseFile.setMode(OpenMode.FILE);
+                    a1.add(baseFile);
+                    new DeleteTask(context.getActivity().getContentResolver(), c).execute((a1));
                 }
+                dataUtils.removeHiddenFile(items.get(position).getPath());
+                items.remove(items.get(position));
+                notifyDataSetChanged();
             });
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    materialDialog.dismiss();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (file.isDirectory()) {
-                                context.getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        context.loadlist(file.getPath(), false, OpenMode.UNKNOWN);
-                                    }
-                                });
-                            } else {
-                                if (!file.isSmb()) {
-                                    context.getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            FileUtils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
-                                        }
-                                    });
-                                }
-                            }
+            row.setOnClickListener(view -> {
+                materialDialog.dismiss();
+                new Thread(() -> {
+                    if (file.isDirectory()) {
+                        context.getActivity().runOnUiThread(() -> {
+                            context.loadlist(file.getPath(), false, OpenMode.UNKNOWN);
+                        });
+                    } else {
+                        if (!file.isSmb()) {
+                            context.getActivity().runOnUiThread(() -> {
+                                FileUtils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
+                            });
                         }
-                    }).start();
-                }
+                    }
+                }).start();
             });
         }
     }

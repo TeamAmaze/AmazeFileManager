@@ -318,42 +318,27 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      */
     private void saveFile(final Uri uri, final File file, final String editTextString) {
         Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    writeTextFile(uri, file, editTextString);
-                } catch (StreamNotFoundException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Toast.makeText(getApplicationContext(), R.string.error_file_not_found,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Toast.makeText(getApplicationContext(), R.string.error_io,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (RootNotPermittedException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Toast.makeText(getApplicationContext(), R.string.rootfailure,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+        new Thread(() -> {
+            try {
+                writeTextFile(uri, file, editTextString);
+            } catch (StreamNotFoundException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(getApplicationContext(), R.string.error_file_not_found,
+                            Toast.LENGTH_SHORT).show();
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(getApplicationContext(), R.string.error_io,
+                            Toast.LENGTH_SHORT).show();
+                });
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(getApplicationContext(), R.string.rootfailure,
+                            Toast.LENGTH_SHORT).show();
+                });
             }
         }).start();
     }
@@ -433,11 +418,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             cacheFile.delete();
         }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
-            }
+        runOnUiThread(() -> {
+            Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -457,62 +439,48 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         setProgress(true);
         this.mFile = mFile;
         mInput.setHint(R.string.loading);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    inputStream = getInputStream(uri, mFile);
+        new Thread(() -> {
+            try {
+                inputStream = getInputStream(uri, mFile);
 
-                    String str;
+                String str;
 
-                    StringBuilder stringBuilder = new StringBuilder();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                    if (bufferedReader != null) {
-                        while ((str = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(str).append("\n");
-                        }
+                StringBuilder stringBuilder = new StringBuilder();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                if (bufferedReader != null) {
+                    while ((str = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(str).append("\n");
                     }
-                    mOriginal = stringBuilder.toString();
-                    inputStream.close();
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                mInput.setText(mOriginal);
-                                if (mOriginal.isEmpty()) {
-
-                                    mInput.setHint(R.string.file_empty);
-                                } else
-                                    mInput.setHint(null);
-                            } catch (OutOfMemoryError e) {
-                                mInput.setHint(R.string.error);
-                            }
-                            setProgress(false);
-                        }
-                    });
-
-                } catch (StreamNotFoundException e) {
-
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mInput.setHint(R.string.error_file_not_found);
-                        }
-                    });
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mInput.setHint(R.string.error_io);
-                        }
-                    });
                 }
+                mOriginal = stringBuilder.toString();
+                inputStream.close();
+
+                runOnUiThread(() -> {
+                    try {
+                        mInput.setText(mOriginal);
+                        if (mOriginal.isEmpty()) {
+
+                            mInput.setHint(R.string.file_empty);
+                        } else
+                            mInput.setHint(null);
+                    } catch (OutOfMemoryError e) {
+                        mInput.setHint(R.string.error);
+                    }
+                    setProgress(false);
+                });
+
+            } catch (StreamNotFoundException e) {
+
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    mInput.setHint(R.string.error_file_not_found);
+                });
+            } catch (IOException e) {
+
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    mInput.setHint(R.string.error_io);
+                });
             }
         }).start();
     }

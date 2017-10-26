@@ -147,13 +147,7 @@ public class ProcessViewerFragment extends Fragment {
                         // callback called when we're not inside the app
                         return;
                     }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            processResults(dataPackage, ServiceType.COPY);
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COPY));
                 }
 
                 @Override
@@ -192,13 +186,7 @@ public class ProcessViewerFragment extends Fragment {
                         // callback called when we're not inside the app
                         return;
                     }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            processResults(dataPackage, ServiceType.EXTRACT);
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.EXTRACT));
                 }
 
                 @Override
@@ -235,12 +223,7 @@ public class ProcessViewerFragment extends Fragment {
                         // callback called when we're not inside the app
                         return;
                     }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            processResults(dataPackage, ServiceType.COMPRESS);
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COMPRESS));
                 }
 
                 @Override
@@ -477,20 +460,17 @@ public class ProcessViewerFragment extends Fragment {
      */
     private void cancelBroadcast(final Intent intent) {
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),
-                        getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
-                getActivity().sendBroadcast(intent);
-                mProgressTypeText.setText(getResources().getString(R.string.cancelled));
-                mProgressSpeedText.setText("");
-                mProgressFileText.setText("");
-                mProgressBytesText.setText("");
-                mProgressFileNameText.setText("");
+        mCancelButton.setOnClickListener(v -> {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.stopping), Toast.LENGTH_LONG).show();
+            getActivity().sendBroadcast(intent);
+            mProgressTypeText.setText(getResources().getString(R.string.cancelled));
+            mProgressSpeedText.setText("");
+            mProgressFileText.setText("");
+            mProgressBytesText.setText("");
+            mProgressFileNameText.setText("");
 
-                mProgressTypeText.setTextColor(Utils.getColor(getContext(), android.R.color.holo_red_light));
-            }
+            mProgressTypeText.setTextColor(Utils.getColor(getContext(), android.R.color.holo_red_light));
         });
     }
 

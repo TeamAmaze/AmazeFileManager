@@ -31,11 +31,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -126,18 +124,15 @@ public class DatabaseViewerActivity extends ThemedActivity {
         listView = (ListView) findViewById(R.id.listView);
 
         load(pathFile);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                DbViewerFragment fragment = new DbViewerFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("table", arrayList.get(position));
-                fragment.setArguments(bundle);
-                fragmentTransaction.add(R.id.content_frame, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            DbViewerFragment fragment = new DbViewerFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("table", arrayList.get(position));
+            fragment.setArguments(bundle);
+            fragmentTransaction.add(R.id.content_frame, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
     }
@@ -153,44 +148,37 @@ public class DatabaseViewerActivity extends ThemedActivity {
     }
 
     private void load(final File file) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File file1 = getExternalCacheDir();
+        new Thread(() -> {
+            File file1 = getExternalCacheDir();
 
-                // if the db can't be read, and we have root enabled, try reading it by
-                // first copying it in cache dir
-                if (!file.canRead() && ThemedActivity.rootMode) {
+            // if the db can't be read, and we have root enabled, try reading it by
+            // first copying it in cache dir
+            if (!file.canRead() && ThemedActivity.rootMode) {
 
-                    try {
-                        RootUtils.copy(pathFile.getPath(),
-                                new File(file1.getPath(), file.getName()).getPath());
-                        pathFile = new File(file1.getPath(), file.getName());
-                    } catch (RootNotPermittedException e) {
-                        e.printStackTrace();
-                    }
-                    delete = true;
-                }
                 try {
-                    sqLiteDatabase = SQLiteDatabase.openDatabase(pathFile.getPath(), null,
-                            SQLiteDatabase.OPEN_READONLY);
-
-                    c = sqLiteDatabase.rawQuery(
-                            "SELECT name FROM sqlite_master WHERE type='table'", null);
-                    arrayList = getDbTableNames(c);
-                    arrayAdapter = new ArrayAdapter(DatabaseViewerActivity.this, android.R.layout.simple_list_item_1, arrayList);
-                } catch (Exception e) {
+                    RootUtils.copy(pathFile.getPath(),
+                            new File(file1.getPath(), file.getName()).getPath());
+                    pathFile = new File(file1.getPath(), file.getName());
+                } catch (RootNotPermittedException e) {
                     e.printStackTrace();
-                    finish();
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        listView.setAdapter(arrayAdapter);
-                    }
-                });
+                delete = true;
             }
+            try {
+                sqLiteDatabase = SQLiteDatabase.openDatabase(pathFile.getPath(), null,
+                        SQLiteDatabase.OPEN_READONLY);
+
+                c = sqLiteDatabase.rawQuery(
+                        "SELECT name FROM sqlite_master WHERE type='table'", null);
+                arrayList = getDbTableNames(c);
+                arrayAdapter = new ArrayAdapter(DatabaseViewerActivity.this, android.R.layout.simple_list_item_1, arrayList);
+            } catch (Exception e) {
+                e.printStackTrace();
+                finish();
+            }
+            runOnUiThread(() -> {
+                listView.setAdapter(arrayAdapter);
+            });
         }).start();
     }
 
