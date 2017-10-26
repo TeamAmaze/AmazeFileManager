@@ -83,7 +83,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true);
+        dialog = ProgressDialog.show(context, "", context.getString(R.string.processing), true);
     }
 
     @Override
