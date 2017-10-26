@@ -182,22 +182,18 @@ public class IconHolder {
             iconView.setImageBitmap(this.mAppIcons.get(filePath));
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                mHandler.removeMessages(MSG_DESTROY);
-                if (mWorkerThread == null || mWorkerHandler==null) {
-                    mWorkerThread = new HandlerThread("IconHolderLoader");
-                    mWorkerThread.start();
-                    mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
-                }
-
-                mRequests.put(iconView, fso);
-                Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
-                msg.sendToTarget();
-
+        new Thread(() -> {
+            mHandler.removeMessages(MSG_DESTROY);
+            if (mWorkerThread == null || mWorkerHandler==null) {
+                mWorkerThread = new HandlerThread("IconHolderLoader");
+                mWorkerThread.start();
+                mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
             }
+
+            mRequests.put(iconView, fso);
+            Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
+            msg.sendToTarget();
+
         }).start();
     }
 

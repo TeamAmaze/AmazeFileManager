@@ -46,12 +46,9 @@ public class PathSwitchPreference extends Preference {
     private View.OnClickListener setListener(final View v, @IdRes int id, final int elem) {
         final PathSwitchPreference t = this;
 
-        View.OnClickListener l = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                lastItemClicked = elem;
-                getOnPreferenceClickListener().onPreferenceClick(t);
-            }
+        View.OnClickListener l = view -> {
+            lastItemClicked = elem;
+            getOnPreferenceClickListener().onPreferenceClick(t);
         };
 
         v.findViewById(id).setOnClickListener(l);

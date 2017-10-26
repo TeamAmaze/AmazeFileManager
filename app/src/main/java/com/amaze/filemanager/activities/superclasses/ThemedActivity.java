@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -61,19 +60,12 @@ public class ThemedActivity extends PreferenceActivity {
                             getString(R.string.grant),
                             getString(R.string.cancel),
                             null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat
-                            .requestPermissions(ThemedActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-                    materialDialog.dismiss();
-                }
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                ActivityCompat.requestPermissions(ThemedActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
+                materialDialog.dismiss();
             });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+                finish();
             });
             materialDialog.setCancelable(false);
             materialDialog.show();

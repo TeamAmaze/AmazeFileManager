@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -120,57 +119,46 @@ public class RenameBookmark extends DialogFragment {
                 });
             } else t2.setVisibility(View.GONE);
             ip.setText(pa);
-            builder.onNeutral(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                }
-            });
+            builder.onNeutral((dialog, which) -> dialog.dismiss());
 
             materialDialog = builder.build();
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String t = ip.getText().toString();
-                    String name = conName.getText().toString();
-                    if (studiomode != 0 && t.startsWith("smb://")) {
-                        try {
-                            URL a = new URL(t);
-                            String userinfo = a.getUserInfo();
-                            if (userinfo == null && user.length() > 0) {
-                                t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() + a.getPath();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                String t = ip.getText().toString();
+                String name = conName.getText().toString();
+                if (studiomode != 0 && t.startsWith("smb://")) {
+                    try {
+                        URL a = new URL(t);
+                        String userinfo = a.getUserInfo();
+                        if (userinfo == null && user.length() > 0) {
+                            t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() + a.getPath();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    int i = -1;
-                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
-                        if (!t.equals(title) && t.length() >= 1) {
-                            dataUtils.removeBook(i);
-                            dataUtils.addBook(new String[]{name, t});
-                            dataUtils.sortBook();
-                            if (bookmarkCallback != null) {
-                                bookmarkCallback.modify(path, title, t, name);
-                            }
-                        }
-                    }
-                    materialDialog.dismiss();
-
                 }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int i;
-                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                int i = -1;
+                if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                    if (!t.equals(title) && t.length() >= 1) {
                         dataUtils.removeBook(i);
+                        dataUtils.addBook(new String[]{name, t});
+                        dataUtils.sortBook();
                         if (bookmarkCallback != null) {
-                            bookmarkCallback.delete(title, path);
+                            bookmarkCallback.modify(path, title, t, name);
                         }
                     }
-                    materialDialog.dismiss();
                 }
+                materialDialog.dismiss();
+
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+                int i;
+                if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                    dataUtils.removeBook(i);
+                    if (bookmarkCallback != null) {
+                        bookmarkCallback.delete(title, path);
+                    }
+                }
+                materialDialog.dismiss();
             });
             return materialDialog;
         }

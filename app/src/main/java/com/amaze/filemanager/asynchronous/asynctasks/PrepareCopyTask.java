@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -189,21 +188,15 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         dialogBuilder.positiveColor(accentColor);
         dialogBuilder.negativeColor(accentColor);
         dialogBuilder.neutralColor(accentColor);
-        dialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (checkBox.isChecked())
-                    dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
-                doNotReplaceFiles(path, filesToCopy, conflictingFiles);
-            }
+        dialogBuilder.onPositive((dialog, which) -> {
+            if (checkBox.isChecked())
+                dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
+            doNotReplaceFiles(path, filesToCopy, conflictingFiles);
         });
-        dialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (checkBox.isChecked())
-                    dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
-                replaceFiles(path, filesToCopy, conflictingFiles);
-            }
+        dialogBuilder.onNegative((dialog, which) -> {
+            if (checkBox.isChecked())
+                dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
+            replaceFiles(path, filesToCopy, conflictingFiles);
         });
 
         final MaterialDialog dialog = dialogBuilder.build();

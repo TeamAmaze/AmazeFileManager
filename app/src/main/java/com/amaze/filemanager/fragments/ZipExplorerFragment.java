@@ -33,7 +33,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +41,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -61,7 +59,6 @@ import com.amaze.filemanager.ui.ZipObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
-import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -133,25 +130,17 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         mainActivity = (MainActivity) getActivity();
         listView = (RecyclerView) rootView.findViewById(R.id.listView);
-        listView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (stopAnims && !zipExplorerAdapter.stoppedAnimation) {
-                    stopAnim();
-                }
-                zipExplorerAdapter.stoppedAnimation = true;
-
-                stopAnims = false;
-                return false;
+        listView.setOnTouchListener((view, motionEvent) -> {
+            if (stopAnims && !zipExplorerAdapter.stoppedAnimation) {
+                stopAnim();
             }
+            zipExplorerAdapter.stoppedAnimation = true;
+
+            stopAnims = false;
+            return false;
         });
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         return rootView;
     }
@@ -170,18 +159,15 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         realZipFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
 
         mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
-        mToolbarContainer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (stopAnims) {
-                    if ((!zipExplorerAdapter.stoppedAnimation)) {
-                        stopAnim();
-                    }
-                    zipExplorerAdapter.stoppedAnimation = true;
+        mToolbarContainer.setOnTouchListener((view, motionEvent) -> {
+            if (stopAnims) {
+                if ((!zipExplorerAdapter.stoppedAnimation)) {
+                    stopAnim();
                 }
-                stopAnims = false;
-                return false;
+                zipExplorerAdapter.stoppedAnimation = true;
             }
+            stopAnims = false;
+            return false;
         });
 
         listView.setVisibility(View.VISIBLE);
@@ -456,17 +442,14 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      */
     public void changeZipPath(final String folder) {
         swipeRefreshLayout.setRefreshing(true);
-        new ZipHelperTask(getContext(), realZipFile.getPath(), folder, new OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>>() {
-            @Override
-            public void onAsyncTaskFinished(ArrayList<ZipObjectParcelable> data) {
-                if (gobackitem && relativeDirectory != null && relativeDirectory.trim().length() != 0)
-                    elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
-                elements = data;
-                createZipViews(data, folder);
+        new ZipHelperTask(getContext(), realZipFile.getPath(), folder, data -> {
+            if (gobackitem && relativeDirectory != null && relativeDirectory.trim().length() != 0)
+                elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
+            elements = data;
+            createZipViews(data, folder);
 
-                swipeRefreshLayout.setRefreshing(false);
-                updateBottomBar();
-            }
+            swipeRefreshLayout.setRefreshing(false);
+            updateBottomBar();
         }).execute();
     }
 
@@ -476,19 +459,16 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public void changeRarPath(final String folder) {
         swipeRefreshLayout.setRefreshing(true);
         new RarHelperTask(getContext(), realZipFile.getPath(), folder,
-                new OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>>() {
-            @Override
-            public void onAsyncTaskFinished(Pair<Archive, ArrayList<FileHeader>> data) {
-                archive = data.first;
-                if(data.second != null) {
-                    createRarViews(data.second, folder);
-                    elementsRar = data.second;
-                }
+                data -> {
+                    archive = data.first;
+                    if(data.second != null) {
+                        createRarViews(data.second, folder);
+                        elementsRar = data.second;
+                    }
 
-                swipeRefreshLayout.setRefreshing(false);
-                updateBottomBar();
-            }
-        }).execute();
+                    swipeRefreshLayout.setRefreshing(false);
+                    updateBottomBar();
+                }).execute();
     }
 
     private void refresh() {
@@ -551,11 +531,8 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         final FastScroller fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(listView, 1);
         fastScroller.setPressedHandleColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
-        ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                fastScroller.updateHandlePosition(verticalOffset, 112);
-            }
+        ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            fastScroller.updateHandlePosition(verticalOffset, 112);
         });
         listView.stopScroll();
         relativeDirectory = dir;

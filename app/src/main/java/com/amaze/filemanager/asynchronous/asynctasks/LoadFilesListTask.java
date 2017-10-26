@@ -32,6 +32,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -339,6 +340,11 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             } while (cursor.moveToNext());
         }
         cursor.close();
+        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.getDate1()).compareTo(rhs.getDate1()));
+        if (songs.size() > 20)
+            for (int i = songs.size() - 1; i > 20; i--) {
+                songs.remove(i);
+            }
         return songs;
     }
 
@@ -410,13 +416,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, new Comparator<LayoutElementParcelable>() {
-            @Override
-            public int compare(LayoutElementParcelable lhs, LayoutElementParcelable rhs) {
-                return -1 * Long.valueOf(lhs.getDate1()).compareTo(rhs.getDate1());
-
-            }
-        });
+        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.getDate1()).compareTo(rhs.getDate1()));
         if (songs.size() > 20)
             for (int i = songs.size() - 1; i > 20; i--) {
                 songs.remove(i);

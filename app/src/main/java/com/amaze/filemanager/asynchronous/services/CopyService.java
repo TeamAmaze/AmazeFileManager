@@ -149,14 +149,8 @@ public class CopyService extends Service {
             totalSourceFiles = sourceFiles.size();
             progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
-            progressHandler.setProgressListener(new ProgressHandler.ProgressListener() {
-
-                @Override
-                public void onProgressed(String fileName, int sourceFiles, int sourceProgress,
-                                         long totalSize, long writtenSize, int speed) {
-                    publishResults(id, fileName, sourceFiles, sourceProgress, totalSize,
-                            writtenSize, speed, false, move);
-                }
+            progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
+                publishResults(id, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);

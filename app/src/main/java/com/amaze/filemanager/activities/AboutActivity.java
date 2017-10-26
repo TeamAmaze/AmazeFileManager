@@ -105,26 +105,15 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 R.drawable.about_header);
 
         // It will generate colors based on the image in an AsyncTask.
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @SuppressWarnings("ResourceType")
-            @Override
-            public void onGenerated(Palette palette) {
-
-                int mutedColor = palette.getMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
-                int darkMutedColor = palette.getDarkMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
-                mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
-                mCollapsingToolbarLayout.setStatusBarScrimColor(darkMutedColor);
-            }
+        Palette.from(bitmap).generate(palette -> {
+            int mutedColor = palette.getMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
+            int darkMutedColor = palette.getDarkMutedColor(Utils.getColor(AboutActivity.this, R.color.primary_blue));
+            mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
+            mCollapsingToolbarLayout.setStatusBarScrimColor(darkMutedColor);
         });
 
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
-                mTitleTextView.setAlpha(Math.abs(verticalOffset / (float)
-                        appBarLayout.getTotalScrollRange()));
-            }
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            mTitleTextView.setAlpha(Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange()));
         });
     }
 

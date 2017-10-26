@@ -146,11 +146,8 @@ public class AppConfig extends LeakCanaryApplication {
             final Context c = context;
             final String m = message;
 
-            ((AppConfig) context).runInApplicationThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(c, m, Toast.LENGTH_LONG).show();
-                }
+            ((AppConfig) context).runInApplicationThread(() -> {
+                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
             });
         }
     }
