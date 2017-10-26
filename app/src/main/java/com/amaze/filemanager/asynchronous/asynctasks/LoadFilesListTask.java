@@ -44,6 +44,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
@@ -176,7 +177,8 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     });
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-                    return null;
+                    AppConfig.toast(c, c.getResources().getString(R.string.failed_no_connection));
+                    return new Pair<>(openmode, list);
                 }
                 break;
             default:

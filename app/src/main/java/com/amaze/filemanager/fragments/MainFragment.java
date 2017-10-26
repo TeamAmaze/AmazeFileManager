@@ -209,7 +209,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
 
         SHOW_PERMISSIONS = sharedPref.getBoolean("showPermissions", false);
-        SHOW_SIZE = sharedPref.getBoolean("showFileSize", false);
+        SHOW_SIZE = sharedPref.getBoolean("showFileSize", true);
         SHOW_DIVIDERS = sharedPref.getBoolean("showDividers", true);
         SHOW_HEADERS = sharedPref.getBoolean("showHeaders", true);
         GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);

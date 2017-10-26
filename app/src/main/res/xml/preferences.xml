@@ -95,7 +95,7 @@
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref"/>
@@ -107,9 +107,6 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/text_editor">
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/archive_preferences">
