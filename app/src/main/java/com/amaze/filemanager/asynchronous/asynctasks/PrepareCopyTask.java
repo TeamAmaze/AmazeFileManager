@@ -20,6 +20,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -109,17 +110,18 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         return copyFolder;
     }
 
-    private ArrayList<HybridFileParcelable> checkConflicts(ArrayList<HybridFileParcelable> filesToCopy, HybridFile destination) {
-        ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
-
-        for (HybridFileParcelable k1 : destination.listFiles(rootMode)) {
-            for (HybridFileParcelable j : filesToCopy) {
-                if (k1.getName().equals((j).getName())) {
-                    conflictingFiles.add(j);
+    private ArrayList<HybridFileParcelable> checkConflicts(final ArrayList<HybridFileParcelable> filesToCopy, HybridFile destination) {
+        final ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
+        destination.forEachChildrenFile(context, rootMode, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                for (HybridFileParcelable j : filesToCopy) {
+                    if (file.getName().equals((j).getName())) {
+                        conflictingFiles.add(j);
+                    }
                 }
             }
-        }
-
+        });
         return conflictingFiles;
     }
 
@@ -314,7 +316,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
                     nextNodes.add(new CopyNode(path + "/"
                             + conflictingFiles.get(i).getName(),
-                            conflictingFiles.get(i).listFiles(rootMode)));
+                            conflictingFiles.get(i).listFiles(context, rootMode)));
 
                     filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));
                     conflictingFiles.remove(i);

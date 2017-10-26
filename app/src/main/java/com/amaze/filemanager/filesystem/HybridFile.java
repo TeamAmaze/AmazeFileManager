@@ -14,6 +14,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.Logger;
@@ -77,24 +78,26 @@ public class HybridFile {
             mode = OpenMode.GDRIVE;
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
             mode = OpenMode.DROPBOX;
+        } else if(context == null) {
+            mode = OpenMode.FILE;
         } else {
-            if (context == null) {
-                mode = OpenMode.FILE;
-                return;
-            }
             boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode", false);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 mode = OpenMode.FILE;
-                if (rootmode) {
-                    if (!getFile().canRead()) mode = OpenMode.ROOT;
+                if (rootmode && !getFile().canRead()) {
+                    mode = OpenMode.ROOT;
                 }
-                return;
+            } else {
+                if (FileUtil.isOnExtSdCard(getFile(), context)) {
+                    mode = OpenMode.FILE;
+                } else if (rootmode && !getFile().canRead()) {
+                    mode = OpenMode.ROOT;
+                }
+
+                if (mode == OpenMode.UNKNOWN) {
+                    mode = OpenMode.FILE;
+                }
             }
-            if (FileUtil.isOnExtSdCard(getFile(), context)) mode = OpenMode.FILE;
-            else if (rootmode) {
-                if (!getFile().canRead()) mode = OpenMode.ROOT;
-            }
-            if (mode == OpenMode.UNKNOWN) mode = OpenMode.FILE;
         }
 
     }
@@ -148,13 +151,7 @@ public class HybridFile {
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
-        ArrayList<HybridFileParcelable> arrayList = null;
-        try {
-            arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
-        } catch (RootNotPermittedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrayList<HybridFileParcelable> arrayList = RootHelper.getFilesList(getFile().getParent(), true, true, null);
         for (HybridFileParcelable baseFile : arrayList) {
             if (baseFile.getPath().equals(path))
                 return baseFile;
@@ -552,7 +549,7 @@ public class HybridFile {
                 if(baseFile!=null) size = baseFile.getSize();
                 break;
             case OTG:
-                size = FileUtils.folderSize(path, context);
+                size = FileUtils.otgFolderSize(path, context);
                 break;
             case DROPBOX:
             case BOX:
@@ -644,48 +641,48 @@ public class HybridFile {
     }
 
     /**
-     * @deprecated use {@link #listFiles(Context, boolean)}
-     * @param rootmode
-     * @return
+     * Helper method to list children of this file
      */
-    public ArrayList<HybridFileParcelable> listFiles(boolean rootmode) {
-        ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
-        if (isSmb()) {
-            try {
-                SmbFile smbFile = new SmbFile(path);
-                for (SmbFile smbFile1 : smbFile.listFiles()) {
-                    HybridFileParcelable baseFile = new HybridFileParcelable(smbFile1.getPath());
-                    baseFile.setName(smbFile1.getName());
-                    baseFile.setMode(OpenMode.SMB);
-                    baseFile.setDirectory(smbFile1.isDirectory());
-                    baseFile.setDate(smbFile1.lastModified());
-                    baseFile.setSize(baseFile.isDirectory() ? 0 : smbFile1.length());
-                    arrayList.add(baseFile);
+    public void forEachChildrenFile(Context context, boolean isRoot, OnFileFound onFileFound) {
+        switch (mode) {
+            case SMB:
+                try {
+                    SmbFile smbFile = new SmbFile(path);
+                    for (SmbFile smbFile1 : smbFile.listFiles()) {
+                        HybridFileParcelable baseFile=new HybridFileParcelable(smbFile1.getPath());
+                        baseFile.setName(smbFile1.getName());
+                        baseFile.setMode(OpenMode.SMB);
+                        baseFile.setDirectory(smbFile1.isDirectory());
+                        baseFile.setDate(smbFile1.lastModified());
+                        baseFile.setSize(baseFile.isDirectory()?0:smbFile1.length());
+                        onFileFound.onFileFound(baseFile);
+                    }
+                } catch (MalformedURLException | SmbException e) {
+                    e.printStackTrace();
                 }
-            } catch (MalformedURLException e) {
-                if (arrayList != null) arrayList.clear();
-                e.printStackTrace();
-            } catch (SmbException e) {
-                if (arrayList != null) arrayList.clear();
-                e.printStackTrace();
-            }
-        } else if (isOtgFile()) {
+                break;
+            case OTG:
+                OTGUtil.getDocumentFiles(path, context, onFileFound);
+                break;
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+                try {
+                    CloudUtil.getCloudFiles(path, dataUtils.getAccount(mode), mode, onFileFound);
+                } catch (CloudPluginException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                RootHelper.getFiles(path, isRoot, true, null, onFileFound);
 
-        } else {
-            try {
-                arrayList = RootHelper.getFilesList(path, rootmode, true, null);
-            } catch (RootNotPermittedException e) {
-                e.printStackTrace();
-            }
         }
-        return arrayList;
     }
 
     /**
      * Helper method to list children of this file
-     *
-     * @param context
-     * @return
+     * @deprecated use forEachChildrenFile()
      */
     public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
         ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
@@ -714,50 +711,19 @@ public class HybridFile {
                 arrayList = OTGUtil.getDocumentFilesList(path, context);
                 break;
             case DROPBOX:
-                try {
-
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.DROPBOX), OpenMode.DROPBOX);
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-
-                    arrayList = new ArrayList<>();
-                }
-                break;
             case BOX:
-                try {
-
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.BOX), OpenMode.BOX);
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-                    arrayList = new ArrayList<>();
-                }
-                break;
             case GDRIVE:
-                try {
-
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.GDRIVE), OpenMode.GDRIVE);
-                } catch (CloudPluginException e) {
-                    e.printStackTrace();
-
-                    arrayList = new ArrayList<>();
-                }
-                break;
             case ONEDRIVE:
                 try {
-
-                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(OpenMode.ONEDRIVE), OpenMode.ONEDRIVE);
+                    arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(mode), mode);
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
-
                     arrayList = new ArrayList<>();
                 }
                 break;
             default:
-                try {
-                    arrayList = RootHelper.getFilesList(path, isRoot, true, null);
-                } catch (RootNotPermittedException e) {
-                    e.printStackTrace();
-                }
+                arrayList = RootHelper.getFilesList(path, isRoot, true, null);
+
         }
 
         return arrayList;
@@ -1059,12 +1025,12 @@ public class HybridFile {
                 LayoutElementParcelable layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = FileUtils.newElement(mainFragment.folder,
+                    layoutElement = new LayoutElementParcelable(mainFragment.folder,
                                     path, RootHelper.parseFilePermission(file),
                                     "", folderSize() + "", 0, true, false,
                                     file.lastModified() + "");
                 } else {
-                    layoutElement = FileUtils.newElement(Icons.loadMimeIcon(
+                    layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
                             file.getPath(), !mainFragment.IS_LIST, mainFragment.getResources()),
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");

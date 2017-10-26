@@ -32,11 +32,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -48,6 +48,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -97,6 +98,7 @@ import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
@@ -124,7 +126,7 @@ import jcifs.smb.SmbFile;
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
-    public BitmapDrawable folder, apk, DARK_IMAGE, DARK_VIDEO;
+    public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public int sortby, dsort, asc;
     public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
@@ -265,7 +267,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-        apk = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_apk_grid));
+        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
@@ -281,11 +283,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         initNoFileLayout();
         SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
         COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
-        mFolderBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_grid_folder_new);
-        folder = new BitmapDrawable(res, mFolderBitmap);
+        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
-        DARK_IMAGE = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_image_dark));
-        DARK_VIDEO = new BitmapDrawable(res, BitmapFactory.decodeResource(res, R.drawable.ic_doc_video_dark));
+        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
+        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
@@ -1022,16 +1023,32 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     LoadFilesListTask loadFilesListTask;
 
-    public void loadlist(String path, boolean back, OpenMode openMode) {
+    /**
+     * This loads a path into the MainFragment.
+     * @param path the path to be loaded
+     * @param back if we're coming back from any directory and want the scroll to be restored
+     * @param openMode the mode in which the directory should be opened
+     */
+    public void loadlist(final String path, final boolean back, final OpenMode openMode) {
+        if (mActionMode != null) mActionMode.finish();
 
-        if (mActionMode != null) {
-            mActionMode.finish();
+        mSwipeRefreshLayout.setRefreshing(true);
+
+        if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING) {
+            loadFilesListTask.cancel(true);
         }
 
-        if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING)
-            loadFilesListTask.cancel(true);
-        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), utilsProvider, back, ma, openMode);
-        loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (path));
+        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,
+                new OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>>() {
+            @Override
+            public void onAsyncTaskFinished(Pair<OpenMode, ArrayList<LayoutElementParcelable>> data) {
+                if(data.second != null) {
+                    createViews(data.second, back, path, data.first, false, checkPathIsGrid(path));
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -1113,9 +1130,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
                         && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
                     //create the "go to parent" button (aka '..')
-                    Bitmap iconBitmap = BitmapFactory.decodeResource(res, R.drawable.ic_arrow_left_white_24dp);
-                    bitmap.add(0, new LayoutElementParcelable(new BitmapDrawable(res, iconBitmap), "..", "",
-                            "", goToParentText, 0, false, true, ""));
+                    Drawable iconDrawable = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
+                    bitmap.add(0, new LayoutElementParcelable(iconDrawable, "..", "", "", goToParentText, 0, false, true, ""));
                 }
               
                 if (bitmap.size() == 0 && !results) {
@@ -1489,7 +1505,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     void fixIcons(boolean forceReload) {
         if (getLayoutElements() == null) return;
-        BitmapDrawable iconDrawable;
+        Drawable iconDrawable;
 
         synchronized (getLayoutElements()) {
             for (LayoutElementParcelable layoutElement : getLayoutElements()) {
@@ -1506,7 +1522,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         ArrayList<LayoutElementParcelable> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (SmbFile aMFile : mFile) {
-            if (dataUtils.getHiddenfiles().contains(aMFile.getPath()))
+            if (dataUtils.isFileHidden(aMFile.getPath()))
                 continue;
             String name = aMFile.getName();
             name = (aMFile.isDirectory() && name.endsWith("/")) ? name.substring(0, name.length() - 1) : name;
@@ -1543,7 +1559,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
         File f = new File(mFile.getPath());
         String size = "";
-        if (!dataUtils.getHiddenfiles().contains(mFile.getPath())) {
+        if (!dataUtils.isFileHidden(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, f.getPath(), mFile.getPermission(),

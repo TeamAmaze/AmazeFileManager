@@ -74,7 +74,7 @@ import java.util.concurrent.Executors;
 import eu.chainfire.libsuperuser.Shell;
 
 import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.utils.files.FileUtils.toHFileArray;
+import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -970,7 +970,7 @@ public class GeneralDialogCreation {
 
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHistory()), null, true);
+                toHybridFileArrayList(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
         MaterialDialog x= a.build();
@@ -988,7 +988,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
-                toHFileArray(dataUtils.getHiddenfiles()), null, false);
+                FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
         MaterialDialog x= a.build();

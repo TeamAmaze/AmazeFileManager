@@ -11,7 +11,9 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.SmbUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -150,8 +152,18 @@ public class UtilsHandler extends SQLiteOpenHelper {
         return getPath(Operation.HISTORY);
     }
 
-    public ArrayList<String> getHiddenList() {
-        return getPath(Operation.HIDDEN);
+    public ConcurrentRadixTree<VoidValue> getHiddenFilesConcurrentRadixTree() {
+        ConcurrentRadixTree<VoidValue> paths = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
+
+        Cursor cursor = getReadableDatabase().query(getTableForOperation(Operation.HIDDEN), null,
+                null, null, null, null, null);
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            paths.put(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)), VoidValue.SINGLETON);
+        }
+        cursor.close();
+
+        return paths;
     }
 
     public ArrayList<String> getListViewList() {
@@ -327,7 +339,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         switch (operation) {
             case HISTORY:
-            case HIDDEN:
             case LIST:
             case GRID:
                 ArrayList<String> paths = new ArrayList<>();

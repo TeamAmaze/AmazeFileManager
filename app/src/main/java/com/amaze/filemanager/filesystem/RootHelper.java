@@ -23,8 +23,9 @@ import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class RootHelper {
      * @param showHidden
      * @return
      */
-    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden) {
+    public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden, OnFileFound listener) {
         File f = new File(path);
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
         try {
@@ -126,9 +127,11 @@ public class RootHelper {
                     baseFile.setMode(OpenMode.FILE);
                     if (showHidden) {
                         files.add(baseFile);
+                        listener.onFileFound(baseFile);
                     } else {
                         if (!x.isHidden()) {
                             files.add(baseFile);
+                            listener.onFileFound(baseFile);
                         }
                     }
                 }
@@ -205,12 +208,7 @@ public class RootHelper {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, new GetModeCallBack() {
-                @Override
-                public void getMode(OpenMode mode) {
-
-                }
-            });
+            ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null);
             for (HybridFileParcelable strings : ls) {
                 if (strings.getPath() != null && strings.getPath().equals(path)) {
                     return true;
@@ -285,67 +283,80 @@ public class RootHelper {
      * @param showHidden      to show hidden files
      * @param getModeCallBack callback to set the type of file
      * @return TODO: Avoid parsing ls
+     * @deprecated use getFiles()
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
-                                                               GetModeCallBack getModeCallBack)
-            throws RootNotPermittedException {
-        //String p = " ";
+                                                               GetModeCallBack getModeCallBack) {
+        final ArrayList<HybridFileParcelable> files = new ArrayList<>();
+        getFiles(path, root, showHidden, getModeCallBack, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                files.add(file);
+            }
+        });
+        return files;
+    }
+
+    /**
+     * Get files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images)
+     *
+     * @param path
+     * @param root            whether root is available or not
+     * @param showHidden      to show hidden files
+     * @param getModeCallBack callback to set the type of file
+     * @return TODO: Avoid parsing ls
+     */
+    public static void getFiles(String path, boolean root, boolean showHidden,
+                                GetModeCallBack getModeCallBack, OnFileFound fileCallback) {
         OpenMode mode = OpenMode.FILE;
-        //if (showHidden) p = "a ";
         ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        ArrayList<String> ls;
-        if (root) {
-            // we're rooted and we're trying to load file with superuser
-            if (!path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+        if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+            try {
+                // we're rooted and we're trying to load file with superuser
                 // we're at the root directories, superuser is required!
+                ArrayList<String> ls;
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
                 ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
                 if (ls != null) {
                     for (int i = 0; i < ls.size(); i++) {
                         String file = ls.get(i);
-                        if (!file.contains("Permission denied"))
-                            try {
-                                HybridFileParcelable array = FileUtils.parseName(file);
+                        if (!file.contains("Permission denied")) {
+                            HybridFileParcelable array = FileUtils.parseName(file);
+                            if (array != null) {
                                 array.setMode(OpenMode.ROOT);
-                                if (array != null) {
-                                    array.setName(array.getPath());
-                                    array.setPath(path + "/" + array.getPath());
-                                    if (array.getLink().trim().length() > 0) {
-                                        boolean isdirectory = isDirectory(array.getLink(), root, 0);
-                                        array.setDirectory(isdirectory);
-                                    } else array.setDirectory(isDirectory(array));
-                                    files.add(array);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                array.setName(array.getPath());
+                                array.setPath(path + "/" + array.getPath());
+                                if (array.getLink().trim().length() > 0) {
+                                    boolean isdirectory = isDirectory(array.getLink(), root, 0);
+                                    array.setDirectory(isdirectory);
+                                } else array.setDirectory(isDirectory(array));
+                                files.add(array);
+                                fileCallback.onFileFound(array);
                             }
+                        }
 
                     }
                     mode = OpenMode.ROOT;
                 }
-            } else if (FileUtils.canListFiles(new File(path))) {
-                // we might as well not require root to load files
-                files = getFilesList(path, showHidden);
-                mode = OpenMode.FILE;
-            } else {
-                // couldn't load files using native java filesystem callbacks
-                // maybe the access is not allowed due to android system restrictions, we'll see later
-                mode = OpenMode.FILE;
-                files = new ArrayList<>();
+
+                if (getModeCallBack != null) getModeCallBack.getMode(mode);
+            } catch (RootNotPermittedException e) {
+                e.printStackTrace();
             }
-        } else if (FileUtils.canListFiles(new File(path))) {
-            // we don't have root, so we're taking a chance to load files using basic java filesystem
-            files = getFilesList(path, showHidden);
+        }
+
+        if (FileUtils.canListFiles(new File(path))) {
+            // we're taking a chance to load files using basic java filesystem
+            getFilesList(path, showHidden, fileCallback);
             mode = OpenMode.FILE;
         } else {
-            // couldn't load files using native java filesystem callbacks
+            // we couldn't load files using native java filesystem callbacks
             // maybe the access is not allowed due to android system restrictions, we'll see later
             mode = OpenMode.FILE;
-            files = new ArrayList<>();
         }
+
         if (getModeCallBack != null) getModeCallBack.getMode(mode);
-        return files;
     }
 
 }

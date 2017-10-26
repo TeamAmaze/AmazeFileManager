@@ -16,6 +16,7 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
@@ -32,30 +33,40 @@ import java.util.List;
 
 public class CloudUtil {
 
-    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
-            throws CloudPluginException {
+    /**
+     * @deprecated use getCloudFiles()
+     */
+    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
+                                                            OpenMode openMode) throws CloudPluginException {
+        final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+        getCloudFiles(path, cloudStorage, openMode, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                baseFiles.add(file);
+            }
+        });
+        return baseFiles;
+    }
 
-        ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
-
+    public static void getCloudFiles(String path, CloudStorage cloudStorage, OpenMode openMode,
+                                     OnFileFound fileFoundCallback) throws CloudPluginException {
         String strippedPath = stripPath(openMode, path);
-
         try {
-
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
-
-                HybridFileParcelable baseFile = new HybridFileParcelable(path + "/" + cloudMetaData.getName(),
-                        "", (cloudMetaData.getModifiedAt() == null)
-                        ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
+                HybridFileParcelable baseFile = new HybridFileParcelable(
+                        path + "/" + cloudMetaData.getName(),
+                        "",
+                        (cloudMetaData.getModifiedAt() == null) ? 0l : cloudMetaData.getModifiedAt(),
+                        cloudMetaData.getSize(),
                         cloudMetaData.getFolder());
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
-                baseFiles.add(baseFile);
+                fileFoundCallback.onFileFound(baseFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new CloudPluginException();
         }
-        return baseFiles;
     }
 
     /**

@@ -510,7 +510,7 @@ public class MainActivity extends ThemedActivity implements
             @Override
             public <E> E doInBackground() {
 
-                dataUtils.setHiddenfiles(utilsHandler.getHiddenList());
+                dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());

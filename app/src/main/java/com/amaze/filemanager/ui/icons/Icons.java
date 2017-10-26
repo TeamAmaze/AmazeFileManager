@@ -20,9 +20,7 @@
 package com.amaze.filemanager.ui.icons;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
@@ -38,7 +36,7 @@ public class Icons {
 
     // construct a with an approximation of the capacity
     private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
-    private static SparseArray<Bitmap> sMimeIcons = new SparseArray<>();
+    private static SparseArray<Drawable> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
         if (sMimeIconIds.put(mimeType, resId) != null) {
@@ -331,7 +329,7 @@ public class Icons {
         else return -1;
     }
 
-    public static BitmapDrawable loadMimeIcon(String path, boolean grid, final Resources res) {
+    public static Drawable loadMimeIcon(String path, boolean grid, final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
             /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/
@@ -396,12 +394,12 @@ public class Icons {
         return loadBitmapDrawableById(res, resId);
     }
 
-    private static BitmapDrawable loadBitmapDrawableById(Resources res, int resId) {
-        Bitmap bitmap = sMimeIcons.get(resId);
-        if (bitmap == null) {
-            bitmap = BitmapFactory.decodeResource(res, resId);
-            sMimeIcons.put(resId, bitmap);
+    private static Drawable loadBitmapDrawableById(Resources res, int resId) {
+        Drawable drawable = sMimeIcons.get(resId);
+        if (drawable == null) {
+            drawable = res.getDrawable(resId);
+            sMimeIcons.put(resId, drawable);
         }
-        return new BitmapDrawable(res, bitmap);
+        return drawable;
     }
 }

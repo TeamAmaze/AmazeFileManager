@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -53,12 +52,12 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -67,6 +66,8 @@ import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
 import java.text.ParsePosition;
@@ -74,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jcifs.smb.SmbFile;
 
@@ -144,8 +146,15 @@ public class FileUtils {
     /**
      * Helper method to get size of an otg folder
      */
-    public static long folderSize(String path, Context context) {
-        return getTotalBytes(OTGUtil.getDocumentFilesList(path, context), context);
+    public static long otgFolderSize(String path, final Context context) {
+        final AtomicLong totalBytes = new AtomicLong(0);
+        OTGUtil.getDocumentFiles(path, context, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                totalBytes.addAndGet(getBaseFileSize(file, context));
+            }
+        });
+        return totalBytes.longValue();
     }
 
     /**
@@ -612,10 +621,7 @@ public class FileUtils {
             case OTG:
                 return true;
             default:
-                HybridFile parentFile = new HybridFile(currentFile.getMode(), currentFile.getParent(context));
-                ArrayList<HybridFileParcelable> parentFiles = parentFile.listFiles(context, currentFile.isRoot());
-                if (parentFiles == null) return false;
-                else return true;
+                return true;// TODO: 29/9/2017 there might be nothing to go back to (check parent)
         }
     }
 
@@ -667,11 +673,7 @@ public class FileUtils {
     }
 
     public static boolean canListFiles(File f) {
-        try {
-            return f.canRead() && f.isDirectory();
-        } catch (Exception e) {
-            return false;
-        }
+        return f.canRead() && f.isDirectory();
     }
 
     public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
@@ -812,17 +814,17 @@ public class FileUtils {
         }*/
     }
 
-    /**
-     * @deprecated use new LayoutElementParcelable()
-     */
-    public static LayoutElementParcelable newElement(BitmapDrawable i, String d, String permissions, String symlink,
-                                                     String size, long longSize, boolean directorybool, boolean b,
-                                                     String date) {
-        return new LayoutElementParcelable(i, new File(d).getName(), d, permissions, symlink,
-                size, longSize, b, date, directorybool);
+    public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(ConcurrentRadixTree<VoidValue> a) {
+        ArrayList<HybridFile> b = new ArrayList<>();
+        for (CharSequence o : a.getKeysStartingWith("")) {
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, o.toString());
+            hFile.generateMode(null);
+            b.add(hFile);
+        }
+        return b;
     }
 
-    public static ArrayList<HybridFile> toHFileArray(ArrayList<String> a) {
+    public static ArrayList<HybridFile> toHybridFileArrayList(ArrayList<String> a) {
         ArrayList<HybridFile> b = new ArrayList<>();
         for (int i = 0; i < a.size(); i++) {
             HybridFile hFile=new HybridFile(OpenMode.UNKNOWN,a.get(i));
