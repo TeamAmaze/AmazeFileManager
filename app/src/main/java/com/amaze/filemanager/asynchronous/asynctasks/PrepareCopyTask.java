@@ -1,5 +1,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,10 +15,10 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -37,8 +38,9 @@ import java.util.Set;
  * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
  *  This AsyncTask works by creating a tree where each folder that can be fusioned together with
- *  another in the destination is a node (CopyNode), each node is copied when the conflicts are dealt
- *  with (the dialog is shown, and the tree is walked via a BFS).
+ *  another in the destination is a node (CopyNode). While the tree is being created an indeterminate
+ *  ProgressDialog is shown. Each node is copied when the conflicts are dealt with
+ *  (the dialog is shown, and the tree is walked via a BFS).
  *  If the process is cancelled (via the button in the dialog) the dialog closes without any more code
  *  to be executed, finishCopying() is never executed so no changes are made.
  */
@@ -55,6 +57,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
     private int counter = 0;
     private MainActivity mainActivity;
     private Context context;
+    private ProgressDialog dialog;
     private boolean rootMode = false;
     private OpenMode openMode = OpenMode.FILE;
     private DO_FOR_ALL_ELEMENTS dialogState = null;
@@ -75,6 +78,12 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         this.rootMode = rootMode;
 
         this.path = path;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        dialog = ProgressDialog.show(context, "", context.getString(R.string.loading), true);
     }
 
     @Override
@@ -144,6 +153,8 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
             onEndDialog(null, null, null);
         }
+
+        dialog.dismiss();
     }
 
     private void startService(ArrayList<HybridFileParcelable> sourceFiles, String target, OpenMode openmode) {
