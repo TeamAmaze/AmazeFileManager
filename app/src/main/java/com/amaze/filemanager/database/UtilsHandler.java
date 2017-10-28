@@ -37,10 +37,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String TABLE_GRID = "grid";
     private static final String TABLE_BOOKMARKS = "bookmarks";
     private static final String TABLE_SMB = "smb";
+    private static final String TABLE_SFTP = "sftp";
 
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_HOST_PUBKEY = "pub_key";
+    private static final String COLUMN_PRIVATE_KEY = "ssh_key";
 
     public UtilsHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,6 +78,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT"
                 + ")";
+        String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_NAME + " TEXT,"
+                + COLUMN_PATH + " TEXT,"
+                + COLUMN_HOST_PUBKEY + " TEXT,"
+                + COLUMN_PRIVATE_KEY + " TEXT,"
+                + ")";
 
         db.execSQL(queryHistory);
         db.execSQL(queryHidden);
@@ -82,6 +92,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
+        db.execSQL(querySftp);
     }
 
     @Override
@@ -92,6 +103,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRID);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKMARKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMB);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SFTP);
 
         onCreate(db);
     }
@@ -102,7 +114,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         LIST,
         GRID,
         BOOKMARKS,
-        SMB
+        SMB,
+        SFTP
     }
 
     public void addCommonBookmarks() {
@@ -293,6 +306,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         clearTable(Operation.SMB);
     }
 
+    public void clearSshTable() { clearTable(Operation.SFTP); }
+
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
     }
@@ -403,6 +418,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 return TABLE_BOOKMARKS;
             case SMB:
                 return TABLE_SMB;
+            case SFTP:
+                return TABLE_SFTP;
             default:
                 return null;
         }
