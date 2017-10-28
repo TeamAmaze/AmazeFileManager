@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -40,7 +42,7 @@ public class SftpConnectDialog extends DialogFragment
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.sftp_dialog, null);
 
         int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
-        
+
         ba3.title((R.string.scp_con));
         ba3.autoDismiss(false);
         ba3.customView(v2, true);
@@ -49,6 +51,13 @@ public class SftpConnectDialog extends DialogFragment
         ba3.positiveText(R.string.create);
         if (edit) ba3.negativeText(R.string.delete);
         ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
+        
+        ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dismiss();
+            }
+        });
 
         return ba3.build();
     }
