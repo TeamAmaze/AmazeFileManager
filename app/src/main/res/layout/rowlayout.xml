@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:maxLines="1"
+            android:singleLine="true"
             android:ellipsize="middle"
             android:clickable="false"
             android:textSize="17sp" />
