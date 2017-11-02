@@ -19,6 +19,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -84,7 +85,7 @@ public class EncryptService extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         notificationBuilder.setContentIntent(pendingIntent);
 
         if (cryptEnum == CryptEnum.ENCRYPT) {
@@ -98,6 +99,8 @@ public class EncryptService extends Service {
             notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
             notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
         }
+
+        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder);
 
         startForeground(ID_NOTIFICATION, notificationBuilder.build());
 
@@ -260,12 +263,14 @@ public class EncryptService extends Service {
 
         if(failedOps.size()==0)return;
 
-        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context);
-        mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
-        mBuilder.setContentText(context.getString(R.string.copy_error).replace("%s",
-                move ? context.getString(R.string.crypt_encrypted).toLowerCase() :
-                        context.getString(R.string.crypt_decrypted).toLowerCase()));
-        mBuilder.setAutoCancel(true);
+        String error = move ? context.getString(R.string.crypt_encrypted).toLowerCase():context.getString(R.string.crypt_decrypted).toLowerCase();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+            .setContentTitle(context.getString(R.string.operationunsuccesful))
+            .setContentText(context.getString(R.string.copy_error, error))
+            .setAutoCancel(true);
+
+        NotificationConstants.setMetadata(context, mBuilder);
 
         progressHandler.setCancelled(true);
 
