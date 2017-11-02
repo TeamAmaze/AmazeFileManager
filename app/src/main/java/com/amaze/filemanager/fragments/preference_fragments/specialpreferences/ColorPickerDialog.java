@@ -239,12 +239,9 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         }
 
         SavedState myState = (SavedState) state;
-
-        super.onRestoreInstanceState(myState.getSuperState());//onBindDialogView(View view)
-
-        if(getDialog() != null) getDialog().dismiss();
         selectedIndex = myState.selectedItem;
-        showDialog(null);
+        super.onRestoreInstanceState(myState.getSuperState());//onBindDialogView(View view)
+        select(selectedItem, true);
     }
 
     private static class SavedState extends BaseSavedState {

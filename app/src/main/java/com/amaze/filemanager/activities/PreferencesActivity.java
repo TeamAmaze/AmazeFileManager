@@ -84,8 +84,9 @@ public class PreferencesActivity extends ThemedActivity {
 
         if (savedInstanceState != null){
             selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+        } else {
+            selectItem(selectedItem);
         }
-        selectItem(selectedItem);
     }
 
     @Override

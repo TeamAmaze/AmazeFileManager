@@ -51,6 +51,8 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             PreferencesConstants.PREFERENCE_SKIN, PreferencesConstants.PREFERENCE_SKIN_TWO,
             PreferencesConstants.PREFERENCE_ACCENT, PreferencesConstants.PREFERENCE_ICON_SKIN};
 
+    private static final String KEY_SECTION = "section";
+
     private int currentSection = SECTION_0;
 
     private MaterialDialog dialog;
@@ -64,8 +66,12 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        loadSection0();
-        reloadListeners();
+        if(savedInstanceState == null) {
+            loadSection0();
+            reloadListeners();
+        } else {
+            onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     @Override
@@ -238,6 +244,24 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             selectedColors.setColors(skin, skin_two, accent_skin, icon_skin);
         } else{
             selectedColors.setColorsVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(KEY_SECTION, currentSection);
+    }
+
+    private void onRestoreInstanceState(Bundle inState) {
+        currentSection = inState.getInt(KEY_SECTION, SECTION_0);
+        if(currentSection == SECTION_0) {
+            loadSection0();
+            reloadListeners();
+        } else {
+            loadSection1();
+            reloadListeners();
         }
     }
 
