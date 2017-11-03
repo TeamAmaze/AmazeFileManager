@@ -22,19 +22,17 @@
 package com.amaze.filemanager.fragments;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Icon;
 import android.media.MediaScannerConnection;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -63,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,11 +110,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -176,6 +171,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
     private MediaScannerConnection mediaScannerConnection;
 
+    ShortcutManager shortcutManager;
+
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
 
@@ -190,6 +187,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                shortcutManager = getActivity().getApplicationContext().getSystemService(ShortcutManager.class);
+            }
+
 
         utilsProvider = getMainActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -1601,6 +1604,59 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
         addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getActivity().sendBroadcast(addIntent);
+
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+
+            Uri file = Uri.fromFile(new File(path.getDesc()));
+
+            SharedPreferences sharedpreferences = getActivity().getApplicationContext().getSharedPreferences
+                    ("SHORTCUT_TEST", Context.MODE_PRIVATE);
+            int val = sharedpreferences.getInt("SHORTCUT_TEST_VALUE", 0);
+
+
+
+            Log.v("SHORTCUT_VAL1", ""+ val);
+            ShortcutInfo shortcut = new ShortcutInfo.Builder(getActivity().getApplicationContext(), "id" + val++)
+                        .setShortLabel("File")
+                        .setLongLabel(new File(path.getDesc()).getName())
+                        .setIcon(Icon.createWithResource(getActivity().getApplicationContext(), R.mipmap.ic_launcher))
+                        .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(
+                                file, getMimeType(file)))
+                        .build();
+            Log.v("SHORTCUT_VAL2", ""+ val);
+
+
+
+           // shortcutManager.setDynamicShortcuts(Arrays.asList(shortcut));
+
+            shortcutManager.addDynamicShortcuts(Arrays.asList(shortcut));
+
+
+            for(int i =0; i< shortcutManager.getDynamicShortcuts().size(); i++) {
+                Log.v("SHORTCUT_COUNT", "" + shortcutManager.getDynamicShortcuts().get(i).getId());
+            }
+
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putInt("SHORTCUT_TEST_VALUE", val);
+            editor.commit();
+            Log.v("SHORTCUT_VAL3", ""+ val);
+        }
+    }
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
     }
 
     // This method is used to implement the modification for the pre Searching
