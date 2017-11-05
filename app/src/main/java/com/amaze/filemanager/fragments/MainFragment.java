@@ -1590,58 +1590,50 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     private void addShortcut(LayoutElementParcelable path) {
-        //Adding shortcut for MainActivity
-        //on Home screen
-        Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
-                MainActivity.class);
-        shortcutIntent.putExtra("path", path.getDesc());
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
-        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Intent addIntent = new Intent();
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
-        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        getActivity().sendBroadcast(addIntent);
-
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+            //Adding shortcut for MainActivity
+            //on Home screen
+            Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
+                    MainActivity.class);
+            shortcutIntent.putExtra("path", path.getDesc());
+            shortcutIntent.setAction(Intent.ACTION_MAIN);
+            shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Intent addIntent = new Intent();
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                    Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
+            addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+            getActivity().sendBroadcast(addIntent);
+        } else {
             Uri file = Uri.fromFile(new File(path.getDesc()));
-
             SharedPreferences sharedpreferences = getActivity().getApplicationContext().getSharedPreferences
-                    ("SHORTCUT_TEST", Context.MODE_PRIVATE);
-            int val = sharedpreferences.getInt("SHORTCUT_TEST_VALUE", 0);
+                    ("SHORTCUT", Context.MODE_PRIVATE);
+            int val = sharedpreferences.getInt("SHORTCUT_ID", 0);
 
-
-
-            Log.v("SHORTCUT_VAL1", ""+ val);
             ShortcutInfo shortcut = new ShortcutInfo.Builder(getActivity().getApplicationContext(), "id" + val++)
-                        .setShortLabel("File")
+                        .setShortLabel(new File(path.getDesc()).getName())
                         .setLongLabel(new File(path.getDesc()).getName())
                         .setIcon(Icon.createWithResource(getActivity().getApplicationContext(), R.mipmap.ic_launcher))
                         .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(
                                 file, getMimeType(file)))
                         .build();
-            Log.v("SHORTCUT_VAL2", ""+ val);
 
+            List<ShortcutInfo> shortcuts = shortcutManager.getDynamicShortcuts();
 
-
-           // shortcutManager.setDynamicShortcuts(Arrays.asList(shortcut));
-
-            shortcutManager.addDynamicShortcuts(Arrays.asList(shortcut));
-
-
-            for(int i =0; i< shortcutManager.getDynamicShortcuts().size(); i++) {
-                Log.v("SHORTCUT_COUNT", "" + shortcutManager.getDynamicShortcuts().get(i).getId());
+             if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
+                    shortcuts.size() > 0) {
+                 // remove last
+                 shortcuts.remove(shortcuts.size() - 1);
+                 shortcuts.add(shortcuts.size() - 1, shortcut);
+                 shortcutManager.setDynamicShortcuts(shortcuts);
+            } else {
+                shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
             }
 
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt("SHORTCUT_TEST_VALUE", val);
+            editor.putInt("SHORTCUT_ID", val);
             editor.commit();
-            Log.v("SHORTCUT_VAL3", ""+ val);
         }
     }
 
