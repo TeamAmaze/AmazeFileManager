@@ -80,6 +80,7 @@ import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.LayoutElementsManager;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
@@ -143,11 +144,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public ArrayList<HybridFileParcelable> searchHelper = new ArrayList<>();
     public int no;
 
+    private static final String KEY_LAYOUT_ELEMENTS = "layoutelements";
+
     private String CURRENT_PATH = "";
-    /**
-     * This is not an exact copy of the elements in the adapter
-     */
-    private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
     private RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
     private Resources res;
@@ -392,7 +391,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void switchView() {
-        createViews(getLayoutElements(), false, CURRENT_PATH, openMode, results, checkPathIsGrid(CURRENT_PATH));
+        LayoutElementsManager manager = LayoutElementsManager.getInstance();
+        createViews(manager.getLayoutElementsClone(), false, CURRENT_PATH, openMode, results, checkPathIsGrid(CURRENT_PATH));
     }
 
     @Override
@@ -414,7 +414,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             outState.putInt("index", index);
             outState.putInt("top", top);
-            outState.putParcelableArrayList("list", getLayoutElements());
+            outState.putParcelable(KEY_LAYOUT_ELEMENTS, LayoutElementsManager.getInstance());
             outState.putString("CURRENT_PATH", CURRENT_PATH);
             outState.putBoolean("selection", selection);
             outState.putInt("openMode", openMode.ordinal());
@@ -445,13 +445,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             openMode = OpenMode.getOpenMode(savedInstanceState.getInt("openMode", 0));
             if (openMode == OpenMode.SMB)
                 smbPath = savedInstanceState.getString("SmbPath");
-            putLayoutElements(savedInstanceState.<LayoutElementParcelable>getParcelableArrayList("list"));
+            LayoutElementsManager.setInstance(savedInstanceState.getParcelable(KEY_LAYOUT_ELEMENTS));
             CURRENT_PATH = cur;
             folder_count = savedInstanceState.getInt("folder_count", 0);
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
             getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count, this);
-            createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
+            LayoutElementsManager manager = LayoutElementsManager.getInstance();
+            createViews(manager.getLayoutElementsClone(), true, (CURRENT_PATH), openMode, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
                     adapter.toggleChecked(index, null);
@@ -623,12 +624,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             computeScroll();
+            LayoutElementsManager manager = LayoutElementsManager.getInstance();
             ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
             switch (item.getItemId()) {
                 case R.id.openmulti:
-
                     try {
-
                         Intent intent_result = new Intent(Intent.ACTION_SEND_MULTIPLE);
                         ArrayList<Uri> resulturis = new ArrayList<>();
 
@@ -658,7 +658,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.delete:
-                    GeneralDialogCreation.deleteFilesDialog(getContext(), getLayoutElements(),
+                    GeneralDialogCreation.deleteFilesDialog(getContext(),
                             getMainActivity(), checkedItems, utilsProvider.getAppTheme());
                     return true;
                 case R.id.share:
@@ -667,17 +667,15 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         arrayList.add(new File(e.getDesc()));
                     }
                     if (arrayList.size() > 100)
-                        Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.share_limit), Toast.LENGTH_SHORT).show();
                     else {
-
-                        switch (getLayoutElement(0).getMode()) {
+                        switch (manager.getLayoutElement(0).getMode()) {
                             case DROPBOX:
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
-                                FileUtils.shareCloudFile(getLayoutElement(0).getDesc(),
-                                        getLayoutElement(0).getMode(), getContext());
+                                FileUtils.shareCloudFile(manager.getLayoutElement(0).getDesc(),
+                                        manager.getLayoutElement(0).getMode(), getContext());
                                 break;
                             default:
                                 FileUtils.shareFiles(arrayList, getActivity(), utilsProvider.getAppTheme(), accentColor);
@@ -1101,89 +1099,87 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void createViews(ArrayList<LayoutElementParcelable> bitmap, boolean back, String path,
                             final OpenMode openMode, boolean results, boolean grid) {
         if (bitmap != null && isAdded()) {
-            synchronized (bitmap) {
-                boolean isOtg = path.equals(OTGUtil.PREFIX_OTG + "/"),
-                            isOnTheCloud = path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                                    || path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                                    || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                                    || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
+            boolean isOtg = path.equals(OTGUtil.PREFIX_OTG + "/"),
+                    isOnTheCloud = path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            || path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
-                String goToParentText = getString(R.string.goback);
+            String goToParentText = getString(R.string.goback);
 
-                if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                        && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
-                    //create the "go to parent" button (aka '..')
-                    Drawable iconDrawable = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
-                    bitmap.add(0, new LayoutElementParcelable(iconDrawable, "..", "", "", goToParentText, 0, false, true, ""));
-                }
-              
-                if (bitmap.size() == 0 && !results) {
-                    nofilesview.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
-                    mSwipeRefreshLayout.setEnabled(false);
-                } else {
-                    mSwipeRefreshLayout.setEnabled(true);
-                    nofilesview.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
-
-                }
-                putLayoutElements(bitmap);
-                if (grid && IS_LIST)
-                    switchToGrid();
-                else if (!grid && !IS_LIST) switchToList();
-                if (adapter == null) {
-                    adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, bitmap, ma.getActivity(), SHOW_HEADERS);
-                } else {
-                    adapter.setItems(getLayoutElements());
-                }
-                stopAnims = true;
-                this.openMode = openMode;
-                if (openMode != OpenMode.CUSTOM)
-                    dataUtils.addHistoryFile(path);
-                //mSwipeRefreshLayout.setRefreshing(false);
-
-                listView.setAdapter(adapter);
-                if (!addheader) {
-                    //listView.removeItemDecoration(headersDecor);
-                    listView.removeItemDecoration(dividerItemDecoration);
-                    addheader = true;
-                }
-                if (addheader && IS_LIST) {
-                    dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
-                    listView.addItemDecoration(dividerItemDecoration);
-                    addheader = false;
-                }
-                if (!results) this.results = false;
-                CURRENT_PATH = path;
-                if (back) {
-                    if (scrolls.containsKey(CURRENT_PATH)) {
-                        Bundle b = scrolls.get(CURRENT_PATH);
-                        if (IS_LIST)
-                            mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                        else
-                            mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                    }
-                }
-
-                //floatingActionButton.show();
-                getMainActivity().updatePaths(no);
-                listView.stopScroll();
-                fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
-                mToolbarContainer.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-                    fastScroller.updateHandlePosition(verticalOffset, 112);
-                    //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
-                    //      fastScroller.updateHandlePosition();
-                });
-                fastScroller.registerOnTouchListener(() -> {
-                    if (stopAnims && adapter != null) {
-                        stopAnimation();
-                        stopAnims = false;
-                    }
-                });
-
-                startFileObserver();
-                //getMainActivity().invalidateFab(openMode);
+            if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
+                    && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
+                //create the "go to parent" button (aka '..')
+                Drawable iconDrawable = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
+                bitmap.add(0, new LayoutElementParcelable(iconDrawable, "..", "", "", goToParentText, 0, false, true, ""));
             }
+
+            if (bitmap.size() == 0 && !results) {
+                nofilesview.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setEnabled(false);
+            } else {
+                mSwipeRefreshLayout.setEnabled(true);
+                nofilesview.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+
+            }
+            LayoutElementsManager.getInstance().putLayoutElements(bitmap);
+            if (grid && IS_LIST)
+                switchToGrid();
+            else if (!grid && !IS_LIST) switchToList();
+            if (adapter == null) {
+                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, bitmap, ma.getActivity(), SHOW_HEADERS);
+            } else {
+                adapter.setItems(LayoutElementsManager.getInstance().getLayoutElementsClone());
+            }
+            stopAnims = true;
+            this.openMode = openMode;
+            if (openMode != OpenMode.CUSTOM)
+                dataUtils.addHistoryFile(path);
+            //mSwipeRefreshLayout.setRefreshing(false);
+
+            listView.setAdapter(adapter);
+            if (!addheader) {
+                //listView.removeItemDecoration(headersDecor);
+                listView.removeItemDecoration(dividerItemDecoration);
+                addheader = true;
+            }
+            if (addheader && IS_LIST) {
+                dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
+                listView.addItemDecoration(dividerItemDecoration);
+                addheader = false;
+            }
+            if (!results) this.results = false;
+            CURRENT_PATH = path;
+            if (back) {
+                if (scrolls.containsKey(CURRENT_PATH)) {
+                    Bundle b = scrolls.get(CURRENT_PATH);
+                    if (IS_LIST)
+                        mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                    else
+                        mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+                }
+            }
+
+            //floatingActionButton.show();
+            getMainActivity().updatePaths(no);
+            listView.stopScroll();
+            fastScroller.setRecyclerView(listView, IS_LIST? 1:columns);
+            mToolbarContainer.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+                fastScroller.updateHandlePosition(verticalOffset, 112);
+                //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
+                //      fastScroller.updateHandlePosition();
+            });
+            fastScroller.registerOnTouchListener(() -> {
+                if (stopAnims && adapter != null) {
+                    stopAnimation();
+                    stopAnims = false;
+                }
+            });
+
+            startFileObserver();
+            //getMainActivity().invalidateFab(openMode);
         } else {
             // list loading cancelled
             // TODO: Add support for cancelling list loading
@@ -1456,16 +1452,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     void fixIcons(boolean forceReload) {
-        if (getLayoutElements() == null) return;
+        if (LayoutElementsManager.getInstance().getLayoutElementsClone() == null) return;
         Drawable iconDrawable;
 
-        synchronized (getLayoutElements()) {
-            for (LayoutElementParcelable layoutElement : getLayoutElements()) {
-                if (forceReload || layoutElement.getImageId() == null) {
-                    iconDrawable = layoutElement.isDirectory() ?
-                            folder : Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
-                    layoutElement.setImageId(iconDrawable);
-                }
+        for (LayoutElementParcelable layoutElement : LayoutElementsManager.getInstance().getLayoutElementsClone()) {
+            if (forceReload || layoutElement.getImageId() == null) {
+                iconDrawable = layoutElement.isDirectory()?
+                        folder:Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
+                layoutElement.setImageId(iconDrawable);
             }
         }
     }
@@ -1518,7 +1512,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
 
                 layoutElement.setMode(mFile.getMode());
-                addLayoutElement(layoutElement);
+                LayoutElementsManager.getInstance().addLayoutElement(layoutElement);
                 folder_count++;
                 return layoutElement;
             } else {
@@ -1538,7 +1532,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
                             f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
                     layoutElement.setMode(mFile.getMode());
-                    addLayoutElement(layoutElement);
+                    LayoutElementsManager.getInstance().addLayoutElement(layoutElement);
                     file_count++;
                     return layoutElement;
                 } catch (Exception e) {
@@ -1614,10 +1608,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     // values, if true, new values are added to the adapter.
     public void addSearchResult(HybridFileParcelable a, String query) {
         if (listView != null) {
+            LayoutElementsManager manager = LayoutElementsManager.getInstance();
 
             // initially clearing the array for new result set
             if (!results) {
-                getLayoutElements().clear();
+                manager.clearLayoutElement();
                 file_count = 0;
                 folder_count = 0;
             }
@@ -1625,7 +1620,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             // adding new value to LIST_ELEMENTS
             LayoutElementParcelable layoutElementAdded = addTo(a);
             if (!results) {
-                createViews(getLayoutElements(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
+                createViews(manager.getLayoutElementsClone(), false, (CURRENT_PATH), openMode, false, !IS_LIST);
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
                 getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searching, query));
                 results = true;
@@ -1639,18 +1634,19 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void onSearchCompleted(final String query) {
         if (!results) {
             // no results were found
-            getLayoutElements().clear();
+            LayoutElementsManager.getInstance().clearLayoutElement();
         }
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                Collections.sort(getLayoutElements(), new FileListSorter(dsort, sortby, asc));
+                Collections.sort(LayoutElementsManager.getInstance().getLayoutElementsClone(),
+                        new FileListSorter(dsort, sortby, asc));
                 return null;
             }
 
             @Override
             public void onPostExecute(Void c) {
-                createViews(getLayoutElements(), true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
+                createViews(LayoutElementsManager.getInstance().getLayoutElementsClone(), true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
                 getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searchresults, query));
             }
@@ -1707,30 +1703,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         return (MainActivity) getActivity();
     }
 
-    public synchronized void addLayoutElement(LayoutElementParcelable layoutElement) {
-        this.LIST_ELEMENTS.add(layoutElement);
-    }
-
-    public synchronized LayoutElementParcelable getLayoutElement(int index) {
-        return this.LIST_ELEMENTS.get(index);
-    }
-
-    public synchronized void putLayoutElements(ArrayList<LayoutElementParcelable> layoutElements) {
-        this.LIST_ELEMENTS = layoutElements;
-    }
-
-    public synchronized ArrayList<LayoutElementParcelable> getLayoutElements() {
-        return this.LIST_ELEMENTS;
-    }
-
-    public synchronized int getLayoutElementSize() {
-        return this.LIST_ELEMENTS.size();
-    }
-
-    public synchronized void removeLayoutElement(int index) {
-        this.LIST_ELEMENTS.remove(index);
-    }
-
     @Override
     public void changePath(String path) {
         loadlist(path, false, openMode);
@@ -1763,63 +1735,21 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         @Override
         public void onEvent(int event, String path) {
+            long currentArrivalTime = Calendar.getInstance().getTimeInMillis();
+            LayoutElementsManager manager = LayoutElementsManager.getInstance();
 
-            synchronized (getLayoutElements()) {
-
-                long currentArrivalTime = Calendar.getInstance().getTimeInMillis();
-
-                if (currentArrivalTime-lastArrivalTime < DEFER_CONSTANT) {
-                    // defer the observer until unless it reports a change after at least 5 secs of last one
-                    // keep adding files added, if there were any, to the buffer
-
-                    switch (event) {
-                        case CREATE:
-                        case MOVED_TO:
-                            pathsAdded.add(path);
-                            break;
-                        case DELETE:
-                        case MOVED_FROM:
-                            pathsRemoved.add(path);
-                            break;
-                        case DELETE_SELF:
-                        case MOVE_SELF:
-                            getActivity().runOnUiThread(MainFragment.this::goBack);
-                            return;
-                        default:
-                            return;
-                    }
-                    return;
-                }
-
-                lastArrivalTime = currentArrivalTime;
+            if (currentArrivalTime - lastArrivalTime < DEFER_CONSTANT) {
+                // defer the observer until unless it reports a change after at least 5 secs of last one
+                // keep adding files added, if there were any, to the buffer
 
                 switch (event) {
                     case CREATE:
                     case MOVED_TO:
-                        // add path for this event first
                         pathsAdded.add(path);
-                        for (String pathAdded : pathsAdded) {
-                            HybridFile fileCreated = new HybridFile(openMode, CURRENT_PATH + "/" + pathAdded);
-                            addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
-                        }
-                        // reset the buffer after every threshold time
-                        pathsAdded = new ArrayList<>();
                         break;
                     case DELETE:
                     case MOVED_FROM:
                         pathsRemoved.add(path);
-                        for (int i = 0; i < getLayoutElementSize(); i++) {
-                            File currentFile = new File(getLayoutElement(i).getDesc());
-
-                            for (String pathRemoved : pathsRemoved) {
-
-                                if (currentFile.getName().equals(pathRemoved)) {
-                                    removeLayoutElement(i);
-                                    break;
-                                }
-                            }
-                        }
-                        pathsRemoved = new ArrayList<>();
                         break;
                     case DELETE_SELF:
                     case MOVE_SELF:
@@ -1828,27 +1758,65 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     default:
                         return;
                 }
-
-                getActivity().runOnUiThread(() -> {
-
-                    if (listView.getVisibility() == View.VISIBLE) {
-                        if (getLayoutElements().size() == 0) {
-
-                            // no item left in list, recreate views
-                            createViews(getLayoutElements(), true, CURRENT_PATH, openMode, results, !IS_LIST);
-                        } else {
-
-                            // we already have some elements in list view, invalidate the adapter
-                            adapter.setItems(getLayoutElements());
-                        }
-                    } else {
-                        // there was no list view, means the directory was empty
-                        loadlist(CURRENT_PATH, true, openMode);
-                    }
-
-                    computeScroll();
-                });
+                return;
             }
+
+            lastArrivalTime = currentArrivalTime;
+
+            switch (event) {
+                case CREATE:
+                case MOVED_TO:
+                    // add path for this event first
+                    pathsAdded.add(path);
+                    for (String pathAdded : pathsAdded) {
+                        HybridFile fileCreated = new HybridFile(openMode, CURRENT_PATH + "/" + pathAdded);
+                        manager.addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
+                    }
+                    // reset the buffer after every threshold time
+                    pathsAdded = new ArrayList<>();
+                    break;
+                case DELETE:
+                case MOVED_FROM:
+                    pathsRemoved.add(path);
+                    for (int i = 0; i < manager.getLayoutElementSize(); i++) {
+                        File currentFile = new File(manager.getLayoutElement(i).getDesc());
+
+                        for (String pathRemoved : pathsRemoved) {
+
+                            if (currentFile.getName().equals(pathRemoved)) {
+                                manager.removeLayoutElement(i);
+                                break;
+                            }
+                        }
+                    }
+                    pathsRemoved = new ArrayList<>();
+                    break;
+                case DELETE_SELF:
+                case MOVE_SELF:
+                    getActivity().runOnUiThread(MainFragment.this::goBack);
+                    return;
+                default:
+                    return;
+            }
+
+            getActivity().runOnUiThread(() -> {
+                if (listView.getVisibility() == View.VISIBLE) {
+                    ArrayList<LayoutElementParcelable> elements = LayoutElementsManager.getInstance().getLayoutElementsClone();
+
+                    if (LayoutElementsManager.getInstance().getLayoutElementSize() == 0) {
+                        // no item left in list, recreate views
+                        createViews(elements, true, CURRENT_PATH, openMode, results, !IS_LIST);
+                    } else {
+                        // we already have some elements in list view, invalidate the adapter
+                        adapter.setItems(elements);
+                    }
+                } else {
+                    // there was no list view, means the directory was empty
+                    loadlist(CURRENT_PATH, true, openMode);
+                }
+
+                computeScroll();
+            });
         }
 
     }

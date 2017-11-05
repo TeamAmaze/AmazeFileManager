@@ -36,6 +36,7 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
@@ -72,7 +73,7 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     private int offset = 0;
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
-                           ArrayList<LayoutElementParcelable> itemsRaw, Context context, boolean showHeaders) {
+                           List<LayoutElementParcelable> itemsRaw, Context context, boolean showHeaders) {
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
@@ -270,11 +271,11 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
         notifyItemInserted(getItemCount());
     }
 
-    public void setItems(ArrayList<LayoutElementParcelable> arrayList) {
+    public void setItems(List<LayoutElementParcelable> arrayList) {
         setItems(arrayList, true);
     }
 
-    private void setItems(ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+    private void setItems(List<LayoutElementParcelable> arrayList, boolean invalidate) {
         synchronized (arrayList) {
             itemsDigested.clear();
             offset = 0;

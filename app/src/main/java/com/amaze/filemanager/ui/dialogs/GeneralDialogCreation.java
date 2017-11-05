@@ -122,8 +122,8 @@ public class GeneralDialogCreation {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static void deleteFilesDialog(final Context c, final ArrayList<LayoutElementParcelable> layoutElements,
-                                         final MainActivity mainActivity, final List<LayoutElementParcelable> positions,
+    public static void deleteFilesDialog(final Context c, final MainActivity mainActivity,
+                                         final List<LayoutElementParcelable> positions,
                                          AppTheme appTheme) {
 
         final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
