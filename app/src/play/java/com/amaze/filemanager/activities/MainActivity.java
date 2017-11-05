@@ -100,6 +100,7 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.LayoutElementsManager;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -111,7 +112,6 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -2353,8 +2353,8 @@ public class MainActivity extends ThemedActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.getCurrentPath(),
-                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.createViews(LayoutElementsManager.getInstance().getLayoutElementsClone(), false,
+                mainFragment.getCurrentPath(), mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 

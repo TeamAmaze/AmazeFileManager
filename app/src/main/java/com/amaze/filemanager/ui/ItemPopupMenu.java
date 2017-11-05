@@ -116,9 +116,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.delete:
                 ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
                 positions.add(rowItem);
-                GeneralDialogCreation.deleteFilesDialog(context,
-                        mainFragment.getLayoutElements(),
-                        mainFragment.getMainActivity(),
+                GeneralDialogCreation.deleteFilesDialog(context, mainFragment.getMainActivity(),
                         positions, utilitiesProvider.getAppTheme());
                 return true;
             case R.id.open_with:
