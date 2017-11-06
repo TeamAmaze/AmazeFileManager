@@ -1607,6 +1607,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getActivity().sendBroadcast(addIntent);
         } else {
             Uri file = Uri.fromFile(new File(path.getDesc()));
+
             SharedPreferences sharedpreferences = getActivity().getApplicationContext().getSharedPreferences
                     ("SHORTCUT", Context.MODE_PRIVATE);
             int val = sharedpreferences.getInt("SHORTCUT_ID", 0);
@@ -1617,13 +1618,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         .setShortLabel(new File(path.getDesc()).getName())
                         .setLongLabel(new File(path.getDesc()).getName())
                         .setIcon(Icon.createWithResource(getActivity().getApplicationContext(), R.mipmap.ic_launcher))
-                        .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(
-                                file, mimeType))
+                        .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(file, mimeType))
                         .build();
 
             List<ShortcutInfo> shortcuts = shortcutManager.getDynamicShortcuts();
 
-             if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
+            if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
                     shortcuts.size() > 0) {
                  // remove last
                  shortcuts.remove(shortcuts.size() - 1);
