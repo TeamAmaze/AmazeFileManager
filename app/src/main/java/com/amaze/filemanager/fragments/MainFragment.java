@@ -1611,12 +1611,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     ("SHORTCUT", Context.MODE_PRIVATE);
             int val = sharedpreferences.getInt("SHORTCUT_ID", 0);
 
+            String mimeType = (getMimeType(file) == null? "*/*": getMimeType(file));
+
             ShortcutInfo shortcut = new ShortcutInfo.Builder(getActivity().getApplicationContext(), "id" + val++)
                         .setShortLabel(new File(path.getDesc()).getName())
                         .setLongLabel(new File(path.getDesc()).getName())
                         .setIcon(Icon.createWithResource(getActivity().getApplicationContext(), R.mipmap.ic_launcher))
                         .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(
-                                file, getMimeType(file)))
+                                file, mimeType))
                         .build();
 
             List<ShortcutInfo> shortcuts = shortcutManager.getDynamicShortcuts();
