@@ -37,6 +37,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String TABLE_GRID = "grid";
     private static final String TABLE_BOOKMARKS = "bookmarks";
     private static final String TABLE_SMB = "smb";
+    private static final String TABLE_SSHHOSTS = "ssh_hosts";
     private static final String TABLE_SFTP = "sftp";
 
     private static final String COLUMN_ID = "_id";
@@ -78,11 +79,15 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT"
                 + ")";
+        String querySshHostKeys = "CREATE TABLE IF NOT EXISTS " + TABLE_SSHHOSTS + " ("
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_NAME + " TEXT,"
+                + COLUMN_HOST_PUBKEY + " TEXT"
+                + ")";
         String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT,"
-                + COLUMN_HOST_PUBKEY + " TEXT,"
                 + COLUMN_PRIVATE_KEY + " TEXT,"
                 + ")";
 
@@ -92,6 +97,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
+        db.execSQL(querySshHostKeys);
         db.execSQL(querySftp);
     }
 
@@ -103,6 +109,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRID);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKMARKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMB);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SSHHOSTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SFTP);
 
         onCreate(db);
@@ -115,6 +122,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         GRID,
         BOOKMARKS,
         SMB,
+        SSHHOSTS,
         SFTP
     }
 
@@ -231,6 +239,30 @@ public class UtilsHandler extends SQLiteOpenHelper {
         return row;
     }
 
+    public String getSshHostKey(String host, int port)
+    {
+        return getSshHostKey(host+":"+port);
+    }
+
+    public String getSshHostKey(String hostAndPort)
+    {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor result = sqLiteDatabase.query(TABLE_SSHHOSTS, new String[]{COLUMN_NAME}, COLUMN_NAME + " = ?", new String[]{hostAndPort}, null, null, COLUMN_NAME);
+        if(result.moveToFirst())
+        {
+            try {
+                return result.getString(0);
+            }
+            finally {
+                result.close();
+            }
+        }
+        else {
+            result.close();
+            return null;
+        }
+    }
+
     public void removeHistoryPath(String path) {
         removePath(Operation.HISTORY, path);
     }
@@ -307,6 +339,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public void clearSshTable() { clearTable(Operation.SFTP); }
+
+    public void clearSshHostsTable() { clearTable(Operation.SSHHOSTS); }
 
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
@@ -420,6 +454,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 return TABLE_SMB;
             case SFTP:
                 return TABLE_SFTP;
+            case SSHHOSTS:
+                return TABLE_SSHHOSTS;
             default:
                 return null;
         }
