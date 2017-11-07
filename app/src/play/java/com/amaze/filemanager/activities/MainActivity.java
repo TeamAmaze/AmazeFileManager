@@ -397,7 +397,7 @@ public class MainActivity extends ThemedActivity implements
 
                     if (uri != null) {
 
-                        path = uri.getPath();
+                        path = Utils.sanitizeInput(uri.getPath());
                     } else {
                         // no data field, open home for the tab in later processing
                         path = null;
@@ -405,7 +405,7 @@ public class MainActivity extends ThemedActivity implements
                 } else {
                     // we don't have folder resource mime type set, supposed to be zip/rar
                     openzip = true;
-                    zippath = uri.toString();
+                    zippath = Utils.sanitizeInput(uri.toString());
                 }
 
             } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
