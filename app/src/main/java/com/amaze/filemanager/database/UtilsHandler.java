@@ -88,7 +88,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT,"
-                + COLUMN_PRIVATE_KEY + " TEXT,"
+                + COLUMN_PRIVATE_KEY + " TEXT"
                 + ")";
 
         db.execSQL(queryHistory);
