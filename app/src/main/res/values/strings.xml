@@ -683,4 +683,7 @@
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
     <string name="scp_con">SCP/SFTP Connection</string>
     <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">The authenticity of host \'%s\' can\'t be established.\n\n%s key fingerprint is %s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
+    <string name="ssh_select_pem_button">SSH Private Key</string>
 </resources>

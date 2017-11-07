@@ -113,7 +113,10 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 
     //SFTP
-    compile 'com.hierynomus:sshj:0.21.1'
+    compile 'com.hierynomus:sshj:0.23.0'
+
+    compile 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
+    compile 'com.madgag.spongycastle:prov:1.58.0.0'
 }
 
 configurations.all {
