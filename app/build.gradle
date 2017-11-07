@@ -75,7 +75,7 @@ dependencies {
     compile 'org.apache.commons:commons-compress:1.10'
 
     // Google Play Services
-    playCompile 'com.google.android.gms:play-services-plus:10.2.6'
+    playCompile 'com.google.android.gms:play-services-plus:11.4.0'
 
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.junrar:junrar:0.7'
@@ -114,6 +114,14 @@ dependencies {
 
     //SFTP
     compile 'com.hierynomus:sshj:0.21.1'
+}
+
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
+        }
+    }
 }
 
 def Properties props = new Properties()
