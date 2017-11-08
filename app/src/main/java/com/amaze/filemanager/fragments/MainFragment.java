@@ -1023,14 +1023,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             loadFilesListTask.cancel(true);
         }
 
-        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,
-                new OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>>() {
-            @Override
-            public void onAsyncTaskFinished(Pair<OpenMode, ArrayList<LayoutElementParcelable>> data) {
-                if(data.second != null) {
-                    createViews(data.second, back, path, data.first, false, checkPathIsGrid(path));
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,(data) -> {
+            if (data.second != null) {
+                createViews(data.second, back, path, data.first, false, checkPathIsGrid(path));
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
         loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
