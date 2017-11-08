@@ -35,14 +35,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaScannerConnection;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileObserver;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
@@ -74,10 +73,12 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
+import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
@@ -99,7 +100,6 @@ import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -112,7 +112,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1192,29 +1191,28 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     private void startFileObserver() {
+        switch (openMode) {
+            case ROOT:
+            case FILE:
+                // watch the current directory
+                File file = new File(CURRENT_PATH);
 
-        AppConfig.runInBackground(() -> {
-            switch (openMode) {
-                case ROOT:
-                case FILE:
-                    // watch the current directory
-                    File file = new File(CURRENT_PATH);
+                if (file.isDirectory() && file.canRead()) {
 
-                    if (file.isDirectory() && file.canRead()) {
-
-                        if (customFileObserver != null) {
-                            // already a watcher instantiated, first it should be stopped
-                            customFileObserver.stopWatching();
-                        }
-
-                        customFileObserver = new CustomFileObserver(CURRENT_PATH);
-                        customFileObserver.startWatching();
+                    if (customFileObserver != null) {
+                        // already a watcher instantiated, first it should be stopped
+                        customFileObserver.stopWatching();
+                        customFileObserver = null;
                     }
-                    break;
-                default:
-                    break;
-            }
-        });
+
+                    customFileObserver = new CustomFileObserver(CURRENT_PATH,
+                            new FileHandler(this, utilsProvider, listView));
+                    customFileObserver.startWatching();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -1746,110 +1744,4 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         return R.drawable.root;
     }
 
-    /**
-     * Inner class which monitors any change in local filesystem and updates the adapter
-     * Makes use of inotify in Linux
-     */
-    private class CustomFileObserver extends FileObserver {
-
-        CustomFileObserver(String path) {
-            super(path);
-        }
-
-        private long lastArrivalTime = 0l;
-        private static final int DEFER_CONSTANT = 5000;
-        private ArrayList<String> pathsAdded = new ArrayList<>();
-        private ArrayList<String> pathsRemoved = new ArrayList<>();
-
-        @Override
-        public void onEvent(int event, String path) {
-
-            synchronized (getLayoutElements()) {
-
-                long currentArrivalTime = Calendar.getInstance().getTimeInMillis();
-
-                if (currentArrivalTime-lastArrivalTime < DEFER_CONSTANT) {
-                    // defer the observer until unless it reports a change after at least 5 secs of last one
-                    // keep adding files added, if there were any, to the buffer
-
-                    switch (event) {
-                        case CREATE:
-                        case MOVED_TO:
-                            pathsAdded.add(path);
-                            break;
-                        case DELETE:
-                        case MOVED_FROM:
-                            pathsRemoved.add(path);
-                            break;
-                        case DELETE_SELF:
-                        case MOVE_SELF:
-                            getActivity().runOnUiThread(MainFragment.this::goBack);
-                            return;
-                        default:
-                            return;
-                    }
-                    return;
-                }
-
-                lastArrivalTime = currentArrivalTime;
-
-                switch (event) {
-                    case CREATE:
-                    case MOVED_TO:
-                        // add path for this event first
-                        pathsAdded.add(path);
-                        for (String pathAdded : pathsAdded) {
-                            HybridFile fileCreated = new HybridFile(openMode, CURRENT_PATH + "/" + pathAdded);
-                            addLayoutElement(fileCreated.generateLayoutElement(MainFragment.this, utilsProvider));
-                        }
-                        // reset the buffer after every threshold time
-                        pathsAdded = new ArrayList<>();
-                        break;
-                    case DELETE:
-                    case MOVED_FROM:
-                        pathsRemoved.add(path);
-                        for (int i = 0; i < getLayoutElementSize(); i++) {
-                            File currentFile = new File(getLayoutElement(i).getDesc());
-
-                            for (String pathRemoved : pathsRemoved) {
-
-                                if (currentFile.getName().equals(pathRemoved)) {
-                                    removeLayoutElement(i);
-                                    break;
-                                }
-                            }
-                        }
-                        pathsRemoved = new ArrayList<>();
-                        break;
-                    case DELETE_SELF:
-                    case MOVE_SELF:
-                        getActivity().runOnUiThread(MainFragment.this::goBack);
-                        return;
-                    default:
-                        return;
-                }
-
-                getActivity().runOnUiThread(() -> {
-
-                    if (listView.getVisibility() == View.VISIBLE) {
-                        if (getLayoutElements().size() == 0) {
-
-                            // no item left in list, recreate views
-                            createViews(getLayoutElements(), true, CURRENT_PATH, openMode, results, !IS_LIST);
-                        } else {
-
-                            // we already have some elements in list view, invalidate the adapter
-                            adapter.setItems(getLayoutElements());
-                        }
-                    } else {
-                        // there was no list view, means the directory was empty
-                        loadlist(CURRENT_PATH, true, openMode);
-                    }
-
-                    computeScroll();
-                });
-            }
-        }
-
-    }
 }
