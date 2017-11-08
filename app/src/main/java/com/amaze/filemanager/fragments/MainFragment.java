@@ -42,6 +42,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -67,6 +68,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -171,8 +173,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
     private MediaScannerConnection mediaScannerConnection;
-
-    ShortcutManager shortcutManager;
+    private ShortcutManager shortcutManager;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -182,6 +183,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * any of the search result
      */
     private boolean mRetainSearchTask = false;
+
+    private static final String KEY_PREFERENCES_SHORTCUT_ID = "SHORTCUT_ID";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1596,7 +1599,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             //on Home screen
             Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
                     MainActivity.class);
-            shortcutIntent.putExtra("path", path.getDesc());
+            shortcutIntent.putExtra(MainActivity.ARGS_INTENT_ACTION_VIEW_KEY_PATH, path.getDesc());
             shortcutIntent.setAction(Intent.ACTION_MAIN);
             shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             Intent addIntent = new Intent();
@@ -1609,9 +1612,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         } else {
             Uri file = Uri.fromFile(new File(path.getDesc()));
 
-            SharedPreferences sharedpreferences = getActivity().getApplicationContext().getSharedPreferences
-                    ("SHORTCUT", Context.MODE_PRIVATE);
-            int val = sharedpreferences.getInt("SHORTCUT_ID", 0);
+            int val = sharedPref.getInt(KEY_PREFERENCES_SHORTCUT_ID, 0);
 
             String mimeType = (getMimeType(file) == null? "*/*": getMimeType(file));
 
@@ -1629,38 +1630,22 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
                     shortcuts.size() > 0) {
 
-                // maximum limit reached. Ask user if they want to replace shortcut.
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Maximum Shortcut Limit Reached. Please confirm " +
-                        "if you would like to replace the existing shortcuts")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // remove last
-                                shortcuts.remove(shortcuts.size() - 1);
-                                shortcuts.add(shortcuts.size() - 1, shortcut);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                                    shortcutManager.setDynamicShortcuts(shortcuts);
-                                }
-                            }
-                        })
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                return;
-                            }
-                        });
-                // Create the AlertDialog object and return it
-                builder.create();
-
-                builder.show();
+                GeneralDialogCreation.showShortcutFailDialog(getMainActivity(), () -> {
+                    // remove last
+                    shortcuts.remove(shortcuts.size() - 1);
+                    shortcuts.add(shortcuts.size() - 1, shortcut);
+                    return shortcutManager.setDynamicShortcuts(shortcuts);
+                });
             } else {
                 shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
             }
 
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt("SHORTCUT_ID", val);
-            editor.commit();
+            sharedPref.edit().putInt(KEY_PREFERENCES_SHORTCUT_ID, val).apply();
         }
+    }
+
+    public interface Shortcut {
+        boolean replaceShortcut();
     }
 
     public String getMimeType(Uri uri) {

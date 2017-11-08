@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
@@ -68,6 +70,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Predicate;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -538,6 +541,28 @@ public class GeneralDialogCreation {
 
         builder.onNegative((dialog, which) -> dialog.cancel());
 
+        builder.show();
+    }
+
+    public static void showShortcutFailDialog(MainActivity mainActivity, MainFragment.Shortcut shortcut) {
+        // maximum limit reached. Ask user if they want to replace shortcut.
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+        builder.title(mainActivity.getResources().getString(R.string.shortcut_failed_add));
+        builder.content(mainActivity.getResources().getString(R.string.shortcut_failed_count_exceed));
+
+        builder.onPositive((dialog, which) -> {
+
+            boolean success = shortcut.replaceShortcut();
+            AppConfig.toast(mainActivity, success ?
+                    mainActivity.getResources().getString(R.string.done) :
+                    mainActivity.getResources().getString(R.string.shortcut_failed_add)
+            );
+        });
+
+        builder.positiveText(mainActivity.getResources().getString(R.string.ok));
+        builder.positiveColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
+        builder.negativeText(mainActivity.getResources().getString(R.string.cancel));
+        builder.negativeColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
         builder.show();
     }
 
