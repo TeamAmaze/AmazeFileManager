@@ -46,15 +46,15 @@ public class FileHandler extends Handler {
             case CustomFileObserver.NEW_ITEM:
                 HybridFile fileCreated = new HybridFile(main.openMode,
                         main.getCurrentPath() + "/" + path);
-                main.addLayoutElement(fileCreated.generateLayoutElement(main,
+                main.getElementsList().add(fileCreated.generateLayoutElement(main,
                         utilsProvider));
                 break;
             case CustomFileObserver.DELETED_ITEM:
-                for (int i = 0; i < main.getLayoutElementSize(); i++) {
-                    File currentFile = new File(main.getLayoutElement(i).getDesc());
+                for (int i = 0; i < main.getElementsList().size(); i++) {
+                    File currentFile = new File(main.getElementsList().get(i).getDesc());
 
                     if (currentFile.getName().equals(path)) {
-                        main.removeLayoutElement(i);
+                        main.getElementsList().remove(i);
                         break;
                     }
                 }
@@ -65,13 +65,13 @@ public class FileHandler extends Handler {
         }
 
         if (listView.getVisibility() == View.VISIBLE) {
-            if (main.getLayoutElements().size() == 0) {
+            if (main.getElementsList().size() == 0) {
                 // no item left in list, recreate views
-                main.createViews(main.getLayoutElements(), true, main.getCurrentPath(),
+                main.createViews(main.getElementsList(), true, main.getCurrentPath(),
                         main.openMode, main.results, !main.IS_LIST);
             } else {
                 // we already have some elements in list view, invalidate the adapter
-                ((RecyclerAdapter) listView.getAdapter()).setItems(main.getLayoutElements());
+                ((RecyclerAdapter) listView.getAdapter()).setItems(main.getElementsList());
             }
         } else {
             // there was no list view, means the directory was empty

@@ -111,7 +111,6 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -2353,7 +2352,7 @@ public class MainActivity extends ThemedActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.getCurrentPath(),
+        mainFragment.createViews(mainFragment.getElementsList(), false, mainFragment.getCurrentPath(),
                 mainFragment.openMode, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
