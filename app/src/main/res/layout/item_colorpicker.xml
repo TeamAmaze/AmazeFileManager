@@ -25,7 +25,7 @@
         android:textAppearance="@android:style/TextAppearance.Widget.TextView"
         android:layout_alignBottom="@+id/select"/>
 
-    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.CircularColorsView
+    <com.amaze.filemanager.ui.views.CircularColorsView
         android:id="@+id/circularColorsView"
         android:layout_width="100dp"
         android:layout_height="50dp"

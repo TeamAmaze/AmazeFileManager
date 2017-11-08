@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.ColorPickerDialog
+    <com.amaze.filemanager.ui.dialogs.ColorPickerDialog
         android:key="preselectedconfigs"
         android:title="@string/preselectedconfigs_title"/>
-    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.InvalidablePreferenceCategory
+    <com.amaze.filemanager.ui.views.preference.InvalidablePreferenceCategory
         android:key="category"
         android:title="@string/customize">
         <Preference
@@ -22,5 +22,5 @@
             android:key="icon_skin"
             android:title="@string/icon_color_title"
             android:summary="@string/icon_color_summary"/>
-    </com.amaze.filemanager.fragments.preference_fragments.specialpreferences.InvalidablePreferenceCategory>
+    </com.amaze.filemanager.ui.views.preference.InvalidablePreferenceCategory>
 </PreferenceScreen>

@@ -1,4 +1,4 @@
-package com.amaze.filemanager.fragments.preference_fragments.specialpreferences;
+package com.amaze.filemanager.ui.dialogs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.views.CircularColorsView;
+import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 

@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="horizontal">
 
-    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.CircularColorsView
+    <com.amaze.filemanager.ui.views.CircularColorsView
         android:id="@+id/colorsection"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

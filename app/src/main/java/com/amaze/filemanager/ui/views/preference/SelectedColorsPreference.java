@@ -1,4 +1,4 @@
-package com.amaze.filemanager.fragments.preference_fragments.specialpreferences;
+package com.amaze.filemanager.ui.views.preference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.views.CircularColorsView;
 
 /**
  * @author Emmanuel

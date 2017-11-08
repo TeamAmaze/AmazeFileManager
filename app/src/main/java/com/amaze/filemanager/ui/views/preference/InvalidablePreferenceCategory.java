@@ -1,4 +1,4 @@
-package com.amaze.filemanager.fragments.preference_fragments.specialpreferences;
+package com.amaze.filemanager.ui.views.preference;
 
 import android.content.Context;
 import android.preference.PreferenceCategory;

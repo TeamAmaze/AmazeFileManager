@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.fragments.preference_fragments.specialpreferences.ColorPickerDialog;
+import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
