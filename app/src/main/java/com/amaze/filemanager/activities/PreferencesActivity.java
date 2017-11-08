@@ -76,11 +76,11 @@ public class PreferencesActivity extends ThemedActivity {
         setContentView(R.layout.prefsfrag);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        invalidateActionBar();
+        invalidateRecentsColorAndIcon();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_HOME_AS_UP | android.support.v7.app.ActionBar.DISPLAY_SHOW_TITLE);
-        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
-        invalidateStatusBar();
+        invalidateToolbarColor();
+        invalidateNavBar();
 
         if (savedInstanceState != null){
             selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
@@ -146,7 +146,7 @@ public class PreferencesActivity extends ThemedActivity {
         changed = true;
     }
 
-    public void invalidateActionBar() {
+    public void invalidateRecentsColorAndIcon() {
         if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
@@ -155,7 +155,11 @@ public class PreferencesActivity extends ThemedActivity {
         }
     }
 
-    public void invalidateStatusBar() {
+    public void invalidateToolbarColor() {
+        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+    }
+
+    public void invalidateNavBar() {
         if (SDK_INT == 20 || SDK_INT == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);

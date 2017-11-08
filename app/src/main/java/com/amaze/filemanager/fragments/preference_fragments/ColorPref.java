@@ -106,8 +106,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     public boolean onPreferenceClick(final Preference preference) {
         switch(preference.getKey()) {
             case KEY_COLOREDNAV:
-                if (activity != null) activity.setChanged();
-                invalidateEverything();
+                activity.invalidateNavBar();
                 break;
             case PreferencesConstants.PREFERENCE_SKIN:
             case PreferencesConstants.PREFERENCE_SKIN_TWO:
@@ -215,8 +214,9 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     }
 
     private void invalidateEverything() {
-        activity.invalidateActionBar();
-        activity.invalidateStatusBar();
+        activity.invalidateRecentsColorAndIcon();
+        activity.invalidateToolbarColor();
+        activity.invalidateNavBar();
         if(currentSection == SECTION_1) {
             ColorPickerDialog selectedColors = (ColorPickerDialog) findPreference(KEY_PRESELECTED_CONFIGS);
             if (selectedColors != null) {
