@@ -84,8 +84,10 @@ public class PreferencesActivity extends ThemedActivity {
 
         if (savedInstanceState != null){
             selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+        } else if(getIntent().getExtras() != null) {
+            selectItem(getIntent().getExtras().getInt(KEY_CURRENT_FRAG_OPEN));
         } else {
-            selectItem(selectedItem);
+            selectItem(0);
         }
     }
 
@@ -146,6 +148,10 @@ public class PreferencesActivity extends ThemedActivity {
         changed = true;
     }
 
+    public boolean getChanged() {
+        return changed;
+    }
+
     public void invalidateRecentsColorAndIcon() {
         if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
@@ -194,16 +200,20 @@ public class PreferencesActivity extends ThemedActivity {
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
+        if(selectedItem != START_PREFERENCE) {
+            Intent i = activity.getIntent();
+            i.putExtra(KEY_CURRENT_FRAG_OPEN, selectedItem);
+        }
         activity.startActivity(activity.getIntent());
     }
 
     /**
      * When a Preference (that requires an independent fragment) is selected this is called.
-     * @param i the Preference in question
+     * @param item the Preference in question
      */
-    public void selectItem(int i) {
-        selectedItem = i;
-        switch (i) {
+    public void selectItem(int item) {
+        selectedItem = item;
+        switch (item) {
             case START_PREFERENCE:
                 loadPrefFragment(new PrefFrag(), R.string.setting);
                 break;
@@ -230,4 +240,5 @@ public class PreferencesActivity extends ThemedActivity {
         t.commit();
         getSupportActionBar().setTitle(titleBarName);
     }
+
 }

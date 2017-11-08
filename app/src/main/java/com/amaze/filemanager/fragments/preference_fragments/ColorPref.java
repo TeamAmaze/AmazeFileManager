@@ -170,6 +170,10 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     }
 
     private void loadSection0() {
+        if(((PreferencesActivity) getActivity()).getChanged()) {
+            ((PreferencesActivity) getActivity()).restartPC(getActivity());
+        }
+
         addPreferencesFromResource(R.xml.color_prefs);
         if (Build.VERSION.SDK_INT >= 21) {
             findPreference(KEY_COLOREDNAV).setEnabled(true);
