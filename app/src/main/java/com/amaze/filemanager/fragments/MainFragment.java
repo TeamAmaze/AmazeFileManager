@@ -1423,7 +1423,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             (getActivity()).registerReceiver(decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
         }
-        //startFileObserver();
+        startFileObserver();
         fixIcons(false);
     }
 
