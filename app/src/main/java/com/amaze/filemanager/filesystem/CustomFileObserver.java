@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem;
 
 import android.os.FileObserver;
 import android.os.Handler;
+import android.os.Message;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ public class CustomFileObserver extends FileObserver {
      */
     private static final int IN_IGNORED = 0x00008000;
     private static final int DEFER_CONSTANT = 5000;
+    private static final int MASK = CREATE | MOVED_TO | DELETE | MOVED_FROM | DELETE_SELF | MOVE_SELF;
 
     private long lastMessagedTime = 0L;
     private boolean messagingScheduled = false;
@@ -36,7 +38,7 @@ public class CustomFileObserver extends FileObserver {
     private ArrayList<String> pathsRemoved = new ArrayList<>();
 
     public CustomFileObserver(String path, Handler handler) {
-        super(path);
+        super(path, MASK);
         this.path = path;
         this.handler = handler;
     }
