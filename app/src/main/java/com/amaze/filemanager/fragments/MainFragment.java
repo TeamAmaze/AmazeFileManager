@@ -48,6 +48,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -1623,12 +1624,35 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             List<ShortcutInfo> shortcuts = shortcutManager.getDynamicShortcuts();
 
+            // Checking for one less than the max allowed shortcuts per activity
+            // because only 4 shortcuts are shown at max.
             if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
                     shortcuts.size() > 0) {
-                 // remove last
-                 shortcuts.remove(shortcuts.size() - 1);
-                 shortcuts.add(shortcuts.size() - 1, shortcut);
-                 shortcutManager.setDynamicShortcuts(shortcuts);
+
+                // maximum limit reached. Ask user if they want to replace shortcut.
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Maximum Shortcut Limit Reached. Please confirm " +
+                        "if you would like to replace the existing shortcuts")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // remove last
+                                shortcuts.remove(shortcuts.size() - 1);
+                                shortcuts.add(shortcuts.size() - 1, shortcut);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                                    shortcutManager.setDynamicShortcuts(shortcuts);
+                                }
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                return;
+                            }
+                        });
+                // Create the AlertDialog object and return it
+                builder.create();
+
+                builder.show();
             } else {
                 shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
             }
