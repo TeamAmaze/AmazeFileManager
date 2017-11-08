@@ -167,6 +167,15 @@ public class UtilsHandler extends SQLiteOpenHelper {
         setPath(Operation.SMB, name, path);
     }
 
+    public void addSshHostKey(String hostAndPort, String hostKey) {
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, hostAndPort);
+        values.put(COLUMN_HOST_PUBKEY, hostKey);
+
+        database.insert(getTableForOperation(Operation.SSHHOSTS), null, values);
+    }
+
     public ArrayList<String> getHistoryList() {
         return getPath(Operation.HISTORY);
     }
