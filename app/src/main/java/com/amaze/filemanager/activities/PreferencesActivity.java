@@ -104,7 +104,7 @@ public class PreferencesActivity extends ThemedActivity {
         }
 
         if (selectedItem != START_PREFERENCE && changed) {
-            restartPC(this);
+            restartActivity(this);
         } else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
         } else {
@@ -123,7 +123,7 @@ public class PreferencesActivity extends ThemedActivity {
                 if(currentFragment.onOptionsItemSelected(item)) return true;
 
                 if (selectedItem != START_PREFERENCE && changed) {
-                    restartPC(this);
+                    restartActivity(this);
                 } else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
                 } else {
@@ -192,7 +192,11 @@ public class PreferencesActivity extends ThemedActivity {
         if (getAppTheme().equals(AppTheme.BLACK)) getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
     }
 
-    public void restartPC(final Activity activity) {
+    /**
+     * This 'elegantly' destroys the activity and recreates it so that the different widgets and texts
+     * change their inner states's colors.
+     */
+    public void restartActivity(final Activity activity) {
         if (activity == null) throw new NullPointerException();
 
         final int enter_anim = android.R.anim.fade_in;

@@ -171,7 +171,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     private void loadSection0() {
         if(((PreferencesActivity) getActivity()).getChanged()) {
-            ((PreferencesActivity) getActivity()).restartPC(getActivity());
+            ((PreferencesActivity) getActivity()).restartActivity(getActivity());
         }
 
         addPreferencesFromResource(R.xml.color_prefs);
