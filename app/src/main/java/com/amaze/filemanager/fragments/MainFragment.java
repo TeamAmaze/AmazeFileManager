@@ -1187,11 +1187,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         switch (openMode) {
             case ROOT:
             case FILE:
-                // watch the current directory
+                if(customFileObserver != null && !customFileObserver.wasStopped()
+                        && customFileObserver.getPath().equals(getCurrentPath())) {
+                    return;
+                }
+
                 File file = new File(CURRENT_PATH);
 
                 if (file.isDirectory() && file.canRead()) {
-
                     if (customFileObserver != null) {
                         // already a watcher instantiated, first it should be stopped
                         customFileObserver.stopWatching();

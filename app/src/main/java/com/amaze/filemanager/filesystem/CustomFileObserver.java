@@ -19,22 +19,49 @@ public class CustomFileObserver extends FileObserver {
      */
     public static final int GOBACK = -1, NEW_ITEM = 0, DELETED_ITEM = 1;
 
+    /**
+     * When the bserver stops observing this event is recieved
+     * Check: http://rswiki.csie.org/lxr/http/source/include/linux/inotify.h?a=m68k#L45
+     */
+    private static final int IN_IGNORED = 0x00008000;
     private static final int DEFER_CONSTANT = 5000;
 
     private long lastMessagedTime = 0L;
     private boolean messagingScheduled = false;
+    private boolean wasStopped = false;
 
     private Handler handler;
+    private String path;
     private ArrayList<String> pathsAdded = new ArrayList<>();
     private ArrayList<String> pathsRemoved = new ArrayList<>();
 
     public CustomFileObserver(String path, Handler handler) {
         super(path);
+        this.path = path;
         this.handler = handler;
+    }
+
+    public boolean wasStopped() {
+        return wasStopped;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public void stopWatching() {
+        wasStopped = true;
+        super.stopWatching();
     }
 
     @Override
     public void onEvent(int event, String path) {
+        if(event == IN_IGNORED) {
+            wasStopped = true;
+            return;
+        }
+
         long deltaTime = Calendar.getInstance().getTimeInMillis() - lastMessagedTime;
 
         switch (event) {
