@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.CryptException;
+import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
@@ -250,13 +251,17 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public String getSshHostKey(String host, int port)
     {
-        return getSshHostKey(host+":"+port);
+        StringBuilder sb = new StringBuilder(host);
+        if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
+            sb.append(':').append(port);
+
+        return getSshHostKey(sb.toString());
     }
 
     public String getSshHostKey(String hostAndPort)
     {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        Cursor result = sqLiteDatabase.query(TABLE_SSHHOSTS, new String[]{COLUMN_NAME}, COLUMN_NAME + " = ?", new String[]{hostAndPort}, null, null, COLUMN_NAME);
+        Cursor result = sqLiteDatabase.query(TABLE_SSHHOSTS, new String[]{COLUMN_HOST_PUBKEY}, COLUMN_NAME + " = ?", new String[]{hostAndPort}, null, null, COLUMN_NAME);
         if(result.moveToFirst())
         {
             try {
