@@ -24,6 +24,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.services.ssh.SFtpClientUtils;
+import com.amaze.filemanager.services.ssh.SshConnectionPool;
+import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
+import com.amaze.filemanager.services.ssh.tasks.VerifyHostKeyTask;
+import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
@@ -45,14 +50,13 @@ import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.Security;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SftpConnectDialog extends DialogFragment
 {
     private static final String TAG = "SftpConnectDialog";
-
-    private static final int SSH_DEFAULT_PORT = 22;
 
     //Idiotic code
     private static final int SELECT_PEM_INTENT = 0x01010101;
@@ -94,7 +98,7 @@ public class SftpConnectDialog extends DialogFragment
         final Button selectPemBTN = (Button) v2.findViewById(R.id.selectPemBTN);
 
         if(!edit)
-            portET.setText(Integer.toString(SSH_DEFAULT_PORT));
+            portET.setText(Integer.toString(SshConnectionPool.SSH_DEFAULT_PORT));
 
         portET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -137,7 +141,8 @@ public class SftpConnectDialog extends DialogFragment
                 String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
                 if(sshHostKey != null)
                 {
-
+                    Log.i(TAG, String.format("%s:%s", username, password));
+                    authenticateAndSaveSetup(hostname, port, sshHostKey, username, password);
                 }
                 else
                 {
@@ -147,20 +152,21 @@ public class SftpConnectDialog extends DialogFragment
                         {
                             final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
                             StringBuilder sb = new StringBuilder(hostname);
-                            if(port != SSH_DEFAULT_PORT && port > 0)
+                            if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
                                 sb.append(':').append(port);
 
                             final String hostAndPort = sb.toString();
 
                             new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                                    .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKey))
+                                    .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
                                     .setCancelable(true)
                                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
+                                            Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
                                             utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
-                                            new AuthenticateSshTask(hostname, port, username, password).execute();
                                             dialog.dismiss();
+                                            authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password);
                                         }
                                     }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                                 @Override
@@ -169,7 +175,9 @@ public class SftpConnectDialog extends DialogFragment
                                 }
                             }).show();
                         }
-                    } catch(Exception e) {
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    } catch(ExecutionException e) {
                         e.printStackTrace();
                     }
                 }
@@ -195,6 +203,23 @@ public class SftpConnectDialog extends DialogFragment
             selectedPem = data.getData();
             Log.d(TAG, "Selected PEM: " + selectedPem.toString());
             new VerifyPemTask(selectedPem).execute();
+        }
+    }
+
+    private void authenticateAndSaveSetup(String hostname, int port, String hostKeyFingerprint, String username, String password)
+    {
+        SSHClient sshClient = null;
+        try {
+            if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password).execute().get())
+            {
+                Log.i(TAG, "Authentication successful");
+                Log.d(TAG, Uri.fromParts("ssh", String.format("%s:%s@%s:%i", username, password, hostname, port) , null).toString());
+                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.fromParts("ssh", String.format("%s:%s@%s:%i", username, password, hostname, port) , null).toString()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            SFtpClientUtils.tryDisconnect(sshClient);
         }
     }
 
@@ -234,117 +259,6 @@ public class SftpConnectDialog extends DialogFragment
         @Override
         protected void onPostExecute(KeyPair keyPair) {
 
-        }
-    }
-
-    /* Because of the way SSHClient designed to accept HostKeyVerifier before connecting and get the
-     * host key, the background task will need to return AlertDialog.Builder
-     */
-    private final class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
-    {
-        final String hostname;
-        final int port;
-
-        VerifyHostKeyTask(String hostname, int port)
-        {
-            this.hostname = hostname;
-            this.port = port;
-        }
-
-        @Override
-        protected PublicKey doInBackground(Void... voids) {
-
-            final AtomicReference<PublicKey> holder = new AtomicReference<PublicKey>();
-            final Semaphore semaphore = new Semaphore(0);
-            final SSHClient sshClient = new SSHClient();
-            sshClient.addHostKeyVerifier(new HostKeyVerifier() {
-                @Override
-                public boolean verify(String hostname, int port, PublicKey key) {
-                holder.set(key);
-                semaphore.release();
-                return true;
-                }
-            });
-
-            try {
-                sshClient.connect(hostname, port);
-                semaphore.acquire();
-            } catch(IOException e) {
-                holder.set(null);
-                semaphore.release();
-            } catch(InterruptedException e) {
-                holder.set(null);
-                semaphore.release();
-            }
-            finally {
-                tryCloseSshClientConnection(sshClient);
-                return holder.get();
-            }
-        }
-    }
-
-    final class AuthenticateSshTask extends AsyncTask<Void, Void, Boolean>
-    {
-        final String hostname;
-        final int port;
-        final String username;
-        final String password;
-
-        AuthenticateSshTask(String hostname, int port, String username, String password)
-        {
-            this.hostname = hostname;
-            this.port = port;
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            final String hostKey = utilsHandler.getSshHostKey(hostname, port);
-            final SSHClient sshClient = new SSHClient();
-            sshClient.addHostKeyVerifier(hostKey);
-
-            try {
-                sshClient.connect(hostname, port);
-                if(password != null && !"".equals(password))
-                {
-                    sshClient.authPassword(username, password);
-                    return true;
-                }
-                else
-                {
-                    //Perform key-based authentication
-                }
-
-            } catch (UserAuthException e) {
-                e.printStackTrace();
-                return false;
-            } catch (TransportException e) {
-
-            } catch (IOException e) {
-
-            } finally {
-                tryCloseSshClientConnection(sshClient);
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result)
-        {
-
-        }
-    }
-
-    private static final void tryCloseSshClientConnection(SSHClient client)
-    {
-        if(client.isConnected()){
-            try {
-                client.disconnect();
-            } catch (IOException e) {
-                Log.w(TAG, "Error closing SSHClient connection", e);
-            }
         }
     }
 }

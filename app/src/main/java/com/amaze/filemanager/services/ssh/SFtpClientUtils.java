@@ -50,4 +50,15 @@ public abstract class SFtpClientUtils
         }
         return retval;
     }
+
+    public static final void tryDisconnect(SSHClient client)
+    {
+        if(client != null && client.isConnected()){
+            try {
+                client.disconnect();
+            } catch (IOException e) {
+                Log.w(TAG, "Error closing SSHClient connection", e);
+            }
+        }
+    }
 }

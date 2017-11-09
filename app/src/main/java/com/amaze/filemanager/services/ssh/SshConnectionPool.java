@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SshConnectionPool
 {
-    private static final String TAG = "SshConnectionPool";
+    public static final int SSH_DEFAULT_PORT = 22;
 
-    private static final int SSH_DEFAULT_PORT = 22;
+    private static final String TAG = "SshConnectionPool";
 
     private static SshConnectionPool instance = null;
 
