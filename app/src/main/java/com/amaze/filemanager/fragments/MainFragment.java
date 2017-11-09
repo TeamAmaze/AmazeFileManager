@@ -182,6 +182,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      */
     private boolean mRetainSearchTask = false;
 
+    /**
+     * For caching the back button
+     */
+    private Drawable backIcon = null;
+    private LayoutElementParcelable back = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -389,7 +395,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void switchView() {
-        createViews(LIST_ELEMENTS, false, CURRENT_PATH, openMode, results, checkPathIsGrid(CURRENT_PATH));
+        reloadListElements(false, results, checkPathIsGrid(CURRENT_PATH));
     }
 
     @Override
@@ -448,7 +454,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
             getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count, this);
-            createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, results, !IS_LIST);
+            reloadListElements( true, results, !IS_LIST);
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
                     adapter.toggleChecked(index, null);
@@ -1023,7 +1029,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,(data) -> {
             if (data.second != null) {
-                createViews(data.second, back, path, data.first, false, checkPathIsGrid(path));
+                setListElements(data.second, back, path, data.first, false, checkPathIsGrid(path));
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -1091,25 +1097,35 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param results  is the list of elements a result from search
      * @param grid     whether to set grid view or list view
      */
-    public void createViews(ArrayList<LayoutElementParcelable> bitmap, boolean back, String path,
-                            final OpenMode openMode, boolean results, boolean grid) {
-        if (bitmap != null && isAdded()) {
-            boolean isOtg = path.equals(OTGUtil.PREFIX_OTG + "/"),
-                    isOnTheCloud = path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                            || path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                            || path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                            || path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
+    public void setListElements(ArrayList<LayoutElementParcelable> bitmap, boolean back, String path,
+                                final OpenMode openMode, boolean results, boolean grid) {
+        if (bitmap != null) {
+            LIST_ELEMENTS = bitmap;
+            CURRENT_PATH = path;
+            this.openMode = openMode;
+            reloadListElements(back, results, grid);
+        } else {
+            // list loading cancelled
+            // TODO: Add support for cancelling list loading
+            loadlist(home, true, OpenMode.FILE);
+        }
+    }
 
-            String goToParentText = getString(R.string.goback);
+    public void reloadListElements(boolean back, boolean results, boolean grid) {
+        if (isAdded()) {
+            boolean isOtg = CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/"),
+                    isOnTheCloud = CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
-            if (GO_BACK_ITEM && !path.equals("/") && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
-                    && !isOtg && !isOnTheCloud && (bitmap.size() == 0 || !bitmap.get(0).getSize().equals(goToParentText))) {
-                //create the "go to parent" button (aka '..')
-                Drawable iconDrawable = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
-                bitmap.add(0, new LayoutElementParcelable(iconDrawable, "..", "", "", goToParentText, 0, false, true, ""));
+            if (GO_BACK_ITEM && !CURRENT_PATH.equals("/")
+                    && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT) && !isOtg && !isOnTheCloud
+                    && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).getSize().equals(getString(R.string.goback)))) {
+                LIST_ELEMENTS.add(0, getBackElement());
             }
 
-            if (bitmap.size() == 0 && !results) {
+            if (LIST_ELEMENTS.size() == 0 && !results) {
                 nofilesview.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setEnabled(false);
@@ -1117,43 +1133,50 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 mSwipeRefreshLayout.setEnabled(true);
                 nofilesview.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
+            }
 
-            }
-            LIST_ELEMENTS = new ArrayList<>(bitmap);
-            if (grid && IS_LIST)
-                switchToGrid();
+            if (grid && IS_LIST) switchToGrid();
             else if (!grid && !IS_LIST) switchToList();
+
             if (adapter == null) {
-                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, bitmap, ma.getActivity(), SHOW_HEADERS);
+                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
             } else {
-                adapter.setItems(LIST_ELEMENTS);
+                adapter.setItems(new ArrayList<>(LIST_ELEMENTS));
             }
+
             stopAnims = true;
-            this.openMode = openMode;
-            if (openMode != OpenMode.CUSTOM)
-                dataUtils.addHistoryFile(path);
+
+            if (openMode != OpenMode.CUSTOM) {
+                dataUtils.addHistoryFile(CURRENT_PATH);
+            }
+
             //mSwipeRefreshLayout.setRefreshing(false);
 
             listView.setAdapter(adapter);
+
             if (!addheader) {
                 //listView.removeItemDecoration(headersDecor);
                 listView.removeItemDecoration(dividerItemDecoration);
                 addheader = true;
             }
+
             if (addheader && IS_LIST) {
                 dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
                 listView.addItemDecoration(dividerItemDecoration);
                 addheader = false;
             }
-            if (!results) this.results = false;
-            CURRENT_PATH = path;
-            if (back) {
-                if (scrolls.containsKey(CURRENT_PATH)) {
-                    Bundle b = scrolls.get(CURRENT_PATH);
-                    if (IS_LIST)
-                        mLayoutManager.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
-                    else
-                        mLayoutManagerGrid.scrollToPositionWithOffset(b.getInt("index"), b.getInt("top"));
+
+            if (!results) {
+                this.results = false;
+            }
+
+            if (back && scrolls.containsKey(CURRENT_PATH)) {
+                Bundle b = scrolls.get(CURRENT_PATH);
+                int index = b.getInt("index"), top = b.getInt("top");
+                if (IS_LIST) {
+                    mLayoutManager.scrollToPositionWithOffset(index, top);
+                } else {
+                    mLayoutManagerGrid.scrollToPositionWithOffset(index, top);
                 }
             }
 
@@ -1175,12 +1198,21 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             startFileObserver();
             //getMainActivity().invalidateFab(openMode);
-
         } else {
             // list loading cancelled
             // TODO: Add support for cancelling list loading
             loadlist(home, true, OpenMode.FILE);
         }
+    }
+
+    private LayoutElementParcelable getBackElement() {
+        if (backIcon == null || back == null) {
+            backIcon = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
+            back = new LayoutElementParcelable(backIcon, "..", "", "",
+                    getString(R.string.goback), 0, false, true, "");
+        }
+
+        return back;
     }
 
     private void startFileObserver() {
@@ -1616,7 +1648,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             // adding new value to LIST_ELEMENTS
             LayoutElementParcelable layoutElementAdded = addTo(a);
             if (!results) {
-                createViews(LIST_ELEMENTS, false, (CURRENT_PATH), openMode, false, !IS_LIST);
+                reloadListElements(false, false, !IS_LIST);
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
                 getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searching, query));
                 results = true;
@@ -1641,7 +1673,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             @Override
             public void onPostExecute(Void c) {
-                createViews(LIST_ELEMENTS, true, (CURRENT_PATH), openMode, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
+                reloadListElements(true, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
                 getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searchresults, query));
             }

@@ -67,8 +67,7 @@ public class FileHandler extends Handler {
         if (listView.getVisibility() == View.VISIBLE) {
             if (main.getElementsList().size() == 0) {
                 // no item left in list, recreate views
-                main.createViews(main.getElementsList(), true, main.getCurrentPath(),
-                        main.openMode, main.results, !main.IS_LIST);
+                main.reloadListElements(true, main.results, !main.IS_LIST);
             } else {
                 // we already have some elements in list view, invalidate the adapter
                 ((RecyclerAdapter) listView.getAdapter()).setItems(main.getElementsList());

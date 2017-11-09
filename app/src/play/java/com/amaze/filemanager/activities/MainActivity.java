@@ -2352,8 +2352,7 @@ public class MainActivity extends ThemedActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.getElementsList(), false, mainFragment.getCurrentPath(),
-                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 
