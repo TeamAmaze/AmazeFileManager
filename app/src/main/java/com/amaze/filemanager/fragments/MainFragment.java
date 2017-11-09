@@ -1150,12 +1150,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 dataUtils.addHistoryFile(CURRENT_PATH);
             }
 
-            //mSwipeRefreshLayout.setRefreshing(false);
-
             listView.setAdapter(adapter);
 
             if (!addheader) {
-                //listView.removeItemDecoration(headersDecor);
                 listView.removeItemDecoration(dividerItemDecoration);
                 addheader = true;
             }
@@ -1180,14 +1177,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 }
             }
 
-            //floatingActionButton.show();
             getMainActivity().updatePaths(no);
             listView.stopScroll();
             fastScroller.setRecyclerView(listView, IS_LIST? 1:columns);
             mToolbarContainer.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
                 fastScroller.updateHandlePosition(verticalOffset, 112);
-                //    fastScroller.setPadding(fastScroller.getPaddingLeft(),fastScroller.getTop(),fastScroller.getPaddingRight(),112+verticalOffset);
-                //      fastScroller.updateHandlePosition();
             });
             fastScroller.registerOnTouchListener(() -> {
                 if (stopAnims && adapter != null) {
@@ -1197,7 +1191,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             });
 
             startFileObserver();
-            //getMainActivity().invalidateFab(openMode);
         } else {
             // list loading cancelled
             // TODO: Add support for cancelling list loading
