@@ -157,7 +157,8 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 listOtg(path, new OnFileFound() {
                     @Override
                     public void onFileFound(HybridFileParcelable file) {
-                        list.add(createListParcelables(file));
+                        LayoutElementParcelable elem = createListParcelables(file);
+                        if(elem != null) list.add(elem);
                     }
                 });
                 openmode = OpenMode.OTG;
@@ -173,7 +174,8 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     listCloud(path, cloudStorage, openmode, new OnFileFound() {
                         @Override
                         public void onFileFound(HybridFileParcelable file) {
-                            list.add(createListParcelables(file));
+                            LayoutElementParcelable elem = createListParcelables(file);
+                            if(elem != null) list.add(elem);
                         }
                     });
                 } catch (CloudPluginException e) {
@@ -194,7 +196,8 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         }, new OnFileFound() {
                             @Override
                             public void onFileFound(HybridFileParcelable file) {
-                                list.add(createListParcelables(file));
+                                LayoutElementParcelable elem = createListParcelables(file);
+                                if(elem != null) list.add(elem);
                             }
                         });
                 break;
