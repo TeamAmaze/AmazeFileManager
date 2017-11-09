@@ -177,6 +177,17 @@ public class UtilsHandler extends SQLiteOpenHelper {
         database.insert(getTableForOperation(Operation.SSHHOSTS), null, values);
     }
 
+    public void addSsh(String name, String path, String sshKey) {
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_PATH, path);
+        if(sshKey != null && !"".equals(sshKey))
+            values.put(COLUMN_PRIVATE_KEY, sshKey);
+
+        database.insert(getTableForOperation(Operation.SFTP), null, values);
+    }
+
     public ArrayList<String> getHistoryList() {
         return getPath(Operation.HISTORY);
     }

@@ -103,8 +103,8 @@ public class SftpConnectDialog extends DialogFragment
         portET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
-                    portET.selectAll();
+            if(hasFocus)
+                portET.selectAll();
             }
         });
 
@@ -113,11 +113,11 @@ public class SftpConnectDialog extends DialogFragment
         selectPemBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent()
-                        .setType("*/*")
-                        .setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent()
+                    .setType("*/*")
+                    .setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(intent, SELECT_PEM_INTENT);
+            startActivityForResult(intent, SELECT_PEM_INTENT);
             }
         });
 
@@ -133,54 +133,54 @@ public class SftpConnectDialog extends DialogFragment
         ba3.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                final String hostname = addressET.getText().toString();
-                final int port = Integer.parseInt(portET.getText().toString());
-                final String username = usernameET.getText().toString();
-                final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
+            final String hostname = addressET.getText().toString();
+            final int port = Integer.parseInt(portET.getText().toString());
+            final String username = usernameET.getText().toString();
+            final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
 
-                String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
-                if(sshHostKey != null)
-                {
-                    Log.i(TAG, String.format("%s:%s", username, password));
-                    authenticateAndSaveSetup(hostname, port, sshHostKey, username, password);
-                }
-                else
-                {
-                    try {
-                        PublicKey hostKey = new VerifyHostKeyTask(hostname, port).execute().get();
-                        if(hostKey != null)
-                        {
-                            final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
-                            StringBuilder sb = new StringBuilder(hostname);
-                            if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
-                                sb.append(':').append(port);
+            String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
+            if(sshHostKey != null)
+            {
+                Log.i(TAG, String.format("%s:%s", username, password));
+                authenticateAndSaveSetup(hostname, port, sshHostKey, username, password);
+            }
+            else
+            {
+                try {
+                    PublicKey hostKey = new VerifyHostKeyTask(hostname, port).execute().get();
+                    if(hostKey != null)
+                    {
+                        final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
+                        StringBuilder sb = new StringBuilder(hostname);
+                        if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
+                            sb.append(':').append(port);
 
-                            final String hostAndPort = sb.toString();
+                        final String hostAndPort = sb.toString();
 
-                            new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                                    .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
-                                    .setCancelable(true)
-                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
-                                            utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
-                                            dialog.dismiss();
-                                            authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password);
-                                        }
-                                    }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
-                        }
-                    } catch(InterruptedException e) {
-                        e.printStackTrace();
-                    } catch(ExecutionException e) {
-                        e.printStackTrace();
+                        new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
+                                .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
+                                        utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
+                                        dialog.dismiss();
+                                        authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password);
+                                    }
+                                }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
                     }
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                } catch(ExecutionException e) {
+                    e.printStackTrace();
                 }
+            }
             }
         });
         
@@ -212,14 +212,13 @@ public class SftpConnectDialog extends DialogFragment
         try {
             if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password).execute().get())
             {
-                Log.i(TAG, "Authentication successful");
-                Log.d(TAG, Uri.fromParts("ssh", String.format("%s:%s@%s:%i", username, password, hostname, port) , null).toString());
-                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.fromParts("ssh", String.format("%s:%s@%s:%i", username, password, hostname, port) , null).toString()));
+                String path = SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString());
+//                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString()));
+//                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString()));
+                utilsHandler.addSsh(String.format("%s@%s:%d", username, hostname, port), path, null);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            SFtpClientUtils.tryDisconnect(sshClient);
         }
     }
 
