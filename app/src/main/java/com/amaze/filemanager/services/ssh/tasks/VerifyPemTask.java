@@ -3,7 +3,9 @@ package com.amaze.filemanager.services.ssh.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,9 +30,13 @@ public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
         try {
             reader = new InputStreamReader(pemFile);
             PEMParser pemParser = new PEMParser(reader);
-//            Log.d(TAG, pemParser.readObject().toString());
-            KeyPair keyPair = (KeyPair) pemParser.readObject();
-            return keyPair;
+            PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+            KeyPair retval = converter.getKeyPair(keyPair);
+            converter = null;
+            keyPair = null;
+            pemParser = null;
+            return retval;
         } catch (FileNotFoundException e){
             Log.e(TAG, "Unable to open PEM for reading", e);
             return null;
@@ -45,10 +51,5 @@ public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
             }
         }
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(KeyPair keyPair) {
-
     }
 }
