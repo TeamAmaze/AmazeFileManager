@@ -1,13 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.3'
-
-    dexOptions {
-        jumboMode = true
-    }
+    buildToolsVersion '26.0.2'
 
     packagingOptions {
         exclude 'proguard-project.txt'
@@ -27,7 +22,7 @@ android {
         versionCode 63
         versionName "3.2.1"
 
-        vectorDrawables.useSupportLibrary = true;
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -53,6 +48,8 @@ android {
         abortOnError false
     }
 
+    flavorDimensions 'static'
+
     productFlavors {
         fdroid {
             buildConfigField "boolean", "IS_VERSION_FDROID", "true"
@@ -71,25 +68,34 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:palette-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
+    compile ('com.readystatesoftware.systembartint:systembartint:1.0.3')
+
+    compile ('com.android.support:design:25.3.1')
+
+    compile ('com.android.support:appcompat-v7:25.3.1')
+
+    compile ('com.android.support:palette-v7:25.3.1')
+
+    compile ('com.android.support:cardview-v7:25.3.1')
 
     //Detect memory leaks
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugCompile ('com.squareup.leakcanary:leakcanary-android:1.5.1')
 
-    compile 'org.apache.commons:commons-compress:1.10'
+    releaseCompile ('com.squareup.leakcanary:leakcanary-android-no-op:1.5.1')
+
+    compile ('org.apache.commons:commons-compress:1.10')
 
     // Google Play Services
-    playCompile 'com.google.android.gms:play-services-plus:10.2.6'
+    playCompile 'com.google.android.gms:play-services-plus:11.6.0'
 
-    compile 'com.github.clans:fab:1.6.4'
-    compile 'com.github.junrar:junrar:0.7'
-    compile 'com.afollestad.material-dialogs:core:0.9.4.3'
+    compile ('com.github.clans:fab:1.6.4')
+
+    compile ('com.github.junrar:junrar:0.7') {
+        exclude module: 'commons-logging'
+    }
+
+    compile ('com.afollestad.material-dialogs:core:0.9.4.3')
 
     //FTP Server
     /*
@@ -99,30 +105,32 @@ dependencies {
     */
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-    compile group: 'org.apache.mina', name: 'mina-core', version: '2.0.13'
+    compile (group: 'org.apache.mina', name: 'mina-core', version: '2.0.13')
+
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+    compile (group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21')
+
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    compile (group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21')
 
     //compile files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    compile group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
+    compile (group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0')
 
     //compile files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    compile group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
+    compile (group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0')
 
     //compile 'com.jcraft:jsch:0.1.53'
-    compile 'com.android.volley:volley:1.0.0'
+    compile ('com.android.volley:volley:1.0.0')
 
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    compile ('eu.chainfire:libsuperuser:1.0.0.+')
 
-    compile 'com.cloudrail:cloudrail-si-android:2.17.0'
+    compile ('com.cloudrail:cloudrail-si-android:2.17.0')
 
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
+    compile ('com.github.PhilJay:MPAndroidChart:v3.0.2') //Nice charts and graphs
 
-    compile 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
+    compile ('com.github.npgall:concurrent-trees:2.6.1') //Concurrent tries
 }
 
 def Properties props = new Properties()

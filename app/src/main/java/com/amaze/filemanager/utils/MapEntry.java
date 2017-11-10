@@ -1,12 +1,13 @@
 package com.amaze.filemanager.utils;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by Vishal on 21/12/15.
  * A helper class which provides data structure of key/value pair
  */
-public class MapEntry implements LinkedHashMap.Entry {
+public class MapEntry implements Map.Entry {
 
     private KeyMapEntry key;
     private Integer value;
@@ -36,7 +37,7 @@ public class MapEntry implements LinkedHashMap.Entry {
         return null;
     }
 
-    public static class KeyMapEntry implements LinkedHashMap.Entry {
+    public static class KeyMapEntry implements Map.Entry {
 
         private Integer key, value;
 
