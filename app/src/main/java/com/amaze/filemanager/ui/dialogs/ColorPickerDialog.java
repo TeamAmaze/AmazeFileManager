@@ -32,6 +32,7 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 
 public class ColorPickerDialog extends SelectedColorsPreference {
 
+    public static final int DEFAULT = 0;
     public static final int NO_DATA = -1;
     public static final int CUSTOM_INDEX = -2;
     public static final int RANDOM_INDEX = -3;
@@ -40,6 +41,8 @@ public class ColorPickerDialog extends SelectedColorsPreference {
      * ONLY add new elements to the end of the array
      */
     private static final ColorItemPair[] COLORS = new ColorItemPair[]{
+            new ColorItemPair(R.string.defualt,
+                    new int[]{R.color.primary_indigo, R.color.primary_indigo, R.color.primary_pink, R.color.accent_pink}),
             new ColorItemPair(R.string.orange,
                     new int[]{R.color.primary_orange, R.color.primary_orange, R.color.primary_deep_orange, R.color.accent_amber}),
             new ColorItemPair(R.string.blue,
@@ -86,6 +89,16 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         sharedPrefs = getSharedPreferences();
         int accentColor = colorPref.getColor(ColorUsage.ACCENT);
         if(selectedIndex == NO_DATA) {//if instance was restored the value is already set
+            boolean isUsingDefault = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, NO_DATA) == NO_DATA
+                    && sharedPrefs.getInt(PreferencesConstants.PREFERENCE_SKIN, R.color.primary_indigo) == R.color.primary_indigo
+                    && sharedPrefs.getInt(PreferencesConstants.PREFERENCE_SKIN_TWO, R.color.primary_indigo) == R.color.primary_indigo
+                    && sharedPrefs.getInt(PreferencesConstants.PREFERENCE_ACCENT, R.color.primary_pink) == R.color.primary_pink
+                    && sharedPrefs.getInt(PreferencesConstants.PREFERENCE_ICON_SKIN, R.color.primary_pink) == R.color.primary_pink;
+
+            if(isUsingDefault) {
+                sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, DEFAULT).apply();
+            }
+
             if(sharedPrefs.getBoolean("random_checkbox", false)) {
                 sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, RANDOM_INDEX).apply();
             }
