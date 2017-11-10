@@ -14,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyHostKeyTask;
+import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -69,6 +72,8 @@ public class SftpConnectDialog extends DialogFragment
 
     private Uri selectedPem = null;
 
+    private KeyPair selectedParsedKeyPair = null;
+
     String emptyAddress, emptyName, invalidUsername;
 
     static {
@@ -89,8 +94,8 @@ public class SftpConnectDialog extends DialogFragment
         context = getActivity();
         final boolean edit=getArguments().getBoolean("edit",false);
         final SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
-        final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(context);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.sftp_dialog, null);
+        final EditText connectionET = (EditText) v2.findViewById(R.id.connectionET);
         final EditText addressET = (EditText) v2.findViewById(R.id.ipET);
         final EditText portET = (EditText) v2.findViewById(R.id.portET);
         final EditText usernameET = (EditText) v2.findViewById(R.id.usernameET);
@@ -121,18 +126,19 @@ public class SftpConnectDialog extends DialogFragment
             }
         });
 
-        ba3.title((R.string.scp_con));
-        ba3.autoDismiss(false);
-        ba3.customView(v2, true);
-        ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        ba3.neutralText(R.string.cancel);
-        ba3.positiveText(R.string.create);
-        if (edit) ba3.negativeText(R.string.delete);
-        ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
-
-        ba3.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+        final MaterialDialog dialog = new MaterialDialog.Builder(context)
+            .title((R.string.scp_con))
+            .autoDismiss(false)
+            .customView(v2, true)
+            .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
+            .neutralText(R.string.cancel)
+            .positiveText(R.string.create)
+            .negativeText(R.string.delete)
+            .positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor)
+            .onPositive(new MaterialDialog.SingleButtonCallback() {
+        @Override
+        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+        {
             final String hostname = addressET.getText().toString();
             final int port = Integer.parseInt(portET.getText().toString());
             final String username = usernameET.getText().toString();
@@ -158,20 +164,20 @@ public class SftpConnectDialog extends DialogFragment
                         final String hostAndPort = sb.toString();
 
                         new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                                .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
-                                .setCancelable(true)
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
-                                        utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
-                                        dialog.dismiss();
-                                        authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password);
-                                    }
-                                }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                            .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt), hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
+                                    utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
+                                    dialog.dismiss();
+                                    authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password);
+                                }
+                            }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                             }
                         }).show();
                     }
@@ -181,17 +187,41 @@ public class SftpConnectDialog extends DialogFragment
                     e.printStackTrace();
                 }
             }
-            }
-        });
-        
-        ba3.onNeutral(new MaterialDialog.SingleButtonCallback() {
+        }}).onNeutral(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 dismiss();
             }
-        });
+        }).build();
 
-        return ba3.build();
+        final View okBTN = dialog.getActionButton(DialogAction.POSITIVE);
+        okBTN.setEnabled(false);
+
+        TextWatcher validator = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                okBTN.setEnabled(
+                        connectionET.getText().length() > 0
+                     && addressET.getText().length() > 0
+                     && portET.getText().length() > 0
+                     && usernameET.getText().length() > 0
+                     && (passwordET.getText().length() > 0 || selectedParsedKeyPair != null)
+                );
+            }
+        };
+
+        addressET.addTextChangedListener(validator);
+        portET.addTextChangedListener(validator);
+        usernameET.addTextChangedListener(validator);
+        passwordET.addTextChangedListener(validator);
+
+        return dialog;
     }
 
     @Override
@@ -202,7 +232,19 @@ public class SftpConnectDialog extends DialogFragment
         {
             selectedPem = data.getData();
             Log.d(TAG, "Selected PEM: " + selectedPem.toString());
-            new VerifyPemTask(selectedPem).execute();
+            try {
+                KeyPair keypair = new VerifyPemTask(context.getContentResolver().openInputStream(selectedPem)).execute().get();
+                if(keypair != null)
+                {
+                    selectedParsedKeyPair = keypair;
+                }
+            } catch(FileNotFoundException e) {
+                Log.e(TAG, "File not found", e);
+            } catch(InterruptedException ignored) {
+
+            } catch(ExecutionException e) {
+
+            }
         }
     }
 
@@ -219,45 +261,6 @@ public class SftpConnectDialog extends DialogFragment
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private final class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
-    {
-        final Uri pemFile;
-
-        VerifyPemTask(Uri pemFile)
-        {
-            this.pemFile = pemFile;
-        }
-
-        @Override
-        protected KeyPair doInBackground(Void... voids) {
-            InputStreamReader reader = null;
-            try {
-                reader = new InputStreamReader(context.getContentResolver().openInputStream(pemFile));
-                PEMParser pemParser = new PEMParser(reader);
-                KeyPair keyPair = (KeyPair) pemParser.readObject();
-                return keyPair;
-            } catch (FileNotFoundException e){
-                Log.e(TAG, "Unable to open PEM for reading", e);
-                return null;
-            } catch (IOException e) {
-                Log.e(TAG, "IOException reading PEM", e);
-            } finally {
-                if(reader != null)
-                {
-                    try {
-                        reader.close();
-                    } catch (IOException ignored) {}
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(KeyPair keyPair) {
-
         }
     }
 }
