@@ -206,7 +206,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
 
             mFile = new HybridFileParcelable(Utils.sanitizeInput(getIntent().getData().getPath()));
-            Log.d(getClass().getSimpleName(), "External path - " + getIntent().getData().getPath());
         }
 
         String fileName;
