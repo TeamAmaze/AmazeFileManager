@@ -1,15 +1,21 @@
 package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.KeyType;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.userauth.UserAuthException;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+
+import org.bouncycastle.openssl.PEMException;
 
 import java.io.IOException;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
 {
@@ -19,14 +25,16 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
 
     private final String username;
     private final String password;
+    private final KeyPair privateKey;
 
-    public SshAuthenticationTask(String hostname, int port, String hostKey, String username, String password)
+    public SshAuthenticationTask(String hostname, int port, String hostKey, String username, String password, KeyPair privateKey) throws PEMException
     {
         this.hostname = hostname;
         this.port = port;
         this.hostKey = hostKey;
         this.username = username;
         this.password = password;
+        this.privateKey = privateKey;
     }
 
     @Override
@@ -44,8 +52,23 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
             }
             else
             {
-                //Perform key-based authentication
-                Log.i("DEBUG", "Do key-based auth");
+                sshClient.authPublickey(username, new KeyProvider() {
+                    @Override
+                    public PrivateKey getPrivate() throws IOException {
+                        return privateKey.getPrivate();
+                    }
+
+                    @Override
+                    public PublicKey getPublic() throws IOException {
+                        return privateKey.getPublic();
+                    }
+
+                    @Override
+                    public KeyType getType() throws IOException {
+                        return KeyType.fromKey(getPublic());
+                    }
+                });
+                return true;
             }
 
         } catch (UserAuthException e) {
