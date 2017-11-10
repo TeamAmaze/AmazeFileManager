@@ -1223,7 +1223,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     if (customFileObserver != null) {
                         // already a watcher instantiated, first it should be stopped
                         customFileObserver.stopWatching();
-                        customFileObserver = null;
                     }
 
                     customFileObserver = new CustomFileObserver(CURRENT_PATH,
@@ -1456,9 +1455,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void onPause() {
         super.onPause();
         (getActivity()).unregisterReceiver(receiver2);
+        if(customFileObserver != null) {
+            customFileObserver.stopWatching();
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
             (getActivity()).unregisterReceiver(decryptReceiver);
         }
     }
@@ -1466,9 +1467,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     @Override
     public void onStop() {
         super.onStop();
-
-        if (customFileObserver != null)
-            customFileObserver.stopWatching();
 
         if (mediaScannerConnection != null)
             mediaScannerConnection.disconnect();
