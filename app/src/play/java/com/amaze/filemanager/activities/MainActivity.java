@@ -488,7 +488,7 @@ public class MainActivity extends ThemedActivity implements
             mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
         }
         //recents header color implementation
-        if (SDK_INT >= 21) {
+        if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -549,11 +549,11 @@ public class MainActivity extends ThemedActivity implements
                             if (file.isDirectory(MainActivity.this))
                                 goToMain(path);
                             else {
-                                goToMain("");
+                                goToMain(null);
                                 FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
                             }
                         } else {
-                            goToMain("");
+                            goToMain(null);
 
                         }
                     }
@@ -631,7 +631,7 @@ public class MainActivity extends ThemedActivity implements
      * of possible deadlock situation and the asynchronous behaviour of LibSuperSU
      */
     private void initializeInteractiveShell() {
-        // only one looper can be associated to a thread. So we're making sure not to create new
+        // only one looper can be associated to a thread. So we are making sure not to create new
         // handler threads every time the code relaunch.
         if (rootMode) {
             handlerThread = new HandlerThread("handler");
@@ -740,8 +740,8 @@ public class MainActivity extends ThemedActivity implements
         if (usbManager.getDeviceList().size()!=0) {
             // we need to set this every time as there is no way to know that whether USB device was
             // disconnected after closing the app and another one was connected
-            // in that case the uri will obviously change
-            // other wise we could persist the uri even after reopening the app by not writing
+            // in that case the URI will obviously change
+            // other wise we could persist the URI even after reopening the app by not writing
             // this preference when it's not null
             getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
             return true;
@@ -801,14 +801,14 @@ public class MainActivity extends ThemedActivity implements
                 if (file.isDirectory(this))
                     goToMain(path);
                 else {
-                    goToMain("");
+                    goToMain(null);
                     FileUtils.openFile(new File(path), this, getPrefs());
                 }
             } else {
-                goToMain("");
+                goToMain(null);
             }
         } else {
-            goToMain("");
+            goToMain(null);
         }
     }
 
@@ -1295,7 +1295,7 @@ public class MainActivity extends ThemedActivity implements
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
                 refreshDrawer();
-                goToMain("");
+                goToMain(null);
             }
         }
     };
@@ -1404,7 +1404,7 @@ public class MainActivity extends ThemedActivity implements
 
         parent = new File("/mnt/sdcard/usbStorage");
         if (parent.exists() && parent.canExecute())
-            return (parent);
+            return parent;
         parent = new File("/mnt/sdcard/usb_storage");
         if (parent.exists() && parent.canExecute())
             return parent;
