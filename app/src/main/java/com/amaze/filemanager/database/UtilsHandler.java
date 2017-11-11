@@ -16,6 +16,7 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Vishal on 29-05-2017.
@@ -258,6 +259,32 @@ public class UtilsHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return row;
+    }
+
+    public List<String[]> getSftpList()
+    {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SFTP), new String[]{COLUMN_NAME,COLUMN_PATH},
+                null, null, null, null, COLUMN_ID);
+
+        cursor.moveToFirst();
+        ArrayList<String[]> retval = new ArrayList<String[]>();
+        try
+        {
+            while(cursor.moveToNext())
+            {
+                retval.add(new String[]{
+                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_PATH))
+                });
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
+        return retval;
     }
 
     public String getSshHostKey(String host, int port)
