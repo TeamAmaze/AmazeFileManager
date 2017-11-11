@@ -29,6 +29,8 @@ import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyHostKeyTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -127,6 +129,7 @@ public class SftpConnectDialog extends DialogFragment
         @Override
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
         {
+            final String connectionName = connectionET.getText().toString();
             final String hostname = addressET.getText().toString();
             final int port = Integer.parseInt(portET.getText().toString());
             final String username = usernameET.getText().toString();
@@ -135,7 +138,7 @@ public class SftpConnectDialog extends DialogFragment
             String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
             if(sshHostKey != null)
             {
-                authenticateAndSaveSetup(hostname, port, sshHostKey, username, password, selectedParsedKeyPair);
+                authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username, password, selectedParsedKeyPair);
             }
             else
             {
@@ -159,7 +162,8 @@ public class SftpConnectDialog extends DialogFragment
                                     Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
                                     utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
                                     dialog.dismiss();
-                                    authenticateAndSaveSetup(hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
+                                    authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
+                                    dismiss();
                                 }
                             }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
@@ -238,18 +242,23 @@ public class SftpConnectDialog extends DialogFragment
         }
     }
 
-    private void authenticateAndSaveSetup(String hostname, int port, String hostKeyFingerprint, String username, String password, KeyPair selectedParsedKeyPair)
+    private void authenticateAndSaveSetup(final String connectionName, String hostname, int port, String hostKeyFingerprint, String username, String password, KeyPair selectedParsedKeyPair)
     {
         try {
             if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair).execute().get())
             {
-                String path = SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString());
-                if(selectedParsedKeyPair != null) {
-                    path = SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString());
-                }
-//                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString()));
-//                Log.d(TAG, SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString()));
-                utilsHandler.addSsh(String.format("%s@%s:%d", username, hostname, port), path, getPemContents());
+                final String path = (selectedParsedKeyPair != null) ?
+                        SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString()) :
+                        SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString());
+
+                AppConfig.runInBackground(new Runnable() {
+                    @Override
+                    public void run() {
+                        utilsHandler.addSsh(connectionName, path, getPemContents());
+                    }
+                });
+                DataUtils.getInstance().addServer(new String[]{connectionName, path});
+                ((MainActivity) getActivity()).refreshDrawer();
             }
         } catch (Exception e) {
             e.printStackTrace();
