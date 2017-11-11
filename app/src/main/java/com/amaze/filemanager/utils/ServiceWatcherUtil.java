@@ -187,6 +187,6 @@ public class ServiceWatcherUtil {
             }
         };
 
-        handler.postDelayed(runnable,0);
+        handler.postDelayed(runnable, 0);
     }
 }
