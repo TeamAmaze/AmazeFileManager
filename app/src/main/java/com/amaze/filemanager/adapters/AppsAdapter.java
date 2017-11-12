@@ -63,10 +63,10 @@ import java.util.List;
 public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
-    Context context;
-    List<LayoutElementParcelable> items;
-    public SparseBooleanArray myChecked = new SparseBooleanArray();
-    AppsListFragment app;
+    private Context context;
+    private List<LayoutElementParcelable> items;
+    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private AppsListFragment app;
 
     private ThemedActivity themedActivity;
 
