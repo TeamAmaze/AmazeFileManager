@@ -1640,30 +1640,25 @@ public class MainActivity extends ThemedActivity implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("G+", "Connection suspended");
-        new Thread(() -> {
-            if (mGoogleApiClient != null)
-                mGoogleApiClient.connect();
-        }).run();
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.connect();
     }
 
     public void onConnectionFailed(final ConnectionResult result) {
         Log.d("G+", "Connection failed" + result.getErrorCode() + result.getErrorCode());
         if (!mIntentInProgress && result.hasResolution()) {
-            new Thread(() -> {
-                try {
-                    mIntentInProgress = true;
-                    startIntentSenderForResult(result.getResolution().getIntentSender(),
+            try {
+                mIntentInProgress = true;
+                startIntentSenderForResult(result.getResolution().getIntentSender(),
                             RC_SIGN_IN, null, 0, 0, 0);
-                } catch (IntentSender.SendIntentException e) {
-                    // The intent was canceled before it was sent.  Return to the default
-                    // state and attempt to connect to get an updated ConnectionResult.
-                    mIntentInProgress = false;
-                    if (mGoogleApiClient != null) {
-
-                        mGoogleApiClient.connect();
-                    }
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent.  Return to the default
+                // state and attempt to connect to get an updated ConnectionResult.
+                mIntentInProgress = false;
+                if (mGoogleApiClient != null) {
+                    mGoogleApiClient.connect();
                 }
-            }).run();
+            }
         }
     }
 
@@ -1673,19 +1668,16 @@ public class MainActivity extends ThemedActivity implements
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient != null) {
-            new Thread(() -> {
-                mIntentInProgress = false;
-                mGoogleApiKey = true;
-                // !mGoogleApiClient.isConnecting
-                if (mGoogleApiClient.isConnecting()) {
-                    mGoogleApiClient.connect();
-                } else
-                    mGoogleApiClient.disconnect();
-
-            }).run();
+            mIntentInProgress = false;
+            mGoogleApiKey = true;
+            // !mGoogleApiClient.isConnecting
+            if (mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            } else
+                mGoogleApiClient.disconnect();
         } else if (requestCode == image_selector_request_code) {
             if (getPrefs() != null && intent != null && intent.getData() != null) {
-                if (SDK_INT >= 19)
+                if (SDK_INT >= Build.VERSION_CODES.KITKAT)
                     getContentResolver().takePersistableUriPermission(intent.getData(),
                             Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getPrefs().edit().putString("drawer_header_path", intent.getData().toString()).commit();
@@ -1802,7 +1794,7 @@ public class MainActivity extends ThemedActivity implements
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         drawerHeaderView.setOnLongClickListener(v -> {
             Intent intent1;
-            if (SDK_INT < 19) {
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
                 intent1 = new Intent();
                 intent1.setAction(Intent.ACTION_GET_CONTENT);
             } else {
@@ -1905,14 +1897,14 @@ public class MainActivity extends ThemedActivity implements
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
         // status bar0
-        if (SDK_INT == 20 || SDK_INT == 19) {
+        if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (SDK_INT >= 21) {
+        } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -1945,7 +1937,7 @@ public class MainActivity extends ThemedActivity implements
             if (colourednavigation)
                 mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
                         .getStatusColor(colorDrawable.getColor()));
-        } else if (SDK_INT == 20 || SDK_INT == 19) {
+        } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
 
             // for kitkat devices, the status bar color
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -2125,27 +2117,25 @@ public class MainActivity extends ThemedActivity implements
     }
 
     void setDrawerHeaderBackground() {
-        new Thread(() -> {
-            if (getPrefs().getBoolean("plus_pic", false)) return;
-            String path1 = getPrefs().getString("drawer_header_path", null);
-            if (path1 == null) return;
-            try {
-                final ImageView headerImageView = new ImageView(MainActivity.this);
-                headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-                mImageLoader.get(path1, new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                        headerImageView.setImageBitmap(response.getBitmap());
-                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                    }
+        if (getPrefs().getBoolean("plus_pic", false)) return;
+        String path1 = getPrefs().getString("drawer_header_path", null);
+        if (path1 == null) return;
+        try {
+            final ImageView headerImageView = new ImageView(MainActivity.this);
+            headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
+            mImageLoader.get(path1, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    headerImageView.setImageBitmap(response.getBitmap());
+                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {}
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).run();
+                @Override
+                public void onErrorResponse(VolleyError error) {}
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {
