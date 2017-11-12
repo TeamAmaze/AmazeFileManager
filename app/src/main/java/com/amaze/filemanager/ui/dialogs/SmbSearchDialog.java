@@ -113,7 +113,7 @@ public class SmbSearchDialog extends DialogFragment {
         return builder.build();
     }
 
-    private class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> {
+    private class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ElementViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
@@ -129,14 +129,14 @@ public class SmbSearchDialog extends DialogFragment {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ElementViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_PROGRESSBAR:
                     ProgressBar progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyle);
                     progressBar.setIndeterminate(true);
                     progressBar.setBackgroundDrawable(null);
 
-                    return new ViewHolder(progressBar);
+                    return new ElementViewHolder(progressBar);
                 default:
                 case VIEW_ELEMENT:
                     View view = mInflater.inflate(R.layout.smb_computers_row, parent, false);
@@ -146,21 +146,11 @@ public class SmbSearchDialog extends DialogFragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(ElementViewHolder holder, int position) {
             holder.render(position, items.get(position));
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            ViewHolder(View itemView) {
-                super(itemView);
-            }
-
-            public void render(final int p, ComputerParcelable f) {
-
-            }
-        }
-
-        class ElementViewHolder extends ViewHolder {
+        class ElementViewHolder extends RecyclerView.ViewHolder {
             private View rootView;
 
             private ImageView image;
@@ -177,7 +167,6 @@ public class SmbSearchDialog extends DialogFragment {
                 txtDesc = (TextView) view.findViewById(R.id.secondLine);
             }
 
-            @Override
             public void render(final int p, ComputerParcelable f) {
                 rootView.setOnClickListener(v -> {
                     if (subnetScanner != null)
