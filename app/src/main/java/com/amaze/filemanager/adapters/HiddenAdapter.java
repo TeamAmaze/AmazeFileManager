@@ -3,7 +3,6 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,9 +40,8 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenAdapter.ViewHolder
     private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context context, MainFragment mainFrag,  SharedPreferences sharedPreferences,
-                                @LayoutRes int layoutId, ArrayList<HybridFile> items,
-                                MaterialDialog materialDialog, boolean hide) {
+    public HiddenAdapter(Context context, MainFragment mainFrag, SharedPreferences sharedPreferences,
+                         ArrayList<HybridFile> items, MaterialDialog materialDialog, boolean hide) {
         this.c = context;
         this.context = mainFrag;
         sharedPrefs = sharedPreferences;

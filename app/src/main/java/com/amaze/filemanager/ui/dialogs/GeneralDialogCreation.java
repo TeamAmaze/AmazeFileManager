@@ -847,7 +847,7 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
 
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
                 toHybridFileArrayList(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
@@ -865,7 +865,7 @@ public class GeneralDialogCreation {
         a.title(R.string.hiddenfiles);
         a.theme(appTheme.getMaterialDialogTheme());
         a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs, R.layout.bookmarkrow,
+        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
                 FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
