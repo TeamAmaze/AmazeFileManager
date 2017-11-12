@@ -35,7 +35,7 @@ import java.util.List;
 public class SmbSearchDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
-    listViewAdapter listViewAdapter;
+    ListViewAdapter listViewAdapter;
     ArrayList<ComputerParcelable> computers = new ArrayList<>();
     int accentColor;
     SubnetScanner subnetScanner;
@@ -78,7 +78,7 @@ public class SmbSearchDialog extends DialogFragment {
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(accentColor);
         computers.add(new ComputerParcelable("-1", "-1"));
-        listViewAdapter = new listViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
+        listViewAdapter = new ListViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
         subnetScanner = new SubnetScanner(getActivity());
         subnetScanner.setObserver(new SubnetScanner.ScanObserver() {
             @Override
@@ -114,7 +114,7 @@ public class SmbSearchDialog extends DialogFragment {
         return builder.build();
     }
 
-    private class listViewAdapter extends RecyclerView.Adapter<listViewAdapter.ViewHolder> {
+    private class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
@@ -122,7 +122,7 @@ public class SmbSearchDialog extends DialogFragment {
         private LayoutInflater mInflater;
         private Context context;
 
-        public listViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
+        public ListViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
             this.context = context;
             items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
