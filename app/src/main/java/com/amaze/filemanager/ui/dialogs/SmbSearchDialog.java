@@ -20,7 +20,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 import com.amaze.filemanager.utils.ComputerParcelable;
 import com.amaze.filemanager.utils.SubnetScanner;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by arpitkh996 on 16-01-2016.
+ * Created by arpitkh996 on 16-01-2016 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class SmbSearchDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
@@ -115,16 +114,17 @@ public class SmbSearchDialog extends DialogFragment {
         return builder.build();
     }
 
-    private class listViewAdapter extends RecyclerArrayAdapter<ComputerParcelable, listViewAdapter.ViewHolder> {
+    private class listViewAdapter extends RecyclerView.Adapter<listViewAdapter.ViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
+        private ArrayList<ComputerParcelable> items;
         LayoutInflater mInflater;
         Context context;
 
         public listViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
             this.context = context;
-            addAll(objects);
+            items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         }
@@ -148,7 +148,7 @@ public class SmbSearchDialog extends DialogFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.render(position, getItem(position));
+            holder.render(position, items.get(position));
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -186,7 +186,7 @@ public class SmbSearchDialog extends DialogFragment {
                     if (getActivity() != null && getActivity() instanceof MainActivity) {
                         dismiss();
                         MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.showSMBDialog(listViewAdapter.getItem(p).name, listViewAdapter.getItem(p).addr, false);
+                        mainActivity.showSMBDialog(listViewAdapter.items.get(p).name, listViewAdapter.items.get(p).addr, false);
                     }
                 });
 
@@ -200,12 +200,22 @@ public class SmbSearchDialog extends DialogFragment {
 
         @Override
         public int getItemViewType(int position) {
-            ComputerParcelable f = getItem(position);
+            ComputerParcelable f = items.get(position);
             if (f.addr.equals("-1")) {
                 return VIEW_PROGRESSBAR;
             } else {
                 return VIEW_ELEMENT;
             }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return items.size();
         }
 
     }

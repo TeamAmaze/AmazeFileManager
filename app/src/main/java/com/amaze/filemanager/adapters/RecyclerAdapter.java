@@ -47,7 +47,7 @@ import java.util.ArrayList;
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *                                edited by Jens Klingenberg <mail@jensklingenberg.de>
  */
-public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
             GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;

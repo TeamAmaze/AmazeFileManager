@@ -39,7 +39,7 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class ZipExplorerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
+public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
 

@@ -28,9 +28,9 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Arpit on 16-11-2014.
+ * Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
-public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapter.ViewHolder> {
+public class HiddenAdapter extends RecyclerView.Adapter<HiddenAdapter.ViewHolder> {
 
     private SharedPreferences sharedPrefs;
     private MainFragment context;
@@ -44,7 +44,6 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
     public HiddenAdapter(Context context, MainFragment mainFrag,  SharedPreferences sharedPreferences,
                                 @LayoutRes int layoutId, ArrayList<HybridFile> items,
                                 MaterialDialog materialDialog, boolean hide) {
-        addAll(items);
         this.c = context;
         this.context = mainFrag;
         sharedPrefs = sharedPreferences;
@@ -64,7 +63,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.render(position, getItem(position));
+        holder.render(position, items.get(position));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -125,4 +124,15 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
     public void updateDialog(MaterialDialog dialog) {
         materialDialog = dialog;
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
 }
