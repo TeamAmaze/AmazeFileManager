@@ -64,7 +64,6 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
     private Context context;
-    private List<LayoutElementParcelable> items;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private AppsListFragment app;
 
@@ -83,54 +82,10 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }*/
     }
 
-    public void toggleChecked(int position) {
-        if (myChecked.get(position)) {
-            myChecked.put(position, false);
-        } else {
-            myChecked.put(position, true);
-        }
-
-        notifyDataSetChanged();
-
-    }
-
-    public void toggleChecked(boolean b) {
-
-        for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, b);
-        }
-        notifyDataSetChanged();
-
-
-    }
-
-    public List<Integer> getCheckedItemPositions() {
-        List<Integer> checkedItemPositions = new ArrayList<Integer>();
-
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (myChecked.get(i)) {
-                (checkedItemPositions).add(i);
-            }
-        }
-
-        return checkedItemPositions;
-    }
-
-    public boolean areAllChecked() {
-        boolean b = true;
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (!myChecked.get(i)) {
-                b = false;
-            }
-        }
-        return b;
-    }
-
     public void setData(List<LayoutElementParcelable> data) {
         clear();
 
         if (data != null) {
-            this.items = data;
             addAll(data);
         }
     }
