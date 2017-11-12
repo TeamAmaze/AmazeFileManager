@@ -34,10 +34,10 @@ import java.util.List;
 public class SmbSearchDialog extends DialogFragment {
     private UtilitiesProviderInterface utilsProvider;
 
-    ListViewAdapter listViewAdapter;
-    ArrayList<ComputerParcelable> computers = new ArrayList<>();
-    int accentColor;
-    SubnetScanner subnetScanner;
+    private ListViewAdapter listViewAdapter;
+    private ArrayList<ComputerParcelable> computers = new ArrayList<>();
+    private int accentColor;
+    private SubnetScanner subnetScanner;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -205,7 +205,7 @@ public class SmbSearchDialog extends DialogFragment {
             image = (ImageView) view.findViewById(R.id.icon);
             txtDesc = (TextView) view.findViewById(R.id.secondLine);
         }
-        
+
     }
 
 }
