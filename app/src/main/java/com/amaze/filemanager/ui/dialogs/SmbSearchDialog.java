@@ -119,8 +119,8 @@ public class SmbSearchDialog extends DialogFragment {
         private static final int VIEW_ELEMENT = 2;
 
         private ArrayList<ComputerParcelable> items;
-        LayoutInflater mInflater;
-        Context context;
+        private LayoutInflater mInflater;
+        private Context context;
 
         public listViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
             this.context = context;
