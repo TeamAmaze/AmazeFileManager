@@ -113,7 +113,7 @@ public class SmbSearchDialog extends DialogFragment {
         return builder.build();
     }
 
-    private class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ElementViewHolder> {
+    private class ListViewAdapter extends RecyclerView.Adapter<ElementViewHolder> {
         private static final int VIEW_PROGRESSBAR = 1;
         private static final int VIEW_ELEMENT = 2;
 
@@ -147,43 +147,24 @@ public class SmbSearchDialog extends DialogFragment {
 
         @Override
         public void onBindViewHolder(ElementViewHolder holder, int position) {
-            holder.render(position, items.get(position));
-        }
+            ComputerParcelable f =  items.get(position);
 
-        class ElementViewHolder extends RecyclerView.ViewHolder {
-            private View rootView;
+            holder.rootView.setOnClickListener(v -> {
+                if (subnetScanner != null)
+                    subnetScanner.interrupt();
+                if (getActivity() != null && getActivity() instanceof MainActivity) {
+                    dismiss();
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.showSMBDialog(listViewAdapter.items.get(position).name,
+                            listViewAdapter.items.get(position).addr, false);
+                }
+            });
 
-            private ImageView image;
-            private TextView txtTitle;
-            private TextView txtDesc;
-
-            ElementViewHolder(View view) {
-                super(view);
-
-                rootView = view;
-
-                txtTitle = (TextView) view.findViewById(R.id.firstline);
-                image = (ImageView) view.findViewById(R.id.icon);
-                txtDesc = (TextView) view.findViewById(R.id.secondLine);
-            }
-
-            public void render(final int p, ComputerParcelable f) {
-                rootView.setOnClickListener(v -> {
-                    if (subnetScanner != null)
-                        subnetScanner.interrupt();
-                    if (getActivity() != null && getActivity() instanceof MainActivity) {
-                        dismiss();
-                        MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.showSMBDialog(listViewAdapter.items.get(p).name, listViewAdapter.items.get(p).addr, false);
-                    }
-                });
-
-                txtTitle.setText(f.name);
-                image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
-                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
-                    image.setColorFilter(Color.parseColor("#666666"));
-                txtDesc.setText(f.addr);
-            }
+            holder.txtTitle.setText(f.name);
+            holder.image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                holder.image.setColorFilter(Color.parseColor("#666666"));
+            holder.txtDesc.setText(f.addr);
         }
 
         @Override
@@ -206,6 +187,25 @@ public class SmbSearchDialog extends DialogFragment {
             return items.size();
         }
 
+    }
+
+    private static class ElementViewHolder extends RecyclerView.ViewHolder {
+        private View rootView;
+
+        private ImageView image;
+        private TextView txtTitle;
+        private TextView txtDesc;
+
+        ElementViewHolder(View view) {
+            super(view);
+
+            rootView = view;
+
+            txtTitle = (TextView) view.findViewById(R.id.firstline);
+            image = (ImageView) view.findViewById(R.id.icon);
+            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+        }
+        
     }
 
 }
