@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +77,7 @@ public class SmbSearchDialog extends DialogFragment {
         builder.positiveText(R.string.use_custom_ip);
         builder.positiveColor(accentColor);
         computers.add(new ComputerParcelable("-1", "-1"));
-        listViewAdapter = new ListViewAdapter(getActivity(), R.layout.smb_computers_row, computers);
+        listViewAdapter = new ListViewAdapter(getActivity(), computers);
         subnetScanner = new SubnetScanner(getActivity());
         subnetScanner.setObserver(new SubnetScanner.ScanObserver() {
             @Override
@@ -122,7 +121,7 @@ public class SmbSearchDialog extends DialogFragment {
         private LayoutInflater mInflater;
         private Context context;
 
-        public ListViewAdapter(Context context, @LayoutRes int resource, List<ComputerParcelable> objects) {
+        public ListViewAdapter(Context context, List<ComputerParcelable> objects) {
             this.context = context;
             items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
