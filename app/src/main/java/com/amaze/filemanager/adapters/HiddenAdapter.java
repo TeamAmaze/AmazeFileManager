@@ -45,7 +45,7 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenAdapter.ViewHolder
         this.c = context;
         this.context = mainFrag;
         sharedPrefs = sharedPreferences;
-        this.items = items;
+        this.items = new ArrayList<>(items);
         this.hide = hide;
         this.materialDialog = materialDialog;
     }
