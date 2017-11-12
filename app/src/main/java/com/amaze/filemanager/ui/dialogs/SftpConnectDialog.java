@@ -93,7 +93,25 @@ public class SftpConnectDialog extends DialogFragment
         final Button selectPemBTN = (Button) v2.findViewById(R.id.selectPemBTN);
 
         if(!edit)
+        {
+            connectionET.setText(R.string.scp_con);
             portET.setText(Integer.toString(SshConnectionPool.SSH_DEFAULT_PORT));
+        }
+        else
+        {
+            connectionET.setText(getArguments().getString("connectionName"));
+            addressET.setText(getArguments().getString("address"));
+            portET.setText(getArguments().getInt("port"));
+            usernameET.setText(getArguments().getString("username"));
+            if(getArguments().getString("password", null) != null)
+            {
+                passwordET.setText(getArguments().getString("password"));
+            }
+            else
+            {
+
+            }
+        }
 
         portET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -116,14 +134,13 @@ public class SftpConnectDialog extends DialogFragment
             }
         });
 
-        final MaterialDialog dialog = new MaterialDialog.Builder(context)
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context)
             .title((R.string.scp_con))
             .autoDismiss(false)
             .customView(v2, true)
             .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
             .neutralText(R.string.cancel)
             .positiveText(R.string.create)
-            .negativeText(R.string.delete)
             .positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor)
             .onPositive(new MaterialDialog.SingleButtonCallback() {
         @Override
@@ -163,6 +180,7 @@ public class SftpConnectDialog extends DialogFragment
                                     utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
                                     dialog.dismiss();
                                     authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
+                                    Log.d(TAG, "Saved setup");
                                     dismiss();
                                 }
                             }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -178,12 +196,24 @@ public class SftpConnectDialog extends DialogFragment
                     e.printStackTrace();
                 }
             }
-        }}).onNeutral(new MaterialDialog.SingleButtonCallback() {
+        }}).onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dismiss();
+                dialog.dismiss();
             }
-        }).build();
+        });
+
+        if(edit) {
+            Log.d(TAG, "Edit? " + edit);
+            dialogBuilder.negativeText(R.string.delete).onNeutral(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        MaterialDialog dialog = dialogBuilder.build();
 
         final View okBTN = dialog.getActionButton(DialogAction.POSITIVE);
         okBTN.setEnabled(false);
