@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,12 +27,15 @@ import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyHostKeyTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -281,14 +286,30 @@ public class SftpConnectDialog extends DialogFragment
                         SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString()) :
                         SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString());
 
-                AppConfig.runInBackground(new Runnable() {
-                    @Override
-                    public void run() {
+                if(DataUtils.getInstance().containsServer(path) == -1) {
+                    AppConfig.runInBackground(new Runnable() {
+                        @Override
+                        public void run() {
                         utilsHandler.addSsh(connectionName, path, getPemContents());
+                        }
+                    });
+                    DataUtils.getInstance().addServer(new String[]{connectionName, path});
+                    ((MainActivity) getActivity()).refreshDrawer();
+
+                    TabFragment fragment = ((MainActivity) getActivity()).getFragment();
+                    if (fragment != null) {
+                        Fragment fragment1 = fragment.getTab();
+                        if (fragment1 != null) {
+                            final MainFragment ma = (MainFragment) fragment1;
+                            ma.loadlist(path, false, OpenMode.UNKNOWN);
+                        }
                     }
-                });
-                DataUtils.getInstance().addServer(new String[]{connectionName, path});
-                ((MainActivity) getActivity()).refreshDrawer();
+                    dismiss();
+
+                } else {
+                    Snackbar.make(getActivity().findViewById(R.id.content_frame), getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+                    dismiss();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
