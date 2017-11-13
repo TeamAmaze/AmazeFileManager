@@ -70,6 +70,9 @@ public class HFile {
             if (!isDirectory) this.path = path + name;
             else if (!name.endsWith("/")) this.path = path + name + "/";
             else this.path = path + name;
+        } else if(path.startsWith("ssh://") || isSftp()) {
+            Log.d(TAG, path);
+            this.path = path + "/" + name;
         } else this.path = path + "/" + name;
     }
 
@@ -736,6 +739,8 @@ public class HFile {
                 if (arrayList != null) arrayList.clear();
                 e.printStackTrace();
             }
+        } else if (isSftp()) {
+            Log.d(TAG, "Listing file at [" + path + "]");
         } else if (isOtgFile()) {
 
         } else {
