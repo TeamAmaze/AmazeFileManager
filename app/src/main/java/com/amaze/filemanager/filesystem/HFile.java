@@ -76,7 +76,7 @@ public class HFile {
     public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
-        } else if (path.startsWith("scp://") || path.startsWith("sftp://")) {
+        } else if (path.startsWith("ssh://")) {
             mode = OpenMode.SFTP;
         } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
