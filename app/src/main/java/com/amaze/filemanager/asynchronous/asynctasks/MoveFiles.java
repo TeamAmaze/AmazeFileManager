@@ -27,7 +27,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -40,7 +40,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
-import com.squareup.haha.perflib.Main;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -105,7 +104,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                                 try {
                                     if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName()))
                                         return false;
-                                } catch (RootNotPermittedException e) {
+                                } catch (ShellNotRunningException e) {
                                     e.printStackTrace();
                                     return false;
                                 }

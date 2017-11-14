@@ -14,12 +14,11 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
@@ -345,7 +344,7 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
-    private static boolean rename(File f, String name, boolean root) throws RootNotPermittedException {
+    private static boolean rename(File f, String name, boolean root) throws ShellNotRunningException {
         String newPath = f.getParent() + "/" + name;
         if (f.getParentFile().canWrite()) {
             return f.renameTo(new File(newPath));
@@ -364,7 +363,7 @@ public abstract class FileUtil {
      * @return true if the renaming was successful.
      */
     static boolean renameFolder(@NonNull final File source, @NonNull final File target,
-                                Context context) throws RootNotPermittedException {
+                                Context context) throws ShellNotRunningException {
         // First try the normal rename.
         if (rename(source, target.getName(), false)) {
             return true;

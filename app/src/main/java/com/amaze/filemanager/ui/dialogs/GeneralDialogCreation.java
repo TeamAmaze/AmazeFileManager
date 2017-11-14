@@ -36,7 +36,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -941,7 +941,7 @@ public class GeneralDialogCreation {
                     }
                 });
                 mainFrag.updateList();
-            } catch (RootNotPermittedException e1) {
+            } catch (ShellNotRunningException e1) {
                 Toast.makeText(context, mainFrag.getResources().getString(R.string.rootfailure),
                         Toast.LENGTH_LONG).show();
                 e1.printStackTrace();

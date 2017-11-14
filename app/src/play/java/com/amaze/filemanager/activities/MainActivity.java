@@ -646,7 +646,7 @@ public class MainActivity extends ThemedActivity implements
                     closeInteractiveShell();
                     sharedPref.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
                 }
-            } catch (RootNotPermittedException e) {
+            } catch (ShellNotRunningException e) {
                 e.printStackTrace();
                 sharedPref.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
             }*/

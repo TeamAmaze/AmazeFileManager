@@ -6,7 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -177,7 +177,7 @@ public class Operations {
                             try {
 
                                 RootUtils.mkDir(file.getParent(context), file.getName(context));
-                            } catch (RootNotPermittedException e) {
+                            } catch (ShellNotRunningException e) {
                                 e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
@@ -303,7 +303,7 @@ public class Operations {
                             try {
 
                                 RootUtils.mkFile(file.getPath());
-                            } catch (RootNotPermittedException e) {
+                            } catch (ShellNotRunningException e) {
                                 e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
@@ -420,14 +420,14 @@ public class Operations {
                             } else if (mode == 1 || mode == 0) {
                                 try {
                                     FileUtil.renameFolder(file, file1, context);
-                                } catch (RootNotPermittedException e) {
+                                } catch (ShellNotRunningException e) {
                                     e.printStackTrace();
                                 }
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode) {
                                     try {
                                         RootUtils.rename(file.getPath(), file1.getPath());
-                                    } catch (RootNotPermittedException e) {
+                                    } catch (ShellNotRunningException e) {
                                         e.printStackTrace();
                                     }
                                     oldFile.setMode(OpenMode.ROOT);
@@ -441,7 +441,7 @@ public class Operations {
                         case ROOT:
                             try {
                                 RootUtils.rename(file.getPath(), file1.getPath());
-                            } catch (RootNotPermittedException e) {
+                            } catch (ShellNotRunningException e) {
                                 e.printStackTrace();
                             }
 

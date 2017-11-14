@@ -4,7 +4,7 @@ package com.amaze.filemanager.utils;
  * Created by arpitkh996 on 25-01-2016.
  */
 
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class RootUtils {
      * @param path the path on which action to perform
      * @return String the root of mount point that was ro, and mounted to rw; null otherwise
      */
-    private static String mountFileSystemRW(String path) throws RootNotPermittedException {
+    private static String mountFileSystemRW(String path) throws ShellNotRunningException {
         String command = "mount";
         ArrayList<String> output = RootHelper.runShellCommand(command);
         String mountPoint = "", types = null;
@@ -71,7 +71,7 @@ public class RootUtils {
      *
      * @param path the root of device/filesystem to be mounted as ro
      */
-    private static void mountFileSystemRO(String path) throws RootNotPermittedException {
+    private static void mountFileSystemRO(String path) throws ShellNotRunningException {
         String command = "umount -r \"" + path + "\"";
         RootHelper.runShellCommand(command);
     }
@@ -79,7 +79,7 @@ public class RootUtils {
     /**
      * Copies file using root
      */
-    public static void copy(String source, String destination) throws RootNotPermittedException {
+    public static void copy(String source, String destination) throws ShellNotRunningException {
         // remounting destination as rw
         String mountPoint = mountFileSystemRW(destination);
 
@@ -97,7 +97,7 @@ public class RootUtils {
      * @param path path to new directory
      * @param name name of directory
      */
-    public static void mkDir(String path, String name) throws RootNotPermittedException {
+    public static void mkDir(String path, String name) throws ShellNotRunningException {
 
         String mountPoint = mountFileSystemRW(path);
 
@@ -113,7 +113,7 @@ public class RootUtils {
      *
      * @param path path to new file
      */
-    public static void mkFile(String path) throws RootNotPermittedException {
+    public static void mkFile(String path) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(path);
 
         RootHelper.runShellCommand("touch \"" + path + "\"");
@@ -138,7 +138,7 @@ public class RootUtils {
      *
      * @return boolean whether file was deleted or not
      */
-    public static boolean delete(String path) throws RootNotPermittedException {
+    public static boolean delete(String path) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(path);
         ArrayList<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
 
@@ -153,7 +153,7 @@ public class RootUtils {
     /**
      * Moves file using root
      */
-    public static void move(String path, String destination) throws RootNotPermittedException {
+    public static void move(String path, String destination) throws ShellNotRunningException {
         // remounting destination as rw
         String mountPoint = mountFileSystemRW(destination);
 
@@ -173,7 +173,7 @@ public class RootUtils {
      * @param newPath path to file after rename
      * @return if rename was successful or not
      */
-    public static boolean rename(String oldPath, String newPath) throws RootNotPermittedException {
+    public static boolean rename(String oldPath, String newPath) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(oldPath);
         ArrayList<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
 
@@ -186,7 +186,7 @@ public class RootUtils {
     }
 
     public static void cat(String sourcePath, String destinationPath)
-            throws RootNotPermittedException {
+            throws ShellNotRunningException {
 
         String mountPoint = mountFileSystemRW(destinationPath);
 
