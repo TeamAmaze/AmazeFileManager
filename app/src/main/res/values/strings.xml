@@ -582,4 +582,7 @@
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>
     <string name="failed_no_connection">Failed to load files. Please check your connection.</string>
+    <string name="shortcut_failed_count_exceed">Maximum shortcut limit reached.
+        Do you want to replace the existing shortcut?</string>
+    <string name="shortcut_failed_add">Failed to add shortcut</string>
 </resources>

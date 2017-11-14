@@ -22,19 +22,17 @@
 package com.amaze.filemanager.fragments;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Icon;
 import android.media.MediaScannerConnection;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -44,12 +42,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -63,10 +63,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -111,11 +113,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -175,6 +173,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
     private MediaScannerConnection mediaScannerConnection;
+    private ShortcutManager shortcutManager;
 
     // defines the current visible tab, default either 0 or 1
     //private int mCurrentTab;
@@ -185,11 +184,19 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      */
     private boolean mRetainSearchTask = false;
 
+    private static final String KEY_PREFERENCES_SHORTCUT_ID = "SHORTCUT_ID";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                shortcutManager = getActivity().getApplicationContext().getSystemService(ShortcutManager.class);
+            }
+
 
         utilsProvider = getMainActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -1587,20 +1594,72 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     private void addShortcut(LayoutElementParcelable path) {
-        //Adding shortcut for MainActivity
-        //on Home screen
-        Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
-                MainActivity.class);
-        shortcutIntent.putExtra("path", path.getDesc());
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
-        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Intent addIntent = new Intent();
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
-        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        getActivity().sendBroadcast(addIntent);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+            //Adding shortcut for MainActivity
+            //on Home screen
+            Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
+                    MainActivity.class);
+            shortcutIntent.putExtra(MainActivity.ARGS_INTENT_ACTION_VIEW_KEY_PATH, path.getDesc());
+            shortcutIntent.setAction(Intent.ACTION_MAIN);
+            shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Intent addIntent = new Intent();
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                    Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
+            addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+            getActivity().sendBroadcast(addIntent);
+        } else {
+            Uri file = Uri.fromFile(new File(path.getDesc()));
+
+            int val = sharedPref.getInt(KEY_PREFERENCES_SHORTCUT_ID, 0);
+
+            String mimeType = (getMimeType(file) == null? "*/*": getMimeType(file));
+
+            ShortcutInfo shortcut = new ShortcutInfo.Builder(getActivity().getApplicationContext(), "id" + val++)
+                        .setShortLabel(new File(path.getDesc()).getName())
+                        .setLongLabel(new File(path.getDesc()).getName())
+                        .setIcon(Icon.createWithResource(getActivity().getApplicationContext(), R.mipmap.ic_launcher))
+                        .setIntent(new Intent(Intent.ACTION_VIEW).setDataAndType(file, mimeType))
+                        .build();
+
+            List<ShortcutInfo> shortcuts = shortcutManager.getDynamicShortcuts();
+
+            // Checking for one less than the max allowed shortcuts per activity
+            // because only 4 shortcuts are shown at max.
+            if (shortcuts.size() >= shortcutManager.getMaxShortcutCountPerActivity()-1 &&
+                    shortcuts.size() > 0) {
+
+                GeneralDialogCreation.showShortcutFailDialog(getMainActivity(), () -> {
+                    // remove last
+                    shortcuts.remove(shortcuts.size() - 1);
+                    shortcuts.add(shortcuts.size() - 1, shortcut);
+                    return shortcutManager.setDynamicShortcuts(shortcuts);
+                });
+            } else {
+                shortcutManager.addDynamicShortcuts(Collections.singletonList(shortcut));
+            }
+
+            sharedPref.edit().putInt(KEY_PREFERENCES_SHORTCUT_ID, val).apply();
+        }
+    }
+
+    public interface Shortcut {
+        boolean replaceShortcut();
+    }
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
     }
 
     // This method is used to implement the modification for the pre Searching

@@ -295,6 +295,12 @@ public class MainActivity extends ThemedActivity implements
      */
     public static final String ARGS_INTENT_ACTION_VIEW_MIME_FOLDER = "resource/folder";
 
+    /**
+     * Key that defines an intent incoming from some component of amaze and wants to view a specific
+     * directory
+     */
+    public static final String ARGS_INTENT_ACTION_VIEW_KEY_PATH = "path";
+
     private static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
     private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/oauth2redirect";
 
@@ -354,7 +360,7 @@ public class MainActivity extends ThemedActivity implements
             getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
         }
 
-        path = getIntent().getStringExtra("path");
+        path = getIntent().getStringExtra(ARGS_INTENT_ACTION_VIEW_KEY_PATH);
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         intent = getIntent();
 
