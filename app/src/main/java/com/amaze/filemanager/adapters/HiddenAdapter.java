@@ -3,7 +3,6 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +27,9 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Arpit on 16-11-2014.
+ * Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
-public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapter.ViewHolder> {
+public class HiddenAdapter extends RecyclerView.Adapter<HiddenAdapter.ViewHolder> {
 
     private SharedPreferences sharedPrefs;
     private MainFragment context;
@@ -41,14 +40,12 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
     private DataUtils dataUtils = DataUtils.getInstance();
     ///	public HashMap<Integer, Boolean> myChecked = new HashMap<Integer, Boolean>();
 
-    public HiddenAdapter(Context context, MainFragment mainFrag,  SharedPreferences sharedPreferences,
-                                @LayoutRes int layoutId, ArrayList<HybridFile> items,
-                                MaterialDialog materialDialog, boolean hide) {
-        addAll(items);
+    public HiddenAdapter(Context context, MainFragment mainFrag, SharedPreferences sharedPreferences,
+                         ArrayList<HybridFile> items, MaterialDialog materialDialog, boolean hide) {
         this.c = context;
         this.context = mainFrag;
         sharedPrefs = sharedPreferences;
-        this.items = items;
+        this.items = new ArrayList<>(items);
         this.hide = hide;
         this.materialDialog = materialDialog;
     }
@@ -64,7 +61,7 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.render(position, getItem(position));
+        holder.render(position, items.get(position));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -125,4 +122,15 @@ public class HiddenAdapter extends RecyclerArrayAdapter<HybridFile, HiddenAdapte
     public void updateDialog(MaterialDialog dialog) {
         materialDialog = dialog;
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
 }

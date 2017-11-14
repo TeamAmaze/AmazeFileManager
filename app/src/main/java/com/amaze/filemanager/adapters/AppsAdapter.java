@@ -63,10 +63,9 @@ import java.util.List;
 public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
-    Context context;
-    List<LayoutElementParcelable> items;
-    public SparseBooleanArray myChecked = new SparseBooleanArray();
-    AppsListFragment app;
+    private Context context;
+    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private AppsListFragment app;
 
     private ThemedActivity themedActivity;
 
@@ -83,54 +82,10 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }*/
     }
 
-    public void toggleChecked(int position) {
-        if (myChecked.get(position)) {
-            myChecked.put(position, false);
-        } else {
-            myChecked.put(position, true);
-        }
-
-        notifyDataSetChanged();
-
-    }
-
-    public void toggleChecked(boolean b) {
-
-        for (int i = 0; i < items.size(); i++) {
-            myChecked.put(i, b);
-        }
-        notifyDataSetChanged();
-
-
-    }
-
-    public List<Integer> getCheckedItemPositions() {
-        List<Integer> checkedItemPositions = new ArrayList<Integer>();
-
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (myChecked.get(i)) {
-                (checkedItemPositions).add(i);
-            }
-        }
-
-        return checkedItemPositions;
-    }
-
-    public boolean areAllChecked() {
-        boolean b = true;
-        for (int i = 0; i < myChecked.size(); i++) {
-            if (!myChecked.get(i)) {
-                b = false;
-            }
-        }
-        return b;
-    }
-
     public void setData(List<LayoutElementParcelable> data) {
         clear();
 
         if (data != null) {
-            this.items = data;
             addAll(data);
         }
     }
@@ -143,12 +98,11 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         ImageButton about;
     }
 
+    @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         final LayoutElementParcelable rowItem = getItem(position);
 
         View view;
-        final int p = position;
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -163,11 +117,10 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
             view.findViewById(R.id.generic_icon).setVisibility(View.GONE);
             view.findViewById(R.id.picture_icon).setVisibility(View.GONE);
             view.setTag(vholder);
-
         } else {
             view = convertView;
-
         }
+
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.apkIcon.setImageDrawable(rowItem.getImageId());
         app.ic.cancelLoad(holder.apkIcon);
@@ -191,22 +144,18 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         });
 
 
-        Boolean checked = myChecked.get(position);
-        if (checked != null) {
-
-            if (checked) {
-                holder.rl.setBackgroundColor(Utils.getColor(context, R.color.appsadapter_background));
+        if (myChecked.get(position)) {
+            holder.rl.setBackgroundColor(Utils.getColor(context, R.color.appsadapter_background));
+        } else {
+            if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
+                holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
             } else {
-                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-                    holder.rl.setBackgroundResource(R.drawable.safr_ripple_white);
-                } else {
-                    holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
-                }
+                holder.rl.setBackgroundResource(R.drawable.safr_ripple_black);
             }
         }
         return view;
     }
-    void showPopup(View v,final LayoutElementParcelable rowItem){
+    private void showPopup(View v, final LayoutElementParcelable rowItem){
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
             popupMenu.setOnMenuItemClickListener(item -> {
