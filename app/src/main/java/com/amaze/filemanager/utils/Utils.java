@@ -12,7 +12,6 @@ import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -48,12 +47,6 @@ public class Utils {
         return Math.min(minimum, max);
     }
 
-    /**
-     * TODO
-     *
-     * @param view
-     * @return
-     */
     public static float getViewRawY(View view) {
         int[] location = new int[2];
         location[0] = 0;
@@ -78,10 +71,6 @@ public class Utils {
         }
     }
 
-    public String getDate(File f) {
-        return getDate(f.lastModified());
-    }
-
     public static String getDate(long f) {
         return DATE_WITH_MINUTES.format(f);
     }
@@ -93,14 +82,6 @@ public class Utils {
         return date;
     }
 
-    /**
-     * TODO
-     *
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
-     * @return
-     */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -123,14 +104,9 @@ public class Utils {
         return inSampleSize;
     }
 
-    public boolean isAtleastKitkat() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-    }
-
     /**
      * Gets color
      *
-     * @param c     Context
      * @param color the resource id for the color
      * @return the color
      */
@@ -170,71 +146,55 @@ public class Utils {
      *  (https://commons.apache.org/proper/commons-lang/javadocs/api-2.6/org/apache/commons/lang/StringUtils.html#difference(java.lang.String,%20java.lang.String))
      */
     public static String differenceStrings(String str1, String str2) {
-        if (str1 == null) {
-            return str2;
-        }
-        if (str2 == null) {
-            return str1;
-        }
+        if (str1 == null) return str2;
+        if (str2 == null) return str1;
+
         int at = indexOfDifferenceStrings(str1, str2);
-        if (at == INDEX_NOT_FOUND) {
-            return "";
-        }
+
+        if (at == INDEX_NOT_FOUND) return "";
+
         return str2.substring(at);
     }
 
     private static int indexOfDifferenceStrings(CharSequence cs1, CharSequence cs2) {
-        if (cs1 == cs2) {
-            return INDEX_NOT_FOUND;
-        }
-        if (cs1 == null || cs2 == null) {
-            return 0;
-        }
+        if (cs1 == cs2) return INDEX_NOT_FOUND;
+        if (cs1 == null || cs2 == null) return 0;
+
         int i;
         for (i = 0; i < cs1.length() && i < cs2.length(); ++i) {
-            if (cs1.charAt(i) != cs2.charAt(i)) {
-                break;
-            }
+            if (cs1.charAt(i) != cs2.charAt(i)) break;
         }
-        if (i < cs2.length() || i < cs1.length()) {
-            return i;
-        }
+
+        if (i < cs2.length() || i < cs1.length()) return i;
+
         return INDEX_NOT_FOUND;
     }
 
     /**
      * Force disables screen rotation. Useful when we're temporarily in activity because of external intent,
      * and don't have to really deal much with filesystem.
-     * @param mainActivity
      */
     public static void disableScreenRotation(MainActivity mainActivity) {
         int screenOrientation = mainActivity.getResources().getConfiguration().orientation;
 
         if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-
             mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-
             mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
     /**
      * Sanitizes input from external application to avoid any attempt of command injection
-     * @param input
-     * @return
      */
     public static String sanitizeInput(String input) {
-
         // iterate through input and keep sanitizing until it's fully injection proof
         String sanitizedInput;
         String sanitizedInputTemp = input;
+        
         while (true) {
-
             sanitizedInput = sanitizeInputOnce(sanitizedInputTemp);
-            if (sanitizedInput.equals(sanitizedInputTemp))
-                break;
-
+            if (sanitizedInput.equals(sanitizedInputTemp)) break;
             sanitizedInputTemp = sanitizedInput;
         }
 
@@ -242,22 +202,16 @@ public class Utils {
     }
 
     private static String sanitizeInputOnce(String input) {
-
-        String sanitizedInput = input.replaceAll(INPUT_INTENT_BLACKLIST_PIPE, "").
+        return input.replaceAll(INPUT_INTENT_BLACKLIST_PIPE, "").
                 replaceAll(INPUT_INTENT_BLACKLIST_AMP, "").
                 replaceAll(INPUT_INTENT_BLACKLIST_DOTS, "").
-                replaceAll(INPUT_INTENT_BLACKLIST_COLON, "")
-                ;
-        return sanitizedInput;
+                replaceAll(INPUT_INTENT_BLACKLIST_COLON, "");
     }
 
     /**
      * Returns uri associated to specific basefile
-     * @param baseFile
-     * @return
      */
     public static Uri getUriForBaseFile(Context context, HybridFileParcelable baseFile) {
-
         switch (baseFile.getMode()) {
             case FILE:
             case ROOT:
