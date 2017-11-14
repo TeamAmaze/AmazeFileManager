@@ -11,7 +11,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
@@ -20,6 +19,9 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Provides useful interfaces and methods for encryption/decryption
@@ -68,7 +70,7 @@ public class EncryptDecryptUtils {
 
         try {
             encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
-        } catch (CryptException e) {
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
 
             // we couldn't find any entry in database or lost the key to decipher
@@ -102,13 +104,11 @@ public class EncryptDecryptUtils {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
                                 mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
-                    } else throw new CryptException();
-                } catch (CryptException e) {
+                    } else throw new IllegalStateException("API < M!");
+                } catch (GeneralSecurityException | IOException | IllegalStateException e) {
                     e.printStackTrace();
 
-                    Toast.makeText(main.getContext(),
-                            main.getResources().getString(R.string.crypt_decryption_fail),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
             case PrefFrag.ENCRYPT_PASSWORD_MASTER:
@@ -117,13 +117,9 @@ public class EncryptDecryptUtils {
                             mainActivity, decryptIntent, utilsProvider.getAppTheme(),
                             CryptUtil.decryptPassword(c, preferences1.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                     PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
-                } catch (CryptException e) {
+                } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
-
-
-                    Toast.makeText(main.getContext(),
-                            main.getResources().getString(R.string.crypt_decryption_fail),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -140,7 +136,7 @@ public class EncryptDecryptUtils {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws CryptException {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws GeneralSecurityException, IOException {
 
         CryptHandler handler = new CryptHandler(context);
 

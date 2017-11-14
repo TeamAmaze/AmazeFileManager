@@ -45,7 +45,6 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -54,6 +53,8 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 import static com.amaze.filemanager.R.string.feedback;
@@ -273,7 +274,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                         // no password set in preferences, just leave the field empty
                         decryptedPassword = "";
                     }
-                } catch (CryptException e) {
+                } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
                 }
 
@@ -307,9 +308,8 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                                 sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
                                         "").apply();
                             }
-                        } catch (CryptException e) {
+                        } catch (GeneralSecurityException | IOException e) {
                             e.printStackTrace();
-
                             sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
                                     PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
                         }

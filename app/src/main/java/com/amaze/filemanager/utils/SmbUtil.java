@@ -3,8 +3,10 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.files.CryptUtil;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Created by Vishal on 30-05-2017.
@@ -17,7 +19,7 @@ public class SmbUtil {
     /**
      * Parse path to decrypt smb password
      */
-    public static String getSmbDecryptedPath(Context context, String path) throws CryptException {
+    public static String getSmbDecryptedPath(Context context, String path) throws GeneralSecurityException, IOException {
         if (!(path.contains(":") && path.contains("@"))) {
             // smb path doesn't have any credentials
             return path;
@@ -40,7 +42,7 @@ public class SmbUtil {
     /**
      * Parse path to encrypt smb password
      */
-    public static String getSmbEncryptedPath(Context context, String path) throws CryptException {
+    public static String getSmbEncryptedPath(Context context, String path) throws GeneralSecurityException, IOException  {
         if (!(path.contains(":") && path.contains("@"))) {
             // smb path doesn't have any credentials
             return path;

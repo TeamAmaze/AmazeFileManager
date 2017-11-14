@@ -21,7 +21,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -46,6 +45,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -131,7 +131,7 @@ public class FTPService extends Service implements Runnable {
             try {
                 password = CryptUtil.decryptPassword(getApplicationContext(), preferences.getString(KEY_PREFERENCE_PASSWORD, ""));
                 isPasswordProtected = true;
-            } catch (CryptException e) {
+            } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
 
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
