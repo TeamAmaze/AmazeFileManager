@@ -23,13 +23,11 @@ package com.amaze.filemanager.utils;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-//import com.google.gson.Gson;
-
+/**
+ * Extract from: https://github.com/kcochibili/TinyDB--Android-Shared-Preferences-Turbo
+ * Author: https://github.com/kcochibili
+ */
 public class TinyDB {
-
     /*
      *  The "‚" character is not a comma, it is the SINGLE LOW-9 QUOTATION MARK. U-201A
      *  + U-2017 + U-201A are used for separating the items in a list.
@@ -63,69 +61,4 @@ public class TinyDB {
         return newArray;
     }
 
-    /**
-     * Get parsed ArrayList of T from SharedPreferences at 'key'
-     * @param key SharedPreferences key
-     * @return ArrayList of T
-     */
-    public static <T> ArrayList<T> getList(SharedPreferences preferences, Class<T> klazz, String key,
-                                           ArrayList<T> defaultValue) {
-        String pref = preferences.getString(key, "");
-
-        if(pref.equals("")) {
-            return defaultValue;
-        }
-
-        String[] myList = TextUtils.split(pref, DIVIDER);
-        ArrayList<String> arrayToList = new ArrayList<>(Arrays.asList(myList));
-        ArrayList<T> newList = new ArrayList<>();
-
-        for (String item : arrayToList)
-            newList.add(valueOf(klazz, item));
-
-        return newList;
-    }
-
-    // Put methods
-
-    /**
-     * Put ArrayList of T into SharedPreferences with 'key' and save
-     * @param key SharedPreferences key
-     */
-    public static <T> void putList(SharedPreferences preferences, String key, ArrayList<T> list) {
-        checkForNullKey(key);
-        Object[] myList = list.toArray();
-        preferences.edit().putString(key, TextUtils.join(DIVIDER, myList)).apply();
-    }
-
-    /**
-     * null keys would corrupt the shared pref file and make them unreadable this is a preventive measure
-     * @param key the pref key
-     */
-    private static void checkForNullKey(String key){
-        if (key == null){
-            throw new NullPointerException();
-        }
-    }
-
-    private static <T> T valueOf(Class<T> klazz, String arg) {
-        Exception cause = null;
-
-        if(klazz != String.class) {
-            T ret = null;
-            try {
-                ret = klazz.cast(klazz.getDeclaredMethod("valueOf", String.class).invoke(null, arg));
-            } catch (Exception e) {
-                cause = e;
-            }
-
-            if (cause == null) {
-                return ret;
-            } else {
-                throw new IllegalArgumentException(cause);
-            }
-        } else {
-            return (T) arg;//Is string but String.valueOf(String) doesn't exist
-        }
-    }
 }
