@@ -8,12 +8,11 @@ import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.ByteArrayInputStream;
@@ -109,7 +108,7 @@ public class Operations {
                     try {
                         file.getSmbFile(2000).mkdirs();
                     } catch (SmbException e) {
-                        Logger.log(e, file.getPath(), context);
+                        e.printStackTrace();
                         errorCallBack.done(file, false);
                         return null;
                     }
@@ -179,7 +178,7 @@ public class Operations {
 
                                 RootUtils.mkDir(file.getParent(context), file.getName(context));
                             } catch (RootNotPermittedException e) {
-                                Logger.log(e, file.getPath(), context);
+                                e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
                             return null;
@@ -219,7 +218,7 @@ public class Operations {
                     try {
                         file.getSmbFile(2000).createNewFile();
                     } catch (SmbException e) {
-                        Logger.log(e, file.getPath(), context);
+                        e.printStackTrace();
                         errorCallBack.done(file, false);
                         return null;
                     }
@@ -305,7 +304,7 @@ public class Operations {
 
                                 RootUtils.mkFile(file.getPath());
                             } catch (RootNotPermittedException e) {
-                                Logger.log(e, file.getPath(), context);
+                                e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
                             return null;
@@ -428,8 +427,8 @@ public class Operations {
                                 if (!a && rootMode) {
                                     try {
                                         RootUtils.rename(file.getPath(), file1.getPath());
-                                    } catch (Exception e) {
-                                        Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
+                                    } catch (RootNotPermittedException e) {
+                                        e.printStackTrace();
                                     }
                                     oldFile.setMode(OpenMode.ROOT);
                                     newFile.setMode(OpenMode.ROOT);
@@ -441,10 +440,9 @@ public class Operations {
                             break;
                         case ROOT:
                             try {
-
                                 RootUtils.rename(file.getPath(), file1.getPath());
-                            } catch (Exception e) {
-                                Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
+                            } catch (RootNotPermittedException e) {
+                                e.printStackTrace();
                             }
 
                             newFile.setMode(OpenMode.ROOT);
