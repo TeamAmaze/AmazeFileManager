@@ -95,7 +95,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         super.onCreate(savedInstanceState);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
-        PreferenceUtils.reset();
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
