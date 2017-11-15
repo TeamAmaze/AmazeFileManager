@@ -3,6 +3,7 @@ package com.amaze.filemanager.services.ssh.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amaze.filemanager.services.ssh.CustomSshJConfig;
 import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 
 import net.schmizz.sshj.SSHClient;
@@ -30,7 +31,7 @@ public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
 
         final AtomicReference<PublicKey> holder = new AtomicReference<PublicKey>();
         final Semaphore semaphore = new Semaphore(0);
-        final SSHClient sshClient = new SSHClient();
+        final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.addHostKeyVerifier(new HostKeyVerifier() {
             @Override
             public boolean verify(String hostname, int port, PublicKey key) {

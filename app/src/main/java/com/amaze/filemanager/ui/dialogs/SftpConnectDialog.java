@@ -49,7 +49,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.security.Security;
 import java.util.concurrent.ExecutionException;
 
 public class SftpConnectDialog extends DialogFragment
@@ -70,11 +69,6 @@ public class SftpConnectDialog extends DialogFragment
     private KeyPair selectedParsedKeyPair = null;
 
     String emptyAddress, emptyName, invalidUsername;
-
-    static {
-        Security.removeProvider("BC");
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), Security.getProviders().length+1);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -290,7 +284,7 @@ public class SftpConnectDialog extends DialogFragment
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                        utilsHandler.addSsh(connectionName, path, getPemContents());
+                            utilsHandler.addSsh(connectionName, path, getPemContents());
                         }
                     });
                     DataUtils.getInstance().addServer(new String[]{connectionName, path});

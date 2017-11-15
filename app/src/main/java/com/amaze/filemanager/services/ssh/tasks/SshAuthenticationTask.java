@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.services.ssh.CustomSshJConfig;
 import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 
 import net.schmizz.sshj.SSHClient;
@@ -40,7 +41,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected Boolean doInBackground(Void... voids) {
 
-        final SSHClient sshClient = new SSHClient();
+        final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.addHostKeyVerifier(hostKey);
 
         try {
