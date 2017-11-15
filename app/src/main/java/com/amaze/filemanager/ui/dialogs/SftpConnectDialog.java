@@ -277,14 +277,16 @@ public class SftpConnectDialog extends DialogFragment
             if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair).execute().get())
             {
                 final String path = (selectedParsedKeyPair != null) ?
-                        SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s@%s:%d", username, hostname, port)).toString()) :
-                        SmbUtil.getSmbEncryptedPath(context, Uri.parse(String.format("ssh://%s:%s@%s:%d", username, password, hostname, port)).toString());
+                        String.format("ssh://%s@%s:%d", username, hostname, port) :
+                        String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
+
+                final String encryptedPath = SmbUtil.getSmbEncryptedPath(context, path);
 
                 if(DataUtils.getInstance().containsServer(path) == -1) {
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                            utilsHandler.addSsh(connectionName, path, getPemContents());
+                            utilsHandler.addSsh(connectionName, encryptedPath, getPemContents());
                         }
                     });
                     DataUtils.getInstance().addServer(new String[]{connectionName, path});

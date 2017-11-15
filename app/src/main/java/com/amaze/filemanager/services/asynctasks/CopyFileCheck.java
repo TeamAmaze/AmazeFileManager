@@ -114,7 +114,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
     private ArrayList<BaseFile> checkConflicts(ArrayList<BaseFile> filesToCopy, HFile destination) {
         ArrayList<BaseFile> conflictingFiles = new ArrayList<>();
 
-        for (BaseFile k1 : destination.listFiles(rootMode)) {
+        for (BaseFile k1 : destination.listFiles(context, rootMode)) {
             for (BaseFile j : filesToCopy) {
                 if (k1.getName().equals((j).getName())) {
                     conflictingFiles.add(j);
@@ -315,7 +315,7 @@ public class CopyFileCheck extends AsyncTask<ArrayList<BaseFile>, String, CopyFi
 
                     nextNodes.add(new CopyNode(path + "/"
                             + conflictingFiles.get(i).getName(),
-                            conflictingFiles.get(i).listFiles(rootMode)));
+                            conflictingFiles.get(i).listFiles(context, rootMode)));
 
                     filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));
                     conflictingFiles.remove(i);

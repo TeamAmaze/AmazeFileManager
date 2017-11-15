@@ -8,9 +8,12 @@ public abstract class SFtpClientTemplate<T>
 {
     public final String url;
 
-    public SFtpClientTemplate(String url)
+    public final String hostKey;
+
+    public SFtpClientTemplate(String url, String hostKey)
     {
         this.url = url;
+        this.hostKey = hostKey;
     }
 
     public abstract T execute(SFTPClient client) throws IOException;

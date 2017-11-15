@@ -25,9 +25,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -40,6 +42,7 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
@@ -72,14 +75,16 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
     private OpenMode openmode;
     private boolean grid;
     private DataUtils dataUtils = DataUtils.getInstance();
+    private UtilsHandler utilsHandler;
 
     public LoadList(Context c, UtilitiesProviderInterface utilsProvider, boolean back,
-                    MainFragment ma, OpenMode openmode) {
+                    MainFragment ma, OpenMode openmode, UtilsHandler utilsHandler) {
         this.utilsProvider = utilsProvider;
         this.back = back;
         this.ma = ma;
         this.openmode = openmode;
         this.c = c;
+        this.utilsHandler = utilsHandler;
     }
 
     @Override
@@ -113,6 +118,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 openmode = OpenMode.GDRIVE;
             } else if (hFile.isOneDriveFile()) {
                 openmode = OpenMode.ONEDRIVE;
+            } else if (hFile.isSftp()) {
+                openmode = OpenMode.SFTP;
             } else if (hFile.isCustomPath())
                 openmode = OpenMode.CUSTOM;
             else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
@@ -135,6 +142,12 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                     publishProgress(e.getLocalizedMessage());
                     e.printStackTrace();
                 }
+                break;
+            case SFTP:
+                HFile sftpHFile = new HFile(OpenMode.SFTP, path);
+                Log.d("DEBUG.LoadList", path);
+                sftpHFile.setSshHostKey(utilsHandler.getSshHostKey(Uri.parse(path)));
+                list = addTo(sftpHFile.listFiles(c, true));
                 break;
             case CUSTOM:
                 ArrayList<BaseFile> arrayList = null;

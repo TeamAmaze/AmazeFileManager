@@ -26,7 +26,7 @@ public abstract class SFtpClientUtils
         T retval = null;
         try
         {
-            ssh = SshConnectionPool.getInstance().getConnection(template.url);
+            ssh = SshConnectionPool.getInstance().getConnection(template.url, template.hostKey);
             client = ssh.newSFTPClient();
             retval = template.execute(client);
         }
@@ -49,6 +49,12 @@ public abstract class SFtpClientUtils
             }
         }
         return retval;
+    }
+
+    public static final String extractRemotePathFrom(String fullUri)
+    {
+        String uriWithoutProtocol = fullUri.substring("ssh://".length());
+        return uriWithoutProtocol.indexOf('/') == -1 ? "/" : uriWithoutProtocol.substring(uriWithoutProtocol.indexOf("/"));
     }
 
     public static final void tryDisconnect(SSHClient client)

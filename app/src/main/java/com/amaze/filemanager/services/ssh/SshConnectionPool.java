@@ -32,12 +32,12 @@ public class SshConnectionPool
         return instance;
     }
 
-    public SSHClient getConnection(String url) throws IOException
+    public SSHClient getConnection(String url, String hostKey) throws IOException
     {
         SSHClient client = connections.get(url);
         if(client == null)
         {
-            client = create(url);
+            client = create(url, hostKey);
         }
         else
         {
@@ -46,19 +46,23 @@ public class SshConnectionPool
                 Log.d(TAG, "Connection no longer usable. Reconnecting...");
                 expire(client);
                 connections.remove(url);
-                client = create(url);
+                client = create(url, hostKey);
             }
         }
-        return connections.put(url, client);
+        Log.d(TAG, client.toString());
+        connections.put(url, client);
+        return client;
     }
 
-    private SSHClient create(String url) throws IOException
+    private SSHClient create(String url, String hostKey) throws IOException
     {
-        return create(Uri.parse(url));
+        return create(Uri.parse(url), hostKey);
     }
 
-    private SSHClient create(Uri uri) throws IOException
+    private SSHClient create(Uri uri, String hostKey) throws IOException
     {
+        Log.d(TAG, "Opening connection for " + uri.toString());
+
         String host = uri.getHost();
         int port = uri.getPort();
         //If the uri is fetched from the app's database storage, we assume it will never be empty
@@ -69,7 +73,8 @@ public class SshConnectionPool
         if(port < 0)
             port = SSH_DEFAULT_PORT;
 
-        SSHClient client = new SSHClient();
+        SSHClient client = new SSHClient(new CustomSshJConfig());
+        client.addHostKeyVerifier(hostKey);
         client.connect(host, port);
         client.authPassword(username, password);
         return client;

@@ -32,6 +32,7 @@ import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.xfer.FilePermission;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +59,8 @@ public class HFile {
     OpenMode mode = OpenMode.FILE;
 
     private DataUtils dataUtils = DataUtils.getInstance();
+
+    private String sshHostKey;
 
     public HFile(OpenMode mode, String path) {
         this.path = path;
@@ -113,6 +116,11 @@ public class HFile {
             if (mode == OpenMode.UNKNOWN) mode = OpenMode.FILE;
         }
 
+    }
+
+    public void setSshHostKey(String sshHostKey)
+    {
+        this.sshHostKey = sshHostKey;
     }
 
     public void setMode(OpenMode mode) {
@@ -183,10 +191,10 @@ public class HFile {
     public long lastModified() throws MalformedURLException, SmbException {
         switch (mode) {
             case SFTP:
-                SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path, sshHostKey) {
                     @Override
                     public Long execute(SFTPClient client) throws IOException {
-                        return client.mtime(path);
+                        return client.mtime(SFtpClientUtils.extractRemotePathFrom(path));
                     }
                 });
                 break;
@@ -214,10 +222,10 @@ public class HFile {
         long s = 0L;
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path, sshHostKey) {
                     @Override
                     public Long execute(SFTPClient client) throws IOException {
-                        return client.size(path);
+                        return client.size(SFtpClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
@@ -249,10 +257,10 @@ public class HFile {
         long s = 0l;
         switch (mode){
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path, sshHostKey) {
                     @Override
                     public Long execute(SFTPClient client) throws IOException {
-                        return client.size(path);
+                        return client.size(SFtpClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
@@ -449,10 +457,10 @@ public class HFile {
         boolean isDirectory;
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path, sshHostKey) {
                     @Override
                     public Boolean execute(SFTPClient client) throws IOException {
-                        return client.stat(path).getType().equals(FileMode.Type.DIRECTORY);
+                        return client.stat(SFtpClientUtils.extractRemotePathFrom(path)).getType().equals(FileMode.Type.DIRECTORY);
                     }
                 });
             case SMB:
@@ -495,10 +503,10 @@ public class HFile {
         boolean isDirectory;
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path, sshHostKey) {
                     @Override
                     public Boolean execute(SFTPClient client) throws IOException {
-                        return client.stat(path).getType().equals(FileMode.Type.DIRECTORY);
+                        return client.stat(SFtpClientUtils.extractRemotePathFrom(path)).getType().equals(FileMode.Type.DIRECTORY);
                     }
                 });
             case SMB:
@@ -559,10 +567,10 @@ public class HFile {
 
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path, sshHostKey) {
                     @Override
                     public Long execute(SFTPClient client) throws IOException {
-                        return client.size(path);
+                        return client.size(SFtpClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
@@ -598,10 +606,10 @@ public class HFile {
 
         switch (mode){
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<Long>(path, sshHostKey) {
                     @Override
                     public Long execute(SFTPClient client) throws IOException {
-                        return client.size(path);
+                        return client.size(SFtpClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
@@ -704,6 +712,7 @@ public class HFile {
                 size = spaceAllocation.getTotal();
                 break;
             case SFTP:
+                break;
             case OTG:
                 // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
                 DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
@@ -763,23 +772,27 @@ public class HFile {
         ArrayList<BaseFile> arrayList = new ArrayList<>();
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<ArrayList<BaseFile>>(path) {
+                arrayList = SFtpClientUtils.execute(new SFtpClientTemplate<ArrayList<BaseFile>>(path, sshHostKey) {
                     @Override
                     public ArrayList<BaseFile> execute(SFTPClient client) throws IOException {
                         ArrayList<BaseFile> retval = new ArrayList<BaseFile>();
-                        for(RemoteResourceInfo info : client.ls(path))
+                        Log.d("DEBUG", "ls " + SFtpClientUtils.extractRemotePathFrom(path));
+                        for(RemoteResourceInfo info : client.ls(SFtpClientUtils.extractRemotePathFrom(path)))
                         {
-                            BaseFile f = new BaseFile(info.getPath());
+//                            Log.d("DEBUG", info.toString());
+                            BaseFile f = new BaseFile(String.format("%s/%s", path, info.getName()));
                             f.setName(info.getName());
                             f.setMode(OpenMode.SFTP);
                             f.setDirectory(info.isDirectory());
                             f.setDate(info.getAttributes().getMtime());
                             f.setSize(f.isDirectory()?0:info.getAttributes().getSize());
+                            f.setPermission(Integer.toString(FilePermission.toMask(info.getAttributes().getPermissions()), 8));
                             retval.add(f);
                         }
                         return retval;
                     }
                 });
+                break;
             case SMB:
                 try {
                     SmbFile smbFile = new SmbFile(path);
@@ -873,10 +886,10 @@ public class HFile {
     public InputStream getInputStream() {
         InputStream inputStream;
         if (isSftp()) {
-            return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path) {
+            return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path, sshHostKey) {
                 @Override
                 public InputStream execute(SFTPClient client) throws IOException {
-                    final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                    final RemoteFile rf = client.open(SFtpClientUtils.extractRemotePathFrom(path));
                     return rf. new RemoteFileInputStream(){
                         @Override
                         public void close() throws IOException {
@@ -916,10 +929,10 @@ public class HFile {
 
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<InputStream>(path, sshHostKey) {
                     @Override
                     public InputStream execute(SFTPClient client) throws IOException {
-                        final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                        final RemoteFile rf = client.open(SFtpClientUtils.extractRemotePathFrom(path));
                         return rf. new RemoteFileInputStream(){
                             @Override
                             public void close() throws IOException {
@@ -987,10 +1000,10 @@ public class HFile {
         OutputStream outputStream;
         switch (mode) {
             case SFTP:
-                return SFtpClientUtils.execute(new SFtpClientTemplate<OutputStream>(path) {
+                return SFtpClientUtils.execute(new SFtpClientTemplate<OutputStream>(path, sshHostKey) {
                     @Override
                     public OutputStream execute(SFTPClient client) throws IOException {
-                        final RemoteFile rf = client.open(Uri.parse(path).getPath());
+                        final RemoteFile rf = client.open(SFtpClientUtils.extractRemotePathFrom(path));
                         return rf.new RemoteFileOutputStream(){
                             @Override
                             public void close() throws IOException {
@@ -1040,10 +1053,10 @@ public class HFile {
     public boolean exists() {
         boolean exists = false;
         if (isSftp()) {
-            exists = SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+            exists = SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path, sshHostKey) {
                 @Override
                 public Boolean execute(SFTPClient client) throws IOException {
-                    return client.stat(path) != null;
+                    return client.stat(SFtpClientUtils.extractRemotePathFrom(path)) != null;
                 }
             });
         } else if (isSmb()) {
@@ -1106,11 +1119,11 @@ public class HFile {
 
     public boolean setLastModified(final long date) {
         if (isSftp()) {
-            return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path) {
+            return SFtpClientUtils.execute(new SFtpClientTemplate<Boolean>(path, sshHostKey) {
                 @Override
                 public Boolean execute(SFTPClient client) throws IOException {
-                    FileAttributes fa = client.stat(path);
-                    client.setattr(path, new FileAttributes.Builder()
+                    FileAttributes fa = client.stat(SFtpClientUtils.extractRemotePathFrom(path));
+                    client.setattr(SFtpClientUtils.extractRemotePathFrom(path), new FileAttributes.Builder()
                             .withAtimeMtime(fa.getAtime(), date)
                             .withPermissions(fa.getPermissions())
                             .withSize(fa.getSize())
@@ -1137,10 +1150,10 @@ public class HFile {
 
     public void mkdir(Context context) {
         if(isSftp()) {
-            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path) {
+            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path, sshHostKey) {
                 @Override
                 public Void execute(SFTPClient client) throws IOException {
-                    client.mkdir(path);
+                    client.mkdir(SFtpClientUtils.extractRemotePathFrom(path));
                     return null;
                 }
             });
@@ -1195,10 +1208,10 @@ public class HFile {
 
     public boolean delete(Context context, boolean rootmode) throws RootNotPermittedException {
         if (isSftp()) {
-            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path) {
+            SFtpClientUtils.execute(new SFtpClientTemplate<Void>(path, sshHostKey) {
                 @Override
                 public Void execute(SFTPClient client) throws IOException {
-                    client.rm(Uri.parse(path).getPath());
+                    client.rm(SFtpClientUtils.extractRemotePathFrom(path));
                     return null;
                 }
             });

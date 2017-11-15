@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -274,10 +276,23 @@ public class UtilsHandler extends SQLiteOpenHelper {
         {
             while(cursor.moveToNext())
             {
-                retval.add(new String[]{
-                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(COLUMN_PATH))
-                });
+                try {
+                    retval.add(new String[]{
+                            cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                            SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
+                    });
+                } catch(CryptException e) {
+                    Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+                    e.printStackTrace();
+
+                    // failing to decrypt the path, removing entry from database
+                    Toast.makeText(context,
+                            context.getResources().getString(R.string.failed_smb_decrypt_path),
+                            Toast.LENGTH_LONG).show();
+//                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+//                            "");
+                    continue;
+                }
             }
         }
         finally
@@ -285,6 +300,17 @@ public class UtilsHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return retval;
+    }
+
+    public String getSshHostKey(Uri uri)
+    {
+        String host = uri.getHost();
+        int port = uri.getPort();
+
+        if(port < 0)
+            port = SshConnectionPool.SSH_DEFAULT_PORT;
+
+        return getSshHostKey(host, port);
     }
 
     public String getSshHostKey(String host, int port)

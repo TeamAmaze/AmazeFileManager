@@ -163,6 +163,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                                 m.renameBookmark((item).getTitle(), path);
                             } else if (path.startsWith("smb:/")) {
                                 m.showSMBDialog(item.getTitle(), path, true);
+                            } else if (path.startsWith("ssh:/")) {
+                                m.showSftpDialog(item.getTitle(), path, true);
                             } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
                                 GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
