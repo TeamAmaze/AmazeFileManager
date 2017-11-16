@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Class which monitors any change in local filesystem and updates the adapter
@@ -39,7 +40,7 @@ public class CustomFileObserver extends FileObserver {
     private static final int MASK = CREATE | MOVED_TO | DELETE | MOVED_FROM | DELETE_SELF | MOVE_SELF;
 
     private long lastMessagedTime = 0L;
-    private boolean messagingScheduled = false;
+    private AtomicBoolean messagingScheduled = new AtomicBoolean(false);
     private boolean wasStopped = false;
 
     private Handler handler;
@@ -105,6 +106,7 @@ public class CustomFileObserver extends FileObserver {
                 return;
         }
 
+        if(messagingScheduled.get()) return;
 
         if(deltaTime <= DEFER_CONSTANT) {
             // defer the observer until unless it reports a change after at least 5 secs of last one
@@ -113,36 +115,33 @@ public class CustomFileObserver extends FileObserver {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-
-                    if(messagingScheduled) return;
                     sendMessages();
                 }
             }, DEFER_CONSTANT - deltaTime);
 
-            messagingScheduled = true;
+            messagingScheduled.set(true);
         } else {
-            if(messagingScheduled) return;
             sendMessages();
         }
     }
 
-    private synchronized void sendMessages() {
+    private void sendMessages() {
         lastMessagedTime = Calendar.getInstance().getTimeInMillis();
+        messagingScheduled.set(false);
 
         synchronized (pathsAdded) {
             for (String pathAdded : pathsAdded) {
                 handler.obtainMessage(NEW_ITEM, pathAdded).sendToTarget();
             }
+            pathsAdded.clear();
         }
-        pathsAdded.clear();
 
         synchronized (pathsRemoved) {
             for (String pathRemoved : pathsRemoved) {
                 handler.obtainMessage(DELETED_ITEM, pathRemoved).sendToTarget();
             }
+            pathsRemoved.clear();
         }
-        pathsRemoved.clear();
-        messagingScheduled = false;
     }
 
     /**
