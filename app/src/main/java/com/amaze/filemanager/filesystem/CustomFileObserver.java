@@ -105,7 +105,6 @@ public class CustomFileObserver extends FileObserver {
                 return;
         }
 
-        if(messagingScheduled) return;
 
         if(deltaTime <= DEFER_CONSTANT) {
             // defer the observer until unless it reports a change after at least 5 secs of last one
@@ -114,19 +113,21 @@ public class CustomFileObserver extends FileObserver {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
+
+                    if(messagingScheduled) return;
                     sendMessages();
                 }
             }, DEFER_CONSTANT - deltaTime);
 
             messagingScheduled = true;
         } else {
+            if(messagingScheduled) return;
             sendMessages();
         }
     }
 
-    private void sendMessages() {
+    private synchronized void sendMessages() {
         lastMessagedTime = Calendar.getInstance().getTimeInMillis();
-        messagingScheduled = false;
 
         synchronized (pathsAdded) {
             for (String pathAdded : pathsAdded) {
@@ -141,6 +142,7 @@ public class CustomFileObserver extends FileObserver {
             }
         }
         pathsRemoved.clear();
+        messagingScheduled = false;
     }
 
     /**
