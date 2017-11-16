@@ -42,7 +42,6 @@ import com.amaze.filemanager.filesystem.HFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.services.ssh.SFtpClientUtils;
 import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
@@ -147,7 +146,8 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
                 HFile sftpHFile = new HFile(OpenMode.SFTP, path);
                 Log.d("DEBUG.LoadList", path);
                 sftpHFile.setSshHostKey(utilsHandler.getSshHostKey(Uri.parse(path)));
-                list = addTo(sftpHFile.listFiles(c, true));
+                ArrayList<BaseFile> files = sftpHFile.listFiles(c, true);
+                list = addTo(files);
                 break;
             case CUSTOM:
                 ArrayList<BaseFile> arrayList = null;

@@ -1,25 +1,25 @@
 package com.amaze.filemanager.services.ssh;
 
-import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.SSHClient;
 
 import java.io.IOException;
 
-public abstract class SFtpClientTemplate<T>
+public abstract class SshClientTemplate<T>
 {
     public final String url;
 
     public final boolean closeClientOnFinish;
 
-    public SFtpClientTemplate(String url)
+    public SshClientTemplate(String url)
     {
         this(url, true);
     }
 
-    public SFtpClientTemplate(String url, boolean closeClientOnFinish)
+    public SshClientTemplate(String url, boolean closeClientOnFinish)
     {
         this.url = url;
         this.closeClientOnFinish = closeClientOnFinish;
     }
 
-    public abstract T execute(SFTPClient client) throws IOException;
+    public abstract T execute(SSHClient client) throws IOException;
 }

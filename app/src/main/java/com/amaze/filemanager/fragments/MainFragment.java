@@ -1326,6 +1326,11 @@ public class MainFragment extends android.support.v4.app.Fragment {
                             e.printStackTrace();
                         }
 
+                    } else if (openMode == OpenMode.SFTP) {
+                        if(!CURRENT_PATH.substring("ssh://".length()).contains("/"))
+                            loadlist(home, false, OpenMode.FILE);
+                        else
+                            loadlist(currentFile.getParent(getContext()), true, openMode);
                     } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
                             CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")

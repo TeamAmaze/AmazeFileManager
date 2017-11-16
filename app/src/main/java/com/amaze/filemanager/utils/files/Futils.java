@@ -56,6 +56,7 @@ import com.amaze.filemanager.ui.LayoutElement;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
@@ -107,7 +108,10 @@ public class Futils {
     }
 
     public static long folderSize(HFile directory, OnProgressUpdate<Long> updateState) {
-        return folderSize(new File(directory.getPath()), updateState);
+        if(directory.isSftp())
+            return directory.folderSize(AppConfig.getInstance());
+        else
+            return folderSize(new File(directory.getPath()), updateState);
     }
 
     public static long folderSize(SmbFile directory) {
@@ -567,6 +571,7 @@ public class Futils {
             case GDRIVE:
             case ONEDRIVE:
             case OTG:
+            case SFTP:
                 return true;
             default:
                 HFile parentFile = new HFile(currentFile.getMode(), currentFile.getParent(context));

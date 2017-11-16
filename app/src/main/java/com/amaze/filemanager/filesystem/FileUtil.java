@@ -803,6 +803,7 @@ public abstract class FileUtil {
     public static int checkFolder(final String f,Context context) {
         if(f==null)return 0;
         if(f.startsWith("smb://")
+                || f.startsWith("ssh://")
                 || f.startsWith(OTGUtil.PREFIX_OTG)
                 || f.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
                 || f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)

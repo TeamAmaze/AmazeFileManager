@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.android.volley.Request;
@@ -27,6 +28,8 @@ public class AppConfig extends Application {
     private UtilitiesProviderInterface utilsProvider;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private UtilsHandler utilsHandler;
+
     private static Handler mApplicationHandler = new Handler();
     private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
     private static Handler sBackgroundHandler;
@@ -43,6 +46,7 @@ public class AppConfig extends Application {
         mInstance = this;
 
         utilsProvider = new UtilitiesProvider(this);
+        utilsHandler = new UtilsHandler(this);
 
         sBackgroundHandlerThread.start();
         sBackgroundHandler = new Handler(sBackgroundHandlerThread.getLooper());
@@ -179,6 +183,10 @@ public class AppConfig extends Application {
             this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
         }
         return mImageLoader;
+    }
+
+    public UtilsHandler getUtilsHandler() {
+        return utilsHandler;
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {

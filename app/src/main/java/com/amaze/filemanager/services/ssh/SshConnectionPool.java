@@ -3,6 +3,9 @@ package com.amaze.filemanager.services.ssh;
 import android.net.Uri;
 import android.util.Log;
 
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.utils.AppConfig;
+
 import net.schmizz.sshj.SSHClient;
 
 import java.io.IOException;
@@ -32,12 +35,12 @@ public class SshConnectionPool
         return instance;
     }
 
-    public SSHClient getConnection(String url, String hostKey) throws IOException
+    public SSHClient getConnection(String url) throws IOException
     {
         SSHClient client = connections.get(url);
         if(client == null)
         {
-            client = create(url, hostKey);
+            client = create(url);
         }
         else
         {
@@ -46,22 +49,22 @@ public class SshConnectionPool
                 Log.d(TAG, "Connection no longer usable. Reconnecting...");
                 expire(client);
                 connections.remove(url);
-                client = create(url, hostKey);
+                client = create(url);
             }
         }
-        Log.d(TAG, client.toString());
         connections.put(url, client);
         return client;
     }
 
-    private SSHClient create(String url, String hostKey) throws IOException
+    private SSHClient create(String url) throws IOException
     {
-        return create(Uri.parse(url), hostKey);
+        return create(Uri.parse(url));
     }
 
-    private SSHClient create(Uri uri, String hostKey) throws IOException
+    private SSHClient create(Uri uri) throws IOException
     {
         Log.d(TAG, "Opening connection for " + uri.toString());
+        new Exception().printStackTrace();
 
         String host = uri.getHost();
         int port = uri.getPort();
@@ -74,7 +77,7 @@ public class SshConnectionPool
             port = SSH_DEFAULT_PORT;
 
         SSHClient client = new SSHClient(new CustomSshJConfig());
-        client.addHostKeyVerifier(hostKey);
+        client.addHostKeyVerifier(AppConfig.getInstance().getUtilsHandler().getSshHostKey(host, port));
         client.connect(host, port);
         client.authPassword(username, password);
         return client;

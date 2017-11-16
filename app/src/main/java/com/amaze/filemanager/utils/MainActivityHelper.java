@@ -15,6 +15,7 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -559,6 +560,12 @@ public class MainActivityHelper {
             intent.putExtra(ExtractService.KEY_PATH_ZIP, file.getPath());
             ServiceWatcherUtil.runService(mainActivity, intent);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+    }
+
+    public String parseSftpPath(String a) {
+        if (a.contains("@"))
+            return "ssh://" + a.substring(a.indexOf("@") + 1, a.length());
+        else return a;
     }
 
     public String parseSmbPath(String a) {

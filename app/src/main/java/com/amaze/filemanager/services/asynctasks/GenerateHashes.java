@@ -2,6 +2,7 @@ package com.amaze.filemanager.services.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,8 +10,15 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.services.ssh.SshClientSessionTemplate;
+import com.amaze.filemanager.services.ssh.SshClientTemplate;
+import com.amaze.filemanager.services.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
+
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +55,37 @@ public class GenerateHashes extends AsyncTask<Void, String, String[]> {
         String sha256 = context.getString(R.string.error);
 
         try {
-            if (!file.isDirectory(context)) {
+            if (file.isSftp()) {
+                md5 = SshClientUtils.execute(new SshClientSessionTemplate<String>(file.getPath()) {
+                    @Override
+                    public String execute(Session session) throws IOException {
+                        Session.Command cmd = session.exec(String.format("md5sum -b \"%s\" | cut -c -32", SshClientUtils.extractRemotePathFrom(file.getPath())));
+                        String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+                        cmd.close();
+                        if(cmd.getExitStatus() == 0)
+                            return result;
+                        else {
+                            Log.d("DEBUG", "status: " + cmd.getExitStatus() + "; result: " + result);
+                            return null;
+                        }
+                    }
+                });
+                sha256 = SshClientUtils.execute(new SshClientSessionTemplate<String>(file.getPath()) {
+                    @Override
+                    public String execute(Session session) throws IOException {
+                        Session.Command cmd = session.exec(String.format("sha256sum -b \"%s\" | cut -c -64", SshClientUtils.extractRemotePathFrom(file.getPath())));
+                        String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+                        cmd.close();
+                        if(cmd.getExitStatus() == 0)
+                            return result;
+                        else {
+                            Log.d("DEBUG", "status: " + cmd.getExitStatus() + "; result: " + result);
+                            return null;
+                        }
+                    }
+                });
+            }
+            else if (!file.isDirectory(context)) {
                 md5 = getMD5Checksum();
                 sha256 = getSHA256Checksum();
             }

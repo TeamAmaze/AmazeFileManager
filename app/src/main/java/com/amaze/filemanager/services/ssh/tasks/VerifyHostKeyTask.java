@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amaze.filemanager.services.ssh.CustomSshJConfig;
-import com.amaze.filemanager.services.ssh.SFtpClientUtils;
+import com.amaze.filemanager.services.ssh.SshClientUtils;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SecurityUtils;
@@ -54,7 +54,7 @@ public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
             semaphore.release();
         }
         finally {
-            SFtpClientUtils.tryDisconnect(sshClient);
+            SshClientUtils.tryDisconnect(sshClient);
             return holder.get();
         }
     }

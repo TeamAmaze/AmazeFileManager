@@ -3,7 +3,7 @@ package com.amaze.filemanager.services.ssh.tasks;
 import android.os.AsyncTask;
 
 import com.amaze.filemanager.services.ssh.CustomSshJConfig;
-import com.amaze.filemanager.services.ssh.SFtpClientUtils;
+import com.amaze.filemanager.services.ssh.SshClientUtils;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.KeyType;
@@ -80,7 +80,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            SFtpClientUtils.tryDisconnect(sshClient);
+            SshClientUtils.tryDisconnect(sshClient);
         }
 
         return false;

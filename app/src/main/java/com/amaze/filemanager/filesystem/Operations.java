@@ -105,6 +105,10 @@ public class Operations {
                     errorCallBack.exists(file);
                     return null;
                 }
+                if (file.isSftp()) {
+                    file.mkdir(context);
+                    return null;
+                }
                 if (file.isSmb()) {
                     try {
                         file.getSmbFile(2000).mkdirs();

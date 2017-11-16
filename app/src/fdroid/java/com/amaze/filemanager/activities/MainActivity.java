@@ -129,6 +129,7 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -330,7 +331,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
-        utilsHandler = new UtilsHandler(this);
+        utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
@@ -2184,6 +2185,9 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
         if (news.length() == 0) return;
 
         switch (openmode) {
+            case SFTP:
+                newPath = mainActivityHelper.parseSftpPath(news);
+                break;
             case SMB:
                 newPath = mainActivityHelper.parseSmbPath(news);
                 break;
