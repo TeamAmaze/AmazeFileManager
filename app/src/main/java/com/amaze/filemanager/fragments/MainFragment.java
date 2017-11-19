@@ -1449,6 +1449,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
         startFileObserver();
         fixIcons(false);
+        loadlist(CURRENT_PATH, false, openMode);
     }
 
     @Override
