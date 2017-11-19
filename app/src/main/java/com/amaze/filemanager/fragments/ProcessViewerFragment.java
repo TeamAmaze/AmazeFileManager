@@ -216,20 +216,12 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            zipService.setProgressListener(new ZipService.ProgressListener() {
-                @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
-                    if (getActivity() == null) {
-                        // callback called when we're not inside the app
-                        return;
-                    }
-                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COMPRESS));
+            zipService.setProgressListener(dataPackage -> {
+                if (getActivity() == null) {
+                    // callback called when we're not inside the app
+                    return;
                 }
-
-                @Override
-                public void refresh() {
-
-                }
+                getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COMPRESS));
             });
         }
 
