@@ -175,7 +175,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
             watcherUtil.watch();
 
             try {
-                out = FileUtil.getOutputStream(zipDirectory, c, totalBytes);
+                out = FileUtil.getOutputStream(zipDirectory, c);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
 
                 int fileProgress = 0;
