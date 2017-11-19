@@ -63,7 +63,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String mZipPath;
-    Context c;
     ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
     private DoWork asyncTask;
@@ -75,7 +74,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
 
     @Override
     public void onCreate() {
-        c = getApplicationContext();
         registerReceiver(receiver1, new IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL));
     }
 
@@ -186,7 +184,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         }
 
         public void execute(@NonNull final Context context, ArrayList<File> baseFiles, String zipPath) {
-
             OutputStream out;
             File zipDirectory = new File(zipPath);
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
@@ -218,7 +215,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         }
 
         private void compressFile(File file, String path) throws IOException, NullPointerException {
-
             if (!file.isDirectory()) {
                 if (isCancelled()) return;
 
@@ -238,9 +234,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
                 return;
             }
             for (File currentFile : file.listFiles()) {
-
                 compressFile(currentFile, path + File.separator + file.getName());
-
             }
         }
     }
@@ -262,9 +256,9 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.compressing;
-            mBuilder.setContentTitle(c.getResources().getString(title));
+            mBuilder.setContentTitle(getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " +
-                    Formatter.formatFileSize(c, writtenSize) + "/" + Formatter.formatFileSize(c, totalSize));
+                    Formatter.formatFileSize(this, writtenSize) + "/" + Formatter.formatFileSize(this, totalSize));
             int id1 = Integer.parseInt("789" + startId);
             mNotifyManager.notify(id1, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
@@ -294,7 +288,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             asyncTask.cancel(true);
@@ -303,7 +296,6 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
         return mBinder;
     }
 
