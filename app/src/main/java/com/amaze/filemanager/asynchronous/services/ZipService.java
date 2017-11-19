@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 
@@ -51,6 +52,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -63,9 +65,8 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
     String mZipPath;
     Context c;
     ProgressListener progressListener;
-    long totalBytes = 0L;
     private final IBinder mBinder = new LocalBinder();
-    private ProgressHandler progressHandler;
+    private DoWork asyncTask;
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
@@ -108,7 +109,8 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
 
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
-        new DoWork(baseFiles, mZipPath).execute();
+        asyncTask = new DoWork(this, baseFiles, mZipPath);
+        asyncTask.execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
@@ -128,46 +130,62 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         void onUpdate(CopyDataParcelable dataPackage);
     }
 
-    public class DoWork extends AsyncTask<Void, Void, Void> {
+    public static class DoWork extends AsyncTask<Void, Void, Void> {
 
-        ZipOutputStream zos;
+        private WeakReference<ZipService> zipService;
 
-        String zipPath;
-        ServiceWatcherUtil watcherUtil;
-
+        private ProgressHandler progressHandler;
+        private ZipOutputStream zos;
+        private String zipPath;
+        private ServiceWatcherUtil watcherUtil;
+        private long totalBytes = 0L;
         private ArrayList<HybridFileParcelable> baseFiles;
 
-        public DoWork(ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+        public DoWork(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+            this.zipService = new WeakReference<>(zipService);
             this.baseFiles = baseFiles;
             this.zipPath = zipPath;
         }
 
         protected Void doInBackground(Void... p) {
+            final ZipService zipService = this.zipService.get();
+            if(zipService == null) return null;
+
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalBytes = FileUtils.getTotalBytes(baseFiles, c);
+            totalBytes = FileUtils.getTotalBytes(baseFiles, zipService);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-            progressHandler.setProgressListener(ZipService.this);
+            progressHandler.setProgressListener(zipService);
 
             CopyDataParcelable intent1 = new CopyDataParcelable(baseFiles.get(0).getName(),
                     baseFiles.size(), totalBytes, false);
-            putDataPackage(intent1);
+            zipService.putDataPackage(intent1);
 
-            execute(Utils.hybridListToFileArrayList(baseFiles), zipPath);
+            execute(zipService.getApplicationContext(), Utils.hybridListToFileArrayList(baseFiles), zipPath);
             return null;
         }
 
         @Override
         public void onPostExecute(Void b) {
+            final ZipService zipService = this.zipService.get();
+            if(zipService == null) return;
 
             watcherUtil.stopWatch();
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, mZipPath);
-            sendBroadcast(intent);
-            stopSelf();
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath);
+            zipService.sendBroadcast(intent);
+            zipService.stopSelf();
         }
 
-        public void execute(ArrayList<File> baseFiles, String zipPath) {
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            progressHandler.setCancelled(true);
+            File zipFile = new File(zipPath);
+            if(zipFile.exists()) zipFile.delete();
+        }
+
+        public void execute(@NonNull final Context context, ArrayList<File> baseFiles, String zipPath) {
 
             OutputStream out;
             File zipDirectory = new File(zipPath);
@@ -175,7 +193,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
             watcherUtil.watch();
 
             try {
-                out = FileUtil.getOutputStream(zipDirectory, c);
+                out = FileUtil.getOutputStream(zipDirectory, context);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
 
                 int fileProgress = 0;
@@ -202,7 +220,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         private void compressFile(File file, String path) throws IOException, NullPointerException {
 
             if (!file.isDirectory()) {
-                if (progressHandler.getCancelled()) return;
+                if (isCancelled()) return;
 
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
@@ -239,7 +257,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
     public void onProgressed(String fileName, int sourceFiles, int sourceProgress, long totalSize, long writtenSize, int speed) {
         boolean isCompleted = false;
 
-        if (!progressHandler.getCancelled()) {
+        if (!asyncTask.isCancelled()) {
             float progressPercent = ((float) writtenSize / totalSize) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
@@ -279,7 +297,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            progressHandler.setCancelled(true);
+            asyncTask.cancel(true);
         }
     };
 
