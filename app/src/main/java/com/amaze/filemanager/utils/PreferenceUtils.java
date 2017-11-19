@@ -8,7 +8,7 @@ import android.graphics.Color;
 public class PreferenceUtils {
 
     public static final String KEY_CURRENT_TAB = "current_tab";
-    public static final String KEY_PATH_COMPRESS = "zippath";
+    public static final String KEY_ROOT = "rootmode";
 
     public static final int DEFAULT_PRIMARY = 4;
     public static final int DEFAULT_ACCENT = 1;

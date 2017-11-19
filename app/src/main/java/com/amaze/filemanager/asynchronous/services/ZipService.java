@@ -30,7 +30,6 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 
@@ -41,7 +40,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -87,11 +85,10 @@ public class ZipService extends Service {
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
         File zipFile = new File(path);
-        mZipPath = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(PreferenceUtils.KEY_PATH_COMPRESS, path);
+        mZipPath = path;
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (!mZipPath.equals(path)) {
-            mZipPath.concat(mZipPath.endsWith("/") ? (zipFile.getName()) : ("/" + zipFile.getName()));
+            mZipPath.concat(mZipPath.endsWith("/")? (zipFile.getName()):("/" + zipFile.getName()));
         }
 
         if (!zipFile.exists()) {
