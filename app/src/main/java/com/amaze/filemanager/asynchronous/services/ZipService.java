@@ -54,23 +54,24 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipService extends Service implements ProgressHandler.ProgressListener {
 
-    private int startId;
-    NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
-    String mZipPath;
-    ProgressListener progressListener;
-    private final IBinder mBinder = new LocalBinder();
-    private DoWork asyncTask;
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
     public static final String KEY_COMPRESS_BROADCAST_CANCEL = "zip_cancel";
+
+    private int startId;
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressListener progressListener;
+    private final IBinder mBinder = new LocalBinder();
+    private CompressAsyncTask asyncTask;
+    private final List<CopyDataParcelable> dataPackages = Collections.synchronizedList(new ArrayList<CopyDataParcelable>());
 
     @Override
     public void onCreate() {
@@ -80,7 +81,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
         this.startId = startId;
-        mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
+        String mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
 
         File zipFile = new File(mZipPath);
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -107,7 +108,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
 
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
-        asyncTask = new DoWork(this, baseFiles, mZipPath);
+        asyncTask = new CompressAsyncTask(this, baseFiles, mZipPath);
         asyncTask.execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
@@ -128,7 +129,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         void onUpdate(CopyDataParcelable dataPackage);
     }
 
-    public static class DoWork extends AsyncTask<Void, Void, Void> {
+    public static class CompressAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private WeakReference<ZipService> zipService;
 
@@ -139,7 +140,7 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
         private long totalBytes = 0L;
         private ArrayList<HybridFileParcelable> baseFiles;
 
-        public DoWork(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+        public CompressAsyncTask(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
             this.zipService = new WeakReference<>(zipService);
             this.baseFiles = baseFiles;
             this.zipPath = zipPath;
@@ -305,32 +306,20 @@ public class ZipService extends Service implements ProgressHandler.ProgressListe
     }
 
     /**
-     * Returns the {@link #dataPackages} list which contains
+     * Returns a clone of {@link #dataPackages} list which contains
      * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
      */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
+    public List<CopyDataParcelable> getDataPackageList() {
+        synchronized (dataPackages) {
+            return new ArrayList<>(dataPackages);
+        }
     }
 
     /**
      * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
      */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
+    private void putDataPackage(CopyDataParcelable dataPackage) {
+        dataPackages.add(dataPackage);
     }
 
 }

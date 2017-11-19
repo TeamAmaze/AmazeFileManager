@@ -62,6 +62,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
@@ -208,9 +209,10 @@ public class ProcessViewerFragment extends Fragment {
             ZipService.LocalBinder localBinder = (ZipService.LocalBinder) service;
             ZipService zipService = localBinder.getService();
 
-            for (int i = 0; i< zipService.getDataPackageSize(); i++) {
+            List<CopyDataParcelable> dataParcelableList = zipService.getDataPackageList();
 
-                processResults(zipService.getDataPackage(i), ServiceType.COMPRESS);
+            for (CopyDataParcelable data : dataParcelableList) {
+                processResults(data, ServiceType.COMPRESS);
             }
 
             // animate the chart a little after initial values have been applied
