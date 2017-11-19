@@ -41,6 +41,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -143,14 +144,6 @@ public class ZipService extends Service {
             this.zipPath = zipPath;
         }
 
-        public ArrayList<File> toFileArray(ArrayList<HybridFileParcelable> a) {
-            ArrayList<File> b = new ArrayList<>();
-            for (int i = 0; i < a.size(); i++) {
-                b.add(new File(a.get(i).getPath()));
-            }
-            return b;
-        }
-
         protected Void doInBackground(Void... p) {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
@@ -164,7 +157,7 @@ public class ZipService extends Service {
                     baseFiles.size(), totalBytes, false);
             putDataPackage(intent1);
 
-            execute(toFileArray(baseFiles), zipPath);
+            execute(Utils.hybridListToFileArrayList(baseFiles), zipPath);
             return null;
         }
 
