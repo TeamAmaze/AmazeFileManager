@@ -3,6 +3,8 @@ package com.amaze.filemanager.ui;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Comparator;
+
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *         on 20/11/2017, at 15:26.
@@ -93,6 +95,20 @@ public class CompressedObjectParcelable implements Parcelable {
             size = im.readLong();
             date = im.readLong();
         }
+    }
+
+    public static class Sorter implements Comparator<CompressedObjectParcelable> {
+        @Override
+        public int compare(CompressedObjectParcelable file1, CompressedObjectParcelable file2) {
+            if(file1.getType() == CompressedObjectParcelable.TYPE_GOBACK) return -1;
+            else if(file2.getType() == CompressedObjectParcelable.TYPE_GOBACK) return 1;
+            else if (file1.isDirectory() && !file2.isDirectory()) {
+                return -1;
+            } else if (file2.isDirectory() && !(file1).isDirectory()) {
+                return 1;
+            } else return file1.getName().compareToIgnoreCase(file2.getName());
+        }
+
     }
 
 }

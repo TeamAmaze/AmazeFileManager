@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -114,7 +113,7 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
                 }
             }
 
-            Collections.sort(elements, new FileListSorter());
+            Collections.sort(elements, new CompressedObjectParcelable.Sorter());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,20 +125,6 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
     protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
         super.onPostExecute(zipEntries);
         onFinish.onAsyncTaskFinished(zipEntries);
-    }
-
-    private class FileListSorter implements Comparator<CompressedObjectParcelable> {
-        @Override
-        public int compare(CompressedObjectParcelable file1, CompressedObjectParcelable file2) {
-            if(file1.getType() == CompressedObjectParcelable.TYPE_GOBACK) return -1;
-            else if(file2.getType() == CompressedObjectParcelable.TYPE_GOBACK) return 1;
-            else if (file1.isDirectory() && !file2.isDirectory()) {
-                return -1;
-            } else if (file2.isDirectory() && !(file1).isDirectory()) {
-                return 1;
-            } else return file1.getName().compareToIgnoreCase(file2.getName());
-        }
-
     }
 
 }
