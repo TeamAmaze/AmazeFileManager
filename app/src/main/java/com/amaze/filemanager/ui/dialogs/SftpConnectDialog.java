@@ -178,11 +178,18 @@ public class SftpConnectDialog extends DialogFragment
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
-                                    utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
-                                    dialog.dismiss();
-                                    authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
-                                    Log.d(TAG, "Saved setup");
+                                    if(!edit)
+                                    {
+                                        Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
+                                        utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
+                                        dialog.dismiss();
+                                        authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
+                                        Log.d(TAG, "Saved setup");
+                                    }
+                                    else
+                                    {
+
+                                    }
                                     dismiss();
                                 }
                             }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -201,6 +208,7 @@ public class SftpConnectDialog extends DialogFragment
         }}).onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
                 dialog.dismiss();
             }
         });
@@ -254,13 +262,14 @@ public class SftpConnectDialog extends DialogFragment
         if(SELECT_PEM_INTENT == requestCode && Activity.RESULT_OK == resultCode)
         {
             selectedPem = data.getData();
-            Log.d(TAG, "Selected PEM: " + selectedPem.toString());
+            Log.d(TAG, "Selected PEM: " + selectedPem.toString() + "/ " + selectedPem.getLastPathSegment());
             try {
                 InputStream selectedKeyContent = context.getContentResolver().openInputStream(selectedPem);
                 KeyPair keypair = new VerifyPemTask(selectedKeyContent).execute().get();
                 if(keypair != null)
                 {
                     selectedParsedKeyPair = keypair;
+                    selectedParsedKeyPairName = selectedPem.getLastPathSegment();
                     MDButton okBTN = ((MaterialDialog)getDialog()).getActionButton(DialogAction.POSITIVE);
                     okBTN.setEnabled(okBTN.isEnabled() || true);
                 }
@@ -289,7 +298,7 @@ public class SftpConnectDialog extends DialogFragment
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                            utilsHandler.addSsh(connectionName, encryptedPath, getPemContents());
+                            utilsHandler.addSsh(connectionName, encryptedPath, selectedParsedKeyPairName, getPemContents());
                         }
                     });
                     DataUtils.getInstance().addServer(new String[]{connectionName, path});
