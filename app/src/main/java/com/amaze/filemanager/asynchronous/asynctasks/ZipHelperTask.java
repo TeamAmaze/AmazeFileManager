@@ -26,6 +26,7 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
     private WeakReference<Context> context;
     private Uri fileLocation;
     private String relativeDirectory;
+    private boolean createBackItem;
     private OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>> onFinish;
 
     /**
@@ -33,16 +34,22 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public ZipHelperTask(Context c, String realFileDirectory, String dir, OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>> l) {
+    public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
+                         OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>> l) {
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
         relativeDirectory = dir;
+        createBackItem = goback;
         onFinish = l;
     }
 
     @Override
     protected ArrayList<ZipObjectParcelable> doInBackground(Void... params) {
         ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
+
+        if (createBackItem) {
+            elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
+        }
 
         try {
             ArrayList<ZipObjectParcelable> wholelist = new ArrayList<>();
@@ -124,12 +131,13 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
     private class FileListSorter implements Comparator<ZipObjectParcelable> {
         @Override
         public int compare(ZipObjectParcelable file1, ZipObjectParcelable file2) {
-            if (file1.isDirectory() && !file2.isDirectory()) {
+            if(file1.getEntry() == null) return -1;
+            else if(file2.getEntry() == null) return 1;
+            else if (file1.isDirectory() && !file2.isDirectory()) {
                 return -1;
             } else if (file2.isDirectory() && !(file1).isDirectory()) {
                 return 1;
-            }
-            return file1.getEntry().getName().compareToIgnoreCase(file2.getEntry().getName());
+            } else return file1.getEntry().getName().compareToIgnoreCase(file2.getEntry().getName());
         }
 
     }

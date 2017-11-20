@@ -395,8 +395,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     };
 
     public boolean canGoBack() {
-        if (openmode == RAR_FILE) return !(relativeDirectory == null || relativeDirectory.trim().length() == 0);
-        else return !(relativeDirectory == null || relativeDirectory.trim().length() == 0);
+        return !isRootRelativePath();
     }
 
     public void goBack() {
@@ -428,7 +427,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
 
     @Override
     public String getPath() {
-        if(relativeDirectory != null && relativeDirectory.length() != 0) return "/" + relativeDirectory;
+        if(!isRootRelativePath()) return "/" + relativeDirectory;
         else return "";
     }
 
@@ -442,11 +441,10 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      */
     public void changeZipPath(final String folder) {
         swipeRefreshLayout.setRefreshing(true);
-        new ZipHelperTask(getContext(), realZipFile.getPath(), folder, data -> {
-            if (gobackitem && relativeDirectory != null && relativeDirectory.trim().length() != 0)
-                elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
+        boolean addGoBackItem = gobackitem && !isRoot(folder);
+        new ZipHelperTask(getContext(), realZipFile.getPath(), folder, addGoBackItem, data -> {
             elements = data;
-            createZipViews(data, folder);
+            createZipViews(elements, folder);
 
             swipeRefreshLayout.setRefreshing(false);
             updateBottomBar();
@@ -476,7 +474,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     }
 
     private void updateBottomBar() {
-        String path = relativeDirectory != null && relativeDirectory.length() != 0? realZipFile.getName() + "/" + relativeDirectory : realZipFile.getName();
+        String path = !isRootRelativePath()? realZipFile.getName() + "/" + relativeDirectory : realZipFile.getName();
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
@@ -538,6 +536,14 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         relativeDirectory = dir;
         updateBottomBar();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private boolean isRootRelativePath() {
+        return isRoot(relativeDirectory);
+    }
+
+    private boolean isRoot(String folder) {
+        return folder == null || folder.isEmpty();
     }
 
 }
