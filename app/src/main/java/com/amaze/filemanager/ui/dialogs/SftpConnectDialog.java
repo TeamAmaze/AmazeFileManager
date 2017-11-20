@@ -68,6 +68,8 @@ public class SftpConnectDialog extends DialogFragment
 
     private KeyPair selectedParsedKeyPair = null;
 
+    private String selectedParsedKeyPairName = null;
+
     String emptyAddress, emptyName, invalidUsername;
 
     @Override
@@ -102,13 +104,14 @@ public class SftpConnectDialog extends DialogFragment
             addressET.setText(getArguments().getString("address"));
             portET.setText(getArguments().getString("port"));
             usernameET.setText(getArguments().getString("username"));
-            if(getArguments().getString("password", null) != null)
+            if(getArguments().getBoolean("hasPassword"))
             {
-                passwordET.setText(getArguments().getString("password"));
+                passwordET.setHint(R.string.password_unchanged);
             }
             else
             {
-
+                selectedParsedKeyPairName = getArguments().getString("keypairName");
+                selectPemBTN.setText(selectedParsedKeyPairName);
             }
         }
 

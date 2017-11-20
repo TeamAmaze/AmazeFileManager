@@ -686,4 +686,5 @@
     <string name="ssh_host_key_verification_prompt">The authenticity of host \'%s\' can\'t be established.\n\n%s key fingerprint is %s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
     <string name="ssh_select_pem_button">SSH Private Key</string>
+    <string name="password_unchanged">(unchanged)</string>
 </resources>
