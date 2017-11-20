@@ -1079,7 +1079,6 @@ public class HFile {
                                 {
                                     rf.close();
                                     client.close();
-                                    ssh.close();
                                 }
                             }
                         };
