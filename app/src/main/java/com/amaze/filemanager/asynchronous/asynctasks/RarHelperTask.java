@@ -1,9 +1,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
 
+import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
@@ -11,30 +10,26 @@ import com.github.junrar.rarfile.FileHeader;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList<FileHeader>>> {
+public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObjectParcelable>> {
 
-    private WeakReference<Context> context;
     private String fileLocation;
     private String relativeDirectory;
     private boolean createBackItem;
-    private OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>> onFinish;
+    private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
 
     /**
      * AsyncTask to load RAR file items.
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public RarHelperTask(Context c, String realFileDirectory, String dir, boolean goBack,
-                         OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>> l) {
-        context = new WeakReference<>(c);
+    public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
+                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
         createBackItem = goBack;
@@ -42,12 +37,12 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
     }
 
     @Override
-    protected Pair<Archive, ArrayList<FileHeader>> doInBackground(Void... params) {
-        try {
-            ArrayList<FileHeader> elements = new ArrayList<>();
+    protected ArrayList<CompressedObjectParcelable> doInBackground(Void... params) {
+        ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
 
+        try {
             if (createBackItem) {
-                elements.add(0, null);
+                elements.add(0, new CompressedObjectParcelable());
             }
 
             Archive zipfile = new Archive(new File(fileLocation));
@@ -60,36 +55,29 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(header);
+                    elements.add(new CompressedObjectParcelable(convertName(header), 0, header.getDataSize(), header.isDirectory()));
                 }
             }
-            Collections.sort(elements, new FileListSorter());
-            return new Pair<>(zipfile, elements);
+            Collections.sort(elements, new CompressedObjectParcelable.Sorter());
         } catch (RarException | IOException e) {
             e.printStackTrace();
-            return null;
         }
+
+        return elements;
     }
 
     @Override
-    protected void onPostExecute(Pair<Archive, ArrayList<FileHeader>> ArchivePairZipEntries) {
-        super.onPostExecute(ArchivePairZipEntries);
-        onFinish.onAsyncTaskFinished(ArchivePairZipEntries);
+    protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
+        super.onPostExecute(zipEntries);
+        onFinish.onAsyncTaskFinished(zipEntries);
     }
 
-    private class FileListSorter implements Comparator<FileHeader> {
-        @Override
-        public int compare(FileHeader file1, FileHeader file2) {
-            if(file1 == null) return -1;
-            else if(file2 == null) return 1;
-            else if (file1.isDirectory() && !file2.isDirectory()) {
-                return -1;
-            } else if (file2.isDirectory() && !(file1).isDirectory()) {
-                return 1;
-            } else {
-                return file1.getFileNameString().compareToIgnoreCase(file2.getFileNameString());
-            }
-        }
+    private String convertName(FileHeader file) {
+        String name = file.getFileNameString().replace('\\', '/');
+
+        if(file.isDirectory()) return name + "/";
+        else return name;
     }
+
 }
 
