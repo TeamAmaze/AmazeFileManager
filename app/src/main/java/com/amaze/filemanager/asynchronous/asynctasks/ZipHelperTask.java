@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.ui.ZipObjectParcelable;
+import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import java.io.File;
@@ -21,13 +21,13 @@ import java.util.zip.ZipInputStream;
 /**
  * Created by Vishal on 11/23/2014 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParcelable>> {
+public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObjectParcelable>> {
 
     private WeakReference<Context> context;
     private Uri fileLocation;
     private String relativeDirectory;
     private boolean createBackItem;
-    private OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>> onFinish;
+    private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
 
     /**
      * AsyncTask to load ZIP file items.
@@ -35,7 +35,7 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
      * @param dir relativeDirectory to access inside the zip file
      */
     public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
-                         OnAsyncTaskFinished<ArrayList<ZipObjectParcelable>> l) {
+                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
         relativeDirectory = dir;
@@ -44,31 +44,31 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
     }
 
     @Override
-    protected ArrayList<ZipObjectParcelable> doInBackground(Void... params) {
-        ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
+    protected ArrayList<CompressedObjectParcelable> doInBackground(Void... params) {
+        ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
 
         if (createBackItem) {
-            elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
+            elements.add(0, new CompressedObjectParcelable());
         }
 
         try {
-            ArrayList<ZipObjectParcelable> wholelist = new ArrayList<>();
+            ArrayList<CompressedObjectParcelable> wholelist = new ArrayList<>();
             if (new File(fileLocation.getPath()).canRead()) {
                 ZipFile zipfile = new ZipFile(fileLocation.getPath());
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    wholelist.add(new ZipObjectParcelable(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
+                    wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             } else {
                 ZipInputStream zipfile1 = new ZipInputStream(context.get().getContentResolver().openInputStream(fileLocation));
                 for (ZipEntry entry = zipfile1.getNextEntry(); entry != null; entry = zipfile1.getNextEntry()) {
-                    wholelist.add(new ZipObjectParcelable(entry, entry.getTime(), entry.getSize(), entry.isDirectory()));
+                    wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             }
 
             ArrayList<String> strings = new ArrayList<>();
 
-            for (ZipObjectParcelable entry : wholelist) {
+            for (CompressedObjectParcelable entry : wholelist) {
                 File file = new File(entry.getName());
                 if (relativeDirectory == null || relativeDirectory.trim().length() == 0) {
                     String y = entry.getName();
@@ -76,13 +76,13 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
                         y = y.substring(1, y.length());
                     if (file.getParent() == null || file.getParent().length() == 0 || file.getParent().equals("/")) {
                         if (!strings.contains(y)) {
-                            elements.add(new ZipObjectParcelable(new ZipEntry(y), entry.getTime(), entry.getSize(), entry.isDirectory()));
+                            elements.add(new CompressedObjectParcelable(y, entry.getTime(), entry.getSize(), entry.isDirectory()));
                             strings.add(y);
                         }
                     } else {
                         String path = y.substring(0, y.indexOf("/") + 1);
                         if (!strings.contains(path)) {
-                            ZipObjectParcelable zipObj = new ZipObjectParcelable(new ZipEntry(path), entry.getTime(), entry.getSize(), true);
+                            CompressedObjectParcelable zipObj = new CompressedObjectParcelable(path, entry.getTime(), entry.getSize(), true);
                             strings.add(path);
                             elements.add(zipObj);
                         }
@@ -94,7 +94,7 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
 
                     if (file.getParent() != null && (file.getParent().equals(relativeDirectory) || file.getParent().equals("/" + relativeDirectory))) {
                         if (!strings.contains(y)) {
-                            elements.add(new ZipObjectParcelable(new ZipEntry(y), entry.getTime(), entry.getSize(), entry.isDirectory()));
+                            elements.add(new CompressedObjectParcelable(y, entry.getTime(), entry.getSize(), entry.isDirectory()));
                             strings.add(y);
                         }
                     } else {
@@ -104,7 +104,7 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
                             int index = relativeDirectory.length() + 1 + path1.indexOf("/");
                             String path = y.substring(0, index + 1);
                             if (!strings.contains(path)) {
-                                ZipObjectParcelable zipObj = new ZipObjectParcelable(new ZipEntry(y.substring(0, index + 1)), entry.getTime(), entry.getSize(), true);
+                                CompressedObjectParcelable zipObj = new CompressedObjectParcelable(y.substring(0, index + 1), entry.getTime(), entry.getSize(), true);
                                 strings.add(path);
                                 elements.add(zipObj);
                             }
@@ -123,21 +123,21 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<ZipObjectParc
     }
 
     @Override
-    protected void onPostExecute(ArrayList<ZipObjectParcelable> zipEntries) {
+    protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
         super.onPostExecute(zipEntries);
         onFinish.onAsyncTaskFinished(zipEntries);
     }
 
-    private class FileListSorter implements Comparator<ZipObjectParcelable> {
+    private class FileListSorter implements Comparator<CompressedObjectParcelable> {
         @Override
-        public int compare(ZipObjectParcelable file1, ZipObjectParcelable file2) {
-            if(file1.getEntry() == null) return -1;
-            else if(file2.getEntry() == null) return 1;
+        public int compare(CompressedObjectParcelable file1, CompressedObjectParcelable file2) {
+            if(file1.getType() == CompressedObjectParcelable.TYPE_GOBACK) return -1;
+            else if(file2.getType() == CompressedObjectParcelable.TYPE_GOBACK) return 1;
             else if (file1.isDirectory() && !file2.isDirectory()) {
                 return -1;
             } else if (file2.isDirectory() && !(file1).isDirectory()) {
                 return 1;
-            } else return file1.getEntry().getName().compareToIgnoreCase(file2.getEntry().getName());
+            } else return file1.getName().compareToIgnoreCase(file2.getName());
         }
 
     }

@@ -23,7 +23,7 @@ import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
-import com.amaze.filemanager.ui.ZipObjectParcelable;
+import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -49,7 +49,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private UtilitiesProviderInterface utilsProvider;
     private Drawable folder;
     private ArrayList<FileHeader> enterRar;
-    private ArrayList<ZipObjectParcelable> enterZip;
+    private ArrayList<CompressedObjectParcelable> enterZip;
     private ZipExplorerFragment zipExplorerFragment;
     private LayoutInflater mInflater;
     private boolean[] itemsChecked;
@@ -57,7 +57,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int offset = 0;
 
     public ZipExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider,
-                              ArrayList<ZipObjectParcelable> enterZip, ArrayList<FileHeader> enterRar,
+                              ArrayList<CompressedObjectParcelable> enterZip, ArrayList<FileHeader> enterRar,
                               ZipExplorerFragment zipExplorerFragment, boolean isZip) {
         this.utilsProvider = utilsProvider;
 
@@ -152,7 +152,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         itemsChecked = new boolean[enterRar.size()];
     }
 
-    public void generateZip(ArrayList<ZipObjectParcelable> arrayList) {
+    public void generateZip(ArrayList<CompressedObjectParcelable> arrayList) {
         offset = 0;
         stoppedAnimation = false;
         enterZip = arrayList;
@@ -196,7 +196,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void onBindViewZip(final CompressedItemViewHolder holder, final int position) {
-        final ZipObjectParcelable rowItem = enterZip.get(position);
+        final CompressedObjectParcelable rowItem = enterZip.get(position);
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -206,7 +206,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(zipExplorerFragment.accentColor,
                     utilsProvider.getAppTheme(), zipExplorerFragment.getResources().getDisplayMetrics()));
 
-        if (rowItem.getEntry() == null) {
+        if (rowItem.getType() == CompressedObjectParcelable.TYPE_GOBACK) {
             holder.genericIcon.setImageDrawable(zipExplorerFragment.getResources().getDrawable(R.drawable.ic_arrow_left_white_24dp));
             gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
             holder.txtTitle.setText("..");
@@ -240,13 +240,13 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         holder.rl.setOnLongClickListener(view -> {
-            if (rowItem.getEntry() != null) {
+            if (rowItem.getType() != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
             }
             return true;
         });
         holder.genericIcon.setOnClickListener(view -> {
-            if (rowItem.getEntry() != null) {
+            if (rowItem.getType() != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
             }
         });
@@ -264,7 +264,7 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else holder.checkImageView.setVisibility(View.INVISIBLE);
 
         holder.rl.setOnClickListener(p1 -> {
-            if (rowItem.getEntry() == null)
+            if (rowItem.getType() == CompressedObjectParcelable.TYPE_GOBACK)
                 zipExplorerFragment.goBack();
             else {
                 if (zipExplorerFragment.selection) {
@@ -312,6 +312,8 @@ public class ZipExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private void onBindViewHolderRar(final CompressedItemViewHolder holder, int position) {
         if (position < 0) return;
         final FileHeader rowItem = enterRar.get(position);
+
+
 
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 

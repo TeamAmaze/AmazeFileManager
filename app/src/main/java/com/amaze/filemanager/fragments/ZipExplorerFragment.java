@@ -55,7 +55,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.RarHelperTask;
 import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.ui.ZipObjectParcelable;
+import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -102,7 +102,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
     public Archive archive;
     public ArrayList<FileHeader> elementsRar = new ArrayList<>();
-    public ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
+    public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
     public MainActivity mainActivity;
     public RecyclerView listView;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -456,7 +456,8 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
      */
     public void changeRarPath(final String folder) {
         swipeRefreshLayout.setRefreshing(true);
-        new RarHelperTask(getContext(), realZipFile.getPath(), folder,
+        boolean addGoBackItem = gobackitem && !isRoot(folder);
+        new RarHelperTask(getContext(), realZipFile.getPath(), folder, addGoBackItem,
                 data -> {
                     archive = data.first;
                     if(data.second != null) {
@@ -478,7 +479,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    private void createZipViews(ArrayList<ZipObjectParcelable> zipEntries, String dir) {
+    private void createZipViews(ArrayList<CompressedObjectParcelable> zipEntries, String dir) {
         if (zipExplorerAdapter == null) {
             zipExplorerAdapter = new ZipExplorerAdapter(getActivity(), utilsProvider, zipEntries, null, this, true);
             listView.setAdapter(zipExplorerAdapter);
@@ -487,7 +488,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         }
         folder = 0;
         file = 0;
-        for (ZipObjectParcelable zipEntry : zipEntries) {
+        for (CompressedObjectParcelable zipEntry : zipEntries) {
             if (zipEntry.isDirectory()) folder++;
             else file++;
         }

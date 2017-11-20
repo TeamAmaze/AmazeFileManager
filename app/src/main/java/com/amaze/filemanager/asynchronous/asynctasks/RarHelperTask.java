@@ -24,6 +24,7 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
     private WeakReference<Context> context;
     private String fileLocation;
     private String relativeDirectory;
+    private boolean createBackItem;
     private OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>> onFinish;
 
     /**
@@ -31,10 +32,12 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public RarHelperTask(Context c, String realFileDirectory, String dir, OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>> l) {
+    public RarHelperTask(Context c, String realFileDirectory, String dir, boolean goBack,
+                         OnAsyncTaskFinished<Pair<Archive, ArrayList<FileHeader>>> l) {
         context = new WeakReference<>(c);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
+        createBackItem = goBack;
         onFinish = l;
     }
 
@@ -42,6 +45,11 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
     protected Pair<Archive, ArrayList<FileHeader>> doInBackground(Void... params) {
         try {
             ArrayList<FileHeader> elements = new ArrayList<>();
+
+            if (createBackItem) {
+                elements.add(0, null);
+            }
+
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace("/", "\\");
 
@@ -72,13 +80,15 @@ public class RarHelperTask extends AsyncTask<Void, Void, Pair<Archive, ArrayList
     private class FileListSorter implements Comparator<FileHeader> {
         @Override
         public int compare(FileHeader file1, FileHeader file2) {
-            if (file1.isDirectory() && !file2.isDirectory()) {
+            if(file1 == null) return -1;
+            else if(file2 == null) return 1;
+            else if (file1.isDirectory() && !file2.isDirectory()) {
                 return -1;
             } else if (file2.isDirectory() && !(file1).isDirectory()) {
                 return 1;
+            } else {
+                return file1.getFileNameString().compareToIgnoreCase(file2.getFileNameString());
             }
-
-            return file1.getFileNameString().compareToIgnoreCase(file2.getFileNameString());
         }
     }
 }
