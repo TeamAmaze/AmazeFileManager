@@ -21,6 +21,7 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -51,10 +52,11 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.asynctasks.RarHelperTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
+import com.amaze.filemanager.filesystem.compressed.RarHelper;
+import com.amaze.filemanager.filesystem.compressed.ZipHelper;
 import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
@@ -75,15 +77,36 @@ import java.util.Calendar;
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
     public static final String KEY_PATH = "path";
 
-    private static final int ZIP_FILE = 0, RAR_FILE = 1;
-
     private static final String KEY_CACHE_FILES = "cache_files";
     private static final String KEY_URI = "uri";
-    private static final String KEY_OPEN_MODE = "open_mode";
     private static final String KEY_FILE = "file";
     private static final String KEY_WHOLE_LIST = "whole_list";
     private static final String KEY_ELEMENTS = "elements";
     private static final String KEY_OPEN = "is_open";
+
+    /**
+     * To add compatibility with other compressed file types edit this method
+     */
+    private static CompressedInterface getCompressedInterfaceInstance(Context context, File file) {
+        CompressedInterface compressedInterface;
+        
+        String path = file.getPath();
+        boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
+        boolean isTar = path.endsWith(".tar") || path.endsWith(".tar.gz");
+        boolean isRar = path.endsWith(".rar");
+
+        if (isZip || isTar) {
+            compressedInterface = new ZipHelper(context);
+        } else if (isRar) {
+            compressedInterface = new RarHelper();
+        } else {
+            return null;
+        }
+
+        compressedInterface.setFilePath(file.getPath());
+        return compressedInterface;
+    }
+
 
     public File compressedFile;
 
@@ -107,13 +130,13 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public boolean isOpen = false;  // flag states whether to open file after service extracts it
 
     private UtilitiesProviderInterface utilsProvider;
+    private CompressedInterface compressedInterface;
     private View rootView;
     private boolean addheader = true;
     private LinearLayoutManager mLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private boolean showDividers;
     private View mToolbarContainer;
-    private int openmode;
     private boolean stopAnims = true;
     private int file = 0, folder = 0;
 
@@ -195,11 +218,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
             files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
-            if (compressedFile.getPath().endsWith(".rar")) {
-                openmode = RAR_FILE;
-            } else {
-                openmode = ZIP_FILE;
-            }
+            compressedInterface = getCompressedInterfaceInstance(getContext(), compressedFile);
 
             changePath("");
         } else {
@@ -213,7 +232,6 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList(KEY_ELEMENTS, elements);
-        outState.putInt(KEY_OPEN_MODE, openmode);
         outState.putString(KEY_PATH, relativeDirectory);
         outState.putString(KEY_URI, compressedFile.getPath());
         outState.putString(KEY_FILE, compressedFile.getPath());
@@ -228,12 +246,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
         relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
 
-        if (compressedFile.getPath().endsWith(".rar")) {
-            openmode = RAR_FILE;
-        } else {
-            openmode = ZIP_FILE;
-        }
-
+        compressedInterface = getCompressedInterfaceInstance(getContext(), compressedFile);
         createViews(elements, relativeDirectory);
     }
 
@@ -382,33 +395,20 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         }
     };
 
-    public boolean canGoBack() {
-        return !isRootRelativePath();
-    }
-
-    public void goBack() {
-        if (openmode == RAR_FILE) {
-            String path;
-            try {
-                path = relativeDirectory.substring(0, relativeDirectory.lastIndexOf("/"));
-            } catch (Exception e) {
-                path = "";
-            }
-            changeRarPath(path);
-        } else {
-            changeZipPath(new File(relativeDirectory).getParent());
-        }
-    }
-
     @Override
-    public void changePath(String path) {
-        if(path.startsWith("/")) path = path.substring(1);
+    public void changePath(String folder) {
+        if(folder == null) folder = "";
+        if(folder.startsWith("/")) folder = folder.substring(1);
 
-        if (openmode == ZIP_FILE) {// TODO: 15/9/2017 put switch
-            changeZipPath(path);
-        } else {
-            changeRarPath(path);
-        }
+        boolean addGoBackItem = gobackitem && !isRoot(folder);
+        String finalfolder = folder;
+        compressedInterface.changePath(folder, addGoBackItem, data -> {
+            elements = data;
+            createViews(elements, finalfolder);
+
+            swipeRefreshLayout.setRefreshing(false);
+            updateBottomBar();
+        });
 
         updateBottomBar();
     }
@@ -422,37 +422,6 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     @Override
     public int getRootDrawable() {
         return R.drawable.ic_compressed_white_24dp;
-    }
-
-    /**
-     * The folders's path separator must be "/"
-     */
-    public void changeZipPath(final String folder) {
-        swipeRefreshLayout.setRefreshing(true);
-        boolean addGoBackItem = gobackitem && !isRoot(folder);
-        new ZipHelperTask(getContext(), compressedFile.getPath(), folder, addGoBackItem, data -> {
-            elements = data;
-            createViews(elements, folder);
-
-            swipeRefreshLayout.setRefreshing(false);
-            updateBottomBar();
-        }).execute();
-    }
-
-    /**
-     * The folders's path separator must be "/"
-     */
-    public void changeRarPath(final String folder) {
-        swipeRefreshLayout.setRefreshing(true);
-        boolean addGoBackItem = gobackitem && !isRoot(folder);
-        new RarHelperTask(compressedFile.getPath(), folder, addGoBackItem,
-                data -> {
-                    elements = data;
-                    createViews(data, folder);
-
-                    swipeRefreshLayout.setRefreshing(false);
-                    updateBottomBar();
-                }).execute();
     }
 
     private void refresh() {
@@ -500,6 +469,14 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         relativeDirectory = dir;
         updateBottomBar();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public boolean canGoBack() {
+        return !isRootRelativePath();
+    }
+
+    public void goBack() {
+        changePath(new File(relativeDirectory).getParent());
     }
 
     private boolean isRootRelativePath() {
