@@ -320,7 +320,7 @@ public class SftpConnectDialog extends DialogFragment
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                            utilsHandler.addSsh(connectionName, encryptedPath, selectedParsedKeyPairName, getPemContents());
+                        utilsHandler.addSsh(connectionName, encryptedPath, selectedParsedKeyPairName, getPemContents());
                         }
                     });
                     DataUtils.getInstance().addServer(new String[]{connectionName, path});

@@ -1,6 +1,7 @@
 package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.amaze.filemanager.services.ssh.CustomSshJConfig;
@@ -20,7 +21,7 @@ public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
     final String hostname;
     final int port;
 
-    public VerifyHostKeyTask(String hostname, int port)
+    public VerifyHostKeyTask(@NonNull String hostname, int port)
     {
         this.hostname = hostname;
         this.port = port;

@@ -346,6 +346,32 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
+    public String getSshAuthPrivateKey(String host, int port, String username)
+    {
+        return getSshAuthPrivateKey(String.format("ssh://%s@%s:%d", username, host, port));
+    }
+
+    public String getSshAuthPrivateKey(String hostPortWithUsername)
+    {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_PRIVATE_KEY},
+                COLUMN_NAME + " = ?", new String[]{hostPortWithUsername},
+                null, null, null);
+        if(result.moveToFirst())
+        {
+            try {
+                return result.getString(0);
+            }
+            finally {
+                result.close();
+            }
+        }
+        else {
+            result.close();
+            return null;
+        }
+    }
+
     public void removeHistoryPath(String path) {
         removePath(Operation.HISTORY, path);
     }

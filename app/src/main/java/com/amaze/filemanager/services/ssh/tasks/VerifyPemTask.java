@@ -1,6 +1,7 @@
 package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -19,7 +20,7 @@ public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
 
     private final InputStream pemFile;
 
-    public VerifyPemTask(InputStream pemFile)
+    public VerifyPemTask(@NonNull InputStream pemFile)
     {
         this.pemFile = pemFile;
     }

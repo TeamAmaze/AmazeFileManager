@@ -1,5 +1,6 @@
 package com.amaze.filemanager.services.ssh;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.schmizz.sshj.SSHClient;
@@ -12,7 +13,7 @@ public abstract class SshClientUtils
 {
     private static final String TAG = "SshClientUtils";
 
-    public static final <T> T execute(SshClientTemplate<T> template)
+    public static final <T> T execute(@NonNull SshClientTemplate<T> template)
     {
         SSHClient client = null;
         T retval = null;
@@ -42,7 +43,7 @@ public abstract class SshClientUtils
         return retval;
     }
 
-    public static final <T> T execute(final SshClientSessionTemplate<T> template)
+    public static final <T> T execute(@NonNull final SshClientSessionTemplate<T> template)
     {
         return execute(new SshClientTemplate<T>(template.url, false) {
             @Override
@@ -86,7 +87,7 @@ public abstract class SshClientUtils
      * @param <T> Type of return value
      * @return Template execution results
      */
-    public static final <T> T execute(final SFtpClientTemplate<T> template)
+    public static final <T> T execute(@NonNull final SFtpClientTemplate<T> template)
     {
         return execute(new SshClientTemplate<T>(template.url, false) {
             @Override
@@ -122,7 +123,7 @@ public abstract class SshClientUtils
         });
     }
 
-    public static final String extractRemotePathFrom(String fullUri)
+    public static final String extractRemotePathFrom(@NonNull String fullUri)
     {
         String uriWithoutProtocol = fullUri.substring("ssh://".length());
         return uriWithoutProtocol.indexOf('/') == -1 ? "/" : uriWithoutProtocol.substring(uriWithoutProtocol.indexOf("/"));

@@ -1,14 +1,27 @@
 package com.amaze.filemanager.services.ssh;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.KeyType;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +48,7 @@ public class SshConnectionPool
         return instance;
     }
 
-    public SSHClient getConnection(String url) throws IOException
+    public SSHClient getConnection(@NonNull String url) throws IOException
     {
         SSHClient client = connections.get(url);
         if(client == null)
@@ -56,12 +69,12 @@ public class SshConnectionPool
         return client;
     }
 
-    private SSHClient create(String url) throws IOException
+    private SSHClient create(@NonNull String url) throws IOException
     {
         return create(Uri.parse(url));
     }
 
-    private SSHClient create(Uri uri) throws IOException
+    private SSHClient create(@NonNull Uri uri) throws IOException
     {
         Log.d(TAG, "Opening connection for " + uri.toString());
         new Exception().printStackTrace();
@@ -71,24 +84,28 @@ public class SshConnectionPool
         //If the uri is fetched from the app's database storage, we assume it will never be empty
         String[] userInfo = uri.getUserInfo().split(":");
         String username = userInfo[0];
-        String password = userInfo.length > 1 ? userInfo[1] : "";
+        String password = userInfo.length > 1 ? userInfo[1] : null;
 
         if(port < 0)
             port = SSH_DEFAULT_PORT;
 
         SSHClient client = new SSHClient(new CustomSshJConfig());
-        client.addHostKeyVerifier(AppConfig.getInstance().getUtilsHandler().getSshHostKey(host, port));
+        UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
+        client.addHostKeyVerifier(utilsHandler.getSshHostKey(host, port));
         client.connect(host, port);
-        client.authPassword(username, password);
+        if(password != null)
+            client.authPassword(username, password);
+        else
+            client.authPublickey(username, createKeyProviderFrom(utilsHandler.getSshAuthPrivateKey(host, port, username)));
         return client;
     }
 
-    private boolean validate(SSHClient client)
+    private boolean validate(@NonNull SSHClient client)
     {
         return client.isConnected() && client.isAuthenticated();
     }
 
-    private void expire(SSHClient client)
+    private void expire(@NonNull SSHClient client)
     {
         try
         {
@@ -113,5 +130,32 @@ public class SshConnectionPool
             }
             connections.clear();
         }
+    }
+
+    private KeyProvider createKeyProviderFrom(@NonNull String pemContents) throws IOException
+    {
+        Reader reader = new StringReader(pemContents);
+        PEMParser pemParser = new PEMParser(reader);
+
+        PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+        final KeyPair retval = converter.getKeyPair(keyPair);
+
+        return new KeyProvider() {
+            @Override
+            public PrivateKey getPrivate() throws IOException {
+                return retval.getPrivate();
+            }
+
+            @Override
+            public PublicKey getPublic() throws IOException {
+                return retval.getPublic();
+            }
+
+            @Override
+            public KeyType getType() throws IOException {
+                return KeyType.fromKey(getPublic());
+            }
+        };
     }
 }
