@@ -397,6 +397,30 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
+    public void removeSftpPath(String name, String path) {
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        try
+        {
+            if (path.equals("")) {
+                // we don't have a path, remove the entry with this name
+                throw new CryptException();
+            }
+
+            sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
+                    new String[] {name, SmbUtil.getSmbEncryptedPath(context, path)});
+
+        }
+        catch (CryptException e)
+        {
+            e.printStackTrace();
+            // force remove entry, we end up deleting all entries with same name
+            sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ?",
+                    new String[] {name});
+        }
+    }
+
     public void clearHistoryTable() {
         clearTable(Operation.HISTORY);
     }

@@ -76,7 +76,7 @@ public class SftpConnectDialog extends DialogFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = (UtilitiesProviderInterface) getActivity();
-        utilsHandler = ((MainActivity) getActivity()).getUtilsHandler();
+        utilsHandler = AppConfig.getInstance().getUtilsHandler();
     }
 
     @Override
@@ -104,6 +104,7 @@ public class SftpConnectDialog extends DialogFragment
             addressET.setText(getArguments().getString("address"));
             portET.setText(getArguments().getString("port"));
             usernameET.setText(getArguments().getString("username"));
+            Log.d("DEBUG", getArguments().getString("password"));
             if(getArguments().getBoolean("hasPassword"))
             {
                 passwordET.setHint(R.string.password_unchanged);
@@ -136,6 +137,12 @@ public class SftpConnectDialog extends DialogFragment
             }
         });
 
+        final String connectionName = connectionET.getText().toString();
+        final String hostname = addressET.getText().toString();
+        final int port = Integer.parseInt(portET.getText().toString());
+        final String username = usernameET.getText().toString();
+        final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
+
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context)
             .title((R.string.scp_con))
             .autoDismiss(false)
@@ -148,16 +155,11 @@ public class SftpConnectDialog extends DialogFragment
         @Override
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
         {
-            final String connectionName = connectionET.getText().toString();
-            final String hostname = addressET.getText().toString();
-            final int port = Integer.parseInt(portET.getText().toString());
-            final String username = usernameET.getText().toString();
-            final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
 
             String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
             if(sshHostKey != null)
             {
-                authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username, password, selectedParsedKeyPair);
+                authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username, password, selectedParsedKeyPairName, selectedParsedKeyPair);
             }
             else
             {
@@ -183,7 +185,7 @@ public class SftpConnectDialog extends DialogFragment
                                         Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
                                         utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
                                         dialog.dismiss();
-                                        authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair);
+                                        authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPairName, selectedParsedKeyPair);
                                         Log.d(TAG, "Saved setup");
                                     }
                                     else
@@ -208,14 +210,32 @@ public class SftpConnectDialog extends DialogFragment
         }}).onNegative(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                dialog.dismiss();
+            dialog.dismiss();
             }
         });
 
         if(edit) {
             Log.d(TAG, "Edit? " + edit);
-            dialogBuilder.negativeText(R.string.delete).onNeutral(new MaterialDialog.SingleButtonCallback() {
+            dialogBuilder.negativeText(R.string.delete).onNegative(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                final String path = deriveSftpPathFrom(hostname, port, username, getArguments().getString("password", null), selectedParsedKeyPair);
+                int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
+
+                if (i != -1) {
+                    DataUtils.getInstance().removeServer(i);
+
+                    AppConfig.runInBackground(new Runnable() {
+                        @Override
+                        public void run() {
+                            utilsHandler.removeSftpPath(connectionName, path);
+                        }
+                    });
+                    ((MainActivity) getActivity()).refreshDrawer();
+                }
+                dialog.dismiss();
+                }
+            }).onNeutral(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     dialog.dismiss();
@@ -283,14 +303,16 @@ public class SftpConnectDialog extends DialogFragment
         }
     }
 
-    private void authenticateAndSaveSetup(final String connectionName, String hostname, int port, String hostKeyFingerprint, String username, String password, KeyPair selectedParsedKeyPair)
+    private void authenticateAndSaveSetup(final String connectionName, final String hostname,
+                                          final int port, final String hostKeyFingerprint,
+                                          final String username, final String password,
+                                          final String selectedParsedKeyPairName,
+                                          final KeyPair selectedParsedKeyPair)
     {
         try {
             if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPair).execute().get())
             {
-                final String path = (selectedParsedKeyPair != null) ?
-                        String.format("ssh://%s@%s:%d", username, hostname, port) :
-                        String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
+                final String path = deriveSftpPathFrom(hostname, port, username, password, selectedParsedKeyPair);
 
                 final String encryptedPath = SmbUtil.getSmbEncryptedPath(context, path);
 
@@ -322,6 +344,13 @@ public class SftpConnectDialog extends DialogFragment
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String deriveSftpPathFrom(String hostname, int port, String username, String password, KeyPair selectedParsedKeyPair)
+    {
+        return (selectedParsedKeyPair != null) ?
+                String.format("ssh://%s@%s:%d", username, hostname, port) :
+                String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
     }
 
     private String getPemContents()
