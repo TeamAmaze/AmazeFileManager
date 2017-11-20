@@ -98,9 +98,9 @@ public class SftpConnectDialog extends DialogFragment
         }
         else
         {
-            connectionET.setText(getArguments().getString("connectionName"));
+            connectionET.setText(getArguments().getString("name"));
             addressET.setText(getArguments().getString("address"));
-            portET.setText(getArguments().getInt("port"));
+            portET.setText(getArguments().getString("port"));
             usernameET.setText(getArguments().getString("username"));
             if(getArguments().getString("password", null) != null)
             {
