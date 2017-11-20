@@ -753,6 +753,7 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
     public void exit() {
         if (backPressedToExitOnce) {
+            SshConnectionPool.getInstance().expungeAllConnections();
             finish();
             if (BaseActivity.rootMode) {
                 // TODO close all shells
@@ -1440,6 +1441,8 @@ public class MainActivity extends BaseActivity implements OnRequestPermissionsRe
 
         CryptHandler cryptHandler = new CryptHandler(this);
         cryptHandler.close();
+
+        SshConnectionPool.getInstance().expungeAllConnections();
 
         /*if (mainFragment!=null)
             mainFragment = null;*/

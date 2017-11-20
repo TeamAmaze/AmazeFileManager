@@ -99,4 +99,19 @@ public class SshConnectionPool
             Log.w(TAG, e);
         }
     }
+
+    public void expungeAllConnections()
+    {
+        if(!connections.isEmpty())
+        {
+            for(SSHClient connection : connections.values())
+            {
+                if(connection.isConnected())
+                {
+                    SshClientUtils.tryDisconnect(connection);
+                }
+            }
+            connections.clear();
+        }
+    }
 }
