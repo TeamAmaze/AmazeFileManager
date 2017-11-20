@@ -48,6 +48,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_HOST_PUBKEY = "pub_key";
+    private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
 
     public UtilsHandler(Context context) {
@@ -92,6 +93,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT,"
+                + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
                 + COLUMN_PRIVATE_KEY + " TEXT"
                 + ")";
 
@@ -180,13 +182,16 @@ public class UtilsHandler extends SQLiteOpenHelper {
         database.insert(getTableForOperation(Operation.SSHHOSTS), null, values);
     }
 
-    public void addSsh(String name, String path, String sshKey) {
+    public void addSsh(String name, String path, String sshKeyName, String sshKey) {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
         values.put(COLUMN_PATH, path);
         if(sshKey != null && !"".equals(sshKey))
+        {
+            values.put(COLUMN_PRIVATE_KEY_NAME, sshKeyName);
             values.put(COLUMN_PRIVATE_KEY, sshKey);
+        }
 
         database.insert(getTableForOperation(Operation.SFTP), null, values);
     }
