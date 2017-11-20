@@ -440,9 +440,12 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         } else {
             compressedExplorerAdapter.generateZip(items);
         }
+
         folder = 0;
         file = 0;
         for (CompressedObjectParcelable item : items) {
+            if(item.getType() == CompressedObjectParcelable.TYPE_GOBACK) continue;
+            
             if (item.isDirectory()) folder++;
             else file++;
         }
