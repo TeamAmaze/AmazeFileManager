@@ -145,8 +145,7 @@ public class LoadList extends AsyncTask<String, String, ArrayList<LayoutElement>
             case SFTP:
                 HFile sftpHFile = new HFile(OpenMode.SFTP, path);
                 Log.d("DEBUG.LoadList", path);
-                sftpHFile.setSshHostKey(utilsHandler.getSshHostKey(Uri.parse(path)));
-                ArrayList<BaseFile> files = sftpHFile.listFiles(c, true);
+                ArrayList<BaseFile> files = sftpHFile.listFiles(c, false);
                 list = addTo(files);
                 break;
             case CUSTOM:

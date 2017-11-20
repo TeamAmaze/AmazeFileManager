@@ -124,13 +124,6 @@ public class HFile {
 
     }
 
-    public void setSshHostKey(String sshHostKey)
-    {
-        this.sshHostKey = sshHostKey;
-    }
-
-    public String getSshHostKey() { return this.sshHostKey; }
-
     public void setMode(OpenMode mode) {
         this.mode = mode;
     }
