@@ -129,6 +129,14 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 
     implementation 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
+
+    //Glide: loads icons seemlessly
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    implementation ("com.github.bumptech.glide:recyclerview-integration:4.3.1") {
+        // Excludes the support library because it's already included by Glide.
+        transitive = false
+    }
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 }
 
 def Properties props = new Properties()

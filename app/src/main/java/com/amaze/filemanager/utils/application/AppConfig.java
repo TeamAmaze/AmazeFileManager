@@ -22,7 +22,7 @@ import com.android.volley.toolbox.Volley;
  * Created by vishal on 7/12/16 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
 
-public class AppConfig extends LeakCanaryApplication {
+public class AppConfig extends GlideApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
 
