@@ -75,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import jcifs.smb.SmbFile;
@@ -813,10 +814,10 @@ public class FileUtils {
         return b;
     }
 
-    public static ArrayList<HybridFile> toHybridFileArrayList(ArrayList<String> a) {
+    public static ArrayList<HybridFile> toHybridFileArrayList(LinkedList<String> a) {
         ArrayList<HybridFile> b = new ArrayList<>();
-        for (int i = 0; i < a.size(); i++) {
-            HybridFile hFile=new HybridFile(OpenMode.UNKNOWN,a.get(i));
+        for (String s : a) {
+            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, s);
             hFile.generateMode(null);
             b.add(hFile);
         }

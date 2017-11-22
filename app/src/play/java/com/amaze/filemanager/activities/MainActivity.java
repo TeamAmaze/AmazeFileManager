@@ -506,6 +506,7 @@ public class MainActivity extends ThemedActivity implements
             public <E> E doInBackground() {
 
                 dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+                dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
