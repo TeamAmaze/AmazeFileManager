@@ -91,12 +91,12 @@ public class SshConnectionPool
 
         SSHClient client = new SSHClient(new CustomSshJConfig());
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-        client.addHostKeyVerifier(utilsHandler.getSshHostKey(host, port));
+        client.addHostKeyVerifier(utilsHandler.getSshHostKey(uri.toString()));
         client.connect(host, port);
         if(password != null)
             client.authPassword(username, password);
         else
-            client.authPublickey(username, createKeyProviderFrom(utilsHandler.getSshAuthPrivateKey(host, port, username)));
+            client.authPublickey(username, createKeyProviderFrom(utilsHandler.getSshAuthPrivateKey(uri.toString())));
         return client;
     }
 

@@ -41,7 +41,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String TABLE_GRID = "grid";
     private static final String TABLE_BOOKMARKS = "bookmarks";
     private static final String TABLE_SMB = "smb";
-    private static final String TABLE_SSHHOSTS = "ssh_hosts";
     private static final String TABLE_SFTP = "sftp";
 
     private static final String COLUMN_ID = "_id";
@@ -84,15 +83,11 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT"
                 + ")";
-        String querySshHostKeys = "CREATE TABLE IF NOT EXISTS " + TABLE_SSHHOSTS + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_NAME + " TEXT,"
-                + COLUMN_HOST_PUBKEY + " TEXT"
-                + ")";
         String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT,"
+                + COLUMN_HOST_PUBKEY + " TEXT,"
                 + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
                 + COLUMN_PRIVATE_KEY + " TEXT"
                 + ")";
@@ -103,7 +98,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
-        db.execSQL(querySshHostKeys);
         db.execSQL(querySftp);
     }
 
@@ -115,7 +109,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRID);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKMARKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMB);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SSHHOSTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SFTP);
 
         onCreate(db);
@@ -128,7 +121,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         GRID,
         BOOKMARKS,
         SMB,
-        SSHHOSTS,
         SFTP
     }
 
@@ -173,20 +165,12 @@ public class UtilsHandler extends SQLiteOpenHelper {
         setPath(Operation.SMB, name, path);
     }
 
-    public void addSshHostKey(String hostAndPort, String hostKey) {
-        SQLiteDatabase database = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, hostAndPort);
-        values.put(COLUMN_HOST_PUBKEY, hostKey);
-
-        database.insert(getTableForOperation(Operation.SSHHOSTS), null, values);
-    }
-
-    public void addSsh(String name, String path, String sshKeyName, String sshKey) {
+    public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
         values.put(COLUMN_PATH, path);
+        values.put(COLUMN_HOST_PUBKEY, hostKey);
         if(sshKey != null && !"".equals(sshKey))
         {
             values.put(COLUMN_PRIVATE_KEY_NAME, sshKeyName);
@@ -307,30 +291,21 @@ public class UtilsHandler extends SQLiteOpenHelper {
         return retval;
     }
 
-    public String getSshHostKey(Uri uri)
+    public String getSshHostKey(String uri)
     {
-        String host = uri.getHost();
-        int port = uri.getPort();
-
-        if(port < 0)
-            port = SshConnectionPool.SSH_DEFAULT_PORT;
-
-        return getSshHostKey(host, port);
-    }
-
-    public String getSshHostKey(String host, int port)
-    {
-        StringBuilder sb = new StringBuilder(host);
-        if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
-            sb.append(':').append(port);
-
-        return getSshHostKey(sb.toString());
-    }
-
-    public String getSshHostKey(String hostAndPort)
-    {
+        Log.d("DEBUG", uri);
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        Cursor result = sqLiteDatabase.query(TABLE_SSHHOSTS, new String[]{COLUMN_HOST_PUBKEY}, COLUMN_NAME + " = ?", new String[]{hostAndPort}, null, null, COLUMN_NAME);
+        try
+        {
+            uri = SmbUtil.getSmbEncryptedPath(context, uri);
+        }
+        catch(CryptException e)
+        {
+            Log.e("UtilsHandler", "Error decrypting path", e);
+            return null;
+        }
+
+        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY}, COLUMN_PATH + " = ?", new String[]{uri}, null, null, null);
         if(result.moveToFirst())
         {
             try {
@@ -346,16 +321,21 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String getSshAuthPrivateKey(String host, int port, String username)
+    public String getSshAuthPrivateKey(String uri)
     {
-        return getSshAuthPrivateKey(String.format("ssh://%s@%s:%d", username, host, port));
-    }
+        try
+        {
+            uri = SmbUtil.getSmbEncryptedPath(context, uri);
+        }
+        catch(CryptException e)
+        {
+            Log.e("UtilsHandler", "Error decrypting path", e);
+            return null;
+        }
 
-    public String getSshAuthPrivateKey(String hostPortWithUsername)
-    {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_PRIVATE_KEY},
-                COLUMN_NAME + " = ?", new String[]{hostPortWithUsername},
+                COLUMN_NAME + " = ?", new String[]{uri},
                 null, null, null);
         if(result.moveToFirst())
         {
@@ -473,8 +453,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public void clearSshTable() { clearTable(Operation.SFTP); }
 
-    public void clearSshHostsTable() { clearTable(Operation.SSHHOSTS); }
-
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
     }
@@ -587,8 +565,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 return TABLE_SMB;
             case SFTP:
                 return TABLE_SFTP;
-            case SSHHOSTS:
-                return TABLE_SSHHOSTS;
             default:
                 return null;
         }

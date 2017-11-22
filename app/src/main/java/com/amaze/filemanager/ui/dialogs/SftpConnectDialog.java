@@ -70,8 +70,6 @@ public class SftpConnectDialog extends DialogFragment
 
     private String selectedParsedKeyPairName = null;
 
-    String emptyAddress, emptyName, invalidUsername;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,12 +135,6 @@ public class SftpConnectDialog extends DialogFragment
             }
         });
 
-        final String connectionName = connectionET.getText().toString();
-        final String hostname = addressET.getText().toString();
-        final int port = Integer.parseInt(portET.getText().toString());
-        final String username = usernameET.getText().toString();
-        final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
-
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context)
             .title((R.string.scp_con))
             .autoDismiss(false)
@@ -156,7 +148,14 @@ public class SftpConnectDialog extends DialogFragment
         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
         {
 
-            String sshHostKey = utilsHandler.getSshHostKey(hostname, port);
+            final String connectionName = connectionET.getText().toString();
+            final String hostname = addressET.getText().toString();
+            final int port = Integer.parseInt(portET.getText().toString());
+            final String username = usernameET.getText().toString();
+            final String password = passwordET.getText() != null ? passwordET.getText().toString() : null;
+
+            String sshHostKey = utilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port, username, password, selectedParsedKeyPair));
+            Log.d("DEBUG", "sshHostKey? [" + sshHostKey + "]");
             if(sshHostKey != null)
             {
                 authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username, password, selectedParsedKeyPairName, selectedParsedKeyPair);
@@ -183,7 +182,7 @@ public class SftpConnectDialog extends DialogFragment
                                     if(!edit)
                                     {
                                         Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
-                                        utilsHandler.addSshHostKey(hostAndPort, hostKeyFingerprint);
+                                        //This closes the host fingerprint verification dialog
                                         dialog.dismiss();
                                         authenticateAndSaveSetup(connectionName, hostname, port, hostKeyFingerprint, username, password, selectedParsedKeyPairName, selectedParsedKeyPair);
                                         Log.d(TAG, "Saved setup");
@@ -219,6 +218,12 @@ public class SftpConnectDialog extends DialogFragment
             dialogBuilder.negativeText(R.string.delete).onNegative(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                final String connectionName = connectionET.getText().toString();
+                final String hostname = addressET.getText().toString();
+                final int port = Integer.parseInt(portET.getText().toString());
+                final String username = usernameET.getText().toString();
+
                 final String path = deriveSftpPathFrom(hostname, port, username, getArguments().getString("password", null), selectedParsedKeyPair);
                 int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
 
@@ -320,7 +325,7 @@ public class SftpConnectDialog extends DialogFragment
                     AppConfig.runInBackground(new Runnable() {
                         @Override
                         public void run() {
-                        utilsHandler.addSsh(connectionName, encryptedPath, selectedParsedKeyPairName, getPemContents());
+                        utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint, selectedParsedKeyPairName, getPemContents());
                         }
                     });
                     DataUtils.getInstance().addServer(new String[]{connectionName, path});
