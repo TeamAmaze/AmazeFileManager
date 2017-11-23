@@ -86,7 +86,6 @@ public class ExtractService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-        Bundle b = new Bundle();
         String file = intent.getStringExtra(KEY_PATH_ZIP);
         String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
 
@@ -101,8 +100,6 @@ public class ExtractService extends Service {
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         ArrayList<String> entries = intent.getStringArrayListExtra(KEY_ENTRIES_ZIP);
-
-        b.putString(KEY_PATH_ZIP, file);
 
         long totalSize = getTotalSize(file);
         progressHandler = new ProgressHandler(1, totalSize);
@@ -122,7 +119,7 @@ public class ExtractService extends Service {
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         startForeground(Integer.parseInt("123" + startId), mBuilder.build());
 
-        new DoWork(this, progressHandler, epath, entries).execute(b);
+        new DoWork(this, progressHandler, file, epath, entries).execute();
         return START_STICKY;
     }
 
@@ -205,43 +202,42 @@ public class ExtractService extends Service {
         }
     }
 
-    public static class DoWork extends AsyncTask<Bundle, Void, Integer> {
+    public static class DoWork extends AsyncTask<Void, Void, Void> {
 
         private WeakReference<ExtractService> extractService;
         private ArrayList<String> entriesToExtract;
-        private String extractPath;
+        private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private long totalBytes = 0L;
         private ServiceWatcherUtil watcherUtil;
 
 
-        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String epath, ArrayList<String> entries) {
+        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String epath, String cpath, ArrayList<String> entries) {
             this.extractService = new WeakReference<>(extractService);
             this.progressHandler = progressHandler;
-            extractPath = epath;
+            extractionPath = epath;
+            compressedPath = cpath;
             entriesToExtract = entries;
         }
 
         @Override
-        protected Integer doInBackground(Bundle... p1) {
+        protected Void doInBackground(Void... p) {
             final Context context = this.extractService.get();
             if(context == null) return null;
 
-            String file = p1[0].getString(KEY_PATH_ZIP);
-
-            File f = new File(file);
+            File f = new File(compressedPath);
 
             String path;
-            if (extractPath.equals(file)) {
+            if (extractionPath.equals(compressedPath)) {
 
                 // custom extraction path not set, extract at default path
                 path = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
             } else {
 
-                if (extractPath.endsWith("/")) {
-                    path = extractPath + f.getName().substring(0, f.getName().lastIndexOf("."));
+                if (extractionPath.endsWith("/")) {
+                    path = extractionPath + f.getName().substring(0, f.getName().lastIndexOf("."));
                 } else {
-                    path = extractPath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
+                    path = extractionPath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
                 }
             }
 
@@ -256,9 +252,7 @@ public class ExtractService extends Service {
                 extractRar(context, f, path);
             else if (f.getName().toLowerCase().endsWith(".tar") || f.getName().toLowerCase().endsWith(".tar.gz"))
                 extractTar(context, f, path);
-            Log.i("Amaze", "Almost Completed");
-            // TODO: Implement this method
-            return p1[0].getInt("id");
+            return null;
         }
 
         /**
@@ -627,7 +621,7 @@ public class ExtractService extends Service {
         }
 
         @Override
-        public void onPostExecute(Integer b) {
+        public void onPostExecute(Void b) {
             final ExtractService extractService = this.extractService.get();
             if(extractService == null) return;
 
@@ -635,7 +629,7 @@ public class ExtractService extends Service {
             // in extracting the file
             if (watcherUtil != null) watcherUtil.stopWatch();
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, extractPath);
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, extractionPath);
             extractService.sendBroadcast(intent);
             extractService.stopSelf();
         }
