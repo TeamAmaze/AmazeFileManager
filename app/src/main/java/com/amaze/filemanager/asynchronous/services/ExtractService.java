@@ -31,6 +31,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -55,6 +56,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
@@ -62,19 +64,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 public class ExtractService extends Service {
 
-    Context cd;
+    Context context;
 
     // list of data packages,// to initiate chart in process viewer fragment
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
-    // total size of file, can change later
-    private long totalSize = 0L;
-
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
-    // names of entries to be extracted
-    private ArrayList<String> entries = new ArrayList<>();
-    private String epath;
     private ProgressHandler progressHandler;
 
     public static final String KEY_PATH_ZIP = "zip";
@@ -85,7 +81,7 @@ public class ExtractService extends Service {
     @Override
     public void onCreate() {
         registerReceiver(receiver1, new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL));
-        cd = getApplicationContext();
+        context = getApplicationContext();
     }
 
     @Override
@@ -94,6 +90,7 @@ public class ExtractService extends Service {
         String file = intent.getStringExtra(KEY_PATH_ZIP);
         String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
 
+        String epath;
         if (extractPath != null) {
             // a custom dynamic path to extract files to
             epath = extractPath;
@@ -103,11 +100,11 @@ public class ExtractService extends Service {
         }
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        entries = intent.getStringArrayListExtra(KEY_ENTRIES_ZIP);
+        ArrayList<String> entries = intent.getStringArrayListExtra(KEY_ENTRIES_ZIP);
 
         b.putString(KEY_PATH_ZIP, file);
 
-        totalSize = getTotalSize(file);
+        long totalSize = getTotalSize(file);
         progressHandler = new ProgressHandler(1, totalSize);
 
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
@@ -118,14 +115,14 @@ public class ExtractService extends Service {
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        mBuilder = new NotificationCompat.Builder(cd);
+        mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         startForeground(Integer.parseInt("123" + startId), mBuilder.build());
 
-        new DoWork().execute(b);
+        new DoWork(this, progressHandler, epath, entries).execute(b);
         return START_STICKY;
     }
 
@@ -169,13 +166,13 @@ public class ExtractService extends Service {
             float progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(cd, done) + "/"
-                    + Formatter.formatFileSize(cd, total));
+            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"
+                    + Formatter.formatFileSize(context, total));
             int id1 = Integer.parseInt("123" + id);
             mNotifyManager.notify(id1, mBuilder.build());
             if (progressPercent == 100 || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.extract_complete));
-                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(cd, total));
+                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, total));
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(id1, mBuilder.build());
@@ -208,29 +205,76 @@ public class ExtractService extends Service {
         }
     }
 
-    public class DoWork extends AsyncTask<Bundle, Void, Integer> {
+    public static class DoWork extends AsyncTask<Bundle, Void, Integer> {
 
-        long totalBytes = 0L;
+        private WeakReference<ExtractService> extractService;
+        private ArrayList<String> entriesToExtract;
+        private String extractPath;
+        private ProgressHandler progressHandler;
+        private long totalBytes = 0L;
         private ServiceWatcherUtil watcherUtil;
 
-        private void createDir(File dir) {
-            FileUtil.mkdir(dir, cd);
+
+        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String epath, ArrayList<String> entries) {
+            this.extractService = new WeakReference<>(extractService);
+            this.progressHandler = progressHandler;
+            extractPath = epath;
+            entriesToExtract = entries;
+        }
+
+        @Override
+        protected Integer doInBackground(Bundle... p1) {
+            final Context context = this.extractService.get();
+            if(context == null) return null;
+
+            String file = p1[0].getString(KEY_PATH_ZIP);
+
+            File f = new File(file);
+
+            String path;
+            if (extractPath.equals(file)) {
+
+                // custom extraction path not set, extract at default path
+                path = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
+            } else {
+
+                if (extractPath.endsWith("/")) {
+                    path = extractPath + f.getName().substring(0, f.getName().lastIndexOf("."));
+                } else {
+                    path = extractPath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
+                }
+            }
+
+            if (entriesToExtract != null && entriesToExtract.size() != 0) {
+                if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
+                    extract(context, f, path, entriesToExtract);
+                else if (f.getName().toLowerCase().endsWith(".rar"))
+                    extractRar(context, f, path, entriesToExtract);
+            } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
+                extract(context, f, path);
+            else if (f.getName().toLowerCase().endsWith(".rar"))
+                extractRar(context, f, path);
+            else if (f.getName().toLowerCase().endsWith(".tar") || f.getName().toLowerCase().endsWith(".tar.gz"))
+                extractTar(context, f, path);
+            Log.i("Amaze", "Almost Completed");
+            // TODO: Implement this method
+            return p1[0].getInt("id");
         }
 
         /**
          * Method extracts {@link ZipEntry} from {@link ZipFile}
          *
-         * @param zipFile   zip file from which entries are to be extracted
+         * @param zipFile   zip file from which entriesToExtract are to be extracted
          * @param entry     zip entry that is to be extracted
          * @param outputDir output directory
          * @throws Exception
          */
-        private void unzipEntry(ZipFile zipFile, ZipEntry entry, String outputDir)
+        private void unzipEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry, String outputDir)
                 throws Exception {
 
             if (entry.isDirectory()) {
                 // zip entry is a directory, return after creating new directory
-                createDir(new File(outputDir, entry.getName()));
+                FileUtil.mkdir(new File(outputDir, entry.getName()), context);
                 return;
             }
 
@@ -239,13 +283,13 @@ public class ExtractService extends Service {
             if (!outputFile.getParentFile().exists()) {
                 // creating directory if not already exists
 
-                createDir(outputFile.getParentFile());
+                FileUtil.mkdir(outputFile.getParentFile(), context);
             }
 
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, cd, 0));
+                    FileUtil.getOutputStream(outputFile, context, 0));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -260,23 +304,23 @@ public class ExtractService extends Service {
             }
         }
 
-        private void unzipRAREntry(Archive zipFile, FileHeader entry, String outputDir)
+        private void unzipRAREntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
                 throws Exception {
             String name = entry.getFileNameString();
             name = name.replaceAll("\\\\", "/");
             if (entry.isDirectory()) {
-                createDir(new File(outputDir, name));
+                FileUtil.mkdir(new File(outputDir, name), context);
                 return;
             }
             File outputFile = new File(outputDir, name);
             if (!outputFile.getParentFile().exists()) {
-                createDir(outputFile.getParentFile());
+                FileUtil.mkdir(outputFile.getParentFile(), context);
             }
             //	Log.i("Amaze", "Extracting: " + entry);
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, cd, entry.getFullUnpackSize()));
+                    FileUtil.getOutputStream(outputFile, context, entry.getFullUnpackSize()));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -294,20 +338,20 @@ public class ExtractService extends Service {
             }
         }
 
-        private void unzipTAREntry(TarArchiveInputStream zipFileStream, TarArchiveEntry entry,
+        private void unzipTAREntry(@NonNull final Context context, TarArchiveInputStream zipFileStream, TarArchiveEntry entry,
                                    String outputDir) throws Exception {
             String name = entry.getName();
             if (entry.isDirectory()) {
-                createDir(new File(outputDir, name));
+                FileUtil.mkdir(new File(outputDir, name), context);
                 return;
             }
             File outputFile = new File(outputDir, name);
             if (!outputFile.getParentFile().exists()) {
-                createDir(outputFile.getParentFile());
+                FileUtil.mkdir(outputFile.getParentFile(), context);
             }
 
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, cd, entry.getRealSize()));
+                    FileUtil.getOutputStream(outputFile, context, entry.getRealSize()));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -332,7 +376,7 @@ public class ExtractService extends Service {
          * @param entryNamesList  names of files to be extracted from the archive
          * @return
          */
-        private boolean extract(File archive, String destinationPath,
+        private boolean extract(@NonNull final Context context, File archive, String destinationPath,
                                 ArrayList<String> entryNamesList) {
 
             ArrayList<ZipEntry> entry1 = new ArrayList<>();
@@ -371,7 +415,7 @@ public class ExtractService extends Service {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(entry.getName());
-                        unzipEntry(zipfile, entry, destinationPath);
+                        unzipEntry(context, zipfile, entry, destinationPath);
                         progressHandler.setSourceFilesProcessed(++i);
                     }
                 }
@@ -379,13 +423,13 @@ public class ExtractService extends Service {
                 return true;
             } catch (Exception e) {
                 Log.e("amaze", "Error while extracting file " + archive, e);
-                AppConfig.toast(getApplicationContext(), getString(R.string.error));
+                AppConfig.toast(context, context.getString(R.string.error));
                 return false;
             }
 
         }
 
-        private boolean extract(File archive, String destinationPath) {
+        private boolean extract(@NonNull final Context context, File archive, String destinationPath) {
 
             try {
                 ArrayList<ZipEntry> arrayList = new ArrayList<>();
@@ -414,7 +458,7 @@ public class ExtractService extends Service {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(entry.getName());
-                        unzipEntry(zipfile, entry, destinationPath);
+                        unzipEntry(context, zipfile, entry, destinationPath);
                     }
                 }
                 progressHandler.setSourceFilesProcessed(1);
@@ -422,13 +466,13 @@ public class ExtractService extends Service {
                 return true;
             } catch (Exception e) {
                 Log.e("amaze", "Error while extracting file " + archive, e);
-                AppConfig.toast(getApplicationContext(), getString(R.string.error));
+                AppConfig.toast(context, context.getString(R.string.error));
                 return false;
             }
 
         }
 
-        private boolean extractTar(File archive, String destinationPath) {
+        private boolean extractTar(@NonNull final Context context, File archive, String destinationPath) {
 
             try {
 
@@ -463,7 +507,7 @@ public class ExtractService extends Service {
 
                         inputStream.getNextTarEntry();
                         progressHandler.setFileName(entry.getName());
-                        unzipTAREntry(inputStream, entry, destinationPath);
+                        unzipTAREntry(context, inputStream, entry, destinationPath);
                     }
                 }
                 progressHandler.setSourceFilesProcessed(1);
@@ -474,7 +518,7 @@ public class ExtractService extends Service {
                 return true;
             } catch (Exception e) {
                 Log.e("amaze", "Error while extracting file " + archive, e);
-                AppConfig.toast(getApplicationContext(), getString(R.string.error));
+                AppConfig.toast(context, context.getString(R.string.error));
                 return false;
             }
 
@@ -488,7 +532,7 @@ public class ExtractService extends Service {
             }
         }
 
-        private boolean extractRar(File archive, String destinationPath) {
+        private boolean extractRar(@NonNull final Context context, File archive, String destinationPath) {
 
             try {
                 ArrayList<FileHeader> arrayList = new ArrayList<>();
@@ -505,7 +549,7 @@ public class ExtractService extends Service {
                     totalBytes += header.getFullUnpackSize();
                 }
 
-                // setting total bytes calculated from zip entries
+                // setting total bytes calculated from zip entriesToExtract
                 progressHandler.setTotalSize(totalBytes);
 
                 setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), 1);
@@ -518,7 +562,7 @@ public class ExtractService extends Service {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(header.getFileNameString());
-                        unzipRAREntry(zipFile, header, destinationPath);
+                        unzipRAREntry(context, zipFile, header, destinationPath);
                     }
                 }
                 progressHandler.setSourceFilesProcessed(1);
@@ -526,12 +570,12 @@ public class ExtractService extends Service {
                 return true;
             } catch (Exception e) {
                 Log.e("amaze", "Error while extracting file " + archive, e);
-                AppConfig.toast(getApplicationContext(), getString(R.string.error));
+                AppConfig.toast(context, context.getString(R.string.error));
                 return false;
             }
         }
 
-        private boolean extractRar(File archive, String destinationPath, ArrayList<String> entries) {
+        private boolean extractRar(@NonNull final Context context, File archive, String destinationPath, ArrayList<String> entriesToExtract) {
 
             try {
 
@@ -541,7 +585,7 @@ public class ExtractService extends Service {
 
                 // iterating archive elements to find file names that are to be extracted
                 for (FileHeader header : rarFile.getFileHeaders()) {
-                    for (String entry : entries) {
+                    for (String entry : entriesToExtract) {
 
                         if (header.getFileNameString().contains(entry)) {
                             // header to be extracted is atleast the entry path (may be more, when it is a directory)
@@ -568,7 +612,7 @@ public class ExtractService extends Service {
                     if (!progressHandler.getCancelled()) {
 
                         progressHandler.setFileName(entry.getFileNameString());
-                        unzipRAREntry(rarFile, entry, destinationPath);
+                        unzipRAREntry(context, rarFile, entry, destinationPath);
                         progressHandler.setSourceFilesProcessed(++i);
                     }
                 }
@@ -577,81 +621,46 @@ public class ExtractService extends Service {
             } catch (Exception e) {
 
                 Log.e("amaze", "Error while extracting file " + archive, e);
-                AppConfig.toast(getApplicationContext(), getString(R.string.error));
+                AppConfig.toast(context, getString(R.string.error));
                 return false;
             }
         }
 
-        protected Integer doInBackground(Bundle... p1) {
-
-            String file = p1[0].getString(KEY_PATH_ZIP);
-
-            File f = new File(file);
-
-            String path;
-            if (epath.equals(file)) {
-
-                // custom extraction path not set, extract at default path
-                path = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
-            } else {
-
-                if (epath.endsWith("/")) {
-                    path = epath + f.getName().substring(0, f.getName().lastIndexOf("."));
-                } else {
-                    path = epath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
-                }
-            }
-
-            if (entries != null && entries.size() != 0) {
-                if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
-                    extract(f, path, entries);
-                else if (f.getName().toLowerCase().endsWith(".rar"))
-                    extractRar(f, path, entries);
-            } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
-                extract(f, path);
-            else if (f.getName().toLowerCase().endsWith(".rar"))
-                extractRar(f, path);
-            else if (f.getName().toLowerCase().endsWith(".tar") || f.getName().toLowerCase().endsWith(".tar.gz"))
-                extractTar(f, path);
-            Log.i("Amaze", "Almost Completed");
-            // TODO: Implement this method
-            return p1[0].getInt("id");
-        }
-
         @Override
         public void onPostExecute(Integer b) {
+            final ExtractService extractService = this.extractService.get();
+            if(extractService == null) return;
 
             // check whether watcherutil was initialized. It was not initialized when we got exception
             // in extracting the file
             if (watcherUtil != null) watcherUtil.stopWatch();
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, epath);
-            sendBroadcast(intent);
-            stopSelf();
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, extractPath);
+            extractService.sendBroadcast(intent);
+            extractService.stopSelf();
         }
 
+        /**
+         * Setting initial package to initialize charts in process viewer properly
+         */
+        private void setInitDataPackage(long totalSize, String fileName, int sourceTotal) {
+            final ExtractService extractService = this.extractService.get();
+            if(extractService == null) return;
+
+            CopyDataParcelable intent1 = new CopyDataParcelable();
+            intent1.setName(fileName);
+            intent1.setSourceFiles(sourceTotal);
+            intent1.setSourceProgress(0);
+            intent1.setTotal(totalSize);
+            intent1.setByteProgress(0);
+            intent1.setSpeedRaw(0);
+            intent1.setMove(false);
+            intent1.setCompleted(false);
+            extractService.putDataPackage(intent1);
+        }
 
     }
 
-    /**
-     * Setting initial package to initialize charts in process viewer properly
-     *
-     * @param totalSize
-     * @param fileName
-     */
-    private void setInitDataPackage(long totalSize, String fileName, int sourceTotal) {
-
-        CopyDataParcelable intent1 = new CopyDataParcelable();
-        intent1.setName(fileName);
-        intent1.setSourceFiles(sourceTotal);
-        intent1.setSourceProgress(0);
-        intent1.setTotal(totalSize);
-        intent1.setByteProgress(0);
-        intent1.setSpeedRaw(0);
-        intent1.setMove(false);
-        intent1.setCompleted(false);
-        putDataPackage(intent1);
-    }
 
     @Override
     public void onDestroy() {
