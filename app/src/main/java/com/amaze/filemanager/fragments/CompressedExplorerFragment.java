@@ -21,7 +21,6 @@
 package com.amaze.filemanager.fragments;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -54,15 +53,13 @@ import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
-import com.amaze.filemanager.filesystem.compressed.RarHelper;
-import com.amaze.filemanager.filesystem.compressed.ZipHelper;
 import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -83,29 +80,6 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     private static final String KEY_WHOLE_LIST = "whole_list";
     private static final String KEY_ELEMENTS = "elements";
     private static final String KEY_OPEN = "is_open";
-
-    /**
-     * To add compatibility with other compressed file types edit this method
-     */
-    private static CompressedInterface getCompressedInterfaceInstance(Context context, File file) {
-        CompressedInterface compressedInterface;
-        
-        String path = file.getPath();
-        boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
-        boolean isTar = path.endsWith(".tar") || path.endsWith(".tar.gz");
-        boolean isRar = path.endsWith(".rar");
-
-        if (isZip || isTar) {
-            compressedInterface = new ZipHelper(context);
-        } else if (isRar) {
-            compressedInterface = new RarHelper();
-        } else {
-            return null;
-        }
-
-        compressedInterface.setFilePath(file.getPath());
-        return compressedInterface;
-    }
 
 
     public File compressedFile;
@@ -218,7 +192,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
             files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
-            compressedInterface = getCompressedInterfaceInstance(getContext(), compressedFile);
+            compressedInterface = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
 
             changePath("");
         } else {
@@ -246,7 +220,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
         relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
 
-        compressedInterface = getCompressedInterfaceInstance(getContext(), compressedFile);
+        compressedInterface = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
         createViews(elements, relativeDirectory);
     }
 
@@ -314,16 +288,15 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                     mode.invalidate();
                     return true;
                 case R.id.ex:
-
                     Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), ExtractService.class);
-                    ArrayList<String> a = new ArrayList<>();
-                    for (int i : compressedExplorerAdapter.getCheckedItemPositions()) {
-                        a.add(elements.get(i).getName());
+
+                    String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
+                    for (int i = 0; i < dirs.length; i++) {
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).getName();
                     }
-                    intent.putExtra(ExtractService.KEY_PATH_ZIP, compressedFile.getPath());
-                    intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                    ServiceWatcherUtil.runService(getContext(), intent);
+
+                    compressedInterface.decompress(null, dirs);
+
                     mode.finish();
                     return true;
             }
@@ -435,7 +408,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     private void createViews(ArrayList<CompressedObjectParcelable> items, String dir) {
         if (compressedExplorerAdapter == null) {
-            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this);
+            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, compressedInterface);
             listView.setAdapter(compressedExplorerAdapter);
         } else {
             compressedExplorerAdapter.generateZip(items);

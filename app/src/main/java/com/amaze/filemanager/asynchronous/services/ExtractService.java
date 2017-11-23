@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
@@ -88,18 +87,9 @@ public class ExtractService extends Service {
     public int onStartCommand(Intent intent, int flags, final int startId) {
         String file = intent.getStringExtra(KEY_PATH_ZIP);
         String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
+        String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
-        String epath;
-        if (extractPath != null) {
-            // a custom dynamic path to extract files to
-            epath = extractPath;
-        } else {
-
-            epath = PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_PATH_EXTRACT, file);
-        }
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        ArrayList<String> entries = intent.getStringArrayListExtra(KEY_ENTRIES_ZIP);
 
         long totalSize = getTotalSize(file);
         progressHandler = new ProgressHandler(1, totalSize);
@@ -119,7 +109,7 @@ public class ExtractService extends Service {
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         startForeground(Integer.parseInt("123" + startId), mBuilder.build());
 
-        new DoWork(this, progressHandler, file, epath, entries).execute();
+        new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
     }
 
@@ -205,18 +195,19 @@ public class ExtractService extends Service {
     public static class DoWork extends AsyncTask<Void, Void, Void> {
 
         private WeakReference<ExtractService> extractService;
-        private ArrayList<String> entriesToExtract;
+        private String[] entriesToExtract;
         private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private long totalBytes = 0L;
         private ServiceWatcherUtil watcherUtil;
 
 
-        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String epath, String cpath, ArrayList<String> entries) {
+        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
+                       String[] entries) {
             this.extractService = new WeakReference<>(extractService);
             this.progressHandler = progressHandler;
-            extractionPath = epath;
             compressedPath = cpath;
+            extractionPath = epath;
             entriesToExtract = entries;
         }
 
@@ -227,32 +218,26 @@ public class ExtractService extends Service {
 
             File f = new File(compressedPath);
 
-            String path;
-            if (extractionPath.equals(compressedPath)) {
-
-                // custom extraction path not set, extract at default path
-                path = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
-            } else {
-
-                if (extractionPath.endsWith("/")) {
-                    path = extractionPath + f.getName().substring(0, f.getName().lastIndexOf("."));
-                } else {
-                    path = extractionPath + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
-                }
+            if (!compressedPath.equals(extractionPath)) {// custom extraction path not set, extract at default path
+                extractionPath = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
+            } else if (extractionPath.endsWith("/")) {
+                extractionPath = extractionPath + f.getName().substring(0, f.getName().lastIndexOf("."));
             }
 
             try {
-                if (entriesToExtract != null && entriesToExtract.size() != 0) {
-                    if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
-                        extract(context, f, path, entriesToExtract);
-                    else if (f.getName().toLowerCase().endsWith(".rar"))
-                        extractRar(context, f, path, entriesToExtract);
-                } else if (f.getName().toLowerCase().endsWith(".zip") || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".apk"))
-                    extract(context, f, path);
-                else if (f.getName().toLowerCase().endsWith(".rar"))
-                    extractRar(context, f, path);
-                else if (f.getName().toLowerCase().endsWith(".tar") || f.getName().toLowerCase().endsWith(".tar.gz"))
-                    extractTar(context, f, path);
+                String path = f.getPath().toLowerCase();
+                boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
+                boolean isTar = path.endsWith(".tar") || path.endsWith(".tar.gz");
+                boolean isRar = path.endsWith(".rar");
+
+                if (entriesToExtract != null && entriesToExtract.length != 0) {
+                    if (isZip) extract(context, f, extractionPath, entriesToExtract);
+                    else if (isRar) extractRar(context, f, extractionPath, entriesToExtract);
+                } else {
+                    if (isZip) extract(context, f, extractionPath);
+                    else if (isRar) extractRar(context, f, extractionPath);
+                    else if (isTar) extractTar(context, f, extractionPath);
+                }
             } catch (IOException | RarException e) {
                 Log.e("amaze", "Error while extracting file " + compressedPath, e);
                 AppConfig.toast(context, context.getString(R.string.error));
@@ -369,7 +354,7 @@ public class ExtractService extends Service {
          * @return
          */
         private void extract(@NonNull final Context context, File archive, String destinationPath,
-                                ArrayList<String> entryNamesList) throws IOException {
+                                String[] entryNamesList) throws IOException {
 
             ArrayList<ZipEntry> entry1 = new ArrayList<>();
             ZipFile zipfile = new ZipFile(archive);
@@ -396,7 +381,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, entry1.get(0).getName(), entryNamesList.size());
+            setInitDataPackage(totalBytes, entry1.get(0).getName(), entryNamesList.length);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -529,7 +514,7 @@ public class ExtractService extends Service {
         }
 
         private void extractRar(@NonNull final Context context, File archive, String destinationPath,
-                                ArrayList<String> entriesToExtract) throws IOException, RarException {
+                                String[] entriesToExtract) throws IOException, RarException {
             Archive rarFile = new Archive(archive);
 
             ArrayList<FileHeader> arrayList = new ArrayList<>();

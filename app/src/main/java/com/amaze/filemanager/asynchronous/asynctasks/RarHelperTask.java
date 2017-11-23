@@ -2,6 +2,7 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.os.AsyncTask;
 
+import com.amaze.filemanager.filesystem.compressed.RarHelper;
 import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
@@ -55,7 +56,7 @@ public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(convertName(header), 0, header.getDataSize(), header.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(RarHelper.convertName(header), 0, header.getDataSize(), header.isDirectory()));
                 }
             }
             Collections.sort(elements, new CompressedObjectParcelable.Sorter());
@@ -70,13 +71,6 @@ public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
     protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
         super.onPostExecute(zipEntries);
         onFinish.onAsyncTaskFinished(zipEntries);
-    }
-
-    private String convertName(FileHeader file) {
-        String name = file.getFileNameString().replace('\\', '/');
-
-        if(file.isDirectory()) return name + "/";
-        else return name;
     }
 
 }

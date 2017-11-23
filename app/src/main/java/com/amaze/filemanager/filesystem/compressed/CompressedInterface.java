@@ -19,4 +19,14 @@ public interface CompressedInterface {
      */
     void changePath(String path, boolean addGoBackItem,
                     OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish);
+    /**
+     * Decompress a file somewhere
+     */
+    void decompress(String whereToDecompress);
+
+    /**
+     * Decompress files or dirs inside the compressed file.
+     * @param subDirectories separator is "/", ended with "/" if it is a directory, does not if it's a file
+     */
+    void decompress(String whereToDecompress, String[] subDirectories);
 }

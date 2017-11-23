@@ -2,7 +2,6 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -20,14 +19,13 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
-import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -49,16 +47,18 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     private Drawable folder;
     private ArrayList<CompressedObjectParcelable> items;
     private CompressedExplorerFragment compressedExplorerFragment;
+    private CompressedInterface compressedInterface;
     private LayoutInflater mInflater;
     private boolean[] itemsChecked;
     private int offset = 0;
 
     public CompressedExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider,
                                      ArrayList<CompressedObjectParcelable> items,
-                                     CompressedExplorerFragment compressedExplorerFragment) {
+                                     CompressedExplorerFragment compressedExplorerFragment,
+                                     CompressedInterface compressedInterface) {
         this.utilsProvider = utilsProvider;
-
         this.items = items;
+        this.compressedInterface = compressedInterface;
 
         itemsChecked = new boolean[items.size()];
 
@@ -276,16 +276,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
                         Toast.makeText(compressedExplorerFragment.getContext(),
                                 compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(compressedExplorerFragment.getContext(), ExtractService.class);
-                        ArrayList<String> a = new ArrayList<>();
-
-                        // adding name of entry to extract from zip, before opening it
-                        a.add(rowItem.getName());
-                        intent.putExtra(ExtractService.KEY_PATH_ZIP, compressedExplorerFragment.compressedFile.getPath());
-                        intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                        intent.putExtra(ExtractService.KEY_PATH_EXTRACT,
-                                compressedExplorerFragment.getActivity().getExternalCacheDir().getPath());
-                        ServiceWatcherUtil.runService(compressedExplorerFragment.getContext(), intent);
+                        compressedInterface.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
+                                new String[]{rowItem.getName()});
                     }
                 }
             }

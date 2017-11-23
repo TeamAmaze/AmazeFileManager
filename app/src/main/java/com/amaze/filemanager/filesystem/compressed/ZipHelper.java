@@ -1,10 +1,13 @@
 package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
+import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.util.ArrayList;
 
@@ -31,4 +34,23 @@ public class ZipHelper implements CompressedInterface {
                            OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
         new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish).execute();
     }
+
+    @Override
+    public void decompress(String whereToDecompress) {
+        Intent intent = new Intent(context, ExtractService.class);
+        intent.putExtra(ExtractService.KEY_PATH_ZIP, filePath);
+        intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, new String[0]);
+        intent.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress);
+        ServiceWatcherUtil.runService(context, intent);
+    }
+
+    @Override
+    public void decompress(String whereToDecompress, String[] subDirectories) {
+        Intent intent = new Intent(context, ExtractService.class);
+        intent.putExtra(ExtractService.KEY_PATH_ZIP, filePath);
+        intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, subDirectories);
+        intent.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress);
+        ServiceWatcherUtil.runService(context, intent);
+    }
+
 }
