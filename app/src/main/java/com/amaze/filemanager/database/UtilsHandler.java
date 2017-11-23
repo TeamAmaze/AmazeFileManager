@@ -166,6 +166,9 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
+        Log.d("DEBUG", "sshKeyName: " + sshKeyName);
+        Log.d("DEBUG", "sshKey: " + sshKey);
+
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
@@ -266,9 +269,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
             while(cursor.moveToNext())
             {
                 try {
+                    String path = cursor.getString(cursor.getColumnIndex(COLUMN_PATH));
+                    if(Uri.parse(path).getUserInfo().contains(":"))
+                        path = SmbUtil.getSmbDecryptedPath(context, path);
+
                     retval.add(new String[]{
                             cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                            SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
+                            path
                     });
                 } catch(CryptException e) {
                     Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
@@ -293,19 +300,34 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public String getSshHostKey(String uri)
     {
-        Log.d("DEBUG", uri);
+        return getSshHostKey(Uri.parse(uri));
+    }
+
+    public String getSshHostKey(Uri uri)
+    {
+        Log.d("DEBUG", uri.toString());
+        String _uri = null;
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        try
+        if(uri.getUserInfo().contains(":"))
         {
-            uri = SmbUtil.getSmbEncryptedPath(context, uri);
+            try
+            {
+                _uri = SmbUtil.getSmbEncryptedPath(context, uri.toString());
+            }
+            catch(CryptException e)
+            {
+                Log.e("UtilsHandler", "Error decrypting path", e);
+                return null;
+            }
         }
-        catch(CryptException e)
+        else
         {
-            Log.e("UtilsHandler", "Error decrypting path", e);
-            return null;
+            _uri = uri.toString();
         }
 
-        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY}, COLUMN_PATH + " = ?", new String[]{uri}, null, null, null);
+        Log.d("DEBUG", _uri);
+
+        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY}, COLUMN_PATH + " = ?", new String[]{_uri}, null, null, null);
         if(result.moveToFirst())
         {
             try {
@@ -323,19 +345,32 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public String getSshAuthPrivateKey(String uri)
     {
-        try
+        return getSshAuthPrivateKey(Uri.parse(uri));
+    }
+
+    public String getSshAuthPrivateKey(Uri uri)
+    {
+        String _uri = null;
+        if(uri.getUserInfo().contains(":"))
         {
-            uri = SmbUtil.getSmbEncryptedPath(context, uri);
+            try
+            {
+                _uri = SmbUtil.getSmbEncryptedPath(context, uri.toString());
+            }
+            catch(CryptException e)
+            {
+                Log.e("UtilsHandler", "Error decrypting path", e);
+                return null;
+            }
         }
-        catch(CryptException e)
+        else
         {
-            Log.e("UtilsHandler", "Error decrypting path", e);
-            return null;
+            _uri = uri.toString();
         }
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_PRIVATE_KEY},
-                COLUMN_NAME + " = ?", new String[]{uri},
+                COLUMN_PATH + " = ?", new String[]{_uri},
                 null, null, null);
         if(result.moveToFirst())
         {

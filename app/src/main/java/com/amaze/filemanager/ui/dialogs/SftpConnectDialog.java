@@ -140,7 +140,7 @@ public class SftpConnectDialog extends DialogFragment
             .autoDismiss(false)
             .customView(v2, true)
             .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
-            .neutralText(R.string.cancel)
+            .negativeText(R.string.cancel)
             .positiveText(R.string.create)
             .positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor)
             .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -294,7 +294,7 @@ public class SftpConnectDialog extends DialogFragment
                 if(keypair != null)
                 {
                     selectedParsedKeyPair = keypair;
-                    selectedParsedKeyPairName = selectedPem.getLastPathSegment();
+                    selectedParsedKeyPairName = selectedPem.getLastPathSegment().substring(selectedPem.getLastPathSegment().indexOf('/')+1);
                     MDButton okBTN = ((MaterialDialog)getDialog()).getActionButton(DialogAction.POSITIVE);
                     okBTN.setEnabled(okBTN.isEnabled() || true);
                 }
@@ -319,7 +319,7 @@ public class SftpConnectDialog extends DialogFragment
             {
                 final String path = deriveSftpPathFrom(hostname, port, username, password, selectedParsedKeyPair);
 
-                final String encryptedPath = SmbUtil.getSmbEncryptedPath(context, path);
+                final String encryptedPath = (password.length() > 0) ? SmbUtil.getSmbEncryptedPath(context, path) : path;
 
                 if(DataUtils.getInstance().containsServer(path) == -1) {
                     AppConfig.runInBackground(new Runnable() {
