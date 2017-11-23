@@ -111,7 +111,6 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.ZipExplorerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -507,6 +506,7 @@ public class MainActivity extends ThemedActivity implements
             public <E> E doInBackground() {
 
                 dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+                dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
@@ -2353,8 +2353,7 @@ public class MainActivity extends ThemedActivity implements
 
     @Override
     public void onCancelled() {
-        mainFragment.createViews(mainFragment.getLayoutElements(), false, mainFragment.getCurrentPath(),
-                mainFragment.openMode, false, !mainFragment.IS_LIST);
+        mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
         mainFragment.mSwipeRefreshLayout.setRefreshing(false);
     }
 

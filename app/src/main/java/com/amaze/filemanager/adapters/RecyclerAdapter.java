@@ -47,7 +47,7 @@ import java.util.ArrayList;
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *                                edited by Jens Klingenberg <mail@jensklingenberg.de>
  */
-public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.ViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
             GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
@@ -275,26 +275,24 @@ public class RecyclerAdapter extends RecyclerArrayAdapter<String, RecyclerView.V
     }
 
     private void setItems(ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
-        synchronized (arrayList) {
-            itemsDigested.clear();
-            offset = 0;
-            stoppedAnimation = false;
+        itemsDigested.clear();
+        offset = 0;
+        stoppedAnimation = false;
 
-            for (LayoutElementParcelable e : arrayList) {
-                itemsDigested.add(new ListItem(e));
-            }
+        for (LayoutElementParcelable e : arrayList) {
+            itemsDigested.add(new ListItem(e));
+        }
 
-            if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
-                itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
-            }
+        if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+            itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
+        }
 
-            for (int i = 0; i < itemsDigested.size(); i++) {
-                itemsDigested.get(i).setAnimate(false);
-            }
+        for (int i = 0; i < itemsDigested.size(); i++) {
+            itemsDigested.get(i).setAnimate(false);
+        }
 
-            if(showHeaders) {
-                createHeaders(invalidate);
-            }
+        if (showHeaders) {
+            createHeaders(invalidate);
         }
     }
 
