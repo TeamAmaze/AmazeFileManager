@@ -217,8 +217,6 @@
     <string name="database">Basis Data</string>
   <string name="colourednavigation">Bilah Navigasi Berwarna</string>
   <string name="colourednavigationsum">Entah bilah sistem navigasi diwarnai dengan lapisan atas</string>
-    <string name="gplus_pic_title">Masuk dengan G +</string>
-  <string name="gplus_pic_summary">Tampilkan G + penutup gambar di laci</string>
     <string name="color_title">Warna</string>
   <string name="color_summary">Atur warna untuk berbagai komponen UI</string>
   <string name="primary_color_title">Warna primer (tab kiri)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Set warna untuk ikon</string>
     <string name="choose_color">Pilih warna</string>
   <string name="g_plus_community_title">Bergabung dengan komunitas G+</string>
-    <string name="no_cover_photo">Tidak ada foto sampul</string>
   <string name="files">Berkas</string>
     <string name="textreader">Pembaca teks</string>
   <string name="databasereader">Basis data pembaca</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Beri izin</string>
   <string name="grantfailed">Ijin Tidak diberikan</string>
   <string name="granttext">Aplikasi butuh ijin penyimpanan untuk melanjutkan. Membatalkan dialog ini akan keluar dari aplikasi.</string>
-  <string name="grantgplus">Aplikasi ini membutuhkan izin untuk fitur ini. Membatalkan dialog ini akan menghapus centang fitur ini.</string>
   <string name="operationunsuccesful">Operasi gagal</string>
   <string name="creatingfile">Membuat File</string>
   <string name="creatingfolder">Membuat Folder</string>
@@ -321,7 +317,6 @@
 Fitur ini membuat file tersedia di jaringan lokal, sehingga PC dan perangkat selular Anda berada di jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi windows pada internet atau saat ponsel Anda tersambung pada koneksi data — harus tersambung pada wifi. \n\n </p> <li> <b>Menemukan alamat IP</b>\n </li> <p style="margin-left: 40px"> Buka perintah prompt.ketik \'ipconfig\' dan tekan enter. cari gateaway kustom di bawah adapter jaringan untuk router alamat IP Anda. Cari \"IPv4 Address\" di bawah bagian adaptor yang sama untuk menemukan alamat IP komputer Anda.\n\n </p> <b> masukkan detil di kotak dialog smb</b>\n </ul> </body> </html>    </string>
   <string name="share_limit">Tidak dapat berbagi lebih dari 100 file</string>
   <string name="otg_access">Pilih root perangkat OTG</string>
-  <string name="no_profile_pic">Tidak ada profil gambar G+</string>
   <string name="opening">Membuka..</string>
   <string name="information">Informasi</string>
   <!-- reference to file accessed date -->

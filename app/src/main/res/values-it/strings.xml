@@ -219,8 +219,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="database">Database</string>
   <string name="colourednavigation">Barra di navigazione colorata</string>
   <string name="colourednavigationsum">Specifica se la barra di navigazione di sistema sarà colorata o meno insieme alla ski</string>
-    <string name="gplus_pic_title">Accedi con Google+</string>
-  <string name="gplus_pic_summary">Mostra immagine di copertina G+ nel pannello di navigazione</string>
     <string name="color_title">Colori</string>
   <string name="color_summary">Imposta i colori dei vari componenti dell\'interfaccia utente</string>
   <string name="primary_color_title">Colore primario (scheda di sinistra)</string>
@@ -231,7 +229,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="icon_color_summary">Imposta il colore delle icone</string>
     <string name="choose_color">Scegli colore</string>
   <string name="g_plus_community_title">Unisciti alla community G+</string>
-    <string name="no_cover_photo">Nessuna immagine di copertina</string>
   <string name="files">File</string>
     <string name="textreader">Visualizzatore testo</string>
   <string name="databasereader">Visualizzatore database</string>
@@ -271,7 +268,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="grantper">Concedi autorizzazione</string>
   <string name="grantfailed">Autorizzazione non concessa</string>
   <string name="granttext">L\'app richiede l\'autorizzazione di accedere all\'archiviazione per poter continuare. L\'annullamento di questa finestra di dialogo causerà l\'uscita dall\'app.</string>
-  <string name="grantgplus">L\'app richiede l\'autorizzazione per poter utilizzare questa funzionalità. L\'annullamento di questa finestra di dialogo deselezionerà questa funzionalità.</string>
   <string name="operationunsuccesful">Operazione non riuscita</string>
   <string name="creatingfile">Creazione file in corso</string>
   <string name="creatingfolder">Creazione cartella in corso</string>
@@ -325,7 +321,6 @@ relative allo sviluppo</string>
 <html><body> <h1>Come accedere alla cartella condivisa di windows (smb) android</h1>\n\n <ul><li><b>Abilita condivisione File</b> \n</li> <p style="margin-left: 40px"> aprire il pannello di controllo, fare clic su Scegli Gruppo Home e opzioni in rete e Internet di condivisione e fare clic su Modifica impostazioni di condivisione avanzata. Abilitare la condivisione file e stampanti feature.\n\n</p> <li><b>impostazioni di condivisione di File aggiuntivi</b> \n</li> <p style="margin-left: 40px"> è possibile anche configurare l\'altro avanzate impostazioni condivisione qui. \n ad esempio, è possibile abilitare l\'accesso ai tuoi file senza una password se ti fidi di tutti i dispositivi sulla rete locale. Una volta che condivisione file e stampanti è attivata, si può aprire Esplora File o Esplora risorse di Windows, destro del mouse su una cartella che si desidera condividere e selezionare Proprietà. \n clicca sul pulsante Condividi e rendere la cartella disponibile sulla network.\n\n</p> <li><b>assicurarsi che entrambi i dispositivi siano sulla stessa Wifi</b> \n</li> <p style="margin-left: 40px"> questa caratteristica rende i file disponibili sulla rete locale, quindi il vostro PC e dispositivi mobili devono essere sulla stessa rete locale. Si can \' t accedere una cartella condivisa di Windows su Internet o quando lo smartphone è collegato ai suoi dati mobili — deve essere collegato a Wi-Fi.\n\n</p> <li><b>Trovare IP indirizzo</b> \n</li> <p style="margin-left: 40px"> Open Command Prompt. Digitare \"ipconfig\" e premere INVIO. Guardare per Default Gateway sotto la scheda di rete per l\'indirizzo IP del router. Cercare \"IPv4 Address\" sotto la stessa sezione di adattatore per trovare IP address.\n\n del computer</p> <b>invio dettagli nella finestra di dialogo smb</b> \n</ul></body></html>    </string>
   <string name="share_limit">Impossibile condividere più di 100 file</string>
   <string name="otg_access">Seleziona la radice del dispositivo OTG</string>
-  <string name="no_profile_pic">Nessuna immagine profilo G+</string>
   <string name="opening">Apertura in corso..</string>
   <string name="information">Informazioni</string>
   <!-- reference to file accessed date -->

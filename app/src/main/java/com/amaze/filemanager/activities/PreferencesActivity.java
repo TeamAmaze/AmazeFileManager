@@ -51,7 +51,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
 
-public class PreferencesActivity extends ThemedActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PreferencesActivity extends ThemedActivity {
 
     //Start is the first activity you see
     public static final int START_PREFERENCE = 0;
@@ -192,20 +192,6 @@ public class PreferencesActivity extends ThemedActivity implements ActivityCompa
                 loadPrefFragment(new AdvancedSearchPref(), R.string.advanced_search);
                 break;
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 66) {
-            PrefFrag prefFrag = (PrefFrag) getFragmentManager().findFragmentById(R.id.prefsfragment);
-
-            if (prefFrag != null) {
-
-                prefFrag.invalidateGplus();
-            }
-        }
-
     }
 
     private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {

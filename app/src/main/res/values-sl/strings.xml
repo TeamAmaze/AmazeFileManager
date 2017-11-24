@@ -193,8 +193,6 @@
   <string name="select_intent">Izberi</string>
     <string name="colourednavigation">Barvna vrstica za krmarjenje</string>
   <string name="colourednavigationsum">Ne glede na to, ali je sistemska navigacijska vrstica obarvana s preobleko</string>
-  <string name="gplus_pic_title">Vpis z G +</string>
-  <string name="gplus_pic_summary">Pokaži G + naslovno sliko v predalu</string>
     <string name="color_title">Barva</string>
   <string name="color_summary">Nastavite izgled uporabniškega vmesnika</string>
   <string name="accent_color_title">Barva poudarka</string>
@@ -274,7 +272,6 @@
   <string name="use_custom_ip">Uporaba IP po meri</string>
   <string name="share_limit">Ne moremo deliti več kot 100 datotek</string>
   <string name="otg_access">Izberite koren OTG naprave</string>
-  <string name="no_profile_pic">Ni G + slike profila</string>
   <string name="opening">Odpiranje..</string>
   <string name="information">Podatki</string>
   <!-- reference to file accessed date -->

@@ -217,8 +217,6 @@
   <string name="database">資料庫</string>
   <string name="colourednavigation">導覽列變色</string>
   <string name="colourednavigationsum">設定導覽列是否跟隨色彩樣式變色</string>
-  <string name="gplus_pic_title">登入至 G+</string>
-  <string name="gplus_pic_summary">在清單中顯示 G+ 封面圖片</string>
   <string name="color_title">顏色</string>
   <string name="color_summary">將顏色設定為不同的使用者介面元件</string>
   <string name="primary_color_title">主顏色 (左側頁籤)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">將顏色設定為圖示</string>
   <string name="choose_color">選擇顏色</string>
   <string name="g_plus_community_title">加入 G + 社群</string>
-  <string name="no_cover_photo">沒有封面照片</string>
   <string name="files">近期檔案</string>
   <string name="textreader">文字閱讀器</string>
   <string name="databasereader">資料庫讀取器</string>
@@ -267,7 +264,6 @@
   <string name="grantper">授予權限</string>
   <string name="grantfailed">未授予權限</string>
   <string name="granttext">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
-  <string name="grantgplus">應用程式需要此功能的權限。取消此對話方塊將取消此功能。</string>
   <string name="operationunsuccesful">操作失敗</string>
   <string name="creatingfile">建立檔案</string>
   <string name="creatingfolder">正在建立資料夾</string>
@@ -357,7 +353,6 @@
         </html>    </string>
   <string name="share_limit">無法分享超過 100 個檔案</string>
   <string name="otg_access">選擇 OTG 裝置的根目錄。</string>
-  <string name="no_profile_pic">沒有 G+ 的個人資料圖片</string>
   <string name="opening">正在開始...</string>
   <string name="information">資訊</string>
   <!-- reference to file accessed date -->

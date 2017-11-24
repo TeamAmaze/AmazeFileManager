@@ -217,8 +217,6 @@
     <string name="database">Datenbank</string>
   <string name="colourednavigation">Farbige Navigationsleiste</string>
   <string name="colourednavigationsum">Ob oder nicht, die Navigationsleiste wird mit der Farbe des Skins angezeigt.</string>
-    <string name="gplus_pic_title">Mit G+ anmelden</string>
-  <string name="gplus_pic_summary">Zeige G+ Titelbild im Drawer</string>
     <string name="color_title">Farbe</string>
   <string name="color_summary">Farbe für diverse Elemente setzen</string>
   <string name="primary_color_title">Primärfarbe</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Icon-Farbe setzen</string>
     <string name="choose_color">Wähle eine Farbe</string>
   <string name="g_plus_community_title">Trete der G+ Community bei</string>
-    <string name="no_cover_photo">Kein Titelfoto</string>
   <string name="files">Dateien</string>
     <string name="textreader">Text-Reader</string>
   <string name="databasereader">Datenbank-Leser</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Erlaubnis erteilen</string>
   <string name="grantfailed">Erlaubnis nicht erteilen</string>
   <string name="granttext">Zum Fortfahren benötigt die App Zugriffsrechte für den Speicherplatz. Der Abbruch dieses Dialogs führt zum Beenden der App.</string>
-  <string name="grantgplus">Die App benötigt die entsprechende Berechtigung. Der Abbruch dieses Dialogs führt zur Deaktivierung dieser Funktion.</string>
   <string name="operationunsuccesful">Vorgang erfolgreich</string>
   <string name="creatingfile">Erstelle Datei</string>
   <string name="creatingfolder">Erstelle Verzeichnis</string>
@@ -321,7 +317,6 @@ rund um die Entwicklung</string>
          <html><body> <h1>Wie freigegebenen Windows-Ordner Zugriff auf Android (Smb)</h1>\n\n <ul><li><b>File-Sharing aktivieren</b> \n</li> <p style="margin-left: 40px"> Öffnen Sie die Systemsteuerung, klicken Sie auf Wählen Sie Heimnetzgruppe und Freigabeoptionen unter Netzwerk und Internet, und klicken Sie auf erweiterte Freigabeeinstellungen ändern. Aktivieren Sie die Datei- und Druckerfreigabe feature.\n\n</p> <li><b>zusätzliche File-Sharing-Einstellungen</b> \n</li> <p style="margin-left: 40px"> kann auch die andere erweiterte Freigabe Einstellungen hier. \n z. B. konfigurieren möchten, könnten Sie Zugriff auf Ihre Dateien ohne Passwort aktivieren, vertraust du alle Geräte in Ihrem lokalen Netzwerk. Wenn Datei- und Druckerfreigabe aktiviert ist, können Sie Datei-Explorer oder Windows Explorer zu öffnen, rechtsklicken Sie einen Ordner, den Sie freigeben möchten, und wählen Sie Eigenschaften. \n Klicken Sie auf die Share-Taste und machen den Ordner finden Sie auf der network.\n\n</p> <li><b>stellen sicher, dass beide Geräte sind auf dem gleichen Wifi</b> \n</li> <p style="margin-left: 40px"> dieses Feature macht Dateien im lokalen Netzwerk verfügbar, so dass Ihr PC und mobilen Geräten im gleichen lokalen Netzwerk sein. Sie können \' t Zugriff auf einen freigegebenen Windows-Ordner über das Internet oder wenn Ihr Smartphone mit seiner mobilen Daten verbunden ist – es hat mit Wi-Fi.\n\n verbunden sein</p> <li><b>IP-Adresse suchen</b> \n</li> <p style="margin-left: 40px"> offenen Eingabeaufforderung. Geben Sie \"Ipconfig\" und drücken Sie die Eingabetaste. Suchen Sie nach Standard-Gateway unter Netzwerkadapter für die IP-Adresse Ihres Routers. Suchen Sie nach \"IPv4 Address\" unter den gleichen Adapter Abschnitt Ihres Computers IP-address.\n\n zu finden</p> <b>Enter Details im Dialogfeld Smb</b> \n</ul></body></html>    </string>
   <string name="share_limit">Es können nicht mehr als 100 Dateien geteilt werden</string>
   <string name="otg_access">Stammverzeichnis des OTG-Geräts wählen</string>
-  <string name="no_profile_pic">Kein G+ Profilbild</string>
   <string name="opening">Öffne..</string>
   <string name="information">Informationen</string>
   <!-- reference to file accessed date -->

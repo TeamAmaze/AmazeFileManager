@@ -1,18 +1,15 @@
 package com.amaze.filemanager.utils;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -25,7 +22,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
@@ -33,9 +29,9 @@ import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -623,46 +619,4 @@ public class MainActivityHelper {
         return file.getName().equals(file.getParentName());
     }
 
-
-
-    public static boolean checkAccountsPermission(Context context) {
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
-    }
-
-    public static void requestAccountsPermission(final BasicActivity activity) {
-        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.INTERNET};
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                Manifest.permission.INTERNET)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-
-            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(activity,
-                    new String[] {
-                            activity.getResources().getString(R.string.grantgplus),
-                            activity.getResources().getString(R.string.grantper),
-                            activity.getResources().getString(R.string.grant),
-                            activity.getResources().getString(R.string.cancel), null
-                    });
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-                ActivityCompat.requestPermissions(activity,PERMISSIONS, 66);
-                materialDialog.dismiss();
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> activity.finish());
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(activity, PERMISSIONS, 66);
-        }
-    }
 }

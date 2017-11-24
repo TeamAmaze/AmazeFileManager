@@ -217,8 +217,6 @@
     <string name="database">Databáze</string>
   <string name="colourednavigation">Barevný navigační panel</string>
   <string name="colourednavigationsum">Zbarvení navigačního panelu v souladu se skinem</string>
-    <string name="gplus_pic_title">Přihlásit se pomocí G+</string>
-  <string name="gplus_pic_summary">Zobrazit ikonu G+ na postranním panelu</string>
     <string name="color_title">Barva</string>
   <string name="color_summary">Nastavit barvu pro různé části uživatelského rozhraní</string>
   <string name="primary_color_title">Primární barva (levá karta)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Nastavit barvu ikony</string>
     <string name="choose_color">Vybrat barvu</string>
   <string name="g_plus_community_title">Připojte se ke komunitě G+</string>
-    <string name="no_cover_photo">Žádná úvodní fotka</string>
   <string name="files">Soubory</string>
     <string name="textreader">Textový prohlížeč</string>
   <string name="databasereader">Prohlížeč databáze</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Udělit oprávnění</string>
   <string name="grantfailed">Oprávnění není uděleno</string>
   <string name="granttext">Aplikace potřebuje pro pokračování udělit přístup k úložišti. Zavřením dialogového okna bude aplikace ukončena.</string>
-  <string name="grantgplus">Aplikace vyžaduje oprávnění pro tuto funkci. Zavřením dialogového okna nebude funkce povolena.</string>
   <string name="operationunsuccesful">Operace se nezdařila</string>
   <string name="creatingfile">Vytvoření souboru</string>
   <string name="creatingfolder">Vytváření složky</string>
@@ -354,7 +350,6 @@
         </html>    </string>
   <string name="share_limit">Nelze sdílet více než 100 souborů</string>
   <string name="otg_access">Vyberte kořenovou složku OTG zařízení</string>
-  <string name="no_profile_pic">Žádný obrázek profilu G+</string>
   <string name="opening">Otevírání..</string>
   <string name="information">Informace</string>
   <!-- reference to file accessed date -->

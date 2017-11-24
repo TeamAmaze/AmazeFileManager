@@ -209,8 +209,6 @@
     <string name="database">База података</string>
   <string name="colourednavigation">Обоји траку навигације</string>
   <string name="colourednavigationsum">Обоји системску траку навигације заједно са маском</string>
-    <string name="gplus_pic_title">Пријави се Г+ налогом</string>
-  <string name="gplus_pic_summary">Прикажи Г+ насловну слику у фиоци</string>
     <string name="color_title">Боја</string>
   <string name="color_summary">Постављање боје разних УИ компоненти</string>
   <string name="primary_color_title">Примарна боја</string>
@@ -221,7 +219,6 @@
   <string name="icon_color_summary">Боја икона</string>
     <string name="choose_color">Избор боје</string>
   <string name="g_plus_community_title">Придружите се Г+ заједници</string>
-    <string name="no_cover_photo">Нема насловне слике</string>
   <string name="files">Фајлови</string>
     <string name="textreader">Читач текста</string>
   <string name="databasereader">Читач базе података</string>
@@ -258,7 +255,6 @@
   <string name="grantper">Одобри дозволу</string>
   <string name="grantfailed">Дозвола није одобрена</string>
   <string name="granttext">Апликацији је потребна дозвола за складиште да настави. Отказивањем дијалога напустићете апликацију.</string>
-  <string name="grantgplus">Апликацији је потребна дозвола за ову функцију. Отказивањем дијалога искључићете ово.</string>
   <string name="operationunsuccesful">Радња није успела</string>
   <string name="creatingfile">Правим фајл</string>
   <string name="creatingfolder">Правим фасциклу</string>
