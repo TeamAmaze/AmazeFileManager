@@ -491,12 +491,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.apkIcon.setVisibility(View.GONE);
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).clear(holder.pictureIcon);
                                 GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.pictureIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).clear(holder.apkIcon);
                                 GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             }
@@ -507,7 +505,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             holder.genericIcon.setVisibility(View.GONE);
                             holder.pictureIcon.setVisibility(View.GONE);
                             holder.apkIcon.setVisibility(View.VISIBLE);
-                            GlideApp.with(mainFrag).clear(holder.apkIcon);
                             GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
                                     .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                         }
@@ -517,12 +514,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             holder.genericIcon.setVisibility(View.GONE);
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).clear(holder.pictureIcon);
                                 GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.pictureIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).clear(holder.apkIcon);
                                 GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             }
@@ -638,12 +633,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.imageView1.setImageDrawable(null);
                     if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
                         holder.imageView1.setBackgroundColor(Color.BLACK);
-                    GlideApp.with(mainFrag).clear(holder.imageView1);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.imageView1)
                             .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                 } else if (Icons.isApk(new File(rowItem.getDesc()))) {
                     holder.genericIcon.setColorFilter(null);
-                    GlideApp.with(mainFrag).clear(holder.genericIcon);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.genericIcon)
                             .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                 }

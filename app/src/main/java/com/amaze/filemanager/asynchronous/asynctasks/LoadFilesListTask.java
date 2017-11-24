@@ -29,6 +29,7 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -41,6 +42,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -49,7 +51,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
-import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.Glide;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -59,6 +61,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
+
+import javax.microedition.khronos.opengles.GL;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
@@ -214,9 +218,12 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     @Override
     protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
         super.onPostExecute(list);
-        //for (LayoutElementParcelable e : list.second) {
-         //   GlideHelper.preloadDrawable(c, GlideHelper.HEIGHT, GlideHelper.WIDTH, e.getDesc());
-        //}
+        GlideApp.get(c).clearMemory();
+        for (LayoutElementParcelable e : list.second) {
+            if(ma.SHOW_THUMBS && Icons.shouldLoadFromFile(e)) {
+                GlideApp.with(ma).load(e.getDesc()).preload(GlideConstants.WIDTH, GlideConstants.HEIGHT);
+            }
+        }
         listener.onAsyncTaskFinished(list);
     }
 

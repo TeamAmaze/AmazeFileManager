@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
@@ -402,5 +403,16 @@ public class Icons {
     public static Drawable loadFailedThumbForFile(@NonNull final Context context, String filePath) {
         return context.getResources().getDrawable(Icons.loadMimeIcon(filePath, false, context.getResources()));
     }
+
+    /**
+     * Cancel loading of a drawable for a certain ImageView or clearing the ImageView
+     * Should you load this file as an image of itself (e.g. image, video)
+     * or as an icon (e.g. folder, generic file).
+     */
+      public static boolean shouldLoadFromFile (LayoutElementParcelable file) {
+          int filetype = Icons.getTypeOfFile(file.getDesc());
+          return filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK;
+      }
+
 
 }
