@@ -29,6 +29,8 @@ public class SshConnectionPool
 {
     public static final int SSH_DEFAULT_PORT = 22;
 
+    public static final String SSH_URI_PREFIX = "ssh://";
+
     private static final String TAG = "SshConnectionPool";
 
     private static SshConnectionPool instance = null;
@@ -50,6 +52,9 @@ public class SshConnectionPool
 
     public SSHClient getConnection(@NonNull String url) throws IOException
     {
+        url = SshClientUtils.extractBaseUriFrom(url);
+        Log.d(TAG, "Opening connection for " + url);
+
         SSHClient client = connections.get(url);
         if(client == null)
         {
@@ -76,9 +81,6 @@ public class SshConnectionPool
 
     private SSHClient create(@NonNull Uri uri) throws IOException
     {
-        Log.d(TAG, "Opening connection for " + uri.toString());
-        new Exception().printStackTrace();
-
         String host = uri.getHost();
         int port = uri.getPort();
         //If the uri is fetched from the app's database storage, we assume it will never be empty

@@ -3,11 +3,17 @@ package com.amaze.filemanager.services.ssh;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amaze.filemanager.exceptions.CryptException;
+import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.SmbUtil;
+
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.IOException;
+
+import static com.amaze.filemanager.services.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 public abstract class SshClientUtils
 {
@@ -123,10 +129,46 @@ public abstract class SshClientUtils
         });
     }
 
+    public static final String encryptSshPathAsNecessary(@NonNull String fullUri)
+    {
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.indexOf('@'));
+        try
+        {
+            return (uriWithoutProtocol.indexOf(':') > 0) ?
+                    SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri) :
+                    fullUri;
+        }
+        catch(CryptException e){
+            Log.e(TAG, "Error encrypting path", e);
+            return fullUri;
+        }
+    }
+
+    public static final String decryptSshPathAsNecessary(@NonNull String fullUri)
+    {
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.indexOf('@'));
+        try
+        {
+            return (uriWithoutProtocol.indexOf(':') > 0) ?
+                    SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri) :
+                    fullUri;
+        }
+        catch(CryptException e){
+            Log.e(TAG, "Error decrypting path", e);
+            return fullUri;
+        }
+    }
+
+    public static final String extractBaseUriFrom(@NonNull String fullUri)
+    {
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
+        return uriWithoutProtocol.indexOf('/') == -1 ? fullUri : fullUri.substring(0, uriWithoutProtocol.indexOf('/') + SSH_URI_PREFIX.length());
+    }
+
     public static final String extractRemotePathFrom(@NonNull String fullUri)
     {
-        String uriWithoutProtocol = fullUri.substring("ssh://".length());
-        return uriWithoutProtocol.indexOf('/') == -1 ? "/" : uriWithoutProtocol.substring(uriWithoutProtocol.indexOf("/"));
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
+        return uriWithoutProtocol.indexOf('/') == -1 ? "/" : uriWithoutProtocol.substring(uriWithoutProtocol.indexOf('/'));
     }
 
     public static final void tryDisconnect(SSHClient client)

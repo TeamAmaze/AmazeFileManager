@@ -102,7 +102,6 @@ public class SftpConnectDialog extends DialogFragment
             addressET.setText(getArguments().getString("address"));
             portET.setText(getArguments().getString("port"));
             usernameET.setText(getArguments().getString("username"));
-            Log.d("DEBUG", getArguments().getString("password"));
             if(getArguments().getBoolean("hasPassword"))
             {
                 passwordET.setHint(R.string.password_unchanged);
