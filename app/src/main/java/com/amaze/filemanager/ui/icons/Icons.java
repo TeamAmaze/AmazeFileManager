@@ -229,8 +229,8 @@ public class Icons {
         );
     }
 
-    public static boolean isText(String name) {
-        String mimeType = MimeTypes.getMimeType(new File(name));
+    public static boolean isText(File file) {
+        String mimeType = MimeTypes.getMimeType(file);
 
         Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_text_am) return true;
@@ -243,8 +243,8 @@ public class Icons {
         return false;
     }
 
-    public static boolean isVideo(String name) {
-        String mimeType = MimeTypes.getMimeType(new File(name));
+    public static boolean isVideo(File file) {
+        String mimeType = MimeTypes.getMimeType(file);
         Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_video_am) return true;
         if (mimeType != null && mimeType.contains("/")) {
@@ -256,12 +256,12 @@ public class Icons {
         return false;
     }
 
-    public static boolean isEncrypted(String name) {
-        return name.endsWith(CryptUtil.CRYPT_EXTENSION);
+    public static boolean isEncrypted(File file) {
+        return file.getName().endsWith(CryptUtil.CRYPT_EXTENSION);
     }
 
-    public static boolean isAudio(String name) {
-        String mimeType = MimeTypes.getMimeType(new File(name));
+    public static boolean isAudio(File file) {
+        String mimeType = MimeTypes.getMimeType(file);
         Integer res = sMimeIconIds.get(mimeType);
         if (res != null && res == R.drawable.ic_doc_audio_am) return true;
         if (mimeType != null && mimeType.contains("/")) {
@@ -273,33 +273,33 @@ public class Icons {
         return false;
     }
 
-    public static boolean isCode(String name) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
+    public static boolean isCode(File file) {
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
         return res != null && res == R.drawable.ic_doc_codes;
     }
 
-    public static boolean isArchive(String name) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
+    public static boolean isArchive(File file) {
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
         return res != null && res == R.drawable.ic_zip_box_white_36dp;
     }
 
-    public static boolean isApk(String name) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
+    public static boolean isApk(File file) {
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
         return res != null && res == R.drawable.ic_doc_apk_white;
     }
 
-    public static boolean isPdf(String name) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
+    public static boolean isPdf(File file) {
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
         return res != null && res == R.drawable.ic_doc_pdf;
     }
 
-    public static boolean isPicture(String name) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(new File(name)));
+    public static boolean isPicture(File file) {
+        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
         return res != null && res == R.drawable.ic_doc_image;
     }
 
-    public static boolean isGeneric(String name) {
-        String mimeType = MimeTypes.getMimeType(new File(name));
+    public static boolean isGeneric(File file) {
+        String mimeType = MimeTypes.getMimeType(file);
         if (mimeType == null) {
             return true;
         }
@@ -308,26 +308,28 @@ public class Icons {
         return resId == null;
     }
 
-    public static int getTypeOfFile(String description) {
-        if (Icons.isVideo(description))
+    public static int getTypeOfFile(String filePath) {
+        File file = new File(filePath);
+
+        if (Icons.isVideo(file))
             return VIDEO;
-        else if (Icons.isAudio(description))
+        else if (Icons.isAudio(file))
             return AUDIO;
-        else if (Icons.isPdf(description))
+        else if (Icons.isPdf(file))
             return PDF;
-        else if (Icons.isCode(description))
+        else if (Icons.isCode(file))
             return CODE;
-        else if (Icons.isText(description))
+        else if (Icons.isText(file))
             return TEXT;
-        else if (Icons.isArchive(description))
+        else if (Icons.isArchive(file))
             return ARCHIVE;
-        else if (Icons.isGeneric(description))
+        else if (Icons.isGeneric(file))
             return GENERIC;
-        else if (Icons.isApk(description))
+        else if (Icons.isApk(file))
             return APK;
-        else if (Icons.isPicture(description))
+        else if (Icons.isPicture(file))
             return PICTURE;
-        else if (Icons.isEncrypted(description))
+        else if (Icons.isEncrypted(file))
             return ENCRYPTED;
         else return -1;
     }

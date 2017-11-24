@@ -33,6 +33,7 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -631,7 +632,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
                 GlideApp.with(mainFrag).load(rowItem.getDrawableId()).into(holder.genericIcon);
 
-                if (Icons.isPicture((rowItem.getDesc().toLowerCase())) || Icons.isVideo(rowItem.getDesc().toLowerCase())) {
+                if (Icons.isPicture(new File(rowItem.getDesc().toLowerCase())) || Icons.isVideo(new File(rowItem.getDesc().toLowerCase()))) {
                     holder.genericIcon.setColorFilter(null);
                     holder.imageView1.setVisibility(View.VISIBLE);
                     holder.imageView1.setImageDrawable(null);
@@ -640,7 +641,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     GlideApp.with(mainFrag).clear(holder.imageView1);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.imageView1)
                             .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
-                } else if (Icons.isApk((rowItem.getDesc()))) {
+                } else if (Icons.isApk(new File(rowItem.getDesc()))) {
                     holder.genericIcon.setColorFilter(null);
                     GlideApp.with(mainFrag).clear(holder.genericIcon);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.genericIcon)
