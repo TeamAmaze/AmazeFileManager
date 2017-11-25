@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.utils.DataUtils;
@@ -218,6 +219,17 @@ public class Operations {
                 if (file.exists()) {
                     errorCallBack.exists(file);
                     return null;
+                }
+                if (file.isSftp()) {
+                    OutputStream out = file.getOutputStream(context);
+                    try {
+                        out.close();
+                        errorCallBack.done(file, true);
+                        return null;
+                    } catch(IOException e) {
+                        errorCallBack.done(file, false);
+                        return null;
+                    }
                 }
                 if (file.isSmb()) {
                     try {
