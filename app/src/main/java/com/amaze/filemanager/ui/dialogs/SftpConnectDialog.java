@@ -239,10 +239,9 @@ public class SftpConnectDialog extends DialogFragment
                 }
                 dialog.dismiss();
                 }
-            }).onNeutral(new MaterialDialog.SingleButtonCallback() {
+            }).neutralText(R.string.cancel).onNeutral(new MaterialDialog.SingleButtonCallback() {
                 @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {dialog.dismiss();
                 }
             });
         }
@@ -352,7 +351,7 @@ public class SftpConnectDialog extends DialogFragment
 
     private String deriveSftpPathFrom(String hostname, int port, String username, String password, KeyPair selectedParsedKeyPair)
     {
-        return (selectedParsedKeyPair != null) ?
+        return (selectedParsedKeyPair != null || password == null) ?
                 String.format("ssh://%s@%s:%d", username, hostname, port) :
                 String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
     }

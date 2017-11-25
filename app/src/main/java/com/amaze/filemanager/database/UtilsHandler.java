@@ -302,7 +302,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public String getSshHostKey(String uri)
     {
-        uri = SshClientUtils.decryptSshPathAsNecessary(uri);
+        uri = SshClientUtils.encryptSshPathAsNecessary(uri);
         if(uri != null)
         {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
@@ -413,7 +413,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
             }
 
             sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
-                    new String[] {name, SmbUtil.getSmbEncryptedPath(context, path)});
+                    new String[] {name, SshClientUtils.encryptSshPathAsNecessary(path)});
 
         }
         catch (CryptException e)
