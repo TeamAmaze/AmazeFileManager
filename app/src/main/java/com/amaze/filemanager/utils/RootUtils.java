@@ -11,7 +11,13 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class RootUtils {
+    public static final int CHMOD_READ = 4, CHMOD_WRITE = 2, CHMOD_EXECUTE = 1;
     public static final String DATA_APP_DIR = "/data/app";
+    /**
+     * This is the chmod command, it should be used with String.format().
+     * String.format(CHMOD_COMMAND, options, permsOctalInt, path);
+     */
+    public static final String CHMOD_COMMAND = "chmod %s %o \"%s\"";
     private static final String LS = "ls -lAnH \"%\" --color=never";
     private static final String LSDIR = "ls -land \"%\" --color=never";
     public static final String SYSTEM_APP_DIR = "/system/app";
@@ -195,6 +201,20 @@ public class RootUtils {
             // we mounted the filesystem as rw, let's mount it back to ro
             mountFileSystemRO(mountPoint);
         }
+    }
+
+    /**
+     * This converts from a set of booleans to OCTAL permissions notations.
+     * For use with {@link RootUtils.CHMOD_COMMAND}
+     * (true, false, false,  true, true, false,  false, false, true) => 0461
+     */
+    public static int permissionsToOctalString(boolean ur, boolean uw, boolean ux,
+                                                  boolean gr, boolean gw, boolean gx,
+                                                  boolean or, boolean ow, boolean ox) {
+        int u = ((ur?CHMOD_READ:0) | (uw?CHMOD_WRITE:0) | (ux?CHMOD_EXECUTE:0)) << 6;
+        int g = ((gr?CHMOD_READ:0) | (gw?CHMOD_WRITE:0) | (gx?CHMOD_EXECUTE:0)) << 3;
+        int o = (or?CHMOD_READ:0) | (ow?CHMOD_WRITE:0) | (ox?CHMOD_EXECUTE:0);
+        return u | g | o;
     }
 
 }

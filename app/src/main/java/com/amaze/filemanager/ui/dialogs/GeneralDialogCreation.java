@@ -46,6 +46,7 @@ import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -909,28 +910,12 @@ public class GeneralDialogCreation {
         exegroup.setChecked(exe[1]);
         exeother.setChecked(exe[2]);
         but.setOnClickListener(v1 -> {
-            int a = 0, b = 0, c = 0;
-            if (readown.isChecked()) a = 4;
-            if (writeown.isChecked()) b = 2;
-            if (exeown.isChecked()) c = 1;
-            int owner = a + b + c;
-            int d = 0;
-            int e = 0;
-            int f1 = 0;
-            if (readgroup.isChecked()) d = 4;
-            if (writegroup.isChecked()) e = 2;
-            if (exegroup.isChecked()) f1 = 1;
-            int group = d + e + f1;
-            int g = 0, h = 0, i = 0;
-            if (readother.isChecked()) g = 4;
-            if (writeother.isChecked()) h = 2;
-            if (exeother.isChecked()) i = 1;
-            int other = g + h + i;
-            String finalValue = owner + "" + group + "" + other;
+            int perms = RootUtils.permissionsToOctalString(readown.isChecked(), writeown.isChecked(), exeown.isChecked(),
+                                                                    readgroup.isChecked(), writegroup.isChecked(), exegroup.isChecked(),
+                                                                    readother.isChecked(), writeother.isChecked(), exeother.isChecked());
 
-            String command = "chmod " + finalValue + " " + file.getPath();
-            if (file.isDirectory())
-                command = "chmod -R " + finalValue + " \"" + file.getPath() + "\"";
+            String options =  !file.isDirectory(context)? "-R":"";
+            String command = String.format(RootUtils.CHMOD_COMMAND, options, perms, file.getPath());
 
             try {
                 RootHelper.runShellCommand(command, (commandCode, exitCode, output) -> {
