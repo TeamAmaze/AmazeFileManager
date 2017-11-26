@@ -10,6 +10,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:minHeight="100dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -158,9 +159,17 @@
         </LinearLayout>
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/nomediacheckbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hidemedia"
+        android:visibility="gone"/>
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_height="125dp" />
 
     <android.support.v7.widget.AppCompatButton

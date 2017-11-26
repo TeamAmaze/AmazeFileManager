@@ -328,12 +328,15 @@ public class GeneralDialogCreation {
                 name  = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
+        File nomediaFile = baseFile.isDirectory()? new File(baseFile.getPath() + "/" + FileUtils.NOMEDIA_FILE):null;
+
         MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
         builder.title(c.getString(R.string.properties));
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         TextView itemsText = (TextView) v.findViewById(R.id.t7);
+        CheckBox nomediaCheckbox = (CheckBox) v.findViewById(R.id.nomediacheckbox);
 
         /*View setup*/ {
             TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
@@ -358,6 +361,13 @@ public class GeneralDialogCreation {
             ((TextView) v.findViewById(R.id.t6)).setText(parent);
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
+
+            if(baseFile.isDirectory()){
+                nomediaCheckbox.setVisibility(View.VISIBLE);
+                if(nomediaFile.exists()) {
+                    nomediaCheckbox.setChecked(true);
+                }
+            }
 
             LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
             LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
@@ -483,6 +493,22 @@ public class GeneralDialogCreation {
         builder.positiveText(base.getResources().getString(R.string.ok));
         builder.positiveColor(accentColor);
         builder.dismissListener(dialog -> executor.shutdown());
+        builder.onPositive((dialog, which) ->{
+            if(baseFile.isDirectory()) {
+                if(nomediaFile == null) throw new NullPointerException("'.nomedia' inside '" + baseFile.getPath() + "' shouldn't be null!");
+                boolean shouldThereBeNomedia = nomediaCheckbox.isChecked();
+
+                if (shouldThereBeNomedia) {
+                    try {
+                        nomediaFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    nomediaFile.delete();
+                }
+            }
+        });
 
         MaterialDialog materialDialog = builder.build();
         materialDialog.show();
