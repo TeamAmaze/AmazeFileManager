@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
@@ -79,7 +80,7 @@ public class CopyService extends Service {
     private Context c;
 
     private ProgressListener progressListener;
-    private final IBinder mBinder = new LocalBinder();
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler;
     private ServiceWatcherUtil watcherUtil;
 
@@ -568,13 +569,6 @@ public class CopyService extends Service {
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return mBinder;
-    }
-
-    public class LocalBinder extends Binder {
-        public CopyService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return CopyService.this;
-        }
     }
 
     public interface ProgressListener {

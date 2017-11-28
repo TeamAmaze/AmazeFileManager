@@ -8,20 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -51,7 +51,7 @@ public class EncryptService extends Service {
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private Context context;
-    private IBinder mBinder = new LocalBinder();
+    private IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler;
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
@@ -224,13 +224,6 @@ public class EncryptService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    public class LocalBinder extends Binder {
-
-        public EncryptService getService() {
-            return EncryptService.this;
-        }
     }
 
     @Override

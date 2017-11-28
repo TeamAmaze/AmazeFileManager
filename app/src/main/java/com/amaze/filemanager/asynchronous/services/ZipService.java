@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -41,6 +40,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -65,7 +65,7 @@ public class ZipService extends Service {
     Context c;
     ProgressListener progressListener;
     long totalBytes = 0L;
-    private final IBinder mBinder = new LocalBinder();
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler;
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
@@ -119,13 +119,6 @@ public class ZipService extends Service {
         new DoWork().execute(b);
         // If we get killed, after returning from here, restart
         return START_STICKY;
-    }
-
-    public class LocalBinder extends Binder {
-        public ZipService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return ZipService.this;
-        }
     }
 
     public void setProgressListener(ProgressListener progressListener) {

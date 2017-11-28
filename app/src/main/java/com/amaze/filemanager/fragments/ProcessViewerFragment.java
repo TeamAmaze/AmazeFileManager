@@ -19,16 +19,16 @@
 
 package com.amaze.filemanager.fragments;
 
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Html;
@@ -49,6 +49,7 @@ import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -125,9 +126,7 @@ public class ProcessViewerFragment extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-
-            CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
-            CopyService copyService = localBinder.getService();
+            CopyService copyService = ((ObtainableServiceBinder<CopyService>) service).getService();
 
             for (int i=0; i<copyService.getDataPackageSize(); i++) {
 
@@ -166,8 +165,7 @@ public class ProcessViewerFragment extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
-            ExtractService extractService = localBinder.getService();
+            ExtractService extractService = ((ObtainableServiceBinder<ExtractService>) service).getService();
 
             for (int i=0; i<extractService.getDataPackageSize(); i++) {
 
@@ -203,8 +201,7 @@ public class ProcessViewerFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ZipService.LocalBinder localBinder = (ZipService.LocalBinder) service;
-            ZipService zipService = localBinder.getService();
+            ZipService zipService = ((ObtainableServiceBinder<ZipService>) service).getService();
 
             for (int i = 0; i< zipService.getDataPackageSize(); i++) {
 
@@ -240,8 +237,8 @@ public class ProcessViewerFragment extends Fragment {
     private ServiceConnection mCryptConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            EncryptService.LocalBinder binder = (EncryptService.LocalBinder) service;
-            EncryptService encryptService = binder.getService();
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            EncryptService encryptService = ((ObtainableServiceBinder<EncryptService>) service).getService();
 
             for (int i=0; i<encryptService.getDataPackageSize(); i++) {
                 CopyDataParcelable dataPackage = encryptService.getDataPackage(i);

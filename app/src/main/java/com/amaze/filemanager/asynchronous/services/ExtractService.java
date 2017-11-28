@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -40,6 +39,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -65,6 +65,8 @@ import java.util.zip.ZipFile;
 public class ExtractService extends Service {
 
     Context context;
+
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
     // list of data packages,// to initiate chart in process viewer fragment
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
@@ -126,15 +128,6 @@ public class ExtractService extends Service {
     private long getTotalSize(String filePath) {
 
         return new File(filePath).length();
-    }
-
-    private final IBinder mBinder = new LocalBinder();
-
-    public class LocalBinder extends Binder {
-        public ExtractService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return ExtractService.this;
-        }
     }
 
     public void setProgressListener(ProgressListener progressListener) {
