@@ -21,7 +21,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,9 +35,8 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -62,14 +60,14 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-public class ExtractService extends Service {
+public class ExtractService extends ProgressiveService {
 
     Context context;
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
     // list of data packages,// to initiate chart in process viewer fragment
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+    private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
@@ -130,18 +128,6 @@ public class ExtractService extends Service {
         return new File(filePath).length();
     }
 
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    ProgressListener progressListener;
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
     private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
@@ -162,14 +148,9 @@ public class ExtractService extends Service {
                 publishCompletedResult("", id1);
             }
 
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     total, done, speed, false, isCompleted);
-            putDataPackage(intent);
-
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isCompleted) progressListener.refresh();
-            }
+            addDatapoint(intent);
         } else publishCompletedResult(fileName, Integer.parseInt("123" + id));
     }
 
@@ -202,8 +183,8 @@ public class ExtractService extends Service {
 
         @Override
         protected Void doInBackground(Void... p) {
-            final Context context = this.extractService.get();
-            if(context == null) return null;
+            final ExtractService extractService = this.extractService.get();
+            if(extractService == null) return null;
 
             File f = new File(compressedPath);
 
@@ -220,16 +201,16 @@ public class ExtractService extends Service {
                 boolean isRar = path.endsWith(".rar");
 
                 if (entriesToExtract != null && entriesToExtract.length != 0) {
-                    if (isZip) extract(context, f, extractionPath, entriesToExtract);
-                    else if (isRar) extractRar(context, f, extractionPath, entriesToExtract);
+                    if (isZip) extract(extractService, f, extractionPath, entriesToExtract);
+                    else if (isRar) extractRar(extractService, f, extractionPath, entriesToExtract);
                 } else {
-                    if (isZip) extract(context, f, extractionPath);
-                    else if (isRar) extractRar(context, f, extractionPath);
-                    else if (isTar) extractTar(context, f, extractionPath);
+                    if (isZip) extract(extractService, f, extractionPath);
+                    else if (isRar) extractRar(extractService, f, extractionPath);
+                    else if (isTar) extractTar(extractService, f, extractionPath);
                 }
             } catch (IOException | RarException e) {
                 Log.e("amaze", "Error while extracting file " + compressedPath, e);
-                AppConfig.toast(context, context.getString(R.string.error));
+                AppConfig.toast(extractService, extractService.getString(R.string.error));
             }
             return null;
         }
@@ -342,7 +323,7 @@ public class ExtractService extends Service {
          * @param entryNamesList  names of files to be extracted from the archive
          * @return
          */
-        private void extract(@NonNull final Context context, File archive, String destinationPath,
+        private void extract(@NonNull final ExtractService extractService, File archive, String destinationPath,
                                 String[] entryNamesList) throws IOException {
 
             ArrayList<ZipEntry> entry1 = new ArrayList<>();
@@ -370,7 +351,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, entry1.get(0).getName(), entryNamesList.length);
+            extractService.addFirstDatapoint(entry1.get(0).getName(), entryNamesList.length, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -380,13 +361,13 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getName());
-                    unzipEntry(context, zipfile, entry, destinationPath);
+                    unzipEntry(extractService, zipfile, entry, destinationPath);
                     progressHandler.setSourceFilesProcessed(++i);
                 }
             }
         }
 
-        private void extract(@NonNull final Context context, File archive, String destinationPath) throws IOException {
+        private void extract(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException {
             ArrayList<ZipEntry> arrayList = new ArrayList<>();
             ZipFile zipfile = new ZipFile(archive);
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
@@ -404,7 +385,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getName(), 1);
+            extractService.addFirstDatapoint(arrayList.get(0).getName(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -413,13 +394,13 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getName());
-                    unzipEntry(context, zipfile, entry, destinationPath);
+                    unzipEntry(extractService, zipfile, entry, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
         }
 
-        private void extractTar(@NonNull final Context context, File archive, String destinationPath) throws IOException {
+        private void extractTar(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException {
             ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
 
             TarArchiveInputStream inputStream = createTarInputStream(archive);
@@ -438,7 +419,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, archiveEntries.get(0).getName(), 1);
+            extractService.addFirstDatapoint(archiveEntries.get(0).getName(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -451,7 +432,7 @@ public class ExtractService extends Service {
 
                     inputStream.getNextTarEntry();
                     progressHandler.setFileName(entry.getName());
-                    unzipTAREntry(context, inputStream, entry, destinationPath);
+                    unzipTAREntry(extractService, inputStream, entry, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
@@ -468,7 +449,7 @@ public class ExtractService extends Service {
             }
         }
 
-        private void extractRar(@NonNull final Context context, File archive, String destinationPath) throws IOException, RarException {
+        private void extractRar(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException, RarException {
             ArrayList<FileHeader> arrayList = new ArrayList<>();
             Archive zipFile = new Archive(archive);
             FileHeader fh = zipFile.nextFileHeader();
@@ -486,7 +467,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entriesToExtract
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), 1);
+            extractService.addFirstDatapoint(arrayList.get(0).getFileNameString(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -496,16 +477,15 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(header.getFileNameString());
-                    unzipRAREntry(context, zipFile, header, destinationPath);
+                    unzipRAREntry(extractService, zipFile, header, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
         }
 
-        private void extractRar(@NonNull final Context context, File archive, String destinationPath,
+        private void extractRar(@NonNull final ExtractService extractService, File archive, String destinationPath,
                                 String[] entriesToExtract) throws IOException, RarException {
             Archive rarFile = new Archive(archive);
-
             ArrayList<FileHeader> arrayList = new ArrayList<>();
 
             // iterating archive elements to find file names that are to be extracted
@@ -527,7 +507,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), arrayList.size());
+            extractService.addFirstDatapoint(arrayList.get(0).getFileNameString(), arrayList.size(), totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -537,7 +517,7 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getFileNameString());
-                    unzipRAREntry(context, rarFile, entry, destinationPath);
+                    unzipRAREntry(extractService, rarFile, entry, destinationPath);
                     progressHandler.setSourceFilesProcessed(++i);
                 }
             }
@@ -556,18 +536,6 @@ public class ExtractService extends Service {
             extractService.sendBroadcast(intent);
             extractService.stopSelf();
         }
-
-        /**
-         * Setting initial package to initialize charts in process viewer properly
-         */
-        private void setInitDataPackage(long totalSize, String fileName, int sourceTotal) {
-            final ExtractService extractService = this.extractService.get();
-            if(extractService == null) return;
-
-            CopyDataParcelable intent1 = new CopyDataParcelable(fileName, sourceTotal, totalSize, false);
-            extractService.putDataPackage(intent1);
-        }
-
     }
 
 
@@ -592,35 +560,6 @@ public class ExtractService extends Service {
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return mBinder;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
     }
 
 }

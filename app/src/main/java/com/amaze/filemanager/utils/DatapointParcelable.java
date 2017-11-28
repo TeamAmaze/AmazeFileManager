@@ -13,7 +13,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
  * This class also acts as a middle layer to communicate with
  * {@link ProcessViewerFragment}
  */
-public class CopyDataParcelable implements Parcelable {
+public class DatapointParcelable implements Parcelable {
 
     // which file is being copied from total number of files
     public final int sourceProgress;
@@ -35,7 +35,7 @@ public class CopyDataParcelable implements Parcelable {
     // name of source file being copied
     public final String name;
 
-    public CopyDataParcelable(String name, int amountOfSourceFiles, long totalSize, boolean move) {
+    public DatapointParcelable(String name, int amountOfSourceFiles, long totalSize, boolean move) {
         this.name = name;
         sourceFiles = amountOfSourceFiles;
         this.totalSize = totalSize;
@@ -47,7 +47,7 @@ public class CopyDataParcelable implements Parcelable {
         completed = false;
     }
 
-    public CopyDataParcelable(String name, int amountOfSourceFiles, int sourceProgress,
+    public DatapointParcelable(String name, int amountOfSourceFiles, int sourceProgress,
                               long totalSize, long byteProgress, int speedRaw, boolean move,
                               boolean completed) {
         this.name = name;
@@ -59,8 +59,7 @@ public class CopyDataParcelable implements Parcelable {
         this.move = move;
         this.completed = completed;
     }
-
-    protected CopyDataParcelable(Parcel in) {
+    protected DatapointParcelable(Parcel in) {
         sourceProgress = in.readInt();
         byteProgress = in.readLong();
         sourceFiles = in.readInt();
@@ -71,15 +70,15 @@ public class CopyDataParcelable implements Parcelable {
         speedRaw = in.readInt();
     }
 
-    public static final Creator<CopyDataParcelable> CREATOR = new Creator<CopyDataParcelable>() {
+    public static final Creator<DatapointParcelable> CREATOR = new Creator<DatapointParcelable>() {
         @Override
-        public CopyDataParcelable createFromParcel(Parcel in) {
-            return new CopyDataParcelable(in);
+        public DatapointParcelable createFromParcel(Parcel in) {
+            return new DatapointParcelable(in);
         }
 
         @Override
-        public CopyDataParcelable[] newArray(int size) {
-            return new CopyDataParcelable[size];
+        public DatapointParcelable[] newArray(int size) {
+            return new DatapointParcelable[size];
         }
     };
     

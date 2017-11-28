@@ -22,13 +22,11 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -48,22 +46,22 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends Service {
+public class CopyService extends ProgressiveService {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -73,13 +71,10 @@ public class CopyService extends Service {
 
     public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
-    // list of data packages, to initiate chart in process viewer fragment
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private Context c;
 
-    private ProgressListener progressListener;
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler;
     private ServiceWatcherUtil watcherUtil;
@@ -161,9 +156,7 @@ public class CopyService extends Service {
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            CopyDataParcelable intent1 = new CopyDataParcelable(sourceFiles.get(0).getName(),
-                    sourceFiles.size(), totalSize, move);
-            putDataPackage(intent1);
+            addFirstDatapoint(sourceFiles.get(0).getName(), sourceFiles.size(), totalSize, move);
 
             targetPath = p1[0].getString(TAG_COPY_TARGET);
             move = p1[0].getBoolean(TAG_COPY_MOVE);
@@ -448,7 +441,7 @@ public class CopyService extends Service {
     }
 
     /**
-     * Publish the results of the progress to notification and {@link CopyDataParcelable}
+     * Publish the results of the progress to notification and {@link DatapointParcelable}
      * and eventually to {@link ProcessViewerFragment}
      *
      * @param id             id of current service
@@ -496,13 +489,9 @@ public class CopyService extends Service {
             }
 
             //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     totalSize, writtenSize, speed, move, isComplete);
-            putDataPackage(intent);
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isComplete) progressListener.refresh();
-            }
+            addDatapoint(intent);
         } else publishCompletedResult(Integer.parseInt("456" + id));
     }
 
@@ -569,45 +558,6 @@ public class CopyService extends Service {
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return mBinder;
-    }
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
     }
 
 }

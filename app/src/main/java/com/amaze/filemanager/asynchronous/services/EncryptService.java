@@ -2,7 +2,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +16,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17.
  */
 
-public class EncryptService extends Service {
+public class EncryptService extends ProgressiveService {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
@@ -46,8 +44,6 @@ public class EncryptService extends Service {
 
     public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
-    // list of data packages which contains progress
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private Context context;
@@ -60,7 +56,6 @@ public class EncryptService extends Service {
     private HybridFileParcelable baseFile;
     private CryptEnum cryptEnum;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
-    private ProgressListener progressListener;
     private boolean broadcastResult = false;
 
     @Override
@@ -122,11 +117,7 @@ public class EncryptService extends Service {
             progressHandler.setProgressListener(EncryptService.this::publishResults);
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            CopyDataParcelable dataPackage = new CopyDataParcelable(baseFile.getName(),
-                    1, 1, totalSize, 0, 0,
-                    cryptEnum==CryptEnum.ENCRYPT ? false : true,  // we're using encrypt as move flag false
-                    false);
-            putDataPackage(dataPackage);
+            addFirstDatapoint(baseFile.getName(), 1, totalSize, cryptEnum == CryptEnum.ENCRYPT);// we're using encrypt as move flag false
 
             if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
                 serviceWatcherUtil.watch();
@@ -203,13 +194,9 @@ public class EncryptService extends Service {
             }
 
             //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, cryptEnum==CryptEnum.ENCRYPT ? false : true, false);
-            putDataPackage(intent);
-            if(progressListener!=null) {
-                progressListener.onUpdate(intent);
-                if(false) progressListener.refresh();
-            }
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
+                    totalSize, writtenSize, speed, cryptEnum==CryptEnum.ENCRYPT, false);
+            addDatapoint(intent);
         } else publishCompletedResult();
     }
 
@@ -290,40 +277,4 @@ public class EncryptService extends Service {
         }
     };
 
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-        void refresh();
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
-    }
 }

@@ -19,14 +19,12 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -47,8 +45,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
+import com.amaze.filemanager.asynchronous.services.ProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -126,7 +125,7 @@ public class ProcessViewerFragment extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            CopyService copyService = ((ObtainableServiceBinder<CopyService>) service).getService();
+            ProgressiveService copyService = ((ObtainableServiceBinder<? extends ProgressiveService>) service).getService();
 
             for (int i=0; i<copyService.getDataPackageSize(); i++) {
 
@@ -136,9 +135,9 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            copyService.setProgressListener(new CopyService.ProgressListener() {
+            copyService.setProgressListener(new ProgressiveService.ProgressListener() {
                 @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
+                public void onUpdate(final DatapointParcelable dataPackage) {
                     if (getActivity() == null || getActivity().getSupportFragmentManager().
                             findFragmentByTag(MainActivity.KEY_INTENT_PROCESS_VIEWER) == null) {
                         // callback called when we're not inside the app
@@ -165,7 +164,7 @@ public class ProcessViewerFragment extends Fragment {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ExtractService extractService = ((ObtainableServiceBinder<ExtractService>) service).getService();
+            ProgressiveService extractService = ((ObtainableServiceBinder<? extends ProgressiveService>) service).getService();
 
             for (int i=0; i<extractService.getDataPackageSize(); i++) {
 
@@ -175,9 +174,9 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            extractService.setProgressListener(new ExtractService.ProgressListener() {
+            extractService.setProgressListener(new ProgressiveService.ProgressListener() {
                 @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
+                public void onUpdate(final DatapointParcelable dataPackage) {
                     if (getActivity()==null) {
                         // callback called when we're not inside the app
                         return;
@@ -201,7 +200,7 @@ public class ProcessViewerFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ZipService zipService = ((ObtainableServiceBinder<ZipService>) service).getService();
+            ProgressiveService zipService = ((ObtainableServiceBinder<? extends ProgressiveService>) service).getService();
 
             for (int i = 0; i< zipService.getDataPackageSize(); i++) {
 
@@ -211,9 +210,9 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            zipService.setProgressListener(new ZipService.ProgressListener() {
+            zipService.setProgressListener(new ProgressiveService.ProgressListener() {
                 @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
+                public void onUpdate(final DatapointParcelable dataPackage) {
                     if (getActivity() == null) {
                         // callback called when we're not inside the app
                         return;
@@ -238,10 +237,10 @@ public class ProcessViewerFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            EncryptService encryptService = ((ObtainableServiceBinder<EncryptService>) service).getService();
+            ProgressiveService encryptService = ((ObtainableServiceBinder<? extends ProgressiveService>) service).getService();
 
             for (int i=0; i<encryptService.getDataPackageSize(); i++) {
-                CopyDataParcelable dataPackage = encryptService.getDataPackage(i);
+                DatapointParcelable dataPackage = encryptService.getDataPackage(i);
                 processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
                         : ServiceType.ENCRYPT);
             }
@@ -249,9 +248,9 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             mLineChart.animateXY(500, 500);
 
-            encryptService.setProgressListener(new EncryptService.ProgressListener() {
+            encryptService.setProgressListener(new ProgressiveService.ProgressListener() {
                 @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
+                public void onUpdate(final DatapointParcelable dataPackage) {
                     if (getActivity() == null) {
                         // callback called when we're not inside the app
                         return;
@@ -311,7 +310,7 @@ public class ProcessViewerFragment extends Fragment {
     }
 
     /**
-     * Enum helps defining the result type for {@link #processResults(CopyDataParcelable, ServiceType)}
+     * Enum helps defining the result type for {@link #processResults(DatapointParcelable, ServiceType)}
      * to process
      */
     enum ServiceType {
@@ -319,7 +318,7 @@ public class ProcessViewerFragment extends Fragment {
         COPY, EXTRACT, COMPRESS, ENCRYPT, DECRYPT
     }
 
-    public void processResults(final CopyDataParcelable dataPackage, ServiceType serviceType) {
+    public void processResults(final DatapointParcelable dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
             String name = dataPackage.name;
             long total = dataPackage.totalSize;
