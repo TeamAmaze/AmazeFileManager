@@ -98,7 +98,6 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -1656,39 +1655,20 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             // no results were found
             LIST_ELEMENTS.clear();
         }
-        
-        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public <E> E doInBackground() {
-
+            protected Void doInBackground(Void... params) {
                 Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc));
                 return null;
             }
 
             @Override
-            public Void onPostExecute(Object result) {
-
+            public void onPostExecute(Void c) {
                 reloadListElements(true, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
                 getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searchresults, query));
-                return null;
             }
-
-            @Override
-            public Void onPreExecute() {
-                return null;
-            }
-
-            @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
-                return null;
-            }
-        });
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void launchSMB(final SmbFile smbFile, final long si, final Activity activity) {
