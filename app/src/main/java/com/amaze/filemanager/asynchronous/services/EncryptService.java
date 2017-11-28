@@ -28,7 +28,7 @@ import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import java.util.ArrayList;
 
 /**
- * Created by vishal on 8/4/17.
+ * Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 
 public class EncryptService extends ProgressiveService {

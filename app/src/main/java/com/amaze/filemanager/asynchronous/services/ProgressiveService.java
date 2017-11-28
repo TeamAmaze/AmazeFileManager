@@ -10,7 +10,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import java.util.ArrayList;
 
 /**
- * @author Emmanuel
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *         on 28/11/2017, at 19:32.
  */
 

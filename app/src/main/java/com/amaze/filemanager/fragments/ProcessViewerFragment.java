@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -538,4 +539,52 @@ public class ProcessViewerFragment extends Fragment {
         mLineChart.setData(mLineData);
         mLineChart.invalidate();
     }
+
+    private static class CustomServiceConnection<T extends ObtainableServiceBinder<? extends ProgressiveService>> implements ServiceConnection {
+
+        private ProcessViewerFragment fragment;
+        private LineChart lineChart;
+        private Class<T> binderClazz;
+        private ServiceType serviceType;
+
+        public CustomServiceConnection(ProcessViewerFragment frag,
+                                                         LineChart lineChart, Class<T> binderClazz,
+                                                         ServiceType serviceType) {
+            fragment = frag;
+            this.lineChart = lineChart;
+            this.binderClazz = binderClazz;
+            this.serviceType = serviceType;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ProgressiveService specificService = binderClazz.cast(service).getService();
+
+            for (int i = 0; i < specificService.getDataPackageSize(); i++) {
+                DatapointParcelable dataPackage = specificService.getDataPackage(i);
+                fragment.processResults(dataPackage, serviceType);
+            }
+
+            // animate the chart a little after initial values have been applied
+            lineChart.animateXY(500, 500);
+
+            specificService.setProgressListener(new EncryptService.ProgressListener() {
+                @Override
+                public void onUpdate(final DatapointParcelable dataPackage) {
+                    if (fragment.getActivity() == null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    fragment.getActivity().runOnUiThread(() -> fragment.processResults(dataPackage, serviceType));
+                }
+
+                @Override
+                public void refresh() {}
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {}
+    }
+
 }
