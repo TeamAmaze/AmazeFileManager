@@ -67,7 +67,6 @@ import java.util.concurrent.TimeUnit;
 public class ProcessViewerFragment extends Fragment {
 
     private boolean isInitialized = false;
-    private SharedPreferences sharedPrefs;
     private MainActivity mainActivity;
     private int accentColor, primaryColor;
     private ImageButton mCancelButton;
@@ -95,7 +94,7 @@ public class ProcessViewerFragment extends Fragment {
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
         mainActivity.floatingActionButton.getMenuButton().hide();
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        
         mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = (CardView) rootView.findViewById(R.id.card_view);
