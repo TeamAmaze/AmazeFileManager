@@ -66,13 +66,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
 
-    boolean isInitialized = false;
-    SharedPreferences sharedPrefs;
-    MainActivity mainActivity;
-    int accentColor, primaryColor;
-    ImageButton mCancelButton;
-    ImageView mProgressImage;
-
+    private boolean isInitialized = false;
+    private SharedPreferences sharedPrefs;
+    private MainActivity mainActivity;
+    private int accentColor, primaryColor;
+    private ImageButton mCancelButton;
+    private ImageView mProgressImage;
     private View rootView;
     private CardView mCardView;
     private LineChart mLineChart;
