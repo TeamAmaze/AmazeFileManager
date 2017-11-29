@@ -169,6 +169,10 @@
             android:label="@string/crypt_encrypting"
             />
 
+        <service android:name=".asynchronous.services.DecryptService"
+            android:label="@string/crypt_decrypting"
+            />
+
         <service
             android:name="com.amaze.filemanager.asynchronous.ftpservice.FTPService"
             android:enabled="true"
