@@ -27,7 +27,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipExplorerFragment;
+import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -138,7 +138,7 @@ public class BottomBar implements View.OnTouchListener{
                         timer.start();
                         showButtons(m);
                     }
-                } else if (fragmentAtFrame instanceof ZipExplorerFragment) {
+                } else if (fragmentAtFrame instanceof CompressedExplorerFragment) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();

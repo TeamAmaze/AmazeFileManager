@@ -28,15 +28,16 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
@@ -504,9 +505,8 @@ public class MainActivityHelper {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
-            Intent intent = new Intent(mainActivity, ExtractService.class);
-            intent.putExtra(ExtractService.KEY_PATH_ZIP, file.getPath());
-            ServiceWatcherUtil.runService(mainActivity, intent);
+            CompressedInterface compressedInterface = CompressedHelper.getCompressedInterfaceInstance(mainActivity, file);
+            compressedInterface.decompress(null);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

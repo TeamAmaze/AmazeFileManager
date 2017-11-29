@@ -34,7 +34,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.ZipExplorerFragment;
+import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
@@ -50,7 +50,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
     private ArrayList<HybridFileParcelable> files;
     private Context cd;
     private boolean rootMode;
-    private ZipExplorerFragment zipExplorerFragment;
+    private CompressedExplorerFragment compressedExplorerFragment;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public DeleteTask(ContentResolver c, Context cd) {
@@ -58,10 +58,10 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
     }
 
-    public DeleteTask(ContentResolver c, Context cd, ZipExplorerFragment zipExplorerFragment) {
+    public DeleteTask(ContentResolver c, Context cd, CompressedExplorerFragment compressedExplorerFragment) {
         this.cd = cd;
         rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
-        this.zipExplorerFragment = zipExplorerFragment;
+        this.compressedExplorerFragment = compressedExplorerFragment;
     }
 
     @Override
@@ -170,12 +170,12 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
 
         if (!b) {
             Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-        } else if (zipExplorerFragment ==null) {
+        } else if (compressedExplorerFragment ==null) {
             Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
 
-        if (zipExplorerFragment !=null) {
-            zipExplorerFragment.files.clear();
+        if (compressedExplorerFragment !=null) {
+            compressedExplorerFragment.files.clear();
         }
     }
 

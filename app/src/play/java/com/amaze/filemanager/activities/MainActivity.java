@@ -105,12 +105,12 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
+import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -773,25 +773,25 @@ public class MainActivity extends ThemedActivity implements
             } else {
                 getCurrentMainFragment().goBack();
             }
-        } else if (fragment instanceof ZipExplorerFragment) {
-            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment)  getFragmentAtFrame();
-            if (zipExplorerFragment.mActionMode == null) {
-                if (zipExplorerFragment.canGoBack()) {
-                    zipExplorerFragment.goBack();
+        } else if (fragment instanceof CompressedExplorerFragment) {
+            CompressedExplorerFragment compressedExplorerFragment = (CompressedExplorerFragment)  getFragmentAtFrame();
+            if (compressedExplorerFragment.mActionMode == null) {
+                if (compressedExplorerFragment.canGoBack()) {
+                    compressedExplorerFragment.goBack();
                 } else if (openzip) {
                     openzip = false;
                     finish();
                 } else {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipExplorerFragment);
+                    fragmentTransaction.remove(compressedExplorerFragment);
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.showMenuButton(true);
                 }
             } else {
-                zipExplorerFragment.mActionMode.finish();
+                compressedExplorerFragment.mActionMode.finish();
             }
         } else if (fragment instanceof FTPServerFragment) {
             //returning back from FTP server
@@ -1031,7 +1031,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (fragment instanceof ZipExplorerFragment) {
+        } else if (fragment instanceof CompressedExplorerFragment) {
             appbar.setTitle(R.string.appbar_name);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
@@ -1187,8 +1187,8 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.extract:
                 Fragment fragment1 = getFragmentAtFrame();
-                if (fragment1 instanceof ZipExplorerFragment) {
-                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).realZipFile);
+                if (fragment1 instanceof CompressedExplorerFragment) {
+                    mainActivityHelper.extractFile(((CompressedExplorerFragment) fragment1).compressedFile);
                 }
                 break;
             case R.id.search:
@@ -1358,9 +1358,9 @@ public class MainActivity extends ThemedActivity implements
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new ZipExplorerFragment();
+        Fragment zipFragment = new CompressedExplorerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ZipExplorerFragment.KEY_PATH, path);
+        bundle.putString(CompressedExplorerFragment.KEY_PATH, path);
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commitAllowingStateLoss();
