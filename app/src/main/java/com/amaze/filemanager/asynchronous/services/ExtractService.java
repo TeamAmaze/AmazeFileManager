@@ -61,6 +61,7 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 public class ExtractService extends ProgressiveService {
 
     Context context;
@@ -117,15 +118,16 @@ public class ExtractService extends ProgressiveService {
         return START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(receiver1);
+    }
+
     /**
      * Method calculates zip file size to initiate progress
      * Supporting local file extraction progress for now
-     *
-     * @param filePath
-     * @return
      */
     private long getTotalSize(String filePath) {
-
         return new File(filePath).length();
     }
 
@@ -322,7 +324,6 @@ public class ExtractService extends ProgressiveService {
          * @param archive         the file pointing to archive
          * @param destinationPath the where to extract
          * @param entryNamesList  names of files to be extracted from the archive
-         * @return
          */
         private void extract(@NonNull final ExtractService extractService, File archive, String destinationPath,
                                 String[] entryNamesList) throws IOException {
@@ -539,18 +540,11 @@ public class ExtractService extends ProgressiveService {
         }
     }
 
-
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(receiver1);
-    }
-
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             progressHandler.setCancelled(true);
@@ -558,8 +552,7 @@ public class ExtractService extends ProgressiveService {
     };
 
     @Override
-    public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
+    public IBinder onBind(Intent intent) {
         return mBinder;
     }
 

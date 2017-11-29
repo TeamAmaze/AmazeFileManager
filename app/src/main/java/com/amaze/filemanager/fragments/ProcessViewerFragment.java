@@ -160,11 +160,6 @@ public class ProcessViewerFragment extends Fragment {
         getActivity().unbindService(mDecryptConnection);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     /**
      * Enum helps defining the result type for {@link #processResults(DatapointParcelable, ServiceType)}
      * to process
