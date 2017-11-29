@@ -557,9 +557,6 @@
     <string name="text_editor">Configurações do editor de texto</string>
     <string name="preference_newstack_title">Abrir arquivos como nova tarefa</string>
     <string name="preference_newstack_summary">Permite-lhe abrir arquivos em tarefas separadas. Access them from system recents screen.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Programadores</string>
     <string name="nobitcoinapp">Instale uma carteira de bitcoins</string>
-
-    <string name="appbar_name" translatable="false">Amaze</string>
 </resources>
