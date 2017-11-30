@@ -575,9 +575,6 @@
     <string name="text_editor">Agordoj de la tekstredaktilo</string>
     <string name="preference_newstack_title">Malfermi dosierojn kiel nova tasko</string>
     <string name="preference_newstack_summary">Ĝi ebligi vin malfermi dosierojn en malkuna taskoj. Atingi ilin el sistema freŝa ekrano.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Programistoj</string>
     <string name="nobitcoinapp">Bonvolu, instali bitcoin-monujo</string>
-
-    <string name="appbar_name" translatable="false">Amaze</string>
 </resources>
