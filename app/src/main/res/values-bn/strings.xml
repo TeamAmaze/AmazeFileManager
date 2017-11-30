@@ -412,12 +412,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
 
-
-    <string name="gplus_pic_title">Sign-In with G+</string>
-
-    <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
-
-
     <string name="color_title">Color</string>
 
     <string name="color_summary">Set color to various UI components</string>
@@ -437,8 +431,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="choose_color">Choose color</string>
 
     <string name="g_plus_community_title">G+ Community</string>
-
-    <string name="no_cover_photo">No cover photo</string>
 
     <string name="files">Files</string>
 
@@ -513,8 +505,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <string name="grantfailed">Permission not granted</string>
 
     <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
-
-    <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
 
     <string name="operationunsuccesful">Operation Unsuccessful</string>
 

@@ -207,8 +207,6 @@
     <string name="database">데이터베이스</string>
   <string name="colourednavigation">네비게이션 바 색상화</string>
   <string name="colourednavigationsum">네비게이션 바와 스킨의 색상과 같도록 설정합니다.</string>
-    <string name="gplus_pic_title">구글 플러스 API</string>
-  <string name="gplus_pic_summary">구글 플러스 커버 사진을 보여줍니다.</string>
   <string name="color_title">색상</string>
   <string name="color_summary">다양한 항목의 색상을 설정합니다.</string>
   <string name="primary_color_title">대표 색상</string>
@@ -219,7 +217,6 @@
   <string name="icon_color_summary">아이콘의 색상을 설정합니다.</string>
     <string name="choose_color">색상을 선택해 주세요</string>
   <string name="g_plus_community_title">구글 플러스 커뮤니티</string>
-    <string name="no_cover_photo">커버 사진이 없습니다</string>
   <string name="files">파일</string>
     <string name="textreader">텍스트 리더</string>
   <string name="databasereader">데이터베이스 리더</string>

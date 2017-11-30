@@ -14,18 +14,17 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -141,31 +140,25 @@ public abstract class FileUtil {
         return true;
     }
 
-    public static OutputStream getOutputStream(final File target, Context context) throws Exception {
+    public static OutputStream getOutputStream(final File target, Context context) throws FileNotFoundException {
         return getOutputStream(target, context, 0);
     }
 
-    public static OutputStream getOutputStream(final File target, Context context, long s) throws Exception {
+    public static OutputStream getOutputStream(final File target, Context context, long s) throws FileNotFoundException {
         OutputStream outStream = null;
-        try {
-            // First try the normal way
-            if (isWritable(target)) {
-                // standard way
-                outStream = new FileOutputStream(target);
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    // Storage Access Framework
-                    DocumentFile targetDocument = getDocumentFile(target, false, context);
-                    outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
-                } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                    // Workaround for Kitkat ext SD card
-                    return MediaStoreHack.getOutputStream(context, target.getPath());
-                }
+        // First try the normal way
+        if (isWritable(target)) {
+            // standard way
+            outStream = new FileOutputStream(target);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // Storage Access Framework
+                DocumentFile targetDocument = getDocumentFile(target, false, context);
+                outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                // Workaround for Kitkat ext SD card
+                return MediaStoreHack.getOutputStream(context, target.getPath());
             }
-        } catch (Exception e) {
-            Log.e("AmazeFileUtils",
-                    "Error when copying file from " + target.getAbsolutePath(), e);
-            throw new Exception();
         }
         return outStream;
     }

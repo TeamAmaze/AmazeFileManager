@@ -217,8 +217,6 @@
     <string name="database">Adatbázis</string>
   <string name="colourednavigation">Színes navigációs sáv</string>
   <string name="colourednavigationsum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
-    <string name="gplus_pic_title">Bejelentkezés G+ azonosítóval</string>
-  <string name="gplus_pic_summary">G+ borítókép megjelenítése a fiókban</string>
     <string name="color_title">Szín</string>
   <string name="color_summary">Állítsa be a különböző kezelőfelületi elemek színét</string>
   <string name="primary_color_title">Alapszín (bal lap)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Állítsa be az ikonok színét</string>
     <string name="choose_color">Válasszon színt</string>
   <string name="g_plus_community_title">Csatlakozzon a G+ közösséghez</string>
-    <string name="no_cover_photo">Nincs borítókép</string>
   <string name="files">fájl</string>
     <string name="textreader">Szövegolvasó</string>
   <string name="databasereader">Adatbázis-olvasó</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Engedély megadása</string>
   <string name="grantfailed">Az engedély nincs megadva</string>
   <string name="granttext">Tárolási engedélyre van szüksége az alkalmazásnak a folytatáshoz. A párbeszédpanel megszakításakor az alkalmazás kilép.</string>
-  <string name="grantgplus">Engedélyre van szüksége az alkalmazásnak ehhez a funkcióhoz. A párbeszédpanel megszakítása érvényteleníteni fogja ezt a funkciót.</string>
   <string name="operationunsuccesful">A művelet sikertelen volt</string>
   <string name="creatingfile">Fájl létrehozása</string>
   <string name="creatingfolder">Mappa létrehozása</string>
@@ -370,7 +366,6 @@
     </string>
   <string name="share_limit">Nem oszthat meg 100-nál több fájlt</string>
   <string name="otg_access">Válassza ki az OTG eszköz gyökerét</string>
-  <string name="no_profile_pic">Nincs G+ profilkép</string>
   <string name="opening">Megnyitás..</string>
   <string name="information">Információk</string>
   <!-- reference to file accessed date -->

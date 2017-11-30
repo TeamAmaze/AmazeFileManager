@@ -17,6 +17,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Vishal on 29-05-2017.
@@ -148,8 +149,21 @@ public class UtilsHandler extends SQLiteOpenHelper {
         setPath(Operation.SMB, name, path);
     }
 
-    public ArrayList<String> getHistoryList() {
-        return getPath(Operation.HISTORY);
+    public LinkedList<String> getHistoryLinkedList() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.HISTORY), null,
+                null, null, null, null, null);
+
+        LinkedList<String> paths = new LinkedList<>();
+        cursor.moveToFirst();
+        try {
+            while (cursor.moveToNext()) {
+                paths.push(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            }
+        } finally {
+            cursor.close();
+        }
+        return paths;
     }
 
     public ConcurrentRadixTree<VoidValue> getHiddenFilesConcurrentRadixTree() {
@@ -335,15 +349,14 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(operation), null,
                 null, null, null, null, null);
-        cursor.moveToFirst();
+
+        ArrayList<String> paths = new ArrayList<>();
 
         switch (operation) {
-            case HISTORY:
             case LIST:
             case GRID:
-                ArrayList<String> paths = new ArrayList<>();
+                cursor.moveToFirst();
                 try {
-
                     while (cursor.moveToNext()) {
                         paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
                     }
@@ -364,12 +377,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 new String[] {path});
     }
 
-    private void clearTable(Operation operation) {
-
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-
-        sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
-                new String[] { "NOT NULL" });
+    private void clearTable(Operation table) {
+        getWritableDatabase().delete(getTableForOperation(table), null, null);
     }
 
     private void renamePath(Operation operation, String name, String path) {

@@ -213,8 +213,6 @@
   <string name="database">Database</string>
   <string name="colourednavigation">Gekleurde navigatiebalk</string>
   <string name="colourednavigationsum">Of de systeemnavigatiebalk gekleurd is met het thema</string>
-  <string name="gplus_pic_title">Inloggen met Google+</string>
-  <string name="gplus_pic_summary">Google+-omslagfoto in navigatielade</string>
   <string name="color_title">Kleur</string>
   <string name="color_summary">Kleur instellen voor enkele UI-componenten</string>
   <string name="primary_color_title">Primaire kleur</string>
@@ -225,7 +223,6 @@
   <string name="icon_color_summary">Kleur instellen voor pictogrammen</string>
   <string name="choose_color">Kleur kiezen</string>
   <string name="g_plus_community_title">Word lid van de G+ community</string>
-  <string name="no_cover_photo">Geen omslagfoto</string>
   <string name="files">Bestanden</string>
   <string name="textreader">Tekst bekijken</string>
   <string name="databasereader">Databases bekijken</string>
@@ -262,7 +259,6 @@
   <string name="grantper">Toestemming geven</string>
   <string name="grantfailed">Geen toestemming verleend</string>
   <string name="granttext">De app heeft opslag-rechten nodig om te functioneren. Als u op annuleren drukt, wordt de app afgesloten.</string>
-  <string name="grantgplus">De app heeft rechten nodig voor deze functie. Als u op annuleren drukt, wordt deze functie uitgeschakeld.</string>
   <string name="operationunsuccesful">Uitvoeren mislukt</string>
   <string name="creatingfile">Bestand aanmaken</string>
   <string name="creatingfolder">Map aanmaken</string>
@@ -313,7 +309,6 @@ Anders wordt er naar een voorval gezocht.</string>
   <string name="use_custom_ip">Gebruik aangepast IP</string>
   <string name="bookmark_lost">Bladwijzer niet gevonden, opnieuw aan het maken&#8230;</string>
   <string name="share_limit">Kan niet meer dan 100 bestanden delen</string>
-  <string name="no_profile_pic">Geen G+ profiel foto</string>
   <string name="opening">Openen..</string>
   <string name="information">Informatie</string>
   <!-- reference to file accessed date -->

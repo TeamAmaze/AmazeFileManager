@@ -217,8 +217,6 @@
     <string name="database">データベース</string>
   <string name="colourednavigation">色付きのナビゲーションバー</string>
   <string name="colourednavigationsum">システムのナビゲーションバーがスキンで色付けされているかどうかにかかわらず</string>
-    <string name="gplus_pic_title">G+ でサインイン</string>
-  <string name="gplus_pic_summary">ドロワーに G+ カバー画像を表示します</string>
     <string name="color_title">色</string>
   <string name="color_summary">様々な UI コンポーネントに色を設定します</string>
   <string name="primary_color_title">プライマリー色 (左タブ)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">アイコンに色を設定します</string>
     <string name="choose_color">色を選択</string>
   <string name="g_plus_community_title">G+ コミュニティに参加</string>
-    <string name="no_cover_photo">カバー写真なし</string>
   <string name="files">ファイル</string>
     <string name="textreader">テキストリーダー</string>
   <string name="databasereader">データベースリーダー</string>
@@ -267,7 +264,6 @@
   <string name="grantper">アクセス許可を付与する</string>
   <string name="grantfailed">アクセス許可が付与されていません</string>
   <string name="granttext">アプリを続行するには、ストレージのアクセス許可が必要です。このダイアログをキャンセルすると、アプリを終了します。</string>
-  <string name="grantgplus">アプリは、この機能のアクセス許可が必要です。このダイアログをキャンセルすると、この機能をオフにします。</string>
   <string name="operationunsuccesful">操作に失敗しました</string>
   <string name="creatingfile">ファイルの作成中</string>
   <string name="creatingfolder">フォルダーの作成中</string>
@@ -355,7 +351,6 @@ Wi-Fiに接続する必要があります。</li><li>\\n
 </string>
   <string name="share_limit">100 ファイル以上を共有することはできません</string>
   <string name="otg_access">OTG デバイスのルートを選択</string>
-  <string name="no_profile_pic">G+ プロフィール写真はありません</string>
   <string name="opening">開いています..</string>
   <string name="information">情報</string>
   <!-- reference to file accessed date -->

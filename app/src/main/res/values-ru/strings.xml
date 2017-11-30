@@ -218,8 +218,6 @@
     <string name="database">База данных</string>
   <string name="colourednavigation">Цветная панель навигации</string>
   <string name="colourednavigationsum">Окраска панели навигации вместе со скином</string>
-    <string name="gplus_pic_title">Войти в G+</string>
-  <string name="gplus_pic_summary">Показать обложку и значок профиля из G+ в боковом меню</string>
     <string name="color_title">Цвет</string>
   <string name="color_summary">Установить цвет для различных компонентов UI</string>
   <string name="primary_color_title">Основной цвет (Левая вкладка)</string>
@@ -230,7 +228,6 @@
   <string name="icon_color_summary">Установить цвет значков</string>
     <string name="choose_color">Выберите цвет</string>
   <string name="g_plus_community_title">Присоединиться к G+ сообществу</string>
-    <string name="no_cover_photo">Нет обложки</string>
   <string name="files">Файлы</string>
     <string name="textreader">Просмотр текста</string>
   <string name="databasereader">Просмотрщик баз данных</string>
@@ -268,7 +265,6 @@
   <string name="grantper">Предоставление разрешения</string>
   <string name="grantfailed"> Разрешение не предоставляется</string>
   <string name="granttext">Приложению требуется разрешение хранения для продолжения. Закрытие этого диалога завершит приложение.</string>
-  <string name="grantgplus">Приложению требуется разрешение для этого свойства. Закрытие этого диалога снимет это свойство.</string>
   <string name="operationunsuccesful">Операция безуспешна</string>
   <string name="creatingfile">Создание файла</string>
   <string name="creatingfolder">Создание папки</string>
@@ -357,7 +353,6 @@
         </html>    </string>
   <string name="share_limit">Нельзя отправить больше 100 файлов</string>
   <string name="otg_access">Выберите корень OTG устройства</string>
-  <string name="no_profile_pic">Нет аватарки на G+</string>
   <string name="opening">Открываю..</string>
   <string name="information">Информация</string>
   <!-- reference to file accessed date -->

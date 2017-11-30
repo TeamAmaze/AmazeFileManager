@@ -185,13 +185,11 @@
   <string name="select_intent">Markera</string>
     <string name="database">Databas</string>
   <string name="colourednavigation">Färgat navigationsfält</string>
-    <string name="gplus_pic_title">Logga in med G+</string>
   <string name="color_title">Färg</string>
   <string name="accent_color_title">Accentfärg</string>
   <string name="icon_color_title">Ikonfärg</string>
     <string name="choose_color">Välj färg</string>
   <string name="g_plus_community_title">Gå med i G+ Community</string>
-  <string name="no_cover_photo">Inget omslagsfoto</string>
   <string name="files">Filer</string>
     <string name="textreader">Textläsare</string>
   <string name="databasereader">Databasläsare</string>
@@ -266,7 +264,6 @@
   <string name="bookmark_lost">Bokmärke hittades inte, återskapar&#8230;</string>
   <string name="share_limit">Kan inte dela fler än 100 filer</string>
   <string name="otg_access">Välj roten utav OTG-enhet</string>
-  <string name="no_profile_pic">Ingen G+-profilbild</string>
   <string name="opening">Öppnar..</string>
   <string name="information">Information</string>
   <!-- reference to file accessed date -->

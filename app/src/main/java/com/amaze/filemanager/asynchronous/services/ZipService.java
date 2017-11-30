@@ -211,9 +211,9 @@ public class ZipService extends Service {
                         compressFile(file, "");
                     } else return;
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                e.printStackTrace();
             } finally {
-
                 try {
                     zos.flush();
                     zos.close();

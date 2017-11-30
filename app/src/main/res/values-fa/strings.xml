@@ -207,8 +207,6 @@
     <string name="database">پایگاه داده</string>
   <string name="colourednavigation">منوی رنگی</string>
   <string name="colourednavigationsum">آیا سیستم منوی کشویی با پوشته رنگی شود یا نه</string>
-    <string name="gplus_pic_title">ورود با گوگل پلاس</string>
-  <string name="gplus_pic_summary">نمایش آیکن گوگل پلاس در منوی کشویی</string>
   <string name="color_title">رنگ</string>
   <string name="color_summary">تنظیم کردن رنگ به رابط کاربری مختلف</string>
   <string name="primary_color_title">رنگ اولیه</string>
@@ -219,7 +217,6 @@
   <string name="icon_color_summary">تنظیم رنگ برای آیکنها</string>
     <string name="choose_color">انتخاب رنگ</string>
   <string name="g_plus_community_title">G+انجمن</string>
-    <string name="no_cover_photo">عکس بدون کاور</string>
   <string name="files">فایلها</string>
     <string name="textreader">خواننده متن</string>
   <string name="databasereader">خواننده پایگاه داده</string>
@@ -255,7 +252,6 @@
   <string name="grantper">اجازه دادن مجوز</string>
   <string name="grantfailed">مجوز داده نشد</string>
   <string name="granttext">برنامه نیازمند اجازه برای دسترسی به منبع حافظه میباشد. لغو کردن این دایالوگ منجربه بستع شدن برنامه میباشد</string>
-  <string name="grantgplus">برنامه نیازمند دسترسی برای این ویژگی میباشد.لغو کردن این دایالوگ منجربه غیرفعال شدن این ویژچی میباشد.</string>
   <string name="operationunsuccesful">عملیات ناموفق</string>
   <string name="creatingfile">ساختن فایل</string>
   <string name="creatingfolder">ساختن پوشه</string>

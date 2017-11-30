@@ -28,7 +28,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -62,7 +61,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -105,12 +103,12 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
+import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.ZipExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -120,7 +118,6 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.ui.drawer.SectionItem;
-import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.utils.BookSorter;
@@ -149,10 +146,6 @@ import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -168,18 +161,13 @@ import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
-public class MainActivity extends ThemedActivity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnRequestPermissionsResultCallback,
+public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
-
-    /* Request code used to invoke sign in user interactions. */
-    static final int RC_SIGN_IN = 0;
 
     private DataUtils dataUtils = DataUtils.getInstance();
 
@@ -240,20 +228,15 @@ public class MainActivity extends ThemedActivity implements
     private Toast toast = null;
     private ActionBarDrawerToggle mDrawerToggle;
     private Intent intent;
-    private GoogleApiClient mGoogleApiClient;
     private View drawerHeaderLayout;
     private View drawerHeaderView, indicator_layout;
-    private RoundedImageView drawerProfilePic;
     private ImageLoader mImageLoader;
 
-    private TextView mGoogleName, mGoogleId;
     private TabHandler tabHandler;
-    // Check for user interaction for Google+ api only once
-    private boolean mGoogleApiKey = false;
     /* A flag indicating that a PendingIntent is in progress and prevents
    * us from starting further intents.
    */
-    private boolean mIntentInProgress, showHidden = false;
+    private boolean showHidden = false;
     private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
     private AppBarLayout appBarLayout;
@@ -337,16 +320,6 @@ public class MainActivity extends ThemedActivity implements
         mImageLoader = AppConfig.getInstance().getImageLoader();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();
-
-        // initialize g+ api client as per preferences
-        if (getPrefs().getBoolean("plus_pic", false)) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(Plus.API)
-                    .addScope(Plus.SCOPE_PLUS_LOGIN)
-                    .build();
-        }
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -506,6 +479,7 @@ public class MainActivity extends ThemedActivity implements
             public <E> E doInBackground() {
 
                 dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+                dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
@@ -772,25 +746,25 @@ public class MainActivity extends ThemedActivity implements
             } else {
                 getCurrentMainFragment().goBack();
             }
-        } else if (fragment instanceof ZipExplorerFragment) {
-            ZipExplorerFragment zipExplorerFragment = (ZipExplorerFragment)  getFragmentAtFrame();
-            if (zipExplorerFragment.mActionMode == null) {
-                if (zipExplorerFragment.canGoBack()) {
-                    zipExplorerFragment.goBack();
+        } else if (fragment instanceof CompressedExplorerFragment) {
+            CompressedExplorerFragment compressedExplorerFragment = (CompressedExplorerFragment)  getFragmentAtFrame();
+            if (compressedExplorerFragment.mActionMode == null) {
+                if (compressedExplorerFragment.canGoBack()) {
+                    compressedExplorerFragment.goBack();
                 } else if (openzip) {
                     openzip = false;
                     finish();
                 } else {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
-                    fragmentTransaction.remove(zipExplorerFragment);
+                    fragmentTransaction.remove(compressedExplorerFragment);
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.showMenuButton(true);
                 }
             } else {
-                zipExplorerFragment.mActionMode.finish();
+                compressedExplorerFragment.mActionMode.finish();
             }
         } else if (fragment instanceof FTPServerFragment) {
             //returning back from FTP server
@@ -1030,7 +1004,7 @@ public class MainActivity extends ThemedActivity implements
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.paste).setVisible(false);
-        } else if (fragment instanceof ZipExplorerFragment) {
+        } else if (fragment instanceof CompressedExplorerFragment) {
             appbar.setTitle(R.string.appbar_name);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
@@ -1186,8 +1160,8 @@ public class MainActivity extends ThemedActivity implements
                 break;
             case R.id.extract:
                 Fragment fragment1 = getFragmentAtFrame();
-                if (fragment1 instanceof ZipExplorerFragment) {
-                    mainActivityHelper.extractFile(((ZipExplorerFragment) fragment1).realZipFile);
+                if (fragment1 instanceof CompressedExplorerFragment) {
+                    mainActivityHelper.extractFile(((CompressedExplorerFragment) fragment1).compressedFile);
                 }
                 break;
             case R.id.search:
@@ -1357,9 +1331,9 @@ public class MainActivity extends ThemedActivity implements
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
-        Fragment zipFragment = new ZipExplorerFragment();
+        Fragment zipFragment = new CompressedExplorerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ZipExplorerFragment.KEY_PATH, path);
+        bundle.putString(CompressedExplorerFragment.KEY_PATH, path);
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commitAllowingStateLoss();
@@ -1552,139 +1526,14 @@ public class MainActivity extends ThemedActivity implements
         mDrawerList.setAdapter(adapter);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // check if user enabled g+ api from preferences
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
-            mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            Person.Image personImage;
-            Person.Cover.CoverPhoto personCover;
-
-            try {
-                personImage = currentPerson.getImage();
-                personCover = currentPerson.getCover().getCoverPhoto();
-            } catch (Exception e) {
-
-                personCover = null;
-                personImage = null;
-            }
-
-            if (personCover != null && personImage != null) {
-                String imgUrl = personImage.getUrl();
-
-                // getting full size image
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(imgUrl);
-                stringBuilder.delete(imgUrl.length() - 6, imgUrl.length());
-                Log.d("G+", stringBuilder.toString());
-                mGoogleName.setText(currentPerson.getDisplayName());
-                mGoogleId.setText(accountName);
-                // setting cover pic
-                mImageLoader.get(personCover.getUrl(), new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                        drawerHeaderParent.setBackgroundColor(Color.parseColor("#ffffff"));
-                        if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            drawerHeaderView.setBackground(new BitmapDrawable(response.getBitmap()));
-                        } else
-                            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(response.getBitmap()));
-                    }
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, getString(R.string.no_cover_photo),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                // setting profile pic
-                mImageLoader.get(stringBuilder.toString(), new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                        drawerProfilePic.setImageBitmap(response.getBitmap());
-                        drawerProfilePic.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, getString(R.string.no_profile_pic),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            } else {
-                Toast.makeText(this, getResources().getText(R.string.no_cover_photo), Toast.LENGTH_SHORT).show();
-                drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-                drawerHeaderParent.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d("G+", "Connection suspended");
-        new Thread(() -> {
-            if (mGoogleApiClient != null)
-                mGoogleApiClient.connect();
-        }).run();
-    }
-
-    public void onConnectionFailed(final ConnectionResult result) {
-        Log.d("G+", "Connection failed" + result.getErrorCode() + result.getErrorCode());
-        if (!mIntentInProgress && result.hasResolution()) {
-            new Thread(() -> {
-                try {
-                    mIntentInProgress = true;
-                    startIntentSenderForResult(result.getResolution().getIntentSender(),
-                            RC_SIGN_IN, null, 0, 0, 0);
-                } catch (IntentSender.SendIntentException e) {
-                    // The intent was canceled before it was sent.  Return to the default
-                    // state and attempt to connect to get an updated ConnectionResult.
-                    mIntentInProgress = false;
-                    if (mGoogleApiClient != null) {
-
-                        mGoogleApiClient.connect();
-                    }
-                }
-            }).run();
-        }
-    }
-
     public AppBar getAppbar() {
         return appbar;
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == RC_SIGN_IN && !mGoogleApiKey && mGoogleApiClient != null) {
-            new Thread(() -> {
-                mIntentInProgress = false;
-                mGoogleApiKey = true;
-                // !mGoogleApiClient.isConnecting
-                if (mGoogleApiClient.isConnecting()) {
-                    mGoogleApiClient.connect();
-                } else
-                    mGoogleApiClient.disconnect();
-
-            }).run();
-        } else if (requestCode == image_selector_request_code) {
+        if (requestCode == image_selector_request_code) {
             if (getPrefs() != null && intent != null && intent.getData() != null) {
-                if (SDK_INT >= 19)
+                if (SDK_INT >= Build.VERSION_CODES.KITKAT)
                     getContentResolver().takePersistableUriPermission(intent.getData(),
                             Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getPrefs().edit().putString("drawer_header_path", intent.getData().toString()).commit();
@@ -1801,7 +1650,7 @@ public class MainActivity extends ThemedActivity implements
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         drawerHeaderView.setOnLongClickListener(v -> {
             Intent intent1;
-            if (SDK_INT < 19) {
+            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
                 intent1 = new Intent();
                 intent1.setAction(Intent.ACTION_GET_CONTENT);
             } else {
@@ -1813,9 +1662,6 @@ public class MainActivity extends ThemedActivity implements
             startActivityForResult(intent1, image_selector_request_code);
             return false;
         });
-        drawerProfilePic = (RoundedImageView) drawerHeaderLayout.findViewById(R.id.profile_pic);
-        mGoogleName = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_name);
-        mGoogleId = (TextView) drawerHeaderLayout.findViewById(R.id.account_header_drawer_email);
         setSupportActionBar(getAppbar().getToolbar());
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
@@ -1904,14 +1750,14 @@ public class MainActivity extends ThemedActivity implements
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
         // status bar0
-        if (SDK_INT == 20 || SDK_INT == 19) {
+        if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (SDK_INT >= 21) {
+        } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -1944,7 +1790,7 @@ public class MainActivity extends ThemedActivity implements
             if (colourednavigation)
                 mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
                         .getStatusColor(colorDrawable.getColor()));
-        } else if (SDK_INT == 20 || SDK_INT == 19) {
+        } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
 
             // for kitkat devices, the status bar color
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -2124,27 +1970,24 @@ public class MainActivity extends ThemedActivity implements
     }
 
     void setDrawerHeaderBackground() {
-        new Thread(() -> {
-            if (getPrefs().getBoolean("plus_pic", false)) return;
-            String path1 = getPrefs().getString("drawer_header_path", null);
-            if (path1 == null) return;
-            try {
-                final ImageView headerImageView = new ImageView(MainActivity.this);
-                headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-                mImageLoader.get(path1, new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                        headerImageView.setImageBitmap(response.getBitmap());
-                        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                    }
+        String path1 = getPrefs().getString("drawer_header_path", null);
+        if (path1 == null) return;
+        try {
+            final ImageView headerImageView = new ImageView(MainActivity.this);
+            headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
+            mImageLoader.get(path1, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    headerImageView.setImageBitmap(response.getBitmap());
+                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+                }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {}
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).run();
+                @Override
+                public void onErrorResponse(VolleyError error) {}
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver receiver2 = new BroadcastReceiver() {

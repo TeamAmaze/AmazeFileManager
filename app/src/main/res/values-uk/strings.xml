@@ -214,8 +214,6 @@
     <string name="database">База даних</string>
   <string name="colourednavigation">Кольорова навігаційна панель</string>
   <string name="colourednavigationsum">Чи буде навігаційна панель мати колір теми</string>
-    <string name="gplus_pic_title">Увійти за допомогою G+</string>
-  <string name="gplus_pic_summary">Показати обкладинку і значок профіля із G+ в боковому меню</string>
     <string name="color_title">Колір</string>
   <string name="color_summary">Встановити колір для різних компонентів UI</string>
   <string name="primary_color_title">Первинний колір (ліва вкладка)</string>
@@ -226,7 +224,6 @@
   <string name="icon_color_summary">Встановити колір іконок</string>
     <string name="choose_color">Обрати колір</string>
   <string name="g_plus_community_title">Приєднатися до спільноти G +</string>
-    <string name="no_cover_photo">Немає обкладинки</string>
   <string name="files">Файли</string>
     <string name="textreader">Читач текстів</string>
   <string name="databasereader">Читач бази даних</string>
@@ -263,7 +260,6 @@
   <string name="grantper">Надати дозвіл</string>
   <string name="grantfailed">Дозвіл не надано</string>
   <string name="granttext">Додатку потрібен дозвіл роботи з сховищем для продовження. Закриття цього діалогу завершить додаток.</string>
-  <string name="grantgplus">Додатку потрібен дозвіл для цієї функції. Закриття цього діалогу зніме цю функцію.</string>
   <string name="operationunsuccesful">Невдала операція</string>
   <string name="creatingfile">Створення файлу</string>
   <string name="creatingfolder">Створення теки</string>
@@ -362,7 +358,6 @@
     </string>
   <string name="share_limit">Неможливо обмінюватися понад 100 файлами</string>
   <string name="otg_access">Виберіть кореневу папку OTG пристрою</string>
-  <string name="no_profile_pic">Немає G + зображення профілю</string>
   <string name="opening">Відкриття..</string>
   <string name="information">Інформація</string>
   <!-- reference to file accessed date -->

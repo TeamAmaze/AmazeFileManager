@@ -213,8 +213,6 @@
     <string name="database">Βάση δεδομένων</string>
   <string name="colourednavigation">Έγχρωμη μπάρα πλοήγησης</string>
   <string name="colourednavigationsum">Αν θα είναι η μπάρα πλοήγησης του συστήματος χρωματισμένη σύμφωνα με το θέμα.</string>
-    <string name="gplus_pic_title">Είσοδος με το G+</string>
-  <string name="gplus_pic_summary">Εμφάνιση της εικόνας του προφίλ σας G+ στο πτυσσόμενο μενού</string>
     <string name="color_title">Χρώμα</string>
   <string name="color_summary">Ορίστε το χρώμα διαφόρων στοιχείων της διεπαφής χρήστη</string>
   <string name="primary_color_title">Κυρίως χρώμα</string>
@@ -225,7 +223,6 @@
   <string name="icon_color_summary">Ορίστε το χρώμα των εικονιδίων</string>
     <string name="choose_color">Επιλέξτε χρώμα</string>
   <string name="g_plus_community_title">Κοινότητα G+</string>
-    <string name="no_cover_photo">Καμία φωτογραφία εξώφυλλου</string>
   <string name="files">Αρχεία</string>
     <string name="textreader">Αναγνώστης κειμένου</string>
   <string name="databasereader">Αναγνώστης βάσεων δεδομένων</string>
@@ -262,7 +259,6 @@
   <string name="grantper">Χορήγησε άδεια</string>
   <string name="grantfailed">Άδεια δεν εκχωρήθηκε</string>
   <string name="granttext">Η εφαρμογή χρειάζεται άδεια αποθήκευσης για να συνεχίσετε. Ακύρωση αυτού του διαλόγου θα τερματίσει την εφαρμογή.</string>
-  <string name="grantgplus">Η εφαρμογή χρειάζεται άδεια για αυτήν τη δυνατότητα. Ακύρωση αυτού του διαλόγου θα αποεπιλέξει αυτό το χαρακτηριστικό.</string>
   <string name="operationunsuccesful">Λειτουργία Ανεπιτυχής</string>
   <string name="creatingfile">Δημιουργία Αρχείου</string>
   <string name="creatingfolder">Δημιουργία Φακέλου</string>

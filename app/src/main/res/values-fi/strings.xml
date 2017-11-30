@@ -213,8 +213,6 @@
     <string name="database">Tietokanta</string>
   <string name="colourednavigation">Värillinen navigointipalkki</string>
   <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
-    <string name="gplus_pic_title">Kirjaudu sisään G+</string>
-  <string name="gplus_pic_summary">Show G+ cover pic in drawer</string>
     <string name="color_title">Väri</string>
   <string name="color_summary">Set color to various UI components</string>
   <string name="primary_color_title">Primary Color (Left Tab)</string>
@@ -225,7 +223,6 @@
   <string name="icon_color_summary">Set color to icons</string>
     <string name="choose_color">Valitse väri</string>
   <string name="g_plus_community_title">Liity G+ yhteisöön</string>
-    <string name="no_cover_photo">Ei kannen kuvaa</string>
   <string name="files">Tiedostot</string>
     <string name="textreader">Tekstinlukija</string>
   <string name="databasereader">Tietokannan lukija</string>
@@ -262,7 +259,6 @@
   <string name="grantper">Anna lupa</string>
   <string name="grantfailed">Oikeuksia ei myönnetty</string>
   <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
-  <string name="grantgplus">App needs permission for this feature. Canceling this dialog will uncheck this feature.</string>
   <string name="operationunsuccesful">Toiminto ei onnistunut</string>
   <string name="creatingfile">Luodaan tiedosto</string>
   <string name="creatingfolder">Luodaan kansio</string>
@@ -364,7 +360,6 @@
     </string>
   <string name="share_limit">Ei voi jakaa yli 100 tiedostoa</string>
   <string name="otg_access">Valitse OTG-laitteen juurihakemisto</string>
-  <string name="no_profile_pic">Ei G++ profiilikuvaa</string>
   <string name="opening">Avataan..</string>
   <string name="information">Tietoja</string>
   <!-- reference to file accessed date -->

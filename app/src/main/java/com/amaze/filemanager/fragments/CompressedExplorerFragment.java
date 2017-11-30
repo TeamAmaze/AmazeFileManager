@@ -49,44 +49,40 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.adapters.ZipExplorerAdapter;
+import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.asynctasks.RarHelperTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.ui.ZipObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
+import com.amaze.filemanager.ui.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
-import com.github.junrar.rarfile.FileHeader;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath {
+public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
     public static final String KEY_PATH = "path";
-
-    private static final int ZIP_FILE = 0, RAR_FILE = 1;
 
     private static final String KEY_CACHE_FILES = "cache_files";
     private static final String KEY_URI = "uri";
-    private static final String KEY_OPEN_MODE = "open_mode";
     private static final String KEY_FILE = "file";
     private static final String KEY_WHOLE_LIST = "whole_list";
     private static final String KEY_ELEMENTS = "elements";
     private static final String KEY_OPEN = "is_open";
 
-    public File realZipFile;
+
+    public File compressedFile;
 
     /**
      * files to be deleted from cache
@@ -97,25 +93,24 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public boolean selection = false;
     public String relativeDirectory = "";//Normally this would be "/" but for pathing issues it isn't
     public String skin, accentColor, iconskin, year;
-    public ZipExplorerAdapter zipExplorerAdapter;
+    public CompressedExplorerAdapter compressedExplorerAdapter;
     public ActionMode mActionMode;
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
     public Archive archive;
-    public ArrayList<FileHeader> elementsRar = new ArrayList<>();
-    public ArrayList<ZipObjectParcelable> elements = new ArrayList<>();
+    public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
     public MainActivity mainActivity;
     public RecyclerView listView;
     public SwipeRefreshLayout swipeRefreshLayout;
     public boolean isOpen = false;  // flag states whether to open file after service extracts it
 
     private UtilitiesProviderInterface utilsProvider;
+    private CompressedInterface compressedInterface;
     private View rootView;
     private boolean addheader = true;
     private LinearLayoutManager mLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
     private boolean showDividers;
     private View mToolbarContainer;
-    private int openmode;
     private boolean stopAnims = true;
     private int file = 0, folder = 0;
 
@@ -131,10 +126,10 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         mainActivity = (MainActivity) getActivity();
         listView = (RecyclerView) rootView.findViewById(R.id.listView);
         listView.setOnTouchListener((view, motionEvent) -> {
-            if (stopAnims && !zipExplorerAdapter.stoppedAnimation) {
+            if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
                 stopAnim();
             }
-            zipExplorerAdapter.stoppedAnimation = true;
+            compressedExplorerAdapter.stoppedAnimation = true;
 
             stopAnims = false;
             return false;
@@ -156,15 +151,15 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        realZipFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
+        compressedFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
 
         mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
         mToolbarContainer.setOnTouchListener((view, motionEvent) -> {
             if (stopAnims) {
-                if ((!zipExplorerAdapter.stoppedAnimation)) {
+                if ((!compressedExplorerAdapter.stoppedAnimation)) {
                     stopAnim();
                 }
-                zipExplorerAdapter.stoppedAnimation = true;
+                compressedExplorerAdapter.stoppedAnimation = true;
             }
             stopAnims = false;
             return false;
@@ -192,16 +187,12 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
 
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
-        if (savedInstanceState == null && realZipFile != null) {
+        if (savedInstanceState == null && compressedFile != null) {
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
-            String fileName = realZipFile.getName().substring(0, realZipFile.getName().lastIndexOf("."));
+            String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
             files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
-            if (realZipFile.getPath().endsWith(".rar")) {
-                openmode = RAR_FILE;
-            } else {
-                openmode = ZIP_FILE;
-            }
+            compressedInterface = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
 
             changePath("");
         } else {
@@ -214,39 +205,23 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (openmode == ZIP_FILE) {
-            outState.putParcelableArrayList(KEY_ELEMENTS, elements);
-        }
-
-        outState.putInt(KEY_OPEN_MODE, openmode);
+        outState.putParcelableArrayList(KEY_ELEMENTS, elements);
         outState.putString(KEY_PATH, relativeDirectory);
-        outState.putString(KEY_URI, realZipFile.getPath());
-        outState.putString(KEY_FILE, realZipFile.getPath());
+        outState.putString(KEY_URI, compressedFile.getPath());
+        outState.putString(KEY_FILE, compressedFile.getPath());
         outState.putParcelableArrayList(KEY_CACHE_FILES, files);
         outState.putBoolean(KEY_OPEN, isOpen);
     }
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
-        realZipFile = new File(Uri.parse(savedInstanceState.getString(KEY_URI)).getPath());
+        compressedFile = new File(Uri.parse(savedInstanceState.getString(KEY_URI)).getPath());
         files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
         isOpen = savedInstanceState.getBoolean(KEY_OPEN);
-        if (realZipFile.getPath().endsWith(".rar")) {
-            openmode = RAR_FILE;
-            String path = savedInstanceState.getString(KEY_FILE);
-            if (path != null && path.length() > 0) {
-                realZipFile = new File(path);
-                relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
-                changeRarPath(relativeDirectory);
-            } else {
-                changePath("");
-            }
-        } else {
-            openmode = ZIP_FILE;
-            elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
-            relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
-            realZipFile = new File(savedInstanceState.getString(KEY_FILE));
-            createZipViews(elements, relativeDirectory);
-        }
+        elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
+        relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
+
+        compressedInterface = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
+        createViews(elements, relativeDirectory);
     }
 
     public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -299,7 +274,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         // onCreateActionMode, but
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<Integer> positions = zipExplorerAdapter.getCheckedItemPositions();
+            ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
             ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
 
             return false; // Return false if nothing is done
@@ -309,20 +284,19 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.all:
-                    zipExplorerAdapter.toggleChecked(true);
+                    compressedExplorerAdapter.toggleChecked(true);
                     mode.invalidate();
                     return true;
                 case R.id.ex:
-
                     Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), ExtractService.class);
-                    ArrayList<String> a = new ArrayList<>();
-                    for (int i : zipExplorerAdapter.getCheckedItemPositions()) {
-                        a.add(openmode == ZIP_FILE ? elements.get(i).getName() : elementsRar.get(i).getFileNameString());
+
+                    String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
+                    for (int i = 0; i < dirs.length; i++) {
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).getName();
                     }
-                    intent.putExtra(ExtractService.KEY_PATH_ZIP, realZipFile.getPath());
-                    intent.putExtra(ExtractService.KEY_ENTRIES_ZIP, a);
-                    ServiceWatcherUtil.runService(getContext(), intent);
+
+                    compressedInterface.decompress(null, dirs);
+
                     mode.finish();
                     return true;
             }
@@ -331,7 +305,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
-            if (zipExplorerAdapter != null) zipExplorerAdapter.toggleChecked(false);
+            if (compressedExplorerAdapter != null) compressedExplorerAdapter.toggleChecked(false);
             selection = false;
             mainActivity.updateViews(mainActivity.getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
             if (Build.VERSION.SDK_INT >= 21) {
@@ -394,41 +368,27 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         }
     };
 
-    public boolean canGoBack() {
-        if (openmode == RAR_FILE) return !(relativeDirectory == null || relativeDirectory.trim().length() == 0);
-        else return !(relativeDirectory == null || relativeDirectory.trim().length() == 0);
-    }
-
-    public void goBack() {
-        if (openmode == RAR_FILE) {
-            String path;
-            try {
-                path = relativeDirectory.substring(0, relativeDirectory.lastIndexOf("/"));
-            } catch (Exception e) {
-                path = "";
-            }
-            changeRarPath(path);
-        } else {
-            changeZipPath(new File(relativeDirectory).getParent());
-        }
-    }
-
     @Override
-    public void changePath(String path) {
-        if(path.startsWith("/")) path = path.substring(1);
+    public void changePath(String folder) {
+        if(folder == null) folder = "";
+        if(folder.startsWith("/")) folder = folder.substring(1);
 
-        if (openmode == ZIP_FILE) {// TODO: 15/9/2017 put switch
-            changeZipPath(path);
-        } else {
-            changeRarPath(path);
-        }
+        boolean addGoBackItem = gobackitem && !isRoot(folder);
+        String finalfolder = folder;
+        compressedInterface.changePath(folder, addGoBackItem, data -> {
+            elements = data;
+            createViews(elements, finalfolder);
+
+            swipeRefreshLayout.setRefreshing(false);
+            updateBottomBar();
+        });
 
         updateBottomBar();
     }
 
     @Override
     public String getPath() {
-        if(relativeDirectory != null && relativeDirectory.length() != 0) return "/" + relativeDirectory;
+        if(!isRootRelativePath()) return "/" + relativeDirectory;
         else return "";
     }
 
@@ -437,85 +397,32 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         return R.drawable.ic_compressed_white_24dp;
     }
 
-    /**
-     * The folders's path separator must be "/"
-     */
-    public void changeZipPath(final String folder) {
-        swipeRefreshLayout.setRefreshing(true);
-        new ZipHelperTask(getContext(), realZipFile.getPath(), folder, data -> {
-            if (gobackitem && relativeDirectory != null && relativeDirectory.trim().length() != 0)
-                elements.add(0, new ZipObjectParcelable(null, 0, 0, true));
-            elements = data;
-            createZipViews(data, folder);
-
-            swipeRefreshLayout.setRefreshing(false);
-            updateBottomBar();
-        }).execute();
-    }
-
-    /**
-     * The folders's path separator must be "/"
-     */
-    public void changeRarPath(final String folder) {
-        swipeRefreshLayout.setRefreshing(true);
-        new RarHelperTask(getContext(), realZipFile.getPath(), folder,
-                data -> {
-                    archive = data.first;
-                    if(data.second != null) {
-                        createRarViews(data.second, folder);
-                        elementsRar = data.second;
-                    }
-
-                    swipeRefreshLayout.setRefreshing(false);
-                    updateBottomBar();
-                }).execute();
-    }
-
     private void refresh() {
         changePath(relativeDirectory);
     }
 
     private void updateBottomBar() {
-        String path = relativeDirectory != null && relativeDirectory.length() != 0? realZipFile.getName() + "/" + relativeDirectory : realZipFile.getName();
+        String path = !isRootRelativePath()? compressedFile.getName() + "/" + relativeDirectory : compressedFile.getName();
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    private void createZipViews(ArrayList<ZipObjectParcelable> zipEntries, String dir) {
-        if (zipExplorerAdapter == null) {
-            zipExplorerAdapter = new ZipExplorerAdapter(getActivity(), utilsProvider, zipEntries, null, this, true);
-            listView.setAdapter(zipExplorerAdapter);
+    private void createViews(ArrayList<CompressedObjectParcelable> items, String dir) {
+        if (compressedExplorerAdapter == null) {
+            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, compressedInterface);
+            listView.setAdapter(compressedExplorerAdapter);
         } else {
-            zipExplorerAdapter.generateZip(zipEntries);
-        }
-        folder = 0;
-        file = 0;
-        for (ZipObjectParcelable zipEntry : zipEntries) {
-            if (zipEntry.isDirectory()) folder++;
-            else file++;
-        }
-        openmode = ZIP_FILE;
-        createViews(dir);
-    }
-
-    private void createRarViews(ArrayList<FileHeader> rarEntries, String dir) {
-        if (zipExplorerAdapter == null) {
-            zipExplorerAdapter = new ZipExplorerAdapter(getActivity(), utilsProvider, null, rarEntries, this, false);
-            listView.setAdapter(zipExplorerAdapter);
-        } else {
-            zipExplorerAdapter.generateRar(rarEntries);
+            compressedExplorerAdapter.generateZip(items);
         }
 
         folder = 0;
         file = 0;
-        for (FileHeader zipEntry : rarEntries) {
-            if (zipEntry.isDirectory()) folder++;
+        for (CompressedObjectParcelable item : items) {
+            if(item.getType() == CompressedObjectParcelable.TYPE_GOBACK) continue;
+            
+            if (item.isDirectory()) folder++;
             else file++;
         }
-        openmode = RAR_FILE;
-        createViews(dir);
-    }
 
-    private void createViews(String dir) {
         stopAnims = true;
         if (!addheader) {
             listView.removeItemDecoration(dividerItemDecoration);
@@ -524,7 +431,7 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         } else {
             dividerItemDecoration = new DividerItemDecoration(getActivity(), true, showDividers);
             listView.addItemDecoration(dividerItemDecoration);
-            //headersDecor = new StickyRecyclerHeadersDecoration(zipExplorerAdapter);
+            //headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);
             //listView.addItemDecoration(headersDecor);
             addheader = false;
         }
@@ -538,6 +445,22 @@ public class ZipExplorerFragment extends Fragment implements BottomBarButtonPath
         relativeDirectory = dir;
         updateBottomBar();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public boolean canGoBack() {
+        return !isRootRelativePath();
+    }
+
+    public void goBack() {
+        changePath(new File(relativeDirectory).getParent());
+    }
+
+    private boolean isRootRelativePath() {
+        return isRoot(relativeDirectory);
+    }
+
+    private boolean isRoot(String folder) {
+        return folder == null || folder.isEmpty();
     }
 
 }

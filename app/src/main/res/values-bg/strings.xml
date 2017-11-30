@@ -189,7 +189,6 @@
   <string name="select_intent">Избери</string>
     <string name="database">База данни</string>
   <string name="colourednavigation">Цветна навигационна лента</string>
-  <string name="gplus_pic_title">Вход със G+</string>
   <string name="color_title">Цвят</string>
   <string name="primary_color_title">Основен цвят (ляв раздел)</string>
   <string name="accent_color_title">Цвят за акцентиране</string>
@@ -270,7 +269,6 @@
   <string name="paypal_copy_message">PayPal id копиран в клипборда</string>
   <string name="searchingdevices">Търсене на устройства</string>
   <string name="share_limit">Не може да споделяте повече от 100 файла</string>
-  <string name="no_profile_pic">Няма G+ профилна снимка</string>
   <string name="opening">Отваряне..</string>
   <string name="information">Информация</string>
   <!-- reference to file accessed date -->

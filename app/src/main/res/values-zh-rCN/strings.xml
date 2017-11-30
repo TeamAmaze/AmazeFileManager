@@ -217,8 +217,6 @@
   <string name="database">数据库</string>
   <string name="colourednavigation">导航栏变色</string>
   <string name="colourednavigationsum">动态调整导航栏以适应皮肤颜色</string>
-  <string name="gplus_pic_title">用 G+ 账号登录</string>
-  <string name="gplus_pic_summary">在导航抽屉中显示 G+ 用户头像</string>
   <string name="color_title">颜色</string>
   <string name="color_summary">为各种界面组件设置颜色</string>
   <string name="primary_color_title">主色调（左侧面板）</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">为图标设置颜色</string>
   <string name="choose_color">选择颜色</string>
   <string name="g_plus_community_title">加入 G+ 社区</string>
-  <string name="no_cover_photo">没有封面图片</string>
   <string name="files">文件</string>
   <string name="textreader">文本阅读器</string>
   <string name="databasereader">数据库读取器</string>
@@ -267,7 +264,6 @@
   <string name="grantper">授予权限</string>
   <string name="grantfailed">权限未被授予</string>
   <string name="granttext">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
-  <string name="grantgplus">此功能需要获得该权限，关闭对话框将无法启用此功能。</string>
   <string name="operationunsuccesful">操作失败</string>
   <string name="creatingfile">正在创建文件</string>
   <string name="creatingfolder">正在创建文件夹</string>
@@ -355,7 +351,6 @@
   </string>
   <string name="share_limit">您最多只能分享 100 个文件</string>
   <string name="otg_access">选择根目录下的 OTG 设备</string>
-  <string name="no_profile_pic">没有 G+ 个人资料图片</string>
   <string name="opening">正在打开</string>
   <string name="information">信息</string>
   <!-- reference to file accessed date -->
@@ -533,4 +528,11 @@
   <string name="typeablepaths_summary">长按地址栏，以输入自定义地址</string>
   <string name="typeablepaths_title">自定义地址</string>
   <string name="go">进入</string>
+  <string name="text_editor">文本编辑器设置</string>
+  <string name="developers">开发者</string>
+  <string name="nobitcoinapp">请安装比特币钱包</string>
+  <string name="preference_newstack_title">新打开一个任务</string>
+  <string name="preference_newstack_summary">新打开一个任务，会出现在最近任务列表里</string>
+  <string name="processing">正在处理中&#8230;</string>
+  <string name="failed_no_connection">无法加载文件，请查看连接是否有效</string>
 </resources>

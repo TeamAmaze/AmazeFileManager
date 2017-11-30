@@ -213,8 +213,6 @@
     <string name="database">Baza danych</string>
   <string name="colourednavigation">Kolorowy pasek nawigacji</string>
   <string name="colourednavigationsum">Koloruje pasek nawigacji zgodnie z kolorystyką aplikacji</string>
-    <string name="gplus_pic_title">Logowanie z G+</string>
-  <string name="gplus_pic_summary">Wyświetla obraz G+ w szufladzie</string>
     <string name="color_title">Kolor</string>
   <string name="color_summary">Ustala kolory różnych elementów interfejsu</string>
   <string name="primary_color_title">Kolor główny (lewa karta)</string>
@@ -225,7 +223,6 @@
   <string name="icon_color_summary">Ustala kolor ikon</string>
     <string name="choose_color">Wybierz kolor</string>
   <string name="g_plus_community_title">Dołącz do społeczności G+</string>
-    <string name="no_cover_photo">Brak obrazu</string>
   <string name="files">Pliki</string>
     <string name="textreader">Czytnik tekstu</string>
   <string name="databasereader">Czytnik baz danych</string>
@@ -263,7 +260,6 @@
   <string name="grantper">Przyznaj uprawnienia</string>
   <string name="grantfailed">Nie przyznano uprawnień</string>
   <string name="granttext">Aplikacja potrzebuje uprawnień do pamięci, by kontynuować. Anulowanie tego okna dialogowego spowoduje zamknięcie aplikacji.</string>
-  <string name="grantgplus">Aplikacja potrzebuje uprawnień dla tej funkcji. Anulowanie tego okna dialogowego spowoduje odznaczenie tej funkcji.</string>
   <string name="operationunsuccesful">Nieudana operacja</string>
   <string name="creatingfile">Tworzenie pliku</string>
   <string name="creatingfolder">Tworzenie katalogu</string>
@@ -355,7 +351,6 @@ smb_instructions
 </string>
   <string name="share_limit">Nie możesz udostępnić więcej niż 100 plików</string>
   <string name="otg_access">Wybierz katalog główny urządzenia OTG</string>
-  <string name="no_profile_pic">Brak zdjęcia profilowego G+</string>
   <string name="opening">Otwieranie...</string>
   <string name="information">Informacja</string>
   <!-- reference to file accessed date -->

@@ -33,12 +33,6 @@
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
-            android:enabled="true"
-            android:key="plus_pic"
-            android:summary="@string/gplus_pic_summary"
-            android:title="@string/gplus_pic_title"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers"/>

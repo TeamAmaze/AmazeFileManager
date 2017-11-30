@@ -225,10 +225,7 @@
     <string name="database">Banco de dados</string>
     <string name="colourednavigation">Barra de navegação colorida</string>
     <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação</string>
-    
-    <string name="gplus_pic_title">Entrar com o G+</string>
-    <string name="gplus_pic_summary">Mostra o ícone do G+ no menu de navegação</string>
-    
+
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos componentes da interface</string>
     <string name="primary_color_title">Cor primária (aba esquerda)</string>
@@ -239,8 +236,7 @@
     <string name="icon_color_summary">Define a cor dos ícones</string>
     <string name="choose_color">Escolha a cor</string>
     <string name="g_plus_community_title">Comunidade G+</string>
-    <string name="no_cover_photo">Sem imagem</string>
-    <string name="files">Arquivos</string>
+        <string name="files">Arquivos</string>
     <string name="textreader">Leitor de texto</string>
     <string name="databasereader">Leitor de banco de dados</string>
     <string name="showDividers">Mostrar linhas divisórias</string>
@@ -278,7 +274,6 @@
     <string name="grantper">Conceder permissão</string>
     <string name="grantfailed">Permissão não concedida</string>
     <string name="granttext">O app precisa de permissão de armazenamento para continuar. Cancelar este diálogo irá fechar o app.</string>
-    <string name="grantgplus">O app precisa de permissão para este recurso. Cancelar este diálogo irá desabilitar este recurso.</string>
     <string name="operationunsuccesful">Operação sem sucesso</string>
     <string name="creatingfile">Criando o arquivo</string>
     <string name="creatingfolder">Criando a pasta</string>
@@ -368,7 +363,6 @@
     </string>
     <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
-    <string name="no_profile_pic">Nenhuma foto de perfil G+</string>
     <string name="opening">Abrindo...</string>
     <string name="information">Informação</string>
     <!-- reference to file accessed date -->
@@ -557,9 +551,6 @@
     <string name="text_editor">Configurações do editor de texto</string>
     <string name="preference_newstack_title">Abrir arquivos como nova tarefa</string>
     <string name="preference_newstack_summary">Permite-lhe abrir arquivos em tarefas separadas. Access them from system recents screen.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Programadores</string>
     <string name="nobitcoinapp">Instale uma carteira de bitcoins</string>
-
-    <string name="appbar_name" translatable="false">Amaze</string>
 </resources>

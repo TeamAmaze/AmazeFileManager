@@ -218,9 +218,6 @@
     <string name="colourednavigation">Färgat Navigationsfält</string>
     <string name="colourednavigationsum">Huruvida systemnavigeringsfältet färgas av skalet</string>
 
-    <string name="gplus_pic_title">Logga in med G+</string>
-    <string name="gplus_pic_summary">Visa G+ omslagsbild i drawer</string>
-
     <string name="color_title">Färg</string>
     <string name="color_summary">Färga olika UI-komponenter</string>
     <string name="primary_color_title">Huvudfärg (Vänster Flik)</string>
@@ -231,7 +228,6 @@
     <string name="icon_color_summary">Färga ikoner</string>
     <string name="choose_color">Välj färg</string>
     <string name="g_plus_community_title">Gå med i G+ Communityn</string>
-    <string name="no_cover_photo">Ingen omslagsbild</string>
     <string name="files">Filer</string>
     <string name="textreader">Textläsare</string>
     <string name="databasereader">Databasläsare</string>
@@ -269,7 +265,6 @@
     <string name="grantper">Tillåt behörighet</string>
     <string name="grantfailed">Behörighet ej beviljad</string>
     <string name="granttext">Appen behöver lagringsbehörighet för att fortsätta. Avbrytande av denna dialog kommer att stänga av appen.</string>
-    <string name="grantgplus">Appen behöver behörighet till den här funktionen. Avbrytande av denna dialog kommer att bocka ur denna funktion.</string>
     <string name="operationunsuccesful">Funktionen lyckades inte</string>
     <string name="creatingfile">Skapar Fil</string>
     <string name="creatingfolder">Skapar Katalog</string>
@@ -322,7 +317,6 @@ kopplade till utveckling</string>
 
     <string name="share_limit">Kan inte dela mer än 100 filer</string>
     <string name="otg_access">Välj roten på OTG-enheten</string>
-    <string name="no_profile_pic">Ingen G+-profilbild</string>
     <string name="opening">Öppnar..</string>
     <string name="information">Information</string>
     <!-- reference to file accessed date -->
