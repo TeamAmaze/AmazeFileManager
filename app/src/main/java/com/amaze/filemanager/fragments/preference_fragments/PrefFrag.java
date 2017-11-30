@@ -63,7 +63,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     private static final String PREFERENCE_KEY_ABOUT = "about";
     private static final String[] PREFERENCE_KEYS =
             {"columns", "theme", "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT,
-                    "plus_pic", "colors", "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
+                    "colors", "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
 
     public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "sidebar_folders_enable";
     public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "sidebar_quickaccess_enable";
@@ -88,7 +88,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
 
     private UtilitiesProviderInterface utilsProvider;
     private SharedPreferences sharedPref;
-    private CheckBox gplus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,11 +103,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
             findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
         }
-
-        gplus = (CheckBox) findPreference("plus_pic");
-
-        if (BuildConfig.IS_VERSION_FDROID)
-            gplus.setEnabled(false);
 
         // crypt master password
         final Preference masterPasswordPreference = findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
@@ -235,12 +229,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             case PREFERENCE_KEY_ABOUT:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
                 return false;
-            case "plus_pic":
-                if(gplus.isChecked()){
-                    boolean b= MainActivityHelper.checkAccountsPermission(getActivity());
-                    if(!b) MainActivityHelper.requestAccountsPermission((PreferencesActivity) getActivity());
-                }
-                return false;
             /*FROM HERE BE FRAGMENTS*/
             case "colors":
                 ((PreferencesActivity) getActivity())
@@ -342,8 +330,4 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         activity.startActivity(activity.getIntent());
     }
 
-    public void invalidateGplus(){
-        boolean a=MainActivityHelper.checkAccountsPermission(getActivity());
-        if(!a)gplus.setChecked(false);
-    }
 }

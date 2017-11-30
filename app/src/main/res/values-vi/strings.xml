@@ -211,8 +211,6 @@
     <string name="database">Dữ liệu</string>
   <string name="colourednavigation">Thanh điều hướng đã được màu</string>
   <string name="colourednavigationsum">Có hay không thanh điều hướng hệ thống được màu cùng với giao diện</string>
-    <string name="gplus_pic_title">Đăng nhập bằng G+</string>
-  <string name="gplus_pic_summary">Hiện ảnh bìa G + trong ngăn kéo</string>
     <string name="color_title">Màu</string>
   <string name="color_summary">Đặt màu cho các thành phần UI khác nhau</string>
   <string name="primary_color_title">Màu nguyên thủy (Thẻ trái)</string>
@@ -223,7 +221,6 @@
   <string name="icon_color_summary">Đặt màu cho biểu tượng</string>
     <string name="choose_color">Chọn màu</string>
   <string name="g_plus_community_title">Tham gia cộng đồng G+</string>
-    <string name="no_cover_photo">Không có ảnh bìa</string>
   <string name="files">Tệp</string>
     <string name="textreader">Trình đọc văn bản thô</string>
   <string name="databasereader">Trình đọc dữ liệu</string>
@@ -260,7 +257,6 @@
   <string name="grantper">Cấp phép Grant</string>
   <string name="grantfailed">Cấp phép chưa được cấp</string>
   <string name="granttext">Ứng dụng cần sự cho phép lưu trữ để tiếp tục. Thoát hộp thoại này sẽ thoát khỏi ứng dụng.</string>
-  <string name="grantgplus">Ứng dụng cần sự cho phép cho tính năng này. Thoát hộp thoại này sẽ bỏ qua tính năng này.</string>
   <string name="operationunsuccesful">Thao tác không thành công</string>
   <string name="creatingfile">Đang tạo tệp tin</string>
   <string name="creatingfolder">Đang tạo thư mục</string>
@@ -312,7 +308,6 @@
   <string name="bookmark_lost">Không phát hiện dấu trang, đang tạo lại&#8230;</string>
   <string name="share_limit">Không thể chia sẻ hơn 100 tập tin</string>
   <string name="otg_access">Chọn thư mục gốc của thiết bị OTG</string>
-  <string name="no_profile_pic">Không có hình ảnh đại diện G+</string>
   <string name="opening">Đang mở..</string>
   <string name="information">Thông tin</string>
   <!-- reference to file accessed date -->

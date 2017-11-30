@@ -213,8 +213,6 @@
     <string name="database">Base de datos</string>
   <string name="colourednavigation">Barra de navegación coloreada</string>
   <string name="colourednavigationsum">Establece si la barra de navegación del sistema se colorea en función del tema</string>
-    <string name="gplus_pic_title">Identificarse con G+</string>
-  <string name="gplus_pic_summary">Mostrar la foto de portada de G+ en el panel lateral</string>
     <string name="color_title">Color</string>
   <string name="color_summary">Establecer el color de varios componentes gráficos</string>
   <string name="primary_color_title">Color principal</string>
@@ -225,7 +223,6 @@
   <string name="icon_color_summary">Establecer color para los iconos</string>
     <string name="choose_color">Elija el color</string>
   <string name="g_plus_community_title">Unirse a la comunidad G+</string>
-    <string name="no_cover_photo">Sin foto de portada</string>
   <string name="files">Ficheros</string>
     <string name="textreader">Lector de texto</string>
   <string name="databasereader">Lector de base de datos</string>
@@ -262,7 +259,6 @@
   <string name="grantper">Conceder permiso</string>
   <string name="grantfailed">Permiso no concedido</string>
   <string name="granttext">La aplicación necesita permiso para acceder al almacenamiento. Al cancelar este diálogo se cerrará la aplicación.</string>
-  <string name="grantgplus">La aplicación necesita permisos para esta función. Al cancelar este diálogo se desactivará esta función.</string>
   <string name="operationunsuccesful">Operación fallida</string>
   <string name="creatingfile">Creando fichero</string>
   <string name="creatingfolder">Creando carpeta</string>
@@ -312,7 +308,6 @@
   <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
   <string name="share_limit">No se pueden compartir más de 100 archivos</string>
   <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
-  <string name="no_profile_pic">Sin foto de Perfil de G +</string>
   <string name="opening">Abriendo...</string>
   <string name="information">Información</string>
   <!-- reference to file accessed date -->

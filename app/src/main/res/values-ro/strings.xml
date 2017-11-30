@@ -198,8 +198,6 @@
   <string name="database">Bază de date</string>
   <string name="colourednavigation">Bară de navigare colorată</string>
   <string name="colourednavigationsum">Colorarea sau nu a barei de navigare de sistem împreună cu skin-ul</string>
-  <string name="gplus_pic_title">Conectare cu G+</string>
-  <string name="gplus_pic_summary">Se afişează imaginea de copertă G+ în sertar</string>
   <string name="color_title">Culoare</string>
   <string name="color_summary">Setaţi culoarea diferitelor componente UI</string>
   <string name="primary_color_title">Culoare primară</string>
@@ -210,7 +208,6 @@
   <string name="icon_color_summary">Setaţi culoarea pictogramelor</string>
   <string name="choose_color">Selectaţi culoarea</string>
   <string name="g_plus_community_title">Comunitatea G+</string>
-  <string name="no_cover_photo">Nici o fotografie de copertă</string>
   <string name="files">Fişiere</string>
   <string name="textreader">Reader text</string>
   <string name="databasereader">Reader baze de date</string>
@@ -245,7 +242,6 @@
   <string name="grantper">Acordaţi permisiunea</string>
   <string name="grantfailed">Permisiun neacordată</string>
   <string name="granttext">Aplicaţia necesită permisiunea de stocare pentru a continua. Anularea acestui dialog va închide aplicația.</string>
-  <string name="grantgplus">Aplicaţia necesită permisiune pentru această funcție. Anularea acestui dialog va debifa această opţiune.</string>
   <string name="operationunsuccesful">Operaţie nereuşită</string>
   <string name="creatingfile">Creare fişier</string>
   <string name="creatingfolder">Creare dosar</string>

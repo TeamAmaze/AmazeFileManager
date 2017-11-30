@@ -217,8 +217,6 @@
     <string name="database">Databáza</string>
   <string name="colourednavigation">Farebný navigačný panel</string>
   <string name="colourednavigationsum">Zafarbenie navigačného panela v súlade so skinom</string>
-    <string name="gplus_pic_title">Prihlásiť pomocou G+</string>
-  <string name="gplus_pic_summary">Zobraziť ikonu G+ na bočnom paneli</string>
     <string name="color_title">Farba</string>
   <string name="color_summary">Nastaviť farbu pre rôzne súčasti UI rozhrania</string>
   <string name="primary_color_title">Hlavná farba (ľavá karta)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Nastavit farbu ikony</string>
     <string name="choose_color">Vybrať farbu</string>
   <string name="g_plus_community_title">Pripojiť sa ku G+ komunite</string>
-    <string name="no_cover_photo">Žiadna fotka obalu</string>
   <string name="files">Súbory</string>
     <string name="textreader">Prehliadač textov</string>
   <string name="databasereader">Prehliadač databáz</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Udeliť oprávnenie</string>
   <string name="grantfailed">Oprávnenie nebolo udelené</string>
   <string name="granttext">Aplikácia pre pokračovanie potrebuje udeliť povolenie k úložisku. Zrušením tohto dialógového okna sa aplikácia ukončí.</string>
-  <string name="grantgplus">Aplikácia potrebuje povolenie pre túto funkciu. Zrušením tohto dialógového okna nepovolíte túto funkciu.</string>
   <string name="operationunsuccesful">Operácia neúspešná</string>
   <string name="creatingfile">Vytvorenie súboru</string>
   <string name="creatingfolder">Vytvorenie priečinka</string>
@@ -354,7 +350,6 @@
         </html>    </string>
   <string name="share_limit">Nemôžete zdieľať viac ako 100 súborov</string>
   <string name="otg_access">Vyberte koreň OTG zariadenia</string>
-  <string name="no_profile_pic">Žiadny obrázok G+ profilu</string>
   <string name="opening">Otváranie...</string>
   <string name="information">Informácie</string>
   <!-- reference to file accessed date -->

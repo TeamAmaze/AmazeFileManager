@@ -218,9 +218,6 @@
     <string name="colourednavigation">வண்ணமய ஊடுருவல் பட்டை</string>
     <string name="colourednavigationsum">முறைமை ஊடுருவல் பட்டை வண்ண அமைப்பால் வண்ணமயமாக்கப்பட்டாலும் இல்லாவிட்டாலும்</string>
 
-    <string name="gplus_pic_title">G+ இல் உள்நுழைக</string>
-    <string name="gplus_pic_summary">G+ உரைபடத்தை பட்டியில் காண்பி</string>
-
     <string name="color_title">வண்ணம்</string>
     <string name="color_summary">பல்வேறு இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
     <string name="primary_color_title">முதன்மை வண்ணம் (இடது தாவல்)</string>
@@ -231,7 +228,6 @@
     <string name="icon_color_summary">படவுருகளுக்கு வண்ணத்தை அமை</string>
     <string name="choose_color">வண்ணத்தை தேர்வுசெய்க</string>
     <string name="g_plus_community_title">G+ குழுவில் சேர</string>
-    <string name="no_cover_photo">உரைப்படம் இல்லை</string>
     <string name="files">கோப்புகள்</string>
     <string name="textreader">உரை வாசிப்பாளர்</string>
     <string name="databasereader">தரவுத்தள வசிப்பாளர்</string>
@@ -269,7 +265,6 @@
     <string name="grantper">அனுமதி வழங்கு</string>
     <string name="grantfailed">அனுமதி வழங்கப்படவில்லை</string>
     <string name="granttext">மேலும் தொடர நிரலுக்கு நினைவாக அனுமதி தேவை. இந்த உரையை ரத்துச்செய்தால் நிரலில் இருந்து வெளியேற்றப்படுவீர்கள்</string>
-    <string name="grantgplus">இந்த அம்சத்தை செயல்படுத்த நிரலுக்கு அனுமதி தேவை. இந்த உரையை ரத்துச்செய்தால் அம்சம் செயலுக்குவராது.</string>
     <string name="operationunsuccesful">செயல்முறை தோல்வி</string>
     <string name="creatingfile">கோப்பை உருவாக்குகிறது</string>
     <string name="creatingfolder">கோப்புறையை உருவாக்குகிறது</string>
@@ -322,7 +317,6 @@
 
     <string name="share_limit">100 கோப்புகளுக்கு மேல் பகிரமுடியாது</string>
     <string name="otg_access">OTG சாதனத்தின் ரூட் தேர்வு</string>
-    <string name="no_profile_pic">G+ இல் சுயவிவரப்படம் இல்லை</string>
     <string name="opening">திறத்தல்
 </string>
     <string name="information">தகவல்</string>

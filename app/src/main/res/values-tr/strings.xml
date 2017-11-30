@@ -218,8 +218,6 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="database">Veri tabanı</string>
   <string name="colourednavigation">Renkli gezinti çubuğu</string>
   <string name="colourednavigationsum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
-    <string name="gplus_pic_title">Google+ ile oturum aç</string>
-  <string name="gplus_pic_summary">Çekmecede Google+ kapak resmini göster</string>
     <string name="color_title">Renk</string>
   <string name="color_summary">Çeşitli sistem bileşenlerinin renklerini ayarlayın</string>
   <string name="primary_color_title">Ana renk</string>
@@ -230,7 +228,6 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="icon_color_summary">Simge renklerini ayarla</string>
     <string name="choose_color">Renk seç</string>
   <string name="g_plus_community_title">G+ Topluluğuna Katıl</string>
-    <string name="no_cover_photo">Kapak fotoğrafı yok</string>
   <string name="files">Dosyalar</string>
     <string name="textreader">Düz Yazı Okuyucu</string>
   <string name="databasereader">Veritabanı Okuyucu</string>
@@ -268,7 +265,6 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="grantper">İzin ver</string>
   <string name="grantfailed">İzin verilmedi</string>
   <string name="granttext">Uygulamanın devam edebilmesi için depolama iznine ihtiyacı var. İptal etmek uygulamayı sonlandıracaktır.</string>
-  <string name="grantgplus">Uygulama bu özellik için izne ihtiyaç duymaktadır. İptal etmek özellik seçimini pasif yapacaktır.</string>
   <string name="operationunsuccesful">İşlem Başarısız</string>
   <string name="creatingfile">Dosya Oluşturuluyor</string>
   <string name="creatingfolder">Klasör oluşturuluyor</string>
@@ -367,7 +363,6 @@ tartışmalarının parçası olun</string>
     </string>
   <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
   <string name="otg_access">OTG aygıt kökünü seçin</string>
-  <string name="no_profile_pic">G+ profil fotoğrafı yok</string>
   <string name="opening">Açılıyor..</string>
   <string name="information">Bilgi</string>
   <!-- reference to file accessed date -->

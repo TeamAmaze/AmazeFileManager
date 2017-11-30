@@ -226,9 +226,6 @@
     <string name="colourednavigation">Kolorita navigacia breto</string>
     <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
 
-    <string name="gplus_pic_title">Ensaluti kun G+</string>
-    <string name="gplus_pic_summary">Montri G+ kovrilfoton en la navigacipanelo</string>
-
     <string name="color_title">Koloro</string>
     <string name="color_summary">Agordi koloron de multe UI-komponanto</string>
     <string name="primary_color_title">Ĉefa koloro (maldekstra langeto)</string>
@@ -239,7 +236,6 @@
     <string name="icon_color_summary">Agordi koloron por piktogramoj</string>
     <string name="choose_color">Elekti koloron</string>
     <string name="g_plus_community_title">Aliĝi G+ komunumo</string>
-    <string name="no_cover_photo">Kovrilfoton ne ekzistas</string>
     <string name="files">Dosieroj</string>
     <string name="textreader">Teksta legilo</string>
     <string name="databasereader">Datumbaza legilo</string>
@@ -278,7 +274,6 @@
     <string name="grantper">Ricevi permesilo</string>
     <string name="grantfailed">Permesilo ne estas ricevita</string>
     <string name="granttext">Aplikaĵo bezonas memoran permesilon por daŭrigi. Nuligi ĉi tion dialogujon eliros la aplikaĵo.</string>
-    <string name="grantgplus">Aplikaĵo bezonas permesilon por ĉi tio funkcio. Nuligi ĉi tion dialogujon malŝaltos ĉi tio funkcio.</string>
     <string name="operationunsuccesful">Operacio malsukcesita</string>
     <string name="creatingfile">Kreanta dosieron</string>
     <string name="creatingfolder">Kreanta dosierujon</string>
@@ -382,7 +377,6 @@
     </string>
     <string name="share_limit">Ne povas kunhavigin pli da 100 dosieroj</string>
     <string name="otg_access">Elekti la radikdosierujon de OTG device</string>
-    <string name="no_profile_pic">Ne ekzistas G+-an profilbildon</string>
     <string name="opening">Malfermante...</string>
     <string name="information">Informo</string>
     <!-- reference to file accessed date -->

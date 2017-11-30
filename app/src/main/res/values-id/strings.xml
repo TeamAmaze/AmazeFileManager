@@ -218,9 +218,6 @@
     <string name="colourednavigation">Bilah Navigasi Berwarna</string>
     <string name="colourednavigationsum">Apakah warna bilah navigasi sistem sama dengan tampilan</string>
 
-    <string name="gplus_pic_title">Masuk dengan G+</string>
-    <string name="gplus_pic_summary">Tampilkan gambar kover G+ di drawer</string>
-
     <string name="color_title">Warna</string>
     <string name="color_summary">Tetapkan warna untuk macam-macam komponen UI</string>
     <string name="primary_color_title">Warna Utama (Tab Kiri)</string>
@@ -231,7 +228,6 @@
     <string name="icon_color_summary">Tetapkan warna untuk ikon</string>
     <string name="choose_color">Pilih warna</string>
     <string name="g_plus_community_title">Bergabung dengan komunitas G+</string>
-    <string name="no_cover_photo">Tidak ada foto kover</string>
     <string name="files">Berkas</string>
     <string name="textreader">Pembaca Teks</string>
     <string name="databasereader">Pembaca Basis Data</string>
@@ -269,7 +265,6 @@
     <string name="grantper">Berikan Izin</string>
     <string name="grantfailed">Izin tidak diberikan</string>
     <string name="granttext">Apl membutuhkan izin akses penyimpanan untuk bisa melanjutkan. Membatalkan izin ini akan keluar dari apl.</string>
-    <string name="grantgplus">Apl membutuhkan izin untuk fitur ini. Membatalkan izin ini akan menghilangkan fitur ini.</string>
     <string name="operationunsuccesful">Operasi tidak Berhasil</string>
     <string name="creatingfile">Membuat Berkas</string>
     <string name="creatingfolder">Membuat Folder</string>
@@ -322,7 +317,6 @@ terkait dengan pengembangan</string>
 
     <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas.</string>
     <string name="otg_access">Pilih root dari perangkat OTG</string>
-    <string name="no_profile_pic">Tidak ada gambar profil G+</string>
     <string name="opening">Membuka..</string>
     <string name="information">Informasi</string>
     <!-- reference to file accessed date -->

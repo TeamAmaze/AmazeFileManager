@@ -217,8 +217,6 @@
   <string name="database">数据库</string>
   <string name="colourednavigation">导航栏变色</string>
   <string name="colourednavigationsum">动态调整导航栏以适应皮肤颜色</string>
-  <string name="gplus_pic_title">用 G+ 账号登录</string>
-  <string name="gplus_pic_summary">在导航抽屉中显示 G+ 用户头像</string>
   <string name="color_title">颜色</string>
   <string name="color_summary">为各种界面组件设置颜色</string>
   <string name="primary_color_title">主色调（左侧面板）</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">为图标设置颜色</string>
   <string name="choose_color">选择颜色</string>
   <string name="g_plus_community_title">加入 G+ 社区</string>
-  <string name="no_cover_photo">没有封面图片</string>
   <string name="files">文件</string>
   <string name="textreader">文本阅读器</string>
   <string name="databasereader">数据库读取器</string>
@@ -267,7 +264,6 @@
   <string name="grantper">授予权限</string>
   <string name="grantfailed">权限未被授予</string>
   <string name="granttext">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
-  <string name="grantgplus">此功能需要获得该权限，关闭对话框将无法启用此功能。</string>
   <string name="operationunsuccesful">操作失败</string>
   <string name="creatingfile">正在创建文件</string>
   <string name="creatingfolder">正在创建文件夹</string>
@@ -355,7 +351,6 @@
   </string>
   <string name="share_limit">您最多只能分享 100 个文件</string>
   <string name="otg_access">选择根目录下的 OTG 设备</string>
-  <string name="no_profile_pic">没有 G+ 个人资料图片</string>
   <string name="opening">正在打开</string>
   <string name="information">信息</string>
   <!-- reference to file accessed date -->

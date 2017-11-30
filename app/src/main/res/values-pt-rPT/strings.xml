@@ -205,8 +205,6 @@
     <string name="database">Base de dados</string>
   <string name="colourednavigation">Barra de navegação colorida</string>
   <string name="colourednavigationsum">Ative esta opção para colorir a barra de navegação</string>
-    <string name="gplus_pic_title">Iniciar sessão com G+</string>
-  <string name="gplus_pic_summary">Mostrar imagem do G+ no menu de navegação</string>
     <string name="color_title">Cor</string>
   <string name="color_summary">Define a cor dos diversos itens da interface</string>
   <string name="primary_color_title">Cor primária</string>
@@ -217,7 +215,6 @@
   <string name="icon_color_summary">Define a cor dos ícones</string>
     <string name="choose_color">Escolha a cor</string>
   <string name="g_plus_community_title">Integrar a comunidade G+</string>
-    <string name="no_cover_photo">Sem imagem</string>
   <string name="files">Ficheiros</string>
     <string name="textreader">Leitor de texto</string>
   <string name="databasereader">Leitor de bases de dados</string>
@@ -251,7 +248,6 @@
   <string name="grantper">Conceder permissão</string>
   <string name="grantfailed">Permissão não concedida</string>
   <string name="granttext">Tem que permitir o acesso ao armazenamento para continuar. Ao fechar este diálogo, fecha a aplicação.</string>
-  <string name="grantgplus">A aplicação necessita de permissão para esta funcionalidade. Ao fechar o diálogo, desativa a opção.</string>
   <string name="operationunsuccesful">Operação não efetuada</string>
   <string name="creatingfile">A criar ficheiro</string>
   <string name="creatingfolder">A criar pasta</string>
@@ -302,7 +298,6 @@ debater ideias com os programadores</string>
   <string name="bookmark_lost">Marcador não encontrado, a recriar&#8230;</string>
   <string name="share_limit">Não é possível partilhar mais de 100 ficheiros.</string>
   <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
-  <string name="no_profile_pic">Nenhuma imagem no perfil G+</string>
   <string name="opening">A abrir...</string>
   <string name="information">Informações</string>
   <!-- reference to file accessed date -->

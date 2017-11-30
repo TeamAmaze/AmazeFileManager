@@ -217,8 +217,6 @@
     <string name="database">База дадзеных</string>
   <string name="colourednavigation">Каляровая панэль навігацыі</string>
   <string name="colourednavigationsum">Афарбоўка панэлі навігацыі разам з тэмай</string>
-    <string name="gplus_pic_title">Увайсці з дапамогай G+</string>
-  <string name="gplus_pic_summary">Паказаць вокладку і значок профілю з G+ у бакавым меню</string>
     <string name="color_title">Колер</string>
   <string name="color_summary">Усталяваць колер для розных кампанентаў UI</string>
   <string name="primary_color_title">Асноўны колер (Левая ўкладка)</string>
@@ -229,7 +227,6 @@
   <string name="icon_color_summary">Усталяваць колер цэтлікаў</string>
     <string name="choose_color">Выбраць колер</string>
   <string name="g_plus_community_title">Супольнасць G+</string>
-    <string name="no_cover_photo">Няма вокладкі</string>
   <string name="files">Файлы</string>
     <string name="textreader">Прагляднік тэксту</string>
   <string name="databasereader">Прагляднік баз дадзеных</string>
@@ -267,7 +264,6 @@
   <string name="grantper">Прадастаўленне дазволу</string>
   <string name="grantfailed">Дазвол не прадстаўлены</string>
   <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць праграму.</string>
-  <string name="grantgplus">Праграме патрабуецца дазвол для гэтай функцыі. Закрыццё гэтага дыялогу здыме дадзеную функцыю.</string>
   <string name="operationunsuccesful">Аперацыя беспаспяховая</string>
   <string name="creatingfile">Стварыць файл</string>
   <string name="creatingfolder">Стварыць тэчку</string>
@@ -366,7 +362,6 @@
     </string>
   <string name="share_limit">Немагчыма абменьвацца больш за 100 файлаў</string>
   <string name="otg_access">Выберыце каранёвую тэчку OTG прылады</string>
-  <string name="no_profile_pic">Няма выявы профілю G+</string>
   <string name="opening">Адкрыццё..</string>
   <string name="information">Інфармацыя</string>
   <!-- reference to file accessed date -->

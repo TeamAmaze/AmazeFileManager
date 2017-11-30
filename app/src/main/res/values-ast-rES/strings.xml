@@ -209,8 +209,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
     <string name="database">Base de datos</string>
   <string name="colourednavigation">Barra pintada de navegación</string>
   <string name="colourednavigationsum">Si se pinta o non la barra de navegación del sistema col aspeutu</string>
-    <string name="gplus_pic_title">Aniciar sesión con G+</string>
-  <string name="gplus_pic_summary">Amuesa la semeya de G+ nel caxón</string>
     <string name="color_summary">Afita\'l color de dellos componenetes de la IU</string>
   <string name="primary_color_title">Color primariu (llingüeta esquierda)</string>
   <string name="primary_color_summary">Afita\'l color d\'elementos d\'IU grandes pa la llingüeta esquierda</string>
@@ -220,7 +218,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
   <string name="icon_color_summary">Afita\'l color a los iconos</string>
     <string name="choose_color">Escoyeta de color</string>
   <string name="g_plus_community_title">Xúnite la comunidá de G+</string>
-    <string name="no_cover_photo">Nun hai semeya de carátula</string>
   <string name="files">Ficheros</string>
     <string name="textreader">Llector de testos</string>
   <string name="databasereader">Llector de bases de datos</string>
@@ -256,7 +253,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
   <string name="grantper">Conceder permisu</string>
   <string name="grantfailed">Nun se concedió\'l permisu</string>
   <string name="granttext">L\'aplicación precisa\'l permisu d\'almacenamientu pa continuar. Encaboxar esti diálogu fadrá colar l\'aplicación.</string>
-  <string name="grantgplus">L\'aplicación precisa\'l permisu pa esta carauterística. Encaboxalo, nun conseñará esta carauterística.</string>
   <string name="operationunsuccesful">La operación nun tuvo ésitu</string>
   <string name="creatingfile">Creando\'l ficheru</string>
   <string name="creatingfolder">Creando carpeta</string>

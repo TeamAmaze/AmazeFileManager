@@ -226,9 +226,6 @@
     <string name="colourednavigation">Nabigazio barra koloreztatua</string>
     <string name="colourednavigationsum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
 
-    <string name="gplus_pic_title">Hasi saioa G+rekin</string>
-    <string name="gplus_pic_summary">Erakutsi G+eko irudia tiraderan</string>
-
     <string name="color_title">Kolorea</string>
     <string name="color_summary">Ezarri UIko hainbat osagairen kolorea</string>
     <string name="primary_color_title">Lehen kolorea (ezkerreko fitxa)</string>
@@ -239,7 +236,6 @@
     <string name="icon_color_summary">Ezarri ikonoen kolorea</string>
     <string name="choose_color">Aukeratu kolorea</string>
     <string name="g_plus_community_title">Batu G+ Komunitatera</string>
-    <string name="no_cover_photo">Azal argazkirik ez</string>
     <string name="files">Fitxategiak</string>
     <string name="textreader">Testu irakurlea</string>
     <string name="databasereader">Datu-base irakurlea</string>
@@ -277,7 +273,6 @@
     <string name="grantper">Eman baimena</string>
     <string name="grantfailed">Ez da baimenik eman</string>
     <string name="granttext">Aplikazioak biltegirako baimena behar du jarraitzeko. Leiho hau ixteak aplikazioa itxiko du.</string>
-    <string name="grantgplus">Aplikazioak baimena behar du ezaugarri honetarako. Leiho hau ixteak ezaugarri hau ezgaituko du.</string>
     <string name="operationunsuccesful">Eragiketa ez da ongi burutu</string>
     <string name="creatingfile">Fitxategia sortzen</string>
     <string name="creatingfolder">Karpeta sortzen</string>
@@ -380,7 +375,6 @@ beta proba eta eztabaidetan</string>
     </string>
     <string name="share_limit">Ezin dira 100 fitxategi baino gehiago partekatu</string>
     <string name="otg_access">Hautatu OTG gailuaren erroa</string>
-    <string name="no_profile_pic">G+ profileko argazkirik ez</string>
     <string name="opening">Irekitzen...</string>
     <string name="information">Informazioa</string>
     <!-- reference to file accessed date -->
