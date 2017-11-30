@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,29 +124,31 @@ public class SmbSearchDialog extends DialogFragment {
             this.context = context;
             items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public ElementViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view;
             switch (viewType) {
                 case VIEW_PROGRESSBAR:
-                    ProgressBar progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyle);
-                    progressBar.setIndeterminate(true);
-                    progressBar.setBackgroundDrawable(null);
-
-                    return new ElementViewHolder(progressBar);
+                    view = mInflater.inflate(R.layout.smb_progress_row, parent, false);
+                    return new ElementViewHolder(view);
                 default:
                 case VIEW_ELEMENT:
-                    View view = mInflater.inflate(R.layout.smb_computers_row, parent, false);
-
+                    view = mInflater.inflate(R.layout.smb_computers_row, parent, false);
                     return new ElementViewHolder(view);
             }
         }
 
         @Override
         public void onBindViewHolder(ElementViewHolder holder, int position) {
-            ComputerParcelable f =  items.get(position);
+            int viewType = getItemViewType(position);
+            if (viewType == VIEW_PROGRESSBAR) {
+                return;
+            }
+
+            ComputerParcelable f = items.get(position);
 
             holder.rootView.setOnClickListener(v -> {
                 if (subnetScanner != null)
@@ -156,7 +157,7 @@ public class SmbSearchDialog extends DialogFragment {
                     dismiss();
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.showSMBDialog(listViewAdapter.items.get(position).name,
-                            listViewAdapter.items.get(position).addr, false);
+                        listViewAdapter.items.get(position).addr, false);
                 }
             });
 
