@@ -91,6 +91,9 @@ public class DecryptService extends ProgressiveService {
 
         @Override
         protected Void doInBackground(Void... params) {
+            String baseFileFolder = baseFile.isDirectory()?
+                    baseFile.getPath():
+                    baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
 
             if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
@@ -101,7 +104,7 @@ public class DecryptService extends ProgressiveService {
 
             addFirstDatapoint(baseFile.getName(), 1, totalSize, false);// we're using encrypt as move flag false
 
-            if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
+            if (FileUtil.checkFolder(baseFileFolder, context) == 1) {
                 serviceWatcherUtil.watch();
 
                 // we're here to decrypt, we'll decrypt at a custom path.
