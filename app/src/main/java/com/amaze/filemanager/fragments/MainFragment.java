@@ -172,6 +172,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
+
+    /**
+     *  a list of encrypted base files which are supposed to be deleted
+     */
+    private ArrayList<HybridFileParcelable> encryptBaseFiles = new ArrayList<>();
     private MediaScannerConnection mediaScannerConnection;
 
     // defines the current visible tab, default either 0 or 1
@@ -905,6 +910,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     encryptBaseFile = new HybridFileParcelable(getActivity().getExternalCacheDir().getPath()
                             + "/"
                             + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
+                    encryptBaseFiles.add(encryptBaseFile);
 
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
                             e.generateBaseFile(), getActivity().getExternalCacheDir().getPath(),
@@ -1471,6 +1477,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         if (mediaScannerConnection != null)
             mediaScannerConnection.disconnect();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            if (!isEncryptOpen && encryptBaseFiles.size() != 0) {
+                // we've opened the file and are ready to delete it
+                new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(encryptBaseFiles);
+            }
+        }
     }
 
     void fixIcons(boolean forceReload) {
@@ -1569,15 +1583,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void onDestroy() {
         super.onDestroy();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-            if (!isEncryptOpen && encryptBaseFile != null) {
-                // we've opened the file and are ready to delete it
-                ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
-                baseFiles.add(encryptBaseFile);
-                new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(baseFiles);
-            }
-        }
+        // not guaranteed to be called unless we call #finish();
+        // please move code to onStop
     }
 
     public void hide(String path) {
