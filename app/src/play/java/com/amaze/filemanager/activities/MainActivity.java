@@ -1575,8 +1575,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         oppathe = "";
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
+                        ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
                         Intent intent1 = new Intent(con, CopyService.class);
-                        intent1.putExtra(CopyService.TAG_COPY_SOURCES, oparrayList.get(i));
+                        intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
                     }
