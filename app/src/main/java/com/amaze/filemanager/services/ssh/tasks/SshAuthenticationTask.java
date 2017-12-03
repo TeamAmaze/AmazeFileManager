@@ -20,48 +20,53 @@ import java.security.PublicKey;
 
 public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
 {
-    private final String hostname;
-    private final int port;
-    private final String hostKey;
+    private final String mHostname;
+    private final int mPort;
+    private final String mHostKey;
 
-    private final String username;
-    private final String password;
-    private final KeyPair privateKey;
+    private final String mUsername;
+    private final String mPassword;
+    private final KeyPair mPrivateKey;
 
-    public SshAuthenticationTask(String hostname, int port, String hostKey, String username, String password, KeyPair privateKey) throws PEMException
+    public SshAuthenticationTask(String hostname,
+                                 int port,
+                                 String hostKey,
+                                 String username,
+                                 String password,
+                                 KeyPair privateKey)
     {
-        this.hostname = hostname;
-        this.port = port;
-        this.hostKey = hostKey;
-        this.username = username;
-        this.password = password;
-        this.privateKey = privateKey;
+        this.mHostname = hostname;
+        this.mPort = port;
+        this.mHostKey = hostKey;
+        this.mUsername = username;
+        this.mPassword = password;
+        this.mPrivateKey = privateKey;
     }
 
     @Override
     protected Boolean doInBackground(Void... voids) {
 
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
-        sshClient.addHostKeyVerifier(hostKey);
+        sshClient.addHostKeyVerifier(mHostKey);
 
         try {
-            sshClient.connect(hostname, port);
-            if(password != null && !"".equals(password))
+            sshClient.connect(mHostname, mPort);
+            if(mPassword != null && !"".equals(mPassword))
             {
-                sshClient.authPassword(username, password);
+                sshClient.authPassword(mUsername, mPassword);
                 return true;
             }
             else
             {
-                sshClient.authPublickey(username, new KeyProvider() {
+                sshClient.authPublickey(mUsername, new KeyProvider() {
                     @Override
                     public PrivateKey getPrivate() throws IOException {
-                        return privateKey.getPrivate();
+                        return mPrivateKey.getPrivate();
                     }
 
                     @Override
                     public PublicKey getPublic() throws IOException {
-                        return privateKey.getPublic();
+                        return mPrivateKey.getPublic();
                     }
 
                     @Override

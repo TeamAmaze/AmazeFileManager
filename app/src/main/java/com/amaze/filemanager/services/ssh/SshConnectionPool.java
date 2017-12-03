@@ -16,7 +16,6 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.security.KeyPair;
@@ -33,54 +32,46 @@ public class SshConnectionPool
 
     private static final String TAG = "SshConnectionPool";
 
-    private static SshConnectionPool instance = null;
+    private static SshConnectionPool sInstance = null;
 
-    private final Map<String, SSHClient> connections;
+    private final Map<String, SSHClient> mConnections;
 
     private SshConnectionPool()
     {
-        connections = new ConcurrentHashMap<String, SSHClient>();
+        mConnections = new ConcurrentHashMap<String, SSHClient>();
     }
 
-    public static final SshConnectionPool getInstance()
-    {
-        if(instance == null)
-            instance = new SshConnectionPool();
+    public static final SshConnectionPool getInstance() {
+        if(sInstance == null)
+            sInstance = new SshConnectionPool();
 
-        return instance;
+        return sInstance;
     }
 
-    public SSHClient getConnection(@NonNull String url) throws IOException
-    {
+    public SSHClient getConnection(@NonNull String url) throws IOException {
         url = SshClientUtils.extractBaseUriFrom(url);
         Log.d(TAG, "Opening connection for " + url);
 
-        SSHClient client = connections.get(url);
-        if(client == null)
-        {
+        SSHClient client = mConnections.get(url);
+        if(client == null) {
             client = create(url);
-        }
-        else
-        {
-            if(!validate(client))
-            {
+        } else {
+            if(!validate(client)) {
                 Log.d(TAG, "Connection no longer usable. Reconnecting...");
                 expire(client);
-                connections.remove(url);
+                mConnections.remove(url);
                 client = create(url);
             }
         }
-        connections.put(url, client);
+        mConnections.put(url, client);
         return client;
     }
 
-    private SSHClient create(@NonNull String url) throws IOException
-    {
+    private SSHClient create(@NonNull String url) throws IOException {
         return create(Uri.parse(url));
     }
 
-    private SSHClient create(@NonNull Uri uri) throws IOException
-    {
+    private SSHClient create(@NonNull Uri uri) throws IOException {
         String host = uri.getHost();
         int port = uri.getPort();
         //If the uri is fetched from the app's database storage, we assume it will never be empty
@@ -102,40 +93,24 @@ public class SshConnectionPool
         return client;
     }
 
-    private boolean validate(@NonNull SSHClient client)
-    {
+    private boolean validate(@NonNull SSHClient client) {
         return client.isConnected() && client.isAuthenticated();
     }
 
-    private void expire(@NonNull SSHClient client)
-    {
-        try
-        {
-            client.disconnect();
-        }
-        catch(IOException e)
-        {
-            Log.w(TAG, e);
-        }
+    private void expire(@NonNull SSHClient client) {
+        SshClientUtils.tryDisconnect(client);
     }
 
-    public void expungeAllConnections()
-    {
-        if(!connections.isEmpty())
-        {
-            for(SSHClient connection : connections.values())
-            {
-                if(connection.isConnected())
-                {
-                    SshClientUtils.tryDisconnect(connection);
-                }
+    public void expungeAllConnections() {
+        if(!mConnections.isEmpty()) {
+            for(SSHClient connection : mConnections.values()) {
+                SshClientUtils.tryDisconnect(connection);
             }
-            connections.clear();
+            mConnections.clear();
         }
     }
 
-    private KeyProvider createKeyProviderFrom(@NonNull String pemContents) throws IOException
-    {
+    private KeyProvider createKeyProviderFrom(@NonNull String pemContents) throws IOException {
         Reader reader = new StringReader(pemContents);
         PEMParser pemParser = new PEMParser(reader);
 

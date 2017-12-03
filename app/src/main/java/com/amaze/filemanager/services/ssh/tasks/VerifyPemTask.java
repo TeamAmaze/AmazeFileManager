@@ -18,18 +18,17 @@ public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
 {
     private static final String TAG = "VerifyPemTask";
 
-    private final InputStream pemFile;
+    private final InputStream mPemFile;
 
-    public VerifyPemTask(@NonNull InputStream pemFile)
-    {
-        this.pemFile = pemFile;
+    public VerifyPemTask(@NonNull InputStream pemFile) {
+        this.mPemFile = pemFile;
     }
 
     @Override
     protected KeyPair doInBackground(Void... voids) {
         InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(pemFile);
+            reader = new InputStreamReader(mPemFile);
             PEMParser pemParser = new PEMParser(reader);
             PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();

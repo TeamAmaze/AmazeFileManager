@@ -66,8 +66,6 @@ public class HFile {
 
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    private String sshHostKey;
-
     public HFile(OpenMode mode, String path) {
         this.path = path;
         this.mode = mode;
@@ -498,7 +496,8 @@ public class HFile {
                     @Override
                     public Boolean execute(SFTPClient client) throws IOException {
                         try {
-                            return client.stat(SshClientUtils.extractRemotePathFrom(path)).getType().equals(FileMode.Type.DIRECTORY);
+                            return client.stat(SshClientUtils.extractRemotePathFrom(path)).getType()
+                                    .equals(FileMode.Type.DIRECTORY);
                         } catch (SFTPException notFound){
                             return false;
                         }
@@ -606,8 +605,12 @@ public class HFile {
                 return SshClientUtils.execute(new SshClientSessionTemplate<Long>(path) {
                     @Override
                     public Long execute(Session session) throws IOException {
-                        Log.d("DEBUG.folderSize", String.format("du -b -s \"%s\"", SshClientUtils.extractRemotePathFrom(path)));
-                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"", SshClientUtils.extractRemotePathFrom(path)));
+                        Log.d("DEBUG.folderSize", String.format("du -b -s \"%s\"",
+                                SshClientUtils.extractRemotePathFrom(path)));
+
+                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
+                                SshClientUtils.extractRemotePathFrom(path)));
+
                         String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
                         cmd.close();
                         if(cmd.getExitStatus() == 0) {
@@ -1060,7 +1063,9 @@ public class HFile {
                     @Override
                     public OutputStream execute(final SSHClient ssh) throws IOException {
                         final SFTPClient client = ssh.newSFTPClient();
-                        final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(path), EnumSet.of(net.schmizz.sshj.sftp.OpenMode.WRITE, net.schmizz.sshj.sftp.OpenMode.CREAT));
+                        final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(path),
+                                EnumSet.of(net.schmizz.sshj.sftp.OpenMode.WRITE,
+                                        net.schmizz.sshj.sftp.OpenMode.CREAT));
                         return rf.new RemoteFileOutputStream(){
                             @Override
                             public void close() throws IOException {

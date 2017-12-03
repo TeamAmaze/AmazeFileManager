@@ -28,7 +28,7 @@ public class AppConfig extends Application {
     private UtilitiesProviderInterface utilsProvider;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-    private UtilsHandler utilsHandler;
+    private UtilsHandler mUtilsHandler;
 
     private static Handler mApplicationHandler = new Handler();
     private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
@@ -46,7 +46,7 @@ public class AppConfig extends Application {
         mInstance = this;
 
         utilsProvider = new UtilitiesProvider(this);
-        utilsHandler = new UtilsHandler(this);
+        mUtilsHandler = new UtilsHandler(this);
 
         sBackgroundHandlerThread.start();
         sBackgroundHandler = new Handler(sBackgroundHandlerThread.getLooper());
@@ -186,7 +186,7 @@ public class AppConfig extends Application {
     }
 
     public UtilsHandler getUtilsHandler() {
-        return utilsHandler;
+        return mUtilsHandler;
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {

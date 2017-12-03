@@ -18,13 +18,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
 {
-    final String hostname;
-    final int port;
+    final String mHostname;
+    final int mPort;
 
-    public VerifyHostKeyTask(@NonNull String hostname, int port)
-    {
-        this.hostname = hostname;
-        this.port = port;
+    public VerifyHostKeyTask(@NonNull String hostname, int port) {
+        this.mHostname = hostname;
+        this.mPort = port;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
         });
 
         try {
-            sshClient.connect(hostname, port);
+            sshClient.connect(mHostname, mPort);
             semaphore.acquire();
         } catch(IOException e) {
             holder.set(null);
