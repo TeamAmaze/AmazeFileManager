@@ -46,11 +46,11 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -114,7 +114,7 @@ public class CopyService extends ProgressiveService {
 
         NotificationConstants.setMetadata(c, mBuilder);
 
-        startForeground(Integer.parseInt("456" + startId), mBuilder.build());
+        startForeground(NotificationConstants.COPY_ID, mBuilder.build());
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
@@ -132,17 +132,16 @@ public class CopyService extends ProgressiveService {
         this.unregisterReceiver(receiver3);
     }
 
-    private class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
+    private class DoInBackground extends AsyncTask<Bundle, Void, Void> {
         ArrayList<HybridFileParcelable> sourceFiles;
         boolean move;
         Copy copy;
         private String targetPath;
         private OpenMode openMode;
 
-        protected Integer doInBackground(Bundle... p1) {
+        protected Void doInBackground(Bundle... p1) {
 
             sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
-            final int id = p1[0].getInt(TAG_COPY_START_ID);
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
@@ -151,7 +150,7 @@ public class CopyService extends ProgressiveService {
             progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
             progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
-                publishResults(id, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
+                publishResults(fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
@@ -171,11 +170,11 @@ public class CopyService extends ProgressiveService {
                     findAndReplaceEncryptedEntry(sourceFile);
                 }
             }
-            return id;
+            return null;
         }
 
         @Override
-        public void onPostExecute(Integer b) {
+        public void onPostExecute(Void b) {
 
             super.onPostExecute(b);
             //  publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
@@ -431,7 +430,7 @@ public class CopyService extends ProgressiveService {
         mBuilder.setContentIntent(pIntent);
         mBuilder.setSmallIcon(R.drawable.ic_content_copy_white_36dp);
 
-        mNotifyManager.notify(741, mBuilder.build());
+        mNotifyManager.notify(NotificationConstants.FAILED_ID, mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
@@ -444,7 +443,6 @@ public class CopyService extends ProgressiveService {
      * Publish the results of the progress to notification and {@link DatapointParcelable}
      * and eventually to {@link ProcessViewerFragment}
      *
-     * @param id             id of current service
      * @param fileName       file name of current file being copied
      * @param sourceFiles    total number of files selected by user for copy
      * @param sourceProgress files been copied out of them
@@ -454,7 +452,7 @@ public class CopyService extends ProgressiveService {
      * @param isComplete     whether operation completed or ongoing (not supported at the moment)
      * @param move           if the files are to be moved
      */
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                 long totalSize, long writtenSize, int speed, boolean isComplete,
                                 boolean move) {
         if (!progressHandler.getCancelled()) {
@@ -468,8 +466,7 @@ public class CopyService extends ProgressiveService {
             mBuilder.setContentTitle(c.getResources().getString(title));
             mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(c, writtenSize) + "/" +
                     Formatter.formatFileSize(c, totalSize));
-            int id1 = Integer.parseInt("456" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
+            mNotifyManager.notify(NotificationConstants.COPY_ID, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
                 if (move) {
 
@@ -484,20 +481,20 @@ public class CopyService extends ProgressiveService {
                 mBuilder.setContentText("");
                 mBuilder.setOngoing(false);
                 mBuilder.setAutoCancel(true);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id1);
+                mNotifyManager.notify(NotificationConstants.COPY_ID, mBuilder.build());
+                publishCompletedResult();
             }
 
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     totalSize, writtenSize, speed, move, isComplete);
             addDatapoint(intent);
-        } else publishCompletedResult(Integer.parseInt("456" + id));
+        } else publishCompletedResult();
     }
 
-    public void publishCompletedResult(int id1) {
+    public void publishCompletedResult() {
         try {
-            mNotifyManager.cancel(id1);
+            mNotifyManager.cancel(NotificationConstants.COPY_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }

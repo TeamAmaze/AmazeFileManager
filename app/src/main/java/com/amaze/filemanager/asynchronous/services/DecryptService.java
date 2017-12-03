@@ -16,6 +16,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
@@ -35,8 +36,6 @@ public class DecryptService extends ProgressiveService {
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
     public static final String TAG_OPEN_MODE = "open_mode";
-
-    private static final int ID_NOTIFICATION = 27978;
 
     public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
@@ -79,7 +78,7 @@ public class DecryptService extends ProgressiveService {
         notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
 
-        startForeground(ID_NOTIFICATION, notificationBuilder.build());
+        startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
 
         new DecryptService.BackgroundTask().execute();
 
@@ -149,13 +148,13 @@ public class DecryptService extends ProgressiveService {
                     writtenSize) + "/" +
                     Formatter.formatFileSize(context, totalSize));
 
-            notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
+            notificationManager.notify(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
 
                 notificationBuilder.setContentText("");
                 notificationBuilder.setOngoing(false);
                 notificationBuilder.setAutoCancel(true);
-                notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
+                notificationManager.notify(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
                 publishCompletedResult();
             }
 
@@ -168,7 +167,7 @@ public class DecryptService extends ProgressiveService {
 
     public void publishCompletedResult(){
         try {
-            notificationManager.cancel(ID_NOTIFICATION);
+            notificationManager.cancel(NotificationConstants.DECRYPT_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -212,7 +211,7 @@ public class DecryptService extends ProgressiveService {
         mBuilder.setContentIntent(pIntent);
         mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
-        notificationManager.notify(741,mBuilder.build());
+        notificationManager.notify(NotificationConstants.FAILED_ID,mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);

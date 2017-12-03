@@ -98,7 +98,7 @@ public class ExtractService extends ProgressiveService {
         progressHandler = new ProgressHandler(1, totalSize);
 
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
-            publishResults(startId, fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
+            publishResults(fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
         });
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -111,8 +111,9 @@ public class ExtractService extends ProgressiveService {
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
-        startForeground(Integer.parseInt("123" + startId), mBuilder.build());
+        startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
@@ -131,7 +132,7 @@ public class ExtractService extends ProgressiveService {
         return new File(filePath).length();
     }
 
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
             mBuilder.setContentTitle(getResources().getString(R.string.extracting));
@@ -140,26 +141,25 @@ public class ExtractService extends ProgressiveService {
             mBuilder.setOngoing(true);
             mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"
                     + Formatter.formatFileSize(context, total));
-            int id1 = Integer.parseInt("123" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
+            mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
             if (progressPercent == 100 || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.extract_complete));
                 mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, total));
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult("", id1);
+                mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
+                publishCompletedResult("");
             }
 
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     total, done, speed, false, isCompleted);
             addDatapoint(intent);
-        } else publishCompletedResult(fileName, Integer.parseInt("123" + id));
+        } else publishCompletedResult(fileName);
     }
 
-    public void publishCompletedResult(String a, int id1) {
+    public void publishCompletedResult(String a) {
         try {
-            mNotifyManager.cancel(id1);
+            mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }

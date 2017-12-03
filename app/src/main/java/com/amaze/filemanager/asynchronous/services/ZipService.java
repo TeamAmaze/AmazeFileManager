@@ -107,10 +107,10 @@ public class ZipService extends ProgressiveService {
         mBuilder.setContentIntent(pendingIntent)
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
-        NotificationConstants.setMetadata(this, mBuilder);
-        startForeground(Integer.parseInt("789" + startId), mBuilder.build());
 
-        b.putInt("id", startId);
+        NotificationConstants.setMetadata(this, mBuilder);
+        startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
+
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
         b.putString(KEY_COMPRESS_PATH, mZipPath);
         new DoWork().execute(b);
@@ -118,7 +118,7 @@ public class ZipService extends ProgressiveService {
         return START_STICKY;
     }
 
-    public class DoWork extends AsyncTask<Bundle, Void, Integer> {
+    public class DoWork extends AsyncTask<Bundle, Void, Void> {
 
         ZipOutputStream zos;
 
@@ -136,8 +136,7 @@ public class ZipService extends ProgressiveService {
             return b;
         }
 
-        protected Integer doInBackground(Bundle... p1) {
-            final int id = p1[0].getInt("id");
+        protected Void doInBackground(Bundle... p1) {
             ArrayList<HybridFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
 
             // setting up service watchers and initial data packages
@@ -145,18 +144,18 @@ public class ZipService extends ProgressiveService {
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
             progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
-                publishResults(id, fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
+                publishResults(fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
             });
 
             addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
             zipPath = p1[0].getString(KEY_COMPRESS_PATH);
             execute(toFileArray(baseFiles), zipPath);
-            return id;
+            return null;
         }
 
         @Override
-        public void onPostExecute(Integer b) {
+        public void onPostExecute(Void a) {
 
             watcherUtil.stopWatch();
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
@@ -225,7 +224,7 @@ public class ZipService extends ProgressiveService {
         }
     }
 
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
             float progressPercent = ((float) done / total) * 100;
@@ -235,15 +234,14 @@ public class ZipService extends ProgressiveService {
             mBuilder.setContentTitle(c.getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " +
                     Formatter.formatFileSize(c, done) + "/" + Formatter.formatFileSize(c, total));
-            int id1 = Integer.parseInt("789" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
+            mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
             if (done == total || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.compression_complete));
                 mBuilder.setContentText("");
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id1);
+                mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
+                publishCompletedResult();
                 isCompleted = true;
             }
 
@@ -252,13 +250,13 @@ public class ZipService extends ProgressiveService {
 
             addDatapoint(intent);
         } else {
-            publishCompletedResult(Integer.parseInt("789" + id));
+            publishCompletedResult();
         }
     }
 
-    public void publishCompletedResult(int id1) {
+    public void publishCompletedResult() {
         try {
-            mNotifyManager.cancel(id1);
+            mNotifyManager.cancel(NotificationConstants.ZIP_ID);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -35,8 +35,6 @@ public class ServiceWatcherUtil {
 
     private static int HAULT_COUNTER = -1;
 
-    public static final int ID_NOTIFICATION_WAIT =  9248;
-
     /**
      *
      * @param progressHandler to publish progress after certain delay
@@ -177,13 +175,13 @@ public class ServiceWatcherUtil {
 
                     if (pendingIntents.size()==0) {
                         // we've done all the work, free up resources (if not already killed by system)
-                        notificationManager.cancel(ID_NOTIFICATION_WAIT);
+                        notificationManager.cancel(NotificationConstants.WAIT_ID);
                         handler.removeCallbacks(this);
                         waitingThread.quit();
                         return;
                     } else {
 
-                        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
+                        notificationManager.notify(NotificationConstants.WAIT_ID, mBuilder.build());
                     }
                 }
                 handler.postDelayed(this, 5000);
