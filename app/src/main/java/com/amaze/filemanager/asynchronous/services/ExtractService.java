@@ -148,21 +148,13 @@ public class ExtractService extends ProgressiveService {
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
-                publishCompletedResult("");
+                mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
             }
 
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     total, done, speed, false, isCompleted);
             addDatapoint(intent);
-        } else publishCompletedResult(fileName);
-    }
-
-    public void publishCompletedResult(String a) {
-        try {
-            mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } else mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
     }
 
     public static class DoWork extends AsyncTask<Void, Void, Void> {

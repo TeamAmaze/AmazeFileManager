@@ -241,7 +241,7 @@ public class ZipService extends ProgressiveService {
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
                 mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
-                publishCompletedResult();
+                mNotifyManager.cancel(NotificationConstants.ZIP_ID);
                 isCompleted = true;
             }
 
@@ -250,15 +250,7 @@ public class ZipService extends ProgressiveService {
 
             addDatapoint(intent);
         } else {
-            publishCompletedResult();
-        }
-    }
-
-    public void publishCompletedResult() {
-        try {
             mNotifyManager.cancel(NotificationConstants.ZIP_ID);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

@@ -155,22 +155,14 @@ public class DecryptService extends ProgressiveService {
                 notificationBuilder.setOngoing(false);
                 notificationBuilder.setAutoCancel(true);
                 notificationManager.notify(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
-                publishCompletedResult();
+                notificationManager.cancel(NotificationConstants.DECRYPT_ID);
             }
 
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles,
                     sourceProgress, totalSize, writtenSize, speed, false, false);
             addDatapoint(intent);
-        } else publishCompletedResult();
-    }
-
-    public void publishCompletedResult(){
-        try {
-            notificationManager.cancel(NotificationConstants.DECRYPT_ID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } else notificationManager.cancel(NotificationConstants.DECRYPT_ID);
     }
 
     @Override

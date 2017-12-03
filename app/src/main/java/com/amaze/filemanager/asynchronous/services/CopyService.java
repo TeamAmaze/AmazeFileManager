@@ -482,22 +482,14 @@ public class CopyService extends ProgressiveService {
                 mBuilder.setOngoing(false);
                 mBuilder.setAutoCancel(true);
                 mNotifyManager.notify(NotificationConstants.COPY_ID, mBuilder.build());
-                publishCompletedResult();
+                mNotifyManager.cancel(NotificationConstants.COPY_ID);
             }
 
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     totalSize, writtenSize, speed, move, isComplete);
             addDatapoint(intent);
-        } else publishCompletedResult();
-    }
-
-    public void publishCompletedResult() {
-        try {
-            mNotifyManager.cancel(NotificationConstants.COPY_ID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } else mNotifyManager.cancel(NotificationConstants.COPY_ID);
     }
 
     //check if copy is successful
