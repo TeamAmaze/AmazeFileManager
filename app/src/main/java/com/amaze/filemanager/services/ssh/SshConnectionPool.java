@@ -1,9 +1,31 @@
+/*
+ * SshConnectionPool.java
+ *
+ * Copyright © 2017 Raymond Lai <airwave209gt at gmail.com>.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.services.ssh;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.AppConfig;
 
@@ -24,6 +46,12 @@ import java.security.PublicKey;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Poor man's implementation of SSH connection pool.
+ *
+ * It uses a {@link ConcurrentHashMap} to hold the opened SSH connections; all code that uses
+ * {@link SSHClient} can ask for connection here with <code>getConnection(url)</code>.
+ */
 public class SshConnectionPool
 {
     public static final int SSH_DEFAULT_PORT = 22;
@@ -41,6 +69,11 @@ public class SshConnectionPool
         mConnections = new ConcurrentHashMap<String, SSHClient>();
     }
 
+    /**
+     * Use this to obtain SshConnectionPool instance singleton.
+     *
+     * @return {@link SshConnectionPool} instance
+     */
     public static final SshConnectionPool getInstance() {
         if(sInstance == null)
             sInstance = new SshConnectionPool();
@@ -48,6 +81,16 @@ public class SshConnectionPool
         return sInstance;
     }
 
+    /**
+     * Obtain a {@link SSHClient} connection from the underlying connection pool.
+     *
+     * Beneath it will return the connection if it exists; otherwise it will create a new one and
+     * put it into the connection pool.
+     *
+     * @param url SSH connection URL, in the form of <code>ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
+     * @return {@link SSHClient} connection, already opened and authenticated
+     * @throws IOException IOExceptions that occur during connection setup
+     */
     public SSHClient getConnection(@NonNull String url) throws IOException {
         url = SshClientUtils.extractBaseUriFrom(url);
         Log.d(TAG, "Opening connection for " + url);
@@ -67,10 +110,27 @@ public class SshConnectionPool
         return client;
     }
 
+    /**
+     * Kill any connection that is still in place. Used by {@link com.amaze.filemanager.activities.MainActivity}.
+     *
+     * @see MainActivity#onDestroy()
+     * @see MainActivity#exit()
+     */
+    public void expungeAllConnections() {
+        if(!mConnections.isEmpty()) {
+            for(SSHClient connection : mConnections.values()) {
+                SshClientUtils.tryDisconnect(connection);
+            }
+            mConnections.clear();
+        }
+    }
+
     private SSHClient create(@NonNull String url) throws IOException {
         return create(Uri.parse(url));
     }
 
+    // Logic for creating SSH connection. Depends on password existence in given Uri password or
+    // key-based authentication
     private SSHClient create(@NonNull Uri uri) throws IOException {
         String host = uri.getHost();
         int port = uri.getPort();
@@ -101,15 +161,7 @@ public class SshConnectionPool
         SshClientUtils.tryDisconnect(client);
     }
 
-    public void expungeAllConnections() {
-        if(!mConnections.isEmpty()) {
-            for(SSHClient connection : mConnections.values()) {
-                SshClientUtils.tryDisconnect(connection);
-            }
-            mConnections.clear();
-        }
-    }
-
+    //Create the KeyProvider object with given PEM contents required by sshj
     private KeyProvider createKeyProviderFrom(@NonNull String pemContents) throws IOException {
         Reader reader = new StringReader(pemContents);
         PEMParser pemParser = new PEMParser(reader);
