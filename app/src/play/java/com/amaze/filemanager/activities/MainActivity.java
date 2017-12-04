@@ -129,9 +129,11 @@ import com.amaze.filemanager.services.DeleteTask;
 import com.amaze.filemanager.services.EncryptService;
 import com.amaze.filemanager.services.asynctasks.CopyFileCheck;
 import com.amaze.filemanager.services.asynctasks.MoveFiles;
+import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.drawer.EntryItem;
@@ -337,7 +339,7 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
-        utilsHandler = new UtilsHandler(this);
+        utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
@@ -486,7 +488,10 @@ public class MainActivity extends BaseActivity implements
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
-                dataUtils.setServers(utilsHandler.getSmbList());
+                ArrayList<String[]> servers = new ArrayList<String[]>();
+                servers.addAll(utilsHandler.getSmbList());
+                servers.addAll(utilsHandler.getSftpList());
+                dataUtils.setServers(servers);
 
                 return null;
             }
@@ -769,6 +774,7 @@ public class MainActivity extends BaseActivity implements
 
     public void exit() {
         if (backPressedToExitOnce) {
+            SshConnectionPool.getInstance().expungeAllConnections();
             finish();
             if (BaseActivity.rootMode) {
                 // TODO close all shells
@@ -1457,6 +1463,8 @@ public class MainActivity extends BaseActivity implements
         CryptHandler cryptHandler = new CryptHandler(this);
         cryptHandler.close();
 
+        SshConnectionPool.getInstance().expungeAllConnections();
+
         /*if (mainFragment!=null)
             mainFragment = null;*/
     }
@@ -1563,9 +1571,11 @@ public class MainActivity extends BaseActivity implements
             Collections.sort(dataUtils.getServers(), new BookSorter());
             synchronized (dataUtils.getServers()) {
 
-                for (String[] file : dataUtils.getServers())
+                for (String[] file : dataUtils.getServers()) {
                     sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(MainActivity.this,
-                            R.drawable.ic_settings_remote_white_48dp)));
+                            (file[1].startsWith("ssh://")) ? R.drawable.ic_linux_grey600_24dp
+                                    : R.drawable.ic_settings_remote_white_48dp)));
+                }
             }
             sectionItems.add(new SectionItem());
         }
@@ -2335,6 +2345,9 @@ public class MainActivity extends BaseActivity implements
         if (news.length() == 0) return;
 
         switch (openmode) {
+            case SFTP:
+                newPath = mainActivityHelper.parseSftpPath(news);
+                break;
             case SMB:
                 newPath = mainActivityHelper.parseSmbPath(news);
                 break;
@@ -2823,6 +2836,36 @@ public class MainActivity extends BaseActivity implements
         bundle.putBoolean("edit", edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    }
+
+    public void showSftpDialog(String name, String path, boolean edit) {
+        if (path.length() > 0 && name.length() == 0) {
+            int i = dataUtils.containsServer(new String[]{name, path});
+            if (i != -1)
+                name = dataUtils.getServers().get(i)[0];
+        }
+        SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+        Uri uri = Uri.parse(path);
+//        Log.d("DEBUG.showSftpDialog", uri.getUserInfo() + ", " + uri.getHost() + ", " + uri.getPort());
+        String userinfo = uri.getUserInfo();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("address", uri.getHost());
+        bundle.putString("port", Integer.toString(uri.getPort()));
+        bundle.putString("path", path);
+        bundle.putString("username", userinfo.indexOf(':') > 0 ?
+                userinfo.substring(0, userinfo.indexOf(':')) : userinfo);
+
+        if(userinfo.indexOf(':') < 0) {
+            bundle.putBoolean("hasPassword", false);
+            //put key name
+        } else {
+            bundle.putBoolean("hasPassword", true);
+            bundle.putString("password", userinfo.substring(userinfo.indexOf(':')+1));
+        }
+        bundle.putBoolean("edit", edit);
+        sftpConnectDialog.setArguments(bundle);
+        sftpConnectDialog.show(getFragmentManager(), "sftpdialog");
     }
 
     @Override
