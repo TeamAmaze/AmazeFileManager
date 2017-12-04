@@ -1,6 +1,28 @@
+/*
+ * VerifyHostKeyTask.java
+ *
+ * Copyright © 2017 Raymond Lai <airwave209gt at gmail.com>.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,12 +38,29 @@ import java.security.PublicKey;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class VerifyHostKeyTask extends AsyncTask<Void, Void, PublicKey>
+/**
+ * {@link AsyncTask} to obtain SSH host fingerprint.
+ *
+ * It works by adding a {@link HostKeyVerifier} that accepts all SSH host keys, then obtain the
+ * key shown by server, and return to the task's caller.
+ *
+ * {@link Semaphore} with {@link AtomicReference} combo is used to ensure SSH host key is obtained
+ * successfully on returning to the task caller.
+ *
+ * Mainly used by {@link com.amaze.filemanager.ui.dialogs.SftpConnectDialog} on saving SSH
+ * connection settings.
+ *
+ * @see HostKeyVerifier
+ * @see SSHClient#addHostKeyVerifier(String)
+ * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#onCreateDialog(Bundle)
+ */
+
+public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
 {
     final String mHostname;
     final int mPort;
 
-    public VerifyHostKeyTask(@NonNull String hostname, int port) {
+    public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
         this.mHostname = hostname;
         this.mPort = port;
     }

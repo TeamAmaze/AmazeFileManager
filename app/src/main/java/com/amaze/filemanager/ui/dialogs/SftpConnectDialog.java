@@ -28,10 +28,8 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -41,7 +39,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -53,7 +50,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
-import com.amaze.filemanager.services.ssh.tasks.VerifyHostKeyTask;
+import com.amaze.filemanager.services.ssh.tasks.GetSshHostFingerprintTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
@@ -114,6 +111,8 @@ public class SftpConnectDialog extends DialogFragment {
         final EditText passwordET = (EditText) v2.findViewById(R.id.passwordET);
         final Button selectPemBTN = (Button) v2.findViewById(R.id.selectPemBTN);
 
+        // If it's new connection setup, set some default values
+        // Otherwise, use given Bundle instance for filling in the blanks
         if(!edit) {
             connectionET.setText(R.string.scp_con);
             portET.setText(Integer.toString(SshConnectionPool.SSH_DEFAULT_PORT));
@@ -130,6 +129,7 @@ public class SftpConnectDialog extends DialogFragment {
             }
         }
 
+        //For convenience, so I don't need to press backspace all the time
         portET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -140,6 +140,8 @@ public class SftpConnectDialog extends DialogFragment {
 
         int accentColor = mUtilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
 
+        //Use system provided action to get Uri to PEM.
+        //If MaterialDialog.Builder can be upgraded we may use their file selection dialog too
         selectPemBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +153,7 @@ public class SftpConnectDialog extends DialogFragment {
             }
         });
 
+        //Define action for buttons
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext)
             .title((R.string.scp_con))
             .autoDismiss(false)
@@ -179,7 +182,7 @@ public class SftpConnectDialog extends DialogFragment {
                         password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair);
             } else {
                 try {
-                    PublicKey hostKey = new VerifyHostKeyTask(hostname, port).execute().get();
+                    PublicKey hostKey = new GetSshHostFingerprintTask(hostname, port).execute().get();
                     if(hostKey != null) {
                         final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
                         StringBuilder sb = new StringBuilder(hostname);
@@ -231,6 +234,7 @@ public class SftpConnectDialog extends DialogFragment {
             }
         });
 
+        //If we are editing connection settings, give new actions for neutral and negative buttons
         if(edit) {
             Log.d(TAG, "Edit? " + edit);
             dialogBuilder.negativeText(R.string.delete).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -268,6 +272,8 @@ public class SftpConnectDialog extends DialogFragment {
 
         MaterialDialog dialog = dialogBuilder.build();
 
+        // Some validations to make sure the Create/Update button is clickable only when required
+        // setting values are given
         final View okBTN = dialog.getActionButton(DialogAction.POSITIVE);
         okBTN.setEnabled(false);
 
@@ -298,6 +304,9 @@ public class SftpConnectDialog extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Set the PEM key for authentication when the Intent to browse file returned.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -382,6 +391,7 @@ public class SftpConnectDialog extends DialogFragment {
         }
     }
 
+    //Decide the SSH URL depends on password/selected KeyPair
     private String deriveSftpPathFrom(String hostname, int port, String username, String password,
                                       KeyPair selectedParsedKeyPair) {
         return (selectedParsedKeyPair != null || password == null) ?
@@ -389,6 +399,7 @@ public class SftpConnectDialog extends DialogFragment {
                 String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
     }
 
+    //Read the PEM content from InputStream to String.
     private String getPemContents() {
         if(mSelectedPem == null)
             return null;
