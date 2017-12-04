@@ -1,9 +1,12 @@
 package com.amaze.filemanager.services.ssh.tasks;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.services.ssh.CustomSshJConfig;
 import com.amaze.filemanager.services.ssh.SshClientUtils;
+import com.amaze.filemanager.utils.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.KeyType;
@@ -89,5 +92,16 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
         }
 
         return false;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+        if(!result)
+        {
+            if(mPassword != null)
+                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
+            if(mPrivateKey != null)
+                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
+        }
     }
 }

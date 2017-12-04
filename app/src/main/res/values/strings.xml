@@ -687,4 +687,7 @@
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
     <string name="ssh_select_pem_button">SSH Private Key</string>
     <string name="password_unchanged">(unchanged)</string>
+    <string name="ssh_authentication_failure_password">Logon failure: Unable to authenticate with supplied username and password.</string>
+    <string name="ssh_authentication_failure_key">Logon failure: Unable to authenticate with supplied username and private key.</string>
+
 </resources>

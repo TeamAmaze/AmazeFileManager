@@ -1,3 +1,24 @@
+/*
+ * SftpConnectDialog.java
+ *
+ * Copyright © 2017 Raymond Lai <airwave209gt at gmail.com>.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.ui.dialogs;
 
 import android.app.Activity;
@@ -20,6 +41,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -51,10 +73,14 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * SSH/SFTP connection setup dialog.
+ */
 public class SftpConnectDialog extends DialogFragment {
     private static final String TAG = "SftpConnectDialog";
 
     //Idiotic code
+    //FIXME: agree code on
     private static final int SELECT_PEM_INTENT = 0x01010101;
 
     private UtilitiesProviderInterface mUtilsProvider;
@@ -173,14 +199,17 @@ public class SftpConnectDialog extends DialogFragment {
                                         Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
                                         //This closes the host fingerprint verification dialog
                                         dialog.dismiss();
-                                        authenticateAndSaveSetup(connectionName, hostname, port,
+                                        if(authenticateAndSaveSetup(connectionName, hostname, port,
                                                 hostKeyFingerprint, username, password,
-                                                mSelectedParsedKeyPairName, mSelectedParsedKeyPair);
-                                        Log.d(TAG, "Saved setup");
+                                                mSelectedParsedKeyPairName, mSelectedParsedKeyPair))
+                                        {
+                                            dialog.dismiss();
+                                            Log.d(TAG, "Saved setup");
+                                            dismiss();
+                                        }
                                     } else {
                                         //TODO: update connection settings
                                     }
-                                    dismiss();
                                 }
                             }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
@@ -301,14 +330,16 @@ public class SftpConnectDialog extends DialogFragment {
         }
     }
 
-    private void authenticateAndSaveSetup(final String connectionName, final String hostname,
+    private boolean authenticateAndSaveSetup(final String connectionName, final String hostname,
                                           final int port, final String hostKeyFingerprint,
                                           final String username, final String password,
                                           final String selectedParsedKeyPairName,
                                           final KeyPair selectedParsedKeyPair) {
         try {
-            if(new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
-                    selectedParsedKeyPair).execute().get()) {
+            boolean result = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
+                    selectedParsedKeyPair).execute().get();
+            Log.d("DEBUG", "Result: " + result);
+            if(result) {
                 final String path = deriveSftpPathFrom(hostname, port, username, password,
                         selectedParsedKeyPair);
 
@@ -341,9 +372,13 @@ public class SftpConnectDialog extends DialogFragment {
                             getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
                     dismiss();
                 }
+                return true;
+            } else {
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
