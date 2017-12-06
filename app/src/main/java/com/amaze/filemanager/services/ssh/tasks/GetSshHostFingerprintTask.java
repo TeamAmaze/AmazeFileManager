@@ -25,15 +25,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.services.ssh.CustomSshJConfig;
 import com.amaze.filemanager.services.ssh.SshClientUtils;
+import com.amaze.filemanager.utils.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SecurityUtils;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.PublicKey;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,6 +63,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
 {
     final String mHostname;
     final int mPort;
+    Throwable exception = null;
 
     public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
         this.mHostname = hostname;
@@ -87,6 +92,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
             semaphore.acquire();
         } catch(IOException e) {
             holder.set(null);
+            exception = e;
             semaphore.release();
         } catch(InterruptedException e) {
             holder.set(null);
@@ -95,6 +101,18 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
         finally {
             SshClientUtils.tryDisconnect(sshClient);
             return holder.get();
+        }
+    }
+
+    @Override
+    protected void onPostExecute(PublicKey publicKey) {
+        if(exception != null) {
+            if(ConnectException.class.isAssignableFrom(exception.getClass())) {
+                Toast.makeText(AppConfig.getInstance(),
+                        String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
+                                mHostname, mPort, exception.getLocalizedMessage()),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

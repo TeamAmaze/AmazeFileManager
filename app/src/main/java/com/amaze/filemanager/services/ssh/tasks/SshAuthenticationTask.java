@@ -37,6 +37,7 @@ import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -60,6 +61,8 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
     private final String mUsername;
     private final String mPassword;
     private final KeyPair mPrivateKey;
+
+    private Throwable exception = null;
 
     /**
      * Constructor.
@@ -124,6 +127,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
             return false;
         } catch (TransportException e) {
             e.printStackTrace();
+            exception = e;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -138,10 +142,21 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
     protected void onPostExecute(Boolean result) {
         if(!result)
         {
-            if(mPassword != null)
+            if(exception != null && ConnectException.class.isAssignableFrom(exception.getClass())) {
+                Toast.makeText(AppConfig.getInstance(),
+                        String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
+                                mHostname, mPort, exception.getLocalizedMessage()),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            if(mPassword != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
-            if(mPrivateKey != null)
+                return;
+            }
+            if(mPrivateKey != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
+                return;
+            }
         }
     }
 }
