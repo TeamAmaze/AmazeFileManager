@@ -22,12 +22,18 @@ public class CircularColorsView extends View {
     private static final int RADIUS = DIAMETER/2;
     private static final int SEMICIRCLE_LINE_WIDTH = 0;
 
+    private boolean paintInitialized = false;
     private Paint blackPaint = new Paint();
     private Paint[] colors = {new Paint(), new Paint(), new Paint(), new Paint()};
     private RectF semicicleRect = new RectF();
 
     public CircularColorsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        blackPaint.setColor(Color.BLACK);
+        blackPaint.setStyle(Paint.Style.STROKE);
+        blackPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        blackPaint.setStrokeWidth(SEMICIRCLE_LINE_WIDTH);
     }
 
     public void setColors(int color, int color1, int color2, int color3) {
@@ -38,10 +44,7 @@ public class CircularColorsView extends View {
 
         for (Paint p : colors) p.setFlags(Paint.ANTI_ALIAS_FLAG);
 
-        blackPaint.setColor(Color.BLACK);
-        blackPaint.setStyle(Paint.Style.STROKE);
-        blackPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        blackPaint.setStrokeWidth(SEMICIRCLE_LINE_WIDTH);
+        paintInitialized = true;
     }
 
     @Override
@@ -49,6 +52,7 @@ public class CircularColorsView extends View {
         super.onDraw(canvas);
 
         if(isInEditMode()) setColors(Color.CYAN, Color.RED, Color.GREEN, Color.BLUE);
+        if(!paintInitialized) throw new IllegalStateException("Paint has not actual color!");
 
         int centerY = canvas.getHeight()/2;
         int[] positionX = {canvas.getWidth() - DISTANCE_EDGE - DIAMETER - DISTANCE - DIAMETER - DISTANCE - RADIUS,
