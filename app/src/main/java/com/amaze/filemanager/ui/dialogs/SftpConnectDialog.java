@@ -48,7 +48,9 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.services.ssh.SshClientUtils;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
+import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.services.ssh.tasks.GetSshHostFingerprintTask;
 import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
@@ -59,6 +61,7 @@ import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
+import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SecurityUtils;
 
 import java.io.BufferedReader;
@@ -182,7 +185,8 @@ public class SftpConnectDialog extends DialogFragment {
                         password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair);
             } else {
                 try {
-                    PublicKey hostKey = new GetSshHostFingerprintTask(hostname, port).execute().get();
+                    AsyncTaskResult<PublicKey> taskResult = new GetSshHostFingerprintTask(hostname, port).execute().get();
+                    PublicKey hostKey = taskResult.getResult();
                     if(hostKey != null) {
                         final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
                         StringBuilder sb = new StringBuilder(hostname);
@@ -345,10 +349,12 @@ public class SftpConnectDialog extends DialogFragment {
                                           final String selectedParsedKeyPairName,
                                           final KeyPair selectedParsedKeyPair) {
         try {
-            boolean result = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
+            AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
                     selectedParsedKeyPair).execute().get();
-            Log.d("DEBUG", "Result: " + result);
-            if(result) {
+            SSHClient result = taskResult.getResult();
+            if(result != null) {
+                SshClientUtils.tryDisconnect(result);
+
                 final String path = deriveSftpPathFrom(hostname, port, username, password,
                         selectedParsedKeyPair);
 

@@ -52,7 +52,7 @@ import java.security.PublicKey;
  * @see SSHClient#authPublickey(String, KeyProvider...)
  * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#authenticateAndSaveSetup(String, String, int, String, String, String, String, KeyPair)
  */
-public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
+public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>
 {
     private final String mHostname;
     private final int mPort;
@@ -61,8 +61,6 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
     private final String mUsername;
     private final String mPassword;
     private final KeyPair mPrivateKey;
-
-    private Throwable exception = null;
 
     /**
      * Constructor.
@@ -90,7 +88,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
     }
 
     @Override
-    protected Boolean doInBackground(Void... voids) {
+    protected AsyncTaskResult<SSHClient> doInBackground(Void... voids) {
 
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.addHostKeyVerifier(mHostKey);
@@ -99,7 +97,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
             sshClient.connect(mHostname, mPort);
             if(mPassword != null && !"".equals(mPassword)) {
                 sshClient.authPassword(mUsername, mPassword);
-                return true;
+                return new AsyncTaskResult<SSHClient>(sshClient);
             }
             else
             {
@@ -119,44 +117,41 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, Boolean>
                         return KeyType.fromKey(getPublic());
                     }
                 });
-                return true;
+                return new AsyncTaskResult<SSHClient>(sshClient);
             }
 
         } catch (UserAuthException e) {
             e.printStackTrace();
-            return false;
+            return new AsyncTaskResult<SSHClient>(e);
         } catch (TransportException e) {
             e.printStackTrace();
-            exception = e;
+            return new AsyncTaskResult<SSHClient>(e);
         } catch (IOException e) {
             e.printStackTrace();
+            return new AsyncTaskResult<SSHClient>(e);
         } finally {
             SshClientUtils.tryDisconnect(sshClient);
         }
-
-        return false;
     }
 
     //If authentication failed, use Toast to notify user.
     @Override
-    protected void onPostExecute(Boolean result) {
-        if(!result)
-        {
-            if(exception != null && ConnectException.class.isAssignableFrom(exception.getClass())) {
-                Toast.makeText(AppConfig.getInstance(),
-                        String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, exception.getLocalizedMessage()),
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
-            if(mPassword != null) {
-                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
-                return;
-            }
-            if(mPrivateKey != null) {
-                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
-                return;
-            }
+    protected void onPostExecute(AsyncTaskResult<SSHClient> result) {
+
+        if(result.getException() != null && ConnectException.class.isAssignableFrom(result.getException().getClass())) {
+            Toast.makeText(AppConfig.getInstance(),
+                    String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
+                            mHostname, mPort, result.getException().getLocalizedMessage()),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mPassword != null) {
+            Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mPrivateKey != null) {
+            Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
+            return;
         }
     }
 }

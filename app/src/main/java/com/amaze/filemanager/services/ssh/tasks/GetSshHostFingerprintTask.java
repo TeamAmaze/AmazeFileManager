@@ -59,11 +59,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#onCreateDialog(Bundle)
  */
 
-public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
+public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>>
 {
     final String mHostname;
     final int mPort;
-    Throwable exception = null;
 
     public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
         this.mHostname = hostname;
@@ -71,15 +70,15 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
     }
 
     @Override
-    protected PublicKey doInBackground(Void... voids) {
+    protected AsyncTaskResult<PublicKey> doInBackground(Void... voids) {
 
-        final AtomicReference<PublicKey> holder = new AtomicReference<PublicKey>();
+        final AtomicReference<AsyncTaskResult<PublicKey>> holder = new AtomicReference<AsyncTaskResult<PublicKey>>();
         final Semaphore semaphore = new Semaphore(0);
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.addHostKeyVerifier(new HostKeyVerifier() {
             @Override
             public boolean verify(String hostname, int port, PublicKey key) {
-                holder.set(key);
+                holder.set(new AsyncTaskResult<PublicKey>(key));
                 Log.d("DEBUG", SecurityUtils.getFingerprint(key));
                 Log.d("DEBUG", key.getAlgorithm());
                 semaphore.release();
@@ -91,11 +90,10 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
             sshClient.connect(mHostname, mPort);
             semaphore.acquire();
         } catch(IOException e) {
-            holder.set(null);
-            exception = e;
+            holder.set(new AsyncTaskResult<PublicKey>(e));
             semaphore.release();
         } catch(InterruptedException e) {
-            holder.set(null);
+            holder.set(new AsyncTaskResult<PublicKey>(e));
             semaphore.release();
         }
         finally {
@@ -105,12 +103,12 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, PublicKey>
     }
 
     @Override
-    protected void onPostExecute(PublicKey publicKey) {
-        if(exception != null) {
-            if(ConnectException.class.isAssignableFrom(exception.getClass())) {
+    protected void onPostExecute(AsyncTaskResult<PublicKey> result) {
+        if(result.getException() != null) {
+            if(ConnectException.class.isAssignableFrom(result.getException().getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, exception.getLocalizedMessage()),
+                                mHostname, mPort, result.getException().getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
             }
         }
