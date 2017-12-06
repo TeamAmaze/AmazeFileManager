@@ -27,24 +27,19 @@ import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
+import com.amaze.filemanager.services.ssh.tasks.PemToKeyPairTask;
+import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.utils.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.KeyType;
-import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
-
-import org.bouncycastle.openssl.PEMKeyPair;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Poor man's implementation of SSH connection pool.
@@ -147,15 +142,25 @@ public class SshConnectionPool
         if(port < 0)
             port = SSH_DEFAULT_PORT;
 
-        SSHClient client = new SSHClient(new CustomSshJConfig());
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-        client.addHostKeyVerifier(utilsHandler.getSshHostKey(uri.toString()));
-        client.connect(host, port);
-        if(password != null)
-            client.authPassword(username, password);
-        else
-            client.authPublickey(username, createKeyProviderFrom(utilsHandler.getSshAuthPrivateKey(uri.toString())));
-        return client;
+        try {
+            String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
+            KeyPair keyPair = (pem != null && !"".equals(pem)) ?
+                    new PemToKeyPairTask(new StringReader(pem)).execute().get()
+                    : null;
+            AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(host, port,
+                    utilsHandler.getSshHostKey(uri.toString()),
+                    username, password, keyPair).execute().get();
+
+            SSHClient client = taskResult.getResult();
+            return client;
+        } catch(InterruptedException e) {
+            //FIXME: proper handling
+            throw new RuntimeException(e);
+        } catch(ExecutionException e) {
+            //FIXME: proper handling
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean validate(@NonNull SSHClient client) {
@@ -164,32 +169,5 @@ public class SshConnectionPool
 
     private void expire(@NonNull SSHClient client) {
         SshClientUtils.tryDisconnect(client);
-    }
-
-    //Create the KeyProvider object with given PEM contents required by sshj
-    private KeyProvider createKeyProviderFrom(@NonNull String pemContents) throws IOException {
-        Reader reader = new StringReader(pemContents);
-        PEMParser pemParser = new PEMParser(reader);
-
-        PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
-        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-        final KeyPair retval = converter.getKeyPair(keyPair);
-
-        return new KeyProvider() {
-            @Override
-            public PrivateKey getPrivate() throws IOException {
-                return retval.getPrivate();
-            }
-
-            @Override
-            public PublicKey getPublic() throws IOException {
-                return retval.getPublic();
-            }
-
-            @Override
-            public KeyType getType() throws IOException {
-                return KeyType.fromKey(getPublic());
-            }
-        };
     }
 }

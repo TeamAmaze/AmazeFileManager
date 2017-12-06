@@ -35,34 +35,35 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.KeyPair;
 
 /**
- * {@link AsyncTask} to verify given {@link InputStream} is a valid private key in PEM format.
- *
- * It uses {@link InputStreamReader} to read the incoming InputStream as String, then use
- * {@link JcaPEMKeyConverter} to convert contents to {@link KeyPair} which is requird by sshj.
+ * {@link AsyncTask} to convert given {@link InputStream} into {@link KeyPair} which is requird by
+ * sshj, using {@link JcaPEMKeyConverter}.
  *
  * @see JcaPEMKeyConverter
  * @see KeyProvider
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
-public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
+public class PemToKeyPairTask extends AsyncTask<Void, Void, KeyPair>
 {
-    private static final String TAG = "VerifyPemTask";
+    private static final String TAG = "PemToKeyPairTask";
 
-    private final InputStream mPemFile;
+    private final Reader mPemFile;
 
-    public VerifyPemTask(@NonNull InputStream pemFile) {
-        this.mPemFile = pemFile;
+    public PemToKeyPairTask(@NonNull InputStream pemFile) {
+        this.mPemFile = new InputStreamReader(pemFile);
+    }
+
+    public PemToKeyPairTask(@NonNull Reader reader) {
+        this.mPemFile = reader;
     }
 
     @Override
     protected KeyPair doInBackground(Void... voids) {
-        InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(mPemFile);
-            PEMParser pemParser = new PEMParser(reader);
+            PEMParser pemParser = new PEMParser(mPemFile);
             PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             KeyPair retval = converter.getKeyPair(keyPair);
@@ -76,12 +77,9 @@ public class VerifyPemTask extends AsyncTask<Void, Void, KeyPair>
         } catch (IOException e) {
             Log.e(TAG, "IOException reading PEM", e);
         } finally {
-            if(reader != null)
-            {
-                try {
-                    reader.close();
-                } catch (IOException ignored) {}
-            }
+            try {
+                mPemFile.close();
+            } catch (IOException ignored) {}
         }
         return null;
     }

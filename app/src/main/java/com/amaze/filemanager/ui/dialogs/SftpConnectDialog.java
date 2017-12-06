@@ -51,9 +51,9 @@ import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.services.ssh.SshClientUtils;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
+import com.amaze.filemanager.services.ssh.tasks.PemToKeyPairTask;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.services.ssh.tasks.GetSshHostFingerprintTask;
-import com.amaze.filemanager.services.ssh.tasks.VerifyPemTask;
 import com.amaze.filemanager.utils.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -323,7 +323,7 @@ public class SftpConnectDialog extends DialogFragment {
             try {
                 InputStream selectedKeyContent = mContext.getContentResolver()
                         .openInputStream(mSelectedPem);
-                KeyPair keypair = new VerifyPemTask(selectedKeyContent).execute().get();
+                KeyPair keypair = new PemToKeyPairTask(selectedKeyContent).execute().get();
                 if(keypair != null)
                 {
                     mSelectedParsedKeyPair = keypair;
