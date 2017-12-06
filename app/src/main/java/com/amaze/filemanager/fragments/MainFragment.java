@@ -362,6 +362,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
         setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
         listView.setLayoutManager(mLayoutManagerGrid);
+        listView.clearOnScrollListeners();
         adapter = null;
     }
 
@@ -376,6 +377,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
+        listView.clearOnScrollListeners();
         adapter = null;
     }
 
@@ -1125,9 +1127,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             else if (!grid && !IS_LIST) switchToList();
 
             if (adapter == null) {
-                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
+                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, listView, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
             } else {
-                adapter.setItems(new ArrayList<>(LIST_ELEMENTS));
+                adapter.setItems(listView, new ArrayList<>(LIST_ELEMENTS));
             }
 
             stopAnims = true;
@@ -1485,7 +1487,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 file_count++;
                 try {
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(
-                            Icons.loadMimeIcon(aMFile.getPath(), !IS_LIST, res), name,
+                            Icons.loadMimeIcon(aMFile.getPath(), !IS_LIST), name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
                             aMFile.length()), aMFile.length(), false,
                             aMFile.lastModified() + "", false);
@@ -1528,7 +1530,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     //e.printStackTrace();
                 }
                 try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST),
                             f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
                     layoutElement.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);

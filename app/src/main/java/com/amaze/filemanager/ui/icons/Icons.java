@@ -335,7 +335,7 @@ public class Icons {
         else return -1;
     }
 
-    public static @DrawableRes int loadMimeIcon(String path, boolean grid, final Resources res) {
+    public static @DrawableRes int loadMimeIcon(String path, boolean grid) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
             /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/

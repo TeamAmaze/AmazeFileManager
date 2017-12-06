@@ -206,7 +206,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
             holder.date.setText(R.string.goback);
         } else {
             GlideApp.with(compressedExplorerFragment)
-                    .load(Icons.loadMimeIcon(rowItem.getName(), false, context.getResources()))
+                    .load(Icons.loadMimeIcon(rowItem.getName(), false))
                     .into(holder.genericIcon);
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());

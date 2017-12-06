@@ -62,8 +62,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 
-import javax.microedition.khronos.opengles.GL;
-
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -218,12 +216,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     @Override
     protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
         super.onPostExecute(list);
-        GlideApp.get(c).clearMemory();
-        for (LayoutElementParcelable e : list.second) {
-            if(ma.SHOW_THUMBS && Icons.shouldLoadFromFile(e)) {
-                GlideApp.with(ma).load(e.getDesc()).preload(GlideConstants.WIDTH, GlideConstants.HEIGHT);
-            }
-        }
         listener.onAsyncTaskFinished(list);
     }
 
@@ -247,7 +239,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         e.printStackTrace();
                     }
                 }
-                drawable = Icons.loadMimeIcon(baseFile.getPath(), !ma.IS_LIST, ma.getResources());
+                drawable = Icons.loadMimeIcon(baseFile.getPath(), !ma.IS_LIST);
                 ma.file_count++;
             }
 

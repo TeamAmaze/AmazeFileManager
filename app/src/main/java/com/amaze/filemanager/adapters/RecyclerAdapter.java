@@ -17,6 +17,7 @@ import android.widget.PopupMenu;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
@@ -26,15 +27,20 @@ import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
+import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
@@ -61,6 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
+    private RecyclerViewPreloader<String> preloader;
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -71,7 +78,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int offset = 0;
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
-                           ArrayList<LayoutElementParcelable> itemsRaw, Context context, boolean showHeaders) {
+                           RecyclerView recyclerView,  ArrayList<LayoutElementParcelable> itemsRaw,
+                           Context context, boolean showHeaders) {
         setHasStableIds(true);
 
         this.mainFrag = m;
@@ -94,7 +102,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         minRowHeight = context.getResources().getDimension(R.dimen.minimal_row_height);
         grey_color = Utils.getColor(context, R.color.grey);
 
-        setItems(itemsRaw, false);
+        setItems(recyclerView, itemsRaw, false);
+
     }
 
     /**
@@ -271,21 +280,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemInserted(getItemCount());
     }
 
-    public void setItems(ArrayList<LayoutElementParcelable> arrayList) {
-        setItems(arrayList, true);
+    public void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList) {
+        setItems(recyclerView, arrayList, true);
     }
 
-    private void setItems(ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+    private void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
         itemsDigested.clear();
         offset = 0;
         stoppedAnimation = false;
 
+        List<String> uris = new ArrayList<>(itemsDigested.size());
+
         for (LayoutElementParcelable e : arrayList) {
             itemsDigested.add(new ListItem(e));
+            uris.add(e != null? e.getDesc():null);
         }
 
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
             itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
+            uris.add(null);
         }
 
         for (int i = 0; i < itemsDigested.size(); i++) {
@@ -293,11 +306,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         if (showHeaders) {
-            createHeaders(invalidate);
+            createHeaders(invalidate, uris);
         }
+
+        FixedPreloadSizeProvider<String> sizeProvider = new FixedPreloadSizeProvider<>(GlideConstants.WIDTH, GlideConstants.HEIGHT);
+        RecyclerPreloadModelProvider modelProvider =
+                new RecyclerPreloadModelProvider(mainFrag, uris, mainFrag.SHOW_THUMBS, !mainFrag.IS_LIST);
+
+        preloader = new RecyclerViewPreloader<>(Glide.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD);
+
+        recyclerView.addOnScrollListener(preloader);
     }
 
-    public void createHeaders(boolean invalidate)  {
+    public void createHeaders(boolean invalidate, List<String> uris)  {
         boolean[] headers = new boolean[]{false, false};
 
         for (int i = 0; i < itemsDigested.size(); i++) {
@@ -308,6 +329,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (!headers[0] && nextItem.isDirectory()) {
                         headers[0] = true;
                         itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
+                        uris.add(i, null);
                         continue;
                     }
 
@@ -315,6 +337,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
                         headers[1] = true;
                         itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
+                        uris.add(i, null);
                         continue;//leave this continue for symmetry
                     }
                 }
@@ -491,11 +514,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.apkIcon.setVisibility(View.GONE);
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.pictureIcon)
+                                GlideApp.with(mainFrag).load(rowItem.getDesc())
+                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
+                                        .into(holder.pictureIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
+                                GlideApp.with(mainFrag).load(rowItem.getDesc())
+                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
+                                        .into(holder.apkIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             }
                         }
@@ -505,7 +532,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             holder.genericIcon.setVisibility(View.GONE);
                             holder.pictureIcon.setVisibility(View.GONE);
                             holder.apkIcon.setVisibility(View.VISIBLE);
-                            GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
+
+                            GlideApp.with(mainFrag).load(rowItem.getDesc())
+                                    .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
+                                    .into(holder.apkIcon)
                                     .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                         }
                         break;
@@ -514,11 +544,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             holder.genericIcon.setVisibility(View.GONE);
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.pictureIcon)
+                                GlideApp.with(mainFrag).load(rowItem.getDesc())
+                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
+                                        .into(holder.pictureIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
+                                GlideApp.with(mainFrag).load(rowItem.getDesc())
+                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
+                                        .into(holder.apkIcon)
                                         .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                             }
                         }

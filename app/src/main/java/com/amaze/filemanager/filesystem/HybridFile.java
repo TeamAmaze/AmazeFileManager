@@ -1031,7 +1031,7 @@ public class HybridFile {
                                     file.lastModified() + "");
                 } else {
                     layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
-                            file.getPath(), !mainFragment.IS_LIST, mainFragment.getResources()),
+                            file.getPath(), !mainFragment.IS_LIST),
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");
                 }
