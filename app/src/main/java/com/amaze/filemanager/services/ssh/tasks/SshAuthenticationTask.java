@@ -136,20 +136,23 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
     @Override
     protected void onPostExecute(AsyncTaskResult<SSHClient> result) {
 
-        if(result.getException() != null && ConnectException.class.isAssignableFrom(result.getException().getClass())) {
-            Toast.makeText(AppConfig.getInstance(),
-                    String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                            mHostname, mPort, result.getException().getLocalizedMessage()),
-                    Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(mPassword != null) {
-            Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(mPrivateKey != null) {
-            Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
-            return;
+        if(result.getException() != null) {
+            if(ConnectException.class.isAssignableFrom(result.getException().getClass()))
+            {
+                Toast.makeText(AppConfig.getInstance(),
+                        String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
+                                mHostname, mPort, result.getException().getLocalizedMessage()),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if(mPassword != null) {
+                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if(mPrivateKey != null) {
+                Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
+                return;
+            }
         }
     }
 }
