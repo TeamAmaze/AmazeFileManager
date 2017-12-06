@@ -36,27 +36,29 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.RootNotPermittedException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,15 +105,19 @@ public class CopyService extends Service {
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         b.putInt(TAG_COPY_START_ID, startId);
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        mBuilder = new NotificationCompat.Builder(c);
-        mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setContentTitle(getResources().getString(R.string.copying))
+
+        mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
+                .setContentIntent(pendingIntent)
+                .setContentTitle(getResources().getString(R.string.copying))
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
+
+        NotificationConstants.setMetadata(c, mBuilder);
 
         startForeground(Integer.parseInt("456" + startId), mBuilder.build());
 
@@ -421,11 +427,12 @@ public class CopyService extends Service {
 
         if(failedOps.size()==0) return;
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(c);
-        mBuilder.setContentTitle(c.getString(R.string.operationunsuccesful));
-        mBuilder.setContentText(c.getString(R.string.copy_error).replace("%s",
-                move ? c.getString(R.string.moved) : c.getString(R.string.copied)));
-        mBuilder.setAutoCancel(true);
+        String error = move? c.getString(R.string.moved):c.getString(R.string.copied);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
+            .setContentTitle(c.getString(R.string.operationunsuccesful))
+            .setContentText(c.getString(R.string.copy_error, error))
+            .setAutoCancel(true);
 
         progressHandler.setCancelled(true);
 
