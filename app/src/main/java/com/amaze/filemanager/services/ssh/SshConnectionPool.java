@@ -117,12 +117,17 @@ public class SshConnectionPool
      * @see MainActivity#exit()
      */
     public void expungeAllConnections() {
-        if(!mConnections.isEmpty()) {
-            for(SSHClient connection : mConnections.values()) {
-                SshClientUtils.tryDisconnect(connection);
+        AppConfig.runInBackground(new Runnable() {
+            @Override
+            public void run() {
+                if(!mConnections.isEmpty()) {
+                    for (SSHClient connection : mConnections.values()) {
+                        SshClientUtils.tryDisconnect(connection);
+                    }
+                    mConnections.clear();
+                }
             }
-            mConnections.clear();
-        }
+        });
     }
 
     private SSHClient create(@NonNull String url) throws IOException {
