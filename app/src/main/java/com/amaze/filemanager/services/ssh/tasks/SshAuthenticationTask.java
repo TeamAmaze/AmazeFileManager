@@ -129,8 +129,6 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
         } catch (IOException e) {
             e.printStackTrace();
             return new AsyncTaskResult<SSHClient>(e);
-        } finally {
-            SshClientUtils.tryDisconnect(sshClient);
         }
     }
 
