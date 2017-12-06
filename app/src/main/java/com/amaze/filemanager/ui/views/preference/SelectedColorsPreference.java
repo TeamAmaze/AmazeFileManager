@@ -12,6 +12,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.CircularColorsView;
 
 /**
+ * This is the external notification that shows some text and a CircularColorsView.
+ *
  * @author Emmanuel
  *         on 6/10/2017, at 15:36.
  */

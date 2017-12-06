@@ -26,6 +26,9 @@ import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
 /**
+ * This is only the dialog, that shows a list of color combinations and
+ * a customization and random one.
+ *
  * @author Emmanuel
  *         on 11/10/2017, at 12:48.
  */
