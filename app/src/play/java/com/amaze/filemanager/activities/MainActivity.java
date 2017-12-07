@@ -35,7 +35,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -50,7 +49,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -320,7 +318,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
         mainActivityHelper = new MainActivityHelper(this);
-        initialiseFab();
+        initialiseFab();// TODO: 7/12/2017 not init when actionIntent != null
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -565,33 +563,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * Initializes the floating action button to act as to save data from an external intent
      */
     private void initFabToSave(final ArrayList<Uri> uris) {
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
 
-        floatingActionButton.setVisibility(View.VISIBLE);
-
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_file_download_black_24dp);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            if (drawable instanceof VectorDrawable) {
-
-                VectorDrawable vectorDrawable = (VectorDrawable) drawable;
-                vectorDrawable.setTint(getResources().getColor(android.R.color.white));
-
-                floatingActionButton.getMenuButton().setImageDrawable(vectorDrawable);
-            }
-        } else {
-
-            if (drawable instanceof VectorDrawableCompat) {
-
-                VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
-                vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
-
-                floatingActionButton.getMenuButton().setImageDrawable(vectorDrawableCompat);
-            }
-        }
-
-
-        floatingActionButton.setOnClickListener(v -> {
+        floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
+        floatingActionButton.getMenuButton().setOnClickListener(v -> {
             FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
             Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
             finish();
@@ -1857,17 +1834,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             return true;
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    //TODO unused method
-    public void invalidateFab(int openmode) {
-        if (openmode == 2) {
-            floatingActionButton.setVisibility(View.INVISIBLE);
-            floatingActionButton.getMenuButton().hide();
-        } else {
-            floatingActionButton.setVisibility(View.VISIBLE);
-            floatingActionButton.getMenuButton().hide();
         }
     }
 
