@@ -93,15 +93,18 @@ public class SshConnectionPool
         SSHClient client = mConnections.get(url);
         if(client == null) {
             client = create(url);
+            if(client != null)
+                mConnections.put(url, client);
         } else {
             if(!validate(client)) {
                 Log.d(TAG, "Connection no longer usable. Reconnecting...");
                 expire(client);
                 mConnections.remove(url);
                 client = create(url);
+                if(client != null)
+                    mConnections.put(url, client);
             }
         }
-        mConnections.put(url, client);
         return client;
     }
 

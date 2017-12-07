@@ -56,7 +56,10 @@ public abstract class SshClientUtils
         T retval = null;
         try {
             client = SshConnectionPool.getInstance().getConnection(template.url);
-            retval = template.execute(client);
+            if(client != null)
+                retval = template.execute(client);
+            else
+                throw new RuntimeException("Unable to execute template");
         } catch(IOException e) {
             Log.e(TAG, "Error executing template method", e);
         } finally {
