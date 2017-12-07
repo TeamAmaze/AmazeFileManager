@@ -328,11 +328,20 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
+    public String getSshAuthPrivateKeyName(String uri)
+    {
+        return getSshAuthPrivateKeyColumn(uri, COLUMN_PRIVATE_KEY_NAME);
+    }
+
     public String getSshAuthPrivateKey(String uri)
     {
+        return getSshAuthPrivateKeyColumn(uri, COLUMN_PRIVATE_KEY);
+    }
+
+    private String getSshAuthPrivateKeyColumn(String uri, String columnName) {
         //If connection is using key authentication, no need to decrypt the path at all
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_PRIVATE_KEY},
+        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{columnName},
                 COLUMN_PATH + " = ?", new String[]{uri},
                 null, null, null);
         if(result.moveToFirst())

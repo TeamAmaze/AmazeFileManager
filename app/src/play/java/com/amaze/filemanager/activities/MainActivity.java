@@ -2860,7 +2860,7 @@ public class MainActivity extends BaseActivity implements
 
         if(userinfo.indexOf(':') < 0) {
             bundle.putBoolean("hasPassword", false);
-            //put key name
+            bundle.putString("keypairName", utilsHandler.getSshAuthPrivateKeyName(path));
         } else {
             bundle.putBoolean("hasPassword", true);
             bundle.putString("password", userinfo.substring(userinfo.indexOf(':')+1));

@@ -332,6 +332,9 @@ public class SftpConnectDialog extends DialogFragment {
                     MDButton okBTN = ((MaterialDialog)getDialog())
                             .getActionButton(DialogAction.POSITIVE);
                     okBTN.setEnabled(okBTN.isEnabled() || true);
+
+                    Button selectPemBTN = (Button) getDialog().findViewById(R.id.selectPemBTN);
+                    selectPemBTN.setText(mSelectedParsedKeyPairName);
                 }
             } catch(FileNotFoundException e) {
                 Log.e(TAG, "File not found", e);
