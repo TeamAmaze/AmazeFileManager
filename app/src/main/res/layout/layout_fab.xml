@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    fab:fabs_menu_overlayColor="#4d000000"
+    fab:fabs_menu_overlayColor="#00000000"
     fab:fabs_menu_clickableOverlay="true"
     tools:layout_behavior="@string/fabs_menu_layout_behavior">
 

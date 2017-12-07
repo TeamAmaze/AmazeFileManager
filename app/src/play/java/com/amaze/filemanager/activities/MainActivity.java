@@ -1694,7 +1694,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
 
         fabBgView.setOnClickListener(view -> {
-            floatingActionButton.collapse();
             if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
@@ -1808,6 +1807,19 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         floatingActionButton = findViewById(R.id.fabs_menu);
         floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
         floatingActionButton.getMenuButton().setRippleColor(Utils.getColor(this, R.color.white_translucent));
+        floatingActionButton.setAnimationDuration(500);
+        floatingActionButton.setMenuListener(new FABsMenuListener() {
+            @Override
+            public void onMenuExpanded(FABsMenu fabsMenu) {
+                showSmokeScreen();
+            }
+
+            @Override
+            public void onMenuCollapsed(FABsMenu fabsMenu) {
+                hideSmokeScreen();
+            }
+        });
+
         floatingActionButton.setMenuListener(new FABsMenuListener() {
             @Override
             public void onMenuExpanded(FABsMenu fabsMenu) {
@@ -1825,7 +1837,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         fabNewFolder.setRippleColor(Utils.getColor(this, R.color.white_translucent));
         fabNewFolder.setOnClickListener(view -> {
             mainActivityHelper.add(MainActivityHelper.NEW_FOLDER);
-            //utils.revealShow(fabBgView, false);
             floatingActionButton.collapse();
         });
 
@@ -1834,7 +1845,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         fabNewFile.setRippleColor(Utils.getColor(this, R.color.white_translucent));
         fabNewFile.setOnClickListener(view -> {
             mainActivityHelper.add(MainActivityHelper.NEW_FILE);
-            //utils.revealShow(fabBgView, false);
             floatingActionButton.collapse();
         });
 
@@ -1843,7 +1853,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         fabNewCloud.setRippleColor(Utils.getColor(this, R.color.white_translucent));
         fabNewCloud.setOnClickListener(view -> {
             mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
-            //utils.revealShow(fabBgView, false);
             floatingActionButton.collapse();
         });
     }
