@@ -145,7 +145,7 @@ public class IconHolder {
         this.mAppIcons = new LinkedHashMap<String, Bitmap>(MAX_CACHE, .75F, true) {
             private static final long serialVersionUID = 1L;
             @Override
-            protected boolean removeEldestEntry(Entry<String, Bitmap> eldest) {
+            protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
                 return size() > MAX_CACHE;
             }
         };
