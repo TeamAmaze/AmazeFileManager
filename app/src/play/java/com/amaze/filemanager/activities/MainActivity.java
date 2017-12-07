@@ -1802,7 +1802,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     void initialiseFab() {
         int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
-        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
 
         floatingActionButton = findViewById(R.id.fabs_menu);
         floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
@@ -1832,27 +1831,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             }
         });
 
-        TitleFAB fabNewFolder = findViewById(R.id.menu_new_folder);
-        fabNewFolder.setBackgroundColor(iconSkin);
-        fabNewFolder.setRippleColor(Utils.getColor(this, R.color.white_translucent));
-        fabNewFolder.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_FOLDER);
-            floatingActionButton.collapse();
-        });
+        initFabTitle(findViewById(R.id.menu_new_folder), MainActivityHelper.NEW_FOLDER);
+        initFabTitle(findViewById(R.id.menu_new_file), MainActivityHelper.NEW_FILE);
+        initFabTitle(findViewById(R.id.menu_new_cloud), MainActivityHelper.NEW_CLOUD);
+    }
 
-        TitleFAB fabNewFile = findViewById(R.id.menu_new_file);
-        fabNewFile.setBackgroundColor(iconSkin);
-        fabNewFile.setRippleColor(Utils.getColor(this, R.color.white_translucent));
-        fabNewFile.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_FILE);
-            floatingActionButton.collapse();
-        });
+    private void initFabTitle(TitleFAB fabTitle, int type) {
+        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
 
-        final TitleFAB fabNewCloud = findViewById(R.id.menu_new_cloud);
-        fabNewCloud.setBackgroundColor(iconSkin);
-        fabNewCloud.setRippleColor(Utils.getColor(this, R.color.white_translucent));
-        fabNewCloud.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
+        fabTitle.setBackgroundColor(iconSkin);
+        fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
+        fabTitle.setOnClickListener(view -> {
+            mainActivityHelper.add(type);
             floatingActionButton.collapse();
         });
     }
