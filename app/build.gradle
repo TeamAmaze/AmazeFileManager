@@ -83,7 +83,7 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
-    compile 'org.apache.commons:commons-compress:1.10'
+    compile 'org.apache.commons:commons-compress:1.12'
 
     compile 'com.github.clans:fab:1.6.4'
     compile ('com.github.junrar:junrar:0.7') {
@@ -100,9 +100,9 @@ dependencies {
     */
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-    compile group: 'org.apache.mina', name: 'mina-core', version: '2.0.13'
+    compile group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
 
