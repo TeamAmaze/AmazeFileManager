@@ -819,28 +819,33 @@ public class HFile {
         ArrayList<BaseFile> arrayList = new ArrayList<>();
         switch (mode) {
             case SFTP:
-                arrayList = SshClientUtils.execute(new SFtpClientTemplate(path) {
-                    @Override
-                    public ArrayList<BaseFile> execute(SFTPClient client) throws IOException {
-                        ArrayList<BaseFile> retval = new ArrayList<BaseFile>();
-                        Log.d("DEBUG.listFiles", "ls " + SshClientUtils.extractRemotePathFrom(path));
-                        try {
-                            for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
-                                BaseFile f = new BaseFile(String.format("%s/%s", path, info.getName()));
-                                f.setName(info.getName());
-                                f.setMode(OpenMode.SFTP);
-                                f.setDirectory(info.isDirectory());
-                                f.setDate(info.getAttributes().getMtime() * 1000);
-                                f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
-                                f.setPermission(Integer.toString(FilePermission.toMask(info.getAttributes().getPermissions()), 8));
-                                retval.add(f);
+                try {
+                    arrayList = SshClientUtils.execute(new SFtpClientTemplate(path) {
+                        @Override
+                        public ArrayList<BaseFile> execute(SFTPClient client) throws IOException {
+                            ArrayList<BaseFile> retval = new ArrayList<BaseFile>();
+                            Log.d("DEBUG.listFiles", "ls " + SshClientUtils.extractRemotePathFrom(path));
+                            try {
+                                for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
+                                    BaseFile f = new BaseFile(String.format("%s/%s", path, info.getName()));
+                                    f.setName(info.getName());
+                                    f.setMode(OpenMode.SFTP);
+                                    f.setDirectory(info.isDirectory());
+                                    f.setDate(info.getAttributes().getMtime() * 1000);
+                                    f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
+                                    f.setPermission(Integer.toString(FilePermission.toMask(info.getAttributes().getPermissions()), 8));
+                                    retval.add(f);
+                                }
+                            } catch (IOException e) {
+                                Log.w("DEBUG.listFiles", "IOException", e);
                             }
-                        } catch (IOException e) {
-                            Log.w("DEBUG.listFiles", "IOException", e);
+                            return retval;
                         }
-                        return retval;
-                    }
-                });
+                    });
+                } catch(Exception e){
+                    e.printStackTrace();
+                    arrayList.clear();
+                }
                 break;
             case SMB:
                 try {
