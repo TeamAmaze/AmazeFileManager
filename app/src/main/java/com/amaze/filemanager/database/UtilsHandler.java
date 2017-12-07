@@ -9,13 +9,14 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -226,7 +227,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                             cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                             SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
                     });
-                } catch (CryptException e) {
+                } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
 
                     // failing to decrypt the path, removing entry from database
@@ -281,12 +282,12 @@ public class UtilsHandler extends SQLiteOpenHelper {
         try {
             if (path.equals("")) {
                 // we don't have a path, remove the entry with this name
-                throw new CryptException();
+                throw new IOException();
             }
 
             sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
                     new String[] {name, SmbUtil.getSmbEncryptedPath(context, path)});
-        } catch (CryptException e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
             // force remove entry, we end up deleting all entries with same name
 

@@ -85,10 +85,6 @@ import jcifs.smb.SmbFile;
  */
 public class FileUtils {
 
-    public static final int READ = 4;
-    public static final int WRITE = 2;
-    public static final int EXECUTE = 1;
-
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
         try {
@@ -325,10 +321,8 @@ public class FileUtils {
     }
 
     public static float readableFileSizeFloat(long size) {
-        if (size <= 0)
-            return 0;
-        float digitGroups = (float) (size / (1024*1024));
-        return digitGroups;
+        if (size <= 0) return 0;
+        return (float) (size / (1024*1024));
     }
 
     /**
@@ -371,9 +365,6 @@ public class FileUtils {
 
     /**
      * Open file from OTG
-     * @param f
-     * @param c
-     * @param forcechooser
      */
     public static void openunknown(DocumentFile f, Context c, boolean forcechooser, boolean useNewStack) {
         Intent chooserIntent = new Intent();
@@ -503,8 +494,6 @@ public class FileUtils {
 
     /**
      * Method supports showing a UI to ask user to open a file without any extension/mime
-     * @param f
-     * @param c
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
@@ -596,9 +585,6 @@ public class FileUtils {
 
     /**
      * Method determines if there is something to go back to
-     * @param currentFile
-     * @param context
-     * @return
      */
     public static boolean canGoBack(Context context, HybridFile currentFile) {
         switch (currentFile.getMode()) {
@@ -738,8 +724,6 @@ public class FileUtils {
 
     /**
      * Support file opening for {@link DocumentFile} (eg. OTG)
-     * @param f
-     * @param m
      */
     public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
@@ -827,15 +811,17 @@ public class FileUtils {
     /**
      * We're parsing a line returned from a stdout of shell.
      * @param line must be the line returned from a 'ls' command
-     * @return
      */
     public static HybridFileParcelable parseName(String line) {
         boolean linked = false;
-        String name = "", link = "", size = "-1", date = "";
+        StringBuilder name = new StringBuilder();
+        StringBuilder link = new StringBuilder();
+        String size = "-1";
+        String date = "";
         String[] array = line.split(" ");
         if(array.length<6)return null;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].contains("->") && array[0].startsWith("l")) {
+        for (String anArray : array) {
+            if (anArray.contains("->") && array[0].startsWith("l")) {
                 linked = true;
             }
         }
@@ -845,17 +831,17 @@ public class FileUtils {
             size = array[p - 2];}
         if (!linked) {
             for (int i = p + 1; i < array.length; i++) {
-                name = name + " " + array[i];
+                name.append(" ").append(array[i]);
             }
-            name = name.trim();
+            name = new StringBuilder(name.toString().trim());
         } else {
             int q = getLinkPosition(array);
             for (int i = p + 1; i < q; i++) {
-                name = name + " " + array[i];
+                name.append(" ").append(array[i]);
             }
-            name = name.trim();
+            name = new StringBuilder(name.toString().trim());
             for (int i = q + 1; i < array.length; i++) {
-                link = link + " " + array[i];
+                link.append(" ").append(array[i]);
             }
         }
         long Size = (size==null || size.trim().length()==0)?-1:Long.parseLong(size);
@@ -863,12 +849,12 @@ public class FileUtils {
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
             Date stringDate = simpledateformat.parse(date, pos);
-            HybridFileParcelable baseFile=new HybridFileParcelable(name,array[0],stringDate.getTime(),Size,true);
-            baseFile.setLink(link);
+            HybridFileParcelable baseFile=new HybridFileParcelable(name.toString(),array[0],stringDate.getTime(),Size,true);
+            baseFile.setLink(link.toString());
             return baseFile;
         }else {
-            HybridFileParcelable baseFile= new HybridFileParcelable(name,array[0],new File("/").lastModified(),Size,true);
-            baseFile.setLink(link);
+            HybridFileParcelable baseFile= new HybridFileParcelable(name.toString(),array[0],new File("/").lastModified(),Size,true);
+            baseFile.setLink(link.toString());
             return baseFile;
         }
     }
@@ -888,49 +874,19 @@ public class FileUtils {
     }
 
     public static ArrayList<Boolean[]> parse(String permLine) {
-        ArrayList<Boolean[]> arrayList= new ArrayList<>();
-        Boolean[] read=new Boolean[]{false,false,false};
-        Boolean[] write=new Boolean[]{false,false,false};
-        Boolean[] execute=new Boolean[]{false,false,false};
-        int owner = 0;// TODO: 17/5/2017 many variables are unused
-        if (permLine.charAt(1) == 'r') {
-            owner += READ;
-            read[0]=true;
-        }
-        if (permLine.charAt(2) == 'w') {
-            owner += WRITE;
-            write[0]=true;
-        }
-        if (permLine.charAt(3) == 'x') {
-            owner += EXECUTE;
-            execute[0]=true;
-        }
-        int group = 0;
-        if (permLine.charAt(4) == 'r') {
-            group += READ;
-            read[1]=true;
-        }
-        if (permLine.charAt(5) == 'w') {
-            group += WRITE;
-            write[1]=true;
-        }
-        if (permLine.charAt(6) == 'x') {
-            group += EXECUTE;
-            execute[1]=true;
-        }
-        int world = 0;
-        if (permLine.charAt(7) == 'r') {
-            world += READ;
-            read[2]=true;
-        }
-        if (permLine.charAt(8) == 'w') {
-            world += WRITE;
-            write[2]=true;
-        }
-        if (permLine.charAt(9) == 'x') {
-            world += EXECUTE;
-            execute[2]=true;
-        }
+        ArrayList<Boolean[]> arrayList= new ArrayList<>(3);
+        Boolean[] read =new Boolean[]{permLine.charAt(1) == 'r',
+                permLine.charAt(4) == 'r',
+                permLine.charAt(7) == 'r'};
+
+        Boolean[] write=new Boolean[]{permLine.charAt(2) == 'w',
+                permLine.charAt(5) == 'w',
+                permLine.charAt(8) == 'w'};
+
+        Boolean[] execute=new Boolean[]{permLine.charAt(3) == 'x',
+                permLine.charAt(6) == 'x',
+                permLine.charAt(9) == 'x'};
+
         arrayList.add(read);
         arrayList.add(write);
         arrayList.add(execute);

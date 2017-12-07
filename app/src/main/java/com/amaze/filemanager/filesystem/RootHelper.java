@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem;
 import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -43,11 +43,10 @@ public class RootHelper {
      * @param cmd the command
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
-     * @throws RootNotPermittedException
      */
-    public static ArrayList<String> runShellCommand(String cmd) throws RootNotPermittedException {
+    public static ArrayList<String> runShellCommand(String cmd) throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
-            throw new RootNotPermittedException();
+            throw new ShellNotRunningException();
         final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
@@ -70,12 +69,11 @@ public class RootHelper {
      * @param callback
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
-     * @throws RootNotPermittedException
      */
     public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
-            throws RootNotPermittedException {
+            throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
-            throw new RootNotPermittedException();
+            throw new ShellNotRunningException();
         MainActivity.shellInteractive.addCommand(cmd, 0, callback);
         MainActivity.shellInteractive.waitForIdle();
     }
@@ -84,7 +82,7 @@ public class RootHelper {
      * @param cmd the command
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
-     * @throws RootNotPermittedException
+     * @throws ShellNotRunningException
      * @deprecated Use {@link #runShellCommand(String)} instead which runs command on an interactive shell
      * <p>
      * Runs the command and stores output in a list. The listener is set on the caller thread,
@@ -198,9 +196,9 @@ public class RootHelper {
      *
      * @param path
      * @return
-     * @throws RootNotPermittedException
+     * @throws ShellNotRunningException
      */
-    public static boolean fileExists(String path) throws RootNotPermittedException {
+    public static boolean fileExists(String path) throws ShellNotRunningException {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
@@ -232,7 +230,7 @@ public class RootHelper {
      * @return TODO: Avoid parsing ls
      */
     public static boolean isDirectory(String toTest, boolean root, int count)
-            throws RootNotPermittedException {
+            throws ShellNotRunningException {
         File f = new File(toTest);
         String name = f.getName();
         String p = f.getParent();
@@ -337,7 +335,7 @@ public class RootHelper {
                 }
 
                 if (getModeCallBack != null) getModeCallBack.getMode(mode);
-            } catch (RootNotPermittedException e) {
+            } catch (ShellNotRunningException e) {
                 e.printStackTrace();
             }
         }

@@ -32,12 +32,7 @@ public class OTGUtil {
      */
     public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context) {
         final ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        getDocumentFiles(path, context, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                files.add(file);
-            }
-        });
+        getDocumentFiles(path, context, files::add);
         return files;
     }
 
@@ -55,13 +50,13 @@ public class OTGUtil {
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
 
         String[] parts = path.split("/");
-        for (int i = 0; i < parts.length; i++) {
+        for (String part : parts) {
             // first omit 'otg:/' before iterating through DocumentFile
             if (path.equals(OTGUtil.PREFIX_OTG + "/")) break;
-            if (parts[i].equals("otg:") || parts[i].equals("")) continue;
-            Log.d(context.getClass().getSimpleName(), "Currently at: " + parts[i]);
+            if (part.equals("otg:") || part.equals("")) continue;
+
             // iterating through the required path to find the end point
-            rootUri = rootUri.findFile(parts[i]);
+            rootUri = rootUri.findFile(part);
         }
 
         // we have the end point DocumentFile, list the files inside it and return
@@ -82,11 +77,8 @@ public class OTGUtil {
     /**
      * Traverse to a specified path in OTG
      *
-     * @param path
-     * @param context
      * @param createRecursive flag used to determine whether to create new file while traversing to path,
      *                        in case path is not present. Notably useful in opening an output stream.
-     * @return
      */
     public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
@@ -96,22 +88,18 @@ public class OTGUtil {
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
 
         String[] parts = path.split("/");
-        for (int i = 0; i < parts.length; i++) {
-
+        for (String part : parts) {
             if (path.equals("otg:/")) break;
-            if (parts[i].equals("otg:") || parts[i].equals("")) continue;
-            Log.d(context.getClass().getSimpleName(), "Currently at: " + parts[i]);
-            // iterating through the required path to find the end point
+            if (part.equals("otg:") || part.equals("")) continue;
 
-            DocumentFile nextDocument = rootUri.findFile(parts[i]);
-            if (createRecursive) {
-                if (nextDocument == null || !nextDocument.exists()) {
-                    nextDocument = rootUri.createFile(parts[i].substring(parts[i].lastIndexOf(".")), parts[i]);
-                    Log.d(context.getClass().getSimpleName(), "NOT FOUND! File created: " + parts[i]);
-                }
+            // iterating through the required path to find the end point
+            DocumentFile nextDocument = rootUri.findFile(part);
+            if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
+                nextDocument = rootUri.createFile(part.substring(part.lastIndexOf(".")), part);
             }
             rootUri = nextDocument;
         }
+
         return rootUri;
     }
 }
