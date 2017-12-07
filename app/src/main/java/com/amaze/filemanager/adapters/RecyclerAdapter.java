@@ -67,7 +67,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
-    private RecyclerViewPreloader<String> preloader;
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -313,7 +312,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         RecyclerPreloadModelProvider modelProvider =
                 new RecyclerPreloadModelProvider(mainFrag, uris, mainFrag.SHOW_THUMBS, !mainFrag.IS_LIST);
 
-        preloader = new RecyclerViewPreloader<>(Glide.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD);
+        RecyclerViewPreloader<String> preloader =
+                new RecyclerViewPreloader<>(Glide.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD);
 
         recyclerView.addOnScrollListener(preloader);
     }
@@ -467,7 +467,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 holder.txtTitle.setText(rowItem.getTitle());
-                GlideApp.with(mainFrag).load(rowItem.getDrawableId()).into(holder.genericIcon);
+                GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
                 holder.genericText.setText("");
 
                 if (holder.about != null) {
@@ -659,7 +659,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.imageView1.setVisibility(View.INVISIBLE);
                 holder.genericIcon.setVisibility(View.VISIBLE);
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
-                GlideApp.with(mainFrag).load(rowItem.getDrawableId()).into(holder.genericIcon);
+
+                GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
 
                 if (Icons.isPicture(new File(rowItem.getDesc().toLowerCase())) || Icons.isVideo(new File(rowItem.getDesc().toLowerCase()))) {
                     holder.genericIcon.setColorFilter(null);

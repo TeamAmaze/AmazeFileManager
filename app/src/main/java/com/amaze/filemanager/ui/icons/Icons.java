@@ -20,7 +20,8 @@
 package com.amaze.filemanager.ui.icons;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -336,7 +337,15 @@ public class Icons {
     }
 
     public static @DrawableRes int loadMimeIcon(String path, boolean grid) {
-        String mimeType = MimeTypes.getMimeType(new File(path));
+        if(path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
+
+        File f = new File(path);
+        if(f.isDirectory()) {
+            if(path.endsWith(CryptUtil.CRYPT_EXTENSION)) return R.drawable.ic_folder_lock_white_36dp;
+            else return R.drawable.ic_grid_folder_new;
+        }
+
+        String mimeType = MimeTypes.getMimeType(f);
         if (mimeType == null) {
             /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/
             return R.drawable.ic_doc_generic_am;
@@ -401,18 +410,29 @@ public class Icons {
     }
 
     public static Drawable loadFailedThumbForFile(@NonNull final Context context, String filePath) {
-        return context.getResources().getDrawable(Icons.loadMimeIcon(filePath, false, context.getResources()));
+        return context.getResources().getDrawable(Icons.loadMimeIcon(filePath, false));
     }
 
     /**
-     * Cancel loading of a drawable for a certain ImageView or clearing the ImageView
-     * Should you load this file as an image of itself (e.g. image, video)
-     * or as an icon (e.g. folder, generic file).
-     */
-      public static boolean shouldLoadFromFile (LayoutElementParcelable file) {
-          int filetype = Icons.getTypeOfFile(file.getDesc());
-          return filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK;
-      }
+    * Cancel loading of a drawable for a certain ImageView or clearing the ImageView
+    * Should you load this file as an image of itself (e.g. image, video)
+    * or as an icon (e.g. folder, generic file).
+    */
+    public static boolean shouldLoadFromFile (LayoutElementParcelable file) {
+        int filetype = Icons.getTypeOfFile(file.getDesc());
+        return filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK;
+    }
 
+    private Drawable getAppDrawable(@NonNull final Context context, String path) throws OutOfMemoryError {
+       try {
+           PackageManager pm = context.getPackageManager();
+           PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
+           pi.applicationInfo.sourceDir = path;
+           pi.applicationInfo.publicSourceDir = path;
+           return pi.applicationInfo.loadIcon(pm);
+       } catch (Exception e) {
+           return null;
+       }
+    }
 
 }

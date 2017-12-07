@@ -24,7 +24,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
@@ -35,7 +37,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    private @DrawableRes int drawableId;
+    private IconDataParcelable iconData;
     private String title;
     private String desc;
     private String permissions;
@@ -46,14 +48,30 @@ public class LayoutElementParcelable implements Parcelable {
     private long longSize;
     private String date1;
     private boolean header;
+
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElementParcelable(@DrawableRes int image, String title, String desc, String permissions,
-                                   String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
-        drawableId = image;
+    public LayoutElementParcelable(String title, String path, String permissions,
+                                   String symlink, String size, long longSize, boolean header,
+                                   String date, boolean isDirectory, boolean isGrid, boolean useThumbs) {
+        int filetype = Icons.getTypeOfFile(path);
+        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
+
+        if(useThumbs) {
+            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO) {
+                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_PICTURE, path, fallbackIcon);
+            } else if (filetype == Icons.APK) {
+                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_APK, path, fallbackIcon);
+            } else {
+                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+            }
+        } else {
+            this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+        }
+
         this.title = title;
-        this.desc = desc;
+        this.desc = path;
         this.permissions = permissions.trim();
         this.symlink = symlink.trim();
         this.size = size;
@@ -69,10 +87,11 @@ public class LayoutElementParcelable implements Parcelable {
         }
     }
 
-    public LayoutElementParcelable(@DrawableRes int image, String path, String permissions, String symlink,
+    public LayoutElementParcelable(String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
-                                   String date) {
-        this(image, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
+                                   String date, boolean isGrid, boolean useThumbs) {
+        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, isGrid, useThumbs);
+
     }
 
     public HybridFileParcelable generateBaseFile() {
@@ -82,8 +101,8 @@ public class LayoutElementParcelable implements Parcelable {
         return baseFile;
     }
 
-    public @DrawableRes int getDrawableId() {
-        return drawableId;
+    public IconDataParcelable getIconData() {
+        return iconData;
     }
 
     public String getDesc() {
@@ -140,7 +159,7 @@ public class LayoutElementParcelable implements Parcelable {
     }
 
     public LayoutElementParcelable(Parcel im) {
-        drawableId = im.readInt();
+        iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
         title = im.readString();
         desc = im.readString();
         permissions = im.readString();
@@ -163,7 +182,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel p1, int p2) {
-        p1.writeInt(drawableId);
+        p1.writeParcelable(iconData, 0);
         p1.writeString(title);
         p1.writeString(desc);
         p1.writeString(permissions);

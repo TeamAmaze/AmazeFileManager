@@ -82,7 +82,6 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
@@ -1188,8 +1187,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     private LayoutElementParcelable getBackElement() {
         if (back == null) {
-            back = new LayoutElementParcelable(R.drawable.ic_arrow_left_white_24dp, "..", "", "",
-                    getString(R.string.goback), 0, false, true, "");
+            back = new LayoutElementParcelable("..", "", "",
+                    getString(R.string.goback), 0, false, true,
+                    "", !IS_LIST, SHOW_THUMBS);
         }
 
         return back;
@@ -1478,19 +1478,21 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
             if (aMFile.isDirectory()) {
                 folder_count++;
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new, name, aMFile.getPath(),
-                        "", "", "", 0, false, aMFile.lastModified() + "", true);
+
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(name, aMFile.getPath(),
+                        "", "", "", 0, false,
+                        aMFile.lastModified() + "", true, !IS_LIST, SHOW_THUMBS);
+
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
                 a.add(layoutElement);
             } else {
                 file_count++;
                 try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(
-                            Icons.loadMimeIcon(aMFile.getPath(), !IS_LIST), name,
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
-                            aMFile.length()), aMFile.length(), false,
-                            aMFile.lastModified() + "", false);
+                            aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
+                            false, !IS_LIST, SHOW_THUMBS);
                     layoutElement.setMode(OpenMode.SMB);
                     searchHelper.add(layoutElement.generateBaseFile());
                     a.add(layoutElement);
@@ -1509,8 +1511,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (!dataUtils.isFileHidden(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new, f.getPath(), mFile.getPermission(),
-                        mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(), mFile.getPermission(),
+                        mFile.getLink(), size, 0, true, false,
+                        mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
 
                 layoutElement.setMode(mFile.getMode());
                 LIST_ELEMENTS.add(layoutElement);
@@ -1530,8 +1533,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     //e.printStackTrace();
                 }
                 try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST),
-                            f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(),
+                            mFile.getPermission(), mFile.getLink(), size, longSize, false,
+                            false, mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
                     layoutElement.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);
                     file_count++;

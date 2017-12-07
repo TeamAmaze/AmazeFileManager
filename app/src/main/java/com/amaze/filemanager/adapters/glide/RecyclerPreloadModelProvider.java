@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.amaze.filemanager.GlideApp;
+import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.bumptech.glide.ListPreloader;
@@ -43,18 +44,22 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     @Override
     @Nullable
     public RequestBuilder getPreloadRequestBuilder(String uri) {
+        GlideRequest request;
+
         if(!showThumbs) {
-            return GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid)).override(GlideConstants.WIDTH, GlideConstants.HEIGHT);
+            request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));
+        } else {
+            int filetype = Icons.getTypeOfFile(uri);
+            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO) {
+                request = GlideApp.with(fragment).load(uri).fallback(Icons.loadMimeIcon(uri, grid));
+            } else if (filetype == Icons.APK) {
+                request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));// TODO: 6/12/2017 load Icons.getAppDrawable()
+            } else {
+                request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));
+            }
         }
 
-        int filetype = Icons.getTypeOfFile(uri);
-        if(filetype == Icons.PICTURE || filetype == Icons.VIDEO) {
-            return GlideApp.with(fragment).load(uri).override(GlideConstants.WIDTH, GlideConstants.HEIGHT);
-        } else if (filetype == Icons.APK) {
-            return null;
-        } else {
-            return GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid)).override(GlideConstants.WIDTH, GlideConstants.HEIGHT);
-        }
+        return request.override(GlideConstants.WIDTH, GlideConstants.HEIGHT);
     }
 
 }

@@ -25,13 +25,13 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -222,13 +222,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
         if (!dataUtils.isFileHidden(baseFile.getPath())) {
             String size = "";
-            @DrawableRes int drawable;
             long longSize= 0;
 
             if (baseFile.isDirectory()) {
-
-                drawable = baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)?
-                        R.drawable.ic_folder_lock_white_36dp:R.drawable.ic_grid_folder_new;
                 ma.folder_count++;
             } else {
                 if (baseFile.getSize() != -1) {
@@ -239,13 +235,13 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         e.printStackTrace();
                     }
                 }
-                drawable = Icons.loadMimeIcon(baseFile.getPath(), !ma.IS_LIST);
+                
                 ma.file_count++;
             }
 
-            LayoutElementParcelable layoutElement = new LayoutElementParcelable(drawable,
+            LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
-                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "");
+                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "", !ma.IS_LIST, ma.SHOW_THUMBS);
             layoutElement.setMode(baseFile.getMode());
             return layoutElement;
         }

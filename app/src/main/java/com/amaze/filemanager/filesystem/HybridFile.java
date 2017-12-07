@@ -7,13 +7,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
-import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -1025,15 +1023,14 @@ public class HybridFile {
                 LayoutElementParcelable layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new,
-                                    path, RootHelper.parseFilePermission(file),
-                                    "", folderSize() + "", 0, true, false,
-                                    file.lastModified() + "");
+                    layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
+                            "", folderSize() + "", 0, true,
+                            false, file.lastModified() + "", !mainFragment.IS_LIST, mainFragment.SHOW_THUMBS);
                 } else {
-                    layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(
-                            file.getPath(), !mainFragment.IS_LIST),
+                    layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
-                            file.getPath(), file.length() + "", file.length(), false, false, file.lastModified() + "");
+                            file.getPath(), file.length() + "", file.length(), false,
+                            false, file.lastModified() + "", !mainFragment.IS_LIST, mainFragment.SHOW_THUMBS);
                 }
                 layoutElement.setMode(mode);
                 return layoutElement;

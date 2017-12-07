@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.text.format.Formatter;
 
-import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
@@ -71,11 +70,15 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
                 info = null;
             }
 
-            mApps.add(new LayoutElementParcelable(R.drawable.ic_doc_apk_grid,
-                    label == null ? object.packageName : label, object.sourceDir,
-                    object.packageName, object.flags + "_" + (info!=null ? info.versionName:""),
+            LayoutElementParcelable elem = new LayoutElementParcelable(
+                    label == null ? object.packageName : label,
+                    object.sourceDir, object.packageName,
+                    object.flags + "_" + (info!=null ? info.versionName:""),
                     Formatter.formatFileSize(getContext(), sourceDir.length()),
-                    sourceDir.length(), false, sourceDir.lastModified()+"", false));
+                    sourceDir.length(), false, sourceDir.lastModified()+"",
+                    false, false, true);
+
+            mApps.add(elem);
 
             Collections.sort(mApps, new FileListSorter(0, sortBy, asc));
         }
