@@ -29,7 +29,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -41,14 +40,14 @@ import android.widget.ImageView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public class IconHolder {
     private final Map<String, Bitmap> mAppIcons;  // App based
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    private Map<ImageView, String> mRequests;
+    private final Map<ImageView, String> mRequests;
 
     private final Context mContext;
     private final boolean mUseThumbs;
@@ -100,19 +99,19 @@ public class IconHolder {
             final String filePath =(result.fso);
 
             synchronized (mAppIcons) {
+
                 mAppIcons.put(filePath, result.result);
             }
 
             // find the request for it
             synchronized (mRequests) {
-                Iterator<Map.Entry<ImageView, String>> iterator = mRequests.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<ImageView, String> entry = iterator.next();
+                for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
                     final ImageView imageView = entry.getKey();
                     final String fso = entry.getValue();
+
                     if (fso != null && fso.equals(result.fso)) {
                         imageView.setImageBitmap(result.result);
-                        iterator.remove();
+                        mRequests.remove(imageView);
                         break;
                     }
                 }
@@ -131,7 +130,7 @@ public class IconHolder {
         super();
         this.mContext = context;
         this.mUseThumbs = useThumbs;
-        this.mRequests = new HashMap<>();
+        this.mRequests = Collections.synchronizedMap(new HashMap<>());
         this.mIcons = new HashMap<>();
         this.mAppIcons = new LinkedHashMap<String, Bitmap>(MAX_CACHE, .75F, true) {
             private static final long serialVersionUID = 1L;
@@ -180,9 +179,8 @@ public class IconHolder {
                 mWorkerThread.start();
                 mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
             }
-            synchronized (mRequests) {
-                mRequests.put(iconView, fso);
-            }
+
+            mRequests.put(iconView, fso);
             Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
             msg.sendToTarget();
 
@@ -352,9 +350,7 @@ public class IconHolder {
      * Free any resources used by this instance
      */
     public void cleanup() {
-        synchronized (mRequests) {
-            this.mRequests.clear();
-        }
+        this.mRequests.clear();
         this.mIcons.clear();
         this.mAppIcons.clear();
 
