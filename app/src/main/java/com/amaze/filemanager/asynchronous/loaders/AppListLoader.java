@@ -7,10 +7,9 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.text.format.Formatter;
 
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
-import com.amaze.filemanager.utils.files.FileListSorter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,18 +22,16 @@ import java.util.List;
  * Class loads all the packages installed
  */
 
-public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>> {
+public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
 
     private PackageManager packageManager;
     private PackageReceiver packageReceiver;
-    private Context context;
-    private List<LayoutElementParcelable> mApps;
+    private List<AppDataParcelable> mApps;
     private int sortBy, asc;
 
     public AppListLoader(Context context, int sortBy, int asc) {
         super(context);
 
-        this.context = context;
         this.sortBy = sortBy;
         this.asc = asc;
 
@@ -46,7 +43,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
     }
 
     @Override
-    public List<LayoutElementParcelable> loadInBackground() {
+    public List<AppDataParcelable> loadInBackground() {
         List<ApplicationInfo> apps = packageManager.getInstalledApplications(
                 PackageManager.MATCH_UNINSTALLED_PACKAGES |
                         PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
@@ -70,23 +67,22 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
                 info = null;
             }
 
-            LayoutElementParcelable elem = new LayoutElementParcelable(
+            AppDataParcelable elem = new AppDataParcelable(
                     label == null ? object.packageName : label,
                     object.sourceDir, object.packageName,
                     object.flags + "_" + (info!=null ? info.versionName:""),
                     Formatter.formatFileSize(getContext(), sourceDir.length()),
-                    sourceDir.length(), false, sourceDir.lastModified()+"",
-                    false, false, true);
+                    sourceDir.length(), sourceDir.lastModified());
 
             mApps.add(elem);
 
-            Collections.sort(mApps, new FileListSorter(0, sortBy, asc));
+            Collections.sort(mApps, new AppDataParcelable.AppDataSorter(sortBy, asc));
         }
         return mApps;
     }
 
     @Override
-    public void deliverResult(List<LayoutElementParcelable> data) {
+    public void deliverResult(List<AppDataParcelable> data) {
         if (isReset()) {
 
             if (data != null)
@@ -94,7 +90,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
         }
 
         // preserving old data for it to be closed
-        List<LayoutElementParcelable> oldData = mApps;
+        List<AppDataParcelable> oldData = mApps;
         mApps = data;
         if (isStarted()) {
             // loader has been started, if we have data, return immediately
@@ -132,7 +128,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
     }
 
     @Override
-    public void onCanceled(List<LayoutElementParcelable> data) {
+    public void onCanceled(List<AppDataParcelable> data) {
         super.onCanceled(data);
 
         onReleaseResources(data);//TODO onReleaseResources() is empty
@@ -166,7 +162,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
      * @param layoutElementList
      */
     //TODO do something
-    private void onReleaseResources(List<LayoutElementParcelable> layoutElementList) {
+    private void onReleaseResources(List<AppDataParcelable> layoutElementList) {
 
     }
 }

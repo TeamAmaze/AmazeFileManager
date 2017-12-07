@@ -35,15 +35,15 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
+import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.List;
 
-public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<LayoutElementParcelable>> {
+public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>> {
 
     UtilitiesProviderInterface utilsProvider;
     AppsListFragment app = this;
@@ -142,12 +142,12 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public Loader<List<LayoutElementParcelable>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
         return new AppListLoader(getContext(), sortby, asc);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<LayoutElementParcelable>> loader, List<LayoutElementParcelable> data) {
+    public void onLoadFinished(Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
         // set new data to adapter
         adapter.setData(data);
 
@@ -162,7 +162,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoaderReset(Loader<List<LayoutElementParcelable>> loader) {
+    public void onLoaderReset(Loader<List<AppDataParcelable>> loader) {
         adapter.setData(null);
     }
 }

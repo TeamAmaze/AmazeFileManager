@@ -32,23 +32,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.adapters.holders.AppHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -62,7 +59,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
+public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
     private Context context;
@@ -84,7 +81,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }*/
     }
 
-    public void setData(List<LayoutElementParcelable> data) {
+    public void setData(List<AppDataParcelable> data) {
         clear();
 
         if (data != null) {
@@ -92,30 +89,16 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }
     }
 
-    private class ViewHolder {
-        ImageView apkIcon;
-        TextView txtTitle;
-        RelativeLayout rl;
-        TextView txtDesc;
-        ImageButton about;
-    }
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final LayoutElementParcelable rowItem = getItem(position);
+        final AppDataParcelable rowItem = getItem(position);
 
         View view;
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             view = mInflater.inflate(R.layout.rowlayout, null);
-            final ViewHolder vholder = new ViewHolder();
-            vholder.txtTitle = (TextView) view.findViewById(R.id.firstline);
-            vholder.apkIcon = (ImageView) view.findViewById(R.id.apk_icon);
-            vholder.rl = (RelativeLayout) view.findViewById(R.id.second);
-            vholder.txtDesc= (TextView) view.findViewById(R.id.date);
-            vholder.about=(ImageButton)view.findViewById(R.id.properties);
-            vholder.apkIcon.setVisibility(View.VISIBLE);
+            final AppHolder vholder = new AppHolder(view);
             view.findViewById(R.id.generic_icon).setVisibility(View.GONE);
             view.findViewById(R.id.picture_icon).setVisibility(View.GONE);
             view.setTag(vholder);
@@ -123,22 +106,22 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
             view = convertView;
         }
 
-        final ViewHolder holder = (ViewHolder) view.getTag();
+        final AppHolder holder = (AppHolder) view.getTag();
 
-        GlideApp.with(app).load(rowItem.getDesc()).into(holder.apkIcon)
-                .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+        GlideApp.with(app).load(rowItem.path).into(holder.apkIcon)
+                .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.path));
 
         if (holder.about != null) {
             if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 holder.about.setColorFilter(Color.parseColor("#ff666666"));
-            showPopup(holder.about,rowItem);
+            showPopup(holder.about, rowItem);
         }
-        holder.txtTitle.setText(rowItem.getTitle());
+        holder.txtTitle.setText(rowItem.label);
         //	File f = new File(rowItem.getDesc());
-        holder.txtDesc.setText(rowItem.getSize());
+        holder.txtDesc.setText(rowItem.fileSize);
         holder.rl.setClickable(true);
         holder.rl.setOnClickListener(p1 -> {
-            Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
+            Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.packageName);
             if (i1 != null)
                 app.startActivity(i1);
             else
@@ -158,7 +141,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }
         return view;
     }
-    private void showPopup(View v, final LayoutElementParcelable rowItem){
+    private void showPopup(View v, final AppDataParcelable rowItem){
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
             popupMenu.setOnMenuItemClickListener(item -> {
@@ -166,7 +149,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
                 switch (item.getItemId()) {
                     case R.id.open:
-                        Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.getPermissions());
+                        Intent i1 = app.getActivity().getPackageManager().getLaunchIntentForPackage(rowItem.packageName);
                         if (i1!= null)
                             app.startActivity(i1);
                         else
@@ -174,16 +157,16 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
                         return true;
                     case R.id.share:
                         ArrayList<File> arrayList2=new ArrayList<File>();
-                        arrayList2.add(new File(rowItem.getDesc()));
+                        arrayList2.add(new File(rowItem.path));
                         themedActivity.getColorPreference();
                         FileUtils.shareFiles(arrayList2, app.getActivity(), utilsProvider.getAppTheme(), colorAccent);
                         return true;
                     case R.id.unins:
-                        final HybridFileParcelable f1 = new HybridFileParcelable(rowItem.getDesc());
+                        final HybridFileParcelable f1 = new HybridFileParcelable(rowItem.path);
                         f1.setMode(OpenMode.ROOT);
 
-                        if ((Integer.valueOf(rowItem.getSymlink().substring(0,
-                                rowItem.getSymlink().indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                        if ((Integer.valueOf(rowItem.data.substring(0,
+                                rowItem.data.indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
                             // system package
                             if(app.Sp.getBoolean("rootmode",false)) {
                                 MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
@@ -223,30 +206,30 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
                                 Toast.makeText(app.getActivity(),app.getResources().getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            app.unin(rowItem.getPermissions());
+                            app.unin(rowItem.packageName);
                         }
                         return true;
                     case R.id.play:
                         Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                        intent1.setData(Uri.parse("market://details?id=" + rowItem.getPermissions()));
+                        intent1.setData(Uri.parse("market://details?id=" + rowItem.packageName));
                         app.startActivity(intent1);
                         return true;
                     case R.id.properties:
 
                         app.startActivity(new Intent(
                                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.parse("package:" + rowItem.getPermissions())));
+                                Uri.parse("package:" + rowItem.packageName)));
                         return true;
                     case R.id.backup:
                         Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
-                        File f = new File(rowItem.getDesc());
+                        File f = new File(rowItem.path);
                         ArrayList<HybridFileParcelable> ab = new ArrayList<>();
                         File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");
                         if(!dst.exists() || !dst.isDirectory())dst.mkdirs();
                         Intent intent = new Intent(app.getActivity(), CopyService.class);
                         HybridFileParcelable baseFile=RootHelper.generateBaseFile(f,true);
-                        baseFile.setName(rowItem.getTitle() + "_" +
-                                rowItem.getSymlink().substring(rowItem.getSymlink().indexOf("_")+1) + ".apk");
+                        baseFile.setName(rowItem.label + "_" +
+                                rowItem.packageName.substring(rowItem.packageName.indexOf("_")+1) + ".apk");
                         ab.add(baseFile);
 
                         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab);
