@@ -1027,8 +1027,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             loadFilesListTask.cancel(true);
         }
 
-        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,(data) -> {
-            if (data.second != null) {
+        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode, (data) -> {
+            if (data != null && data.second != null) {
                 setListElements(data.second, back, path, data.first, false, checkPathIsGrid(path));
                 mSwipeRefreshLayout.setRefreshing(false);
             }

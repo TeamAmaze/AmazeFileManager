@@ -48,9 +48,9 @@ import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import jcifs.smb.SmbFileInputStream;
 
@@ -100,29 +100,20 @@ public class IconHolder {
             final String filePath =(result.fso);
 
             synchronized (mAppIcons) {
-
                 mAppIcons.put(filePath, result.result);
             }
 
             // find the request for it
             synchronized (mRequests) {
-
-                for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
+                Iterator<Map.Entry<ImageView, String>> iterator = mRequests.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<ImageView, String> entry = iterator.next();
                     final ImageView imageView = entry.getKey();
                     final String fso = entry.getValue();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        if (Objects.equals(fso, result.fso)) {
-                            imageView.setImageBitmap(result.result);
-                            mRequests.remove(imageView);
-                            break;
-                        }
-                    } else {
-                        if (fso.equals(result.fso)) {
-
-                            imageView.setImageBitmap(result.result);
-                            mRequests.remove(imageView);
-                            break;
-                        }
+                    if (fso != null && fso.equals(result.fso)) {
+                        imageView.setImageBitmap(result.result);
+                        iterator.remove();
+                        break;
                     }
                 }
             }
@@ -189,8 +180,9 @@ public class IconHolder {
                 mWorkerThread.start();
                 mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
             }
-
-            mRequests.put(iconView, fso);
+            synchronized (mRequests) {
+                mRequests.put(iconView, fso);
+            }
             Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
             msg.sendToTarget();
 
@@ -201,11 +193,13 @@ public class IconHolder {
      * Cancel loading of a drawable for a certain ImageView.
      */
     public void cancelLoad(ImageView view) {
-        String fso = mRequests.get(view);
-        if (fso != null && mWorkerHandler != null) {
-            mWorkerHandler.removeMessages(MSG_LOAD, fso);
+        synchronized (mRequests) {
+            String fso = mRequests.get(view);
+            if (fso != null && mWorkerHandler != null) {
+                mWorkerHandler.removeMessages(MSG_LOAD, fso);
+            }
+            mRequests.remove(view);
         }
-        mRequests.remove(view);
     }
 
     private class WorkerHandler extends Handler {
@@ -358,7 +352,9 @@ public class IconHolder {
      * Free any resources used by this instance
      */
     public void cleanup() {
-        this.mRequests.clear();
+        synchronized (mRequests) {
+            this.mRequests.clear();
+        }
         this.mIcons.clear();
         this.mAppIcons.clear();
 
