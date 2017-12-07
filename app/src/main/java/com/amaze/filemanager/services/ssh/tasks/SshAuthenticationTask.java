@@ -21,6 +21,8 @@
 
 package com.amaze.filemanager.services.ssh.tasks;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.amaze.filemanager.services.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.DisconnectReason;
 import net.schmizz.sshj.common.KeyType;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.userauth.UserAuthException;
@@ -143,6 +146,22 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
                                 mHostname, mPort, result.getException().getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if(TransportException.class.isAssignableFrom(result.getException().getClass()))
+            {
+                DisconnectReason disconnectReason = TransportException.class.cast(result.getException()).getDisconnectReason();
+                if(DisconnectReason.HOST_KEY_NOT_VERIFIABLE.equals(disconnectReason)) {
+                    new AlertDialog.Builder(AppConfig.getInstance().getActivityContext())
+                            .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
+                            .setMessage(R.string.ssh_connect_failed_host_key_changed_message)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                }
                 return;
             }
             else if(mPassword != null) {

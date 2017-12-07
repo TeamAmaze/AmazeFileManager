@@ -33,6 +33,7 @@ public class AppConfig extends Application {
     private static Handler mApplicationHandler = new Handler();
     private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
     private static Handler sBackgroundHandler;
+    private static Context sActivityContext;
 
     private static AppConfig mInstance;
 
@@ -187,6 +188,14 @@ public class AppConfig extends Application {
 
     public UtilsHandler getUtilsHandler() {
         return mUtilsHandler;
+    }
+
+    public static void setActivityContext(Context context) {
+        sActivityContext = context;
+    }
+
+    public Context getActivityContext() {
+        return sActivityContext;
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {

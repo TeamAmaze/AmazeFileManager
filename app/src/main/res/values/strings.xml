@@ -690,5 +690,11 @@
     <string name="ssh_authentication_failure_password">Logon failure: Unable to authenticate with supplied username and password.</string>
     <string name="ssh_authentication_failure_key">Logon failure: Unable to authenticate with supplied username and private key.</string>
     <string name="ssh_connect_failed">Unable to connect to %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\n
+        Someone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\n
+        Please contact your system administrator or setup a new connection to continue connecting to the server.
+    </string>
 
 </resources>

@@ -336,6 +336,8 @@ public class MainActivity extends BaseActivity implements
 
         dataUtils.registerOnDataChangedListener(this);
 
+        AppConfig.setActivityContext(con);
+
         setContentView(R.layout.main_toolbar);
         initialiseViews();
         tabHandler = new TabHandler(this);
