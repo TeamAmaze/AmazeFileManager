@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -29,11 +28,13 @@ import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 
 import jcifs.smb.SmbFile;
 
@@ -264,8 +265,8 @@ public class SmbConnectDialog extends DialogFragment {
 
             try {
                 s = new String[]{conName.getText().toString(), SmbUtil.getSmbEncryptedPath(getActivity(),
-                        smbFile.getPath())};
-            } catch (CryptException e) {
+                            smbFile.getPath())};
+            } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
                 return;

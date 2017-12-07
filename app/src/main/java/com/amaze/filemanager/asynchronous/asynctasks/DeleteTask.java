@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.utils.DataUtils;
@@ -130,7 +130,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
             for(HybridFileParcelable a : files)
                 try {
                     (a).delete(cd, rootMode);
-                } catch (RootNotPermittedException e) {
+                } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                     b = false;
                 }

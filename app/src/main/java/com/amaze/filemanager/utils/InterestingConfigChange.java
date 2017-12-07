@@ -21,20 +21,12 @@ public class InterestingConfigChange {
     /**
      * Check for any config change between various callbacks to this method.
      * Make sure to recycle after done
-     * @param resources
-     * @return
      */
     public static boolean isConfigChanged(Resources resources) {
         int changedFieldsMask = lastConfiguration.updateFrom(resources.getConfiguration());
-        boolean densityChanged = lastDensity!=resources.getDisplayMetrics().densityDpi;
-
-        if (densityChanged || (changedFieldsMask &
-                (ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_UI_MODE | ActivityInfo.CONFIG_LOCALE)) != 0) {
-            // we have density changed from last time we came here
-            return true;
-        }
-
-        return false;
+        boolean densityChanged = lastDensity != resources.getDisplayMetrics().densityDpi;
+        int mode = ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_UI_MODE | ActivityInfo.CONFIG_LOCALE;
+        return densityChanged || (changedFieldsMask & mode) != 0;
     }
 
     /**

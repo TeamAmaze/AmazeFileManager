@@ -33,15 +33,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.ftpservice.FTPService;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.security.GeneralSecurityException;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
@@ -547,7 +548,7 @@ public class FTPServerFragment extends Fragment {
             } else {
                 return CryptUtil.decryptPassword(getContext(), encryptedPassword);
             }
-        } catch (CryptException e) {
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
 
             Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
@@ -595,7 +596,7 @@ public class FTPServerFragment extends Fragment {
 
         try {
             preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, CryptUtil.encryptPassword(getContext(), password)).apply();
-        } catch (CryptException e) {
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
         }
