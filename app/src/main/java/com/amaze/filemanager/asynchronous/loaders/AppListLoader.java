@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
@@ -22,11 +23,11 @@ import java.util.List;
  * Class loads all the packages installed
  */
 
-public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
+public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
 
     private PackageManager packageManager;
     private PackageReceiver packageReceiver;
-    private List<AppDataParcelable> mApps;
+    private AppsDataPair mApps;
     private int sortBy, asc;
 
     public AppListLoader(Context context, int sortBy, int asc) {
@@ -43,16 +44,15 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
     }
 
     @Override
-    public List<AppDataParcelable> loadInBackground() {
+    public AppsDataPair loadInBackground() {
         List<ApplicationInfo> apps = packageManager.getInstalledApplications(
                 PackageManager.MATCH_UNINSTALLED_PACKAGES |
                         PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
 
         if (apps == null)
-            apps = new ArrayList<>();
+            return new AppsDataPair(Collections.emptyList(), Collections.emptyList());
 
-        mApps = new ArrayList<>(apps.size());
-
+        mApps = new AppsDataPair(new ArrayList<>(apps.size()), new ArrayList<>(apps.size()));
 
         for (ApplicationInfo object : apps) {
             File sourceDir = new File(object.sourceDir);
@@ -74,15 +74,20 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
                     Formatter.formatFileSize(getContext(), sourceDir.length()),
                     sourceDir.length(), sourceDir.lastModified());
 
-            mApps.add(elem);
+            mApps.first.add(elem);
 
-            Collections.sort(mApps, new AppDataParcelable.AppDataSorter(sortBy, asc));
+            Collections.sort(mApps.first, new AppDataParcelable.AppDataSorter(sortBy, asc));
+
+            for (AppDataParcelable p : mApps.first) {
+                mApps.second.add(p.path);
+            }
         }
+
         return mApps;
     }
 
     @Override
-    public void deliverResult(List<AppDataParcelable> data) {
+    public void deliverResult(AppsDataPair data) {
         if (isReset()) {
 
             if (data != null)
@@ -90,7 +95,7 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
         }
 
         // preserving old data for it to be closed
-        List<AppDataParcelable> oldData = mApps;
+        AppsDataPair oldData = mApps;
         mApps = data;
         if (isStarted()) {
             // loader has been started, if we have data, return immediately
@@ -128,7 +133,7 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
     }
 
     @Override
-    public void onCanceled(List<AppDataParcelable> data) {
+    public void onCanceled(AppsDataPair data) {
         super.onCanceled(data);
 
         onReleaseResources(data);//TODO onReleaseResources() is empty
@@ -162,7 +167,23 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
      * @param layoutElementList
      */
     //TODO do something
-    private void onReleaseResources(List<AppDataParcelable> layoutElementList) {
+    private void onReleaseResources(AppsDataPair layoutElementList) {
 
+    }
+
+    /**
+     * typedef Pair<List<AppDataParcelable>, List<String>> AppsDataPair
+     */
+    public static class AppsDataPair extends Pair<List<AppDataParcelable>, List<String>> {
+
+        /**
+         * Constructor for a Pair.
+         *
+         * @param first  the first object in the Pair
+         * @param second the second object in the pair
+         */
+        public AppsDataPair(List<AppDataParcelable> first, List<String> second) {
+            super(first, second);
+        }
     }
 }

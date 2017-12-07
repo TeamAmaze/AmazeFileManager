@@ -36,17 +36,16 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.adapters.holders.AppHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -54,6 +53,7 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,16 +63,21 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     private UtilitiesProviderInterface utilsProvider;
     private Context context;
+    private AppsAdapterPreloadModel modelProvider;
+    private ViewPreloadSizeProvider<String> sizeProvider;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private AppsListFragment app;
 
     private ThemedActivity themedActivity;
 
     public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProviderInterface utilsProvider,
+                       AppsAdapterPreloadModel modelProvider, ViewPreloadSizeProvider<String> sizeProvider,
                        int resourceId, AppsListFragment app) {
         super(context, resourceId);
         themedActivity = ba;
         this.utilsProvider = utilsProvider;
+        this.modelProvider = modelProvider;
+        this.sizeProvider = sizeProvider;
         this.context = context;
         this.app = app;
 
@@ -102,14 +107,14 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
             view.findViewById(R.id.generic_icon).setVisibility(View.GONE);
             view.findViewById(R.id.picture_icon).setVisibility(View.GONE);
             view.setTag(vholder);
+            sizeProvider.setView(view.findViewById(R.id.apk_icon));
         } else {
             view = convertView;
         }
 
         final AppHolder holder = (AppHolder) view.getTag();
 
-        GlideApp.with(app).load(rowItem.path).into(holder.apkIcon)
-                .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.path));
+        modelProvider.loadApkImage(rowItem.path, holder.apkIcon);
 
         if (holder.about != null) {
             if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))

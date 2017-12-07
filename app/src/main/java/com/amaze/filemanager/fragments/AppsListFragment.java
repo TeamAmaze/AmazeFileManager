@@ -31,19 +31,21 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
-import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
+import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
-import java.util.List;
-
-public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>> {
+public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
     UtilitiesProviderInterface utilsProvider;
     AppsListFragment app = this;
@@ -56,6 +58,8 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     int index = 0, top = 0;
 
     public static final int ID_LOADER_APP_LIST = 0;
+
+    private AppsAdapterPreloadModel modelProvider;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,8 +86,15 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
 
-        adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider,
+        modelProvider = new AppsAdapterPreloadModel(app);
+        ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
+        ListPreloader<String> preloader = new ListPreloader<>(GlideApp.with(app), modelProvider,
+                sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
+
+        adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider, modelProvider, sizeProvider,
                 R.layout.rowlayout, app);
+
+        getListView().setOnScrollListener(preloader);
         setListAdapter(adapter);
         setListShown(false);
         setEmptyText(getResources().getString(R.string.no_applications));
@@ -142,14 +153,15 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
+    public Loader<AppListLoader.AppsDataPair> onCreateLoader(int id, Bundle args) {
         return new AppListLoader(getContext(), sortby, asc);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
+    public void onLoadFinished(Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
         // set new data to adapter
-        adapter.setData(data);
+        adapter.setData(data.first);
+        modelProvider.setItemList(data.second);
 
         if (isResumed()) {
             setListShown(true);
@@ -162,7 +174,8 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoaderReset(Loader<List<AppDataParcelable>> loader) {
+    public void onLoaderReset(Loader<AppListLoader.AppsDataPair> loader) {
         adapter.setData(null);
     }
+
 }
