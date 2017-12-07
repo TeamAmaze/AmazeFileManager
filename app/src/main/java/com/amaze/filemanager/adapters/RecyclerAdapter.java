@@ -73,6 +73,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
                            ArrayList<LayoutElementParcelable> itemsRaw, Context context, boolean showHeaders) {
+        setHasStableIds(true);
+
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
@@ -328,6 +330,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return itemsDigested.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
