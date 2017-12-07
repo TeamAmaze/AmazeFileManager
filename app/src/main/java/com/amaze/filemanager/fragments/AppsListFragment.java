@@ -75,7 +75,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         setRetainInstance(true);
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.getAppbar().setTitle(R.string.apps);
-        mainActivity.floatingActionButton.hideMenuButton(true);
+        mainActivity.floatingActionButton.getMenuButton().hide();
         mainActivity.buttonBarFrame.setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
         vl = getListView();
