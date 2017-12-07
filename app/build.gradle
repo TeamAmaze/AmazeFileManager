@@ -3,7 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '26.0.2'
 
     dexOptions {
         jumboMode = true
@@ -53,6 +53,8 @@ android {
         abortOnError false
     }
 
+    flavorDimensions 'static'
+
     productFlavors {
         fdroid {
             buildConfigField "boolean", "IS_VERSION_FDROID", "true"
@@ -85,7 +87,10 @@ dependencies {
     compile 'org.apache.commons:commons-compress:1.10'
 
     compile 'com.github.clans:fab:1.6.4'
-    compile 'com.github.junrar:junrar:0.7'
+    compile ('com.github.junrar:junrar:0.7') {
+        exclude module: 'commons-logging'
+    }
+
     compile 'com.afollestad.material-dialogs:core:0.9.4.7'
 
     //FTP Server
