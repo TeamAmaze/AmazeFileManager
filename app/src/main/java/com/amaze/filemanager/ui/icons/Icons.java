@@ -22,8 +22,8 @@ package com.amaze.filemanager.ui.icons;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
@@ -332,11 +332,11 @@ public class Icons {
         else return -1;
     }
 
-    public static Drawable loadMimeIcon(String path, boolean grid, final Resources res) {
+    public static @DrawableRes int loadMimeIcon(String path, boolean grid, final Resources res) {
         String mimeType = MimeTypes.getMimeType(new File(path));
         if (mimeType == null) {
             /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/
-            return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am);
+            return R.drawable.ic_doc_generic_am;
         }
 
         // Look for exact match first
@@ -369,7 +369,7 @@ public class Icons {
             case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
                 break;
         }*/
-            return loadBitmapDrawableById(res, resId);
+            return resId;
         }
 
         // Otherwise look for partial match
@@ -394,26 +394,11 @@ public class Icons {
             /*if (grid) resId = R.drawable.ic_doc_generic_am_grid; else*/
             resId = R.drawable.ic_doc_generic_am;
         }
-        return loadBitmapDrawableById(res, resId);
-    }
-
-    private static Drawable loadBitmapDrawableById(Resources res, int resId) {
-        Drawable drawable = sMimeIcons.get(resId);
-        if (drawable == null) {
-            drawable = res.getDrawable(resId);
-            sMimeIcons.put(resId, drawable);
-        }
-        return drawable;
+        return resId;
     }
 
     public static Drawable loadFailedThumbForFile(@NonNull final Context context, String filePath) {
-        if (Icons.isApk((filePath))) {
-            return ContextCompat.getDrawable(context, R.drawable.ic_doc_apk_grid);
-        } else if (Icons.isPicture((filePath))) {
-            return ContextCompat.getDrawable(context, R.drawable.ic_doc_image);
-        } else {
-            return null;
-        }
+        return context.getResources().getDrawable(Icons.loadMimeIcon(filePath, false, context.getResources()));
     }
 
 }

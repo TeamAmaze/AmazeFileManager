@@ -31,9 +31,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -164,7 +162,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private View rootView;
     private View actionModeView;
     private FastScroller fastScroller;
-    private Bitmap mFolderBitmap;
     private CustomFileObserver customFileObserver;
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
@@ -188,7 +185,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     /**
      * For caching the back button
      */
-    private Drawable backIcon = null;
     private LayoutElementParcelable back = null;
 
     @Override
@@ -359,9 +355,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     void switchToGrid() {
         IS_LIST = false;
 
-        folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons(true);
-
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
             // will always be grid, set alternate white background
@@ -386,8 +379,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             listView.setBackgroundDrawable(null);
         }
 
-        folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons(true);
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
@@ -1200,9 +1191,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     private LayoutElementParcelable getBackElement() {
-        if (backIcon == null || back == null) {
-            backIcon = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
-            back = new LayoutElementParcelable(backIcon, "..", "", "",
+        if (back == null) {
+            back = new LayoutElementParcelable(R.drawable.ic_arrow_left_white_24dp, "..", "", "",
                     getString(R.string.goback), 0, false, true, "");
         }
 
@@ -1448,7 +1438,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             (getActivity()).registerReceiver(decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
         }
         startFileObserver();
-        fixIcons(false);
     }
 
     @Override
@@ -1480,18 +1469,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
     }
 
-    void fixIcons(boolean forceReload) {
-        if (LIST_ELEMENTS == null) return;
-        Drawable iconDrawable;
-        for (LayoutElementParcelable layoutElement : LIST_ELEMENTS) {
-            if (forceReload || layoutElement.getImageId() == null) {
-                iconDrawable = layoutElement.isDirectory()?
-                        folder:Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
-                layoutElement.setImageId(iconDrawable);
-            }
-        }
-    }
-
     public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path) throws SmbException {
         ArrayList<LayoutElementParcelable> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
@@ -1505,7 +1482,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
             if (aMFile.isDirectory()) {
                 folder_count++;
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, name, aMFile.getPath(),
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new, name, aMFile.getPath(),
                         "", "", "", 0, false, aMFile.lastModified() + "", true);
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
@@ -1536,7 +1513,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (!dataUtils.isFileHidden(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, f.getPath(), mFile.getPermission(),
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new, f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
 
                 layoutElement.setMode(mFile.getMode());

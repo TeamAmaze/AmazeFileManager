@@ -4,16 +4,14 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.AsyncTaskLoader;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
-import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
+import com.amaze.filemanager.utils.files.FileListSorter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,8 +71,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
                 info = null;
             }
 
-            mApps.add(new LayoutElementParcelable(new BitmapDrawable(context.getResources(),
-                    BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_doc_apk_grid)),
+            mApps.add(new LayoutElementParcelable(R.drawable.ic_doc_apk_grid,
                     label == null ? object.packageName : label, object.sourceDir,
                     object.packageName, object.flags + "_" + (info!=null ? info.versionName:""),
                     Formatter.formatFileSize(getContext(), sourceDir.length()),

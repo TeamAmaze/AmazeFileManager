@@ -203,7 +203,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, context.getResources()));
+            holder.genericIcon.setImageResource(Icons.loadMimeIcon(rowItem.getName(), false, context.getResources()));
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (compressedExplorerFragment.showLastModified)
                 holder.date.setText(Utils.getDate(rowItem.getTime(), compressedExplorerFragment.year));

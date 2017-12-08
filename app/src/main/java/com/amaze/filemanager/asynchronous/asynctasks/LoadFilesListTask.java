@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 
@@ -48,6 +49,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
+import com.bumptech.glide.load.engine.GlideException;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -218,15 +220,13 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
         if (!dataUtils.isFileHidden(baseFile.getPath())) {
             String size = "";
-            Drawable drawable;
+            @DrawableRes int drawable;
             long longSize= 0;
 
             if (baseFile.isDirectory()) {
-                if(lockBitmapDrawable == null) {
-                    lockBitmapDrawable = ma.getResources().getDrawable(R.drawable.ic_folder_lock_white_36dp);
-                }
 
-                drawable = baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)? lockBitmapDrawable:ma.folder;
+                drawable = baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)?
+                        R.drawable.ic_folder_lock_white_36dp:R.drawable.ic_grid_folder_new;
                 ma.folder_count++;
             } else {
                 if (baseFile.getSize() != -1) {

@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
@@ -1024,7 +1025,7 @@ public class HybridFile {
                 LayoutElementParcelable layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = new LayoutElementParcelable(mainFragment.folder,
+                    layoutElement = new LayoutElementParcelable(R.drawable.ic_grid_folder_new,
                                     path, RootHelper.parseFilePermission(file),
                                     "", folderSize() + "", 0, true, false,
                                     file.lastModified() + "");

@@ -446,7 +446,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 holder.txtTitle.setText(rowItem.getTitle());
-                holder.genericIcon.setImageDrawable(rowItem.getImageId());
+                GlideApp.with(mainFrag).load(rowItem.getImageId()).into(holder.genericIcon);
                 holder.genericText.setText("");
 
                 if (holder.about != null) {
@@ -641,7 +641,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.imageView1.setVisibility(View.INVISIBLE);
                 holder.genericIcon.setVisibility(View.VISIBLE);
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
-                holder.genericIcon.setImageDrawable(rowItem.getImageId());
+                GlideApp.with(mainFrag).load(rowItem.getImageId()).into(holder.genericIcon);
 
                 if (Icons.isPicture((rowItem.getDesc().toLowerCase())) || Icons.isVideo(rowItem.getDesc().toLowerCase())) {
                     holder.genericIcon.setColorFilter(null);

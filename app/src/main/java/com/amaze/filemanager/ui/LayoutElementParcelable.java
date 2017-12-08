@@ -19,9 +19,9 @@
 
 package com.amaze.filemanager.ui;
 
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -74,7 +74,7 @@ public class LayoutElementParcelable implements Parcelable {
         // TODO: Implement this method
     }
 
-    private Drawable imageId;
+    private @DrawableRes int imageId;
     private String title;
     private String desc;
     private String permissions;
@@ -87,7 +87,7 @@ public class LayoutElementParcelable implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElementParcelable(Drawable imageId, String title, String desc, String permissions,
+    public LayoutElementParcelable(@DrawableRes int imageId, String title, String desc, String permissions,
                                    String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
         this.imageId = imageId;
         this.title = title;
@@ -104,7 +104,7 @@ public class LayoutElementParcelable implements Parcelable {
         }
     }
 
-    public LayoutElementParcelable(Drawable drawable, String path, String permissions, String symlink,
+    public LayoutElementParcelable(@DrawableRes int drawable, String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
                                    String date) {
         this(drawable, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
@@ -121,11 +121,11 @@ public class LayoutElementParcelable implements Parcelable {
                 }
             };
 
-    public Drawable getImageId() {
+    public @DrawableRes int getImageId() {
         return imageId;
     }
 
-    public void setImageId(Drawable imageId){this.imageId=imageId;}
+    public void setImageId(@DrawableRes int imageId){this.imageId=imageId;}
     public String getDesc() {
         return desc;
     }

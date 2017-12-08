@@ -124,7 +124,7 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
         }
 
         final ViewHolder holder = (ViewHolder) view.getTag();
-        holder.apkIcon.setImageDrawable(rowItem.getImageId());
+
         GlideApp.with(app).clear(holder.apkIcon);
         GlideApp.with(app).load(rowItem.getDesc()).into(holder.apkIcon)
                 .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
