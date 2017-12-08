@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
