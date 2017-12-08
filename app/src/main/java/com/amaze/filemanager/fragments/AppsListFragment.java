@@ -32,12 +32,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
-import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -52,7 +51,6 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
 
     public SharedPreferences Sp;
     ListView vl;
-    public IconHolder ic;
     int asc, sortby;
 
     int index = 0, top = 0;
@@ -65,8 +63,6 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         utilsProvider = (UtilitiesProviderInterface) getActivity();
 
         setHasOptionsMenu(false);
-        ic = new IconHolder(getActivity(), true, true);
-
     }
 
     @Override

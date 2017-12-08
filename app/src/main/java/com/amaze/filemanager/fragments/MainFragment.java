@@ -85,7 +85,6 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.icons.IconHolder;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
@@ -133,7 +132,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
-    public IconHolder iconHolder;
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
@@ -285,7 +283,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         getMainActivity().getAppbar().getBottomBar().setClickListener();
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST) {
             listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
@@ -362,7 +359,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     void switchToGrid() {
         IS_LIST = false;
 
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
         fixIcons(true);
 
@@ -390,7 +386,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             listView.setBackgroundDrawable(null);
         }
 
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
         folder = new BitmapDrawable(res, mFolderBitmap);
         fixIcons(true);
         if (mLayoutManager == null)
@@ -1420,7 +1415,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     public void updateList() {
         computeScroll();
-        iconHolder.cleanup();
         loadlist((CURRENT_PATH), true, openMode);
     }
 

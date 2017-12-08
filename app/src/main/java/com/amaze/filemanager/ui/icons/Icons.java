@@ -19,8 +19,11 @@
 
 package com.amaze.filemanager.ui.icons;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
@@ -402,4 +405,15 @@ public class Icons {
         }
         return drawable;
     }
+
+    public static Drawable loadFailedThumbForFile(@NonNull final Context context, String filePath) {
+        if (Icons.isApk((filePath))) {
+            return ContextCompat.getDrawable(context, R.drawable.ic_doc_apk_grid);
+        } else if (Icons.isPicture((filePath))) {
+            return ContextCompat.getDrawable(context, R.drawable.ic_doc_image);
+        } else {
+            return null;
+        }
+    }
+
 }

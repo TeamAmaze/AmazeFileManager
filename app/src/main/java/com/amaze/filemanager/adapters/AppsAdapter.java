@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -123,8 +125,10 @@ public class AppsAdapter extends ArrayAdapter<LayoutElementParcelable> {
 
         final ViewHolder holder = (ViewHolder) view.getTag();
         holder.apkIcon.setImageDrawable(rowItem.getImageId());
-        app.ic.cancelLoad(holder.apkIcon);
-        app.ic.loadDrawable(holder.apkIcon,(rowItem.getDesc()),null);
+        GlideApp.with(app).clear(holder.apkIcon);
+        GlideApp.with(app).load(rowItem.getDesc()).into(holder.apkIcon)
+                .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+
         if (holder.about != null) {
             if(utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 holder.about.setColorFilter(Color.parseColor("#ff666666"));
