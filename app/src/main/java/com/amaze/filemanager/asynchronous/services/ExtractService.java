@@ -38,6 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -102,11 +103,13 @@ public class ExtractService extends Service {
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        mBuilder = new NotificationCompat.Builder(context);
+
+        mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+        NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
         startForeground(Integer.parseInt("123" + startId), mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();

@@ -572,6 +572,8 @@
     <string name="github" translatable="false">GitHub</string>
     <string name="developers">Developers</string>
     <string name="nobitcoinapp">Please install a bitcoin wallet</string>
+    <string name="channelname_normal">Amaze Notifications</string>
+    <string name="channeldescription_normal">Amaze File Manager\'s Notifications</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>

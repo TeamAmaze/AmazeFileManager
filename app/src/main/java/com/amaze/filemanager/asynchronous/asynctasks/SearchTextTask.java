@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.amaze.filemanager.activities.TextEditorActivity;
+import com.amaze.filemanager.utils.ImmutableEntry;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -63,7 +64,7 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
             // comparing and adding searched phrase to a list
             if (searchSubString.equalsIgnoreCase(params[0].toString())) {
 
-                nodes.add(new MapEntry(new MapEntry.KeyMapEntry(i, i + params[0].length()),
+                nodes.add(new MapEntry(new ImmutableEntry<>(i, i + params[0].length()),
                         lineNumberReader.getLineNumber()));
             }
 

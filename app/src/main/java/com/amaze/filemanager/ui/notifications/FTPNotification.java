@@ -63,7 +63,7 @@ public class FTPNotification extends BroadcastReceiver {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        Notification.Builder notificationBuilder = new Notification.Builder(context)
+        Notification.Builder notificationBuilder = new Notification.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)

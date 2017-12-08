@@ -77,9 +77,9 @@ public class RenameBookmark extends DialogFragment {
             builder.autoDismiss(false);
             View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
             builder.customView(v2, true);
-            final TextInputLayout t1 = (TextInputLayout) v2.findViewById(R.id.t1);
-            final TextInputLayout t2 = (TextInputLayout) v2.findViewById(R.id.t2);
-            final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.editText4);
+            final TextInputLayout t1 = v2.findViewById(R.id.t1);
+            final TextInputLayout t2 = v2.findViewById(R.id.t2);
+            final AppCompatEditText conName = v2.findViewById(R.id.editText4);
             conName.setText(title);
             final String s1 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.name));
             final String s2 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.path));
@@ -91,7 +91,7 @@ public class RenameBookmark extends DialogFragment {
                     else t1.setError("");
                 }
             });
-            final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.editText);
+            final AppCompatEditText ip = v2.findViewById(R.id.editText);
             if (studiomode != 0) {
                 if (path.startsWith("smb:/")) {
                     try {

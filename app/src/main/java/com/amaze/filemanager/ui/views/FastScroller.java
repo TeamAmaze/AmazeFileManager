@@ -67,7 +67,7 @@ public class FastScroller extends FrameLayout {
     private void initialise(@NonNull Context context) {
         setClipChildren(false);
         inflate(context, R.layout.fastscroller, this);
-        this.handle = (ImageView) findViewById(R.id.scroll_handle);
+        this.handle = findViewById(R.id.scroll_handle);
         this.bar = findViewById(R.id.scroll_bar);
         this.handle.setEnabled(true);
         setPressedHandleColor(Utils.getColor(getContext(), R.color.accent_blue));

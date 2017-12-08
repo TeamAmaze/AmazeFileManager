@@ -9,18 +9,17 @@ import android.util.Log;
 
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
@@ -422,7 +421,7 @@ public class HybridFile {
             case ROOT:
                 try {
                     isDirectory = RootHelper.isDirectory(path, true, 5);
-                } catch (RootNotPermittedException e) {
+                } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                     isDirectory = false;
                 }
@@ -461,7 +460,7 @@ public class HybridFile {
             case ROOT:
                 try {
                     isDirectory = RootHelper.isDirectory(path,true,5);
-                } catch (RootNotPermittedException e) {
+                } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                     isDirectory = false;
                 }
@@ -878,7 +877,7 @@ public class HybridFile {
         } else if (isRoot()) {
             try {
                 return RootHelper.fileExists(path);
-            } catch (RootNotPermittedException e) {
+            } catch (ShellNotRunningException e) {
                 e.printStackTrace();
                 return false;
             }
@@ -932,7 +931,7 @@ public class HybridFile {
             try {
                 new SmbFile(path).mkdirs();
             } catch (SmbException | MalformedURLException e) {
-                Logger.log(e, path, context);
+                e.printStackTrace();
             }
         } else if (isOtgFile()) {
             if (!exists(context)) {
@@ -977,12 +976,12 @@ public class HybridFile {
             FileUtil.mkdir(new File(path), context);
     }
 
-    public boolean delete(Context context, boolean rootmode) throws RootNotPermittedException {
+    public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
         if (isSmb()) {
             try {
                 new SmbFile(path).delete();
             } catch (SmbException | MalformedURLException e) {
-                Logger.log(e, path, context);
+                e.printStackTrace();
             }
         } else {
             if (isRoot() && rootmode) {

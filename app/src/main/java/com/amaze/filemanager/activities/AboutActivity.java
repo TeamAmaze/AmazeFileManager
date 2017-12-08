@@ -79,15 +79,15 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
-        mTitleTextView = (TextView) findViewById(R.id.text_view_title);
-        ImageView mLicensesIcon = (ImageView) findViewById(R.id.image_view_license);;
+        mAppBarLayout = findViewById(R.id.appBarLayout);
+        mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
+        mTitleTextView =  findViewById(R.id.text_view_title);
+        ImageView mLicensesIcon = findViewById(R.id.image_view_license);;
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
 
         mAppBarLayout.setLayoutParams(calculateHeaderViewParams());
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar mToolbar = findViewById(R.id.toolBar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.md_nav_back));

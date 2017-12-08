@@ -28,7 +28,6 @@ import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -242,21 +241,16 @@ public class TabFragment extends android.support.v4.app.Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        try {
-            int i = 0;
-            if (sharedPrefs != null)
-                sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
-            if (fragments != null && fragments.size() != 0) {
-                if (fragmentManager == null) return;
-                for (Fragment fragment : fragments) {
-                    fragmentManager.putFragment(outState, "tab" + i, fragment);
-                    i++;
-                }
-                outState.putInt("pos", mViewPager.getCurrentItem());
+        int i = 0;
+        if (sharedPrefs != null)
+            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
+        if (fragments != null && fragments.size() != 0) {
+            if (fragmentManager == null) return;
+            for (Fragment fragment : fragments) {
+                fragmentManager.putFragment(outState, "tab" + i, fragment);
+                i++;
             }
-        } catch (Exception e) {
-            Logger.log(e, "puttingtosavedinstance", getActivity());
-            e.printStackTrace();
+            outState.putInt("pos", mViewPager.getCurrentItem());
         }
     }
 

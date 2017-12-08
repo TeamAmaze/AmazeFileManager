@@ -56,6 +56,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
                                      ArrayList<CompressedObjectParcelable> items,
                                      CompressedExplorerFragment compressedExplorerFragment,
                                      CompressedInterface compressedInterface) {
+        setHasStableIds(true);
+
         this.utilsProvider = utilsProvider;
         this.items = items;
         this.compressedInterface = compressedInterface;
@@ -144,6 +146,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
         items = arrayList;
         notifyDataSetChanged();
         itemsChecked = new boolean[items.size()];
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override

@@ -34,7 +34,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -42,7 +41,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,7 +61,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -73,7 +71,6 @@ import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -148,8 +145,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
 
         setContentView(R.layout.search);
-        searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        searchViewLayout = findViewById(R.id.searchview);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -197,8 +194,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
-        mInput = (EditText) findViewById(R.id.fname);
-        scrollView = (ScrollView) findViewById(R.id.editscroll);
+        mInput = findViewById(R.id.fname);
+        scrollView = findViewById(R.id.editscroll);
 
         if (getIntent().getData() != null) {
             // getting uri from external source
@@ -332,7 +329,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     Toast.makeText(getApplicationContext(), R.string.error_io,
                             Toast.LENGTH_SHORT).show();
                 });
-            } catch (RootNotPermittedException e) {
+            } catch (ShellNotRunningException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> {
                     Toast.makeText(getApplicationContext(), R.string.rootfailure,
@@ -351,11 +348,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * @param inputText
      * @throws StreamNotFoundException
      * @throws IOException
-     * @throws RootNotPermittedException
+     * @throws ShellNotRunningException
      * @see #saveFile(Uri, File, String)
      */
     private void writeTextFile(final Uri uri, final File file, String inputText)
-            throws StreamNotFoundException, IOException, RootNotPermittedException {
+            throws StreamNotFoundException, IOException, ShellNotRunningException {
         OutputStream outputStream = null;
 
         if (uri.toString().contains("file://")) {
@@ -636,7 +633,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                         e.printStackTrace();
                         stream = null;
                     }
-                } catch (RootNotPermittedException e) {
+                } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                     stream = null;
                 }
