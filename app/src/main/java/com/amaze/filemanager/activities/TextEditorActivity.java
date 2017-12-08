@@ -145,8 +145,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
 
         setContentView(R.layout.search);
-        searchViewLayout = (RelativeLayout) findViewById(R.id.searchview);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        searchViewLayout = findViewById(R.id.searchview);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
@@ -194,8 +194,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
-        mInput = (EditText) findViewById(R.id.fname);
-        scrollView = (ScrollView) findViewById(R.id.editscroll);
+        mInput = findViewById(R.id.fname);
+        scrollView = findViewById(R.id.editscroll);
 
         if (getIntent().getData() != null) {
             // getting uri from external source

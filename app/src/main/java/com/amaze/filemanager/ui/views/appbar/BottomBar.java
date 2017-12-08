@@ -80,17 +80,17 @@ public class BottomBar implements View.OnTouchListener{
         mainActivity = new WeakReference<>(a);
         this.appbar = appbar;
 
-        frame = (FrameLayout) a.findViewById(R.id.buttonbarframe);
+        frame = a.findViewById(R.id.buttonbarframe);
 
-        scroll = (HorizontalScrollView) a.findViewById(R.id.scroll);
-        buttons = (LinearLayout) a.findViewById(R.id.buttons);
+        scroll = a.findViewById(R.id.scroll);
+        buttons = a.findViewById(R.id.buttons);
 
-        pathLayout = (LinearLayout) a.findViewById(R.id.pathbar);
-        pathScroll = (HorizontalScrollView) a.findViewById(R.id.scroll1);
-        fullPathText = (TextView) a.findViewById(R.id.fullpath);
-        fullPathAnim = (TextView) a.findViewById(R.id.fullpath_anim);
+        pathLayout = a.findViewById(R.id.pathbar);
+        pathScroll = a.findViewById(R.id.scroll1);
+        fullPathText = a.findViewById(R.id.fullpath);
+        fullPathAnim = a.findViewById(R.id.fullpath_anim);
 
-        pathText = (TextView) a.findViewById(R.id.pathname);
+        pathText = a.findViewById(R.id.pathname);
 
         scroll.setSmoothScrollingEnabled(true);
         pathScroll.setSmoothScrollingEnabled(true);

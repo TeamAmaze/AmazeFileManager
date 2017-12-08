@@ -447,7 +447,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             getSupportActionBar().setHomeButtonEnabled(true);
             mDrawerToggle.syncState();
         }
-        /*((ImageButton) findViewById(R.id.drawer_buttton)).setOnClickListener(new ImageView.OnClickListener() {
+        /*findViewById(R.id.drawer_buttton).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
@@ -1277,7 +1277,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             /*
-            ImageView ib = (ImageView) findViewById(R.id.action_overflow);
+            ImageView ib = findViewById(R.id.action_overflow);
             if (ib.getVisibility() == View.VISIBLE) {
                 ib.performClick();
             }
@@ -1642,8 +1642,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     void initialiseViews() {
         appBarLayout = getAppbar().getAppbarLayout();
 
-        mScreenLayout = (CoordinatorLayout) findViewById(R.id.main_frame);
-        buttonBarFrame = (FrameLayout) findViewById(R.id.buttonbarframe);
+        mScreenLayout = findViewById(R.id.main_frame);
+        buttonBarFrame = findViewById(R.id.buttonbarframe);
 
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
@@ -1664,14 +1664,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             return false;
         });
         setSupportActionBar(getAppbar().getToolbar());
-        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        frameLayout = findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
-        mDrawerLinear = (ScrimInsetsRelativeLayout) findViewById(R.id.left_drawer);
+        mDrawerLinear = findViewById(R.id.left_drawer);
         if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-        mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+        mDrawerList = findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
         //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (findViewById(R.id.tab_frame) != null) {
@@ -1697,7 +1697,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-        ImageView divider = (ImageView) findViewById(R.id.divider1);
+        ImageView divider = findViewById(R.id.divider1);
         if (getAppTheme().equals(AppTheme.LIGHT))
             divider.setImageResource(R.color.divider);
         else
@@ -1804,7 +1804,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
         int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
 
-        floatingActionButton = (FloatingActionMenu) findViewById(R.id.menu);
+        floatingActionButton = findViewById(R.id.menu);
         floatingActionButton.setMenuButtonColorNormal(colorAccent);
         floatingActionButton.setMenuButtonColorPressed(colorAccent);
 
@@ -1813,7 +1813,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             else FileUtils.revealShow(fabBgView, false);
         });
 
-        FloatingActionButton fabNewFolder = (FloatingActionButton) findViewById(R.id.menu_new_folder);
+        FloatingActionButton fabNewFolder = findViewById(R.id.menu_new_folder);
         fabNewFolder.setColorNormal(iconSkin);
         fabNewFolder.setColorPressed(iconSkin);
         fabNewFolder.setOnClickListener(view -> {
@@ -1821,7 +1821,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             //utils.revealShow(fabBgView, false);
             floatingActionButton.close(true);
         });
-        FloatingActionButton fabNewFile = (FloatingActionButton) findViewById(R.id.menu_new_file);
+        FloatingActionButton fabNewFile = findViewById(R.id.menu_new_file);
         fabNewFile.setColorNormal(iconSkin);
         fabNewFile.setColorPressed(iconSkin);
         fabNewFile.setOnClickListener(view -> {
@@ -1829,7 +1829,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             //utils.revealShow(fabBgView, false);
             floatingActionButton.close(true);
         });
-        final FloatingActionButton floatingActionButton3 = (FloatingActionButton) findViewById(R.id.menu_new_cloud);
+        final FloatingActionButton floatingActionButton3 = findViewById(R.id.menu_new_cloud);
         floatingActionButton3.setColorNormal(iconSkin);
         floatingActionButton3.setColorPressed(iconSkin);
         floatingActionButton3.setOnClickListener(view -> {
