@@ -84,7 +84,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
         }
         setContentView(R.layout.activity_db_viewer);
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
@@ -121,7 +121,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
         path = getIntent().getStringExtra("path");
         pathFile = new File(path);
-        listView = (ListView) findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
 
         load(pathFile);
         listView.setOnItemClickListener((parent, view, position, id) -> {
