@@ -1,5 +1,5 @@
 /*
- * SshClientTemplate.java
+ * SftpClientTemplate.java
  *
  * Copyright © 2017 Raymond Lai <airwave209gt at gmail.com>.
  *
@@ -18,42 +18,37 @@
  * You should have received a copy of the GNU General Public License
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
-
-package com.amaze.filemanager.services.ssh;
+package com.amaze.filemanager.filesystem.ssh;
 
 import android.support.annotation.NonNull;
 
-import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.IOException;
 
 /**
- * Template class for executing actions with {@link SSHClient} while leave the complexities of
- * handling connection setup/teardown to {@link SshClientUtils}.
+ * Template class for executing actions with {@link SFTPClient} while leave the complexities of
+ * handling connection and session setup/teardown to {@link SshClientUtils}.
  */
-public abstract class SshClientTemplate
+public abstract class SFtpClientTemplate
 {
     public final String url;
 
     public final boolean closeClientOnFinish;
 
-    /**
-     * Constructor, with closeClientOnFinish set to true (that the connection must close after <code>execute</code>.
-     *
-     * @param url SSH connection URL, in the form of <code>ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-     */
-    public SshClientTemplate(@NonNull String url)
+    public SFtpClientTemplate(@NonNull String url)
     {
         this(url, true);
     }
 
     /**
-     * Constructor.
+     * If closeClientOnFinish is set to true, calling code needs to handle closing of {@link SFTPClient}
+     * session.
      *
      * @param url SSH connection URL, in the form of <code>ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-     * @param closeClientOnFinish if set to false, connection will be kept on after <code>execute</code> finishes. This is useful for other calls to reuse the connection.
+     * @param closeClientOnFinish
      */
-    public SshClientTemplate(@NonNull String url, boolean closeClientOnFinish)
+    public SFtpClientTemplate(@NonNull String url, boolean closeClientOnFinish)
     {
         this.url = url;
         this.closeClientOnFinish = closeClientOnFinish;
@@ -62,10 +57,11 @@ public abstract class SshClientTemplate
     /**
      * Implement logic here.
      *
-     * @param client {@link SSHClient} instance, with connection opened and authenticated
+     * @param client {@link SFTPClient} instance, with connection opened and authenticated, and
+     *                                SSH session had been set up.
      * @param <T> Requested return type
      * @return Result of the execution of the type requested
      * @throws IOException
      */
-    public abstract <T> T execute(@NonNull SSHClient client) throws IOException;
+    public abstract <T> T execute(@NonNull SFTPClient client) throws IOException;
 }

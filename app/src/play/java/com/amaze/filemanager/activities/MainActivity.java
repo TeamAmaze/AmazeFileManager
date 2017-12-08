@@ -110,7 +110,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
-import com.amaze.filemanager.services.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -487,7 +487,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
-                
                 ArrayList<String[]> servers = new ArrayList<String[]>();
                 servers.addAll(utilsHandler.getSmbList());
                 servers.addAll(utilsHandler.getSftpList());

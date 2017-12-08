@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,14 +46,14 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.services.ssh.SshClientUtils;
-import com.amaze.filemanager.services.ssh.SshConnectionPool;
-import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
-import com.amaze.filemanager.services.ssh.tasks.PemToKeyPairTask;
-import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
-import com.amaze.filemanager.services.ssh.tasks.GetSshHostFingerprintTask;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.ssh.tasks.AsyncTaskResult;
+import com.amaze.filemanager.filesystem.ssh.tasks.PemToKeyPairTask;
+import com.amaze.filemanager.filesystem.ssh.tasks.SshAuthenticationTask;
+import com.amaze.filemanager.filesystem.ssh.tasks.GetSshHostFingerprintTask;
+import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -71,6 +70,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -163,7 +163,7 @@ public class SftpConnectDialog extends DialogFragment {
             .customView(v2, true)
             .theme(mUtilsProvider.getAppTheme().getMaterialDialogTheme())
             .negativeText(R.string.cancel)
-            .positiveText(R.string.create)
+            .positiveText(edit ? R.string.update : R.string.create)
             .positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor)
             .onPositive(new MaterialDialog.SingleButtonCallback() {
         @Override
@@ -179,10 +179,10 @@ public class SftpConnectDialog extends DialogFragment {
 
             String sshHostKey = nUtilsHandler.getSshHostKey(deriveSftpPathFrom(hostname,port,
                     username, password, mSelectedParsedKeyPair));
-            Log.d("DEBUG", "sshHostKey? [" + sshHostKey + "]");
+
             if(sshHostKey != null) {
                 authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username,
-                        password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair);
+                        password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit);
             } else {
                 try {
                     AsyncTaskResult<PublicKey> taskResult = new GetSshHostFingerprintTask(hostname, port).execute().get();
@@ -202,20 +202,15 @@ public class SftpConnectDialog extends DialogFragment {
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if(!edit) {
-                                        Log.d(TAG, hostAndPort + ": [" + hostKeyFingerprint + "]");
-                                        //This closes the host fingerprint verification dialog
+                                    //This closes the host fingerprint verification dialog
+                                    dialog.dismiss();
+                                    if(authenticateAndSaveSetup(connectionName, hostname, port,
+                                            hostKeyFingerprint, username, password,
+                                            mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit))
+                                    {
                                         dialog.dismiss();
-                                        if(authenticateAndSaveSetup(connectionName, hostname, port,
-                                                hostKeyFingerprint, username, password,
-                                                mSelectedParsedKeyPairName, mSelectedParsedKeyPair))
-                                        {
-                                            dialog.dismiss();
-                                            Log.d(TAG, "Saved setup");
-                                            dismiss();
-                                        }
-                                    } else {
-                                        //TODO: update connection settings
+                                        Log.d(TAG, "Saved setup");
+                                        dismiss();
                                     }
                                 }
                             }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -279,7 +274,8 @@ public class SftpConnectDialog extends DialogFragment {
         // Some validations to make sure the Create/Update button is clickable only when required
         // setting values are given
         final View okBTN = dialog.getActionButton(DialogAction.POSITIVE);
-        okBTN.setEnabled(false);
+        if(!edit)
+            okBTN.setEnabled(false);
 
         TextWatcher validator = new TextWatcher() {
             @Override
@@ -291,11 +287,11 @@ public class SftpConnectDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 okBTN.setEnabled(
-                        connectionET.getText().length() > 0
+                        (connectionET.getText().length() > 0
                      && addressET.getText().length() > 0
                      && portET.getText().length() > 0
                      && usernameET.getText().length() > 0
-                     && (passwordET.getText().length() > 0 || mSelectedParsedKeyPair != null)
+                     && (passwordET.getText().length() > 0 || mSelectedParsedKeyPair != null))
                 );
             }
         };
@@ -346,57 +342,66 @@ public class SftpConnectDialog extends DialogFragment {
         }
     }
 
-    private boolean authenticateAndSaveSetup(final String connectionName, final String hostname,
-                                          final int port, final String hostKeyFingerprint,
-                                          final String username, final String password,
-                                          final String selectedParsedKeyPairName,
-                                          final KeyPair selectedParsedKeyPair) {
-        try {
-            AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
-                    selectedParsedKeyPair).execute().get();
-            SSHClient result = taskResult.getResult();
-            if(result != null) {
-                SshClientUtils.tryDisconnect(result);
+    private boolean authenticateAndSaveSetup(String connectionName, String hostname,
+                                          int port, String hostKeyFingerprint,
+                                          String username, String password,
+                                          String selectedParsedKeyPairName,
+                                          KeyPair selectedParsedKeyPair, boolean isEdit) {
 
-                final String path = deriveSftpPathFrom(hostname, port, username, password,
-                        selectedParsedKeyPair);
+        if(isEdit)
+            password = getArguments().getString("password", null);
 
-                final String encryptedPath = (password.length() > 0) ?
-                        SmbUtil.getSmbEncryptedPath(mContext, path): path;
+        final String path = deriveSftpPathFrom(hostname, port, username, password,
+                selectedParsedKeyPair);
 
-                if(DataUtils.getInstance().containsServer(path) == -1) {
-                    AppConfig.runInBackground(new Runnable() {
-                        @Override
-                        public void run() {
+        final String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(path);
+
+        if(!isEdit) {
+            try {
+                AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
+                        selectedParsedKeyPair).execute().get();
+                SSHClient result = taskResult.getResult();
+                if(result != null) {
+                    SshClientUtils.tryDisconnect(result);
+
+                    if(DataUtils.getInstance().containsServer(path) == -1) {
+                        DataUtils.getInstance().addServer(new String[]{connectionName, path});
+                        ((MainActivity) getActivity()).refreshDrawer();
+
                         nUtilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
-                                selectedParsedKeyPairName, getPemContents());
-                        }
-                    });
-                    DataUtils.getInstance().addServer(new String[]{connectionName, path});
-                    ((MainActivity) getActivity()).refreshDrawer();
+                            selectedParsedKeyPairName, getPemContents());
 
-                    TabFragment fragment = ((MainActivity) getActivity()).getFragment();
-                    if (fragment != null) {
-                        Fragment fragment1 = fragment.getTab();
-                        if (fragment1 != null) {
-                            final MainFragment ma = (MainFragment) fragment1;
-                            ma.loadlist(path, false, OpenMode.UNKNOWN);
-                        }
+                        MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
+                        ma.loadlist(path, false, OpenMode.UNKNOWN);
+                        dismiss();
+
+                    } else {
+                        Snackbar.make(getActivity().findViewById(R.id.content_frame),
+                                getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+                        dismiss();
                     }
-                    dismiss();
-
+                    return true;
                 } else {
-                    Snackbar.make(getActivity().findViewById(R.id.content_frame),
-                            getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
-                    dismiss();
+                    return false;
                 }
-                return true;
-            } else {
+            } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        } else {
+            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(path));
+            DataUtils.getInstance().addServer(new String[]{connectionName, path});
+            Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
+            ((MainActivity) getActivity()).refreshDrawer();
+
+            AppConfig.runInBackground(() -> {
+                nUtilsHandler.updateSsh(connectionName,
+                        getArguments().getString("name"), encryptedPath,
+                        selectedParsedKeyPairName, getPemContents());
+            });
+
+            dismiss();
+            return true;
         }
     }
 

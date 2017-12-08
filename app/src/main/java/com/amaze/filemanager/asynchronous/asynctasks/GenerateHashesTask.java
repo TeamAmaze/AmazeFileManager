@@ -2,15 +2,14 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.services.ssh.SshClientSessionTemplate;
-import com.amaze.filemanager.services.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -63,7 +62,6 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                         if(cmd.getExitStatus() == 0)
                             return result;
                         else {
-                            Log.d("DEBUG", "status: " + cmd.getExitStatus() + "; result: " + result);
                             return null;
                         }
                     }
@@ -77,7 +75,6 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                         if(cmd.getExitStatus() == 0)
                             return result;
                         else {
-                            Log.d("DEBUG", "status: " + cmd.getExitStatus() + "; result: " + result);
                             return null;
                         }
                     }

@@ -5,9 +5,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
-import android.util.Log;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -15,6 +16,8 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
+
+import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -375,6 +378,21 @@ public class Operations {
                         e.printStackTrace();
                     }
                     return null;
+                } else if (oldFile.isSftp()) {
+                    SshClientUtils.execute(new SFtpClientTemplate(oldFile.getPath()) {
+                        @Override
+                        public <Void> Void execute(@NonNull SFTPClient client) throws IOException {
+                            try {
+                                client.rename(SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
+                                        SshClientUtils.extractRemotePathFrom(newFile.getPath()));
+                                errorCallBack.done(newFile, true);
+                            } catch(IOException e) {
+                                e.printStackTrace();
+                                errorCallBack.done(newFile, false);
+                            }
+                            return null;
+                        }
+                    });
                 } else if (oldFile.isDropBoxFile()) {
                     CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                     try {

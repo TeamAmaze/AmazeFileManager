@@ -19,7 +19,7 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services.ssh;
+package com.amaze.filemanager.filesystem.ssh;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -27,9 +27,9 @@ import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
-import com.amaze.filemanager.services.ssh.tasks.PemToKeyPairTask;
-import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
+import com.amaze.filemanager.filesystem.ssh.tasks.AsyncTaskResult;
+import com.amaze.filemanager.filesystem.ssh.tasks.PemToKeyPairTask;
+import com.amaze.filemanager.filesystem.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
@@ -88,7 +88,6 @@ public class SshConnectionPool
      */
     public SSHClient getConnection(@NonNull String url) throws IOException {
         url = SshClientUtils.extractBaseUriFrom(url);
-        Log.d(TAG, "Opening connection for " + url);
 
         SSHClient client = mConnections.get(url);
         if(client == null) {

@@ -137,7 +137,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
-    public String sftpPath;
     public ArrayList<HybridFileParcelable> searchHelper = new ArrayList<>();
     public int no;
 
@@ -1041,6 +1040,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
         });
         loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
     }
 
     void initNoFileLayout() {

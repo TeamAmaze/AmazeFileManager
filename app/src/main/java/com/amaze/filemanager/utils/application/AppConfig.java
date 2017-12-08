@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;

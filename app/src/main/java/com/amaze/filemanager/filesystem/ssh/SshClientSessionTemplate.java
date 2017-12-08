@@ -19,7 +19,7 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services.ssh;
+package com.amaze.filemanager.filesystem.ssh;
 
 import android.support.annotation.NonNull;
 

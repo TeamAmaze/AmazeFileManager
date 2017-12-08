@@ -19,14 +19,13 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services.ssh;
+package com.amaze.filemanager.filesystem.ssh;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.SmbUtil;
 
 import net.schmizz.sshj.SSHClient;
@@ -34,8 +33,9 @@ import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
-import static com.amaze.filemanager.services.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 public abstract class SshClientUtils
 {
@@ -147,7 +147,7 @@ public abstract class SshClientUtils
             return (uriWithoutProtocol.indexOf(':') > 0) ?
                     SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri) :
                     fullUri;
-        } catch(CryptException e){
+        } catch(IOException | GeneralSecurityException e){
             Log.e(TAG, "Error encrypting path", e);
             return fullUri;
         }
@@ -166,7 +166,7 @@ public abstract class SshClientUtils
             return (uriWithoutProtocol.indexOf(':') > 0) ?
                     SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri) :
                     fullUri;
-        } catch(CryptException e){
+        } catch(IOException | GeneralSecurityException e){
             Log.e(TAG, "Error decrypting path", e);
             return fullUri;
         }

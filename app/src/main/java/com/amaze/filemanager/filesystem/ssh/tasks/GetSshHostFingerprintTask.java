@@ -19,21 +19,19 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.services.ssh.tasks;
+package com.amaze.filemanager.filesystem.ssh.tasks;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.services.ssh.CustomSshJConfig;
-import com.amaze.filemanager.services.ssh.SshClientUtils;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.SecurityUtils;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 import java.io.IOException;
@@ -79,8 +77,6 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
             @Override
             public boolean verify(String hostname, int port, PublicKey key) {
                 holder.set(new AsyncTaskResult<PublicKey>(key));
-                Log.d("DEBUG", SecurityUtils.getFingerprint(key));
-                Log.d("DEBUG", key.getAlgorithm());
                 semaphore.release();
                 return true;
             }

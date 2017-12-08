@@ -80,6 +80,8 @@ public class GenericCopyUtil {
                 bufferedInputStream = new BufferedInputStream(contentResolver
                         .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isSmb()) {
+
+                // source is in smb
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isSftp()) {
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_BUFFER_SIZE);
@@ -230,8 +232,6 @@ public class GenericCopyUtil {
                             .openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
                 }
             }
-
-            Log.d("DEBUG", "in: " + bufferedInputStream + ", out: " + bufferedOutputStream);
 
             if (bufferedInputStream!=null) {
                 if (bufferedOutputStream!=null) copyFile(bufferedInputStream, bufferedOutputStream);

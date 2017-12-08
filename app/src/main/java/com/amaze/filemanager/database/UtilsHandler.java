@@ -5,14 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.services.ssh.SshClientUtils;
-import com.amaze.filemanager.services.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -22,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Created by Vishal on 29-05-2017.
@@ -171,9 +169,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
-        Log.d("DEBUG", "sshKeyName: " + sshKeyName);
-        Log.d("DEBUG", "sshKey: " + sshKey);
-
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
@@ -186,6 +181,23 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
 
         database.insert(getTableForOperation(Operation.SFTP), null, values);
+    }
+
+    public void updateSsh(String connectionName, String oldConnectionName, String path,
+                          String sshKeyName, String sshKey) {
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, connectionName);
+        values.put(COLUMN_PATH, path);
+        if(sshKeyName != null && sshKey != null) {
+            values.put(COLUMN_PRIVATE_KEY_NAME, sshKeyName);
+            values.put(COLUMN_PRIVATE_KEY, sshKey);
+        }
+
+        database.update(getTableForOperation(Operation.SFTP), values, String.format("%s=?", COLUMN_NAME),
+                new String[]{oldConnectionName});
     }
 
     public LinkedList<String> getHistoryLinkedList() {
@@ -291,39 +303,31 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 new String[]{COLUMN_NAME,COLUMN_PATH},
                 null, null, null, null, COLUMN_ID);
 
-        cursor.moveToFirst();
+        boolean hasNext = cursor.moveToFirst();
         ArrayList<String[]> retval = new ArrayList<String[]>();
-        try
+        while(hasNext)
         {
-            while(cursor.moveToNext())
-            {
-                String path = SshClientUtils.decryptSshPathAsNecessary(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            String path = SshClientUtils.decryptSshPathAsNecessary(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
 
-                if(path == null)
-                {
-                    Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            if(path == null) {
+                Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
 
-                    // failing to decrypt the path, removing entry from database
-                    Toast.makeText(context,
-                            context.getResources().getString(R.string.failed_smb_decrypt_path),
-                            Toast.LENGTH_LONG).show();
+                // failing to decrypt the path, removing entry from database
+                Toast.makeText(context,
+                        context.getResources().getString(R.string.failed_smb_decrypt_path),
+                        Toast.LENGTH_LONG).show();
 //                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
 //                            "");
-                    continue;
-                }
-                else
-                {
-                    retval.add(new String[]{
-                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                        path
-                    });
-                }
+                continue;
+            } else {
+                retval.add(new String[]{
+                    cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                    path
+                });
             }
+            hasNext = cursor.moveToNext();
         }
-        finally
-        {
-            cursor.close();
-        }
+        cursor.close();
         return retval;
     }
 

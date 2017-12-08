@@ -303,6 +303,9 @@ public class BottomBar implements View.OnTouchListener{
         MainActivityHelper mainActivityHelper = mainActivity.get().mainActivityHelper;
 
         switch (openmode) {
+            case SFTP:
+                newPath = mainActivityHelper.parseSftpPath(news);
+                break;
             case SMB:
                 newPath = mainActivityHelper.parseSmbPath(news);
                 break;

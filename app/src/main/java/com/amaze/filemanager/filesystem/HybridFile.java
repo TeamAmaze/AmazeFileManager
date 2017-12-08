@@ -11,22 +11,20 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.services.ssh.SFtpClientTemplate;
-import com.amaze.filemanager.services.ssh.SshClientSessionTemplate;
-import com.amaze.filemanager.services.ssh.SshClientTemplate;
-import com.amaze.filemanager.services.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
-
+import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
-
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
@@ -80,7 +78,6 @@ public class HybridFile {
             else if (!name.endsWith("/")) this.path = path + name + "/";
             else this.path = path + name;
         } else if(path.startsWith("ssh://") || isSftp()) {
-            Log.d(TAG, path);
             this.path = path + "/" + name;
         } else this.path = path + "/" + name;
     }
@@ -603,9 +600,6 @@ public class HybridFile {
                 return SshClientUtils.execute(new SshClientSessionTemplate(path) {
                     @Override
                     public Long execute(Session session) throws IOException {
-                        Log.d("DEBUG.folderSize", String.format("du -b -s \"%s\"",
-                                SshClientUtils.extractRemotePathFrom(path)));
-
                         Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
                                 SshClientUtils.extractRemotePathFrom(path)));
 
@@ -616,7 +610,6 @@ public class HybridFile {
                             return Long.parseLong(result);
                         }
                         else {
-                            Log.d("DEBUG.folderSize", "Result: " + result);
                             return 0L;
                         }
                     }
@@ -687,16 +680,12 @@ public class HybridFile {
                     @Override
                     public Long execute(final Session session) throws IOException {
                         Long retval = 0L;
-                        Log.d("DEBUG.getUsableSpace", String.format("df \"%s\" --output=avail | grep -v Avail", SshClientUtils.extractRemotePathFrom(path)));
                         Session.Command cmd = session.exec(String.format("df \"%s\" --output=avail | grep -v Avail", SshClientUtils.extractRemotePathFrom(path)));
                         String result = IOUtils.readFully(cmd.getInputStream()).toString();
                         cmd.close();
 
                         if (cmd.getExitStatus() == 0) {
                             retval = Long.parseLong(result.trim());
-                        }
-                        else {
-                            Log.d("DEBUG.getUsableSpace", "Result: " + new String(IOUtils.readFully(cmd.getInputStream()).toByteArray()).trim());
                         }
                         return retval;
                     }
@@ -743,16 +732,12 @@ public class HybridFile {
                     @Override
                     public Long execute(Session session) throws IOException {
                         Long retval = 0L;
-                        Log.d("DEBUG.getTotal", String.format("df \"%s\" --output=size -B1 | grep -v 1B-blocks", SshClientUtils.extractRemotePathFrom(path)));
                         Session.Command cmd = session.exec(String.format("df \"%s\" --output=size -B1 | grep -v 1B-blocks", SshClientUtils.extractRemotePathFrom(path)));
                         String result = IOUtils.readFully(cmd.getInputStream()).toString();
                         cmd.close();
 
                         if (cmd.getExitStatus() == 0) {
                             retval = Long.parseLong(result.trim());
-                        }
-                        else {
-                            Log.d("DEBUG.getTotal", "Result: " + new String(IOUtils.readFully(cmd.getInputStream()).toByteArray()).trim());
                         }
                         return retval;
                     }
@@ -846,7 +831,6 @@ public class HybridFile {
                         @Override
                         public ArrayList<HybridFileParcelable> execute(SFTPClient client) throws IOException {
                             ArrayList<HybridFileParcelable> retval = new ArrayList<HybridFileParcelable>();
-                            Log.d("DEBUG.listFiles", "ls " + SshClientUtils.extractRemotePathFrom(path));
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
@@ -1202,7 +1186,6 @@ public class HybridFile {
                 @Override
                 public Void execute(SFTPClient client) throws IOException {
                     try {
-                        Log.d("DEBUG", "mkdir " + path);
                         client.mkdir(SshClientUtils.extractRemotePathFrom(path));
                     } catch(IOException e) {
                         e.printStackTrace();
@@ -1264,7 +1247,10 @@ public class HybridFile {
             SshClientUtils.execute(new SFtpClientTemplate(path) {
                 @Override
                 public Void execute(SFTPClient client) throws IOException {
-                    client.rm(SshClientUtils.extractRemotePathFrom(path));
+                    if(isDirectory(AppConfig.getInstance()))
+                        client.rmdir(SshClientUtils.extractRemotePathFrom(path));
+                    else
+                        client.rm(SshClientUtils.extractRemotePathFrom(path));
                     return null;
                 }
             });

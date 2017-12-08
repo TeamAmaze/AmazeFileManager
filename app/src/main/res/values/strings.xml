@@ -559,7 +559,6 @@
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
 
-
     <string name="local_inet_addr_error">Error getting local inet address</string>
     <string name="intent_save_as">Save as&#8230;</string>
     <string name="go">Go</string>
@@ -581,7 +580,8 @@
     <string name="processing">Processing&#8230;</string>
     <string name="failed_no_connection">Failed to load files. Please check your connection.</string>
 
-    <string name="scp_con">SCP/SFTP Connection</string>
+    <string name="update">UPDATE</string>
+	<string name="scp_con">SCP/SFTP Connection</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">The authenticity of host \'%s\' can\'t be established.\n\n%s key fingerprint is %s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
