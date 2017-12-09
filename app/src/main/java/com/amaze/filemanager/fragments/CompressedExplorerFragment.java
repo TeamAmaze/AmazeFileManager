@@ -292,7 +292,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {
-                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).getName();
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
                     }
 
                     compressedInterface.decompress(null, dirs);
@@ -417,9 +417,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         folder = 0;
         file = 0;
         for (CompressedObjectParcelable item : items) {
-            if(item.getType() == CompressedObjectParcelable.TYPE_GOBACK) continue;
+            if(item.type == CompressedObjectParcelable.TYPE_GOBACK) continue;
             
-            if (item.isDirectory()) folder++;
+            if (item.directory) folder++;
             else file++;
         }
 
