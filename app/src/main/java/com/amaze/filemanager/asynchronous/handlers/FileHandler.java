@@ -51,7 +51,7 @@ public class FileHandler extends Handler {
                 break;
             case CustomFileObserver.DELETED_ITEM:
                 for (int i = 0; i < main.getElementsList().size(); i++) {
-                    File currentFile = new File(main.getElementsList().get(i).getDesc());
+                    File currentFile = new File(main.getElementsList().get(i).desc);
 
                     if (currentFile.getName().equals(path)) {
                         main.getElementsList().remove(i);

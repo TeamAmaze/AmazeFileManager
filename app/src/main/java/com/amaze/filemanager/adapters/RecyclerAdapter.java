@@ -1,6 +1,7 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.widget.PopupMenu;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
 import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
@@ -25,7 +27,6 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.ItemPopupMenu;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -296,7 +297,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         for (LayoutElementParcelable e : arrayList) {
             itemsDigested.add(new ListItem(e));
-            uris.add(e != null? e.getIconData():null);
+            uris.add(e != null? e.iconData:null);
         }
 
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
@@ -328,15 +329,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (itemsDigested.get(i).elem != null) {
                     LayoutElementParcelable nextItem = itemsDigested.get(i).elem;
 
-                    if (!headers[0] && nextItem.isDirectory()) {
+                    if (!headers[0] && nextItem.isDirectory) {
                         headers[0] = true;
                         itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
                         uris.add(i, null);
                         continue;
                     }
 
-                    if (!headers[1] && !nextItem.isDirectory()
-                            && !nextItem.getTitle().equals(".") && !nextItem.getTitle().equals("..")) {
+                    if (!headers[1] && !nextItem.isDirectory
+                            && !nextItem.title.equals(".") && !nextItem.title.equals("..")) {
                         headers[1] = true;
                         itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
                         uris.add(i, null);
@@ -458,7 +459,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     return true;
                 });
 
-                holder.txtTitle.setText(rowItem.getTitle());
+                holder.txtTitle.setText(rowItem.title);
                 holder.genericText.setText("");
 
                 if (holder.about != null) {
@@ -497,47 +498,47 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // setting icons for various cases
                 // apkIcon holder refers to square/non-circular drawable
                 // pictureIcon is circular drawable
-                switch (rowItem.getFiletype()) {
+                switch (rowItem.filetype) {
                     case Icons.PICTURE:
                     case Icons.VIDEO:
                         if (mainFrag.SHOW_THUMBS) {
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.pictureIcon);
+                                modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.pictureIcon);
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.apkIcon);
+                                modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.apkIcon);
                             }
                         }
                         break;
                     case Icons.APK:
                         if (mainFrag.SHOW_THUMBS) {
                             holder.apkIcon.setVisibility(View.VISIBLE);
-                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.apkIcon);
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.apkIcon);
                         }
                         break;
                     case Icons.GENERIC:
                         holder.genericIcon.setVisibility(View.VISIBLE);
                         // if the file type is any unknown variable
-                        String ext = !rowItem.isDirectory() ? MimeTypes.getExtension(rowItem.getTitle()) : null;
+                        String ext = !rowItem.isDirectory ? MimeTypes.getExtension(rowItem.title) : null;
                         if (ext != null && ext.trim().length() != 0) {
                             holder.genericText.setText(ext);
                             holder.genericIcon.setImageDrawable(null);
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:
                         if (mainFrag.SHOW_THUMBS) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         }
                         break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
-                        modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
+                        modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         break;
                 }
 
@@ -552,7 +553,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     // making sure the generic icon background color filter doesn't get changed
                     // to grey on picture/video/apk/generic text icons when checked
                     // so that user can still look at the thumbs even after selection
-                    if ((rowItem.getFiletype() != Icons.PICTURE && rowItem.getFiletype() != Icons.APK && rowItem.getFiletype() != Icons.VIDEO)) {
+                    if ((rowItem.filetype != Icons.PICTURE && rowItem.filetype != Icons.APK && rowItem.filetype != Icons.VIDEO)) {
                         holder.apkIcon.setVisibility(View.GONE);
                         holder.pictureIcon.setVisibility(View.GONE);
                         holder.genericIcon.setVisibility(View.VISIBLE);
@@ -565,10 +566,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.checkImageView.setVisibility(View.INVISIBLE);
                     GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
                     if (mainFrag.COLORISE_ICONS) {
-                        if (rowItem.isDirectory()) {
+                        if (rowItem.isDirectory) {
                             gradientDrawable.setColor(iconSkinColor);
                         } else {
-                            ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.getDesc()),
+                            ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.desc),
                                     gradientDrawable, iconSkinColor);
                         }
                     } else gradientDrawable.setColor(iconSkinColor);
@@ -577,18 +578,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         gradientDrawable.setColor(goBackColor);
                 }
                 if (mainFrag.SHOW_PERMISSIONS)
-                    holder.perm.setText(rowItem.getPermissions());
+                    holder.perm.setText(rowItem.permissions);
                 if (mainFrag.SHOW_LAST_MODIFIED) {
-                    holder.date.setText(rowItem.getDate());
+                    holder.date.setText(rowItem.date1);
                 } else {
                     holder.date.setVisibility(View.GONE);
                 }
 
                 if (isBackButton) {
-                    holder.date.setText(rowItem.getSize());
+                    holder.date.setText(rowItem.size);
                     holder.txtDesc.setText("");
                 } else if (mainFrag.SHOW_SIZE) {
-                    holder.txtDesc.setText(rowItem.getSize());
+                    holder.txtDesc.setText(rowItem.size);
                 }
             } else {
                 // view is a grid view
@@ -604,30 +605,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     return true;
                 });
-                holder.txtTitle.setText(rowItem.getTitle());
-
+                holder.txtTitle.setText(rowItem.title);
                 holder.imageView1.setVisibility(View.INVISIBLE);
                 holder.genericIcon.setVisibility(View.VISIBLE);
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
 
-                GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
+                GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
 
-                if (rowItem.getFiletype() == Icons.PICTURE || rowItem.getFiletype() == Icons.VIDEO) {
+                if (rowItem.filetype == Icons.PICTURE || rowItem.filetype == Icons.VIDEO) {
                     holder.genericIcon.setColorFilter(null);
                     holder.imageView1.setVisibility(View.VISIBLE);
                     holder.imageView1.setImageDrawable(null);
                     if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
                         holder.imageView1.setBackgroundColor(Color.BLACK);
-                    modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.imageView1);
-                } else if (rowItem.getFiletype() == Icons.APK) {
+                    modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.imageView1);
+                } else if (rowItem.filetype == Icons.APK) {
                     holder.genericIcon.setColorFilter(null);
-                    modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
+                    modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                 }
 
-                if (rowItem.isDirectory()) {
+                if (rowItem.isDirectory) {
                     holder.genericIcon.setColorFilter(iconSkinColor);
                 } else {
-                    switch (rowItem.getFiletype()) {
+                    switch (rowItem.filetype) {
                         case Icons.VIDEO:
                             holder.genericIcon.setColorFilter(videoColor);
                             break;
@@ -684,15 +684,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     showPopup(holder.about, rowItem, p);
                 }
                 if (mainFrag.SHOW_LAST_MODIFIED)
-                    holder.date.setText(rowItem.getDate());
+                    holder.date.setText(rowItem.date1);
                 if (isBackButton) {
-                    holder.date.setText(rowItem.getSize());
+                    holder.date.setText(rowItem.size);
                     holder.txtDesc.setText("");
                 }/*else if(main.SHOW_SIZE)
                 holder.txtDesc.setText(rowItem.getSize());
            */
                 if (mainFrag.SHOW_PERMISSIONS)
-                    holder.perm.setText(rowItem.getPermissions());
+                    holder.perm.setText(rowItem.permissions);
             }
         }
     }
@@ -701,7 +701,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getCorrectView(IconDataParcelable item, int adapterPosition) {
         if (mainFrag.IS_LIST) {
             if(mainFrag.SHOW_THUMBS) {
-                int filetype = itemsDigested.get(adapterPosition).elem.getFiletype();
+                int filetype = itemsDigested.get(adapterPosition).elem.filetype;
 
                 if (filetype == Icons.VIDEO || filetype == Icons.PICTURE) {
                     if (mainFrag.CIRCULAR_IMAGES) {
@@ -729,9 +729,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
                     utilsProvider, mainFrag, rowItem, view, sharedPrefs);
             popupMenu.inflate(R.menu.item_extras);
-            String description = rowItem.getDesc().toLowerCase();
+            String description = rowItem.desc.toLowerCase();
 
-            if (rowItem.isDirectory()) {
+            if (rowItem.isDirectory) {
                 popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
                 popupMenu.getMenu().findItem(R.id.share).setVisible(false);
 

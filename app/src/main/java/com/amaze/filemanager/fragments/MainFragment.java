@@ -535,7 +535,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).desc);
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -553,7 +553,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         if (getMainActivity().mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
                         for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                            File x = new File(e.getDesc());
+                            File x = new File(e.desc);
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -572,7 +572,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).desc);
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -591,7 +591,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             showOption(R.id.openmulti, menu);
                     try {
                         for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                            File x = new File(e.getDesc());
+                            File x = new File(e.desc);
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -642,7 +642,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.about:
                     LayoutElementParcelable x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
-                            x.getPermissions(), (ThemedActivity) getActivity(), ThemedActivity.rootMode,
+                            x.permissions, (ThemedActivity) getActivity(), ThemedActivity.rootMode,
                             utilsProvider.getAppTheme());
                     mode.finish();
                     return true;
@@ -653,7 +653,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<>();
                     for (LayoutElementParcelable e: checkedItems) {
-                        arrayList.add(new File(e.getDesc()));
+                        arrayList.add(new File(e.desc));
                     }
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
@@ -665,7 +665,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
-                                FileUtils.shareCloudFile(LIST_ELEMENTS.get(0).getDesc(),
+                                FileUtils.shareCloudFile(LIST_ELEMENTS.get(0).desc,
                                         LIST_ELEMENTS.get(0).getMode(), getContext());
                                 break;
                             default:
@@ -675,7 +675,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     }
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(checkedItems.get(0).getDesc()).getParent(), false, OpenMode.FILE);
+                    loadlist(new File(checkedItems.get(0).desc).getParent(), false, OpenMode.FILE);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
@@ -696,13 +696,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.hide:
                     for (int i1 = 0; i1 < checkedItems.size(); i1++) {
-                        hide(checkedItems.get(i1).getDesc());
+                        hide(checkedItems.get(i1).desc);
                     }
                     updateList();
                     mode.finish();
                     return true;
                 case R.id.ex:
-                    getMainActivity().mainActivityHelper.extractFile(new File(checkedItems.get(0).getDesc()));
+                    getMainActivity().mainActivityHelper.extractFile(new File(checkedItems.get(0).desc));
                     mode.finish();
                     return true;
                 case R.id.cpy:
@@ -729,7 +729,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.openwith:
                     boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
+                    FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -878,12 +878,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     getMainActivity().getAppbar().getSearchView().hideSearchView();
                 }
 
-                String path = !e.hasSymlink()? e.getDesc():e.getSymlink();
+                String path = !e.hasSymlink()? e.desc:e.symlink;
 
-                if (e.isDirectory()) {
+                if (e.isDirectory) {
                     computeScroll();
                     loadlist(path, false, openMode);
-                } else if (e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                } else if (e.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
                     isEncryptOpen = true;
 
@@ -903,14 +903,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         switch (e.getMode()) {
                             case SMB:
                                 try {
-                                    SmbFile smbFile = new SmbFile(e.getDesc());
-                                    launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                                    SmbFile smbFile = new SmbFile(e.desc);
+                                    launchSMB(smbFile, e.longSize, getMainActivity());
                                 } catch (MalformedURLException ex) {
                                     ex.printStackTrace();
                                 }
                                 break;
                             case OTG:
-                                FileUtils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                FileUtils.openFile(OTGUtil.getDocumentFile(e.desc, getContext(), false),
                                         (MainActivity) getActivity(), sharedPref);
                                 break;
                             case DROPBOX:
@@ -921,11 +921,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                                 break;
                             default:
-                                FileUtils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
+                                FileUtils.openFile(new File(e.desc), (MainActivity) getActivity(), sharedPref);
                                 break;
                         }
 
-                        dataUtils.addHistoryFile(e.getDesc());
+                        dataUtils.addHistoryFile(e.desc);
                     }
                 }
             }
@@ -1108,7 +1108,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (GO_BACK_ITEM && !CURRENT_PATH.equals("/")
                     && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT) && !isOtg && !isOnTheCloud
-                    && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).getSize().equals(getString(R.string.goback)))) {
+                    && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))) {
                 LIST_ELEMENTS.add(0, getBackElement());
             }
 
@@ -1583,12 +1583,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         //on Home screen
         Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
                 MainActivity.class);
-        shortcutIntent.putExtra("path", path.getDesc());
+        shortcutIntent.putExtra("path", path.desc);
         shortcutIntent.setAction(Intent.ACTION_MAIN);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent addIntent = new Intent();
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.desc).getName());
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
         addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
