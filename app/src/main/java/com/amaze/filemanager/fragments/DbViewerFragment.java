@@ -55,6 +55,9 @@ public class DbViewerFragment extends Fragment {
         if (databaseViewerActivity.getAppTheme().equals(AppTheme.DARK)) {
             relativeLayout.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             webView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        } else if (databaseViewerActivity.getAppTheme().equals(AppTheme.BLACK)) {
+            relativeLayout.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+            webView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
         } else {
             relativeLayout.setBackgroundColor(Color.parseColor("#ffffff"));
             webView.setBackgroundColor(Color.parseColor("#ffffff"));

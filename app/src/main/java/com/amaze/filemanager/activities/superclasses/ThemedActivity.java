@@ -210,6 +210,8 @@ public class ThemedActivity extends PreferenceActivity {
         } else {
             if (theme.equals(AppTheme.LIGHT)) {
                 setTheme(R.style.appCompatLight);
+            } else if (theme.equals(AppTheme.BLACK)) {
+                setTheme(R.style.appCompatBlack);
             } else {
                 setTheme(R.style.appCompatDark);
             }

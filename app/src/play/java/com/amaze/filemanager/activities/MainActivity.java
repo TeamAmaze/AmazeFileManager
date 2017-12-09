@@ -416,12 +416,16 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
             */
             getWindow().setBackgroundDrawableResource(android.R.color.white);
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+            getWindow().setBackgroundDrawableResource(android.R.color.black);
         } else {
             getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
         }
 
         if (getAppTheme().equals(AppTheme.DARK)) {
             mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+            mDrawerList.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black));
         }
         mDrawerList.setDivider(null);
         if (!isDrawerLocked) {
@@ -1668,6 +1672,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         indicator_layout = findViewById(R.id.indicator_layout);
         mDrawerLinear = findViewById(R.id.left_drawer);
         if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+        else if (getAppTheme().equals(AppTheme.BLACK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, android.R.color.black));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
@@ -1688,7 +1693,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         fabBgView = findViewById(R.id.fab_bg);
-        if (getAppTheme().equals(AppTheme.DARK)) {
+        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
             fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         }
 
@@ -1705,7 +1710,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         setDrawerHeaderBackground();
         View settingsButton = findViewById(R.id.settingsbutton);
-        if (getAppTheme().equals(AppTheme.DARK)) {
+        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
             settingsButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) settingsButton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
             ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(Utils.getColor(this, android.R.color.white));
@@ -1716,7 +1721,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             finish();
         });
         View appButton = findViewById(R.id.appbutton);
-        if (getAppTheme().equals(AppTheme.DARK)) {
+        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
             appButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) appButton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
             ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(Utils.getColor(this, android.R.color.white));
@@ -1733,7 +1738,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         });
 
         View ftpButton = findViewById(R.id.ftpbutton);
-        if (getAppTheme().equals(AppTheme.DARK)) {
+        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
             ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
             ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
             ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(Utils.getColor(this, android.R.color.white));

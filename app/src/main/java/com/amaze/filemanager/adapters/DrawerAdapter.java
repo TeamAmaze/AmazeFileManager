@@ -107,6 +107,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setFocusable(false);
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 view.setBackgroundColor(Color.WHITE);
+            else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK))
+                view.setBackgroundColor(Color.BLACK);
             else view.setBackgroundResource(R.color.background_material_dark);
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(m, 17)));
             view.setPadding(0, Utils.dpToPx(m, 8), 0, Utils.dpToPx(m, 8));
@@ -182,6 +184,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
+                } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+                    view.setBackgroundColor(Color.BLACK);
                 } else {
                     view.setBackgroundColor(Color.parseColor("#ff424242"));
                 }

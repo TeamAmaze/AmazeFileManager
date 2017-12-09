@@ -82,6 +82,9 @@ public class DatabaseViewerActivity extends ThemedActivity {
         if (getAppTheme().equals(AppTheme.DARK)) {
             setTheme(R.style.appCompatDark);
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+            setTheme(R.style.appCompatBlack);
+            getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
         }
         setContentView(R.layout.activity_db_viewer);
         toolbar = findViewById(R.id.toolbar);

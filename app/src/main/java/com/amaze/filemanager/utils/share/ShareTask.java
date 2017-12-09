@@ -72,7 +72,8 @@ public class ShareTask extends AsyncTask<String, String, Void> {
             intent.setPackage("com.android.bluetooth");
             targetShareIntents.add(intent);
             arrayList1.add(contextc.getResources().getString(R.string.bluetooth));
-            arrayList2.add(contextc.getResources().getDrawable(appTheme.equals(AppTheme.DARK) ? R.drawable.ic_settings_bluetooth_white_36dp : R.drawable.ic_settings_bluetooth_black_24dp));
+            arrayList2.add(contextc.getResources().getDrawable(appTheme.equals(AppTheme.LIGHT) ? R
+                    .drawable.ic_settings_bluetooth_black_24dp : R.drawable.ic_settings_bluetooth_white_36dp));
         }
         return null;
     }

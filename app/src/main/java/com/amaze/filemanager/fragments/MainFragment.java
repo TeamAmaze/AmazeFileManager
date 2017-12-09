@@ -1050,9 +1050,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             loadlist((CURRENT_PATH), false, openMode);
             nofilesview.setRefreshing(false);
         });
-        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+        if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
             ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
-        else {
+        } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+            nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+            ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.BLACK);
+        } else {
             nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
         }

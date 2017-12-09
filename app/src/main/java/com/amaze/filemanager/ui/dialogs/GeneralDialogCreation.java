@@ -745,7 +745,7 @@ public class GeneralDialogCreation {
                             m.openZip(Uri.fromFile(f).toString());
                     }
                 });
-        if (m.getAppTheme().equals(AppTheme.DARK)) mat.theme(Theme.DARK);
+        if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
         if (!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))

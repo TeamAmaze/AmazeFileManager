@@ -85,6 +85,8 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         vl.setDivider(null);
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
             getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK))
+            getActivity().getWindow().getDecorView().setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
 
         adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider,
                 R.layout.rowlayout, app);

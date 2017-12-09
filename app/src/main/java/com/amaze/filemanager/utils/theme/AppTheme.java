@@ -10,11 +10,13 @@ import java.util.Calendar;
 public enum AppTheme {
     LIGHT(0),
     DARK(1),
-    TIMED(2);
+    TIMED(2),
+    BLACK(3);
 
     public static final int LIGHT_INDEX = 0;
     public static final int DARK_INDEX = 1;
     public static final int TIME_INDEX = 2;
+    public static final int BLACK_INDEX = 3;
 
     private int id;
 
@@ -37,6 +39,8 @@ public enum AppTheme {
                 return DARK;
             case TIME_INDEX:
                 return TIMED;
+            case BLACK_INDEX:
+                return BLACK;
         }
     }
 
@@ -49,6 +53,7 @@ public enum AppTheme {
             case LIGHT_INDEX:
                 return Theme.LIGHT;
             case DARK_INDEX:
+            case BLACK_INDEX:
                 return Theme.DARK;
             case TIME_INDEX:
                 int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -79,6 +84,8 @@ public enum AppTheme {
                 } else {
                     return LIGHT;
                 }
+            case BLACK_INDEX:
+                return BLACK;
         }
     }
 

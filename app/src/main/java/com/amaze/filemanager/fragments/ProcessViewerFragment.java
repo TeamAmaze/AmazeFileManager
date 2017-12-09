@@ -91,7 +91,7 @@ public class ProcessViewerFragment extends Fragment {
 
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = mainActivity.getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab));
-        if (mainActivity.getAppTheme().equals(AppTheme.DARK))
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK))
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
@@ -111,7 +111,7 @@ public class ProcessViewerFragment extends Fragment {
         mProgressSpeedText = (TextView) rootView.findViewById(R.id.text_view_progress_speed);
         mProgressTimer = (TextView) rootView.findViewById(R.id.text_view_progress_timer);
 
-        if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
             mCancelButton.setImageResource(R.drawable.ic_action_cancel);
             mCardView.setCardBackgroundColor(Utils.getColor(getContext(), R.color.cardView_foreground));
@@ -391,7 +391,7 @@ public class ProcessViewerFragment extends Fragment {
     private void setupDrawables(ServiceType serviceType, boolean isMove) {
         switch (serviceType) {
             case COPY:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_content_copy_white_36dp));
@@ -404,7 +404,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL));
                 break;
             case EXTRACT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_white_36dp));
@@ -416,7 +416,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
                 break;
             case COMPRESS:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_white_36dp));
@@ -428,7 +428,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
             case ENCRYPT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_folder_lock_white_36dp));
@@ -440,7 +440,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
                 break;
             case DECRYPT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_folder_lock_open_white_36dp));
