@@ -16,26 +16,49 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 public class CopyDataParcelable implements Parcelable {
 
     // which file is being copied from total number of files
-    int sourceProgress;
+    public final int sourceProgress;
 
     // current byte position in total bytes pool
-    long byteProgress;
+    public final long byteProgress;
 
     // total number of source files to be copied
-    int sourceFiles;
+    public final int sourceFiles;
 
     // total size of all source files combined
-    long totalSize;
+    public final long totalSize;
 
     // bytes being copied per sec
-    int speedRaw;
+    public final int speedRaw;
 
-    boolean completed=false,move=false;
+    public final boolean completed, move;
 
     // name of source file being copied
-    String name;
+    public final String name;
 
-    public CopyDataParcelable(){}
+    public CopyDataParcelable(String name, int amountOfSourceFiles, long totalSize, boolean move) {
+        this.name = name;
+        sourceFiles = amountOfSourceFiles;
+        this.totalSize = totalSize;
+        this.move = move;
+
+        speedRaw = 0;
+        sourceProgress = 0;
+        byteProgress = 0;
+        completed = false;
+    }
+
+    public CopyDataParcelable(String name, int amountOfSourceFiles, int sourceProgress,
+                              long totalSize, long byteProgress, int speedRaw, boolean move,
+                              boolean completed) {
+        this.name = name;
+        sourceFiles = amountOfSourceFiles;
+        this.sourceProgress = sourceProgress;
+        this.totalSize = totalSize;
+        this.byteProgress = byteProgress;
+        this.speedRaw = speedRaw;
+        this.move = move;
+        this.completed = completed;
+    }
 
     protected CopyDataParcelable(Parcel in) {
         sourceProgress = in.readInt();
@@ -59,71 +82,7 @@ public class CopyDataParcelable implements Parcelable {
             return new CopyDataParcelable[size];
         }
     };
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getByteProgress() {
-        return byteProgress;
-    }
-
-    public void setByteProgress(long byteProgress) {
-        this.byteProgress = byteProgress;
-    }
-
-    public boolean isMove() {
-        return move;
-    }
-
-    public void setMove(boolean move) {
-        this.move = move;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public long getTotal() {
-        return totalSize;
-    }
-
-    public void setTotal(long totalSize) {
-        this.totalSize = totalSize;
-    }
-
-    public int getSourceProgress() {
-        return sourceProgress;
-    }
-
-    public void setSourceProgress(int progress) {
-        this.sourceProgress = progress;
-    }
-
-    public void setSourceFiles(int sourceFiles) {
-        this.sourceFiles = sourceFiles;
-    }
-
-    public int getSourceFiles() {
-        return this.sourceFiles;
-    }
-
-    public void setSpeedRaw(int speedRaw) {
-        this.speedRaw = speedRaw;
-    }
-
-    public int getSpeedRaw() {
-        return this.speedRaw;
-    }
-
+    
     @Override
     public int describeContents() {
         return 0;
