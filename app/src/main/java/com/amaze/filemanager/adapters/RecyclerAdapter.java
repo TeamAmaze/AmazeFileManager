@@ -38,7 +38,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +53,9 @@ import java.util.List;
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int PICTURE_FILETYPE = 0, APK_FILETYPE = 1, VIDEO_FILETYPE = 2,
-            GENERIC_FILETYPE = 3, ENCRYPTED_FILETYPE = 4;
-
     public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
 
-    private static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
-            GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
+    private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
     public boolean stoppedAnimation = false;
 
@@ -446,26 +441,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     return true;
                 });
 
-                int filetype = -1;
-
-                switch (Icons.getTypeOfFile(rowItem.getDesc())) {
-                    case PICTURE:
-                        filetype = PICTURE_FILETYPE;
-                        break;
-                    case APK:
-                        filetype = APK_FILETYPE;
-                        break;
-                    case VIDEO:
-                        filetype = VIDEO_FILETYPE;
-                        break;
-                    case ENCRYPTED:
-                        if (!rowItem.isDirectory()) filetype = ENCRYPTED_FILETYPE;
-                        break;
-                    case GENERIC:
-                        filetype = GENERIC_FILETYPE;
-                        break;
-                }
-
                 holder.txtTitle.setText(rowItem.getTitle());
                 GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
                 holder.genericText.setText("");
@@ -498,21 +473,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 });
 
                 // resetting icons visibility
-                holder.genericIcon.setVisibility(View.VISIBLE);
-                holder.pictureIcon.setVisibility(View.INVISIBLE);
-                holder.apkIcon.setVisibility(View.INVISIBLE);
+                holder.genericIcon.setVisibility(View.GONE);
+                holder.pictureIcon.setVisibility(View.GONE);
+                holder.apkIcon.setVisibility(View.GONE);
                 holder.checkImageView.setVisibility(View.INVISIBLE);
 
                 // setting icons for various cases
                 // apkIcon holder refers to square/non-circular drawable
                 // pictureIcon is circular drawable
-                switch (filetype) {
-                    case PICTURE_FILETYPE:
+                switch (rowItem.getFiletype()) {
+                    case Icons.PICTURE:
+                    case Icons.VIDEO:
                         if (mainFrag.SHOW_THUMBS) {
-                            holder.genericIcon.setVisibility(View.GONE);
-
                             if (mainFrag.CIRCULAR_IMAGES) {
-                                holder.apkIcon.setVisibility(View.GONE);
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
                                 GlideApp.with(mainFrag).load(rowItem.getDesc())
                                         .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
@@ -527,10 +500,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             }
                         }
                         break;
-                    case APK_FILETYPE:
+                    case Icons.APK:
                         if (mainFrag.SHOW_THUMBS) {
-                            holder.genericIcon.setVisibility(View.GONE);
-                            holder.pictureIcon.setVisibility(View.GONE);
                             holder.apkIcon.setVisibility(View.VISIBLE);
 
                             GlideApp.with(mainFrag).load(rowItem.getDesc())
@@ -539,25 +510,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
                         }
                         break;
-                    case VIDEO_FILETYPE:
-                        if (mainFrag.SHOW_THUMBS) {
-                            holder.genericIcon.setVisibility(View.GONE);
-                            if (mainFrag.CIRCULAR_IMAGES) {
-                                holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc())
-                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
-                                        .into(holder.pictureIcon)
-                                        .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
-                            } else {
-                                holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc())
-                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
-                                        .into(holder.apkIcon)
-                                        .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
-                            }
-                        }
-                        break;
-                    case GENERIC_FILETYPE:
+                    case Icons.GENERIC:
+                        holder.genericIcon.setVisibility(View.VISIBLE);
                         // if the file type is any unknown variable
                         String ext = !rowItem.isDirectory() ? MimeTypes.getExtension(rowItem.getTitle()) : null;
                         if (ext != null && ext.trim().length() != 0) {
@@ -565,19 +519,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             holder.genericIcon.setImageDrawable(null);
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
-
-                            // we could not find the extension, set a generic file type icon
-                            // probably a directory
-                            holder.genericIcon.setVisibility(View.VISIBLE);
+                            // we could not find the extension, set a generic file type icon probably a directory
                         }
-                        holder.pictureIcon.setVisibility(View.GONE);
-                        holder.apkIcon.setVisibility(View.GONE);
                         break;
-                    case ENCRYPTED_FILETYPE:
+                    case Icons.ENCRYPTED:
                         if (mainFrag.SHOW_THUMBS) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            holder.pictureIcon.setVisibility(View.GONE);
-                            holder.apkIcon.setVisibility(View.GONE);
                             GlideApp.with(mainFrag).load(R.drawable.ic_file_lock_white_36dp).into(holder.genericIcon);
                             //GlideApp.with(mainFrag).clear(holder.apkIcon);
                             //GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
@@ -585,8 +532,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         break;
                     default:
-                        holder.pictureIcon.setVisibility(View.GONE);
-                        holder.apkIcon.setVisibility(View.GONE);
                         holder.genericIcon.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -602,8 +547,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     // making sure the generic icon background color filter doesn't get changed
                     // to grey on picture/video/apk/generic text icons when checked
                     // so that user can still look at the thumbs even after selection
-                    if ((filetype != PICTURE_FILETYPE && filetype != APK_FILETYPE
-                            && filetype != VIDEO_FILETYPE)) {
+                    if ((rowItem.getFiletype() != Icons.PICTURE && rowItem.getFiletype() != Icons.APK && rowItem.getFiletype() != Icons.VIDEO)) {
                         holder.apkIcon.setVisibility(View.GONE);
                         holder.pictureIcon.setVisibility(View.GONE);
                         holder.genericIcon.setVisibility(View.VISIBLE);
@@ -656,13 +600,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     return true;
                 });
                 holder.txtTitle.setText(rowItem.getTitle());
+
                 holder.imageView1.setVisibility(View.INVISIBLE);
                 holder.genericIcon.setVisibility(View.VISIBLE);
                 holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
 
                 GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
 
-                if (Icons.isPicture(new File(rowItem.getDesc().toLowerCase())) || Icons.isVideo(new File(rowItem.getDesc().toLowerCase()))) {
+                if (rowItem.getFiletype() == Icons.PICTURE || rowItem.getFiletype() == Icons.VIDEO) {
                     holder.genericIcon.setColorFilter(null);
                     holder.imageView1.setVisibility(View.VISIBLE);
                     holder.imageView1.setImageDrawable(null);
@@ -670,7 +615,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.imageView1.setBackgroundColor(Color.BLACK);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.imageView1)
                             .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
-                } else if (Icons.isApk(new File(rowItem.getDesc()))) {
+                } else if (rowItem.getFiletype() == Icons.APK) {
                     holder.genericIcon.setColorFilter(null);
                     GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.genericIcon)
                             .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
@@ -679,30 +624,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (rowItem.isDirectory()) {
                     holder.genericIcon.setColorFilter(iconSkinColor);
                 } else {
-                    switch (Icons.getTypeOfFile(rowItem.getDesc())) {
-                        case VIDEO:
+                    switch (rowItem.getFiletype()) {
+                        case Icons.VIDEO:
                             holder.genericIcon.setColorFilter(videoColor);
                             break;
-                        case AUDIO:
+                        case Icons.AUDIO:
                             holder.genericIcon.setColorFilter(audioColor);
                             break;
-                        case PDF:
+                        case Icons.PDF:
                             holder.genericIcon.setColorFilter(pdfColor);
                             break;
-                        case CODE:
+                        case Icons.CODE:
                             holder.genericIcon.setColorFilter(codeColor);
                             break;
-                        case TEXT:
+                        case Icons.TEXT:
                             holder.genericIcon.setColorFilter(textColor);
                             break;
-                        case ARCHIVE:
+                        case Icons.ARCHIVE:
                             holder.genericIcon.setColorFilter(archiveColor);
                             break;
-                        case GENERIC:
+                        case Icons.GENERIC:
                             holder.genericIcon.setColorFilter(genericColor);
                             break;
-                        case APK:
-                        case PICTURE:
+                        case Icons.APK:
+                        case Icons.PICTURE:
                             holder.genericIcon.setColorFilter(null);
                             break;
                         default:

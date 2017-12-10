@@ -37,6 +37,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
+    private int filetype;
     private IconDataParcelable iconData;
     private String title;
     private String desc;
@@ -55,7 +56,7 @@ public class LayoutElementParcelable implements Parcelable {
     public LayoutElementParcelable(String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean isGrid, boolean useThumbs) {
-        int filetype = Icons.getTypeOfFile(path);
+        filetype = Icons.getTypeOfFile(path);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
 
         if(useThumbs) {
@@ -99,6 +100,10 @@ public class LayoutElementParcelable implements Parcelable {
         baseFile.setMode(mode);
         baseFile.setName(title);
         return baseFile;
+    }
+
+    public int getFiletype() {
+        return filetype;
     }
 
     public IconDataParcelable getIconData() {
@@ -159,6 +164,7 @@ public class LayoutElementParcelable implements Parcelable {
     }
 
     public LayoutElementParcelable(Parcel im) {
+        filetype = im.readInt();
         iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
         title = im.readString();
         desc = im.readString();
@@ -182,6 +188,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel p1, int p2) {
+        p1.writeInt(filetype);
         p1.writeParcelable(iconData, 0);
         p1.writeString(title);
         p1.writeString(desc);
