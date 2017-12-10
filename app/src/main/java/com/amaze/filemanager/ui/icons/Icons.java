@@ -423,7 +423,7 @@ public class Icons {
         return filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK;
     }
 
-    private Drawable getAppDrawable(@NonNull final Context context, String path) throws OutOfMemoryError {
+    public static Drawable getAppDrawable(@NonNull final Context context, String path) throws OutOfMemoryError {
        try {
            PackageManager pm = context.getPackageManager();
            PackageInfo pi = pm.getPackageArchiveInfo(path, 0);

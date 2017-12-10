@@ -17,7 +17,9 @@ import android.widget.PopupMenu;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
+import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
@@ -34,9 +36,7 @@ import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,8 @@ import java.util.List;
  * Created by Arpit on 11-04-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *                                edited by Jens Klingenberg <mail@jensklingenberg.de>
  */
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
     public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
 
@@ -62,6 +63,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private UtilitiesProviderInterface utilsProvider;
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
+    private RecyclerViewPreloader<IconDataParcelable> preloader;
+    private RecyclerPreloadSizeProvider sizeProvider;
+    private RecyclerPreloadModelProvider modelProvider;
     private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -279,15 +283,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+        if(preloader != null)  {
+            recyclerView.removeOnScrollListener(preloader);
+            preloader = null;
+        }
+
         itemsDigested.clear();
         offset = 0;
         stoppedAnimation = false;
 
-        List<String> uris = new ArrayList<>(itemsDigested.size());
+        ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
 
         for (LayoutElementParcelable e : arrayList) {
             itemsDigested.add(new ListItem(e));
-            uris.add(e != null? e.getDesc():null);
+            uris.add(e != null? e.getIconData():null);
         }
 
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
@@ -303,17 +312,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             createHeaders(invalidate, uris);
         }
 
-        FixedPreloadSizeProvider<String> sizeProvider = new FixedPreloadSizeProvider<>(GlideConstants.WIDTH, GlideConstants.HEIGHT);
-        RecyclerPreloadModelProvider modelProvider =
-                new RecyclerPreloadModelProvider(mainFrag, uris, mainFrag.SHOW_THUMBS, !mainFrag.IS_LIST);
+        sizeProvider = new RecyclerPreloadSizeProvider(this);
+        modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris, mainFrag.SHOW_THUMBS);
 
-        RecyclerViewPreloader<String> preloader =
-                new RecyclerViewPreloader<>(Glide.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD);
+        preloader = new RecyclerViewPreloader<>(GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD);
 
         recyclerView.addOnScrollListener(preloader);
     }
 
-    public void createHeaders(boolean invalidate, List<String> uris)  {
+    public void createHeaders(boolean invalidate, List<IconDataParcelable> uris)  {
         boolean[] headers = new boolean[]{false, false};
 
         for (int i = 0; i < itemsDigested.size(); i++) {
@@ -383,8 +390,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
-                if (mainFrag.IS_LIST) view = mInflater.inflate(R.layout.rowlayout, parent, false);
-                else view = mInflater.inflate(R.layout.griditem, parent, false);
+                if (mainFrag.IS_LIST) {
+                    view = mInflater.inflate(R.layout.rowlayout, parent, false);
+                    sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
+                    sizeProvider.addView(VIEW_PICTURE, view.findViewById(R.id.picture_icon));
+                    sizeProvider.addView(VIEW_APK, view.findViewById(R.id.apk_icon));
+                } else {
+                    view = mInflater.inflate(R.layout.griditem, parent, false);
+                    sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
+                    sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));
+                }
+
+                sizeProvider.closeOffAddition();
 
                 return new ItemViewHolder(view);
             case EMPTY_LAST_ITEM:
@@ -442,7 +459,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 });
 
                 holder.txtTitle.setText(rowItem.getTitle());
-                GlideApp.with(mainFrag).load(rowItem.getIconData().image).into(holder.genericIcon);
                 holder.genericText.setText("");
 
                 if (holder.about != null) {
@@ -487,27 +503,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         if (mainFrag.SHOW_THUMBS) {
                             if (mainFrag.CIRCULAR_IMAGES) {
                                 holder.pictureIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc())
-                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
-                                        .into(holder.pictureIcon)
-                                        .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                                modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.pictureIcon);
                             } else {
                                 holder.apkIcon.setVisibility(View.VISIBLE);
-                                GlideApp.with(mainFrag).load(rowItem.getDesc())
-                                        .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
-                                        .into(holder.apkIcon)
-                                        .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                                modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.apkIcon);
                             }
                         }
                         break;
                     case Icons.APK:
                         if (mainFrag.SHOW_THUMBS) {
                             holder.apkIcon.setVisibility(View.VISIBLE);
-
-                            GlideApp.with(mainFrag).load(rowItem.getDesc())
-                                    .override(GlideConstants.WIDTH, GlideConstants.HEIGHT)
-                                    .into(holder.apkIcon)
-                                    .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.apkIcon);
                         }
                         break;
                     case Icons.GENERIC:
@@ -520,19 +526,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
+                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:
                         if (mainFrag.SHOW_THUMBS) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            GlideApp.with(mainFrag).load(R.drawable.ic_file_lock_white_36dp).into(holder.genericIcon);
-                            //GlideApp.with(mainFrag).clear(holder.apkIcon);
-                            //GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.apkIcon)
-                            //       .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                            modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
                         }
                         break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
+                        modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
                         break;
                 }
 
@@ -613,12 +618,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.imageView1.setImageDrawable(null);
                     if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
                         holder.imageView1.setBackgroundColor(Color.BLACK);
-                    GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.imageView1)
-                            .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                    modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.imageView1);
                 } else if (rowItem.getFiletype() == Icons.APK) {
                     holder.genericIcon.setColorFilter(null);
-                    GlideApp.with(mainFrag).load(rowItem.getDesc()).into(holder.genericIcon)
-                            .onLoadFailed(Icons.loadFailedThumbForFile(context, rowItem.getDesc()));
+                    modelProvider.getPreloadRequestBuilder(rowItem.getIconData()).into(holder.genericIcon);
                 }
 
                 if (rowItem.isDirectory()) {
@@ -690,6 +693,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
            */
                 if (mainFrag.SHOW_PERMISSIONS)
                     holder.perm.setText(rowItem.getPermissions());
+            }
+        }
+    }
+
+    @Override
+    public int getCorrectView(IconDataParcelable item, int adapterPosition) {
+        if (mainFrag.IS_LIST) {
+            if(mainFrag.SHOW_THUMBS) {
+                if (item.type == IconDataParcelable.IMAGE_PICTURE) {
+                    if (mainFrag.CIRCULAR_IMAGES) {
+                        return VIEW_PICTURE;
+                    } else {
+                        return VIEW_APK;
+                    }
+                } else if (item.type == IconDataParcelable.IMAGE_APK) {
+                    return VIEW_APK;
+                }
+            }
+
+            return VIEW_GENERIC;
+        } else {
+            if (item.type == IconDataParcelable.IMAGE_PICTURE) {
+                return VIEW_THUMB;
+            } else {
+                return VIEW_GENERIC;
             }
         }
     }

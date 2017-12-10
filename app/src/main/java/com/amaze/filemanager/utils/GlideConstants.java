@@ -8,6 +8,6 @@ package com.amaze.filemanager.utils;
 public class GlideConstants {
 
     public static final int HEIGHT = 40, WIDTH = 40;
-    public static final int MAX_PRELOAD = 20;
+    public static final int MAX_PRELOAD = 50;
 
 }

@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.GlideConstants;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -19,47 +19,45 @@ import java.util.List;
  *         on 6/12/2017, at 15:15.
  */
 
-public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelProvider<String> {
+public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
     private Fragment fragment;
-    private List<String> urisToLoad;
-    private boolean showThumbs, grid;
+    private List<IconDataParcelable> urisToLoad;
+    private boolean showThumbs;
 
-    public RecyclerPreloadModelProvider(@NonNull Fragment fragment, @NonNull List<String> uris,
-                                        boolean showThumbs, boolean grid) {
+    public RecyclerPreloadModelProvider(@NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris,
+                                        boolean showThumbs) {
         this.fragment = fragment;
         urisToLoad = uris;
         this.showThumbs = showThumbs;
-        this.grid = grid;
     }
 
     @Override
     @NonNull
-    public List<String> getPreloadItems(int position) {
-        String uri = urisToLoad.get(position);
-        if (uri == null) return Collections.emptyList();
-        return Collections.singletonList(uri);
+    public List<IconDataParcelable> getPreloadItems(int position) {
+        IconDataParcelable iconData = urisToLoad.get(position);
+        if (iconData == null) return Collections.emptyList();
+        return Collections.singletonList(iconData);
     }
 
     @Override
     @Nullable
-    public RequestBuilder getPreloadRequestBuilder(String uri) {
+    public RequestBuilder getPreloadRequestBuilder(IconDataParcelable iconData) {
         GlideRequest request;
 
         if(!showThumbs) {
-            request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));
+            request = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
-            int filetype = Icons.getTypeOfFile(uri);
-            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO) {
-                request = GlideApp.with(fragment).load(uri).fallback(Icons.loadMimeIcon(uri, grid));
-            } else if (filetype == Icons.APK) {
-                request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));// TODO: 6/12/2017 load Icons.getAppDrawable()
+            if (iconData.type == IconDataParcelable.IMAGE_PICTURE) {
+                request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.path).fallback(iconData.image);
+            } else if (iconData.type == Icons.APK) {
+                request = GlideApp.with(fragment).asDrawable().centerCrop().load(Icons.getAppDrawable(fragment.getContext(), iconData.path)).fallback(iconData.image);
             } else {
-                request = GlideApp.with(fragment).load(Icons.loadMimeIcon(uri, grid));
+                request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.image);
             }
         }
 
-        return request.override(GlideConstants.WIDTH, GlideConstants.HEIGHT);
+        return request;
     }
 
 }
