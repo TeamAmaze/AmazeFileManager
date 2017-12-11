@@ -37,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedItemViewHolder> {
 
     private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
 
@@ -163,7 +163,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CompressedItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             v.findViewById(R.id.picture_icon).setVisibility(View.INVISIBLE);
@@ -180,11 +180,9 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int position) {
-        CompressedItemViewHolder holder = (CompressedItemViewHolder) vholder;
-
+    public void onBindViewHolder(final CompressedItemViewHolder holder, int position) {
         if (!stoppedAnimation) {
-            animate((CompressedItemViewHolder) vholder);
+            animate(holder);
         }
 
         final CompressedObjectParcelable rowItem = items.get(position);
@@ -302,14 +300,14 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+    public void onViewDetachedFromWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+        holder.rl.clearAnimation();
     }
 
     @Override
-    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+    public boolean onFailedToRecycleView(CompressedItemViewHolder holder) {
+        holder.rl.clearAnimation();
         return super.onFailedToRecycleView(holder);
     }
 
