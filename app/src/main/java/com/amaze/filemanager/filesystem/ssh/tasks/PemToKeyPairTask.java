@@ -21,6 +21,7 @@
 
 package com.amaze.filemanager.filesystem.ssh.tasks;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -44,6 +45,7 @@ import java.security.KeyPair;
  *
  * @see JcaPEMKeyConverter
  * @see KeyProvider
+ * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
 public class PemToKeyPairTask extends AsyncTask<Void, Void, KeyPair>

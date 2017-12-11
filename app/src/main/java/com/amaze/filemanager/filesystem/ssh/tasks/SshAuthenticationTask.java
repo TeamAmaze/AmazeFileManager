@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.ssh.tasks;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -52,10 +53,13 @@ import java.security.PublicKey;
  * @see SSHClient
  * @see SSHClient#authPassword(String, String)
  * @see SSHClient#authPublickey(String, KeyProvider...)
- * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#authenticateAndSaveSetup(String, String, int, String, String, String, String, KeyPair)
+ * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#authenticateAndSaveSetup(String, String, int, String, String, String, String, KeyPair, boolean)
+ * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  */
 public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>
 {
+    private static final int SSH_CONNECT_TIMEOUT = 30000;
+
     private final String mHostname;
     private final int mPort;
     private final String mHostKey;
@@ -94,6 +98,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
 
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.addHostKeyVerifier(mHostKey);
+        sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
 
         try {
             sshClient.connect(mHostname, mPort);

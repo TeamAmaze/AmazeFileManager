@@ -35,7 +35,8 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 import java.io.IOException;
-import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.security.PublicKey;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,6 +60,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>>
 {
+    //We only looking for the host key, so we allow a smaller timeout than SshAuthenticationTask
+    private static final int SSH_CONNECT_TIMEOUT = 5000;
+
     private final String mHostname;
     private final int mPort;
 
@@ -73,6 +77,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
         final AtomicReference<AsyncTaskResult<PublicKey>> holder = new AtomicReference<AsyncTaskResult<PublicKey>>();
         final Semaphore semaphore = new Semaphore(0);
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
+        sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
         sshClient.addHostKeyVerifier(new HostKeyVerifier() {
             @Override
             public boolean verify(String hostname, int port, PublicKey key) {
@@ -86,9 +91,11 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
             sshClient.connect(mHostname, mPort);
             semaphore.acquire();
         } catch(IOException e) {
+            e.printStackTrace();
             holder.set(new AsyncTaskResult<PublicKey>(e));
             semaphore.release();
         } catch(InterruptedException e) {
+            e.printStackTrace();
             holder.set(new AsyncTaskResult<PublicKey>(e));
             semaphore.release();
         }
@@ -101,7 +108,8 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     @Override
     protected void onPostExecute(AsyncTaskResult<PublicKey> result) {
         if(result.exception != null) {
-            if(ConnectException.class.isAssignableFrom(result.exception.getClass())) {
+            if(SocketException.class.isAssignableFrom(result.exception.getClass())
+                    || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
                                 mHostname, mPort, result.exception.getLocalizedMessage()),
