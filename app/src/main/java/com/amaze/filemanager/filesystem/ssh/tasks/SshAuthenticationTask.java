@@ -22,6 +22,7 @@
 package com.amaze.filemanager.filesystem.ssh.tasks;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,6 +42,8 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -67,6 +70,8 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
     private final String mUsername;
     private final String mPassword;
     private final KeyPair mPrivateKey;
+
+    private ProgressDialog mProgressDialog;
 
     /**
      * Constructor.
@@ -139,13 +144,20 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
         }
     }
 
+    @Override
+    protected void onPreExecute() {
+        mProgressDialog = ProgressDialog.show(AppConfig.getInstance().getActivityContext(),
+                "", AppConfig.getInstance().getResources().getString(R.string.processing));
+    }
+
     //If authentication failed, use Toast to notify user.
     @Override
     protected void onPostExecute(AsyncTaskResult<SSHClient> result) {
+        mProgressDialog.dismiss();
 
         if(result.exception != null) {
-            if(ConnectException.class.isAssignableFrom(result.exception.getClass()))
-            {
+            if(SocketException.class.isAssignableFrom(result.exception.getClass())
+                    || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
                                 mHostname, mPort, result.exception.getLocalizedMessage()),

@@ -21,6 +21,7 @@
 
 package com.amaze.filemanager.filesystem.ssh.tasks;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -66,6 +67,8 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     private final String mHostname;
     private final int mPort;
 
+    private ProgressDialog mProgressDialog;
+
     public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
         this.mHostname = hostname;
         this.mPort = port;
@@ -106,7 +109,15 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     }
 
     @Override
+    protected void onPreExecute() {
+        mProgressDialog = ProgressDialog.show(AppConfig.getInstance().getActivityContext(),
+                "", AppConfig.getInstance().getResources().getString(R.string.processing));
+    }
+
+    @Override
     protected void onPostExecute(AsyncTaskResult<PublicKey> result) {
+        mProgressDialog.dismiss();
+
         if(result.exception != null) {
             if(SocketException.class.isAssignableFrom(result.exception.getClass())
                     || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
