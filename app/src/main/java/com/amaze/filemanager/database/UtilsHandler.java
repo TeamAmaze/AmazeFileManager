@@ -36,7 +36,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private Context context;
 
     private static final String DATABASE_NAME = "utilities.db";
-    private static final int DATABASE_VERSION = 1;  // increment only when making change in schema
+    private static final int DATABASE_VERSION = 2;  // increment only when making change in schema
 
     private static final String TABLE_HISTORY = "history";
     private static final String TABLE_HIDDEN = "hidden";
@@ -106,15 +106,20 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HISTORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HIDDEN);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRID);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKMARKS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMB);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SFTP);
-
-        onCreate(db);
+        switch(newVersion) {
+            case 2:
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
+                        + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                        + COLUMN_NAME + " TEXT,"
+                        + COLUMN_PATH + " TEXT,"
+                        + COLUMN_HOST_PUBKEY + " TEXT,"
+                        + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
+                        + COLUMN_PRIVATE_KEY + " TEXT"
+                        + ")");
+                break;
+            default:
+                break;
+        }
     }
 
     private enum Operation {
