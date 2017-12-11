@@ -154,7 +154,7 @@ public class SshConnectionPool
                     utilsHandler.getSshHostKey(uri.toString()),
                     username, password, keyPair).execute().get();
 
-            SSHClient client = taskResult.getResult();
+            SSHClient client = taskResult.result;
             return client;
         } catch(InterruptedException e) {
             //FIXME: proper handling

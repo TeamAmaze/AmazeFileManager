@@ -29,22 +29,16 @@ package com.amaze.filemanager.filesystem.ssh.tasks;
  */
 
 public class AsyncTaskResult<T> {
-    private T result;
-    private Throwable exception;
+    public final T result;
+    public final Throwable exception;
 
     public AsyncTaskResult(T result){
         this.result = result;
+        this.exception = null;
     }
 
     public AsyncTaskResult(Throwable exception){
+        this.result = null;
         this.exception = exception;
-    }
-
-    public T getResult() {
-        return result;
-    }
-
-    public Throwable getException() {
-        return exception;
     }
 }

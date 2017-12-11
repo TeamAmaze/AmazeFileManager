@@ -186,7 +186,7 @@ public class SftpConnectDialog extends DialogFragment {
             } else {
                 try {
                     AsyncTaskResult<PublicKey> taskResult = new GetSshHostFingerprintTask(hostname, port).execute().get();
-                    PublicKey hostKey = taskResult.getResult();
+                    PublicKey hostKey = taskResult.result;
                     if(hostKey != null) {
                         final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
                         StringBuilder sb = new StringBuilder(hostname);
@@ -360,7 +360,7 @@ public class SftpConnectDialog extends DialogFragment {
             try {
                 AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
                         selectedParsedKeyPair).execute().get();
-                SSHClient result = taskResult.getResult();
+                SSHClient result = taskResult.result;
                 if(result != null) {
                     SshClientUtils.tryDisconnect(result);
 

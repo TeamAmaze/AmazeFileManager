@@ -59,8 +59,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>>
 {
-    final String mHostname;
-    final int mPort;
+    private final String mHostname;
+    private final int mPort;
 
     public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
         this.mHostname = hostname;
@@ -100,11 +100,11 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
 
     @Override
     protected void onPostExecute(AsyncTaskResult<PublicKey> result) {
-        if(result.getException() != null) {
-            if(ConnectException.class.isAssignableFrom(result.getException().getClass())) {
+        if(result.exception != null) {
+            if(ConnectException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, result.getException().getLocalizedMessage()),
+                                mHostname, mPort, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
             }
         }

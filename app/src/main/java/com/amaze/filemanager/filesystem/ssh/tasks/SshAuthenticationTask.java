@@ -138,18 +138,18 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
     @Override
     protected void onPostExecute(AsyncTaskResult<SSHClient> result) {
 
-        if(result.getException() != null) {
-            if(ConnectException.class.isAssignableFrom(result.getException().getClass()))
+        if(result.exception != null) {
+            if(ConnectException.class.isAssignableFrom(result.exception.getClass()))
             {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, result.getException().getLocalizedMessage()),
+                                mHostname, mPort, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            else if(TransportException.class.isAssignableFrom(result.getException().getClass()))
+            else if(TransportException.class.isAssignableFrom(result.exception.getClass()))
             {
-                DisconnectReason disconnectReason = TransportException.class.cast(result.getException()).getDisconnectReason();
+                DisconnectReason disconnectReason = TransportException.class.cast(result.exception).getDisconnectReason();
                 if(DisconnectReason.HOST_KEY_NOT_VERIFIABLE.equals(disconnectReason)) {
                     new AlertDialog.Builder(AppConfig.getInstance().getActivityContext())
                             .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
