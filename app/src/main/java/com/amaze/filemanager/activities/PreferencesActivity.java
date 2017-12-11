@@ -39,10 +39,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.fragments.preference_fragments.AdvancedSearchPref;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -50,7 +51,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import static android.os.Build.VERSION.SDK_INT;
 
-public class PreferencesActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PreferencesActivity extends ThemedActivity {
 
     //Start is the first activity you see
     public static final int START_PREFERENCE = 0;
@@ -70,7 +71,7 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
         SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
@@ -176,7 +177,7 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
         selectedItem = i;
         switch (i) {
             case START_PREFERENCE:
-                loadPrefFragment(new Preffrag(), R.string.setting);
+                loadPrefFragment(new PrefFrag(), R.string.setting);
                 break;
             case COLORS_PREFERENCE:
                 loadPrefFragment(new ColorPref(), R.string.color_title);
@@ -191,20 +192,6 @@ public class PreferencesActivity extends BaseActivity implements ActivityCompat.
                 loadPrefFragment(new AdvancedSearchPref(), R.string.advanced_search);
                 break;
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 66) {
-            Preffrag preffrag = (Preffrag) getFragmentManager().findFragmentById(R.id.prefsfragment);
-
-            if (preffrag != null) {
-
-                preffrag.invalidateGplus();
-            }
-        }
-
     }
 
     private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {

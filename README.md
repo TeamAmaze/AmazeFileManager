@@ -1,5 +1,5 @@
-# Amaze File Manager
-
+# Amaze File Manager [<img src="https://travis-ci.org/TeamAmaze/AmazeFileManager.svg?branch=master">](https://travis-ci.org/TeamAmaze/AmazeFileManager)    
+  
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
 [<img alt="Get it on F-Droid" height="80" src="https://f-droid.org/badge/get-it-on.png">](https://f-droid.org/app/com.amaze.filemanager)
 [<img alt="Get it on AFH" height="80" width="207" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
@@ -37,21 +37,7 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
         
     A lot.
     
-See our [Privacy Policy](https://github.com/arpitkh96/AmazeFileManager/wiki/Privacy-Policy)
-
-Contributors
------
-Make sure to write your name and email id in format `Name<email>` in the license declaration above every file you make change to. 
-
-You won't be able to claim the license for changes made by you unless you do that.
-
-Also, take a look at [this guide](https://source.android.com/source/code-style.html) before making changes in code.  
-
-The source code has two flavours, fDroid and play. Both of these include their own MainActivity.
-fDroid's MainAcitivity is generally outdated and is only updated during new release.  
-Any changes made to [fDroid's MainActivity](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/fdroid/java/com/amaze/filemanager/activities/MainActivity.java) will be overwritten. So please make sure to compile and work on [play's MainAcitivty](https://github.com/arpitkh96/AmazeFileManager/blob/master/src/play/java/com/amaze/filemanager/activities/MainActivity.java).
-
-Existing code itself might not follow this, but you don't have to do same mistakes we did a year ago! 
+See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
 
 Translators
 ----

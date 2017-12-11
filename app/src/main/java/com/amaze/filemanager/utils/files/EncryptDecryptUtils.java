@@ -5,22 +5,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.Preffrag;
-import com.amaze.filemanager.services.EncryptService;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Provides useful interfaces and methods for encryption/decryption
@@ -31,6 +32,7 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 public class EncryptDecryptUtils {
 
+    public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
     /**
      * Queries database to map path and password.
      * Starts the encryption process after database query
@@ -51,8 +53,9 @@ public class EncryptDecryptUtils {
 
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
-                                   BaseFile sourceFile, String decryptPath,
-                                   UtilitiesProviderInterface utilsProvider) {
+                                   HybridFileParcelable sourceFile, String decryptPath,
+                                   UtilitiesProviderInterface utilsProvider,
+                                   boolean broadcastResult) {
 
         Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
         decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
@@ -60,13 +63,14 @@ public class EncryptDecryptUtils {
                 EncryptService.CryptEnum.DECRYPT.ordinal());
         decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
         decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
+        decryptIntent.putExtra(EncryptService.TAG_BROADCAST_RESULT, broadcastResult);
         SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
 
-        EncryptedEntry encryptedEntry = null;
+        EncryptedEntry encryptedEntry;
 
         try {
             encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
-        } catch (CryptException e) {
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
 
             // we couldn't find any entry in database or lost the key to decipher
@@ -87,34 +91,35 @@ public class EncryptDecryptUtils {
                     }
                 };
 
+        if (encryptedEntry == null) {
+            // couldn't find the matching path in database, we lost the password
+
+            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         switch (encryptedEntry.getPassword()) {
-            case Preffrag.ENCRYPT_PASSWORD_FINGERPRINT:
+            case PrefFrag.ENCRYPT_PASSWORD_FINGERPRINT:
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
                                 mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
-                    } else throw new CryptException();
-                } catch (CryptException e) {
+                    } else throw new IllegalStateException("API < M!");
+                } catch (GeneralSecurityException | IOException | IllegalStateException e) {
                     e.printStackTrace();
 
-                    Toast.makeText(main.getContext(),
-                            main.getResources().getString(R.string.crypt_decryption_fail),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
-            case Preffrag.ENCRYPT_PASSWORD_MASTER:
+            case PrefFrag.ENCRYPT_PASSWORD_MASTER:
                 try {
                     GeneralDialogCreation.showDecryptDialog(c,
                             mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                            CryptUtil.decryptPassword(c, preferences1.getString(Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    Preffrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
-                } catch (CryptException e) {
+                            CryptUtil.decryptPassword(c, preferences1.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
+                } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
-
-
-                    Toast.makeText(main.getContext(),
-                            main.getResources().getString(R.string.crypt_decryption_fail),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -131,7 +136,7 @@ public class EncryptDecryptUtils {
      * @param path the path to match with
      * @return the entry
      */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws CryptException {
+    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws GeneralSecurityException, IOException {
 
         CryptHandler handler = new CryptHandler(context);
 

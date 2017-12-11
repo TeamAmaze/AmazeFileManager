@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.amaze.filemanager.services.asynctasks.AppListLoader;
+import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 
 /**
  * Created by vishal on 23/2/17.

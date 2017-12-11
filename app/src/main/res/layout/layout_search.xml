@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_view"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@drawable/search_view_shape"
+
+    android:layout_margin="@dimen/search_view_margin"
+    android:gravity="center_vertical"
+    android:visibility="gone"
+    android:elevation="8dp">
+
+    <ImageView
+        android:id="@+id/img_view_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
+        android:layout_marginRight="@dimen/search_view_back_margin_left_right"/>
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/search_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/img_view_back"
+        android:hint="@string/search_hint"
+        android:inputType="textAutoComplete"
+        android:imeOptions="actionSearch"
+        android:maxLines="1"
+        android:layout_toLeftOf="@+id/search_close_btn"
+        android:theme="@style/appCompatLight"
+        android:textColorHint="?colorAccent"/>
+    <ImageView
+        android:id="@+id/search_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        app:srcCompat="@drawable/ic_close_black_24dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
+        android:layout_marginRight="@dimen/search_view_info_margin_left_right"/>
+</RelativeLayout>

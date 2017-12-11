@@ -47,7 +47,6 @@
                     />
 
                 <RelativeLayout
-                    android:id="@+id/textParent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/progress_chart"

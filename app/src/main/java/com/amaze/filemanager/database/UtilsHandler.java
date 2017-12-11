@@ -11,14 +11,18 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.services.ssh.SshClientUtils;
 import com.amaze.filemanager.services.ssh.SshConnectionPool;
 import com.amaze.filemanager.utils.SmbUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -184,12 +188,35 @@ public class UtilsHandler extends SQLiteOpenHelper {
         database.insert(getTableForOperation(Operation.SFTP), null, values);
     }
 
-    public ArrayList<String> getHistoryList() {
-        return getPath(Operation.HISTORY);
+    public LinkedList<String> getHistoryLinkedList() {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.HISTORY), null,
+                null, null, null, null, null);
+
+        LinkedList<String> paths = new LinkedList<>();
+        cursor.moveToFirst();
+        try {
+            while (cursor.moveToNext()) {
+                paths.push(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            }
+        } finally {
+            cursor.close();
+        }
+        return paths;
     }
 
-    public ArrayList<String> getHiddenList() {
-        return getPath(Operation.HIDDEN);
+    public ConcurrentRadixTree<VoidValue> getHiddenFilesConcurrentRadixTree() {
+        ConcurrentRadixTree<VoidValue> paths = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
+
+        Cursor cursor = getReadableDatabase().query(getTableForOperation(Operation.HIDDEN), null,
+                null, null, null, null, null);
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            paths.put(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)), VoidValue.SINGLETON);
+        }
+        cursor.close();
+
+        return paths;
     }
 
     public ArrayList<String> getListViewList() {
@@ -238,7 +265,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                             cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                             SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
                     });
-                } catch (CryptException e) {
+                } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
 
                     // failing to decrypt the path, removing entry from database
@@ -396,12 +423,12 @@ public class UtilsHandler extends SQLiteOpenHelper {
         try {
             if (path.equals("")) {
                 // we don't have a path, remove the entry with this name
-                throw new CryptException();
+                throw new IOException();
             }
 
             sqLiteDatabase.delete(TABLE_SMB, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
                     new String[] {name, SmbUtil.getSmbEncryptedPath(context, path)});
-        } catch (CryptException e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
             // force remove entry, we end up deleting all entries with same name
 
@@ -418,14 +445,14 @@ public class UtilsHandler extends SQLiteOpenHelper {
         {
             if (path.equals("")) {
                 // we don't have a path, remove the entry with this name
-                throw new CryptException();
+                throw new IOException();
             }
 
             sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
                     new String[] {name, SshClientUtils.encryptSshPathAsNecessary(path)});
 
         }
-        catch (CryptException e)
+        catch (IOException e)
         {
             e.printStackTrace();
             // force remove entry, we end up deleting all entries with same name
@@ -490,16 +517,14 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(operation), null,
                 null, null, null, null, null);
-        cursor.moveToFirst();
+
+        ArrayList<String> paths = new ArrayList<>();
 
         switch (operation) {
-            case HISTORY:
-            case HIDDEN:
             case LIST:
             case GRID:
-                ArrayList<String> paths = new ArrayList<>();
+                cursor.moveToFirst();
                 try {
-
                     while (cursor.moveToNext()) {
                         paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
                     }
@@ -520,12 +545,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 new String[] {path});
     }
 
-    private void clearTable(Operation operation) {
-
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-
-        sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
-                new String[] { "NOT NULL" });
+    private void clearTable(Operation table) {
+        getWritableDatabase().delete(getTableForOperation(table), null, null);
     }
 
     private void renamePath(Operation operation, String name, String path) {

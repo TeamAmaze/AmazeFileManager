@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/second"
+    android:layout_height="@dimen/list_header_height"
+    android:layout_width="match_parent" >
+
+    <TextView
+        android:id="@+id/text"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="@dimen/material_generic"
+        android:paddingRight="@dimen/material_generic"
+        android:textSize="@dimen/list_header_textsize">
+    </TextView>
+
+</RelativeLayout>

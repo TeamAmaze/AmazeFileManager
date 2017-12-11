@@ -21,15 +21,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="app_name">Förvåna</string>
   <string name="drawer_close">Stäng navigationspanel</string>
-  <string name="books">Bokmärken</string>
-  <string name="icon">ikon</string>
-  <string name="efn">Ange filnamn</string>
-  <string name="storage">Lagring</string>
-  <string name="gallery">Galleri</string>
-  <string name="apps">Apphanterare</string>
+    <string name="icon">ikon</string>
+    <string name="storage">Lagring</string>
+    <string name="apps">Apphanterare</string>
   <string name="ftp">FTP-server</string>
-  <string name="bookmanag">Bokmärkeshanterare</string>
-  <string name="setting">Inställningar</string>
+    <string name="setting">Inställningar</string>
   <string name="select">Välj objekt</string>
   <string name="pressagain">Tryck igen för att avsluta</string>
   <string name="open">Öppna</string>
@@ -37,42 +33,31 @@
   <string name="play">Play Store</string>
   <string name="properties">Egenskaper</string>
   <string name="copyingapk">Kopierar APK till </string>
-  <string name="addbook">Lägg till bokmärke</string>
-  <string name="delbook">Ta bort bokmärke</string>
+    <string name="delbook">Ta bort bokmärke</string>
   <string name="addtobook">Lägg till bokmärke</string>
   <string name="enterpath">Ange sökväg</string>
   <string name="cancel">AVBRYT</string>
   <string name="create">SKAPA</string>
-  <string name="filenotexists">Fil finns inte</string>
-  <string name="loading">Laddar&#8230;</string>
+    <string name="loading">Laddar&#8230;</string>
   <string name="file_empty">Fil är tom</string>
   <string name="error">Fel</string>
-  <string name="cantlistfiles">Kan inte lista filer utan root</string>
-  <string name="newhomedirectory">Ny hem-mapp</string>
-  <string name="rename">Byt namn</string>
+    <string name="rename">Byt namn</string>
   <string name="save">Spara</string>
-  <string name="renameerror">Kunde inte byta namn</string>
-  <string name="renamed">Bytt namn</string>
-  <string name="fileexist">Fil med samma namn finns redan </string>
-  <string name="enterfile">Ange filnamn</string>
-  <string name="name">Namn</string>
+    <string name="fileexist">Fil med samma namn finns redan </string>
+    <string name="name">Namn</string>
   <string name="date">Datum</string>
   <string name="location">Plats</string>
   <string name="size_capitalized">Storlek</string>
   <string name="noappfound">Ingen app hittades för att öppna denna fil</string>
   <string name="copying">Kopierar</string>
   <string name="moving">Flyttar</string>
-  <string name="add">Lägg till</string>
-  <string name="tab">Flik</string>
-  <string name="file">Fil</string>
+    <string name="file">Fil</string>
   <string name="folder">Mapp</string>
   <string name="newfolder">Ny mapp</string>
   <string name="entername">Ange namn</string>
   <string name="extracting">Extraherar</string>
   <string name="stopping">Stoppar</string>
-  <string name="guide1">Välkommen till Amaze File Manager</string>
-  <string name="guide4">Som kopiera, flytta, egenskaper, etc</string>
-  <string name="openwith">Öppna med</string>
+    <string name="openwith">Öppna med</string>
   <string name="share">Dela</string>
   <string name="about">Om</string>
   <string name="extract">Extrahera</string>
@@ -84,33 +69,22 @@
   <string name="dialog_delete_disclaimer">Vill du verkligen ta bort följande filer?</string>
   <string name="dialog_delete_title">Bekräfta</string>
   <string name="deleting">Tar bort</string>
-  <string name="viewmode">Visningsläge</string>
-  <string name="uimode">UI-läge</string>
-  <string name="sortby">Sortera på</string>
+    <string name="sortby">Sortera på</string>
   <string name="theme">Tema</string>
-  <string name="skin">Skinn</string>
-  <string name="random">Slumpat skinn</string>
+    <string name="random">Slumpat skinn</string>
   <string name="random_summary">Ställer in slumpad primärfärg vid uppstart</string>
   <string name="colorize">Färglägg ikoner</string>
-  <string name="back">Tillbaka</string>
-  <string name="home">Hem</string>
+    <string name="home">Hem</string>
   <string name="paste">Klistra in</string>
-  <string name="close">Stäng</string>
-  <string name="history">Historia</string>
-  <string name="refresh">Uppdatera</string>
-  <string name="copy">Kopiera</string>
+    <string name="history">Historia</string>
+    <string name="copy">Kopiera</string>
   <string name="rootmode">Root Explorer</string>
   <string name="rootmodesummary">För rootade enheter endast. Kolla in det bara om du är säker på det.</string>
-  <string name="mountsystem">Montera systemmappar som skrivbara</string>
-  <string name="rootfailure">Root-åtkomst inte beviljat</string>
+    <string name="rootfailure">Root-åtkomst inte beviljat</string>
   <string name="selectall">Markera alla</string>
   <string name="delete">Ta bort</string>
   <string name="setashome">Ange som hem</string>
-  <string name="foldercolor">Mappfärg</string>
-  <string name="imagegallery">Bildgalleri</string>
-  <string name="changegallerypath">Ändra gallerisökväg</string>
-  <string name="usedefaultgallerypath">Använd förvald bildgalleri-sökväg</string>
-  <!-- New -->
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
@@ -118,18 +92,7 @@
   <string name="dark">Material Dark</string>
   <string name="daytime">Dagtid</string>
   <!--Skin-->
-  <string name="red">Röd</string>
-  <string name="pink">Rosa</string>
-  <string name="blue">Blå</string>
-  <string name="light_blue">Ljusblå</string>
-  <string name="cyan">Cyan</string>
-  <string name="green">Grön</string>
-  <string name="light_green">Ljusgrön</string>
-  <string name="orange">Orange</string>
-  <string name="brown">Brun</string>
-  <string name="black">Svart</string>
-  <string name="supersu">SuperSU</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <string name="foldersOnTop">Mappar överst</string>
   <string name="filesOnTop">Filer överst</string>
   <string name="noneOnTop">Ingen ovanpå</string>
@@ -137,45 +100,30 @@
   <string name="sortName">Namn</string>
   <string name="lastModified">Senast ändrad</string>
   <string name="sortSize">Storlek</string>
-  <string name="lastModifiedDesc">Senast ändrad (Fall)</string>
-  <!--ListMode-->
-  <string name="detailedView">Detaljerad vy</string>
-  <string name="simpleView">Enkel vy</string>
-  <!--Folder-->
-  <string name="Yellow">Gul</string>
-  <string name="pick_a_file">Välj en fil</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">Välj en fil</string>
   <string name="process_viewer">Process-visare</string>
   <string name="in_safe">Otillräckligt utrymme</string>
   <string name="no_file_overwrite">Ingen fil skrevs över</string>
   <string name="skip">Hoppa över</string>
   <string name="overwrite">Skriv över</string>
-  <string name="cant_read_file">Kan inte läsa fil</string>
-  <string name="not_allowed">Inte tillåtet</string>
-  <string name="processes">Processer</string>
-  <string name="searching">Söker</string>
-  <string name="copying_fles">Kopierar filer</string>
-  <string name="done">Färdig</string>
-  <string name="Extracting_fles">Extraherar filer</string>
-  <string name="enablerootmde">Aktivera root-läge</string>
+    <string name="not_allowed">Inte tillåtet</string>
+    <string name="done">Färdig</string>
+    <string name="enablerootmde">Aktivera root-läge</string>
   <string name="goback">Gå tillbaka</string>
-  <string name="foldercreated">Mapp skapad</string>
-  <string name="newfile">Ny fil</string>
+    <string name="newfile">Ny fil</string>
   <string name="nofiles">Inga filer</string>
-  <string name="pathcopied">Sökväg kopierad till urklipp</string>
-  <string name="atroot">Du är vid roten</string>
-  <string name="listview">Listvy</string>
+    <string name="listview">Listvy</string>
   <string name="gridview">Rutnätsvy</string>
   <string name="permission">Behörigheter</string>
   <string name="hide">Dölj</string>
   <string name="exit">Avsluta</string>
-  <string name="enternewname">Ange nytt namn</string>
-  <string name="doforall">Gör för alla objekt</string>
+    <string name="doforall">Gör för alla objekt</string>
   <string name="gridcolumnno">Antal kolumner i rutnätsvyn</string>
-  <string name="randomDialog">Slumpad</string>
-  <string name="authors">Författare</string>
+    <string name="authors">Författare</string>
   <string name="changelog">Ändringslog</string>
-  <string name="fullChangelog">Full ändringslogg</string>
-  <string name="ok">OK</string>
+    <string name="ok">OK</string>
   <string name="ui">Gränssnitt</string>
   <string name="general">Allmänt</string>
   <string name="thumbSummary">Visa miniatyrer av appar och bilder</string>
@@ -194,10 +142,7 @@
   <string name="hiddenfiles">Dolda filer</string>
   <string name="type">Typ</string>
   <string name="rootdirectory">Root</string>
-  <string name="new_string">Ny</string>
-  <string name="setringtone">Ange som ringsignal</string>
-  <string name="copy_path">Kopiera sökväg</string>
-  <string name="addshortcut">Lägg till genväg</string>
+    <string name="addshortcut">Lägg till genväg</string>
   <string name="unsavedchanges">Osparade ändringar</string>
   <string name="saving">Sparar</string>
   <string name="packageinstaller">Paketinstallerare</string>
@@ -206,8 +151,7 @@
   <string name="archive">Arkiv</string>
   <string name="archtext">Detta är ett arkiv. Vilken åtgärd vill du utföra?</string>
   <string name="xda_title">XDA-tråd</string>
-  <string name="invalid_dir">Ogiltig katalog</string>
-  <string name="circularimages">Använd cirkulära ikoner för bilder och videor</string>
+    <string name="circularimages">Använd cirkulära ikoner för bilder och videor</string>
   <string name="circularicons">Använd cirkulära ikoner</string>
   <string name="details">Information</string>
   <string name="translators">Översättare</string>
@@ -228,8 +172,7 @@
   <string name="romanian_translation_title">Rumänska</string>
   <string name="vietnamese_translation_title">Vietnamesiska</string>
   <string name="japanese_translation_title">Japanska</string>
-  <string name="brazilian_portuguese_translation_title">Brasiliansk portugisiska</string>
-  <string name="unin_system_apk">Detta är en system-app, borttagning av den kan leda till systeminstabilitet.\nFortsätt?</string>
+    <string name="unin_system_apk">Detta är en system-app, borttagning av den kan leda till systeminstabilitet.\nFortsätt?</string>
   <string name="warning">Varning</string>
   <string name="donate">Donera</string>
   <string name="archive_preferences">Arkiv-alternativ</string>
@@ -240,26 +183,15 @@
   <string name="image">Bild</string>
   <string name="savepaths">Kom ihåg sökvägar</string>
   <string name="select_intent">Markera</string>
-  <string name="md5copied">MD5 kopierad till urklipp</string>
-  <string name="generating">Genererar..</string>
-  <string name="database">Databas</string>
+    <string name="database">Databas</string>
   <string name="colourednavigation">Färgat navigationsfält</string>
-  <string name="sd_card_grant_next">sd_card_grant_next</string>
-  <string name="sd_card_grant_first">sd_card_grant_first</string>
-  <string name="fab_skin">FAB-skinn</string>
-  <string name="gplus_pic_title">Logga in med G+</string>
   <string name="color_title">Färg</string>
   <string name="accent_color_title">Accentfärg</string>
   <string name="icon_color_title">Ikonfärg</string>
-  <string name="hide_mode_title">Dölj läge</string>
-  <string name="none">Inga</string>
-  <string name="hide_toolbar">Dölj verktygsfält</string>
-  <string name="choose_color">Välj färg</string>
+    <string name="choose_color">Välj färg</string>
   <string name="g_plus_community_title">Gå med i G+ Community</string>
-  <string name="no_cover_photo">Inget omslagsfoto</string>
   <string name="files">Filer</string>
-  <string name="directories">Kataloger</string>
-  <string name="textreader">Textläsare</string>
+    <string name="textreader">Textläsare</string>
   <string name="databasereader">Databasläsare</string>
   <string name="showDividers">Visa avdelare</string>
   <string name="needsaccess">Skriv-åtkomst krävs</string>
@@ -277,8 +209,7 @@
   <string name="images">Bilder</string>
   <string name="clear">Rensa</string>
   <string name="md5">md5: </string>
-  <string name="md5_2">Kopiera md5</string>
-  <string name="calculating"> beräknar </string>
+    <string name="calculating"> beräknar </string>
   <string name="sort">Sortera</string>
   <string name="ascending">Stigande</string>
   <string name="descending">Fallande</string>
@@ -333,7 +264,6 @@
   <string name="bookmark_lost">Bokmärke hittades inte, återskapar&#8230;</string>
   <string name="share_limit">Kan inte dela fler än 100 filer</string>
   <string name="otg_access">Välj roten utav OTG-enhet</string>
-  <string name="no_profile_pic">Ingen G+-profilbild</string>
   <string name="opening">Öppnar..</string>
   <string name="information">Information</string>
   <!-- reference to file accessed date -->
@@ -363,8 +293,7 @@
   <string name="exposure_time">Exponeringstid</string>
   <string name="flash_fired">Blixt utlöst</string>
   <string name="focal_length">Brännvidd</string>
-  <string name="document">Dokument</string>
-  <string name="subject">Ämne</string>
+    <string name="subject">Ämne</string>
   <string name="author">Författare</string>
   <string name="keywords">Nyckelord</string>
   <string name="producer">Producent</string>
@@ -377,10 +306,8 @@
   <!-- %s will be replaced with either copied or moved -->
   <string name="copied">kopierad</string>
   <string name="moved">flyttad</string>
-  <string name="process_chart_description">Förlopp</string>
-  <string name="copy_complete">Kopiering klar</string>
-  <string name="move_complete">Flyttad</string>
-  <string name="waiting_title">Väntar</string>
+    <string name="copy_complete">Kopiering klar</string>
+    <string name="waiting_title">Väntar</string>
   <string name="extract_complete">Extraherat</string>
   <string name="compression_complete">Komprimerat</string>
   <string name="compressing">Komprimerar</string>
@@ -398,8 +325,7 @@
   <string name="permission_owner">Ägare</string>
   <string name="permission_group">Grupp</string>
   <string name="clipboard_path_copy">Sökväg kopierad till urklipp</string>
-  <string name="error_busybox">Busybox hittades inte. Stänger interaktivt shell.</string>
-  <string name="service_timer">Förfluten tid</string>
+    <string name="service_timer">Förfluten tid</string>
   <string name="please_wait">Vänta</string>
   <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
   <!-- references 'name/size/location/hash' copied to clipboard -->

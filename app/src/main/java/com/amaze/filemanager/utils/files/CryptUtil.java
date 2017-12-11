@@ -9,14 +9,11 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
-import android.util.Log;
 
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.exceptions.CryptException;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -27,8 +24,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -36,19 +33,15 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -66,8 +59,8 @@ import javax.security.auth.x500.X500Principal;
  * The service then calls the constructor which fires up the subsequent encryption/decryption process.
  *
  * We differentiate between already encrypted files from <i>new ones</i> by encrypting the plaintext
- * {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_MASTER}
- * and {@link com.amaze.filemanager.fragments.preference_fragments.Preffrag#ENCRYPT_PASSWORD_FINGERPRINT}
+ * {@link PrefFrag#ENCRYPT_PASSWORD_MASTER}
+ * and {@link PrefFrag#ENCRYPT_PASSWORD_FINGERPRINT}
  * against the path in database. At the time of decryption, we check for these values
  * and either retrieve master password from preferences or fire up the fingerprint sensor authentication.
  *
@@ -93,7 +86,7 @@ public class CryptUtil {
     public static final String CRYPT_EXTENSION = ".aze";
 
     private ProgressHandler progressHandler;
-    private ArrayList<HFile> failedOps;
+    private ArrayList<HybridFile> failedOps;
 
     /**
      * Constructor will start encryption process serially. Make sure to call with background thread.
@@ -107,22 +100,15 @@ public class CryptUtil {
      * @param context
      * @param sourceFile the file to encrypt
      */
-    public CryptUtil(Context context, BaseFile sourceFile, ProgressHandler progressHandler,
-                     ArrayList<HFile> failedOps) throws CryptException {
+    public CryptUtil(Context context, HybridFileParcelable sourceFile, ProgressHandler progressHandler,
+                     ArrayList<HybridFile> failedOps) throws GeneralSecurityException, IOException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
         // target encrypted file
-        HFile hFile = new HFile(sourceFile.getMode(), sourceFile.getParent(context));
-
-        try {
-
-            encrypt(context, sourceFile, hFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CryptException();
-        }
+        HybridFile hFile = new HybridFile(sourceFile.getMode(), sourceFile.getParent(context));
+        encrypt(context, sourceFile, hFile);
     }
 
     /**
@@ -138,26 +124,20 @@ public class CryptUtil {
      * @param targetPath the directory in which file is to be decrypted
      *                   the source's parent in normal case
      */
-    public CryptUtil(Context context, BaseFile baseFile, String targetPath,
-                     ProgressHandler progressHandler, ArrayList<HFile> failedOps) throws CryptException {
+    public CryptUtil(Context context, HybridFileParcelable baseFile, String targetPath,
+                     ProgressHandler progressHandler, ArrayList<HybridFile> failedOps) throws GeneralSecurityException, IOException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
-        HFile targetDirectory = new HFile(OpenMode.FILE, targetPath);
+        HybridFile targetDirectory = new HybridFile(OpenMode.FILE, targetPath);
         if (!targetPath.equals(context.getExternalCacheDir())) {
 
             // same file system as of base file
             targetDirectory.setMode(baseFile.getMode());
         }
 
-        try {
-
-            decrypt(context, baseFile, targetDirectory);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CryptException();
-        }
+        decrypt(context, baseFile, targetDirectory);
     }
 
     /**
@@ -165,32 +145,23 @@ public class CryptUtil {
      * @param context
      * @param sourceFile        the source file to decrypt
      * @param targetDirectory   the target directory inside which we're going to decrypt
-     * @throws IOException
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws UnrecoverableEntryException
-     * @throws InvalidKeyException
-     * @throws InvalidAlgorithmParameterException
-     * @throws NoSuchPaddingException
-     * @throws NoSuchProviderException
-     * @throws BadPaddingException
-     * @throws KeyStoreException
-     * @throws IllegalBlockSizeException
      */
-    private void decrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
-            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
-            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    private void decrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
+            throws GeneralSecurityException, IOException {
 
         if (sourceFile.isDirectory()) {
 
-            HFile hFile = new HFile(targetDirectory.getMode(), targetDirectory.getPath(),
+            final HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
                     sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
-                decrypt(context, baseFile, hFile);
-            }
+            sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
+                try {
+                    decrypt(context, file, hFile);
+                } catch (IOException | GeneralSecurityException e) {
+                    throw new IllegalStateException(e); //throw unchecked exception, no throws needed
+                }
+            });
         } else {
 
             if (!sourceFile.getPath().endsWith(CRYPT_EXTENSION)) {
@@ -201,7 +172,7 @@ public class CryptUtil {
             BufferedInputStream inputStream = new BufferedInputStream(sourceFile.getInputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-            HFile targetFile = new HFile(targetDirectory.getMode(),
+            HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName().replace(CRYPT_EXTENSION, ""),
                     sourceFile.isDirectory());
 
@@ -225,34 +196,25 @@ public class CryptUtil {
      * @param context
      * @param sourceFile        the source file to encrypt
      * @param targetDirectory   the target directory in which we're going to encrypt
-     * @throws IOException
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws UnrecoverableEntryException
-     * @throws InvalidKeyException
-     * @throws InvalidAlgorithmParameterException
-     * @throws NoSuchPaddingException
-     * @throws NoSuchProviderException
-     * @throws BadPaddingException
-     * @throws KeyStoreException
-     * @throws IllegalBlockSizeException
      */
-    private void encrypt(Context context, BaseFile sourceFile, HFile targetDirectory) throws IOException,
-            CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException,
-            InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            NoSuchProviderException, BadPaddingException, KeyStoreException, IllegalBlockSizeException {
+    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
+            throws GeneralSecurityException, IOException {
 
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
-            HFile hFile = new HFile(targetDirectory.getMode(),
+            final HybridFile hFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
-            for (BaseFile baseFile : sourceFile.listFiles(context, sourceFile.isRoot())) {
-                encrypt(context, baseFile, hFile);
-            }
+            sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
+                try {
+                    encrypt(context, file, hFile);
+                } catch (IOException | GeneralSecurityException e) {
+                    throw new IllegalStateException(e);//throw unchecked exception, no throws needed
+                }
+            });
         } else {
 
             if (sourceFile.getName().endsWith(CRYPT_EXTENSION)) {
@@ -264,7 +226,7 @@ public class CryptUtil {
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
-            HFile targetFile = new HFile(targetDirectory.getMode(),
+            HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
                     targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
                     sourceFile.isDirectory());
 
@@ -285,26 +247,10 @@ public class CryptUtil {
 
     /**
      * Helper method to encrypt plain text password
-     * @param plainTextPassword
-     * @return
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws IOException
-     * @throws NoSuchPaddingException
-     * @throws UnrecoverableKeyException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static String aesEncryptPassword(String plainTextPassword)
-            throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
-            NoSuchProviderException, InvalidAlgorithmParameterException, IOException,
-            NoSuchPaddingException, UnrecoverableKeyException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+            throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
@@ -316,26 +262,9 @@ public class CryptUtil {
 
     /**
      * Helper method to decrypt cipher text password
-     * @param cipherPassword
-     * @return
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws CertificateException
-     * @throws UnrecoverableKeyException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static String aesDecryptPassword(String cipherPassword) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, CertificateException,
-            UnrecoverableKeyException, KeyStoreException, NoSuchProviderException,
-            InvalidAlgorithmParameterException, IOException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+    private static String aesDecryptPassword(String cipherPassword) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
@@ -349,24 +278,10 @@ public class CryptUtil {
      * Helper method to encrypt a file
      * @param inputStream stream associated with the file to be encrypted
      * @param outputStream stream associated with new output encrypted file
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws IOException
-     * @throws NoSuchPaddingException
-     * @throws UnrecoverableKeyException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static void aesEncrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
-            throws CertificateException, NoSuchAlgorithmException, KeyStoreException,
-            NoSuchProviderException, InvalidAlgorithmParameterException, IOException,
-            NoSuchPaddingException, UnrecoverableKeyException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+            throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
 
@@ -398,24 +313,10 @@ public class CryptUtil {
      * Helper method to decrypt file
      * @param inputStream stream associated with encrypted file
      * @param outputStream stream associated with new output decrypted file
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws CertificateException
-     * @throws UnrecoverableKeyException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static void aesDecrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, CertificateException,
-            UnrecoverableKeyException, KeyStoreException, NoSuchProviderException,
-            InvalidAlgorithmParameterException, IOException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+            throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
@@ -454,10 +355,7 @@ public class CryptUtil {
      * @throws UnrecoverableKeyException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static Key getSecretKey() throws KeyStoreException, CertificateException,
-            NoSuchAlgorithmException, IOException, NoSuchProviderException,
-            InvalidAlgorithmParameterException,
-            UnrecoverableKeyException {
+    private static Key getSecretKey() throws GeneralSecurityException, IOException {
 
         KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
         keyStore.load(null);
@@ -480,10 +378,7 @@ public class CryptUtil {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private static void rsaEncrypt(Context context, BufferedInputStream inputStream, BufferedOutputStream outputStream)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
-            KeyStoreException, UnrecoverableEntryException, IllegalBlockSizeException,
-            InvalidKeyException, IOException {
+            throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
@@ -512,10 +407,7 @@ public class CryptUtil {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private static void rsaDecrypt(Context context, BufferedInputStream inputStream,
-                                   BufferedOutputStream outputStream) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, NoSuchProviderException, CertificateException,
-            BadPaddingException, InvalidAlgorithmParameterException, KeyStoreException,
-            UnrecoverableEntryException, IllegalBlockSizeException, InvalidKeyException, IOException {
+                                   BufferedOutputStream outputStream) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
@@ -543,11 +435,7 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static String rsaEncryptPassword(Context context, String password) throws
-            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            CertificateException, BadPaddingException, InvalidAlgorithmParameterException,
-            KeyStoreException, UnrecoverableEntryException, IllegalBlockSizeException,
-            InvalidKeyException, IOException {
+    private static String rsaEncryptPassword(Context context, String password) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
@@ -559,10 +447,7 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static String rsaDecryptPassword(Context context, String cipherText) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, NoSuchProviderException, CertificateException, BadPaddingException,
-            InvalidAlgorithmParameterException, KeyStoreException, UnrecoverableEntryException,
-            IllegalBlockSizeException, InvalidKeyException, IOException {
+    private static String rsaDecryptPassword(Context context, String cipherText) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
         RSAKeygen keygen = new RSAKeygen(context);
@@ -579,84 +464,44 @@ public class CryptUtil {
      * @param plainText
      * @return
      */
-    public static String encryptPassword(Context context, String plainText) throws CryptException {
+    public static String encryptPassword(Context context, String plainText) throws GeneralSecurityException, IOException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-        try {
+            return CryptUtil.aesEncryptPassword(plainText);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                return CryptUtil.aesEncryptPassword(plainText);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-                return CryptUtil.rsaEncryptPassword(context, plainText);
-            } else return plainText;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CryptException();
-        }
+            return CryptUtil.rsaEncryptPassword(context, plainText);
+        } else return plainText;
     }
 
     /**
      * Method handles decryption of cipher text on various APIs
-     * @param context
-     * @param cipherText
-     * @return
      */
-    public static String decryptPassword(Context context, String cipherText) throws CryptException {
-
-        try {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                return CryptUtil.aesDecryptPassword(cipherText);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-                return CryptUtil.rsaDecryptPassword(context, cipherText);
-            } else return cipherText;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CryptException();
-        }
+    public static String decryptPassword(Context context, String cipherText) throws GeneralSecurityException, IOException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return CryptUtil.aesDecryptPassword(cipherText);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return CryptUtil.rsaDecryptPassword(context, cipherText);
+        } else return cipherText;
     }
 
     /**
      * Method initializes a Cipher to be used by {@link android.hardware.fingerprint.FingerprintManager}
-     * @param context
-     * @return
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws CertificateException
-     * @throws UnrecoverableEntryException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws IOException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
      */
-    public static Cipher initCipher(Context context) throws CryptException {
+    public static Cipher initCipher(Context context) throws GeneralSecurityException, IOException {
+        Cipher cipher = null;
 
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            cipher = Cipher.getInstance(ALGO_AES);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            cipher = Cipher.getInstance(ALGO_AES, "BC");
+            RSAKeygen keygen = new RSAKeygen(context);
 
-            Cipher cipher = null;
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                cipher = Cipher.getInstance(ALGO_AES);
-                GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
-                cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                cipher = Cipher.getInstance(ALGO_AES, "BC");
-                RSAKeygen keygen = new RSAKeygen(context);
-
-                cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
-            }
-            return cipher;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CryptException();
+            cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
         }
+        return cipher;
     }
 
     /**
@@ -674,45 +519,16 @@ public class CryptUtil {
             try {
                 generateKeyPair(context);
                 setKeyPreference();
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (CertificateException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (UnrecoverableEntryException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
+            } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
             }
         }
 
         /**
          * Generates a RSA public/private key pair to encrypt AES key
-         * @param context
-         * @throws KeyStoreException
-         * @throws CertificateException
-         * @throws NoSuchAlgorithmException
-         * @throws IOException
-         * @throws NoSuchProviderException
-         * @throws InvalidAlgorithmParameterException
          */
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        private void generateKeyPair(Context context) throws KeyStoreException,
-                CertificateException, NoSuchAlgorithmException, IOException, NoSuchProviderException,
-                InvalidAlgorithmParameterException {
+        private void generateKeyPair(Context context) throws GeneralSecurityException, IOException {
 
             KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
             keyStore.load(null);
@@ -741,10 +557,7 @@ public class CryptUtil {
         /**
          * Encrypts AES key and set into preference
          */
-        private void setKeyPreference() throws IOException, CertificateException,
-                NoSuchAlgorithmException, InvalidKeyException, UnrecoverableEntryException,
-                NoSuchPaddingException, NoSuchProviderException, BadPaddingException,
-                KeyStoreException, IllegalBlockSizeException {
+        private void setKeyPreference() throws GeneralSecurityException, IOException {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             String encodedAesKey = preferences.getString(PREFERENCE_KEY, null);
@@ -764,12 +577,8 @@ public class CryptUtil {
 
         /**
          * Encrypts randomly generated AES key using RSA public key
-         * @param secretKey
-         * @return
          */
-        private byte[] encryptAESKey(byte[] secretKey) throws KeyStoreException,
-                UnrecoverableEntryException, NoSuchAlgorithmException, IOException,
-                CertificateException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        private byte[] encryptAESKey(byte[] secretKey) throws GeneralSecurityException, IOException {
 
             KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
             keyStore.load(null);
@@ -788,23 +597,9 @@ public class CryptUtil {
 
         /**
          * Decodes encrypted AES key from preference and decrypts using RSA private key
-         * @return
-         * @throws CertificateException
-         * @throws NoSuchPaddingException
-         * @throws InvalidKeyException
-         * @throws NoSuchAlgorithmException
-         * @throws KeyStoreException
-         * @throws NoSuchProviderException
-         * @throws UnrecoverableEntryException
-         * @throws IOException
-         * @throws InvalidAlgorithmParameterException
-         * @throws BadPaddingException
-         * @throws IllegalBlockSizeException
          */
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-        private Key getSecretKey() throws CertificateException, NoSuchPaddingException, InvalidKeyException,
-                NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException,
-                IOException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+        private Key getSecretKey() throws GeneralSecurityException, IOException {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             String encodedString = preferences.getString(PREFERENCE_KEY, null);
@@ -820,20 +615,8 @@ public class CryptUtil {
 
         /**
          * Decrypts AES decoded key from preference using RSA private key
-         * @param encodedBytes
-         * @return
-         * @throws KeyStoreException
-         * @throws CertificateException
-         * @throws NoSuchAlgorithmException
-         * @throws IOException
-         * @throws UnrecoverableEntryException
-         * @throws NoSuchProviderException
-         * @throws NoSuchPaddingException
-         * @throws InvalidKeyException
          */
-        private byte[] decryptAESKey(byte[] encodedBytes) throws KeyStoreException, CertificateException, NoSuchAlgorithmException,
-                IOException, UnrecoverableEntryException, NoSuchProviderException, NoSuchPaddingException,
-                InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        private byte[] decryptAESKey(byte[] encodedBytes) throws GeneralSecurityException, IOException {
 
             KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
             keyStore.load(null);

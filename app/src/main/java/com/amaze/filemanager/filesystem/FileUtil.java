@@ -1,7 +1,6 @@
 package com.amaze.filemanager.filesystem;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,12 +16,21 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -132,33 +140,165 @@ public abstract class FileUtil {
         return true;
     }
 
-    public static OutputStream getOutputStream(final File target, Context context) throws Exception {
+    public static OutputStream getOutputStream(final File target, Context context) throws FileNotFoundException {
         return getOutputStream(target, context, 0);
     }
 
-    public static OutputStream getOutputStream(final File target, Context context, long s) throws Exception {
+    public static OutputStream getOutputStream(final File target, Context context, long s) throws FileNotFoundException {
         OutputStream outStream = null;
-        try {
-            // First try the normal way
-            if (isWritable(target)) {
-                // standard way
-                outStream = new FileOutputStream(target);
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    // Storage Access Framework
-                    DocumentFile targetDocument = getDocumentFile(target, false, context);
-                    outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
-                } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                    // Workaround for Kitkat ext SD card
-                    return MediaStoreHack.getOutputStream(context, target.getPath());
-                }
+        // First try the normal way
+        if (isWritable(target)) {
+            // standard way
+            outStream = new FileOutputStream(target);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // Storage Access Framework
+                DocumentFile targetDocument = getDocumentFile(target, false, context);
+                outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                // Workaround for Kitkat ext SD card
+                return MediaStoreHack.getOutputStream(context, target.getPath());
             }
-        } catch (Exception e) {
-            Log.e("AmazeFileUtils",
-                    "Error when copying file from " + target.getAbsolutePath(), e);
-            throw new Exception();
         }
         return outStream;
+    }
+
+    /**
+     * Writes uri stream from external application to the specified path
+     * @param uris
+     * @param contentResolver
+     * @param currentPath
+     */
+    public static final void writeUriToStorage(final MainActivity mainActivity, final ArrayList<Uri> uris,
+                                               final ContentResolver contentResolver, final String currentPath) {
+
+        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+
+            @Override
+            public <E> E doInBackground() {
+
+                for (Uri uri : uris) {
+
+                    BufferedInputStream bufferedInputStream = null;
+                    try {
+                        bufferedInputStream = new BufferedInputStream(contentResolver.openInputStream(uri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    BufferedOutputStream bufferedOutputStream = null;
+
+                    try {
+
+                        DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+                        String finalFilePath = currentPath + "/" + documentFile.getName();
+                        DataUtils dataUtils = DataUtils.getInstance();
+
+                        HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
+                        hFile.generateMode(mainActivity);
+
+                        switch (hFile.getMode()) {
+                            case FILE:
+                            case ROOT:
+                                if (!FileUtil.isWritable(new File(currentPath))) {
+                                    AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
+                                    return null;
+                                }
+                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(finalFilePath));
+                                break;
+                            case SMB:
+                                OutputStream outputStream = new SmbFile(finalFilePath).getOutputStream();
+                                bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                break;
+                            case DROPBOX:
+                                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                                cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case BOX:
+                                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                                cloudStorageBox.upload(CloudUtil.stripPath(OpenMode.BOX, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case ONEDRIVE:
+                                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                                cloudStorageOneDrive.upload(CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case GDRIVE:
+                                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                                cloudStorageGDrive.upload(CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath),
+                                        bufferedInputStream, documentFile.length(), true);
+                                break;
+                            case OTG:
+                                DocumentFile documentTargetFile = OTGUtil.getDocumentFile(finalFilePath,
+                                        mainActivity, true);
+
+                                bufferedOutputStream = new BufferedOutputStream(contentResolver
+                                        .openOutputStream(documentTargetFile.getUri()),
+                                        GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+                                break;
+                            default:
+                                return null;
+                        }
+
+                        int count = 0;
+                        byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+
+                        while (count != -1) {
+
+                            count = bufferedInputStream.read(buffer);
+                            if (count != -1) {
+
+                                bufferedOutputStream.write(buffer, 0, count);
+                            }
+                        }
+                        bufferedOutputStream.flush();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+
+                        try {
+
+                            if (bufferedInputStream != null) {
+                                bufferedInputStream.close();
+                            }
+                            if (bufferedOutputStream != null) {
+                                bufferedOutputStream.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public Void onPostExecute(Object result) {
+                return null;
+            }
+
+            @Override
+            public Void onPreExecute() {
+                return null;
+            }
+
+            @Override
+            public Void publishResult(Object... result) {
+                return null;
+            }
+
+            @Override
+            public <T> T[] params() {
+                return null;
+            }
+        });
     }
 
     /**
@@ -198,7 +338,7 @@ public abstract class FileUtil {
         return !file.exists();
     }
 
-    private static boolean rename(File f, String name, boolean root) throws RootNotPermittedException {
+    private static boolean rename(File f, String name, boolean root) throws ShellNotRunningException {
         String newPath = f.getParent() + "/" + name;
         if (f.getParentFile().canWrite()) {
             return f.renameTo(new File(newPath));
@@ -217,7 +357,7 @@ public abstract class FileUtil {
      * @return true if the renaming was successful.
      */
     static boolean renameFolder(@NonNull final File source, @NonNull final File target,
-                                Context context) throws RootNotPermittedException {
+                                Context context) throws ShellNotRunningException {
         // First try the normal rename.
         if (rename(source, target.getName(), false)) {
             return true;
@@ -278,7 +418,7 @@ public abstract class FileUtil {
     /**
      * Create a folder. The folder may even be on external SD card for Kitkat.
      *
-     * @deprecated use {@link #mkdirs(Context, HFile)}
+     * @deprecated use {@link #mkdirs(Context, HybridFile)}
      * @param file  The folder to be created.
      * @return True if creation was successful.
      */
@@ -314,7 +454,7 @@ public abstract class FileUtil {
         return false;
     }
 
-    public static boolean mkdirs(Context context, HFile file) {
+    public static boolean mkdirs(Context context, HybridFile file) {
         boolean isSuccessful = true;
         switch (file.mode) {
             case SMB:
@@ -471,40 +611,6 @@ public abstract class FileUtil {
                 totalSuccess = false;
         }
         return totalSuccess;
-    }
-
-    /**
-     * Delete a directory asynchronously.
-     *
-     * @param activity    The activity calling this method.
-     * @param file        The folder name.
-     * @param postActions Commands to be executed after success.
-     */
-    public static void rmdirAsynchronously(final Activity activity, final File file, final Runnable postActions, final Context context) {
-        if (file == null)
-            return;
-        new Thread() {
-            @Override
-            public void run() {
-                int retryCounter = 5; // MAGIC_NUMBER
-                while (!FileUtil.rmdir(file, context) && retryCounter > 0) {
-                    try {
-                        Thread.sleep(100); // MAGIC_NUMBER
-                    } catch (InterruptedException e) {
-                        // do nothing
-                    }
-                    retryCounter--;
-                }
-                if (file.exists()) {
-           /*         DialogUtil.displayError(activity, R.string.message_dialog_failed_to_delete_folder, false,
-                            file.getAbsolutePath());
-           */
-                } else {
-                    activity.runOnUiThread(postActions);
-                }
-
-            }
-        }.start();
     }
 
     /**

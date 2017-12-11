@@ -20,16 +20,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -54,8 +52,6 @@ public class TabFragment extends android.support.v4.app.Fragment
     // current visible tab, either 0 or 1
     //public int currenttab;
     MainActivity mainActivity;
-    View buttons;
-    View mToolBarContainer;
     boolean savepaths;
     FragmentManager fragmentManager;
 
@@ -81,7 +77,6 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         tabHandler = new TabHandler(getContext());
         fragmentManager = getActivity().getSupportFragmentManager();
-        mToolBarContainer = getActivity().findViewById(R.id.lin);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             indicator = (Indicator) getActivity().findViewById(R.id.indicator);
@@ -99,7 +94,6 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (getArguments() != null) {
             path = getArguments().getString("path");
         }
-        buttons = getActivity().findViewById(R.id.buttons);
         mainActivity = ((MainActivity) getActivity());
         mainActivity.supportInvalidateOptionsMenu();
         mViewPager.addOnPageChangeListener(this);
@@ -176,10 +170,10 @@ public class TabFragment extends android.support.v4.app.Fragment
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change
         /*colorDrawable.setColor(Color.parseColor(MainActivity.currentTab==1 ?
-                BaseActivity.skinTwo : BaseActivity.skin));
+                ThemedActivity.skinTwo : ThemedActivity.skin));
         mainActivity.updateViews(colorDrawable);*/
 
-        mainActivity.mainFragment = (MainFragment) getTab();
+        mainActivity.mainFragment = (MainFragment) getCurrentTabFragment();
 
         return rootView;
     }
@@ -206,12 +200,12 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         tabHandler.clear();
         for (Fragment fragment : fragments) {
-            if (fragment.getClass().getName().contains("MainFragment")) {
+            if (fragment instanceof MainFragment) {
                 MainFragment m = (MainFragment) fragment;
                 items.add(parsePathForName(m.getCurrentPath(), m.openMode));
                 if (i - 1 == MainActivity.currentTab && i == pos) {
-                    mainActivity.updatePath(m.getCurrentPath(), m.results, m.openMode, m
-                            .folder_count, m.file_count);
+                    mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results,
+                            MainActivityHelper.SEARCH_TEXT, m.openMode, m.folder_count, m.file_count, m);
                     mainActivity.updateDrawer(m.getCurrentPath());
                 }
                 if (m.openMode == OpenMode.FILE) {
@@ -247,21 +241,16 @@ public class TabFragment extends android.support.v4.app.Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        try {
-            int i = 0;
-            if (sharedPrefs != null)
-                sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
-            if (fragments != null && fragments.size() != 0) {
-                if (fragmentManager == null) return;
-                for (Fragment fragment : fragments) {
-                    fragmentManager.putFragment(outState, "tab" + i, fragment);
-                    i++;
-                }
-                outState.putInt("pos", mViewPager.getCurrentItem());
+        int i = 0;
+        if (sharedPrefs != null)
+            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
+        if (fragments != null && fragments.size() != 0) {
+            if (fragmentManager == null) return;
+            for (Fragment fragment : fragments) {
+                fragmentManager.putFragment(outState, "tab" + i, fragment);
+                i++;
             }
-        } catch (Exception e) {
-            Logger.log(e, "puttingtosavedinstance", getActivity());
-            e.printStackTrace();
+            outState.putInt("pos", mViewPager.getCurrentItem());
         }
     }
 
@@ -283,7 +272,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onPageSelected(int p1) {
-        mToolBarContainer.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
         MainActivity.currentTab = p1;
         if (sharedPrefs != null)
@@ -291,22 +280,13 @@ public class TabFragment extends android.support.v4.app.Fragment
         Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
 
         Fragment fragment = fragments.get(p1);
-        if (fragment != null) {
-            String name = fragments.get(p1).getClass().getName();
-            if (name != null && name.contains("Main")) {
-                MainFragment ma = ((MainFragment) fragments.get(p1));
-                if (ma.getCurrentPath() != null) {
-                    try {
-                        mainActivity.updateDrawer(ma.getCurrentPath());
-                        mainActivity.updatePath(ma.getCurrentPath(), ma.results, ma.openMode,
-                                ma.folder_count, ma.file_count);
-                        if (buttons.getVisibility() == View.VISIBLE) {
-                            mainActivity.bbar(ma);
-                        }
-                    } catch (Exception e) {
-                        //       e.printStackTrace();5
-                    }
-                }
+        if (fragment != null && fragment instanceof MainFragment) {
+            MainFragment ma = (MainFragment) fragment;
+            if (ma.getCurrentPath() != null) {
+                mainActivity.updateDrawer(ma.getCurrentPath());
+                mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(),
+                        ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
+                        ma.folder_count, ma.file_count, ma);
             }
         }
 
@@ -362,26 +342,27 @@ public class TabFragment extends android.support.v4.app.Fragment
         mViewPager.setOffscreenPageLimit(4);
     }
 
-    public Fragment getTab() {
-        if (fragments.size() == 2)
-            return fragments.get(mViewPager.getCurrentItem());
+    public Fragment getCurrentTabFragment() {
+        if (fragments.size() == 2) return fragments.get(mViewPager.getCurrentItem());
         else return null;
     }
 
-    public Fragment getTab(int pos) {
-        if (fragments.size() == 2 && pos < 2)
-            return fragments.get(pos);
+    public Fragment getFragmentAtIndex(int pos) {
+        if (fragments.size() == 2 && pos < 2) return fragments.get(pos);
         else return null;
     }
 
     // updating indicator color as per the current viewpager tab
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
+
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+
         if (index == 0) {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(BaseActivity.accentSkin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
         } else {
-            circleDrawable1.setImageDrawable(new ColorCircleDrawable(Color.parseColor(BaseActivity.accentSkin)));
+            circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
             circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
         }
     }

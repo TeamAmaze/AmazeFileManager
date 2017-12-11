@@ -21,27 +21,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="size_capitalized">Hajmi</string>
   <string name="history">Tarixi</string>
-  <string name="refresh">Yangilash</string>
-  <!-- New -->
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">Qizil</string>
-  <string name="blue">Ko‘k</string>
-  <string name="cyan">Moviy</string>
-  <string name="green">Yashil</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">Hajmi</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">Sariq</string>
-  <string name="version">Qo‘shish</string>
+    <string name="version">Qo‘shish</string>
   <string name="donate">Ehson</string>
   <string name="color_title">Rang</string>
-  <string name="none">Asl</string>
-  <string name="information">Ma’lumot</string>
+    <string name="information">Ma’lumot</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->
   <!-- reference to audio/video file -->

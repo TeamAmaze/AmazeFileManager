@@ -7,14 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
-import com.amaze.filemanager.exceptions.RootNotPermittedException;
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.Logger;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.ByteArrayInputStream;
@@ -51,7 +50,7 @@ public class Operations {
          *
          * @param file
          */
-        void exists(HFile file);
+        void exists(HybridFile file);
 
         /**
          * Callback fired when creating new file/directory and required storage access framework permission
@@ -59,7 +58,7 @@ public class Operations {
          *
          * @param file
          */
-        void launchSAF(HFile file);
+        void launchSAF(HybridFile file);
 
         /**
          * Callback fired when renaming file and required storage access framework permission to access
@@ -68,7 +67,7 @@ public class Operations {
          * @param file
          * @param file1
          */
-        void launchSAF(HFile file, HFile file1);
+        void launchSAF(HybridFile file, HybridFile file1);
 
         /**
          * Callback fired when we're done processing the operation
@@ -76,17 +75,17 @@ public class Operations {
          * @param hFile
          * @param b     defines whether operation was successful
          */
-        void done(HFile hFile, boolean b);
+        void done(HybridFile hFile, boolean b);
 
         /**
          * Callback fired when an invalid file name is found.
          *
          * @param file
          */
-        void invalidName(HFile file);
+        void invalidName(HybridFile file);
     }
 
-    public static void mkdir(@NonNull final HFile file, final Context context, final boolean rootMode,
+    public static void mkdir(@NonNull final HybridFile file, final Context context, final boolean rootMode,
                              @NonNull final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -114,7 +113,7 @@ public class Operations {
                     try {
                         file.getSmbFile(2000).mkdirs();
                     } catch (SmbException e) {
-                        Logger.log(e, file.getPath(), context);
+                        e.printStackTrace();
                         errorCallBack.done(file, false);
                         return null;
                     }
@@ -183,8 +182,8 @@ public class Operations {
                             try {
 
                                 RootUtils.mkDir(file.getParent(context), file.getName(context));
-                            } catch (RootNotPermittedException e) {
-                                Logger.log(e, file.getPath(), context);
+                            } catch (ShellNotRunningException e) {
+                                e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
                             return null;
@@ -201,7 +200,7 @@ public class Operations {
 
     }
 
-    public static void mkfile(@NonNull final HFile file, final Context context, final boolean rootMode,
+    public static void mkfile(@NonNull final HybridFile file, final Context context, final boolean rootMode,
                               @NonNull final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -235,7 +234,7 @@ public class Operations {
                     try {
                         file.getSmbFile(2000).createNewFile();
                     } catch (SmbException e) {
-                        Logger.log(e, file.getPath(), context);
+                        e.printStackTrace();
                         errorCallBack.done(file, false);
                         return null;
                     }
@@ -320,8 +319,8 @@ public class Operations {
                             try {
 
                                 RootUtils.mkFile(file.getPath());
-                            } catch (RootNotPermittedException e) {
-                                Logger.log(e, file.getPath(), context);
+                            } catch (ShellNotRunningException e) {
+                                e.printStackTrace();
                             }
                             errorCallBack.done(file, file.exists());
                             return null;
@@ -338,7 +337,7 @@ public class Operations {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void rename(final HFile oldFile, final HFile newFile, final boolean rootMode,
+    public static void rename(final HybridFile oldFile, final HybridFile newFile, final boolean rootMode,
                               final Context context, final ErrorCallBack errorCallBack) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -437,15 +436,15 @@ public class Operations {
                             } else if (mode == 1 || mode == 0) {
                                 try {
                                     FileUtil.renameFolder(file, file1, context);
-                                } catch (RootNotPermittedException e) {
+                                } catch (ShellNotRunningException e) {
                                     e.printStackTrace();
                                 }
                                 boolean a = !file.exists() && file1.exists();
                                 if (!a && rootMode) {
                                     try {
                                         RootUtils.rename(file.getPath(), file1.getPath());
-                                    } catch (Exception e) {
-                                        Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
+                                    } catch (ShellNotRunningException e) {
+                                        e.printStackTrace();
                                     }
                                     oldFile.setMode(OpenMode.ROOT);
                                     newFile.setMode(OpenMode.ROOT);
@@ -457,10 +456,9 @@ public class Operations {
                             break;
                         case ROOT:
                             try {
-
                                 RootUtils.rename(file.getPath(), file1.getPath());
-                            } catch (Exception e) {
-                                Logger.log(e, oldFile.getPath() + "\n" + newFile.getPath(), context);
+                            } catch (ShellNotRunningException e) {
+                                e.printStackTrace();
                             }
 
                             newFile.setMode(OpenMode.ROOT);
@@ -514,7 +512,7 @@ public class Operations {
      * @param targetFile
      * @return true when copy loop is possible
      */
-    public static boolean isCopyLoopPossible(BaseFile sourceFile, HFile targetFile) {
+    public static boolean isCopyLoopPossible(HybridFileParcelable sourceFile, HybridFile targetFile) {
         return targetFile.getPath().contains(sourceFile.getPath());
     }
 

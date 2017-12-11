@@ -4,32 +4,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.amaze.filemanager.utils.files.Futils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.amaze.filemanager.utils.theme.AppThemeManagerInterface;
-import com.amaze.filemanager.utils.theme.PreferencesAppThemeManager;
+import com.amaze.filemanager.utils.theme.AppThemeManager;
 
 /**
  * Created by piotaixr on 16/01/17.
  */
 
 public class UtilitiesProvider implements UtilitiesProviderInterface {
-    private Futils futils;
     private ColorPreference colorPreference;
-    private AppThemeManagerInterface appThemeManager;
+    private AppThemeManager appThemeManager;
 
     public UtilitiesProvider(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        futils = new Futils();
 
         colorPreference = ColorPreference.loadFromPreferences(context, sharedPreferences);
-        appThemeManager = new PreferencesAppThemeManager(sharedPreferences);
-    }
-
-    @Override
-    public Futils getFutils() {
-        return futils;
+        appThemeManager = new AppThemeManager(sharedPreferences);
     }
 
     @Override
@@ -43,7 +34,7 @@ public class UtilitiesProvider implements UtilitiesProviderInterface {
     }
 
     @Override
-    public AppThemeManagerInterface getThemeManager() {
+    public AppThemeManager getThemeManager() {
         return appThemeManager;
     }
 }

@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.DbViewer;
-import com.amaze.filemanager.services.asynctasks.DbViewerTask;
+import com.amaze.filemanager.activities.DatabaseViewerActivity;
+import com.amaze.filemanager.asynchronous.asynctasks.DbViewerTask;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -22,7 +22,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  * Created by Vishal on 06-02-2015.
  */
 public class DbViewerFragment extends Fragment {
-    public DbViewer dbViewer;
+    public DatabaseViewerActivity databaseViewerActivity;
     private String tableName;
     private View rootView;
     private Cursor schemaCursor, contentCursor;
@@ -32,17 +32,17 @@ public class DbViewerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        dbViewer = (DbViewer) getActivity();
+        databaseViewerActivity = (DatabaseViewerActivity) getActivity();
 
         rootView = inflater.inflate(R.layout.fragment_db_viewer, null);
         webView = (WebView) rootView.findViewById(R.id.webView1);
         loadingText = (TextView) rootView.findViewById(R.id.loadingText);
         relativeLayout = (RelativeLayout) rootView.findViewById(R.id.tableLayout);
         tableName = getArguments().getString("table");
-        dbViewer.setTitle(tableName);
+        databaseViewerActivity.setTitle(tableName);
 
-        schemaCursor = dbViewer.sqLiteDatabase.rawQuery("PRAGMA table_info(" + tableName + ");", null);
-        contentCursor = dbViewer.sqLiteDatabase.rawQuery("SELECT * FROM " + tableName, null);
+        schemaCursor = databaseViewerActivity.sqLiteDatabase.rawQuery("PRAGMA table_info(" + tableName + ");", null);
+        contentCursor = databaseViewerActivity.sqLiteDatabase.rawQuery("SELECT * FROM " + tableName, null);
 
         new DbViewerTask(schemaCursor, contentCursor, webView, this).execute();
 
@@ -52,7 +52,7 @@ public class DbViewerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (dbViewer.getAppTheme().equals(AppTheme.DARK)) {
+        if (databaseViewerActivity.getAppTheme().equals(AppTheme.DARK)) {
             relativeLayout.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             webView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
         } else {

@@ -24,12 +24,9 @@
   <string name="about">About</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
-  <string name="dialog_delete_title">ConfirmPlaceholderComment</string>
   <string name="home">Home</string>
-  <string name="close">Close</string>
-  <string name="history">History</string>
-  <string name="refresh">Refresh</string>
-  <!-- New -->
+    <string name="history">History</string>
+    <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
@@ -43,8 +40,7 @@
   <string name="exit">Exit</string>
   <string name="changelog">Changelog</string>
   <string name="ok">OK</string>
-  <string name="new_string">New</string>
-  <string name="install">Install</string>
+    <string name="install">Install</string>
   <string name="donate">Donate</string>
   <string name="other">Other</string>
   <string name="color_title">Colour</string>

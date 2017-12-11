@@ -7,23 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.exceptions.CryptException;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  * Created by vishal on 15/4/17.
@@ -63,7 +52,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addEntry(EncryptedEntry encryptedEntry) throws CryptException {
+    public void addEntry(EncryptedEntry encryptedEntry) throws GeneralSecurityException, IOException {
 
         ContentValues contentValues = new ContentValues();
         //contentValues.put(COLUMN_ENCRYPTED_ID, encryptedEntry.getId());
@@ -84,7 +73,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) throws CryptException {
+    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) throws GeneralSecurityException, IOException  {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_ENCRYPTED_ID, newEncryptedEntry.getId());
@@ -96,7 +85,7 @@ public class CryptHandler extends SQLiteOpenHelper {
                 new String[]{oldEncryptedEntry.getId() + ""});
     }
 
-    public EncryptedEntry findEntry(String path) throws CryptException {
+    public EncryptedEntry findEntry(String path) throws GeneralSecurityException, IOException {
         String query = "Select * FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_ENCRYPTED_PATH
                 + "= \"" + path + "\"";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
@@ -115,7 +104,7 @@ public class CryptHandler extends SQLiteOpenHelper {
         return encryptedEntry;
     }
 
-    public List<EncryptedEntry> getAllEntries() throws CryptException {
+    public List<EncryptedEntry> getAllEntries() throws GeneralSecurityException, IOException {
         List<EncryptedEntry> entryList = new ArrayList<EncryptedEntry>();
         // Select all query
         String query = "Select * FROM " + TABLE_ENCRYPTED;

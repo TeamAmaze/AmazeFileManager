@@ -12,15 +12,16 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.RecyclerArrayAdapter;
 
 import java.util.ArrayList;
 
 /**
- * Created by Arpit on 01-07-2015.
+ * Created by Arpit on 01-07-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 
-class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder> {
+class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
+
+    private ArrayList<Intent> items;
     private MaterialDialog dialog;
     private ArrayList<String> labels;
     private ArrayList<Drawable> drawables;
@@ -32,7 +33,7 @@ class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder>
 
     ShareAdapter(Context context, ArrayList<Intent> intents, ArrayList<String> labels,
                         ArrayList<Drawable> arrayList1) {
-        addAll(intents);
+        items = new ArrayList<>(intents);
         this.context = context;
         this.labels = labels;
         this.drawables = arrayList1;
@@ -70,14 +71,21 @@ class ShareAdapter extends RecyclerArrayAdapter<Intent, ShareAdapter.ViewHolder>
                 imageView.setImageDrawable(drawables.get(position));
             textView.setVisibility(View.VISIBLE);
             textView.setText(labels.get(position));
-            rootView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (dialog != null && dialog.isShowing()) dialog.dismiss();
-                    context.startActivity(getItem(position));
-                }
+            rootView.setOnClickListener(v -> {
+                if (dialog != null && dialog.isShowing()) dialog.dismiss();
+                context.startActivity(items.get(position));
             });
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
     }
 
 }

@@ -30,21 +30,15 @@
   <!-- UI -->
   <!-- Theme -->
   <!--Skin-->
-  <string name="red">ቀይ</string>
-  <string name="blue">ሰማያዊ</string>
-  <string name="cyan">አረንጓዴ-ሰማያዊ</string>
-  <string name="green">አረንጓዴ</string>
-  <!--DirectorySortMode-->
+    <!--DirectorySortMode-->
   <!--SortBy-->
   <string name="sortSize">መጠን</string>
   <!--ListMode-->
   <!--Folder-->
-  <string name="Yellow">ቢጫ</string>
-  <string name="version">ስሪት</string>
+    <string name="version">ስሪት</string>
   <string name="details">ዝርዝሮች</string>
   <string name="color_title">ቀለም</string>
-  <string name="none">ምንም</string>
-  <string name="path">ዱካ</string>
+    <string name="path">ዱካ</string>
   <string name="information">መረጃ</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

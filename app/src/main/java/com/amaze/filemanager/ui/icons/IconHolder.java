@@ -29,7 +29,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -41,16 +40,16 @@ import android.widget.ImageView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import jcifs.smb.SmbFileInputStream;
 
@@ -69,7 +68,7 @@ public class IconHolder {
     private final Map<String, Bitmap> mAppIcons;  // App based
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    private Map<ImageView, String> mRequests;
+    private final Map<ImageView, String> mRequests;
 
     private final Context mContext;
     private final boolean mUseThumbs;
@@ -98,21 +97,19 @@ public class IconHolder {
         private synchronized void processResult(LoadResult result) {
             // Cache the new drawable
             final String filePath =(result.fso);
-            mAppIcons.put(filePath, result.result);
+
+            synchronized (mAppIcons) {
+
+                mAppIcons.put(filePath, result.result);
+            }
 
             // find the request for it
-            for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
-                final ImageView imageView = entry.getKey();
-                final String fso = entry.getValue();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    if (Objects.equals(fso, result.fso)) {
-                        imageView.setImageBitmap(result.result);
-                        mRequests.remove(imageView);
-                        break;
-                    }
-                } else {
-                    if (fso.equals(result.fso)) {
+            synchronized (mRequests) {
+                for (Map.Entry<ImageView, String> entry : mRequests.entrySet()) {
+                    final ImageView imageView = entry.getKey();
+                    final String fso = entry.getValue();
 
+                    if (fso != null && fso.equals(result.fso)) {
                         imageView.setImageBitmap(result.result);
                         mRequests.remove(imageView);
                         break;
@@ -133,12 +130,12 @@ public class IconHolder {
         super();
         this.mContext = context;
         this.mUseThumbs = useThumbs;
-        this.mRequests = new HashMap<>();
+        this.mRequests = Collections.synchronizedMap(new HashMap<>());
         this.mIcons = new HashMap<>();
         this.mAppIcons = new LinkedHashMap<String, Bitmap>(MAX_CACHE, .75F, true) {
             private static final long serialVersionUID = 1L;
             @Override
-            protected boolean removeEldestEntry(Entry<String, Bitmap> eldest) {
+            protected boolean removeEldestEntry(Map.Entry<String, Bitmap> eldest) {
                 return size() > MAX_CACHE;
             }
         };
@@ -175,22 +172,18 @@ public class IconHolder {
             iconView.setImageBitmap(this.mAppIcons.get(filePath));
             return;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                mHandler.removeMessages(MSG_DESTROY);
-                if (mWorkerThread == null || mWorkerHandler==null) {
-                    mWorkerThread = new HandlerThread("IconHolderLoader");
-                    mWorkerThread.start();
-                    mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
-                }
-
-                mRequests.put(iconView, fso);
-                Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
-                msg.sendToTarget();
-
+        new Thread(() -> {
+            mHandler.removeMessages(MSG_DESTROY);
+            if (mWorkerThread == null || mWorkerHandler==null) {
+                mWorkerThread = new HandlerThread("IconHolderLoader");
+                mWorkerThread.start();
+                mWorkerHandler = new WorkerHandler(mWorkerThread.getLooper());
             }
+
+            mRequests.put(iconView, fso);
+            Message msg = mWorkerHandler.obtainMessage(MSG_LOAD, fso);
+            msg.sendToTarget();
+
         }).start();
     }
 
@@ -198,11 +191,13 @@ public class IconHolder {
      * Cancel loading of a drawable for a certain ImageView.
      */
     public void cancelLoad(ImageView view) {
-        String fso = mRequests.get(view);
-        if (fso != null && mWorkerHandler != null) {
-            mWorkerHandler.removeMessages(MSG_LOAD, fso);
+        synchronized (mRequests) {
+            String fso = mRequests.get(view);
+            if (fso != null && mWorkerHandler != null) {
+                mWorkerHandler.removeMessages(MSG_LOAD, fso);
+            }
+            mRequests.remove(view);
         }
-        mRequests.remove(view);
     }
 
     private class WorkerHandler extends Handler {

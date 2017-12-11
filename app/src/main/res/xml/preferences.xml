@@ -33,12 +33,6 @@
             android:summary="@string/circularimages"
             android:title="@string/circularicons"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
-            android:enabled="true"
-            android:key="plus_pic"
-            android:summary="@string/gplus_pic_summary"
-            android:title="@string/gplus_pic_title"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showDividers"
             android:title="@string/showDividers"/>
@@ -54,7 +48,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="SideBar">
+    <PreferenceCategory android:title="@string/sidebar_preferences">
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="sidebar_folders_enable"
@@ -95,7 +89,7 @@
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
             android:title="@string/sizePref"/>
@@ -107,9 +101,8 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno"/>
-
-
     </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/archive_preferences">
         <EditTextPreference
             android:key="extractpath"
@@ -140,11 +133,24 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/miscellaneous">
-
         <Preference
             android:key="advancedsearch"
             android:title="@string/advanced_search"/>
 
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="typeablepaths"
+            android:summary="@string/typeablepaths_summary"
+            android:title="@string/typeablepaths_title"/>
+
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="texteditor_newstack"
+            android:title="@string/preference_newstack_title"
+            android:summary="@string/preference_newstack_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/advanced">
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="showPermissions"

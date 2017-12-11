@@ -1,15 +1,21 @@
 package com.amaze.filemanager.utils;
 
 import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by arpitkh996 on 20-01-2016.
@@ -23,11 +29,17 @@ public class DataUtils {
     public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
             RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
 
-    private ArrayList<String> hiddenfiles = new ArrayList<>(), gridfiles = new ArrayList<>(),
-            listfiles = new ArrayList<>(), history = new ArrayList<>(), storages = new ArrayList<>();
+    private ConcurrentRadixTree<VoidValue> hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
+
+    private ArrayList<String> gridfiles = new ArrayList<>();
+    private ArrayList<String> listfiles = new ArrayList<>();
+    private LinkedList<String> history = new LinkedList<>();
+    private ArrayList<String> storages = new ArrayList<>();
 
     private ArrayList<Item> list = new ArrayList<>();
-    private ArrayList<String[]> servers = new ArrayList<>(), books = new ArrayList<>();
+
+    private ArrayList<String[]> servers = new ArrayList<>();
+    private ArrayList<String[]> books = new ArrayList<>();
 
     private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
@@ -104,10 +116,10 @@ public class DataUtils {
     }
 
     public void clear() {
-        hiddenfiles = new ArrayList<>();
+        hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
         gridfiles = new ArrayList<>();
         listfiles = new ArrayList<>();
-        history = new ArrayList<>();
+        history.clear();
         storages = new ArrayList<>();
         servers = new ArrayList<>();
         books = new ArrayList<>();
@@ -203,13 +215,7 @@ public class DataUtils {
             books.add(i);
         }
         if (refreshdrawer && dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onBookAdded(i, true);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onBookAdded(i, true));
         }
     }
 
@@ -225,16 +231,10 @@ public class DataUtils {
 
         synchronized (hiddenfiles) {
 
-            hiddenfiles.add(i);
+            hiddenfiles.put(i, VoidValue.SINGLETON);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHiddenFileAdded(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileAdded(i));
         }
     }
 
@@ -245,34 +245,23 @@ public class DataUtils {
             hiddenfiles.remove(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHiddenFileRemoved(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileRemoved(i));
         }
     }
 
-    public ArrayList<String> getHistory() {
+    public void setHistory(LinkedList<String> s) {
+        history.clear();
+        history.addAll(s);
+    }
+
+    public LinkedList<String> getHistory() {
         return history;
     }
 
     public void addHistoryFile(final String i) {
-
-        synchronized (history) {
-
-            history.add(i);
-        }
+        history.push(i);
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-
-                    dataChangeListener.onHistoryAdded(i);
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHistoryAdded(i));
         }
     }
 
@@ -333,13 +322,16 @@ public class DataUtils {
         return null;
     }
 
-    public ArrayList<String> getHiddenfiles() {
+    public boolean isFileHidden(String path) {
+        return getHiddenFiles().getValueForExactKey(path) != null;
+    }
+
+    public ConcurrentRadixTree<VoidValue> getHiddenFiles() {
         return hiddenfiles;
     }
 
-    public synchronized void setHiddenfiles(ArrayList<String> hiddenfiles) {
-        if (hiddenfiles != null)
-            this.hiddenfiles = hiddenfiles;
+    public synchronized void setHiddenFiles(ConcurrentRadixTree<VoidValue> hiddenfiles) {
+        if (hiddenfiles != null) this.hiddenfiles = hiddenfiles;
     }
 
     public ArrayList<String> getGridFiles() {
@@ -361,7 +353,7 @@ public class DataUtils {
     }
 
     public void clearHistory() {
-        history = new ArrayList<>();
+        history.clear();
         if (dataChangeListener != null) {
             AppConfig.runInBackground(new Runnable() {
                 @Override

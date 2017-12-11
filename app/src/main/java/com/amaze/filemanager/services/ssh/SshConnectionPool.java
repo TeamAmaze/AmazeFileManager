@@ -30,7 +30,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.services.ssh.tasks.AsyncTaskResult;
 import com.amaze.filemanager.services.ssh.tasks.PemToKeyPairTask;
 import com.amaze.filemanager.services.ssh.tasks.SshAuthenticationTask;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import net.schmizz.sshj.SSHClient;
 

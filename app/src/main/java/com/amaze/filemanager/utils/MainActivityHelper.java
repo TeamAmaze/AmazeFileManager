@@ -1,18 +1,15 @@
 package com.amaze.filemanager.utils;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -25,26 +22,26 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.filesystem.BaseFile;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.services.DeleteTask;
-import com.amaze.filemanager.services.ExtractService;
-import com.amaze.filemanager.services.ZipTask;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.Futils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,8 +54,8 @@ public class MainActivityHelper {
     public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
 
     private MainActivity mainActivity;
-    private Futils utils;
     private DataUtils dataUtils = DataUtils.getInstance();
+    private int accentColor;
 
     /*
      * A static string which saves the last searched query. Used to retain search task after
@@ -68,19 +65,18 @@ public class MainActivityHelper {
 
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.utils = mainActivity.getFutils();
+        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
-    public void showFailedOperationDialog(ArrayList<BaseFile> failedOps, boolean move,
-                                          Context contextc) {
+    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, boolean move, Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
-        mat.positiveColor(Color.parseColor(BaseActivity.accentSkin));
+        mat.positiveColor(accentColor);
         mat.positiveText(R.string.cancel);
         String content = contextc.getResources().getString(R.string.operation_fail_following);
         int k=1;
-        for(BaseFile s:failedOps){
+        for(HybridFileParcelable s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
             k++;
         }
@@ -117,13 +113,10 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfolder, new OnClickMaterialListener() {
-            @Override
-            public void onClick(MaterialDialog materialDialog) {
-                String a = materialDialog.getInputEditText().getText().toString();
-                mkDir(new HFile(openMode, path + "/" + a), ma);
-                materialDialog.dismiss();
-            }
+        mk(R.string.newfolder, materialDialog -> {
+            String a = materialDialog.getInputEditText().getText().toString();
+            mkDir(new HybridFile(openMode, path + "/" + a), ma);
+            materialDialog.dismiss();
         });
     }
 
@@ -135,13 +128,10 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, new OnClickMaterialListener() {
-            @Override
-            public void onClick(MaterialDialog materialDialog) {
-                String a = materialDialog.getInputEditText().getText().toString();
-                mkFile(new HFile(openMode, path + "/" + a), ma);
-                materialDialog.dismiss();
-            }
+        mk(R.string.newfile, materialDialog -> {
+            String a = materialDialog.getInputEditText().getText().toString();
+            mkFile(new HybridFile(openMode, path + "/" + a), ma);
+            materialDialog.dismiss();
         });
     }
 
@@ -154,12 +144,7 @@ public class MainActivityHelper {
                         mainActivity.getResources().getString(R.string.cancel),
                         null});
 
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                l.onClick(materialDialog);
-            }
-        });
+        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
         materialDialog.show();
     }
 
@@ -168,7 +153,7 @@ public class MainActivityHelper {
     }
 
     public void add(int pos) {
-        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getTab();
+        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getCurrentTabFragment();
         final String path = ma.getCurrentPath();
 
         switch (pos) {
@@ -227,8 +212,8 @@ public class MainActivityHelper {
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
-        x.positiveColor(Color.parseColor(BaseActivity.accentSkin));
-        x.negativeColor(Color.parseColor(BaseActivity.accentSkin));
+        x.positiveColor(accentColor);
+        x.negativeColor(accentColor);
         x.callback(new MaterialDialog.ButtonCallback() {
             @Override
             public void onPositive(MaterialDialog materialDialog) {
@@ -254,82 +239,69 @@ public class MainActivityHelper {
         final Toast toast=Toast.makeText(context, context.getString(R.string.renaming),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.rename(new HFile(mode, oldPath), new HFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
+        Operations.rename(new HybridFile(mode, oldPath), new HybridFile(mode, newPath), rootmode, context, new Operations.ErrorCallBack() {
             @Override
-            public void exists(HFile file) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, context.getString(R.string.fileexist),
-                                Toast.LENGTH_SHORT).show();
-                    }
+            public void exists(HybridFile file) {
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, context.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
                 });
             }
 
             @Override
-            public void launchSAF(HFile file) {
+            public void launchSAF(HybridFile file) {
 
             }
 
             @Override
-            public void launchSAF(final HFile file, final HFile file1) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        mainActivity.oppathe = file.getPath();
-                        mainActivity.oppathe1 = file1.getPath();
-                        mainActivity.operation = DataUtils.RENAME;
-                        guideDialogForLEXA(mainActivity.oppathe1);
-                    }
+            public void launchSAF(final HybridFile file, final HybridFile file1) {
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    mainActivity.oppathe = file.getPath();
+                    mainActivity.oppathe1 = file1.getPath();
+                    mainActivity.operation = DataUtils.RENAME;
+                    guideDialogForLEXA(mainActivity.oppathe1);
                 });
             }
 
             @Override
-            public void done(HFile hFile, final boolean b) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (b) {
-                            Intent intent = new Intent("loadlist");
-                            mainActivity.sendBroadcast(intent);
+            public void done(final HybridFile hFile, final boolean b) {
+                context.runOnUiThread(() -> {
+                    if (b) {
+                        Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
-                            // update the database entry to reflect rename for encrypted file
-                            if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                        intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, hFile.getParent(context));
+                        mainActivity.sendBroadcast(intent);
 
-                                try {
+                        // update the database entry to reflect rename for encrypted file
+                        if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                            try {
 
-                                    CryptHandler cryptHandler = new CryptHandler(context);
-                                    EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
-                                    EncryptedEntry newEntry = new EncryptedEntry();
-                                    newEntry.setId(oldEntry.getId());
-                                    newEntry.setPassword(oldEntry.getPassword());
-                                    newEntry.setPath(newPath);
-                                    cryptHandler.updateEntry(oldEntry, newEntry);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    // couldn't change the entry, leave it alone
-                                }
+                                CryptHandler cryptHandler = new CryptHandler(context);
+                                EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                                EncryptedEntry newEntry = new EncryptedEntry();
+                                newEntry.setId(oldEntry.getId());
+                                newEntry.setPassword(oldEntry.getPassword());
+                                newEntry.setPath(newPath);
+                                cryptHandler.updateEntry(oldEntry, newEntry);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                // couldn't change the entry, leave it alone
                             }
-                        } else
-                            Toast.makeText(context, context.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
-
-                    }
+                        }
+                    } else
+                        Toast.makeText(context, context.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
                 });
             }
 
             @Override
-            public void invalidName(final HFile file) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
-                                + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+            public void invalidName(final HybridFile file) {
+                context.runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
+                            + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -375,167 +347,141 @@ public class MainActivityHelper {
      * Helper method to start Compress service
      *
      * @param file the new compressed file
-     * @param baseFiles list of {@link BaseFile} to be compressed
+     * @param baseFiles list of {@link HybridFileParcelable} to be compressed
      */
-    public void compressFiles(File file, ArrayList<BaseFile> baseFiles) {
+    public void compressFiles(File file, ArrayList<HybridFileParcelable> baseFiles) {
         int mode = checkFolder(file.getParentFile(), mainActivity);
         if (mode == 2) {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.COMPRESS;
             mainActivity.oparrayList = baseFiles;
         } else if (mode == 1) {
-            Intent intent2 = new Intent(mainActivity, ZipTask.class);
-            intent2.putExtra(ZipTask.KEY_COMPRESS_PATH, file.getPath());
-            intent2.putExtra(ZipTask.KEY_COMPRESS_FILES, baseFiles);
+            Intent intent2 = new Intent(mainActivity, ZipService.class);
+            intent2.putExtra(ZipService.KEY_COMPRESS_PATH, file.getPath());
+            intent2.putExtra(ZipService.KEY_COMPRESS_FILES, baseFiles);
             ServiceWatcherUtil.runService(mainActivity, intent2);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
 
-    public void mkFile(final HFile path, final MainFragment ma) {
+    public void mkFile(final HybridFile path, final MainFragment ma) {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkfile(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
-            public void exists(final HFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+            public void exists(final HybridFile file) {
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
+                    if (ma != null && ma.getActivity() != null) {
+                        // retry with dialog prompted again
+                        mkfile(file.getMode(), file.getParent(), ma);
+                    }
+
+                });
+            }
+
+            @Override
+            public void launchSAF(HybridFile file) {
+
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    mainActivity.oppathe = path.getPath();
+                    mainActivity.operation = DataUtils.NEW_FILE;
+                    guideDialogForLEXA(mainActivity.oppathe);
+                });
+
+            }
+
+            @Override
+            public void launchSAF(HybridFile file, HybridFile file1) {
+
+            }
+
+            @Override
+            public void done(HybridFile hFile, final boolean b) {
+                ma.getActivity().runOnUiThread(() -> {
+                    if (b) {
+                        ma.updateList();
+                    } else {
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
                                 Toast.LENGTH_SHORT).show();
-                        if (ma != null && ma.getActivity() != null) {
-                            // retry with dialog prompted again
-                            mkfile(file.getMode(), file.getParent(), ma);
-                        }
-
                     }
                 });
             }
 
             @Override
-            public void launchSAF(HFile file) {
-
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FILE;
-                        guideDialogForLEXA(mainActivity.oppathe);
-                    }
-                });
-
-            }
-
-            @Override
-            public void launchSAF(HFile file, HFile file1) {
-
-            }
-
-            @Override
-            public void done(HFile hFile, final boolean b) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (b) {
-                            ma.updateList();
-                        } else
-                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-            }
-
-            @Override
-            public void invalidName(final HFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+            public void invalidName(final HybridFile file) {
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
     }
 
-    public void mkDir(final HFile path, final MainFragment ma) {
+    public void mkDir(final HybridFile path, final MainFragment ma) {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkdir(path, ma.getActivity(), BaseActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
             @Override
-            public void exists(final HFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
-                                Toast.LENGTH_SHORT).show();
-                        if (ma != null && ma.getActivity() != null) {
-                            // retry with dialog prompted again
-                            mkdir(file.getMode(), file.getParent(), ma);
-                        }
+            public void exists(final HybridFile file) {
+                ma.getActivity().runOnUiThread(() -> {
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(mainActivity, mainActivity.getString(R.string.fileexist),
+                            Toast.LENGTH_SHORT).show();
+                    if (ma != null && ma.getActivity() != null) {
+                        // retry with dialog prompted again
+                        mkdir(file.getMode(), file.getParent(), ma);
                     }
                 });
             }
 
             @Override
-            public void launchSAF(HFile file) {
+            public void launchSAF(HybridFile file) {
                 if (toast != null) toast.cancel();
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainActivity.oppathe = path.getPath();
-                        mainActivity.operation = DataUtils.NEW_FOLDER;
-                        guideDialogForLEXA(mainActivity.oppathe);
-                    }
+                ma.getActivity().runOnUiThread(() -> {
+                    mainActivity.oppathe = path.getPath();
+                    mainActivity.operation = DataUtils.NEW_FOLDER;
+                    guideDialogForLEXA(mainActivity.oppathe);
                 });
 
             }
 
             @Override
-            public void launchSAF(HFile file, HFile file1) {
+            public void launchSAF(HybridFile file, HybridFile file1) {
 
             }
 
             @Override
-            public void done(HFile hFile, final boolean b) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (b) {
-                            ma.updateList();
-                        } else
-                            Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
-                                    Toast.LENGTH_SHORT).show();
+            public void done(HybridFile hFile, final boolean b) {
+                ma.getActivity().runOnUiThread(() -> {
+                    if (b) {
+                        ma.updateList();
+                    } else {
+                        Toast.makeText(ma.getActivity(), ma.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
-            public void invalidName(final HFile file) {
-                ma.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+            public void invalidName(final HybridFile file) {
+                ma.getActivity().runOnUiThread(() -> {
 
-                        if (toast != null) toast.cancel();
-                        Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                                + ": " + file.getName(), Toast.LENGTH_LONG).show();
-                    }
+                    if (toast != null) toast.cancel();
+                    Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
+                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
                 });
             }
         });
     }
 
-    public void deleteFiles(ArrayList<BaseFile> files) {
+    public void deleteFiles(ArrayList<HybridFileParcelable> files) {
         if (files == null || files.size() == 0) return;
         if (files.get(0).isSmb()) {
             new DeleteTask(null, mainActivity).execute((files));
@@ -556,9 +502,8 @@ public class MainActivityHelper {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
-            Intent intent = new Intent(mainActivity, ExtractService.class);
-            intent.putExtra(ExtractService.KEY_PATH_ZIP, file.getPath());
-            ServiceWatcherUtil.runService(mainActivity, intent);
+            CompressedInterface compressedInterface = CompressedHelper.getCompressedInterfaceInstance(mainActivity, file);
+            compressedInterface.decompress(null);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
@@ -615,17 +560,17 @@ public class MainActivityHelper {
      *
      * @param query the text query entered the by user
      */
-    public void search(String query) {
-        TabFragment tabFragment = mainActivity.getFragment();
+    public void search(SharedPreferences sharedPrefs, String query) {
+        TabFragment tabFragment = mainActivity.getTabFragment();
         if (tabFragment == null) return;
-        final MainFragment ma = (MainFragment) tabFragment.getTab();
+        final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
         final String fpath = ma.getCurrentPath();
 
         /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
         //ma.searchTask = task;
         SEARCH_TEXT = query;
-        mainActivity.mainFragment = (MainFragment) mainActivity.getFragment().getTab();
+        mainActivity.mainFragment = (MainFragment) mainActivity.getTabFragment().getCurrentTabFragment();
         FragmentManager fm = mainActivity.getSupportFragmentManager();
         SearchWorkerFragment fragment =
                 (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
@@ -637,9 +582,9 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, BaseActivity.rootMode,
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-                mainActivity.sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, ThemedActivity.rootMode,
+                sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
+                sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }
 
     /**
@@ -677,60 +622,8 @@ public class MainActivityHelper {
      * @param file
      * @return
      */
-    public static boolean isNewDirectoryRecursive(HFile file) {
+    public static boolean isNewDirectoryRecursive(HybridFile file) {
         return file.getName().equals(file.getParentName());
     }
 
-
-
-    public static boolean checkAccountsPermission(Context context) {
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
-    }
-
-    public static void requestAccountsPermission(final Activity activity) {
-        final String[] PERMISSIONS = {Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.INTERNET};
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                Manifest.permission.GET_ACCOUNTS) || ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                Manifest.permission.INTERNET)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-
-            String fab_skin = (BaseActivity.accentSkin);
-            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(activity, fab_skin,
-                    ((UtilitiesProviderInterface) activity).getAppTheme(),
-                    new String[] {
-                            activity.getResources().getString(R.string.grantgplus),
-                            activity.getResources().getString(R.string.grantper),
-                            activity.getResources().getString(R.string.grant),
-                            activity.getResources().getString(R.string.cancel), null
-                    });
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat.requestPermissions(activity,PERMISSIONS, 66);
-                    materialDialog.dismiss();
-                }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.finish();
-                }
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(activity, PERMISSIONS, 66);
-        }
-    }
 }

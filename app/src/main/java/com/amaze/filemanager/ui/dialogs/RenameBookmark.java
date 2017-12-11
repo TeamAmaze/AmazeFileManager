@@ -4,10 +4,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -37,12 +35,12 @@ public class RenameBookmark extends DialogFragment {
     private int studiomode = 0;
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public static RenameBookmark getInstance(String name, String path, String fabskin) {
+    public static RenameBookmark getInstance(String name, String path, int accentColor) {
         RenameBookmark renameBookmark = new RenameBookmark();
         Bundle bundle = new Bundle();
         bundle.putString("title", name);
         bundle.putString("path", path);
-        bundle.putString("fabskin", fabskin);
+        bundle.putInt("accentColor", accentColor);
 
         renameBookmark.setArguments(bundle);
         return renameBookmark;
@@ -60,7 +58,7 @@ public class RenameBookmark extends DialogFragment {
             bookmarkCallback = (BookmarkCallback) getActivity();
         title = getArguments().getString("title");
         path = getArguments().getString("path");
-        String fabskin = getArguments().getString("fabskin");
+        int accentColor = getArguments().getInt("accentColor");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
 
         studiomode = sp.getInt("studio", 0);
@@ -69,9 +67,9 @@ public class RenameBookmark extends DialogFragment {
             String pa = path;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
             builder.title(R.string.renamebookmark);
-            builder.positiveColor(Color.parseColor(fabskin));
-            builder.negativeColor(Color.parseColor(fabskin));
-            builder.neutralColor(Color.parseColor(fabskin));
+            builder.positiveColor(accentColor);
+            builder.negativeColor(accentColor);
+            builder.neutralColor(accentColor);
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);
@@ -79,9 +77,9 @@ public class RenameBookmark extends DialogFragment {
             builder.autoDismiss(false);
             View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
             builder.customView(v2, true);
-            final TextInputLayout t1 = (TextInputLayout) v2.findViewById(R.id.t1);
-            final TextInputLayout t2 = (TextInputLayout) v2.findViewById(R.id.t2);
-            final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.editText4);
+            final TextInputLayout t1 = v2.findViewById(R.id.t1);
+            final TextInputLayout t2 = v2.findViewById(R.id.t2);
+            final AppCompatEditText conName = v2.findViewById(R.id.editText4);
             conName.setText(title);
             final String s1 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.name));
             final String s2 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.path));
@@ -93,7 +91,7 @@ public class RenameBookmark extends DialogFragment {
                     else t1.setError("");
                 }
             });
-            final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.editText);
+            final AppCompatEditText ip = v2.findViewById(R.id.editText);
             if (studiomode != 0) {
                 if (path.startsWith("smb:/")) {
                     try {
@@ -121,57 +119,46 @@ public class RenameBookmark extends DialogFragment {
                 });
             } else t2.setVisibility(View.GONE);
             ip.setText(pa);
-            builder.onNeutral(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                }
-            });
+            builder.onNeutral((dialog, which) -> dialog.dismiss());
 
             materialDialog = builder.build();
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String t = ip.getText().toString();
-                    String name = conName.getText().toString();
-                    if (studiomode != 0 && t.startsWith("smb://")) {
-                        try {
-                            URL a = new URL(t);
-                            String userinfo = a.getUserInfo();
-                            if (userinfo == null && user.length() > 0) {
-                                t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() + a.getPath();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                String t = ip.getText().toString();
+                String name = conName.getText().toString();
+                if (studiomode != 0 && t.startsWith("smb://")) {
+                    try {
+                        URL a = new URL(t);
+                        String userinfo = a.getUserInfo();
+                        if (userinfo == null && user.length() > 0) {
+                            t = "smb://" + ((URLEncoder.encode(user, "UTF-8") + ":" + URLEncoder.encode(pass, "UTF-8") + "@")) + a.getHost() + a.getPath();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    int i = -1;
-                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
-                        if (!t.equals(title) && t.length() >= 1) {
-                            dataUtils.removeBook(i);
-                            dataUtils.addBook(new String[]{name, t});
-                            dataUtils.sortBook();
-                            if (bookmarkCallback != null) {
-                                bookmarkCallback.modify(path, title, t, name);
-                            }
-                        }
-                    }
-                    materialDialog.dismiss();
-
                 }
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int i;
-                    if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                int i = -1;
+                if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                    if (!t.equals(title) && t.length() >= 1) {
                         dataUtils.removeBook(i);
+                        dataUtils.addBook(new String[]{name, t});
+                        dataUtils.sortBook();
                         if (bookmarkCallback != null) {
-                            bookmarkCallback.delete(title, path);
+                            bookmarkCallback.modify(path, title, t, name);
                         }
                     }
-                    materialDialog.dismiss();
                 }
+                materialDialog.dismiss();
+
+            });
+            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+                int i;
+                if ((i = dataUtils.containsBooks(new String[]{title, path})) != -1) {
+                    dataUtils.removeBook(i);
+                    if (bookmarkCallback != null) {
+                        bookmarkCallback.delete(title, path);
+                    }
+                }
+                materialDialog.dismiss();
             });
             return materialDialog;
         }

@@ -35,35 +35,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.BaseActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.filesystem.HFile;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drawer.EntryItem;
 import com.amaze.filemanager.ui.drawer.Item;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DrawerAdapter extends ArrayAdapter<Item> {
     private final Context context;
     private UtilitiesProviderInterface utilsProvider;
     private final ArrayList<Item> values;
     private MainActivity m;
-    private Float[] color;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
-    //TODO queried but never updated
-    private HashMap<String, Float[]> colors = new HashMap<>();
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public void toggleChecked(int position) {
@@ -80,9 +77,9 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     private LayoutInflater inflater;
-    private int fabskin;
 
-    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider, ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
+    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
+                         ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;
 
@@ -93,11 +90,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             myChecked.put(i, false);
         }
         this.m = m;
-        fabskin = Color.parseColor(BaseActivity.accentSkin);
-        color = colors.get(BaseActivity.accentSkin);
-        if (color == null) {
-            color = colors.get("#e91e63");
-        }
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -116,8 +108,8 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                 view.setBackgroundColor(Color.WHITE);
             else view.setBackgroundResource(R.color.background_material_dark);
-            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, m.dpToPx(17)));
-            view.setPadding(0, m.dpToPx(8), 0, m.dpToPx(8));
+            view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(m, 17)));
+            view.setPadding(0, Utils.dpToPx(m, 8), 0, Utils.dpToPx(m, 8));
             return view;
         } else {
             View view = inflater.inflate(R.layout.drawerrow, parent, false);
@@ -128,79 +120,75 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             } else {
                 view.setBackgroundResource(R.drawable.safr_ripple_black);
             }
-            view.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(p1 -> {
+                EntryItem item = (EntryItem) getItem(position);
 
-                public void onClick(View p1) {
-                    EntryItem item = (EntryItem) getItem(position);
+                if (dataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
 
-                    if (dataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
-
-                        checkForPath(item.getPath());
-                    }
-
-                    if (dataUtils.getAccounts().size() > 0 && (item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                                    item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
-                        // we have cloud accounts, try see if token is expired or not
-                        CloudUtil.checkToken(item.getPath(), m);
-                    }
-                    m.selectItem(position);
+                    checkForPath(item.getPath());
                 }
-                // TODO: Implement this method
 
+                if (dataUtils.getAccounts().size() > 0 && (item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                    // we have cloud accounts, try see if token is expired or not
+                    CloudUtil.checkToken(item.getPath(), m);
+                }
+                m.selectItem(position);
             });
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (!getItem(position).isSection())
-                        // not to remove the first bookmark (storage) and permanent bookmarks
-                        if (position > m.storage_count && position < values.size() - 7) {
-                            EntryItem item = (EntryItem) getItem(position);
-                            String title = item.getTitle();
-                            String path = (item).getPath();
-                            if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
-                                m.renameBookmark((item).getTitle(), path);
-                            } else if (path.startsWith("smb:/")) {
-                                m.showSMBDialog(item.getTitle(), path, true);
-                            } else if (path.startsWith("ssh:/")) {
-                                m.showSftpDialog(item.getTitle(), path, true);
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+            view.setOnLongClickListener(v -> {
+                if (!getItem(position).isSection())
+                    // not to remove the first bookmark (storage) and permanent bookmarks
+                    if (position > m.storage_count && position < values.size() - 7) {
+                        EntryItem item = (EntryItem) getItem(position);
+                        String title = item.getTitle();
+                        String path = (item).getPath();
+                        if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
+                            m.renameBookmark((item).getTitle(), path);
+                        } else if (path.startsWith("smb:/")) {
+                            m.showSMBDialog(item.getTitle(), path, true);
+                        } else if (path.startsWith("ssh:/")) {
+                            m.showSftpDialog(item.getTitle(), path, true);
+                        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
-                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
+                            GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
 
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+                        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
 
-                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
+                            GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.GDRIVE);
 
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+                        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
-                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
+                            GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.BOX);
 
-                            } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+                        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
-                                GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
-                            }
-                        } else if (position < m.storage_count) {
-                            String path = ((EntryItem) getItem(position)).getPath();
-                            if (!path.equals("/"))
-                                GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
+                            GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                         }
+                    } else if (position < m.storage_count) {
+                        String path = ((EntryItem) getItem(position)).getPath();
+                        if (!path.equals("/"))
+                            GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
+                    }
 
-                    // return true to denote no further processing
-                    return true;
-                }
+                // return true to denote no further processing
+                return true;
             });
 
             txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
+
             if (myChecked.get(position)) {
-                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
+                int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+                if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
-                else view.setBackgroundColor(Color.parseColor("#ff424242"));
-                imageView.setColorFilter(fabskin);
-                txtTitle.setTextColor(Color.parseColor(BaseActivity.accentSkin));
+                } else {
+                    view.setBackgroundColor(Color.parseColor("#ff424242"));
+                }
+                imageView.setColorFilter(accentColor);
+                txtTitle.setTextColor(accentColor);
             } else {
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     imageView.setColorFilter(Color.parseColor("#666666"));
@@ -226,30 +214,30 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
         if (!new File(path).exists()) {
             Toast.makeText(getContext(), getContext().getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
             Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), getContext(),
-                    BaseActivity.rootMode, new Operations.ErrorCallBack() {
+                    ThemedActivity.rootMode, new Operations.ErrorCallBack() {
                         //TODO empty
                         @Override
-                        public void exists(HFile file) {
+                        public void exists(HybridFile file) {
 
                         }
 
                         @Override
-                        public void launchSAF(HFile file) {
+                        public void launchSAF(HybridFile file) {
 
                         }
 
                         @Override
-                        public void launchSAF(HFile file, HFile file1) {
+                        public void launchSAF(HybridFile file, HybridFile file1) {
 
                         }
 
                         @Override
-                        public void done(HFile hFile, boolean b) {
+                        public void done(HybridFile hFile, boolean b) {
 
                         }
 
                         @Override
-                        public void invalidName(HFile file) {
+                        public void invalidName(HybridFile file) {
 
                         }
                     });

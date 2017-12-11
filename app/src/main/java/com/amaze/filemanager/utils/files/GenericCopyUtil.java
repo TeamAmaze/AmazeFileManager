@@ -6,11 +6,10 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HFile;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.utils.AppConfig;
+import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -39,8 +38,8 @@ import java.nio.channels.ReadableByteChannel;
 
 public class GenericCopyUtil {
 
-    private BaseFile mSourceFile;
-    private HFile mTargetFile;
+    private HybridFileParcelable mSourceFile;
+    private HybridFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
     private DataUtils dataUtils = DataUtils.getInstance();
     public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
@@ -81,8 +80,6 @@ public class GenericCopyUtil {
                 bufferedInputStream = new BufferedInputStream(contentResolver
                         .openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isSmb()) {
-
-                // source is in smb
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(), DEFAULT_BUFFER_SIZE);
             } else if (mSourceFile.isSftp()) {
                 bufferedInputStream = new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_BUFFER_SIZE);
@@ -91,7 +88,7 @@ public class GenericCopyUtil {
                 CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                 bufferedInputStream = new BufferedInputStream(cloudStorageDropbox
                         .download(CloudUtil.stripPath(OpenMode.DROPBOX,
-                        mSourceFile.getPath())));
+                                mSourceFile.getPath())));
             } else if (mSourceFile.isBoxFile()) {
 
                 CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
@@ -278,7 +275,7 @@ public class GenericCopyUtil {
      * @param sourceFile the source file, which is to be copied
      * @param targetFile the target file
      */
-    public void copy(BaseFile sourceFile, HFile targetFile) throws IOException {
+    public void copy(HybridFileParcelable sourceFile, HybridFile targetFile) throws IOException {
 
         this.mSourceFile = sourceFile;
         this.mTargetFile = targetFile;

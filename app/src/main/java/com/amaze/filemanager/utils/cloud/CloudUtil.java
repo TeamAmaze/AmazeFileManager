@@ -7,16 +7,16 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.filesystem.BaseFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
@@ -33,30 +33,40 @@ import java.util.List;
 
 public class CloudUtil {
 
-    public static ArrayList<BaseFile> listFiles(String path, CloudStorage cloudStorage, OpenMode openMode)
-            throws CloudPluginException {
+    /**
+     * @deprecated use getCloudFiles()
+     */
+    public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
+                                                            OpenMode openMode) throws CloudPluginException {
+        final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+        getCloudFiles(path, cloudStorage, openMode, new OnFileFound() {
+            @Override
+            public void onFileFound(HybridFileParcelable file) {
+                baseFiles.add(file);
+            }
+        });
+        return baseFiles;
+    }
 
-        ArrayList<BaseFile> baseFiles = new ArrayList<>();
-
+    public static void getCloudFiles(String path, CloudStorage cloudStorage, OpenMode openMode,
+                                     OnFileFound fileFoundCallback) throws CloudPluginException {
         String strippedPath = stripPath(openMode, path);
-
         try {
-
             for (CloudMetaData cloudMetaData : cloudStorage.getChildren(strippedPath)) {
-
-                BaseFile baseFile = new BaseFile(path + "/" + cloudMetaData.getName(),
-                        "", (cloudMetaData.getModifiedAt() == null)
-                        ? 0l : cloudMetaData.getModifiedAt(), cloudMetaData.getSize(),
+                HybridFileParcelable baseFile = new HybridFileParcelable(
+                        path + "/" + cloudMetaData.getName(),
+                        "",
+                        (cloudMetaData.getModifiedAt() == null) ? 0l : cloudMetaData.getModifiedAt(),
+                        cloudMetaData.getSize(),
                         cloudMetaData.getFolder());
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
-                baseFiles.add(baseFile);
+                fileFoundCallback.onFileFound(baseFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new CloudPluginException();
         }
-        return baseFiles;
     }
 
     /**
@@ -109,39 +119,33 @@ public class CloudUtil {
         return strippedPath;
     }
 
-    public static void launchCloud(final BaseFile baseFile, final OpenMode serviceType, final Activity activity) {
+    public static void launchCloud(final HybridFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
         final CloudStreamer streamer = CloudStreamer.getInstance();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+        new Thread(() -> {
+            try {
+                streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(), baseFile.length(activity));
+                activity.runOnUiThread(() -> {
+                    try {
+                        File file = new File(Uri.parse(CloudUtil.stripPath(serviceType, baseFile.getPath())).getPath());
+                        Uri uri = Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setDataAndType(uri, MimeTypes.getMimeType(file));
+                        PackageManager packageManager = activity.getPackageManager();
+                        List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
+                        if (resInfos != null && resInfos.size() > 0)
+                            activity.startActivity(i);
+                        else
+                            Toast.makeText(activity,
+                                    activity.getResources().getString(R.string.smb_launch_error),
+                                    Toast.LENGTH_SHORT).show();
+                    } catch (ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
 
-                    streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(), baseFile.length(activity));
-                    activity.runOnUiThread(new Runnable() {
-                        public void run() {
-                            try {
-                                File file = new File(Uri.parse(CloudUtil.stripPath(serviceType, baseFile.getPath())).getPath());
-                                Uri uri = Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setDataAndType(uri, MimeTypes.getMimeType(file));
-                                PackageManager packageManager = activity.getPackageManager();
-                                List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
-                                if (resInfos != null && resInfos.size() > 0)
-                                    activity.startActivity(i);
-                                else
-                                    Toast.makeText(activity,
-                                            activity.getResources().getString(R.string.smb_launch_error),
-                                            Toast.LENGTH_SHORT).show();
-                            } catch (ActivityNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
         }).start();
     }

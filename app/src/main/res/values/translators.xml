@@ -27,14 +27,14 @@
     <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>
     <string name="russian_translation_summary" translatable="false">Pablo Luchiano, Kim BeeJay, Yaroslav Pronin</string>
     <string name="spanish_translation_summary" translatable="false">Jose Miguel Sarasola, Roberto M.F. (Roboe)</string>
-    <string name="basque_translation_summary" translatable="false">Aitor Beriain</string>
+    <string name="basque_translation_summary" translatable="false">Aitor Beriain, Asier Iturralde Sarasola</string>
     <string name="chinese_translation_summary" translatable="false">amtlib-dot-dll, Felix2yu, Charles Kane</string>
     <string name="serbian_translation_summary" translatable="false">Mladen Pejaković</string>
     <string name="turkish_translation_summary" translatable="false">Hakan Güven</string>
     <string name="ukrainian_translation_summary" translatable="false">Pablo Luchiano</string>
     <string name="portuguese_translation_summary" translatable="false">Sérgio Marques</string>
-    <string name="brazilian_portuguese_translation_summary" translatable="false">André Marcelo Alvarenga</string>
     <string name="polish_translation_summary" translatable="false">M. Kucharskov, P. Kowalczyk, hawkeye116477</string>
+    <string name="brazilian_portuguese_translation_summary" translatable="false">André Marcelo Alvarenga</string>
     <string name="korean_translation_summary" translable="false" translatable="false">Park Kyungjin</string>
     <string name="greek_translation_summary" translable="false" translatable="false">Vasilis K.</string>
     <string name="dutch_translation_summary" translable="false" translatable="false">Robin van der Vliet</string>
@@ -42,11 +42,10 @@
 	<string name="vietnamese_translation_summary" translable="false" translatable="false">ngoisaosang</string>
     <string name="japanese_translation_summary" translatable="false">Naofumi Fukue</string>
     <string name="tamil_translation_summary" translatable="false">Kuralarasi for StarsSoft</string>
-    <string name="app_version" translatable="false">v3.1.2 RC4</string>
+    <string name="app_version" translatable="false">v3.2.1</string>
     <string name="author_1" translatable="false">Arpit Khurana</string>
     <string name="author_2" translatable="false">Vishal Nehra</string>
-    <string name="github" translatable="false">GitHub</string>
-    <string name="googleplus" translatable="false">Google+</string>
+    <string name="developer_1" translatable="false">Emmanuel Messulam</string>
 
     <string name="contributor_1_title" translatable="false">Team MoKee</string>
     <string name="contributor_2_title" translatable="false">CookIcons.co</string>

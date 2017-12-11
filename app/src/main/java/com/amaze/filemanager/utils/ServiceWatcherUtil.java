@@ -16,6 +16,7 @@ import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.ArrayList;
 
@@ -157,12 +158,14 @@ public class ServiceWatcherUtil {
         final Handler handler = new Handler(waitingThread.getLooper());
         final NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        final NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context);
-        mBuilder.setContentTitle(context.getString(R.string.waiting_title));
-        mBuilder.setContentText(context.getString(R.string.waiting_content));
-        mBuilder.setAutoCancel(false);
-        mBuilder.setSmallIcon(R.drawable.ic_all_inclusive_white_36dp);
-        mBuilder.setProgress(0, 0, true);
+        final NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+                .setContentTitle(context.getString(R.string.waiting_title))
+                .setContentText(context.getString(R.string.waiting_content))
+                .setAutoCancel(false)
+                .setSmallIcon(R.drawable.ic_all_inclusive_white_36dp)
+                .setProgress(0, 0, true);
+
+        NotificationConstants.setMetadata(context, mBuilder);
 
         Runnable runnable = new Runnable() {
             @Override
