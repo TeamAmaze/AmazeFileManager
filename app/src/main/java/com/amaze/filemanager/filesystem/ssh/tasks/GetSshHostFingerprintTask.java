@@ -66,12 +66,14 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
 
     private final String mHostname;
     private final int mPort;
+    private final AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> mCallback;
 
     private ProgressDialog mProgressDialog;
 
-    public GetSshHostFingerprintTask(@NonNull String hostname, int port) {
+    public GetSshHostFingerprintTask(@NonNull String hostname, int port, AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> callback) {
         this.mHostname = hostname;
         this.mPort = port;
+        this.mCallback = callback;
     }
 
     @Override
@@ -81,13 +83,10 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
         final Semaphore semaphore = new Semaphore(0);
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
-        sshClient.addHostKeyVerifier(new HostKeyVerifier() {
-            @Override
-            public boolean verify(String hostname, int port, PublicKey key) {
-                holder.set(new AsyncTaskResult<PublicKey>(key));
-                semaphore.release();
-                return true;
-            }
+        sshClient.addHostKeyVerifier((hostname, port, key) -> {
+            holder.set(new AsyncTaskResult<PublicKey>(key));
+            semaphore.release();
+            return true;
         });
 
         try {
@@ -126,6 +125,8 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
                                 mHostname, mPort, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
             }
+        } else {
+            mCallback.onResult(result);
         }
     }
 }

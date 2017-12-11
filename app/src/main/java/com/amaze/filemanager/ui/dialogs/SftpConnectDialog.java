@@ -26,11 +26,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,7 +54,6 @@ import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
@@ -107,12 +104,12 @@ public class SftpConnectDialog extends DialogFragment {
         mContext = getActivity();
         final boolean edit=getArguments().getBoolean("edit",false);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.sftp_dialog, null);
-        final EditText connectionET = (EditText) v2.findViewById(R.id.connectionET);
-        final EditText addressET = (EditText) v2.findViewById(R.id.ipET);
-        final EditText portET = (EditText) v2.findViewById(R.id.portET);
-        final EditText usernameET = (EditText) v2.findViewById(R.id.usernameET);
-        final EditText passwordET = (EditText) v2.findViewById(R.id.passwordET);
-        final Button selectPemBTN = (Button) v2.findViewById(R.id.selectPemBTN);
+        final EditText connectionET = v2.findViewById(R.id.connectionET);
+        final EditText addressET = v2.findViewById(R.id.ipET);
+        final EditText portET = v2.findViewById(R.id.portET);
+        final EditText usernameET = v2.findViewById(R.id.usernameET);
+        final EditText passwordET = v2.findViewById(R.id.passwordET);
+        final Button selectPemBTN = v2.findViewById(R.id.selectPemBTN);
 
         // If it's new connection setup, set some default values
         // Otherwise, use given Bundle instance for filling in the blanks
@@ -133,42 +130,35 @@ public class SftpConnectDialog extends DialogFragment {
         }
 
         //For convenience, so I don't need to press backspace all the time
-        portET.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-            if(hasFocus)
-                portET.selectAll();
-            }
+        portET.setOnFocusChangeListener((v, hasFocus) -> {
+        if(hasFocus)
+            portET.selectAll();
         });
 
         int accentColor = mUtilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
 
         //Use system provided action to get Uri to PEM.
         //If MaterialDialog.Builder can be upgraded we may use their file selection dialog too
-        selectPemBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            Intent intent = new Intent()
-                    .setType("*/*")
-                    .setAction(Intent.ACTION_GET_CONTENT);
+        selectPemBTN.setOnClickListener(v -> {
+        Intent intent = new Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT);
 
-            startActivityForResult(intent, SELECT_PEM_INTENT);
-            }
+        startActivityForResult(intent, SELECT_PEM_INTENT);
         });
 
         //Define action for buttons
-        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext)
-            .title((R.string.scp_con))
-            .autoDismiss(false)
-            .customView(v2, true)
-            .theme(mUtilsProvider.getAppTheme().getMaterialDialogTheme())
-            .negativeText(R.string.cancel)
-            .positiveText(edit ? R.string.update : R.string.create)
-            .positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor)
-            .onPositive(new MaterialDialog.SingleButtonCallback() {
-        @Override
-        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
-        {
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext);
+        dialogBuilder.title((R.string.scp_con));
+        dialogBuilder.autoDismiss(false);
+        dialogBuilder.customView(v2, true);
+        dialogBuilder.theme(mUtilsProvider.getAppTheme().getMaterialDialogTheme());
+        dialogBuilder.negativeText(R.string.cancel);
+        dialogBuilder.positiveText(edit ? R.string.update : R.string.create);
+        dialogBuilder.positiveColor(accentColor);
+        dialogBuilder.negativeColor(accentColor);
+        dialogBuilder.neutralColor(accentColor);
+        dialogBuilder.onPositive((dialog, which) -> {
 
             final String connectionName = connectionET.getText().toString();
             final String hostname = addressET.getText().toString();
@@ -177,96 +167,67 @@ public class SftpConnectDialog extends DialogFragment {
             final String password = passwordET.getText() != null ?
                     passwordET.getText().toString() : null;
 
-            String sshHostKey = nUtilsHandler.getSshHostKey(deriveSftpPathFrom(hostname,port,
+            String sshHostKey = nUtilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
                     username, password, mSelectedParsedKeyPair));
 
-            if(sshHostKey != null) {
+            if (sshHostKey != null) {
                 authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username,
                         password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit);
             } else {
-                try {
-                    AsyncTaskResult<PublicKey> taskResult = new GetSshHostFingerprintTask(hostname, port).execute().get();
+                new GetSshHostFingerprintTask(hostname, port, taskResult -> {
                     PublicKey hostKey = taskResult.result;
-                    if(hostKey != null) {
+                    if (hostKey != null) {
                         final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
                         StringBuilder sb = new StringBuilder(hostname);
-                        if(port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
+                        if (port != SshConnectionPool.SSH_DEFAULT_PORT && port > 0)
                             sb.append(':').append(port);
 
                         final String hostAndPort = sb.toString();
 
                         new AlertDialog.Builder(mContext).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                            .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt),
-                                    hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
-                            .setCancelable(true)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt),
+                                        hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.yes, (dialog1, which1) -> {
                                     //This closes the host fingerprint verification dialog
-                                    dialog.dismiss();
-                                    if(authenticateAndSaveSetup(connectionName, hostname, port,
+                                    dialog1.dismiss();
+                                    if (authenticateAndSaveSetup(connectionName, hostname, port,
                                             hostKeyFingerprint, username, password,
-                                            mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit))
-                                    {
-                                        dialog.dismiss();
+                                            mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit)) {
+                                        dialog1.dismiss();
                                         Log.d(TAG, "Saved setup");
                                         dismiss();
                                     }
-                                }
-                            }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            }
-                        }).show();
+                                }).setNegativeButton(R.string.no, (dialog1, which1) -> dialog1.dismiss()).show();
                     }
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                } catch(ExecutionException e) {
-                    e.printStackTrace();
-                }
+                }).execute();
             }
-        }}).onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-            dialog.dismiss();
-            }
-        });
+        }).onNegative((dialog, which) -> dialog.dismiss());
 
         //If we are editing connection settings, give new actions for neutral and negative buttons
         if(edit) {
             Log.d(TAG, "Edit? " + edit);
-            dialogBuilder.negativeText(R.string.delete).onNegative(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+            dialogBuilder.negativeText(R.string.delete).onNegative((dialog, which) -> {
 
-                final String connectionName = connectionET.getText().toString();
-                final String hostname = addressET.getText().toString();
-                final int port = Integer.parseInt(portET.getText().toString());
-                final String username = usernameET.getText().toString();
+            final String connectionName = connectionET.getText().toString();
+            final String hostname = addressET.getText().toString();
+            final int port = Integer.parseInt(portET.getText().toString());
+            final String username = usernameET.getText().toString();
 
-                final String path = deriveSftpPathFrom(hostname, port, username,
-                        getArguments().getString("password", null), mSelectedParsedKeyPair);
-                int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
+            final String path = deriveSftpPathFrom(hostname, port, username,
+                    getArguments().getString("password", null), mSelectedParsedKeyPair);
+            int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
 
-                if (i != -1) {
-                    DataUtils.getInstance().removeServer(i);
+            if (i != -1) {
+                DataUtils.getInstance().removeServer(i);
 
-                    AppConfig.runInBackground(new Runnable() {
-                        @Override
-                        public void run() {
-                            nUtilsHandler.removeSftpPath(connectionName, path);
-                        }
-                    });
-                    ((MainActivity) getActivity()).refreshDrawer();
-                }
-                dialog.dismiss();
-                }
-            }).neutralText(R.string.cancel).onNeutral(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {dialog.dismiss();
-                }
-            });
+                AppConfig.runInBackground(() -> {
+                    nUtilsHandler.removeSftpPath(connectionName, path);
+                });
+                ((MainActivity) getActivity()).refreshDrawer();
+            }
+            dialog.dismiss();
+            }).neutralText(R.string.cancel).onNeutral((dialog, which) -> dialog.dismiss());
         }
 
         MaterialDialog dialog = dialogBuilder.build();
@@ -329,7 +290,7 @@ public class SftpConnectDialog extends DialogFragment {
                             .getActionButton(DialogAction.POSITIVE);
                     okBTN.setEnabled(okBTN.isEnabled() || true);
 
-                    Button selectPemBTN = (Button) getDialog().findViewById(R.id.selectPemBTN);
+                    Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
                     selectPemBTN.setText(mSelectedParsedKeyPairName);
                 }
             } catch(FileNotFoundException e) {
@@ -362,7 +323,7 @@ public class SftpConnectDialog extends DialogFragment {
                         selectedParsedKeyPair).execute().get();
                 SSHClient result = taskResult.result;
                 if(result != null) {
-                    SshClientUtils.tryDisconnect(result);
+                    AppConfig.runInBackground(() -> SshClientUtils.tryDisconnect(result));
 
                     if(DataUtils.getInstance().containsServer(path) == -1) {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
