@@ -102,7 +102,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
-//        db.execSQL(querySftp);
+        db.execSQL(querySftp);
     }
 
     @Override
