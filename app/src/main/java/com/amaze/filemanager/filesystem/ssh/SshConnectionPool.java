@@ -53,6 +53,8 @@ public class SshConnectionPool
 
     public static final String SSH_URI_PREFIX = "ssh://";
 
+    public static final int SSH_CONNECT_TIMEOUT = 30000;
+
     private static final String TAG = "SshConnectionPool";
 
     private static SshConnectionPool sInstance = null;

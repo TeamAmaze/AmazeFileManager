@@ -42,6 +42,8 @@ import java.security.PublicKey;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT_TIMEOUT;
+
 /**
  * {@link AsyncTask} to obtain SSH host fingerprint.
  *
@@ -61,9 +63,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>>
 {
-    //We only looking for the host key, so we allow a smaller timeout than SshAuthenticationTask
-    private static final int SSH_CONNECT_TIMEOUT = 5000;
-
     private final String mHostname;
     private final int mPort;
     private final AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> mCallback;

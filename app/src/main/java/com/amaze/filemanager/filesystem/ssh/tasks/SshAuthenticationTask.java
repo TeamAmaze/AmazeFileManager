@@ -46,6 +46,8 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT_TIMEOUT;
+
 /**
  * {@link AsyncTask} for authenticating with SSH server to verify if parameters are correct.
  *
@@ -59,8 +61,6 @@ import java.security.PublicKey;
  */
 public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>
 {
-    private static final int SSH_CONNECT_TIMEOUT = 30000;
-
     private final String mHostname;
     private final int mPort;
     private final String mHostKey;
