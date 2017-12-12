@@ -53,6 +53,15 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
 
+    private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " TEXT,"
+            + COLUMN_PATH + " TEXT,"
+            + COLUMN_HOST_PUBKEY + " TEXT,"
+            + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
+            + COLUMN_PRIVATE_KEY + " TEXT"
+            + ")";
+
     public UtilsHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -86,14 +95,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_PATH + " TEXT"
                 + ")";
-        String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_NAME + " TEXT,"
-                + COLUMN_PATH + " TEXT,"
-                + COLUMN_HOST_PUBKEY + " TEXT,"
-                + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
-                + COLUMN_PRIVATE_KEY + " TEXT"
-                + ")";
 
         db.execSQL(queryHistory);
         db.execSQL(queryHidden);
@@ -101,21 +102,14 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
-        db.execSQL(querySftp);
+//        db.execSQL(querySftp);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch(newVersion) {
-            case 2:
-                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
-                        + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                        + COLUMN_NAME + " TEXT,"
-                        + COLUMN_PATH + " TEXT,"
-                        + COLUMN_HOST_PUBKEY + " TEXT,"
-                        + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
-                        + COLUMN_PRIVATE_KEY + " TEXT"
-                        + ")");
+        switch(oldVersion){
+            case 1:
+                db.execSQL(querySftp);
                 break;
             default:
                 break;

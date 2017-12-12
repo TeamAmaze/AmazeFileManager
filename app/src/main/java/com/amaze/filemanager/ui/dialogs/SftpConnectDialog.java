@@ -319,18 +319,17 @@ public class SftpConnectDialog extends DialogFragment {
 
         if(!isEdit) {
             try {
-                AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port, hostKeyFingerprint, username, password,
-                        selectedParsedKeyPair).execute().get();
+                AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port,
+                        hostKeyFingerprint, username, password, selectedParsedKeyPair).execute().get();
                 SSHClient result = taskResult.result;
                 if(result != null) {
-                    AppConfig.runInBackground(() -> SshClientUtils.tryDisconnect(result));
 
                     if(DataUtils.getInstance().containsServer(path) == -1) {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).refreshDrawer();
 
-                        nUtilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
-                            selectedParsedKeyPairName, getPemContents());
+                        AppConfig.runInBackground(() -> nUtilsHandler.addSsh(connectionName,
+                                encryptedPath, hostKeyFingerprint, selectedParsedKeyPairName, getPemContents()));
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
                         ma.loadlist(path, false, OpenMode.UNKNOWN);
