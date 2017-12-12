@@ -12,17 +12,14 @@ import com.github.junrar.rarfile.FileHeader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObjectParcelable>> {
+public class RarHelperTask extends CompressedHelperTask {
 
     private String fileLocation;
     private String relativeDirectory;
-    private boolean createBackItem;
-    private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
 
     /**
      * AsyncTask to load RAR file items.
@@ -31,21 +28,14 @@ public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
      */
     public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+        super(goBack, l);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
-        createBackItem = goBack;
-        onFinish = l;
     }
 
     @Override
-    protected ArrayList<CompressedObjectParcelable> doInBackground(Void... params) {
-        ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
-
+    void addElements(ArrayList<CompressedObjectParcelable> elements) {
         try {
-            if (createBackItem) {
-                elements.add(0, new CompressedObjectParcelable());
-            }
-
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace("/", "\\");
 
@@ -59,18 +49,9 @@ public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
                     elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(header), 0, header.getDataSize(), header.isDirectory()));
                 }
             }
-            Collections.sort(elements, new CompressedObjectParcelable.Sorter());
         } catch (RarException | IOException e) {
             e.printStackTrace();
         }
-
-        return elements;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
-        super.onPostExecute(zipEntries);
-        onFinish.onAsyncTaskFinished(zipEntries);
     }
 
 }

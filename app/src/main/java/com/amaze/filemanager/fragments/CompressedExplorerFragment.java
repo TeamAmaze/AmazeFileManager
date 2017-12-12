@@ -400,7 +400,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
             swipeRefreshLayout.setRefreshing(false);
             updateBottomBar();
-        });
+        }).execute();
 
         updateBottomBar();
     }

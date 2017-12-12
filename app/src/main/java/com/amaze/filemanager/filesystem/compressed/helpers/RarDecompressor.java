@@ -22,9 +22,9 @@ public class RarDecompressor extends Decompressor {
     }
 
     @Override
-    public void changePath(String path, boolean addGoBackItem,
-                           OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        new RarHelperTask(filePath, path, addGoBackItem, onFinish).execute();
+    public RarHelperTask changePath(String path, boolean addGoBackItem,
+                                       OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+        return new RarHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 
     public static String convertName(FileHeader file) {

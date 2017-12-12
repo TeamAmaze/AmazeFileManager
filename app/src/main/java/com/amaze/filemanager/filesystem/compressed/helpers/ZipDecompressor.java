@@ -21,9 +21,9 @@ public class ZipDecompressor extends Decompressor {
     }
 
     @Override
-    public void changePath(String path, boolean addGoBackItem,
+    public ZipHelperTask changePath(String path, boolean addGoBackItem,
                            OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish).execute();
+        return new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish);
     }
 
 }

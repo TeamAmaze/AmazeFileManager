@@ -21,8 +21,8 @@ public class TarDecompressor extends Decompressor {
     }
 
     @Override
-    public void changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        new TarHelperTask(filePath, path, addGoBackItem, onFinish).execute();
+    public TarHelperTask changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+        return new TarHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 
 }

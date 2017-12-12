@@ -2,7 +2,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -20,13 +18,11 @@ import java.util.zip.ZipInputStream;
 /**
  * Created by Vishal on 11/23/2014 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObjectParcelable>> {
+public class ZipHelperTask extends CompressedHelperTask {
 
     private WeakReference<Context> context;
     private Uri fileLocation;
     private String relativeDirectory;
-    private boolean createBackItem;
-    private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
 
     /**
      * AsyncTask to load ZIP file items.
@@ -35,21 +31,14 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
      */
     public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+        super(goback, l);
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
         relativeDirectory = dir;
-        createBackItem = goback;
-        onFinish = l;
     }
 
     @Override
-    protected ArrayList<CompressedObjectParcelable> doInBackground(Void... params) {
-        ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
-
-        if (createBackItem) {
-            elements.add(0, new CompressedObjectParcelable());
-        }
-
+    void addElements(ArrayList<CompressedObjectParcelable> elements) {
         try {
             ArrayList<CompressedObjectParcelable> wholelist = new ArrayList<>();
             if (new File(fileLocation.getPath()).canRead()) {
@@ -112,19 +101,9 @@ public class ZipHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
 
                 }
             }
-
-            Collections.sort(elements, new CompressedObjectParcelable.Sorter());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return elements;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
-        super.onPostExecute(zipEntries);
-        onFinish.onAsyncTaskFinished(zipEntries);
     }
 
 }
