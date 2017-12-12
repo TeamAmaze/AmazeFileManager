@@ -20,17 +20,13 @@ public class CompressedHelper {
      */
     public static Decompressor getCompressorInstance(Context context, File file) {
         Decompressor decompressor;
+        String type = file.getPath().substring(file.getPath().lastIndexOf('.')+1, file.getPath().length()).toLowerCase();
 
-        String path = file.getPath().toLowerCase();
-        boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
-        boolean isTar = path.endsWith(".tar") || path.endsWith(".tar.gz");
-        boolean isRar = path.endsWith(".rar");
-
-        if (isZip) {
+        if (isZip(type)) {
             decompressor = new ZipDecompressor(context);
-        } else if (isRar) {
+        } else if (isRar(type)) {
             decompressor = new RarDecompressor(context);
-        } else if(isTar) {
+        } else if(isTar(type)) {
             decompressor = new TarDecompressor(context);
         } else {
             return null;
@@ -41,11 +37,21 @@ public class CompressedHelper {
     }
 
     public static boolean isFileExtractable(File file) {
-        String path = file.getPath().toLowerCase();
-        boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
-        boolean isTar = path.endsWith(".tar") || path.endsWith(".tar.gz");
-        boolean isRar = path.endsWith(".rar");
-        return isZip || isTar || isRar;
+        String type = file.getPath().substring(file.getPath().lastIndexOf('.')+1, file.getPath().length()).toLowerCase();
+
+        return isZip(type) || isTar(type) || isRar(type);
+    }
+
+    private static boolean isZip(String type) {
+        return type.endsWith("zip") || type.endsWith("jar") || type.endsWith("apk");
+    }
+
+    private static boolean isTar(String type) {
+         return type.endsWith("tar") || type.endsWith("tar.gz");
+    }
+
+    private static boolean isRar(String type) {
+        return type.endsWith("rar");
     }
 
 }
