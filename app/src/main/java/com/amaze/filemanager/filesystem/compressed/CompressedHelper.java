@@ -2,6 +2,9 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
+import com.amaze.filemanager.filesystem.compressed.helpers.RarHelper;
+import com.amaze.filemanager.filesystem.compressed.helpers.ZipHelper;
+
 import java.io.File;
 
 /**

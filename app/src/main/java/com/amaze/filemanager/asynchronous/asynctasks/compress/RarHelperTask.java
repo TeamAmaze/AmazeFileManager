@@ -1,9 +1,9 @@
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.filesystem.compressed.RarHelper;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.helpers.RarHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;

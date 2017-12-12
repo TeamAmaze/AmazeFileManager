@@ -1,4 +1,4 @@
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
 import android.net.Uri;
