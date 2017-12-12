@@ -33,7 +33,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -117,7 +116,6 @@ import jcifs.smb.SmbFile;
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
-    public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public int sortby, dsort, asc;
     public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
@@ -255,7 +253,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
@@ -271,10 +268,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         initNoFileLayout();
         SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
         COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
-        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
-        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());

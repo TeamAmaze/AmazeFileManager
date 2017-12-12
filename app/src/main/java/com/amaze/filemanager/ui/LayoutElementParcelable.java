@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -34,62 +35,23 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    public LayoutElementParcelable(Parcel im) {
-        title = im.readString();
-        desc = im.readString();
-        permissions = im.readString();
-        symlink = im.readString();
-        int j = im.readInt();
-        date = im.readLong();
-        int i = im.readInt();
-        header = i != 0;
-        isDirectory = j != 0;
-        // don't save bitmaps in parcel, it might exceed the allowed transaction threshold
-        //Bitmap bitmap = (Bitmap) im.readParcelable(getClass().getClassLoader());
-        // Convert Bitmap to Drawable:
-        //imageId = new BitmapDrawable(bitmap);
-        date1 = im.readString();
-        size = im.readString();
-        longSize=im.readLong();
-    }
-
-
-    public int describeContents() {
-        // TODO: Implement this method
-        return 0;
-    }
-
-    public void writeToParcel(Parcel p1, int p2) {
-        p1.writeString(title);
-        p1.writeString(desc);
-        p1.writeString(permissions);
-        p1.writeString(symlink);
-        p1.writeInt(isDirectory?1:0);
-        p1.writeLong(date);
-        p1.writeInt(header ? 1 : 0);
-        //p1.writeParcelable(imageId.getBitmap(), p2);
-        p1.writeString(date1);
-        p1.writeString(size);
-        p1.writeLong(longSize);
-        // TODO: Implement this method
-    }
-
-    private @DrawableRes int imageId;
+    private @DrawableRes int drawableId;
     private String title;
     private String desc;
     private String permissions;
     private String symlink;
     private String size;
     private boolean isDirectory;
-    private long date = 0,longSize=0;
-    private String date1 = "";
+    private long date;
+    private long longSize;
+    private String date1;
     private boolean header;
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElementParcelable(@DrawableRes int imageId, String title, String desc, String permissions,
+    public LayoutElementParcelable(@DrawableRes int image, String title, String desc, String permissions,
                                    String symlink, String size, long longSize, boolean header, String date, boolean isDirectory) {
-        this.imageId = imageId;
+        drawableId = image;
         this.title = title;
         this.desc = desc;
         this.permissions = permissions.trim();
@@ -101,35 +63,32 @@ public class LayoutElementParcelable implements Parcelable {
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
             this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
+        } else {
+            this.date = 0;
+            this.date1 = "";
         }
     }
 
-    public LayoutElementParcelable(@DrawableRes int drawable, String path, String permissions, String symlink,
+    public LayoutElementParcelable(@DrawableRes int image, String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
                                    String date) {
-        this(drawable, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
+        this(image, new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory);
     }
 
-    public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =
-            new Parcelable.Creator<LayoutElementParcelable>() {
-                public LayoutElementParcelable createFromParcel(Parcel in) {
-                    return new LayoutElementParcelable(in);
-                }
-
-                public LayoutElementParcelable[] newArray(int size) {
-                    return new LayoutElementParcelable[size];
-                }
-            };
-
-    public @DrawableRes int getImageId() {
-        return imageId;
+    public HybridFileParcelable generateBaseFile() {
+        HybridFileParcelable baseFile=new HybridFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
+        baseFile.setMode(mode);
+        baseFile.setName(title);
+        return baseFile;
     }
 
-    public void setImageId(@DrawableRes int imageId){this.imageId=imageId;}
+    public @DrawableRes int getDrawableId() {
+        return drawableId;
+    }
+
     public String getDesc() {
         return desc;
     }
-
 
     public String getTitle() {
         return title;
@@ -145,13 +104,6 @@ public class LayoutElementParcelable implements Parcelable {
 
     public boolean isDirectory() {
         return isDirectory;
-    }
-
-    public HybridFileParcelable generateBaseFile() {
-        HybridFileParcelable baseFile=new HybridFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
-        baseFile.setMode(mode);
-        baseFile.setName(title);
-        return baseFile;
     }
 
     public String getSize() {
@@ -186,4 +138,53 @@ public class LayoutElementParcelable implements Parcelable {
     public String toString() {
         return title + "\n" + desc;
     }
+
+    public LayoutElementParcelable(Parcel im) {
+        drawableId = im.readInt();
+        title = im.readString();
+        desc = im.readString();
+        permissions = im.readString();
+        symlink = im.readString();
+        int j = im.readInt();
+        date = im.readLong();
+        int i = im.readInt();
+        header = i != 0;
+        isDirectory = j != 0;
+        date1 = im.readString();
+        size = im.readString();
+        longSize=im.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        // TODO: Implement this method
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel p1, int p2) {
+        p1.writeInt(drawableId);
+        p1.writeString(title);
+        p1.writeString(desc);
+        p1.writeString(permissions);
+        p1.writeString(symlink);
+        p1.writeInt(isDirectory?1:0);
+        p1.writeLong(date);
+        p1.writeInt(header ? 1 : 0);
+        p1.writeString(date1);
+        p1.writeString(size);
+        p1.writeLong(longSize);
+    }
+
+    public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =
+            new Parcelable.Creator<LayoutElementParcelable>() {
+                public LayoutElementParcelable createFromParcel(Parcel in) {
+                    return new LayoutElementParcelable(in);
+                }
+
+                public LayoutElementParcelable[] newArray(int size) {
+                    return new LayoutElementParcelable[size];
+                }
+            };
+
 }

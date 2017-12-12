@@ -214,6 +214,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     @Override
     protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
         super.onPostExecute(list);
+        //for (LayoutElementParcelable e : list.second) {
+         //   GlideHelper.preloadDrawable(c, GlideHelper.HEIGHT, GlideHelper.WIDTH, e.getDesc());
+        //}
         listener.onAsyncTaskFinished(list);
     }
 
