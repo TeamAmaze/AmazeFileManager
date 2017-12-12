@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -48,10 +47,8 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
         if(!showThumbs) {
             request = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
-            if (iconData.type == IconDataParcelable.IMAGE_PICTURE) {
+            if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
                 request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.path).fallback(iconData.image);
-            } else if (iconData.type == Icons.APK) {
-                request = GlideApp.with(fragment).asDrawable().centerCrop().load(Icons.getAppDrawable(fragment.getContext(), iconData.path)).fallback(iconData.image);
             } else {
                 request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.image);
             }

@@ -701,20 +701,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getCorrectView(IconDataParcelable item, int adapterPosition) {
         if (mainFrag.IS_LIST) {
             if(mainFrag.SHOW_THUMBS) {
-                if (item.type == IconDataParcelable.IMAGE_PICTURE) {
+                int filetype = itemsDigested.get(adapterPosition).elem.getFiletype();
+
+                if (filetype == Icons.VIDEO || filetype == Icons.PICTURE) {
                     if (mainFrag.CIRCULAR_IMAGES) {
                         return VIEW_PICTURE;
                     } else {
                         return VIEW_APK;
                     }
-                } else if (item.type == IconDataParcelable.IMAGE_APK) {
+                } else if (filetype == Icons.APK) {
                     return VIEW_APK;
                 }
             }
 
             return VIEW_GENERIC;
         } else {
-            if (item.type == IconDataParcelable.IMAGE_PICTURE) {
+            if (item.type == IconDataParcelable.IMAGE_FROMFILE) {
                 return VIEW_THUMB;
             } else {
                 return VIEW_GENERIC;

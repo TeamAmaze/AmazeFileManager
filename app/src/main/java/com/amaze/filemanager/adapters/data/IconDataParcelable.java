@@ -12,14 +12,14 @@ import android.support.annotation.DrawableRes;
  */
 public class IconDataParcelable implements Parcelable {
 
-    public static final int IMAGE_RES = 0, IMAGE_PICTURE = 1, IMAGE_APK = 2;
+    public static final int IMAGE_RES = 0, IMAGE_FROMFILE = 1;
 
     public final int type;
     public final String path;
     public final @DrawableRes int image;
 
     public IconDataParcelable(int type, @DrawableRes int img) {
-        if(type == IMAGE_PICTURE || type == IMAGE_APK) throw new IllegalArgumentException();
+        if(type == IMAGE_FROMFILE) throw new IllegalArgumentException();
         this.type = type;
         this.image = img;
         this.path = null;

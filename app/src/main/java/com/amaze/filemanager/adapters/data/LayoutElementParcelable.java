@@ -24,7 +24,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
-import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.OpenMode;
@@ -60,10 +59,8 @@ public class LayoutElementParcelable implements Parcelable {
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
 
         if(useThumbs) {
-            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO) {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_PICTURE, path, fallbackIcon);
-            } else if (filetype == Icons.APK) {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_APK, path, fallbackIcon);
+            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK) {
+                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
             } else {
                 this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
             }
