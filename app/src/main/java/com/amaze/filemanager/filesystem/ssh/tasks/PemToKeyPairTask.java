@@ -33,6 +33,7 @@ import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
 
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+import net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile;
 import net.schmizz.sshj.userauth.keyprovider.PuTTYKeyFile;
 
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -66,6 +67,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final PemToKeyPairConverter[] converters = {
         new JcaPemToKeyPairConverter(),
+        new OpenSshPemToKeyPairConverter(),
         new OpenSshV1PemToKeyPairConverter(),
         new PuttyPrivateKeyToKeyPairConverter()
     };
@@ -138,6 +140,19 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                 PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
                 JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
                 return converter.getKeyPair(keyPair);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+    }
+
+    private class OpenSshPemToKeyPairConverter implements PemToKeyPairConverter {
+        @Override
+        public KeyPair convert(String source) {
+            OpenSSHKeyFile converter = new OpenSSHKeyFile();
+            converter.init(new StringReader(source));
+            try {
+                return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
                 return null;
             }
