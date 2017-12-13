@@ -41,7 +41,7 @@ public class CustomSshJConfig extends DefaultConfig
 {
     // This is where we different from the original AndroidConfig. Found it only work if we remove
     // BouncyCastle before registering SpongyCastle's provider
-    static {
+    public static void init() {
         Security.removeProvider("BC");
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(),
     Security.getProviders().length+1);

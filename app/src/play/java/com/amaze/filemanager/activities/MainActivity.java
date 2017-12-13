@@ -100,6 +100,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -307,7 +308,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         initializeInteractiveShell();
 
         dataUtils.registerOnDataChangedListener(this);
-        
+
+        CustomSshJConfig.init();
         AppConfig.setActivityContext(con);
 
         setContentView(R.layout.main_toolbar);

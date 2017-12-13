@@ -29,19 +29,25 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.application.AppConfig;
+import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
 
+import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+import net.schmizz.sshj.userauth.keyprovider.PuTTYKeyFile;
 
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.security.KeyPair;
+import java.security.Provider;
+import java.security.Security;
 
 /**
  * {@link AsyncTask} to convert given {@link InputStream} into {@link KeyPair} which is requird by
@@ -49,12 +55,20 @@ import java.security.KeyPair;
  *
  * @see JcaPEMKeyConverter
  * @see KeyProvider
+ * @see OpenSSHKeyV1KeyFile
+ * @see PuTTYKeyFile
  * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
 public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyPair>>
 {
     private static final String TAG = "PemToKeyPairTask";
+
+    private final PemToKeyPairConverter[] converters = {
+        new JcaPemToKeyPairConverter(),
+        new OpenSshV1PemToKeyPairConverter(),
+        new PuttyPrivateKeyToKeyPairConverter()
+    };
 
     private final Reader mPemFile;
 
@@ -73,25 +87,32 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
     @Override
     protected AsyncTaskResult<KeyPair> doInBackground(Void... voids) {
         AsyncTaskResult<KeyPair> retval = null;
+        for(Provider provider : Security.getProviders())
+            Log.d(TAG, "Provider: " + provider.getName());
+
+        BufferedReader reader = new BufferedReader(mPemFile);
+        StringBuilder sb = new StringBuilder();
+        String line;
         try {
-            PEMParser pemParser = new PEMParser(mPemFile);
-            PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
-            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-            retval = new AsyncTaskResult<KeyPair>(converter.getKeyPair(keyPair));
-            converter = null;
-            keyPair = null;
-            pemParser = null;
-        } catch (FileNotFoundException e){
-            Log.e(TAG, "Unable to open PEM for reading", e);
-            retval = new AsyncTaskResult<KeyPair>(e);
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+            for(PemToKeyPairConverter converter : converters) {
+                KeyPair keyPair = converter.convert(sb.toString());
+                if(keyPair != null) {
+                    retval = new AsyncTaskResult<KeyPair>(keyPair);
+                    break;
+                }
+            }
+            if(retval == null)
+                throw new IOException("No converter available to parse selected PEM");
         } catch (IOException e) {
             Log.e(TAG, "IOException reading PEM", e);
             retval = new AsyncTaskResult<KeyPair>(e);
         } finally {
-            try {
-                mPemFile.close();
-            } catch (IOException ignored) {}
+            IOUtils.closeQuietly(reader);
         }
+
         return retval;
     }
 
@@ -102,6 +123,50 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         }
         if(mCallback != null) {
             mCallback.onResult(result);
+        }
+    }
+
+    private interface PemToKeyPairConverter {
+        KeyPair convert(String source);
+    }
+
+    private class JcaPemToKeyPairConverter implements PemToKeyPairConverter {
+        @Override
+        public KeyPair convert(String source) {
+            PEMParser pemParser = new PEMParser(new StringReader(source));
+            try {
+                PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
+                JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+                return converter.getKeyPair(keyPair);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+    }
+
+    private class OpenSshV1PemToKeyPairConverter implements PemToKeyPairConverter {
+        @Override
+        public KeyPair convert(String source) {
+            OpenSSHKeyV1KeyFile converter = new OpenSSHKeyV1KeyFile();
+            converter.init(new StringReader(source));
+            try {
+                return new KeyPair(converter.getPublic(), converter.getPrivate());
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
+    }
+
+    private class PuttyPrivateKeyToKeyPairConverter implements PemToKeyPairConverter {
+        @Override
+        public KeyPair convert(String source) {
+            PuTTYKeyFile converter = new PuTTYKeyFile();
+            converter.init(new StringReader(source));
+            try {
+                return new KeyPair(converter.getPublic(), converter.getPrivate());
+            } catch (Exception ignored) {
+                return null;
+            }
         }
     }
 }
