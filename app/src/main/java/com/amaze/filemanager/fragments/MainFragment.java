@@ -82,6 +82,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -927,6 +928,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 } catch (MalformedURLException ex) {
                                     ex.printStackTrace();
                                 }
+                                break;
+                            case SFTP:
+                                Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                                SshClientUtils.launchSftp(e.generateBaseFile(), getMainActivity());
                                 break;
                             case OTG:
                                 FileUtils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
