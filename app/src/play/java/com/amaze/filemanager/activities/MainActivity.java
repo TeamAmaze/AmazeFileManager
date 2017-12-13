@@ -1822,6 +1822,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             mainActivityHelper.add(type);
             floatingActionButton.collapse();
         });
+
+        if(getAppTheme().getSimpleTheme() == AppTheme.DARK) {
+            fabTitle.setTitleBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+            fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
+        }
     }
 
     public boolean copyToClipboard(Context context, String text) {
