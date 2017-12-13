@@ -150,7 +150,7 @@ public class SshConnectionPool
         try {
             String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
             KeyPair keyPair = (pem != null && !"".equals(pem)) ?
-                    new PemToKeyPairTask(new StringReader(pem)).execute().get()
+                    new PemToKeyPairTask(new StringReader(pem), null).execute().get().result
                     : null;
             AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(host, port,
                     utilsHandler.getSshHostKey(uri.toString()),

@@ -280,25 +280,23 @@ public class SftpConnectDialog extends DialogFragment {
             try {
                 InputStream selectedKeyContent = mContext.getContentResolver()
                         .openInputStream(mSelectedPem);
-                KeyPair keypair = new PemToKeyPairTask(selectedKeyContent).execute().get();
-                if(keypair != null)
-                {
-                    mSelectedParsedKeyPair = keypair;
-                    mSelectedParsedKeyPairName = mSelectedPem.getLastPathSegment()
-                            .substring(mSelectedPem.getLastPathSegment().indexOf('/')+1);
-                    MDButton okBTN = ((MaterialDialog)getDialog())
-                            .getActionButton(DialogAction.POSITIVE);
-                    okBTN.setEnabled(okBTN.isEnabled() || true);
+                new PemToKeyPairTask(selectedKeyContent, result -> {
+                    if(result.result != null)
+                    {
+                        mSelectedParsedKeyPair = result.result;
+                        mSelectedParsedKeyPairName = mSelectedPem.getLastPathSegment()
+                                .substring(mSelectedPem.getLastPathSegment().indexOf('/')+1);
+                        MDButton okBTN = ((MaterialDialog)getDialog())
+                                .getActionButton(DialogAction.POSITIVE);
+                        okBTN.setEnabled(okBTN.isEnabled() || true);
 
-                    Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
-                    selectPemBTN.setText(mSelectedParsedKeyPairName);
-                }
+                        Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
+                        selectPemBTN.setText(mSelectedParsedKeyPairName);
+                    }
+                }).execute();
+
             } catch(FileNotFoundException e) {
                 Log.e(TAG, "File not found", e);
-            } catch(InterruptedException ignored) {
-
-            } catch(ExecutionException e) {
-
             }
         }
     }

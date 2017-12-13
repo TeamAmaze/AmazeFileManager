@@ -25,6 +25,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
@@ -48,41 +52,56 @@ import java.security.KeyPair;
  * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
-public class PemToKeyPairTask extends AsyncTask<Void, Void, KeyPair>
+public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyPair>>
 {
     private static final String TAG = "PemToKeyPairTask";
 
     private final Reader mPemFile;
 
-    public PemToKeyPairTask(@NonNull InputStream pemFile) {
+    private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> mCallback;
+
+    public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
         this.mPemFile = new InputStreamReader(pemFile);
+        this.mCallback = callback;
     }
 
-    public PemToKeyPairTask(@NonNull Reader reader) {
+    public PemToKeyPairTask(@NonNull Reader reader, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
         this.mPemFile = reader;
+        this.mCallback = callback;
     }
 
     @Override
-    protected KeyPair doInBackground(Void... voids) {
+    protected AsyncTaskResult<KeyPair> doInBackground(Void... voids) {
+        AsyncTaskResult<KeyPair> retval = null;
         try {
             PEMParser pemParser = new PEMParser(mPemFile);
             PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-            KeyPair retval = converter.getKeyPair(keyPair);
+            retval = new AsyncTaskResult<KeyPair>(converter.getKeyPair(keyPair));
             converter = null;
             keyPair = null;
             pemParser = null;
-            return retval;
         } catch (FileNotFoundException e){
             Log.e(TAG, "Unable to open PEM for reading", e);
-            return null;
+            retval = new AsyncTaskResult<KeyPair>(e);
         } catch (IOException e) {
             Log.e(TAG, "IOException reading PEM", e);
+            retval = new AsyncTaskResult<KeyPair>(e);
         } finally {
             try {
                 mPemFile.close();
             } catch (IOException ignored) {}
         }
-        return null;
+        return retval;
+    }
+
+    @Override
+    protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
+        if(result.exception != null) {
+            Toast.makeText(AppConfig.getInstance().getActivityContext(), String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error), result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
+        }
+        if(mCallback != null) {
+            mCallback.onResult(result);
+        }
     }
 }
