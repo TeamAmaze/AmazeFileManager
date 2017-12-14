@@ -449,11 +449,11 @@ public class FileUtils {
         final String where = MediaStore.MediaColumns.DATA + " = ?";
         Uri baseUri = MediaStore.Files.getContentUri(volume);
         boolean isMimeTypeImage = false, isMimeTypeVideo = false, isMimeTypeAudio = false;
-        isMimeTypeImage = Icons.isPicture( path);
+        isMimeTypeImage = Icons.isPicture(new File(path));
         if (!isMimeTypeImage) {
-            isMimeTypeVideo = Icons.isVideo(path);
+            isMimeTypeVideo = Icons.isVideo(new File(path));
             if (!isMimeTypeVideo) {
-                isMimeTypeAudio = Icons.isVideo(path);
+                isMimeTypeAudio = Icons.isVideo(new File(path));
             }
         }
         if (isMimeTypeImage || isMimeTypeVideo || isMimeTypeAudio) {
@@ -674,7 +674,7 @@ public class FileUtils {
             Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        }  else if (Icons.isAudio(f.getPath())) {
+        }  else if (Icons.isAudio(new File(f.getPath()))) {
             final int studio_count = sharedPreferences.getInt("studio", 0);
             Uri uri = Uri.fromFile(f);
             final Intent intent = new Intent();

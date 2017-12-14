@@ -138,6 +138,14 @@ dependencies {
 
     implementation 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
     implementation 'com.madgag.spongycastle:prov:1.58.0.0'
+
+    //Glide: loads icons seemlessly
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    implementation ("com.github.bumptech.glide:recyclerview-integration:4.3.1") {
+        // Excludes the support library because it's already included by Glide.
+        transitive = false
+    }
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 }
 
 configurations.all {

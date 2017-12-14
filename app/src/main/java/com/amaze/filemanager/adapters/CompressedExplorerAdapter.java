@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedItemViewHolder> {
 
     private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
 
@@ -162,7 +163,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CompressedItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             v.findViewById(R.id.picture_icon).setVisibility(View.INVISIBLE);
@@ -179,11 +180,9 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int position) {
-        CompressedItemViewHolder holder = (CompressedItemViewHolder) vholder;
-
+    public void onBindViewHolder(final CompressedItemViewHolder holder, int position) {
         if (!stoppedAnimation) {
-            animate((CompressedItemViewHolder) vholder);
+            animate(holder);
         }
 
         final CompressedObjectParcelable rowItem = items.get(position);
@@ -197,13 +196,17 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
                     utilsProvider.getAppTheme(), compressedExplorerFragment.getResources().getDisplayMetrics()));
 
         if (rowItem.getType() == CompressedObjectParcelable.TYPE_GOBACK) {
-            holder.genericIcon.setImageDrawable(compressedExplorerFragment.getResources().getDrawable(R.drawable.ic_arrow_left_white_24dp));
+            GlideApp.with(compressedExplorerFragment).load(R.drawable.ic_arrow_left_white_24dp).into(holder.genericIcon);
+
             gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
             holder.txtTitle.setText("..");
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, context.getResources()));
+            GlideApp.with(compressedExplorerFragment)
+                    .load(Icons.loadMimeIcon(rowItem.getName(), false))
+                    .into(holder.genericIcon);
+
             final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
             if (compressedExplorerFragment.showLastModified)
                 holder.date.setText(Utils.getDate(rowItem.getTime(), compressedExplorerFragment.year));
@@ -297,14 +300,14 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+    public void onViewDetachedFromWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+        holder.rl.clearAnimation();
     }
 
     @Override
-    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+    public boolean onFailedToRecycleView(CompressedItemViewHolder holder) {
+        holder.rl.clearAnimation();
         return super.onFailedToRecycleView(holder);
     }
 
