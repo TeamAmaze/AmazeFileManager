@@ -30,6 +30,7 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -37,9 +38,10 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -48,6 +50,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
+import com.bumptech.glide.Glide;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -218,15 +221,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
         if (!dataUtils.isFileHidden(baseFile.getPath())) {
             String size = "";
-            Drawable drawable;
             long longSize= 0;
 
             if (baseFile.isDirectory()) {
-                if(lockBitmapDrawable == null) {
-                    lockBitmapDrawable = ma.getResources().getDrawable(R.drawable.ic_folder_lock_white_36dp);
-                }
-
-                drawable = baseFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)? lockBitmapDrawable:ma.folder;
                 ma.folder_count++;
             } else {
                 if (baseFile.getSize() != -1) {
@@ -237,13 +234,13 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         e.printStackTrace();
                     }
                 }
-                drawable = Icons.loadMimeIcon(baseFile.getPath(), !ma.IS_LIST, ma.getResources());
+                
                 ma.file_count++;
             }
 
-            LayoutElementParcelable layoutElement = new LayoutElementParcelable(drawable,
+            LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
-                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "");
+                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "", !ma.IS_LIST, ma.SHOW_THUMBS);
             layoutElement.setMode(baseFile.getMode());
             return layoutElement;
         }

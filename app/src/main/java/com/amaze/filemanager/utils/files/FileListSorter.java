@@ -19,7 +19,7 @@
 
 package com.amaze.filemanager.utils.files;
 
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 
 import java.util.Comparator;
 
