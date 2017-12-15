@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import java.io.File;

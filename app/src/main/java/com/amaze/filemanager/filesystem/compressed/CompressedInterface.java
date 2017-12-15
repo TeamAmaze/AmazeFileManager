@@ -1,6 +1,6 @@
 package com.amaze.filemanager.filesystem.compressed;
 
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import java.util.ArrayList;
