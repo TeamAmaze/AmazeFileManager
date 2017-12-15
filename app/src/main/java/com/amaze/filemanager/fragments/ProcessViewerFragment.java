@@ -214,6 +214,8 @@ public class ProcessViewerFragment extends Fragment {
                     + "</font></i>");
 
             mProgressTimer.setText(timerSpan);
+
+            if(dataPackage.completed) mCancelButton.setVisibility(View.GONE);
         }
     }
 
