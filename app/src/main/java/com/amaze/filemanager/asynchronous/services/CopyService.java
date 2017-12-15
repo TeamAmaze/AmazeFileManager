@@ -160,15 +160,8 @@ public class CopyService extends Service {
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            CopyDataParcelable intent1 = new CopyDataParcelable();
-            intent1.setName(sourceFiles.get(0).getName());
-            intent1.setSourceFiles(sourceFiles.size());
-            intent1.setSourceProgress(0);
-            intent1.setTotal(totalSize);
-            intent1.setByteProgress(0);
-            intent1.setSpeedRaw(0);
-            intent1.setMove(move);
-            intent1.setCompleted(false);
+            CopyDataParcelable intent1 = new CopyDataParcelable(sourceFiles.get(0).getName(),
+                    sourceFiles.size(), totalSize, move);
             putDataPackage(intent1);
 
             targetPath = p1[0].getString(TAG_COPY_TARGET);
@@ -502,15 +495,8 @@ public class CopyService extends Service {
             }
 
             //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable();
-            intent.setName(fileName);
-            intent.setSourceFiles(sourceFiles);
-            intent.setSourceProgress(sourceProgress);
-            intent.setTotal(totalSize);
-            intent.setByteProgress(writtenSize);
-            intent.setSpeedRaw(speed);
-            intent.setMove(move);
-            intent.setCompleted(isComplete);
+            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+                    totalSize, writtenSize, speed, move, isComplete);
             putDataPackage(intent);
             if (progressListener != null) {
                 progressListener.onUpdate(intent);

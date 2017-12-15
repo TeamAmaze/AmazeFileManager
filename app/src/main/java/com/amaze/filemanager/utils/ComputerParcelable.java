@@ -8,8 +8,8 @@ import android.os.Parcelable;
  */
 public class ComputerParcelable implements Parcelable {
 
-    public String addr;
-    public String name;
+    public final String addr;
+    public final String name;
 
     public ComputerParcelable(String str, String str2) {
         this.name = str;
