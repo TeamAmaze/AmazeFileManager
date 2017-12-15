@@ -477,7 +477,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             mode.setCustomView(actionModeView);
 
             getMainActivity().setPagingEnabled(false);
-            getMainActivity().floatingActionButton.hideMenuButton(true);
+            getMainActivity().floatingActionButton.getMenuButton().hide();
 
             // translates the drawable content down
             // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -748,7 +748,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             // translates the drawer content up
             //if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-            getMainActivity().floatingActionButton.showMenuButton(true);
+            getMainActivity().floatingActionButton.getMenuButton().show();
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             getMainActivity().setPagingEnabled(true);

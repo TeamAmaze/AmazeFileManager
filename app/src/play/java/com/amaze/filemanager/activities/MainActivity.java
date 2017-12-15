@@ -35,7 +35,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -50,7 +49,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -144,8 +142,6 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -156,6 +152,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
+import jahirfiquitiva.libs.fabsmenu.FABsMenu;
+import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
+import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
@@ -183,7 +182,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
 
-    public FloatingActionMenu floatingActionButton;
+    public FABsMenu floatingActionButton;
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
     public boolean isDrawerLocked = false;
@@ -319,7 +318,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
         mainActivityHelper = new MainActivityHelper(this);
-        initialiseFab();
+        initialiseFab();// TODO: 7/12/2017 not init when actionIntent != null
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -564,33 +563,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * Initializes the floating action button to act as to save data from an external intent
      */
     private void initFabToSave(final ArrayList<Uri> uris) {
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
+        floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
 
-        floatingActionButton.setVisibility(View.VISIBLE);
-
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_file_download_black_24dp);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            if (drawable instanceof VectorDrawable) {
-
-                VectorDrawable vectorDrawable = (VectorDrawable) drawable;
-                vectorDrawable.setTint(getResources().getColor(android.R.color.white));
-
-                floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawable);
-            }
-        } else {
-
-            if (drawable instanceof VectorDrawableCompat) {
-
-                VectorDrawableCompat vectorDrawableCompat = (VectorDrawableCompat) drawable;
-                vectorDrawableCompat.setTint(getResources().getColor(android.R.color.white));
-
-                floatingActionButton.getMenuIconView().setImageDrawable(vectorDrawableCompat);
-            }
-        }
-
-
-        floatingActionButton.setOnMenuButtonClickListener(v -> {
+        floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
+        floatingActionButton.getMenuButton().setOnClickListener(v -> {
             FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
             Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
             finish();
@@ -741,8 +719,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             // hide search view if visible, with an animation
             getAppbar().getSearchView().hideSearchView();
         } else if (fragment instanceof TabFragment) {
-            if (floatingActionButton.isOpened()) {
-                floatingActionButton.close(true);
+            if (floatingActionButton.isExpanded()) {
+                floatingActionButton.collapse();
             } else {
                 getCurrentMainFragment().goBack();
             }
@@ -761,7 +739,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
                     floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.showMenuButton(true);
+                    floatingActionButton.getMenuButton().show();
                 }
             } else {
                 compressedExplorerFragment.mActionMode.finish();
@@ -865,7 +843,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         transaction.commitAllowingStateLoss();
         appbar.setTitle(null);
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.showMenuButton(true);
+        floatingActionButton.getMenuButton().show();
         if (openzip && zippath != null) {
             if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
             else {
@@ -895,7 +873,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                 else onDrawerClosed();
                 floatingActionButton.setVisibility(View.VISIBLE);
-                floatingActionButton.showMenuButton(true);
+                floatingActionButton.getMenuButton().show();
             } else {
                 pendingPath = ((EntryItem) directoryItems.get(i)).getPath();
 
@@ -1693,7 +1671,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
 
         fabBgView.setOnClickListener(view -> {
-            floatingActionButton.close(true);
             if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
@@ -1802,41 +1779,54 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     void initialiseFab() {
         int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+
+        floatingActionButton = findViewById(R.id.fabs_menu);
+        floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
+        floatingActionButton.getMenuButton().setRippleColor(Utils.getColor(this, R.color.white_translucent));
+        floatingActionButton.setAnimationDuration(500);
+        floatingActionButton.setMenuListener(new FABsMenuListener() {
+            @Override
+            public void onMenuExpanded(FABsMenu fabsMenu) {
+                showSmokeScreen();
+            }
+
+            @Override
+            public void onMenuCollapsed(FABsMenu fabsMenu) {
+                hideSmokeScreen();
+            }
+        });
+
+        floatingActionButton.setMenuListener(new FABsMenuListener() {
+            @Override
+            public void onMenuExpanded(FABsMenu fabsMenu) {
+                FileUtils.revealShow(fabBgView, true);
+            }
+
+            @Override
+            public void onMenuCollapsed(FABsMenu fabsMenu) {
+                FileUtils.revealShow(fabBgView, false);
+            }
+        });
+
+        initFabTitle(findViewById(R.id.menu_new_folder), MainActivityHelper.NEW_FOLDER);
+        initFabTitle(findViewById(R.id.menu_new_file), MainActivityHelper.NEW_FILE);
+        initFabTitle(findViewById(R.id.menu_new_cloud), MainActivityHelper.NEW_CLOUD);
+    }
+
+    private void initFabTitle(TitleFAB fabTitle, int type) {
         int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
 
-        floatingActionButton = findViewById(R.id.menu);
-        floatingActionButton.setMenuButtonColorNormal(colorAccent);
-        floatingActionButton.setMenuButtonColorPressed(colorAccent);
-
-        floatingActionButton.setOnMenuToggleListener(b -> {
-            if (b) FileUtils.revealShow(fabBgView, true);
-            else FileUtils.revealShow(fabBgView, false);
+        fabTitle.setBackgroundColor(iconSkin);
+        fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
+        fabTitle.setOnClickListener(view -> {
+            mainActivityHelper.add(type);
+            floatingActionButton.collapse();
         });
 
-        FloatingActionButton fabNewFolder = findViewById(R.id.menu_new_folder);
-        fabNewFolder.setColorNormal(iconSkin);
-        fabNewFolder.setColorPressed(iconSkin);
-        fabNewFolder.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_FOLDER);
-            //utils.revealShow(fabBgView, false);
-            floatingActionButton.close(true);
-        });
-        FloatingActionButton fabNewFile = findViewById(R.id.menu_new_file);
-        fabNewFile.setColorNormal(iconSkin);
-        fabNewFile.setColorPressed(iconSkin);
-        fabNewFile.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_FILE);
-            //utils.revealShow(fabBgView, false);
-            floatingActionButton.close(true);
-        });
-        final FloatingActionButton floatingActionButton3 = findViewById(R.id.menu_new_cloud);
-        floatingActionButton3.setColorNormal(iconSkin);
-        floatingActionButton3.setColorPressed(iconSkin);
-        floatingActionButton3.setOnClickListener(view -> {
-            mainActivityHelper.add(MainActivityHelper.NEW_CLOUD);
-            //utils.revealShow(fabBgView, false);
-            floatingActionButton.close(true);
-        });
+        if(getAppTheme().getSimpleTheme() == AppTheme.DARK) {
+            fabTitle.setTitleBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+            fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
+        }
     }
 
     public boolean copyToClipboard(Context context, String text) {
@@ -1849,17 +1839,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             return true;
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    //TODO unused method
-    public void invalidateFab(int openmode) {
-        if (openmode == 2) {
-            floatingActionButton.setVisibility(View.INVISIBLE);
-            floatingActionButton.hideMenuButton(true);
-        } else {
-            floatingActionButton.setVisibility(View.VISIBLE);
-            floatingActionButton.showMenuButton(true);
         }
     }
 
