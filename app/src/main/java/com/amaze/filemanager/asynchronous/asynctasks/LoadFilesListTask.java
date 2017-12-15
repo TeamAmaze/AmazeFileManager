@@ -71,7 +71,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private MainFragment ma;
     private Context c;
     private OpenMode openmode;
-    private Drawable lockBitmapDrawable = null;
     private DataUtils dataUtils = DataUtils.getInstance();
     private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
 
