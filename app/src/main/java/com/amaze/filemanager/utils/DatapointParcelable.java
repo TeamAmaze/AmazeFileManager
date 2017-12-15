@@ -3,38 +3,56 @@ package com.amaze.filemanager.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.asynchronous.services.ProgressiveService;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 
 /**
- * Created by Arpit on 01-08-2015.
+ * Created by Arpit on 01-08-2015
+ *      edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
- * Class stores the {@link CopyService} progress variables.
- * This class also acts as a middle layer to communicate with
- * {@link ProcessViewerFragment}
+ * Class stores the {@link ProgressiveService} progress variables.
+ * This class also acts as data carrier to communicate with {@link ProcessViewerFragment}
  */
 public class DatapointParcelable implements Parcelable {
 
-    // which file is being copied from total number of files
+    /**
+     * which file is being copied from total number of files
+     */
     public final int sourceProgress;
 
-    // current byte position in total bytes pool
+    /**
+     * current byte position in total bytes pool
+     */
     public final long byteProgress;
-
-    // total number of source files to be copied
+    /**
+     * total number of source files to be copied
+     */
     public final int sourceFiles;
-
-    // total size of all source files combined
+    /**
+     * total size of all source files combined
+     */
     public final long totalSize;
-
-    // bytes being copied per sec
+    /**
+     * bytes being copied per sec
+     */
     public final int speedRaw;
 
     public final boolean completed, move;
 
-    // name of source file being copied
+     /**
+     * name of source file being copied
+     */
     public final String name;
 
+    /**
+     * For the first datapoint, everything is 0 or false except the params. Allows
+     * move boolean to change the text from "Copying" to "Moving" in case of copy.
+     *
+     * @param name name of source file being copied
+     * @param amountOfSourceFiles total number of source files to be copied
+     * @param totalSize total size of all source files combined
+     * @param move allows changing the text from "Copying" to "Moving" in case of copy
+     */
     public DatapointParcelable(String name, int amountOfSourceFiles, long totalSize, boolean move) {
         this.name = name;
         sourceFiles = amountOfSourceFiles;
@@ -47,6 +65,42 @@ public class DatapointParcelable implements Parcelable {
         completed = false;
     }
 
+    /**
+     *
+     * @param name name of source file being copied
+     * @param amountOfSourceFiles total number of source files to be copied
+     * @param sourceProgress which file is being copied from total number of files
+     * @param totalSize total size of all source files combined
+     * @param byteProgress current byte position in total bytes pool
+     * @param speedRaw bytes being copied per sec
+     * @param completed if the operation has finished
+     */
+    public DatapointParcelable(String name, int amountOfSourceFiles, int sourceProgress,
+                               long totalSize, long byteProgress, int speedRaw, boolean completed) {
+        this.name = name;
+        sourceFiles = amountOfSourceFiles;
+        this.sourceProgress = sourceProgress;
+        this.totalSize = totalSize;
+        this.byteProgress = byteProgress;
+        this.speedRaw = speedRaw;
+        this.completed = completed;
+
+        move = false;
+    }
+
+    /**
+     * The same as {@link DatapointParcelable#DatapointParcelable(String, int, int, long, long, int, boolean)}
+     * but allows move boolean to change the text from "Copying" to "Moving" in case of copy.
+     *
+     * @param name name of source file being copied
+     * @param amountOfSourceFiles total number of source files to be copied
+     * @param sourceProgress which file is being copied from total number of files
+     * @param totalSize total size of all source files combined
+     * @param byteProgress current byte position in total bytes pool
+     * @param speedRaw bytes being copied per sec
+     * @param move allows changing the text from "Copying" to "Moving" in case of copy
+     * @param completed if the operation has finished
+     */
     public DatapointParcelable(String name, int amountOfSourceFiles, int sourceProgress,
                               long totalSize, long byteProgress, int speedRaw, boolean move,
                               boolean completed) {
@@ -59,6 +113,7 @@ public class DatapointParcelable implements Parcelable {
         this.move = move;
         this.completed = completed;
     }
+
     protected DatapointParcelable(Parcel in) {
         sourceProgress = in.readInt();
         byteProgress = in.readLong();

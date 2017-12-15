@@ -158,7 +158,7 @@ public class EncryptService extends ProgressiveService {
 
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, true, false);
+                    totalSize, writtenSize, speed, false);
             addDatapoint(intent);
         } else notificationManager.cancel(NotificationConstants.ENCRYPT_ID);
     }

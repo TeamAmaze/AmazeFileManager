@@ -246,7 +246,7 @@ public class ZipService extends ProgressiveService {
             }
 
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, false, isCompleted);
+                    total, done, speed, isCompleted);
 
             addDatapoint(intent);
         } else {

@@ -152,7 +152,7 @@ public class ExtractService extends ProgressiveService {
             }
 
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, false, isCompleted);
+                    total, done, speed, isCompleted);
             addDatapoint(intent);
         } else mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
     }

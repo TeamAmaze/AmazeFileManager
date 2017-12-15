@@ -160,7 +160,7 @@ public class DecryptService extends ProgressiveService {
 
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles,
-                    sourceProgress, totalSize, writtenSize, speed, false, false);
+                    sourceProgress, totalSize, writtenSize, speed, false);
             addDatapoint(intent);
         } else notificationManager.cancel(NotificationConstants.DECRYPT_ID);
     }
