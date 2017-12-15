@@ -55,7 +55,7 @@ import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;

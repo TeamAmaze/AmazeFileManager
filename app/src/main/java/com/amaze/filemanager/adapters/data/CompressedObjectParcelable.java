@@ -1,4 +1,4 @@
-package com.amaze.filemanager.ui;
+package com.amaze.filemanager.adapters.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
