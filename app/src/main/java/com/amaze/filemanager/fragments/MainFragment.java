@@ -1718,7 +1718,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     @Override
     public int getRootDrawable() {
-        return R.drawable.root;
+        return R.drawable.ic_root_white_24px;
     }
 
 }
