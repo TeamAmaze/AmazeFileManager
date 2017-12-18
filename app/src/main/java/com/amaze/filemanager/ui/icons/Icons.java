@@ -28,39 +28,34 @@ import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
-
-    public static final int VIDEO = 0, AUDIO = 1, PDF = 2, CODE = 3, TEXT = 4, ARCHIVE = 5,
-            GENERIC = 6, APK = 7, PICTURE = 8, ENCRYPTED = 9;
+    public static final int NOT_KNOWN = -1;
+    public static final int APK = 0, AUDIO = 1, CERTIFICATE = 2, CODE = 3, COMPRESSED = 4,
+            CONTACT = 5, EVENTS = 6, FONT = 7, IMAGE = 8, PDF = 9, PRESENTATION = 10,
+            SPREADSHEETS = 11, DOCUMENTS = 12, TEXT = 13, VIDEO = 14, ENCRYPTED = 15;
 
     // construct a with an approximation of the capacity
     private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
-
-    private static void add(String mimeType, int resId) {
+    private static void put(String mimeType, int resId) {
         if (sMimeIconIds.put(mimeType, resId) != null) {
             throw new RuntimeException(mimeType + " already registered!");
         }
     }
 
-    private static void add(int resId, String... mimeTypes) {
+    private static void putKeys(int resId, String... mimeTypes) {
         for (String type : mimeTypes) {
-            add(type, resId);
+            put(type, resId);
         }
     }
 
     static {
-        // Package
-        add(R.drawable.ic_doc_apk_white,
+        putKeys(APK,
                 "application/vnd.android.package-archive"
         );
-
-// Audio
-        add(R.drawable.ic_doc_audio_am,
+        putKeys(AUDIO,
                 "application/ogg",
                 "application/x-flac"
         );
-
-// Certificate
-        add(R.drawable.ic_doc_certificate,
+        putKeys(CERTIFICATE,
                 "application/pgp-keys",
                 "application/pgp-signature",
                 "application/x-pkcs12",
@@ -72,9 +67,7 @@ public class Icons {
                 "application/x-pkcs7-mime",
                 "application/x-pkcs7-signature"
         );
-
-// Source code
-        add(R.drawable.ic_doc_codes,
+        putKeys(CODE,
                 "application/rdf+xml",
                 "application/rss+xml",
                 "application/x-object",
@@ -104,9 +97,7 @@ public class Icons {
                 "text/javascript",
                 "application/x-javascript"
         );
-
-// Compressed
-        add(R.drawable.ic_zip_box_white_36dp,
+        putKeys(COMPRESSED,
                 "application/mac-binhex40",
                 "application/rar",
                 "application/zip",
@@ -127,29 +118,21 @@ public class Icons {
                 "application/x-deb",
                 "application/x-rar-compressed"
         );
-
-// Contact
-        add(R.drawable.ic_doc_contact_am,
+        putKeys(CONTACT,
                 "text/x-vcard",
                 "text/vcard"
         );
-
-// Event
-        add(R.drawable.ic_doc_event_am,
+        putKeys(EVENTS,
                 "text/calendar",
                 "text/x-vcalendar"
         );
-
-// Font
-        add(R.drawable.ic_doc_font,
+        putKeys(FONT,
                 "application/x-font",
                 "application/font-woff",
                 "application/x-font-woff",
                 "application/x-font-ttf"
         );
-
-// Image
-        add(R.drawable.ic_doc_image,
+        putKeys(IMAGE,
                 "application/vnd.oasis.opendocument.graphics",
                 "application/vnd.oasis.opendocument.graphics-template",
                 "application/vnd.oasis.opendocument.image",
@@ -159,14 +142,10 @@ public class Icons {
                 "image/jpeg",
                 "image/png"
         );
-
-// PDF
-        add(R.drawable.ic_doc_pdf,
+        putKeys(PDF,
                 "application/pdf"
         );
-
-// Presentation
-        add(R.drawable.ic_doc_presentation,
+        putKeys(PRESENTATION,
                 "application/vnd.ms-powerpoint",
                 "application/vnd.openxmlformats-officedocument.presentationml.presentation",
                 "application/vnd.openxmlformats-officedocument.presentationml.template",
@@ -177,9 +156,7 @@ public class Icons {
                 "application/x-kpresenter",
                 "application/vnd.oasis.opendocument.presentation"
         );
-
-// Spreadsheet
-        add(R.drawable.ic_doc_spreadsheet_am,
+        putKeys(SPREADSHEETS,
                 "application/vnd.oasis.opendocument.spreadsheet",
                 "application/vnd.oasis.opendocument.spreadsheet-template",
                 "application/vnd.ms-excel",
@@ -191,9 +168,7 @@ public class Icons {
                 "application/x-kspread",
                 "text/comma-separated-values"
         );
-
-// Doc
-        add(R.drawable.ic_doc_doc_am,
+        putKeys(DOCUMENTS,
                 "application/msword",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
@@ -210,195 +185,80 @@ public class Icons {
                 "application/x-kword",
                 "text/markdown"
         );
-
-// Text
-        add(R.drawable.ic_doc_text_am,
+        putKeys(TEXT,
                 "text/plain"
         );
-
-// Video
-        add(R.drawable.ic_doc_video_am,
+        putKeys(VIDEO,
                 "application/x-quicktimeplayer",
                 "application/x-shockwave-flash"
         );
-    }
-
-    public static boolean isText(File file) {
-        String mimeType = MimeTypes.getMimeType(file);
-
-        Integer res = sMimeIconIds.get(mimeType);
-        if (res != null && res == R.drawable.ic_doc_text_am) return true;
-        if (mimeType != null && mimeType.contains("/")) {
-            final String typeOnly = mimeType.split("/")[0];
-            if ("text".equals(typeOnly)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isVideo(File file) {
-        String mimeType = MimeTypes.getMimeType(file);
-        Integer res = sMimeIconIds.get(mimeType);
-        if (res != null && res == R.drawable.ic_doc_video_am) return true;
-        if (mimeType != null && mimeType.contains("/")) {
-            final String typeOnly = mimeType.split("/")[0];
-            if ("video".equals(typeOnly)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isEncrypted(File file) {
-        return file.getName().endsWith(CryptUtil.CRYPT_EXTENSION);
-    }
-
-    public static boolean isAudio(File file) {
-        String mimeType = MimeTypes.getMimeType(file);
-        Integer res = sMimeIconIds.get(mimeType);
-        if (res != null && res == R.drawable.ic_doc_audio_am) return true;
-        if (mimeType != null && mimeType.contains("/")) {
-            final String typeOnly = mimeType.split("/")[0];
-            if ("audio".equals(typeOnly)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isCode(File file) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
-        return res != null && res == R.drawable.ic_doc_codes;
-    }
-
-    public static boolean isArchive(File file) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
-        return res != null && res == R.drawable.ic_zip_box_white_36dp;
-    }
-
-    public static boolean isApk(File file) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
-        return res != null && res == R.drawable.ic_doc_apk_white;
-    }
-
-    public static boolean isPdf(File file) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
-        return res != null && res == R.drawable.ic_doc_pdf;
-    }
-
-    public static boolean isPicture(File file) {
-        Integer res = sMimeIconIds.get(MimeTypes.getMimeType(file));
-        return res != null && res == R.drawable.ic_doc_image;
-    }
-
-    public static boolean isGeneric(File file) {
-        String mimeType = MimeTypes.getMimeType(file);
-        if (mimeType == null) {
-            return true;
-        }
-        Integer resId = sMimeIconIds.get(mimeType);
-
-        return resId == null;
-    }
-
-    public static int getTypeOfFile(String filePath) {
-        File file = new File(filePath);
-
-        if (Icons.isVideo(file))
-            return VIDEO;
-        else if (Icons.isAudio(file))
-            return AUDIO;
-        else if (Icons.isPdf(file))
-            return PDF;
-        else if (Icons.isCode(file))
-            return CODE;
-        else if (Icons.isText(file))
-            return TEXT;
-        else if (Icons.isArchive(file))
-            return ARCHIVE;
-        else if (Icons.isGeneric(file))
-            return GENERIC;
-        else if (Icons.isApk(file))
-            return APK;
-        else if (Icons.isPicture(file))
-            return PICTURE;
-        else if (Icons.isEncrypted(file))
-            return ENCRYPTED;
-        else return -1;
+        putKeys(ENCRYPTED,
+                "application/octet-stream"
+        );
     }
 
     public static @DrawableRes int loadMimeIcon(String path, boolean grid) {
         if(path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
 
         File f = new File(path);
-        if(f.isDirectory()) {
-            if(path.endsWith(CryptUtil.CRYPT_EXTENSION)) return R.drawable.ic_folder_lock_white_36dp;
-            else return R.drawable.ic_grid_folder_new;
-        }
+        int type = getTypeOfFile(f);
 
-        String mimeType = MimeTypes.getMimeType(f);
-        if (mimeType == null) {
-            /* if(grid) return loadBitmapDrawableById(res, R.drawable.ic_doc_generic_am_grid);*/
-            return R.drawable.ic_doc_generic_am;
+        switch (type) {
+            case APK:
+                return R.drawable.ic_doc_apk_grid;
+            case AUDIO:
+                // if (grid) return R.drawable.ic_doc_audio_am_grid;
+                return R.drawable.ic_doc_audio_am;
+            case IMAGE:
+                if (grid) return R.drawable.ic_doc_image_grid;
+                else return R.drawable.ic_doc_image;
+            case TEXT:
+                //if (grid) return R.drawable.ic_doc_text_am_grid;
+                return R.drawable.ic_doc_text_am;
+            case VIDEO:
+                //if (grid) return R.drawable.ic_doc_video_am_grid;
+                return R.drawable.ic_doc_video_am;
+            case PDF:
+                //if(grid)resId=R.drawable.ic_doc_pdf_grid;
+                return R.drawable.ic_doc_pdf;
+            case CERTIFICATE:
+                //if(grid) return R.drawable.ic_doc_certificate_grid;
+                return R.drawable.ic_doc_certificate;
+            case CODE:
+                //if(grid) return R.drawable.ic_doc_codes_grid;
+                return R.drawable.ic_doc_codes;
+            case FONT: //
+                // if(grid) return R.drawable.ic_doc_font_grid;
+                return R.drawable.ic_doc_font;
+            case ENCRYPTED:
+                return R.drawable.ic_folder_lock_white_36dp;
+            default:
+                if(f.isDirectory()) return R.drawable.ic_grid_folder_new;
+                else {
+                    //if (grid) return R.drawable.ic_doc_generic_am_grid;
+                    return R.drawable.ic_doc_generic_am;
+                }
         }
+    }
 
-        // Look for exact match first
-        Integer resId = sMimeIconIds.get(mimeType);
+    public static int getTypeOfFile(File file) {
+        if(file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) return ENCRYPTED;
 
-        if (resId != null) {
-            switch (resId) {
-                case R.drawable.ic_doc_apk_white:
-                    if (grid) resId = R.drawable.ic_doc_apk_grid;
-                    break;/*
-            case R.drawable.ic_doc_audio_am: if(grid)resId=R.drawable.ic_doc_audio_am_grid;
-                break;
-            case R.drawable.ic_doc_certificate: if(grid)resId=R.drawable.ic_doc_certificate_grid;
-                break;
-            case R.drawable.ic_doc_codes: if(grid)resId=R.drawable.ic_doc_codes_grid;
-                break;
-            case R.drawable.ic_doc_font: if(grid)resId=R.drawable.ic_doc_font_grid;
-                break;
-            case R.drawable.ic_doc_generic_am: if(grid)resId=R.drawable.ic_doc_generic_am_grid;
-                break;
-            */
-                case R.drawable.ic_doc_image:
-                    if (grid) resId = R.drawable.ic_doc_image_grid;
-                    break;
-            }
-            /*case R.drawable.ic_doc_pdf: if(grid)resId=R.drawable.ic_doc_pdf_grid;
-                break;
-            case R.drawable.ic_doc_video_am: if(grid)resId=R.drawable.ic_doc_video_am_grid;
-                break;
-            case R.drawable.ic_doc_text_am: if(grid)resId=R.drawable.ic_doc_text_am_grid;
-                break;
-        }*/
-            return resId;
+        String mimeType = MimeTypes.getMimeType(file);
+        if(mimeType == null) return NOT_KNOWN;
+
+        Integer type = sMimeIconIds.get(mimeType);
+        if(type != null) return type;
+        else {
+            if(checkType(mimeType, "text")) return TEXT;
+            if(checkType(mimeType, "video")) return VIDEO;
+            if(checkType(mimeType, "audio")) return AUDIO;
+            else return NOT_KNOWN;
         }
+    }
 
-        // Otherwise look for partial match
-        final String typeOnly = mimeType.split("/")[0];
-
-        if ("audio".equals(typeOnly)) {
-           /* if (grid) resId = R.drawable.ic_doc_audio_am_grid; else*/
-            resId = R.drawable.ic_doc_audio_am;
-        } else if ("image".equals(typeOnly)) {
-            if (grid) resId =  R.drawable.ic_doc_image_grid;
-            else resId = R.drawable.ic_doc_image;
-        } else if ("text".equals(typeOnly)) {
-            /*if (grid) resId = R.drawable.ic_doc_text_am_grid; else*/
-            resId = R.drawable.ic_doc_text_am;
-        } else if ("video".equals(typeOnly)) {
-            /*if (grid) resId = R.drawable.ic_doc_video_am_grid; else*/
-            resId = R.drawable.ic_doc_video_am;
-        } else if (path.endsWith(CryptUtil.CRYPT_EXTENSION)) {
-            resId = R.drawable.ic_file_lock_white_36dp;
-        }
-        if (resId == null) {
-            /*if (grid) resId = R.drawable.ic_doc_generic_am_grid; else*/
-            resId = R.drawable.ic_doc_generic_am;
-        }
-        return resId;
+    private static boolean checkType(String mime, String check) {
+        return mime != null && mime.contains("/") && check.equals(mime.substring(0, mime.indexOf("/")));
     }
 
 }

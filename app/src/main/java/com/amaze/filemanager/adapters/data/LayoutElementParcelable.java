@@ -54,11 +54,11 @@ public class LayoutElementParcelable implements Parcelable {
     public LayoutElementParcelable(String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean isGrid, boolean useThumbs) {
-        filetype = Icons.getTypeOfFile(path);
+        filetype = Icons.getTypeOfFile(new File(path));
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
 
         if(useThumbs) {
-            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK) {
+            if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
                 this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
             } else {
                 this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
