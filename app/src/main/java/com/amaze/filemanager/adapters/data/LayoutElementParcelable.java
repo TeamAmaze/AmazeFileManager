@@ -53,9 +53,9 @@ public class LayoutElementParcelable implements Parcelable {
 
     public LayoutElementParcelable(String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
-                                   String date, boolean isDirectory, boolean isGrid, boolean useThumbs) {
+                                   String date, boolean isDirectory, boolean useThumbs) {
         filetype = Icons.getTypeOfFile(new File(path));
-        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
+        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path);
 
         if(useThumbs) {
             if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
@@ -86,8 +86,8 @@ public class LayoutElementParcelable implements Parcelable {
 
     public LayoutElementParcelable(String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
-                                   String date, boolean isGrid, boolean useThumbs) {
-        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, isGrid, useThumbs);
+                                   String date, boolean useThumbs) {
+        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs);
 
     }
 

@@ -1025,12 +1025,12 @@ public class HybridFile {
 
                     layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
                             "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", !mainFragment.IS_LIST, mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
                 } else {
                     layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", !mainFragment.IS_LIST, mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
                 }
                 layoutElement.setMode(mode);
                 return layoutElement;

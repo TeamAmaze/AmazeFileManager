@@ -197,7 +197,7 @@ public class Icons {
         );
     }
 
-    public static @DrawableRes int loadMimeIcon(String path, boolean grid) {
+    public static @DrawableRes int loadMimeIcon(String path) {
         if(path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
 
         File f = new File(path);
@@ -205,37 +205,28 @@ public class Icons {
 
         switch (type) {
             case APK:
-                return R.drawable.ic_doc_apk_grid;
+                return R.drawable.ic_doc_apk_white;
             case AUDIO:
-                // if (grid) return R.drawable.ic_doc_audio_am_grid;
                 return R.drawable.ic_doc_audio_am;
             case IMAGE:
-                if (grid) return R.drawable.ic_doc_image_grid;
-                else return R.drawable.ic_doc_image;
+                return R.drawable.ic_doc_image;
             case TEXT:
-                //if (grid) return R.drawable.ic_doc_text_am_grid;
                 return R.drawable.ic_doc_text_am;
             case VIDEO:
-                //if (grid) return R.drawable.ic_doc_video_am_grid;
                 return R.drawable.ic_doc_video_am;
             case PDF:
-                //if(grid)resId=R.drawable.ic_doc_pdf_grid;
                 return R.drawable.ic_doc_pdf;
             case CERTIFICATE:
-                //if(grid) return R.drawable.ic_doc_certificate_grid;
                 return R.drawable.ic_doc_certificate;
             case CODE:
-                //if(grid) return R.drawable.ic_doc_codes_grid;
                 return R.drawable.ic_doc_codes;
             case FONT: //
-                // if(grid) return R.drawable.ic_doc_font_grid;
                 return R.drawable.ic_doc_font;
             case ENCRYPTED:
                 return R.drawable.ic_folder_lock_white_36dp;
             default:
                 if(f.isDirectory()) return R.drawable.ic_grid_folder_new;
                 else {
-                    //if (grid) return R.drawable.ic_doc_generic_am_grid;
                     return R.drawable.ic_doc_generic_am;
                 }
         }
