@@ -237,8 +237,29 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private AppBarLayout appBarLayout;
 
-    //TODO make var names meaningful
-    private static final int SELECT_MINUS_2 = -2, NO_VALUE = -1, SELECT_0 = 0, SELECT_102 = 102;
+    /**
+     * In drawer nothing is selected.
+     */
+    private static final int DRAWER_SELECTED_NONE = -1;
+    /**
+     * In drawer first storage is selected.
+     */
+    private static final int DRAWER_SELECTED_DEFAULT = 0;
+    /**
+     * In drawer {@link ProcessViewerFragment} is selected (which is a special case
+     * of {@link #DRAWER_SELECTED_NONE} as ProcessViewer has no drawer item). //TODO might be wrong
+     */
+    private static final int DRAWER_SELECTED_PROCESSVIEWER = 102;
+    /**
+     * In drawer FTP or Apps list (also Settings for a brief second) are selected.
+     */
+    private static final int DRAWER_SELECTED_LASTSECTION = -2;
+
+    /**
+     * Which item in nav drawer is selected values go from 0 to the length of the nav drawer list,
+     * special values are {@link #DRAWER_SELECTED_DEFAULT}, {@link #DRAWER_SELECTED_NONE},
+     * {@link #DRAWER_SELECTED_PROCESSVIEWER} and {@link #DRAWER_SELECTED_LASTSECTION}.
+     */
     private int selectedStorage;
 
     private CoordinatorLayout mScreenLayout;
@@ -401,7 +422,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         if (savedInstanceState != null) {
 
-            selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
+            selectedStorage = savedInstanceState.getInt("selectitem", DRAWER_SELECTED_DEFAULT);
         }
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -498,7 +519,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
-                        selectedStorage = SELECT_102;
+                        selectedStorage = DRAWER_SELECTED_PROCESSVIEWER;
                         openProcesses = false;
                         //title.setText(utils.getString(con, R.string.process_viewer));
                         //Commit the transaction
@@ -512,7 +533,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
                         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
-                        selectedStorage = SELECT_MINUS_2;
+                        selectedStorage = DRAWER_SELECTED_LASTSECTION;
                         adapter.toggleChecked(false);
                         transaction2.commit();
                     } else {
@@ -536,7 +557,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     oppathe1 = savedInstanceState.getString("oppathe1");
                     oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
                     operation = savedInstanceState.getInt("operation");
-                    selectedStorage = savedInstanceState.getInt("selectitem", SELECT_0);
+                    selectedStorage = savedInstanceState.getInt("selectitem", DRAWER_SELECTED_DEFAULT);
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
                     adapter.toggleChecked(selectedStorage);
                 }
@@ -839,7 +860,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
-        selectedStorage = SELECT_0;
+        selectedStorage = DRAWER_SELECTED_DEFAULT;
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         appbar.setTitle(null);
@@ -858,7 +879,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getList();
         switch (directoryDrawerItems.get(i).type) {
             case DrawerItem.ITEM_ENTRY:
-                if ((selectedStorage == NO_VALUE || selectedStorage >= directoryDrawerItems.size())) {
+                if ((selectedStorage == DRAWER_SELECTED_NONE || selectedStorage >= directoryDrawerItems.size())) {
                     TabFragment tabFragment = new TabFragment();
                     Bundle a = new Bundle();
                     a.putString("path", directoryDrawerItems.get(i).path);
@@ -1185,7 +1206,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (selectedStorage != NO_VALUE)
+        if (selectedStorage != DRAWER_SELECTED_NONE)
             outState.putInt("selectitem", selectedStorage);
         if(pasteHelper != null) {
             outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
@@ -1515,7 +1536,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
-                    selectedStorage = SELECT_MINUS_2;
+                    selectedStorage = DRAWER_SELECTED_LASTSECTION;
                     adapter.toggleChecked(false);
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
@@ -1526,7 +1547,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
-                    selectedStorage = SELECT_MINUS_2;
+                    selectedStorage = DRAWER_SELECTED_LASTSECTION;
                     adapter.toggleChecked(false);
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
@@ -1901,7 +1922,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
-            selectedStorage = SELECT_102;
+            selectedStorage = DRAWER_SELECTED_PROCESSVIEWER;
             openProcesses = false;
             //title.setText(utils.getString(con, R.string.process_viewer));
             //Commit the transaction
