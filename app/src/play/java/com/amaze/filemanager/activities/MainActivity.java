@@ -800,9 +800,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 for (Item item : dataUtils.getList()) {
                     if (!item.isSection()) {
 
-                        String entryItemPath = ((EntryItem) item).getPath();
+                        String entryItemPath = ((EntryItem) item).path;
 
-                        if (path.contains(((EntryItem) item).getPath())) {
+                        if (path.contains(((EntryItem) item).path)) {
 
                             if (entryItemPath.length() > entryItemPathOld.length()) {
 
@@ -863,7 +863,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if ((selectedStorage == NO_VALUE || selectedStorage >= directoryItems.size())) {
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
-                a.putString("path", ((EntryItem) directoryItems.get(i)).getPath());
+                a.putString("path", ((EntryItem) directoryItems.get(i)).path);
 
                 tabFragment.setArguments(a);
 
@@ -879,12 +879,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.getMenuButton().show();
             } else {
-                pendingPath = ((EntryItem) directoryItems.get(i)).getPath();
+                pendingPath = ((EntryItem) directoryItems.get(i)).path;
 
                 selectedStorage = i;
                 adapter.toggleChecked(selectedStorage);
 
-                if (((EntryItem) directoryItems.get(i)).getPath().contains(OTGUtil.PREFIX_OTG) &&
+                if (((EntryItem) directoryItems.get(i)).path.contains(OTGUtil.PREFIX_OTG) &&
                         getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
@@ -2000,14 +2000,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (b) {
                     tabHandler.clear();
                     if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, "", ((EntryItem) dataUtils.getList().get(1)).getPath(), "/"));
+                        tabHandler.addTab(new Tab(1, "", ((EntryItem) dataUtils.getList().get(1)).path, "/"));
                     else
                         tabHandler.addTab(new Tab(1, "", "/", "/"));
                     if (!dataUtils.getList().get(0).isSection()) {
-                        String pa = ((EntryItem) dataUtils.getList().get(0)).getPath();
+                        String pa = ((EntryItem) dataUtils.getList().get(0)).path;
                         tabHandler.addTab(new Tab(2, "", pa, pa));
                     } else
-                        tabHandler.addTab(new Tab(2, "", ((EntryItem) dataUtils.getList().get(1)).getPath(), "/"));
+                        tabHandler.addTab(new Tab(2, "", ((EntryItem) dataUtils.getList().get(1)).path, "/"));
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)

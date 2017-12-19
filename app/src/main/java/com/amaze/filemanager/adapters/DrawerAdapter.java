@@ -125,17 +125,17 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
             view.setOnClickListener(p1 -> {
                 EntryItem item = (EntryItem) getItem(position);
 
-                if (dataUtils.containsBooks(new String[]{item.getTitle(), item.getPath()}) != -1) {
+                if (dataUtils.containsBooks(new String[]{item.title, item.path}) != -1) {
 
-                    checkForPath(item.getPath());
+                    checkForPath(item.path);
                 }
 
-                if (dataUtils.getAccounts().size() > 0 && (item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                                item.getPath().startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                if (dataUtils.getAccounts().size() > 0 && (item.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
                     // we have cloud accounts, try see if token is expired or not
-                    CloudUtil.checkToken(item.getPath(), m);
+                    CloudUtil.checkToken(item.path, m);
                 }
                 m.selectItem(position);
             });
@@ -144,12 +144,12 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                     // not to remove the first bookmark (storage) and permanent bookmarks
                     if (position > m.storage_count && position < values.size() - 7) {
                         EntryItem item = (EntryItem) getItem(position);
-                        String title = item.getTitle();
-                        String path = (item).getPath();
-                        if (dataUtils.containsBooks(new String[]{item.getTitle(), path}) != -1) {
-                            m.renameBookmark((item).getTitle(), path);
+                        String title = item.title;
+                        String path = (item).path;
+                        if (dataUtils.containsBooks(new String[]{item.title, path}) != -1) {
+                            m.renameBookmark((item).title, path);
                         } else if (path.startsWith("smb:/")) {
-                            m.showSMBDialog(item.getTitle(), path, true);
+                            m.showSMBDialog(item.title, path, true);
                         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
                             GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
@@ -167,7 +167,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                             GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                         }
                     } else if (position < m.storage_count) {
-                        String path = ((EntryItem) getItem(position)).getPath();
+                        String path = ((EntryItem) getItem(position)).path;
                         if (!path.equals("/"))
                             GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
                     }
@@ -176,7 +176,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 return true;
             });
 
-            txtTitle.setText(((EntryItem) (values.get(position))).getTitle());
+            txtTitle.setText(((EntryItem) (values.get(position))).title);
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
 
@@ -245,6 +245,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     private Drawable getDrawable(int position) {
-        return ((EntryItem) getItem(position)).getIcon();
+        return ((EntryItem) getItem(position)).icon;
     }
 }
