@@ -73,7 +73,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -796,7 +795,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 int k = 0, i = 0;
                 String entryItemPathOld = "";
                 for (DrawerItem drawerItem : dataUtils.getList()) {
-                    if (!drawerItem.isSection()) {
+                    if (drawerItem.type == DrawerItem.ITEM_ENTRY) {
 
                         String entryItemPath = drawerItem.path;
 
@@ -857,44 +856,50 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public void selectItem(final int i) {
         ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getList();
-        if (!directoryDrawerItems.get(i).isSection()) {
-            if ((selectedStorage == NO_VALUE || selectedStorage >= directoryDrawerItems.size())) {
-                TabFragment tabFragment = new TabFragment();
-                Bundle a = new Bundle();
-                a.putString("path", directoryDrawerItems.get(i).path);
+        switch (directoryDrawerItems.get(i).type) {
+            case DrawerItem.ITEM_ENTRY:
+                if ((selectedStorage == NO_VALUE || selectedStorage >= directoryDrawerItems.size())) {
+                    TabFragment tabFragment = new TabFragment();
+                    Bundle a = new Bundle();
+                    a.putString("path", directoryDrawerItems.get(i).path);
 
-                tabFragment.setArguments(a);
+                    tabFragment.setArguments(a);
 
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, tabFragment);
+                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, tabFragment);
 
-                transaction.addToBackStack("tabt1" + 1);
-                pending_fragmentTransaction = transaction;
-                selectedStorage = i;
-                adapter.toggleChecked(selectedStorage);
-                if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                else onDrawerClosed();
-                floatingActionButton.setVisibility(View.VISIBLE);
-                floatingActionButton.getMenuButton().show();
-            } else {
-                pendingPath = directoryDrawerItems.get(i).path;
-
-                selectedStorage = i;
-                adapter.toggleChecked(selectedStorage);
-
-                if (directoryDrawerItems.get(i).path.contains(OTGUtil.PREFIX_OTG) &&
-                        getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
-                    // we've not gotten otg path yet
-                    // start system request for storage access framework
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    startActivityForResult(safIntent, REQUEST_CODE_SAF);
-                } else {
+                    transaction.addToBackStack("tabt1" + 1);
+                    pending_fragmentTransaction = transaction;
+                    selectedStorage = i;
+                    adapter.toggleChecked(selectedStorage);
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.getMenuButton().show();
+                } else {
+                    pendingPath = directoryDrawerItems.get(i).path;
+
+                    selectedStorage = i;
+                    adapter.toggleChecked(selectedStorage);
+
+                    if (directoryDrawerItems.get(i).path.contains(OTGUtil.PREFIX_OTG) &&
+                            getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
+                        // we've not gotten otg path yet
+                        // start system request for storage access framework
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
+                    } else {
+                        if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                        else onDrawerClosed();
+                    }
                 }
-            }
+                break;
+            case DrawerItem.ITEM_INTENT:
+                directoryDrawerItems.get(i).onClickListener.onClick();
+                adapter.toggleChecked(i);
+                break;
         }
     }
 
@@ -1500,6 +1505,37 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             sectionDrawerItems.remove(sectionDrawerItems.size() - 1); //Deletes last divider
         }
 
+        sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
+
+        sectionDrawerItems.add(new DrawerItem(getString(R.string.ftp),
+                ContextCompat.getDrawable(this, R.drawable.ic_ftp_dark), () -> {
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                    transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                    appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    pending_fragmentTransaction = transaction2;
+                    if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                    else onDrawerClosed();
+                    selectedStorage = SELECT_MINUS_2;
+                    adapter.toggleChecked(false);
+        }));
+        sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
+                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_white), () -> {
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+                    transaction2.replace(R.id.content_frame, new AppsListFragment());
+                    appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    pending_fragmentTransaction = transaction2;
+                    if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
+                    else onDrawerClosed();
+                    selectedStorage = SELECT_MINUS_2;
+                    adapter.toggleChecked(false);
+        }));
+        sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
+                ContextCompat.getDrawable(this, R.drawable.ic_settings_white_48dp), () -> {
+                    Intent in = new Intent(MainActivity.this, PreferencesActivity.class);
+                    startActivity(in);
+                    finish();
+        }));
+
         dataUtils.setList(sectionDrawerItems);
 
         adapter = new DrawerAdapter(this, this, sectionDrawerItems, this, getPrefs());
@@ -1677,57 +1713,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-        ImageView divider = findViewById(R.id.divider1);
-        if (getAppTheme().equals(AppTheme.LIGHT))
-            divider.setImageResource(R.color.divider);
-        else
-            divider.setImageResource(R.color.divider_dark);
-
         setDrawerHeaderBackground();
-        View settingsButton = findViewById(R.id.settingsbutton);
-        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
-            settingsButton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) settingsButton.findViewById(R.id.settingicon)).setImageResource(R.drawable.ic_settings_white_48dp);
-            ((TextView) settingsButton.findViewById(R.id.settingtext)).setTextColor(Utils.getColor(this, android.R.color.white));
-        }
-        settingsButton.setOnClickListener(v -> {
-            Intent in = new Intent(MainActivity.this, PreferencesActivity.class);
-            startActivity(in);
-            finish();
-        });
-        View appButton = findViewById(R.id.appbutton);
-        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
-            appButton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) appButton.findViewById(R.id.appicon)).setImageResource(R.drawable.ic_doc_apk_white);
-            ((TextView) appButton.findViewById(R.id.apptext)).setTextColor(Utils.getColor(this, android.R.color.white));
-        }
-        appButton.setOnClickListener(v -> {
-            FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-            transaction2.replace(R.id.content_frame, new AppsListFragment());
-            appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            pending_fragmentTransaction = transaction2;
-            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-            else onDrawerClosed();
-            selectedStorage = SELECT_MINUS_2;
-            adapter.toggleChecked(false);
-        });
-
-        View ftpButton = findViewById(R.id.ftpbutton);
-        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
-            ftpButton.setBackgroundResource(R.drawable.safr_ripple_black);
-            ((ImageView) ftpButton.findViewById(R.id.ftpicon)).setImageResource(R.drawable.ic_ftp_dark);
-            ((TextView) ftpButton.findViewById(R.id.ftptext)).setTextColor(Utils.getColor(this, android.R.color.white));
-        }
-        ftpButton.setOnClickListener(v -> {
-            FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-            transaction2.replace(R.id.content_frame, new FTPServerFragment());
-            appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-            pending_fragmentTransaction = transaction2;
-            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-            else onDrawerClosed();
-            selectedStorage = SELECT_MINUS_2;
-            adapter.toggleChecked(false);
-        });
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
         // status bar0

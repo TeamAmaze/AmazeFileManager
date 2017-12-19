@@ -122,20 +122,25 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
                 view.setBackgroundResource(R.drawable.safr_ripple_black);
             }
             view.setOnClickListener(p1 -> {
-                DrawerItem drawerItem = getItem(position);
+                if(getItem(position).type == DrawerItem.ITEM_INTENT) {
+                    getItem(position).onClickListener.onClick();
+                } else {
+                    DrawerItem drawerItem = getItem(position);
 
-                if (dataUtils.containsBooks(new String[]{drawerItem.title, drawerItem.path}) != -1) {
+                    if (dataUtils.containsBooks(new String[]{drawerItem.title, drawerItem.path}) != -1) {
 
-                    checkForPath(drawerItem.path);
+                        checkForPath(drawerItem.path);
+                    }
+
+                    if (dataUtils.getAccounts().size() > 0 && (drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                            drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                            drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                            drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                        // we have cloud accounts, try see if token is expired or not
+                        CloudUtil.checkToken(drawerItem.path, m);
+                    }
                 }
 
-                if (dataUtils.getAccounts().size() > 0 && (drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
-                    // we have cloud accounts, try see if token is expired or not
-                    CloudUtil.checkToken(drawerItem.path, m);
-                }
                 m.selectItem(position);
             });
             view.setOnLongClickListener(v -> {
