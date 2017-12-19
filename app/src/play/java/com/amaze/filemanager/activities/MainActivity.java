@@ -113,9 +113,7 @@ import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
-import com.amaze.filemanager.ui.drawer.EntryItem;
-import com.amaze.filemanager.ui.drawer.Item;
-import com.amaze.filemanager.ui.drawer.SectionItem;
+import com.amaze.filemanager.ui.drawer.DrawerItem;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.utils.BookSorter;
@@ -797,12 +795,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 String path = strings[0];
                 int k = 0, i = 0;
                 String entryItemPathOld = "";
-                for (Item item : dataUtils.getList()) {
-                    if (!item.isSection()) {
+                for (DrawerItem drawerItem : dataUtils.getList()) {
+                    if (!drawerItem.isSection()) {
 
-                        String entryItemPath = ((EntryItem) item).path;
+                        String entryItemPath = drawerItem.path;
 
-                        if (path.contains(((EntryItem) item).path)) {
+                        if (path.contains(drawerItem.path)) {
 
                             if (entryItemPath.length() > entryItemPathOld.length()) {
 
@@ -858,12 +856,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     public void selectItem(final int i) {
-        ArrayList<Item> directoryItems = dataUtils.getList();
-        if (!directoryItems.get(i).isSection()) {
-            if ((selectedStorage == NO_VALUE || selectedStorage >= directoryItems.size())) {
+        ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getList();
+        if (!directoryDrawerItems.get(i).isSection()) {
+            if ((selectedStorage == NO_VALUE || selectedStorage >= directoryDrawerItems.size())) {
                 TabFragment tabFragment = new TabFragment();
                 Bundle a = new Bundle();
-                a.putString("path", ((EntryItem) directoryItems.get(i)).path);
+                a.putString("path", directoryDrawerItems.get(i).path);
 
                 tabFragment.setArguments(a);
 
@@ -879,12 +877,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 floatingActionButton.setVisibility(View.VISIBLE);
                 floatingActionButton.getMenuButton().show();
             } else {
-                pendingPath = ((EntryItem) directoryItems.get(i)).path;
+                pendingPath = directoryDrawerItems.get(i).path;
 
                 selectedStorage = i;
                 adapter.toggleChecked(selectedStorage);
 
-                if (((EntryItem) directoryItems.get(i)).path.contains(OTGUtil.PREFIX_OTG) &&
+                if (directoryDrawerItems.get(i).path.contains(OTGUtil.PREFIX_OTG) &&
                         getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
@@ -1369,7 +1367,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     
     public void refreshDrawer() {
 
-        ArrayList<Item> sectionItems = new ArrayList<>();
+        ArrayList<DrawerItem> sectionDrawerItems = new ArrayList<>();
         ArrayList<String> storageDirectories = getStorageDirectories();
         storage_count = 0;
         for (String file : storageDirectories) {
@@ -1389,21 +1387,21 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                sectionItems.add(new EntryItem(name, file, icon1));
+                sectionDrawerItems.add(new DrawerItem(name, file, icon1));
             }
         }
         dataUtils.setStorages(storageDirectories);
-        sectionItems.add(new SectionItem());
+        sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
 
         if (dataUtils.getServers().size() > 0) {
             Collections.sort(dataUtils.getServers(), new BookSorter());
             synchronized (dataUtils.getServers()) {
                 for (String[] file : dataUtils.getServers()) {
-                    sectionItems.add(new EntryItem(file[0], file[1], ContextCompat.getDrawable(this,
+                    sectionDrawerItems.add(new DrawerItem(file[0], file[1], ContextCompat.getDrawable(this,
                             R.drawable.ic_settings_remote_white_48dp)));
                 }
             }
-            sectionItems.add(new SectionItem());
+            sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
         }
 
         ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
@@ -1412,7 +1410,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
                 if (cloudStorage instanceof Dropbox) {
 
-                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_DROPBOX,
+                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_DROPBOX,
                             CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
                             ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
 
@@ -1422,7 +1420,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     });
                 } else if (cloudStorage instanceof Box) {
 
-                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_BOX,
+                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_BOX,
                             CloudHandler.CLOUD_PREFIX_BOX + "/",
                             ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
 
@@ -1432,7 +1430,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     });
                 } else if (cloudStorage instanceof OneDrive) {
 
-                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
+                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
                             ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
 
@@ -1442,7 +1440,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     });
                 } else if (cloudStorage instanceof GoogleDrive) {
 
-                    sectionItems.add(new EntryItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                             ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
 
@@ -1455,7 +1453,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             Collections.sort(accountAuthenticationList, new BookSorter());
 
             if (accountAuthenticationList.size() != 0)
-                sectionItems.add(new SectionItem());
+                sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
         }
 
         if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
@@ -1465,11 +1463,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
                 synchronized (dataUtils.getBooks()) {
                     for (String[] file : dataUtils.getBooks()) {
-                        sectionItems.add(new EntryItem(file[0], file[1],
+                        sectionDrawerItems.add(new DrawerItem(file[0], file[1],
                                 ContextCompat.getDrawable(this, R.drawable.folder_fab)));
                     }
                 }
-                sectionItems.add(new SectionItem());
+                sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
             }
         }
 
@@ -1478,33 +1476,33 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.quick), "5",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.quick), "5",
                         ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
             if (quickAccessPref[1])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.recent), "6",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.recent), "6",
                         ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
             if (quickAccessPref[2])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.images), "0",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.images), "0",
                         ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
             if (quickAccessPref[3])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.videos), "1",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.videos), "1",
                         ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
             if (quickAccessPref[4])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.audio), "2",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.audio), "2",
                         ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
             if (quickAccessPref[5])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.documents), "3",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.documents), "3",
                         ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
             if (quickAccessPref[6])
-                sectionItems.add(new EntryItem(getResources().getString(R.string.apks), "4",
+                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.apks), "4",
                         ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
         } else {
-            sectionItems.remove(sectionItems.size() - 1); //Deletes last divider
+            sectionDrawerItems.remove(sectionDrawerItems.size() - 1); //Deletes last divider
         }
 
-        dataUtils.setList(sectionItems);
+        dataUtils.setList(sectionDrawerItems);
 
-        adapter = new DrawerAdapter(this, this, sectionItems, this, getPrefs());
+        adapter = new DrawerAdapter(this, this, sectionDrawerItems, this, getPrefs());
         mDrawerList.setAdapter(adapter);
     }
 
@@ -2000,14 +1998,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (b) {
                     tabHandler.clear();
                     if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, "", ((EntryItem) dataUtils.getList().get(1)).path, "/"));
+                        tabHandler.addTab(new Tab(1, "", dataUtils.getList().get(1).path, "/"));
                     else
                         tabHandler.addTab(new Tab(1, "", "/", "/"));
                     if (!dataUtils.getList().get(0).isSection()) {
-                        String pa = ((EntryItem) dataUtils.getList().get(0)).path;
+                        String pa = dataUtils.getList().get(0).path;
                         tabHandler.addTab(new Tab(2, "", pa, pa));
                     } else
-                        tabHandler.addTab(new Tab(2, "", ((EntryItem) dataUtils.getList().get(1)).path, "/"));
+                        tabHandler.addTab(new Tab(2, "", dataUtils.getList().get(1).path, "/"));
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)

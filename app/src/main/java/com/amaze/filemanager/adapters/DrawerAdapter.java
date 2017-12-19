@@ -42,8 +42,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.drawer.EntryItem;
-import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.ui.drawer.DrawerItem;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -55,10 +54,10 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import java.io.File;
 import java.util.ArrayList;
 
-public class DrawerAdapter extends ArrayAdapter<Item> {
+public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
     private final Context context;
     private UtilitiesProviderInterface utilsProvider;
-    private final ArrayList<Item> values;
+    private final ArrayList<DrawerItem> values;
     private MainActivity m;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private DataUtils dataUtils = DataUtils.getInstance();
@@ -79,7 +78,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     private LayoutInflater inflater;
 
     public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
-                         ArrayList<Item> values, MainActivity m, SharedPreferences Sp) {
+                         ArrayList<DrawerItem> values, MainActivity m, SharedPreferences Sp) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;
 
@@ -123,19 +122,19 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 view.setBackgroundResource(R.drawable.safr_ripple_black);
             }
             view.setOnClickListener(p1 -> {
-                EntryItem item = (EntryItem) getItem(position);
+                DrawerItem drawerItem = getItem(position);
 
-                if (dataUtils.containsBooks(new String[]{item.title, item.path}) != -1) {
+                if (dataUtils.containsBooks(new String[]{drawerItem.title, drawerItem.path}) != -1) {
 
-                    checkForPath(item.path);
+                    checkForPath(drawerItem.path);
                 }
 
-                if (dataUtils.getAccounts().size() > 0 && (item.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                                item.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                if (dataUtils.getAccounts().size() > 0 && (drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                                drawerItem.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
                     // we have cloud accounts, try see if token is expired or not
-                    CloudUtil.checkToken(item.path, m);
+                    CloudUtil.checkToken(drawerItem.path, m);
                 }
                 m.selectItem(position);
             });
@@ -143,13 +142,13 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 if (!getItem(position).isSection())
                     // not to remove the first bookmark (storage) and permanent bookmarks
                     if (position > m.storage_count && position < values.size() - 7) {
-                        EntryItem item = (EntryItem) getItem(position);
-                        String title = item.title;
-                        String path = (item).path;
-                        if (dataUtils.containsBooks(new String[]{item.title, path}) != -1) {
-                            m.renameBookmark((item).title, path);
+                        DrawerItem drawerItem = getItem(position);
+                        String title = drawerItem.title;
+                        String path = (drawerItem).path;
+                        if (dataUtils.containsBooks(new String[]{drawerItem.title, path}) != -1) {
+                            m.renameBookmark((drawerItem).title, path);
                         } else if (path.startsWith("smb:/")) {
-                            m.showSMBDialog(item.title, path, true);
+                            m.showSMBDialog(drawerItem.title, path, true);
                         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
 
                             GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.DROPBOX);
@@ -167,7 +166,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                             GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                         }
                     } else if (position < m.storage_count) {
-                        String path = ((EntryItem) getItem(position)).path;
+                        String path = getItem(position).path;
                         if (!path.equals("/"))
                             GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
                     }
@@ -176,7 +175,7 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 return true;
             });
 
-            txtTitle.setText(((EntryItem) (values.get(position))).title);
+            txtTitle.setText((values.get(position)).title);
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
 
@@ -245,6 +244,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
     }
 
     private Drawable getDrawable(int position) {
-        return ((EntryItem) getItem(position)).icon;
+        return getItem(position).icon;
     }
 }
