@@ -1,4 +1,4 @@
-package com.amaze.filemanager.ui.drawer;
+package com.amaze.filemanager.adapters.data;
 
 import android.graphics.drawable.Drawable;
 

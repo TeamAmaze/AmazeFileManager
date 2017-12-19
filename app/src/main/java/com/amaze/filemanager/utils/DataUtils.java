@@ -1,6 +1,6 @@
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.ui.drawer.DrawerItem;
+import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
