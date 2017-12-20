@@ -106,6 +106,7 @@
     <string name="light">Material Light</string>
     <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
+    <string name="black">Black (for AMOLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>

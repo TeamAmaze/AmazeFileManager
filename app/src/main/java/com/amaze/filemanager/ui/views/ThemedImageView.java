@@ -32,7 +32,7 @@ public class ThemedImageView extends android.support.v7.widget.AppCompatImageVie
         BasicActivity a = (BasicActivity) getActivity();
 
         // dark preference found
-        if (a != null && a.getAppTheme().equals(AppTheme.DARK)) {
+        if (a != null && (a.getAppTheme().equals(AppTheme.DARK) || a.getAppTheme().equals(AppTheme.BLACK))) {
             setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         } else if (a == null) {
             throw new IllegalStateException("Could not get activity! Can't show correct icon color!");

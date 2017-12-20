@@ -148,15 +148,19 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         compressedFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
-
+    
         mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
-        mToolbarContainer.setOnTouchListener((view, motionEvent) -> {
-            if (stopAnims) {
-                if ((!compressedExplorerAdapter.stoppedAnimation)) {
+        mToolbarContainer.setOnTouchListener((view, motionEvent) ->
+        {
+            if(stopAnims)
+            {
+                if((!compressedExplorerAdapter.stoppedAnimation))
+                {
                     stopAnim();
                 }
                 compressedExplorerAdapter.stoppedAnimation = true;
@@ -164,13 +168,16 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             stopAnims = false;
             return false;
         });
-
+    
         listView.setVisibility(View.VISIBLE);
         mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
-
-        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+    
+        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
+        {
             rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        } else if(utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
         } else {
             listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
         }

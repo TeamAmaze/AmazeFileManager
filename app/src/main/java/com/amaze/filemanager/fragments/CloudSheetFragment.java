@@ -47,6 +47,8 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
         if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.DARK)) {
             rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        } else if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.BLACK)) {
+            rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
         } else {
             rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
         }

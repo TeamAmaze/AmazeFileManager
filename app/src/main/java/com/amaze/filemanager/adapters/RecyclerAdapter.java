@@ -640,7 +640,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.genericIcon.setColorFilter(null);
                     holder.imageView1.setVisibility(View.VISIBLE);
                     holder.imageView1.setImageDrawable(null);
-                    if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
+                    if (utilsProvider.getAppTheme().equals(AppTheme.DARK) || utilsProvider.getAppTheme().equals(AppTheme.BLACK))
                         holder.imageView1.setBackgroundColor(Color.BLACK);
                     mainFrag.iconHolder.cancelLoad(holder.imageView1);
                     mainFrag.iconHolder.loadDrawable(holder.imageView1, (rowItem.getDesc()), null);

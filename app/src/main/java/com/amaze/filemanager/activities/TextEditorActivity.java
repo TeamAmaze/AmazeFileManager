@@ -143,6 +143,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
         if (getAppTheme().equals(AppTheme.DARK))
             getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+        else if (getAppTheme().equals(AppTheme.BLACK))
+            getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
 
         setContentView(R.layout.search);
         searchViewLayout = findViewById(R.id.searchview);
@@ -250,6 +252,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         mInput.addTextChangedListener(this);
         if (getAppTheme().equals(AppTheme.DARK))
             mInput.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+        else if (getAppTheme().equals(AppTheme.BLACK))
+            mInput.setBackgroundColor(Utils.getColor(this, android.R.color.black));
 
         mInputTypefaceDefault = mInput.getTypeface();
         mInputTypefaceMono = Typeface.MONOSPACE;
@@ -800,11 +804,13 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
                     // setting older span back before setting new one
                     Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
-                    mInput.getText().setSpan(getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
-                                    new BackgroundColorSpan(Color.LTGRAY),
-                            (Integer) keyValueOld.getKey(),
-                            (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
+                    if (getAppTheme().equals(AppTheme.LIGHT)) {
+                        mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
+                                (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else {
+                        mInput.getText().setSpan(new BackgroundColorSpan(Color.LTGRAY), (Integer) keyValueOld.getKey(),
+                                (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
                     // highlighting previous element in list
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
                     mInput.getText().setSpan(new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
@@ -825,10 +831,13 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     if (mCurrent != -1) {
 
                         Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
-                        mInput.getText().setSpan(getAppTheme().equals(AppTheme.LIGHT) ? new BackgroundColorSpan(Color.YELLOW) :
-                                        new BackgroundColorSpan(Color.LTGRAY),
-                                (Integer) keyValueOld.getKey(),
-                                (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        if (getAppTheme().equals(AppTheme.LIGHT)) {
+                            mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
+                                    (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        } else {
+                            mInput.getText().setSpan(new BackgroundColorSpan(Color.LTGRAY), (Integer) keyValueOld.getKey(),
+                                    (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        }
                     }
 
                     Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
