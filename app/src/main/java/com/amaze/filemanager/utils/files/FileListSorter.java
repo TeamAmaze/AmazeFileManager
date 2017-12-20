@@ -19,7 +19,7 @@
 
 package com.amaze.filemanager.utils.files;
 
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 
 import java.util.Comparator;
 
@@ -36,7 +36,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     }
 
     private boolean isDirectory(LayoutElementParcelable path) {
-        return path.isDirectory();
+        return path.isDirectory;
     }
 
     /**
@@ -87,38 +87,38 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
         if (sort == 0) {
 
             // sort by name
-            return asc * file1.getTitle().compareToIgnoreCase(file2.getTitle());
+            return asc * file1.title.compareToIgnoreCase(file2.title);
         } else if (sort == 1) {
 
             // sort by last modified
-            return asc * Long.valueOf(file1.getDate1()).compareTo(file2.getDate1());
+            return asc * Long.valueOf(file1.date).compareTo(file2.date);
         } else if (sort == 2) {
 
             // sort by size
-            if (!file1.isDirectory() && !file2.isDirectory()) {
+            if (!file1.isDirectory && !file2.isDirectory) {
 
-                return asc * Long.valueOf(file1.getlongSize()).compareTo(file2.getlongSize());
+                return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
             } else {
 
-                return file1.getTitle().compareToIgnoreCase(file2.getTitle());
+                return file1.title.compareToIgnoreCase(file2.title);
             }
 
         } else if(sort ==3) {
 
             // sort by type
-            if(!file1.isDirectory() && !file2.isDirectory()) {
+            if(!file1.isDirectory && !file2.isDirectory) {
 
-                final String ext_a = getExtension(file1.getTitle());
-                final String ext_b = getExtension(file2.getTitle());
+                final String ext_a = getExtension(file1.title);
+                final String ext_b = getExtension(file2.title);
 
 
                 final int res = asc*ext_a.compareTo(ext_b);
                 if (res == 0) {
-                    return asc * file1.getTitle().compareToIgnoreCase(file2.getTitle());
+                    return asc * file1.title.compareToIgnoreCase(file2.title);
                 }
                 return res;
             } else {
-                return  file1.getTitle().compareToIgnoreCase(file2.getTitle());
+                return  file1.title.compareToIgnoreCase(file2.title);
             }
         }
         return 0;

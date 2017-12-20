@@ -95,7 +95,7 @@ public class ProcessViewerFragment extends Fragment {
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
-        mainActivity.floatingActionButton.hideMenuButton(true);
+        mainActivity.floatingActionButton.getMenuButton().hide();
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity.supportInvalidateOptionsMenu();
 
@@ -247,7 +247,7 @@ public class ProcessViewerFragment extends Fragment {
 
             for (int i=0; i<encryptService.getDataPackageSize(); i++) {
                 CopyDataParcelable dataPackage = encryptService.getDataPackage(i);
-                processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
                         : ServiceType.ENCRYPT);
             }
 
@@ -265,7 +265,7 @@ public class ProcessViewerFragment extends Fragment {
                         @Override
                         public void run() {
 
-                            processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                            processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
                                     : ServiceType.ENCRYPT);
                         }
                     });
@@ -326,10 +326,10 @@ public class ProcessViewerFragment extends Fragment {
 
     public void processResults(final CopyDataParcelable dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
-            String name = dataPackage.getName();
-            long total = dataPackage.getTotal();
-            long doneBytes = dataPackage.getByteProgress();
-            boolean move = dataPackage.isMove();
+            String name = dataPackage.name;
+            long total = dataPackage.totalSize;
+            long doneBytes = dataPackage.byteProgress;
+            boolean move = dataPackage.move;
 
             if (!isInitialized) {
 
@@ -342,7 +342,7 @@ public class ProcessViewerFragment extends Fragment {
             }
 
             addEntry(FileUtils.readableFileSizeFloat(doneBytes),
-                    FileUtils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
+                    FileUtils.readableFileSizeFloat(dataPackage.speedRaw));
 
             mProgressFileNameText.setText(name);
 
@@ -353,14 +353,14 @@ public class ProcessViewerFragment extends Fragment {
             mProgressBytesText.setText(bytesText);
 
             Spanned fileProcessedSpan = Html.fromHtml(getResources().getString(R.string.processing_file)
-                    + " <font color='" + accentColor + "'><i>" + (dataPackage.getSourceProgress())
+                    + " <font color='" + accentColor + "'><i>" + (dataPackage.sourceProgress)
                     + " </font></i>" + getResources().getString(R.string.of) + " <i>"
-                    + dataPackage.getSourceFiles() + "</i>");
+                    + dataPackage.sourceFiles + "</i>");
             mProgressFileText.setText(fileProcessedSpan);
 
             Spanned speedSpan = Html.fromHtml(getResources().getString(R.string.current_speed)
                     + ": <font color='" + accentColor + "'><i>"
-                    + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
+                    + Formatter.formatFileSize(getContext(), dataPackage.speedRaw)
                     + "/s</font></i>");
             mProgressSpeedText.setText(speedSpan);
 

@@ -17,12 +17,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
-public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedItemViewHolder> {
 
     private static final int TYPE_HEADER = 0, TYPE_ITEM = 1;
 
@@ -162,7 +163,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CompressedItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             v.findViewById(R.id.picture_icon).setVisibility(View.INVISIBLE);
@@ -179,11 +180,9 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int position) {
-        CompressedItemViewHolder holder = (CompressedItemViewHolder) vholder;
-
+    public void onBindViewHolder(final CompressedItemViewHolder holder, int position) {
         if (!stoppedAnimation) {
-            animate((CompressedItemViewHolder) vholder);
+            animate(holder);
         }
 
         final CompressedObjectParcelable rowItem = items.get(position);
@@ -196,47 +195,50 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
             holder.checkImageView.setBackgroundDrawable(new CircleGradientDrawable(compressedExplorerFragment.accentColor,
                     utilsProvider.getAppTheme(), compressedExplorerFragment.getResources().getDisplayMetrics()));
 
-        if (rowItem.getType() == CompressedObjectParcelable.TYPE_GOBACK) {
-            holder.genericIcon.setImageDrawable(compressedExplorerFragment.getResources().getDrawable(R.drawable.ic_arrow_left_white_24dp));
+        if (rowItem.type == CompressedObjectParcelable.TYPE_GOBACK) {
+            GlideApp.with(compressedExplorerFragment).load(R.drawable.ic_arrow_left_white_24dp).into(holder.genericIcon);
             gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
             holder.txtTitle.setText("..");
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            holder.genericIcon.setImageDrawable(Icons.loadMimeIcon(rowItem.getName(), false, context.getResources()));
-            final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
+            GlideApp.with(compressedExplorerFragment)
+                    .load(Icons.loadMimeIcon(rowItem.name, false))
+                    .into(holder.genericIcon);
+
+            final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
             if (compressedExplorerFragment.showLastModified)
-                holder.date.setText(Utils.getDate(rowItem.getTime(), compressedExplorerFragment.year));
-            if (rowItem.isDirectory()) {
+                holder.date.setText(Utils.getDate(rowItem.date, compressedExplorerFragment.year));
+            if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
                 if (stringBuilder.toString().length() > 0) {
-                    stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+                    stringBuilder.deleteCharAt(rowItem.name.length() - 1);
                     try {
                         holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
                     } catch (Exception e) {
-                        holder.txtTitle.setText(rowItem.getName().substring(0, rowItem.getName().lastIndexOf("/")));
+                        holder.txtTitle.setText(rowItem.name.substring(0, rowItem.name.lastIndexOf("/")));
                     }
                 }
             } else {
                 if (compressedExplorerFragment.showSize)
-                    holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.getSize()));
-                holder.txtTitle.setText(rowItem.getName().substring(rowItem.getName().lastIndexOf("/") + 1));
+                    holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
+                holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
-                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.getName()),
+                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.name),
                             gradientDrawable, Color.parseColor(compressedExplorerFragment.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
             }
         }
 
         holder.rl.setOnLongClickListener(view -> {
-            if (rowItem.getType() != CompressedObjectParcelable.TYPE_GOBACK) {
+            if (rowItem.type != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
             }
             return true;
         });
         holder.genericIcon.setOnClickListener(view -> {
-            if (rowItem.getType() != CompressedObjectParcelable.TYPE_GOBACK) {
+            if (rowItem.type != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
             }
         });
@@ -254,17 +256,17 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
         } else holder.checkImageView.setVisibility(View.INVISIBLE);
 
         holder.rl.setOnClickListener(p1 -> {
-            if (rowItem.getType() == CompressedObjectParcelable.TYPE_GOBACK)
+            if (rowItem.type == CompressedObjectParcelable.TYPE_GOBACK)
                 compressedExplorerFragment.goBack();
             else {
                 if (compressedExplorerFragment.selection) {
                     toggleChecked(position, holder.checkImageView);
                 } else {
-                    final StringBuilder stringBuilder = new StringBuilder(rowItem.getName());
-                    if (rowItem.isDirectory())
-                        stringBuilder.deleteCharAt(rowItem.getName().length() - 1);
+                    final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
+                    if (rowItem.directory)
+                        stringBuilder.deleteCharAt(rowItem.name.length() - 1);
 
-                    if (rowItem.isDirectory()) {
+                    if (rowItem.directory) {
                         compressedExplorerFragment.changePath(stringBuilder.toString());
                     } else {
                         String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
@@ -273,7 +275,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
                                 "/" + fileName;
 
                         HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
-                                + rowItem.getName().replaceAll("\\\\", "/"));
+                                + rowItem.name.replaceAll("\\\\", "/"));
                         file.setMode(OpenMode.FILE);
                         // this file will be opened once service finishes up it's extraction
                         compressedExplorerFragment.files.add(file);
@@ -284,7 +286,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
                                 compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         compressedInterface.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
-                                new String[]{rowItem.getName()});
+                                new String[]{rowItem.name});
                     }
                 }
             }
@@ -297,14 +299,14 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+    public void onViewDetachedFromWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+        holder.rl.clearAnimation();
     }
 
     @Override
-    public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
-        ((CompressedItemViewHolder) holder).rl.clearAnimation();
+    public boolean onFailedToRecycleView(CompressedItemViewHolder holder) {
+        holder.rl.clearAnimation();
         return super.onFailedToRecycleView(holder);
     }
 

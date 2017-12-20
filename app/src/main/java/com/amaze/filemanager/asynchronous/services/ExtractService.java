@@ -169,15 +169,8 @@ public class ExtractService extends Service {
                 publishCompletedResult("", id1);
             }
 
-            CopyDataParcelable intent = new CopyDataParcelable();
-            intent.setName(fileName);
-            intent.setSourceFiles(sourceFiles);
-            intent.setSourceProgress(sourceProgress);
-            intent.setTotal(total);
-            intent.setByteProgress(done);
-            intent.setSpeedRaw(speed);
-            intent.setMove(false);
-            intent.setCompleted(isCompleted);
+            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+                    total, done, speed, false, isCompleted);
             putDataPackage(intent);
 
             if (progressListener != null) {
@@ -578,15 +571,7 @@ public class ExtractService extends Service {
             final ExtractService extractService = this.extractService.get();
             if(extractService == null) return;
 
-            CopyDataParcelable intent1 = new CopyDataParcelable();
-            intent1.setName(fileName);
-            intent1.setSourceFiles(sourceTotal);
-            intent1.setSourceProgress(0);
-            intent1.setTotal(totalSize);
-            intent1.setByteProgress(0);
-            intent1.setSpeedRaw(0);
-            intent1.setMove(false);
-            intent1.setCompleted(false);
+            CopyDataParcelable intent1 = new CopyDataParcelable(fileName, sourceTotal, totalSize, false);
             extractService.putDataPackage(intent1);
         }
 

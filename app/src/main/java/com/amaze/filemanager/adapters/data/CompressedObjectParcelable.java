@@ -1,4 +1,4 @@
-package com.amaze.filemanager.ui;
+package com.amaze.filemanager.adapters.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,10 +12,10 @@ import java.util.Comparator;
 public class CompressedObjectParcelable implements Parcelable {
     public static final int TYPE_GOBACK = -1, TYPE_NORMAL = 0;
 
-    private final boolean directory;
-    private final int type;
-    private final String name;
-    private final long date, size;
+    public final boolean directory;
+    public final int type;
+    public final String name;
+    public final long date, size;
 
     public CompressedObjectParcelable(String name, long date, long size, boolean directory) {
         this.directory = directory;
@@ -34,26 +34,6 @@ public class CompressedObjectParcelable implements Parcelable {
         this.name = null;
         this.date = 0;
         this.size = 0;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public boolean isDirectory() {
-        return directory;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public long getTime() {
-        return date;
     }
 
     @Override
@@ -100,13 +80,13 @@ public class CompressedObjectParcelable implements Parcelable {
     public static class Sorter implements Comparator<CompressedObjectParcelable> {
         @Override
         public int compare(CompressedObjectParcelable file1, CompressedObjectParcelable file2) {
-            if(file1.getType() == CompressedObjectParcelable.TYPE_GOBACK) return -1;
-            else if(file2.getType() == CompressedObjectParcelable.TYPE_GOBACK) return 1;
-            else if (file1.isDirectory() && !file2.isDirectory()) {
+            if(file1.type == CompressedObjectParcelable.TYPE_GOBACK) return -1;
+            else if(file2.type == CompressedObjectParcelable.TYPE_GOBACK) return 1;
+            else if (file1.directory && !file2.directory) {
                 return -1;
-            } else if (file2.isDirectory() && !(file1).isDirectory()) {
+            } else if (file2.directory && !(file1).directory) {
                 return 1;
-            } else return file1.getName().compareToIgnoreCase(file2.getName());
+            } else return file1.name.compareToIgnoreCase(file2.name);
         }
 
     }

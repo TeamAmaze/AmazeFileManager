@@ -51,7 +51,7 @@ public class FileHandler extends Handler {
                 break;
             case CustomFileObserver.DELETED_ITEM:
                 for (int i = 0; i < main.getElementsList().size(); i++) {
-                    File currentFile = new File(main.getElementsList().get(i).getDesc());
+                    File currentFile = new File(main.getElementsList().get(i).desc);
 
                     if (currentFile.getName().equals(path)) {
                         main.getElementsList().remove(i);
@@ -70,7 +70,7 @@ public class FileHandler extends Handler {
                 main.reloadListElements(true, main.results, !main.IS_LIST);
             } else {
                 // we already have some elements in list view, invalidate the adapter
-                ((RecyclerAdapter) listView.getAdapter()).setItems(main.getElementsList());
+                ((RecyclerAdapter) listView.getAdapter()).setItems(listView, main.getElementsList());
             }
         } else {
             // there was no list view, means the directory was empty

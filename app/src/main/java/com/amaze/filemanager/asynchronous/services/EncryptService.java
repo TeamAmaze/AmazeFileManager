@@ -122,16 +122,10 @@ public class EncryptService extends Service {
             progressHandler.setProgressListener(EncryptService.this::publishResults);
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            CopyDataParcelable dataPackage = new CopyDataParcelable();
-            dataPackage.setName(baseFile.getName());
-            dataPackage.setSourceFiles(1);
-            dataPackage.setSourceProgress(1);
-            dataPackage.setTotal(totalSize);
-            dataPackage.setByteProgress(0);
-            dataPackage.setSpeedRaw(0);
-            dataPackage.setMove(cryptEnum==CryptEnum.ENCRYPT ? false : true);   // we're using encrypt as
-                                                                                // move flag false
-            dataPackage.setCompleted(false);
+            CopyDataParcelable dataPackage = new CopyDataParcelable(baseFile.getName(),
+                    1, 1, totalSize, 0, 0,
+                    cryptEnum==CryptEnum.ENCRYPT ? false : true,  // we're using encrypt as move flag false
+                    false);
             putDataPackage(dataPackage);
 
             if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
@@ -209,15 +203,8 @@ public class EncryptService extends Service {
             }
 
             //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable();
-            intent.setName(fileName);
-            intent.setSourceFiles(sourceFiles);
-            intent.setSourceProgress(sourceProgress);
-            intent.setTotal(totalSize);
-            intent.setByteProgress(writtenSize);
-            intent.setSpeedRaw(speed);
-            intent.setMove(cryptEnum==CryptEnum.ENCRYPT ? false : true);
-            intent.setCompleted(false);
+            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+                    totalSize, writtenSize, speed, cryptEnum==CryptEnum.ENCRYPT ? false : true, false);
             putDataPackage(intent);
             if(progressListener!=null) {
                 progressListener.onUpdate(intent);

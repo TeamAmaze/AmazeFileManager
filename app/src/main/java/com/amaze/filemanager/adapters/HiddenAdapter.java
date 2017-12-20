@@ -60,16 +60,16 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
     public void onBindViewHolder(HiddenViewHolder holder, int position) {
         HybridFile file = items.get(position);
 
-        holder.getTxtTitle().setText(file.getName());
+        holder.txtTitle.setText(file.getName());
         String a = file.getReadablePath(file.getPath());
-        holder.getTxtDesc().setText(a);
+        holder.txtDesc.setText(a);
 
         if (hide) {
-            holder.getImage().setVisibility(View.GONE);
+            holder.image.setVisibility(View.GONE);
         }
 
         // TODO: move the listeners to the constructor
-        holder.getImage().setOnClickListener(view -> {
+        holder.image.setOnClickListener(view -> {
             if (!file.isSmb() && file.isDirectory()) {
                 ArrayList<HybridFileParcelable> a1 = new ArrayList<>();
                 HybridFileParcelable baseFile = new HybridFileParcelable(items.get(position).getPath() + "/.nomedia");
@@ -81,7 +81,7 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
             items.remove(items.get(position));
             notifyDataSetChanged();
         });
-        holder.getRow().setOnClickListener(view -> {
+        holder.row.setOnClickListener(view -> {
             materialDialog.dismiss();
             new Thread(() -> {
                 if (file.isDirectory()) {

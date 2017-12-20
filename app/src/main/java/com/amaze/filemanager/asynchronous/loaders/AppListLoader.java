@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.util.Pair;
 import android.text.format.Formatter;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
-import com.amaze.filemanager.utils.files.FileListSorter;
+import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
 
@@ -26,18 +23,16 @@ import java.util.List;
  * Class loads all the packages installed
  */
 
-public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>> {
+public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
 
     private PackageManager packageManager;
     private PackageReceiver packageReceiver;
-    private Context context;
-    private List<LayoutElementParcelable> mApps;
+    private AppsDataPair mApps;
     private int sortBy, asc;
 
     public AppListLoader(Context context, int sortBy, int asc) {
         super(context);
 
-        this.context = context;
         this.sortBy = sortBy;
         this.asc = asc;
 
@@ -49,16 +44,15 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
     }
 
     @Override
-    public List<LayoutElementParcelable> loadInBackground() {
+    public AppsDataPair loadInBackground() {
         List<ApplicationInfo> apps = packageManager.getInstalledApplications(
                 PackageManager.MATCH_UNINSTALLED_PACKAGES |
                         PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
 
         if (apps == null)
-            apps = new ArrayList<>();
+            return new AppsDataPair(Collections.emptyList(), Collections.emptyList());
 
-        mApps = new ArrayList<>(apps.size());
-
+        mApps = new AppsDataPair(new ArrayList<>(apps.size()), new ArrayList<>(apps.size()));
 
         for (ApplicationInfo object : apps) {
             File sourceDir = new File(object.sourceDir);
@@ -73,20 +67,27 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
                 info = null;
             }
 
-            mApps.add(new LayoutElementParcelable(new BitmapDrawable(context.getResources(),
-                    BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_doc_apk_grid)),
-                    label == null ? object.packageName : label, object.sourceDir,
-                    object.packageName, object.flags + "_" + (info!=null ? info.versionName:""),
+            AppDataParcelable elem = new AppDataParcelable(
+                    label == null ? object.packageName : label,
+                    object.sourceDir, object.packageName,
+                    object.flags + "_" + (info!=null ? info.versionName:""),
                     Formatter.formatFileSize(getContext(), sourceDir.length()),
-                    sourceDir.length(), false, sourceDir.lastModified()+"", false));
+                    sourceDir.length(), sourceDir.lastModified());
 
-            Collections.sort(mApps, new FileListSorter(0, sortBy, asc));
+            mApps.first.add(elem);
+
+            Collections.sort(mApps.first, new AppDataParcelable.AppDataSorter(sortBy, asc));
+
+            for (AppDataParcelable p : mApps.first) {
+                mApps.second.add(p.path);
+            }
         }
+
         return mApps;
     }
 
     @Override
-    public void deliverResult(List<LayoutElementParcelable> data) {
+    public void deliverResult(AppsDataPair data) {
         if (isReset()) {
 
             if (data != null)
@@ -94,7 +95,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
         }
 
         // preserving old data for it to be closed
-        List<LayoutElementParcelable> oldData = mApps;
+        AppsDataPair oldData = mApps;
         mApps = data;
         if (isStarted()) {
             // loader has been started, if we have data, return immediately
@@ -132,7 +133,7 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
     }
 
     @Override
-    public void onCanceled(List<LayoutElementParcelable> data) {
+    public void onCanceled(AppsDataPair data) {
         super.onCanceled(data);
 
         onReleaseResources(data);//TODO onReleaseResources() is empty
@@ -166,7 +167,23 @@ public class AppListLoader extends AsyncTaskLoader<List<LayoutElementParcelable>
      * @param layoutElementList
      */
     //TODO do something
-    private void onReleaseResources(List<LayoutElementParcelable> layoutElementList) {
+    private void onReleaseResources(AppsDataPair layoutElementList) {
 
+    }
+
+    /**
+     * typedef Pair<List<AppDataParcelable>, List<String>> AppsDataPair
+     */
+    public static class AppsDataPair extends Pair<List<AppDataParcelable>, List<String>> {
+
+        /**
+         * Constructor for a Pair.
+         *
+         * @param first  the first object in the Pair
+         * @param second the second object in the pair
+         */
+        public AppsDataPair(List<AppDataParcelable> first, List<String> second) {
+            super(first, second);
+        }
     }
 }

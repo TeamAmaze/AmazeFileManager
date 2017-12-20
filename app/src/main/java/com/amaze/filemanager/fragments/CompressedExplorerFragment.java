@@ -55,7 +55,7 @@ import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -299,7 +299,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {
-                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).getName();
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
                     }
 
                     compressedInterface.decompress(null, dirs);
@@ -342,7 +342,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public void onResume() {
         super.onResume();
 
-        mainActivity.floatingActionButton.hideMenuButton(true);
+        mainActivity.floatingActionButton.getMenuButton().hide();
         Intent intent = new Intent(getActivity(), ExtractService.class);
         getActivity().bindService(intent, mServiceConnection, 0);
     }
@@ -424,9 +424,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         folder = 0;
         file = 0;
         for (CompressedObjectParcelable item : items) {
-            if(item.getType() == CompressedObjectParcelable.TYPE_GOBACK) continue;
+            if(item.type == CompressedObjectParcelable.TYPE_GOBACK) continue;
             
-            if (item.isDirectory()) folder++;
+            if (item.directory) folder++;
             else file++;
         }
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menu Layout is needed for the overlay to work -->
+<jahirfiquitiva.libs.fabsmenu.FABsMenuLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    fab:fabs_menu_overlayColor="#00000000"
+    fab:fabs_menu_clickableOverlay="true"
+    tools:layout_behavior="@string/fabs_menu_layout_behavior">
+
+    <!-- FABs Menu is the main view. It will contain all the items FABs and it create the menu fab itself -->
+    <jahirfiquitiva.libs.fabsmenu.FABsMenu
+        android:id="@+id/fabs_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:clipChildren="false"
+        fab:fab_moreButtonPlusIcon="@drawable/ic_add_white_24dp"
+        fab:fab_menuMargins="16dp"
+        fab:fab_moreButtonSize="normal"
+        fab:fab_labelsPosition="left"
+        fab:fab_expandDirection="up">
+
+        <!-- This is the item that appears at the top of the menu -->
+        <jahirfiquitiva.libs.fabsmenu.TitleFAB
+            android:id="@+id/menu_new_folder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:srcCompat="@drawable/folder_fab"
+            fab:fabSize="mini"
+            fab:fab_title="@string/folder"/>
+
+        <jahirfiquitiva.libs.fabsmenu.TitleFAB
+            android:id="@+id/menu_new_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:srcCompat="@drawable/ic_insert_drive_file_white_48dp"
+            fab:fabSize="mini"
+            fab:fab_title="@string/file"/>
+
+        <jahirfiquitiva.libs.fabsmenu.TitleFAB
+            android:id="@+id/menu_new_cloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:srcCompat="@drawable/ic_cloud_white_24dp"
+            fab:fabSize="mini"
+            fab:fab_title="@string/cloud_connection"/>
+    </jahirfiquitiva.libs.fabsmenu.FABsMenu>
+
+</jahirfiquitiva.libs.fabsmenu.FABsMenuLayout>

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fab_height">@dimen/fab_size_mini</dimen>
+    <dimen name="fab_height">40dp</dimen>
 </resources>

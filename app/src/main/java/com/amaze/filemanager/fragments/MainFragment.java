@@ -31,11 +31,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -83,10 +80,8 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.ui.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.icons.IconHolder;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
@@ -120,7 +115,6 @@ import jcifs.smb.SmbFile;
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
-    public Drawable folder, apk, DARK_IMAGE, DARK_VIDEO;
     public int sortby, dsort, asc;
     public String home;
     public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
@@ -133,7 +127,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
-    public IconHolder iconHolder;
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public int file_count, folder_count, columns;
     public String smbPath;
@@ -166,7 +159,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private View rootView;
     private View actionModeView;
     private FastScroller fastScroller;
-    private Bitmap mFolderBitmap;
     private CustomFileObserver customFileObserver;
     private DataUtils dataUtils = DataUtils.getInstance();
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
@@ -190,7 +182,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     /**
      * For caching the back button
      */
-    private Drawable backIcon = null;
     private LayoutElementParcelable back = null;
 
     @Override
@@ -261,7 +252,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-        apk = res.getDrawable(R.drawable.ic_doc_apk_grid);
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
         //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(), listView.getPaddingBottom());
@@ -277,15 +267,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         initNoFileLayout();
         SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
         COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
-        folder = res.getDrawable(R.drawable.ic_grid_folder_new);
         getSortModes();
-        DARK_IMAGE = res.getDrawable(R.drawable.ic_doc_image_dark);
-        DARK_VIDEO = res.getDrawable(R.drawable.ic_doc_video_dark);
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
         f.generateMode(getActivity());
         getMainActivity().getAppbar().getBottomBar().setClickListener();
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
 
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST) {
             listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
@@ -362,10 +348,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     void switchToGrid() {
         IS_LIST = false;
 
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons(true);
-
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
             // will always be grid, set alternate white background
@@ -379,6 +361,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
         setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
         listView.setLayoutManager(mLayoutManagerGrid);
+        listView.clearOnScrollListeners();
         adapter = null;
     }
 
@@ -390,12 +373,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             listView.setBackgroundDrawable(null);
         }
 
-        iconHolder = new IconHolder(getActivity(), SHOW_THUMBS, !IS_LIST);
-        folder = new BitmapDrawable(res, mFolderBitmap);
-        fixIcons(true);
         if (mLayoutManager == null)
             mLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(mLayoutManager);
+        listView.clearOnScrollListeners();
         adapter = null;
     }
 
@@ -496,7 +477,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             mode.setCustomView(actionModeView);
 
             getMainActivity().setPagingEnabled(false);
-            getMainActivity().floatingActionButton.hideMenuButton(true);
+            getMainActivity().floatingActionButton.getMenuButton().hide();
 
             // translates the drawable content down
             // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -554,7 +535,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).desc);
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -572,7 +553,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         if (getMainActivity().mReturnIntent)
                             if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
                         for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                            File x = new File(e.getDesc());
+                            File x = new File(e.desc);
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -591,7 +572,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     showOption(R.id.openwith, menu);
                     showOption(R.id.share, menu);
 
-                    File x = new File(adapter.getCheckedItems().get(0).getDesc());
+                    File x = new File(adapter.getCheckedItems().get(0).desc);
 
                     if (x.isDirectory()) {
                         hideOption(R.id.openwith, menu);
@@ -610,7 +591,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             showOption(R.id.openmulti, menu);
                     try {
                         for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                            File x = new File(e.getDesc());
+                            File x = new File(e.desc);
                             if (x.isDirectory()) {
                                 hideOption(R.id.share, menu);
                                 hideOption(R.id.openmulti, menu);
@@ -661,7 +642,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.about:
                     LayoutElementParcelable x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
-                            x.getPermissions(), (ThemedActivity) getActivity(), ThemedActivity.rootMode,
+                            x.permissions, (ThemedActivity) getActivity(), ThemedActivity.rootMode,
                             utilsProvider.getAppTheme());
                     mode.finish();
                     return true;
@@ -672,7 +653,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.share:
                     ArrayList<File> arrayList = new ArrayList<>();
                     for (LayoutElementParcelable e: checkedItems) {
-                        arrayList.add(new File(e.getDesc()));
+                        arrayList.add(new File(e.desc));
                     }
                     if (arrayList.size() > 100)
                         Toast.makeText(getActivity(), getResources().getString(R.string.share_limit),
@@ -684,7 +665,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
-                                FileUtils.shareCloudFile(LIST_ELEMENTS.get(0).getDesc(),
+                                FileUtils.shareCloudFile(LIST_ELEMENTS.get(0).desc,
                                         LIST_ELEMENTS.get(0).getMode(), getContext());
                                 break;
                             default:
@@ -694,7 +675,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     }
                     return true;
                 case R.id.openparent:
-                    loadlist(new File(checkedItems.get(0).getDesc()).getParent(), false, OpenMode.FILE);
+                    loadlist(new File(checkedItems.get(0).desc).getParent(), false, OpenMode.FILE);
                     return true;
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
@@ -715,13 +696,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.hide:
                     for (int i1 = 0; i1 < checkedItems.size(); i1++) {
-                        hide(checkedItems.get(i1).getDesc());
+                        hide(checkedItems.get(i1).desc);
                     }
                     updateList();
                     mode.finish();
                     return true;
                 case R.id.ex:
-                    getMainActivity().mainActivityHelper.extractFile(new File(checkedItems.get(0).getDesc()));
+                    getMainActivity().mainActivityHelper.extractFile(new File(checkedItems.get(0).desc));
                     mode.finish();
                     return true;
                 case R.id.cpy:
@@ -748,7 +729,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.openwith:
                     boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(new File(checkedItems.get(0).getDesc()), getActivity(), true, useNewStack);
+                    FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -767,7 +748,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             // translates the drawer content up
             //if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-            getMainActivity().floatingActionButton.showMenuButton(true);
+            getMainActivity().floatingActionButton.getMenuButton().show();
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             getMainActivity().setPagingEnabled(true);
@@ -897,12 +878,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     getMainActivity().getAppbar().getSearchView().hideSearchView();
                 }
 
-                String path = !e.hasSymlink()? e.getDesc():e.getSymlink();
+                String path = !e.hasSymlink()? e.desc:e.symlink;
 
-                if (e.isDirectory()) {
+                if (e.isDirectory) {
                     computeScroll();
                     loadlist(path, false, openMode);
-                } else if (e.getDesc().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                } else if (e.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     // decrypt the file
                     isEncryptOpen = true;
 
@@ -922,14 +903,14 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         switch (e.getMode()) {
                             case SMB:
                                 try {
-                                    SmbFile smbFile = new SmbFile(e.getDesc());
-                                    launchSMB(smbFile, e.getlongSize(), getMainActivity());
+                                    SmbFile smbFile = new SmbFile(e.desc);
+                                    launchSMB(smbFile, e.longSize, getMainActivity());
                                 } catch (MalformedURLException ex) {
                                     ex.printStackTrace();
                                 }
                                 break;
                             case OTG:
-                                FileUtils.openFile(OTGUtil.getDocumentFile(e.getDesc(), getContext(), false),
+                                FileUtils.openFile(OTGUtil.getDocumentFile(e.desc, getContext(), false),
                                         (MainActivity) getActivity(), sharedPref);
                                 break;
                             case DROPBOX:
@@ -940,11 +921,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                                 break;
                             default:
-                                FileUtils.openFile(new File(e.getDesc()), (MainActivity) getActivity(), sharedPref);
+                                FileUtils.openFile(new File(e.desc), (MainActivity) getActivity(), sharedPref);
                                 break;
                         }
 
-                        dataUtils.addHistoryFile(e.getDesc());
+                        dataUtils.addHistoryFile(e.desc);
                     }
                 }
             }
@@ -1130,7 +1111,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (GO_BACK_ITEM && !CURRENT_PATH.equals("/")
                     && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT) && !isOtg && !isOnTheCloud
-                    && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).getSize().equals(getString(R.string.goback)))) {
+                    && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))) {
                 LIST_ELEMENTS.add(0, getBackElement());
             }
 
@@ -1148,9 +1129,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             else if (!grid && !IS_LIST) switchToList();
 
             if (adapter == null) {
-                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
+                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, listView, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
             } else {
-                adapter.setItems(new ArrayList<>(LIST_ELEMENTS));
+                adapter.setItems(listView, new ArrayList<>(LIST_ELEMENTS));
             }
 
             stopAnims = true;
@@ -1208,10 +1189,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     private LayoutElementParcelable getBackElement() {
-        if (backIcon == null || back == null) {
-            backIcon = res.getDrawable(R.drawable.ic_arrow_left_white_24dp);
-            back = new LayoutElementParcelable(backIcon, "..", "", "",
-                    getString(R.string.goback), 0, false, true, "");
+        if (back == null) {
+            back = new LayoutElementParcelable("..", "", "",
+                    getString(R.string.goback), 0, false, true,
+                    "", !IS_LIST, SHOW_THUMBS);
         }
 
         return back;
@@ -1423,7 +1404,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     public void updateList() {
         computeScroll();
-        iconHolder.cleanup();
         loadlist((CURRENT_PATH), true, openMode);
     }
 
@@ -1457,7 +1437,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             (getActivity()).registerReceiver(decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
         }
         startFileObserver();
-        fixIcons(false);
     }
 
     @Override
@@ -1489,18 +1468,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
     }
 
-    void fixIcons(boolean forceReload) {
-        if (LIST_ELEMENTS == null) return;
-        Drawable iconDrawable;
-        for (LayoutElementParcelable layoutElement : LIST_ELEMENTS) {
-            if (forceReload || layoutElement.getImageId() == null) {
-                iconDrawable = layoutElement.isDirectory()?
-                        folder:Icons.loadMimeIcon(layoutElement.getDesc(), !IS_LIST, res);
-                layoutElement.setImageId(iconDrawable);
-            }
-        }
-    }
-
     public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path) throws SmbException {
         ArrayList<LayoutElementParcelable> a = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
@@ -1514,19 +1481,21 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
             if (aMFile.isDirectory()) {
                 folder_count++;
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, name, aMFile.getPath(),
-                        "", "", "", 0, false, aMFile.lastModified() + "", true);
+
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(name, aMFile.getPath(),
+                        "", "", "", 0, false,
+                        aMFile.lastModified() + "", true, !IS_LIST, SHOW_THUMBS);
+
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
                 a.add(layoutElement);
             } else {
                 file_count++;
                 try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(
-                            Icons.loadMimeIcon(aMFile.getPath(), !IS_LIST, res), name,
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
-                            aMFile.length()), aMFile.length(), false,
-                            aMFile.lastModified() + "", false);
+                            aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
+                            false, !IS_LIST, SHOW_THUMBS);
                     layoutElement.setMode(OpenMode.SMB);
                     searchHelper.add(layoutElement.generateBaseFile());
                     a.add(layoutElement);
@@ -1545,8 +1514,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (!dataUtils.isFileHidden(mFile.getPath())) {
             if (mFile.isDirectory()) {
                 size = "";
-                LayoutElementParcelable layoutElement = new LayoutElementParcelable(folder, f.getPath(), mFile.getPermission(),
-                        mFile.getLink(), size, 0, true, false, mFile.getDate() + "");
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(), mFile.getPermission(),
+                        mFile.getLink(), size, 0, true, false,
+                        mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
 
                 layoutElement.setMode(mFile.getMode());
                 LIST_ELEMENTS.add(layoutElement);
@@ -1566,8 +1536,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     //e.printStackTrace();
                 }
                 try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(Icons.loadMimeIcon(f.getPath(), !IS_LIST, res),
-                            f.getPath(), mFile.getPermission(), mFile.getLink(), size, longSize, false, false, mFile.getDate() + "");
+                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(),
+                            mFile.getPermission(), mFile.getLink(), size, longSize, false,
+                            false, mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
                     layoutElement.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);
                     file_count++;
@@ -1615,12 +1586,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         //on Home screen
         Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
                 MainActivity.class);
-        shortcutIntent.putExtra("path", path.getDesc());
+        shortcutIntent.putExtra("path", path.desc);
         shortcutIntent.setAction(Intent.ACTION_MAIN);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Intent addIntent = new Intent();
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.getDesc()).getName());
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.desc).getName());
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
         addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
