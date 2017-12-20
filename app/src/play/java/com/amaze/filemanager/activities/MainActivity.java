@@ -534,7 +534,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                         selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                        adapter.toggleChecked(false);
+                        adapter.deselectEverything();
                         transaction2.commit();
                     } else {
                         if (path != null && path.length() > 0) {
@@ -1537,7 +1537,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
                     selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                    adapter.toggleChecked(false);
+                    adapter.deselectEverything();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
                 ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_white), () -> {
@@ -1548,7 +1548,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
                     selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                    adapter.toggleChecked(false);
+                    adapter.deselectEverything();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
                 ContextCompat.getDrawable(this, R.drawable.ic_settings_white_48dp), () -> {
@@ -1559,7 +1559,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         dataUtils.setList(sectionDrawerItems);
 
-        adapter = new DrawerAdapter(this, this, sectionDrawerItems, this, getPrefs());
+        adapter = new DrawerAdapter(this, this, sectionDrawerItems, this);
         mDrawerList.setAdapter(adapter);
     }
 

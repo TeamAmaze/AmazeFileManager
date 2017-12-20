@@ -20,11 +20,9 @@
 package com.amaze.filemanager.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +35,12 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -55,42 +53,37 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
+    public static final int SELECTED_NONE = -1;
+
     private final Context context;
     private UtilitiesProviderInterface utilsProvider;
     private final ArrayList<DrawerItem> values;
     private MainActivity m;
-    private SparseBooleanArray myChecked = new SparseBooleanArray();
+    private int selectedItem = SELECTED_NONE;
     private DataUtils dataUtils = DataUtils.getInstance();
-
-    public void toggleChecked(int position) {
-        toggleChecked(false);
-        myChecked.put(position, true);
-        notifyDataSetChanged();
-    }
-
-    public void toggleChecked(boolean b) {
-        for (int i = 0; i < values.size(); i++) {
-            myChecked.put(i, b);
-        }
-        notifyDataSetChanged();
-    }
-
     private LayoutInflater inflater;
 
     public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
-                         ArrayList<DrawerItem> values, MainActivity m, SharedPreferences Sp) {
+                         ArrayList<DrawerItem> values, MainActivity m) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;
 
         this.context = context;
         this.values = values;
 
-        for (int i = 0; i < values.size(); i++) {
-            myChecked.put(i, false);
-        }
+        selectedItem = SELECTED_NONE;
         this.m = m;
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void toggleChecked(int position) {
+        selectedItem = position;
+        notifyDataSetChanged();
+    }
+
+    public void deselectEverything() {
+        selectedItem = SELECTED_NONE;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -184,7 +177,7 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
             imageView.setImageDrawable(getDrawable(position));
             imageView.clearColorFilter();
 
-            if (myChecked.get(position)) {
+            if (selectedItem == position) {
                 int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
