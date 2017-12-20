@@ -184,8 +184,6 @@ public class DrawerAdapter extends ArrayAdapter<Item> {
                 int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
                 if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
                     view.setBackgroundColor(Color.parseColor("#ffeeeeee"));
-                } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-                    view.setBackgroundColor(Color.BLACK);
                 } else {
                     view.setBackgroundColor(Color.parseColor("#ff424242"));
                 }

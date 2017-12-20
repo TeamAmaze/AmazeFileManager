@@ -807,9 +807,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     if (getAppTheme().equals(AppTheme.LIGHT)) {
                         mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-                        mInput.getText().setSpan(new BackgroundColorSpan(Color.BLACK), (Integer) keyValueOld.getKey(),
-                                (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     } else {
                         mInput.getText().setSpan(new BackgroundColorSpan(Color.LTGRAY), (Integer) keyValueOld.getKey(),
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -836,9 +833,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                         Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
                         if (getAppTheme().equals(AppTheme.LIGHT)) {
                             mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
-                                    (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        } else if (getAppTheme().equals(AppTheme.BLACK)) {
-                            mInput.getText().setSpan(new BackgroundColorSpan(Color.BLACK), (Integer) keyValueOld.getKey(),
                                     (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                         } else {
                             mInput.getText().setSpan(new BackgroundColorSpan(Color.LTGRAY), (Integer) keyValueOld.getKey(),

@@ -1054,7 +1054,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             ((ImageView) nofilesview.findViewById(R.id.image)).setColorFilter(Color.parseColor("#666666"));
         } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
             nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-            ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.BLACK);
+            ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
         } else {
             nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);

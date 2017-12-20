@@ -90,10 +90,6 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
                 mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW),
                         (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
                         Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else if (textEditorActivity.getAppTheme().equals(AppTheme.BLACK)) {
-                mInput.getText().setSpan(new BackgroundColorSpan(Color.BLACK),
-                        (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
-                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {
                 mInput.getText().setSpan(new BackgroundColorSpan(Color.LTGRAY),
                         (Integer) keyMapEntry.getKey(), (Integer) keyMapEntry.getValue(),
