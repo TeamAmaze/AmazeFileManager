@@ -919,7 +919,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 break;
             case DrawerItem.ITEM_INTENT:
                 directoryDrawerItems.get(i).onClickListener.onClick();
-                adapter.toggleChecked(i);
+                selectedStorage = i;
+                adapter.toggleChecked(selectedStorage);
                 break;
         }
     }
@@ -1536,8 +1537,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
-                    selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                    adapter.deselectEverything();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
                 ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_white), () -> {
@@ -1547,8 +1546,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
                     else onDrawerClosed();
-                    selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                    adapter.deselectEverything();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
                 ContextCompat.getDrawable(this, R.drawable.ic_settings_white_48dp), () -> {
