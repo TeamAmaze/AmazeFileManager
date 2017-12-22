@@ -499,7 +499,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             if (!getMainActivity().isDrawerLocked) {
 
                 getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED,
-                        getMainActivity().mDrawerLayout);
+                        getMainActivity().mDrawerLinear);
             }
             return true;
         }
@@ -758,7 +758,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (!getMainActivity().isDrawerLocked) {
                 getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
-                        getMainActivity().mDrawerLayout);
+                        getMainActivity().mDrawerLinear);
             }
         }
     };
