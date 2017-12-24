@@ -1258,6 +1258,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
             registerReceiver(mOtgReceiver, otgFilter);
         }
+
+        // TODO: 24/12/2017 this is a hack to fix a glitch when rotating the screen 
+        updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
+                getColorPreference().getColor(ColorUsage.PRIMARY):getColorPreference().getColor(ColorUsage.PRIMARY_TWO)));
     }
 
     /**
