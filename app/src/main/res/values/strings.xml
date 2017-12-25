@@ -614,5 +614,8 @@
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
     <string name="password_repeat">Repeat password</string>
+
+    <string name="changeDrawerBackground_title">Change drawer header background</string>
+    <string name="changeDrawerBackground_summary">Put something else in the header for the drawer, it can contain transparency</string>
 </resources>
 

@@ -218,8 +218,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
     private static final String KEY_OPERATION = "operation";
 
-    private static final int image_selector_request_code = 31;
-
     private AppBar appbar;
     //private HistoryManager history, grid;
     private MainActivity mainActivity = this;
@@ -1567,16 +1565,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == image_selector_request_code) {
-            if (getPrefs() != null && intent != null && intent.getData() != null) {
-                if (SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    getContentResolver().takePersistableUriPermission(intent.getData(),
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                        intent.getData().toString()).commit();
-                setDrawerHeaderBackground();
-            }
-        } else if (requestCode == 3) {
+        if (requestCode == 3) {
             Uri treeUri;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
@@ -1687,20 +1676,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
-        drawerHeaderView.setOnLongClickListener(v -> {
-            Intent intent1;
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent1 = new Intent();
-                intent1.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            }
-            intent1.addCategory(Intent.CATEGORY_OPENABLE);
-            intent1.setType("image/*");
-            startActivityForResult(intent1, image_selector_request_code);
-            return false;
-        });
         setSupportActionBar(getAppbar().getToolbar());
         frameLayout = findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);

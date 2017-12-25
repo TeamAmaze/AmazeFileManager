@@ -26,6 +26,10 @@
             android:key="colors"
             android:summary="@string/color_summary"
             android:title="@string/color_title"/>
+        <Preference
+            android:key="changeDrawerBackground"
+            android:title="@string/changeDrawerBackground_title"
+            android:summary="@string/changeDrawerBackground_summary"/>
 
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"

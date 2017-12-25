@@ -54,13 +54,17 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.R.string.feedback;
 
 public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
+    private static final int START_PREFERENCE_CHANGE_DRAWER_BACKGROUND = 1;
+
     private static final String[] PREFERENCE_KEYS = {PreferencesConstants.PREFERENCE_GRID_COLUMNS,
             PreferencesConstants.FRAGMENT_THEME, PreferencesConstants.PREFERENCE_ROOTMODE,
-            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, PreferencesConstants.FRAGMENT_FEEDBACK,
+            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES,
+            PreferencesConstants.PREFERENCE_CHANGE_DRAWER_BACKGROUND, PreferencesConstants.FRAGMENT_FEEDBACK,
             PreferencesConstants.FRAGMENT_ABOUT, PreferencesConstants.FRAGMENT_COLORS,
             PreferencesConstants.FRAGMENT_FOLDERS, PreferencesConstants.FRAGMENT_QUICKACCESSES,
             PreferencesConstants.FRAGMENT_ADVANCED_SEARCH};
@@ -188,6 +192,18 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 builder.title(R.string.theme);
                 builder.build().show();
                 return true;
+            case PreferencesConstants.PREFERENCE_CHANGE_DRAWER_BACKGROUND:
+                Intent intent1;
+                if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    intent1 = new Intent();
+                    intent1.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                }
+                intent1.addCategory(Intent.CATEGORY_OPENABLE);
+                intent1.setType("image/*");
+                startActivityForResult(intent1, START_PREFERENCE_CHANGE_DRAWER_BACKGROUND);
+                return true;
             case PreferencesConstants.FRAGMENT_FEEDBACK:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
@@ -294,6 +310,23 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         }
 
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case START_PREFERENCE_CHANGE_DRAWER_BACKGROUND:
+                if (sharedPref != null && data != null && data.getData() != null) {
+                    if (SDK_INT >= Build.VERSION_CODES.KITKAT)
+                        getActivity().getContentResolver().takePersistableUriPermission(data.getData(),
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    sharedPref.edit()
+                            .putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, data.getData().toString())
+                            .commit();
+                }
+                break;
+        }
     }
 
     public static void restartPC(final Activity activity) {
