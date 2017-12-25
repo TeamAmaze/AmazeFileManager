@@ -91,11 +91,11 @@ public class ProcessViewerFragment extends Fragment {
 
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = mainActivity.getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab));
-        if (mainActivity.getAppTheme().equals(AppTheme.DARK))
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK))
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
-        mainActivity.floatingActionButton.hideMenuButton(true);
+        mainActivity.floatingActionButton.getMenuButton().hide();
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mainActivity.supportInvalidateOptionsMenu();
 
@@ -111,7 +111,7 @@ public class ProcessViewerFragment extends Fragment {
         mProgressSpeedText = (TextView) rootView.findViewById(R.id.text_view_progress_speed);
         mProgressTimer = (TextView) rootView.findViewById(R.id.text_view_progress_timer);
 
-        if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
             mCancelButton.setImageResource(R.drawable.ic_action_cancel);
             mCardView.setCardBackgroundColor(Utils.getColor(getContext(), R.color.cardView_foreground));
@@ -247,7 +247,7 @@ public class ProcessViewerFragment extends Fragment {
 
             for (int i=0; i<encryptService.getDataPackageSize(); i++) {
                 CopyDataParcelable dataPackage = encryptService.getDataPackage(i);
-                processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
                         : ServiceType.ENCRYPT);
             }
 
@@ -265,7 +265,7 @@ public class ProcessViewerFragment extends Fragment {
                         @Override
                         public void run() {
 
-                            processResults(dataPackage, dataPackage.isMove() ? ServiceType.DECRYPT
+                            processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
                                     : ServiceType.ENCRYPT);
                         }
                     });
@@ -326,10 +326,10 @@ public class ProcessViewerFragment extends Fragment {
 
     public void processResults(final CopyDataParcelable dataPackage, ServiceType serviceType) {
         if (dataPackage != null) {
-            String name = dataPackage.getName();
-            long total = dataPackage.getTotal();
-            long doneBytes = dataPackage.getByteProgress();
-            boolean move = dataPackage.isMove();
+            String name = dataPackage.name;
+            long total = dataPackage.totalSize;
+            long doneBytes = dataPackage.byteProgress;
+            boolean move = dataPackage.move;
 
             if (!isInitialized) {
 
@@ -342,7 +342,7 @@ public class ProcessViewerFragment extends Fragment {
             }
 
             addEntry(FileUtils.readableFileSizeFloat(doneBytes),
-                    FileUtils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
+                    FileUtils.readableFileSizeFloat(dataPackage.speedRaw));
 
             mProgressFileNameText.setText(name);
 
@@ -353,14 +353,14 @@ public class ProcessViewerFragment extends Fragment {
             mProgressBytesText.setText(bytesText);
 
             Spanned fileProcessedSpan = Html.fromHtml(getResources().getString(R.string.processing_file)
-                    + " <font color='" + accentColor + "'><i>" + (dataPackage.getSourceProgress())
+                    + " <font color='" + accentColor + "'><i>" + (dataPackage.sourceProgress)
                     + " </font></i>" + getResources().getString(R.string.of) + " <i>"
-                    + dataPackage.getSourceFiles() + "</i>");
+                    + dataPackage.sourceFiles + "</i>");
             mProgressFileText.setText(fileProcessedSpan);
 
             Spanned speedSpan = Html.fromHtml(getResources().getString(R.string.current_speed)
                     + ": <font color='" + accentColor + "'><i>"
-                    + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
+                    + Formatter.formatFileSize(getContext(), dataPackage.speedRaw)
                     + "/s</font></i>");
             mProgressSpeedText.setText(speedSpan);
 
@@ -391,7 +391,7 @@ public class ProcessViewerFragment extends Fragment {
     private void setupDrawables(ServiceType serviceType, boolean isMove) {
         switch (serviceType) {
             case COPY:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_content_copy_white_36dp));
@@ -404,7 +404,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL));
                 break;
             case EXTRACT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_white_36dp));
@@ -416,7 +416,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
                 break;
             case COMPRESS:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_zip_box_white_36dp));
@@ -428,7 +428,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
             case ENCRYPT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_folder_lock_white_36dp));
@@ -440,7 +440,7 @@ public class ProcessViewerFragment extends Fragment {
                 cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
                 break;
             case DECRYPT:
-                if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+                if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
                             .getDrawable(R.drawable.ic_folder_lock_open_white_36dp));

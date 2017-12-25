@@ -66,75 +66,7 @@
             android:background="@drawable/fab_shadow_light"
             />
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_behavior="com.amaze.filemanager.ui.SnackBarBehavior"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="10dp"
-            fab:menu_fab_size="normal"
-            fab:menu_showShadow="true"
-            fab:menu_shadowColor="#66000000"
-            fab:menu_shadowRadius="4dp"
-            fab:menu_shadowXOffset="1dp"
-            fab:menu_shadowYOffset="3dp"
-            fab:menu_colorNormal="#DA4336"
-            fab:menu_colorPressed="#E75043"
-            fab:menu_colorRipple="#99FFFFFF"
-            fab:menu_animationDelayPerItem="50"
-            fab:menu_icon="@drawable/fab_add"
-            fab:menu_buttonSpacing="5dp"
-            fab:menu_labels_margin="10dp"
-            fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
-            fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
-            fab:menu_labels_paddingTop="4dp"
-            fab:menu_labels_paddingRight="8dp"
-            fab:menu_labels_paddingBottom="4dp"
-            fab:menu_labels_paddingLeft="8dp"
-            fab:menu_labels_padding="8dp"
-            fab:menu_labels_textSize="14sp"
-            fab:menu_labels_cornerRadius="3dp"
-            fab:menu_labels_colorNormal="#333333"
-            fab:menu_labels_colorPressed="#444444"
-            fab:menu_labels_colorRipple="#66FFFFFF"
-            fab:menu_labels_showShadow="true"
-            fab:menu_labels_singleLine="true"
-            fab:menu_labels_ellipsize="none"
-            fab:menu_labels_maxLines="-1"
-            fab:menu_labels_style="@style/menu_labels_style_light"
-            fab:menu_labels_position="left"
-            fab:menu_openDirection="up"
-            android:elevation="6dp"
-            fab:menu_backgroundColor="@android:color/transparent">
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_new_folder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/folder_fab"
-                fab:fab_size="mini"
-                fab:fab_label="@string/folder" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_new_file"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_insert_drive_file_white_48dp"
-                fab:fab_size="mini"
-                fab:fab_label="@string/file" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_new_cloud"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_cloud_white_24dp"
-                fab:fab_size="mini"
-                fab:fab_label="@string/cloud_connection" />
-
-        </com.github.clans.fab.FloatingActionMenu>
+        <include layout="@layout/layout_fab"/>
 
     </android.support.design.widget.CoordinatorLayout>    <!--
          android:layout_gravity="start" tells DrawerLayout to treat

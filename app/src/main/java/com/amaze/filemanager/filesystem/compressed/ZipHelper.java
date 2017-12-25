@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.amaze.filemanager.asynchronous.asynctasks.ZipHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
-import com.amaze.filemanager.ui.CompressedObjectParcelable;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 

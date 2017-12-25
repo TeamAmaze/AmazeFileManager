@@ -168,15 +168,8 @@ public class ZipService extends Service {
                 publishResults(id, fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
             });
 
-            CopyDataParcelable intent1 = new CopyDataParcelable();
-            intent1.setName(baseFiles.get(0).getName());
-            intent1.setSourceFiles(baseFiles.size());
-            intent1.setSourceProgress(0);
-            intent1.setTotal(totalBytes);
-            intent1.setByteProgress(0);
-            intent1.setSpeedRaw(0);
-            intent1.setMove(false);
-            intent1.setCompleted(false);
+            CopyDataParcelable intent1 = new CopyDataParcelable(baseFiles.get(0).getName(),
+                    baseFiles.size(), totalBytes, false);
             putDataPackage(intent1);
 
             zipPath = p1[0].getString(KEY_COMPRESS_PATH);
@@ -276,15 +269,8 @@ public class ZipService extends Service {
                 isCompleted = true;
             }
 
-            CopyDataParcelable intent = new CopyDataParcelable();
-            intent.setName(fileName);
-            intent.setSourceFiles(sourceFiles);
-            intent.setSourceProgress(sourceProgress);
-            intent.setTotal(total);
-            intent.setByteProgress(done);
-            intent.setSpeedRaw(speed);
-            intent.setMove(false);
-            intent.setCompleted(isCompleted);
+            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
+                    total, done, speed, false, isCompleted);
 
             putDataPackage(intent);
             if (progressListener != null) {

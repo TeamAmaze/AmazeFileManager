@@ -19,16 +19,9 @@
 
 package com.amaze.filemanager.ui.icons;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
@@ -41,7 +34,6 @@ public class Icons {
 
     // construct a with an approximation of the capacity
     private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
-    private static SparseArray<Drawable> sMimeIcons = new SparseArray<>();
 
     private static void add(String mimeType, int resId) {
         if (sMimeIconIds.put(mimeType, resId) != null) {
@@ -407,32 +399,6 @@ public class Icons {
             resId = R.drawable.ic_doc_generic_am;
         }
         return resId;
-    }
-
-    public static Drawable loadFailedThumbForFile(@NonNull final Context context, String filePath) {
-        return context.getResources().getDrawable(Icons.loadMimeIcon(filePath, false));
-    }
-
-    /**
-    * Cancel loading of a drawable for a certain ImageView or clearing the ImageView
-    * Should you load this file as an image of itself (e.g. image, video)
-    * or as an icon (e.g. folder, generic file).
-    */
-    public static boolean shouldLoadFromFile (LayoutElementParcelable file) {
-        int filetype = Icons.getTypeOfFile(file.getDesc());
-        return filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK;
-    }
-
-    public static Drawable getAppDrawable(@NonNull final Context context, String path) throws OutOfMemoryError {
-       try {
-           PackageManager pm = context.getPackageManager();
-           PackageInfo pi = pm.getPackageArchiveInfo(path, 0);
-           pi.applicationInfo.sourceDir = path;
-           pi.applicationInfo.publicSourceDir = path;
-           return pi.applicationInfo.loadIcon(pm);
-       } catch (Exception e) {
-           return null;
-       }
     }
 
 }

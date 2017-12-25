@@ -74,7 +74,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private MainFragment ma;
     private Context c;
     private OpenMode openmode;
-    private Drawable lockBitmapDrawable = null;
     private DataUtils dataUtils = DataUtils.getInstance();
     private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
 
@@ -352,7 +351,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.getDate1()).compareTo(rhs.getDate1()));
+        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
         if (songs.size() > 20)
             for (int i = songs.size() - 1; i > 20; i--) {
                 songs.remove(i);
@@ -428,7 +427,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.getDate1()).compareTo(rhs.getDate1()));
+        Collections.sort(songs, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
         if (songs.size() > 20)
             for (int i = songs.size() - 1; i > 20; i--) {
                 songs.remove(i);

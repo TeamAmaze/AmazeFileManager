@@ -36,18 +36,17 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
-    private int filetype;
-    private IconDataParcelable iconData;
-    private String title;
-    private String desc;
-    private String permissions;
-    private String symlink;
-    private String size;
-    private boolean isDirectory;
-    private long date;
-    private long longSize;
-    private String date1;
-    private boolean header;
+    public final int filetype;
+    public final IconDataParcelable iconData;
+    public final String title;
+    public final String desc;
+    public final String permissions;
+    public final String symlink;
+    public final String size;
+    public final boolean isDirectory;
+    public final long date, longSize;
+    public final String date1;
+    public final boolean header;
 
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
@@ -92,29 +91,6 @@ public class LayoutElementParcelable implements Parcelable {
 
     }
 
-    public HybridFileParcelable generateBaseFile() {
-        HybridFileParcelable baseFile=new HybridFileParcelable(getDesc(), getPermissions(), getDate1(), getlongSize(), isDirectory());
-        baseFile.setMode(mode);
-        baseFile.setName(title);
-        return baseFile;
-    }
-
-    public int getFiletype() {
-        return filetype;
-    }
-
-    public IconDataParcelable getIconData() {
-        return iconData;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public OpenMode getMode() {
         return mode;
     }
@@ -123,36 +99,15 @@ public class LayoutElementParcelable implements Parcelable {
         this.mode = mode;
     }
 
-    public boolean isDirectory() {
-        return isDirectory;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public long getlongSize() {
-        return longSize;
-    }
-
-    public String getDate() {
-        return date1;
-    }
-
-    public long getDate1() {
-        return date;
-    }
-
-    public String getPermissions() {
-        return permissions;
-    }
-
-    public String getSymlink() {
-        return symlink;
+    public HybridFileParcelable generateBaseFile() {
+        HybridFileParcelable baseFile=new HybridFileParcelable(desc, permissions, date, longSize, isDirectory);
+        baseFile.setMode(mode);
+        baseFile.setName(title);
+        return baseFile;
     }
 
     public boolean hasSymlink() {
-        return getSymlink() != null && getSymlink().length() != 0;
+        return symlink != null && symlink.length() != 0;
     }
 
     @Override

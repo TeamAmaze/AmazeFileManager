@@ -180,7 +180,7 @@ public class GeneralDialogCreation {
                     itemsToDelete.add(layoutElement.generateBaseFile());
 
                     // Build list of directories to delete.
-                    if (layoutElement.isDirectory()) {
+                    if (layoutElement.isDirectory) {
                         // Don't add newline between category and list.
                         if (counterDirectories != 0) {
                             directories.append("\n");
@@ -190,7 +190,7 @@ public class GeneralDialogCreation {
 
                         directories.append(++counterDirectories)
                                 .append(". ")
-                                .append(layoutElement.getTitle())
+                                .append(layoutElement.title)
                                 .append(" (")
                                 .append(Formatter.formatFileSize(c, sizeDirectory))
                                 .append(")");
@@ -204,11 +204,11 @@ public class GeneralDialogCreation {
 
                         files.append(++counterFiles)
                                 .append(". ")
-                                .append(layoutElement.getTitle())
+                                .append(layoutElement.title)
                                 .append(" (")
-                                .append(layoutElement.getSize())
+                                .append(layoutElement.size)
                                 .append(")");
-                        sizeTotal += layoutElement.getlongSize();
+                        sizeTotal += layoutElement.longSize;
                     }
 
                     publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);
@@ -745,7 +745,7 @@ public class GeneralDialogCreation {
                             m.openZip(Uri.fromFile(f).toString());
                     }
                 });
-        if (m.getAppTheme().equals(AppTheme.DARK)) mat.theme(Theme.DARK);
+        if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
         if (!f.getName().toLowerCase().endsWith(".rar") && !f.getName().toLowerCase().endsWith(".jar") && !f.getName().toLowerCase().endsWith(".apk") && !f.getName().toLowerCase().endsWith(".zip"))

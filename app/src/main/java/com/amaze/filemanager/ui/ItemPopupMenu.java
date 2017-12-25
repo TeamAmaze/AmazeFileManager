@@ -66,7 +66,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         switch (item.getItemId()) {
             case R.id.about:
                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
-                        rowItem.getPermissions(), (ThemedActivity) mainFragment.getActivity(),
+                        rowItem.permissions, (ThemedActivity) mainFragment.getActivity(),
                         ThemedActivity.rootMode, utilitiesProvider.getAppTheme());
                                 /*
                                 PropertiesSheet propertiesSheet = new PropertiesSheet();
@@ -84,11 +84,11 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     case BOX:
                     case GDRIVE:
                     case ONEDRIVE:
-                        FileUtils.shareCloudFile(rowItem.getDesc(), rowItem.getMode(), context);
+                        FileUtils.shareCloudFile(rowItem.desc, rowItem.getMode(), context);
                         break;
                     default:
                         ArrayList<File> arrayList = new ArrayList<>();
-                        arrayList.add(new File(rowItem.getDesc()));
+                        arrayList.add(new File(rowItem.desc));
                         FileUtils.shareFiles(arrayList,
                                 mainFragment.getMainActivity(), utilitiesProvider.getAppTheme(),
                                 accentColor);
@@ -106,11 +106,11 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             }
             case R.id.ex:
-                mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.getDesc()));
+                mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.desc));
                 return true;
             case R.id.book:
                 DataUtils dataUtils = DataUtils.getInstance();
-                dataUtils.addBook(new String[]{rowItem.getTitle(), rowItem.getDesc()}, true);
+                dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
                 mainFragment.getMainActivity().refreshDrawer();
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
@@ -124,7 +124,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.open_with:
                 boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                FileUtils.openWith(new File(rowItem.getDesc()), mainFragment.getActivity(), useNewStack);
+                FileUtils.openWith(new File(rowItem.desc), mainFragment.getActivity(), useNewStack);
                 return true;
             case R.id.encrypt:
                 final Intent encryptIntent = new Intent(context, EncryptService.class);
