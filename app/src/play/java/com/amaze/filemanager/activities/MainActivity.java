@@ -1675,7 +1675,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderLayout.setOnClickListener(null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         setSupportActionBar(getAppbar().getToolbar());
         frameLayout = findViewById(R.id.content_frame);
@@ -1685,11 +1685,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         else if (getAppTheme().equals(AppTheme.BLACK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, android.R.color.black));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         mDrawerList = findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1720,7 +1717,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

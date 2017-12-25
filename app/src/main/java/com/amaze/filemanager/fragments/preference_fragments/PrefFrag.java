@@ -191,18 +191,12 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 });
                 builder.title(R.string.theme);
                 builder.build().show();
-                return true;
             case PreferencesConstants.PREFERENCE_CHANGE_DRAWER_BACKGROUND:
-                Intent intent1;
-                if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    intent1 = new Intent();
-                    intent1.setAction(Intent.ACTION_GET_CONTENT);
-                } else {
-                    intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                }
-                intent1.addCategory(Intent.CATEGORY_OPENABLE);
-                intent1.setType("image/*");
-                startActivityForResult(intent1, START_PREFERENCE_CHANGE_DRAWER_BACKGROUND);
+                String action = SDK_INT < Build.VERSION_CODES.KITKAT? Intent.ACTION_GET_CONTENT:Intent.ACTION_OPEN_DOCUMENT;
+                Intent intent = new Intent(action);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(intent, START_PREFERENCE_CHANGE_DRAWER_BACKGROUND);
                 return true;
             case PreferencesConstants.FRAGMENT_FEEDBACK:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -318,12 +312,13 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         switch(requestCode) {
             case START_PREFERENCE_CHANGE_DRAWER_BACKGROUND:
                 if (sharedPref != null && data != null && data.getData() != null) {
-                    if (SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         getActivity().getContentResolver().takePersistableUriPermission(data.getData(),
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
                     sharedPref.edit()
                             .putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, data.getData().toString())
-                            .commit();
+                            .apply();
                 }
                 break;
         }
