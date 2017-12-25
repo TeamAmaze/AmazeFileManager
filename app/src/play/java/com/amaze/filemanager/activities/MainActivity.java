@@ -133,7 +133,6 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.CloudRail;
 import com.cloudrail.si.exceptions.AuthenticationException;
@@ -149,6 +148,8 @@ import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1922,24 +1923,21 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void setDrawerHeaderBackground() {
-        String path1 = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                null);
-        if (path1 == null) return;
+        String path = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
+        if (path == null) return;
+        
         try {
-            final ImageView headerImageView = new ImageView(MainActivity.this);
-            headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-            mImageLoader.get(path1, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    headerImageView.setImageBitmap(response.getBitmap());
-                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                }
+            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(path));
+            Drawable drawable = Drawable.createFromStream(inputStream, path);
 
-                @Override
-                public void onErrorResponse(VolleyError error) {}
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                drawerHeaderView.setBackgroundDrawable(drawable);
+            } else {
+                drawerHeaderView.setBackground(drawable);
+            }
+            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+        } catch (FileNotFoundException e) {
+            //don't do anything, normal image is loaded
         }
     }
 
