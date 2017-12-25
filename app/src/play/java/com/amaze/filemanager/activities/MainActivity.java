@@ -1674,6 +1674,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
+        drawerHeaderLayout.setOnClickListener(null);
         drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         setSupportActionBar(getAppbar().getToolbar());

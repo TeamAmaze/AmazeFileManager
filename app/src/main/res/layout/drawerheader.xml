@@ -2,13 +2,11 @@
     android:layout_width="fill_parent"
     android:paddingBottom="8dp"
     android:layout_height="@dimen/drawer_header_height_with_padding"
-    android:minHeight="@dimen/drawer_header_height_with_padding"
-    android:clickable="false">
+    android:minHeight="@dimen/drawer_header_height_with_padding">
     <RelativeLayout android:id="@+id/drawer_header_parent"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/drawer_header_height"
-        android:minHeight="@dimen/drawer_header_height"
-        android:clickable="false">
+        android:minHeight="@dimen/drawer_header_height">
 
         <View
             android:id="@+id/drawer_header"
