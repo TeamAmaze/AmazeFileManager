@@ -103,11 +103,11 @@ public class BottomBar implements View.OnTouchListener{
         buttonRoot.setLayoutParams(buttonParams);
 
         buttonStorage = new ImageButton(a);
-        buttonStorage.setImageDrawable(a.getResources().getDrawable(R.drawable.ic_sd_storage_white_56dp));
+        buttonStorage.setImageDrawable(a.getResources().getDrawable(R.drawable.ic_sd_storage_white_24dp));
         buttonStorage.setBackgroundColor(Color.TRANSPARENT);
         buttonStorage.setLayoutParams(buttonParams);
 
-        arrow = mainActivity.get().getResources().getDrawable(R.drawable.abc_ic_ab_back_holo_dark);
+        arrow = mainActivity.get().getResources().getDrawable(R.drawable.ic_keyboard_arrow_right_white_24dp);
 
         timer = new CountDownTimer(5000, 1000) {
             @Override

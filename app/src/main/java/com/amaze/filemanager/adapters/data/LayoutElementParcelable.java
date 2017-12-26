@@ -53,12 +53,12 @@ public class LayoutElementParcelable implements Parcelable {
 
     public LayoutElementParcelable(String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
-                                   String date, boolean isDirectory, boolean isGrid, boolean useThumbs) {
-        filetype = Icons.getTypeOfFile(path);
-        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isGrid);
+                                   String date, boolean isDirectory, boolean useThumbs) {
+        filetype = Icons.getTypeOfFile(new File(path));
+        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path);
 
         if(useThumbs) {
-            if (filetype == Icons.PICTURE || filetype == Icons.VIDEO || filetype == Icons.APK) {
+            if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
                 this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
             } else {
                 this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
@@ -86,8 +86,8 @@ public class LayoutElementParcelable implements Parcelable {
 
     public LayoutElementParcelable(String path, String permissions, String symlink,
                                    String size, long longSize, boolean isDirectory, boolean header,
-                                   String date, boolean isGrid, boolean useThumbs) {
-        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, isGrid, useThumbs);
+                                   String date, boolean useThumbs) {
+        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs);
 
     }
 

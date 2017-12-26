@@ -1404,7 +1404,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         for (String file : storageDirectories) {
             File f = new File(file);
             String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_56dp);
+            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_24dp);
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
                 name = getResources().getString(R.string.storage);
             } else if ("/storage/sdcard1".equals(file)) {
@@ -1414,7 +1414,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
             } else if (file.contains(OTGUtil.PREFIX_OTG)) {
                 name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_48dp);
+                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_24dp);
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
@@ -1429,7 +1429,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             synchronized (dataUtils.getServers()) {
                 for (String[] file : dataUtils.getServers()) {
                     sectionDrawerItems.add(new DrawerItem(file[0], file[1], ContextCompat.getDrawable(this,
-                            R.drawable.ic_settings_remote_white_48dp)));
+                            R.drawable.ic_settings_remote_white_24dp)));
                 }
             }
             sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
@@ -1495,7 +1495,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 synchronized (dataUtils.getBooks()) {
                     for (String[] file : dataUtils.getBooks()) {
                         sectionDrawerItems.add(new DrawerItem(file[0], file[1],
-                                ContextCompat.getDrawable(this, R.drawable.folder_fab)));
+                                ContextCompat.getDrawable(this, R.drawable.ic_folder_white_24dp)));
                     }
                 }
                 sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
@@ -1508,25 +1508,25 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.quick), "5",
-                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_18dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_24dp)));
             if (quickAccessPref[1])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.recent), "6",
-                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_48dp)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_24dp)));
             if (quickAccessPref[2])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.images), "0",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_image)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp)));
             if (quickAccessPref[3])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.videos), "1",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_video_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_video_library_white_24dp)));
             if (quickAccessPref[4])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.audio), "2",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_audio_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_library_music_white_24dp)));
             if (quickAccessPref[5])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.documents), "3",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_doc_am)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_library_books_white_24dp)));
             if (quickAccessPref[6])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.apks), "4",
-                        ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_grid)));
+                        ContextCompat.getDrawable(this, R.drawable.ic_apk_library_white_24dp)));
         } else {
             sectionDrawerItems.remove(sectionDrawerItems.size() - 1); //Deletes last divider
         }
@@ -1534,7 +1534,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
 
         sectionDrawerItems.add(new DrawerItem(getString(R.string.ftp),
-                ContextCompat.getDrawable(this, R.drawable.ic_ftp_dark), () -> {
+                ContextCompat.getDrawable(this, R.drawable.ic_ftp_white_24dp), () -> {
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                     transaction2.replace(R.id.content_frame, new FTPServerFragment());
                     appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
@@ -1543,7 +1543,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     else onDrawerClosed();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
-                ContextCompat.getDrawable(this, R.drawable.ic_doc_apk_white), () -> {
+                ContextCompat.getDrawable(this, R.drawable.ic_android_white_24dp), () -> {
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
                     transaction2.replace(R.id.content_frame, new AppsListFragment());
                     appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
@@ -1552,7 +1552,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     else onDrawerClosed();
         }));
         sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
-                ContextCompat.getDrawable(this, R.drawable.ic_settings_white_48dp), () -> {
+                ContextCompat.getDrawable(this, R.drawable.ic_settings_white_24dp), () -> {
                     Intent in = new Intent(MainActivity.this, PreferencesActivity.class);
                     startActivity(in);
                     finish();
