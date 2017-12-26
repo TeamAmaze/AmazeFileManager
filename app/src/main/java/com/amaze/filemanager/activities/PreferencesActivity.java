@@ -24,6 +24,7 @@ import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -71,39 +72,16 @@ public class PreferencesActivity extends ThemedActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (SDK_INT >= 21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
-                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            setTaskDescription(taskDescription);
-        }
+        invalidateActionBar();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_HOME_AS_UP | android.support.v7.app.ActionBar.DISPLAY_SHOW_TITLE);
         getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+        invalidateStatusBar();
 
-        if (SDK_INT == 20 || SDK_INT == 19) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
-            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (SDK_INT >= 21) {
-            boolean colourednavigation = Sp.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, false);
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-            if (colourednavigation)
-                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-
-        }
-        if (getAppTheme().equals(AppTheme.BLACK)) getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
         if (savedInstanceState != null){
             selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
         }
@@ -118,10 +96,12 @@ public class PreferencesActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
+        if(currentFragment instanceof ColorPref) {
+            if(((ColorPref) currentFragment).onBackPressed()) return;
+        }
+
         if (selectedItem != START_PREFERENCE && changed) {
-            if(currentFragment instanceof ColorPref && !((ColorPref) currentFragment).onBackPressed()) {
-                restartPC(this);
-            }
+            restartPC(this);
         } else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
         } else {
@@ -137,10 +117,10 @@ public class PreferencesActivity extends ThemedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if(currentFragment.onOptionsItemSelected(item)) return true;
+
                 if (selectedItem != START_PREFERENCE && changed) {
-                    if(!currentFragment.onOptionsItemSelected(item)) {
-                        restartPC(this);
-                    }
+                    restartPC(this);
                 } else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
                 } else {
@@ -165,9 +145,45 @@ public class PreferencesActivity extends ThemedActivity {
         changed = true;
     }
 
+    public void invalidateActionBar() {
+        if (SDK_INT >= 21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
+                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+            setTaskDescription(taskDescription);
+        }
+    }
+
+    public void invalidateStatusBar() {
+        if (SDK_INT == 20 || SDK_INT == 19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+        } else if (SDK_INT >= 21) {
+            SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean colourednavigation = Sp.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            int tabStatusColor = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
+            window.setStatusBarColor(tabStatusColor);
+            if (colourednavigation) {
+                window.setNavigationBarColor(tabStatusColor);
+            } else if(window.getNavigationBarColor() != Color.BLACK){
+                window.setNavigationBarColor(Color.BLACK);
+            }
+        }
+
+        if (getAppTheme().equals(AppTheme.BLACK)) getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
+    }
+
     public void restartPC(final Activity activity) {
-        if (activity == null)
-            return;
+        if (activity == null) throw new NullPointerException();
+
         final int enter_anim = android.R.anim.fade_in;
         final int exit_anim = android.R.anim.fade_out;
         activity.overridePendingTransition(enter_anim, exit_anim);

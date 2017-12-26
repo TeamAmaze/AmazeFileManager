@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
+    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.ColorPickerDialog
+        android:key="preselectedconfigs"
+        android:title="@string/preselectedconfigs_title"/>
+    <com.amaze.filemanager.fragments.preference_fragments.specialpreferences.InvalidablePreferenceCategory
+        android:key="category"
         android:title="@string/customize">
         <Preference
             android:key="skin"
             android:title="@string/primary_color_title"
-            android:summary="@string/primary_color_summary" />
+            android:summary="@string/primary_color_summary"/>
         <Preference
             android:key="skin_two"
             android:title="@string/primary_two_title"
@@ -18,5 +22,5 @@
             android:key="icon_skin"
             android:title="@string/icon_color_title"
             android:summary="@string/icon_color_summary"/>
-    </PreferenceCategory>
+    </com.amaze.filemanager.fragments.preference_fragments.specialpreferences.InvalidablePreferenceCategory>
 </PreferenceScreen>

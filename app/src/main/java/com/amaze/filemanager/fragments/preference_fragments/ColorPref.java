@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
+import com.amaze.filemanager.fragments.preference_fragments.specialpreferences.ColorPickerDialog;
+import com.amaze.filemanager.fragments.preference_fragments.specialpreferences.InvalidablePreferenceCategory;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -40,9 +42,14 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     private static final int SECTION_0 = 0, SECTION_1 = 1;
 
-    private static final String[] PREFERENCE_KEYS_SECTION_0 = {"colorednavigation",
-            "selectcolorconfig", "random_checkbox"};
-    private static final String[] PREFERENCE_KEYS_SECTION_1 = {"skin", "skin_two", "accent_skin", "icon_skin"};
+    private static final String KEY_PRESELECTED_CONFIGS = "preselectedconfigs";
+    private static final String KEY_COLOREDNAV = "colorednavigation";
+
+    private static final String[] PREFERENCE_KEYS_SECTION_0 = {KEY_COLOREDNAV,
+            "selectcolorconfig"};
+    private static final String[] PREFERENCE_KEYS_SECTION_1 = {KEY_PRESELECTED_CONFIGS,
+            PreferencesConstants.PREFERENCE_SKIN, PreferencesConstants.PREFERENCE_SKIN_TWO,
+            PreferencesConstants.PREFERENCE_ACCENT, PreferencesConstants.PREFERENCE_ICON_SKIN};
 
     private int currentSection = SECTION_0;
 
@@ -54,15 +61,10 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.color_prefs);
-
         activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            findPreference("colorednavigation").setEnabled(true);
-        }
-
+        loadSection0();
         reloadListeners();
     }
 
@@ -96,20 +98,15 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
-        if (activity != null) activity.setChanged();
-
         switch(preference.getKey()) {
-            case "random_checkbox":
+            case KEY_COLOREDNAV:
                 if (activity != null) activity.setChanged();
-                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
-                return true;
-            case "colorednavigation":
-                if (activity != null) activity.setChanged();
-                return true;
-            case "skin":
-            case "skin_two":
-            case "accent_skin":
-            case "icon_skin":
+                invalidateEverything();
+                break;
+            case PreferencesConstants.PREFERENCE_SKIN:
+            case PreferencesConstants.PREFERENCE_SKIN_TWO:
+            case PreferencesConstants.PREFERENCE_ACCENT:
+            case PreferencesConstants.PREFERENCE_ICON_SKIN:
                 final ColorUsage usage = ColorUsage.fromString(preference.getKey());
                 if (usage != null) {
                     ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.availableColors, usage);
@@ -131,9 +128,11 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                                 @Override
                                 public void onNeutral(MaterialDialog dialog) {
                                     super.onNeutral(dialog);
+                                    if (activity != null) activity.setChanged();
                                     activity.getColorPreference()
                                             .setRes(usage, usage.getDefaultColor())
                                             .saveToPreferences(sharedPref);
+                                    invalidateEverything();
                                 }
                             })
                             .customView(v, false)
@@ -142,7 +141,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                     adapter.setDialog(dialog);
                     dialog.show();
                 }
-            return false;
+                return false;
             case "selectcolorconfig":
                 switchSections();
                 return true;
@@ -156,13 +155,50 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         if(currentSection == SECTION_0) {
             currentSection = SECTION_1;
-            addPreferencesFromResource(R.xml.conficolor_prefs);
+            loadSection1();
         } else if(currentSection == SECTION_1) {
             currentSection = SECTION_0;
-            addPreferencesFromResource(R.xml.color_prefs);
+            loadSection0();
         }
 
         reloadListeners();
+    }
+
+    private void loadSection0() {
+        addPreferencesFromResource(R.xml.color_prefs);
+        if (Build.VERSION.SDK_INT >= 21) {
+            findPreference(KEY_COLOREDNAV).setEnabled(true);
+        }
+    }
+
+    private void loadSection1() {
+        addPreferencesFromResource(R.xml.conficolor_prefs);
+
+        ColorPickerDialog selectedColors = (ColorPickerDialog) findPreference(KEY_PRESELECTED_CONFIGS);
+        invalidateColorPreference(selectedColors);
+        selectedColors.setColorPreference(activity.getColorPreference());
+        selectedColors.setListener(() -> {
+            if (activity != null) activity.setChanged();
+            checkCustomization();
+            invalidateEverything();
+
+            int colorPickerPref = sharedPref.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA);
+            if(colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
+                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        checkCustomization();
+    }
+
+    private void checkCustomization() {
+        boolean enableCustomization =
+                sharedPref.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA) == ColorPickerDialog.CUSTOM_INDEX;
+
+        findPreference(PreferencesConstants.PREFERENCE_SKIN).setEnabled(enableCustomization);
+        findPreference(PreferencesConstants.PREFERENCE_SKIN_TWO).setEnabled(enableCustomization);
+        findPreference(PreferencesConstants.PREFERENCE_ACCENT).setEnabled(enableCustomization);
+        findPreference(PreferencesConstants.PREFERENCE_ICON_SKIN).setEnabled(enableCustomization);
     }
 
     private void reloadListeners() {
@@ -172,8 +208,40 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         }
     }
 
+    private void invalidateEverything() {
+        activity.invalidateActionBar();
+        activity.invalidateStatusBar();
+        if(currentSection == SECTION_1) {
+            ColorPickerDialog selectedColors = (ColorPickerDialog) findPreference(KEY_PRESELECTED_CONFIGS);
+            if (selectedColors != null) {
+                invalidateColorPreference(selectedColors);
+                selectedColors.invalidateColors();
+            }
+
+            ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getColorPreference());
+        }
+    }
+
+    private void invalidateColorPreference(ColorPickerDialog selectedColors) {
+        int colorPickerPref = sharedPref.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA);
+        boolean isColor = colorPickerPref != ColorPickerDialog.CUSTOM_INDEX
+                && colorPickerPref != ColorPickerDialog.RANDOM_INDEX;
+
+        if(isColor) {
+            selectedColors.setColorsVisibility(View.VISIBLE);
+
+            int skin = activity.getColorPreference().getColor(ColorUsage.PRIMARY);
+            int skin_two = activity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+            int accent_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+            int icon_skin = activity.getColorPreference().getColor(ColorUsage.ICON_SKIN);
+
+            selectedColors.setColors(skin, skin_two, accent_skin, icon_skin);
+        } else{
+            selectedColors.setColorsVisibility(View.GONE);
+        }
+    }
+
     private class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
-        private String prefKey;
         private ColorUsage usage;
         @ColorInt
         private int selectedColor;
@@ -192,7 +260,6 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
          */
         ColorAdapter(Context context, List<Integer> colors, ColorUsage usage) {
             super(context, R.layout.rowlayout, colors);
-            this.prefKey = usage.asString();
             this.usage = usage;
             this.selectedColor = activity.getColorPreference().getColor(usage);
         }

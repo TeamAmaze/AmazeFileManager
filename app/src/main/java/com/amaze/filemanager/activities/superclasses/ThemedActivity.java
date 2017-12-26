@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.fragments.preference_fragments.specialpreferences.ColorPickerDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -27,7 +28,8 @@ public class ThemedActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         // checking if theme should be set light/dark or automatic
-        if (getPrefs().getBoolean(PreferencesConstants.PREFERENCE_RANDOM_COLOR, false)) {
+        int colorPickerPref = getPrefs().getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA);
+        if (colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
             getColorPreference().randomize().saveToPreferences(getPrefs());
         }
 
