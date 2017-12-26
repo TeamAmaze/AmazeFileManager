@@ -1,6 +1,6 @@
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.ui.drawer.Item;
+import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by arpitkh996 on 20-01-2016.
@@ -36,7 +35,7 @@ public class DataUtils {
     private LinkedList<String> history = new LinkedList<>();
     private ArrayList<String> storages = new ArrayList<>();
 
-    private ArrayList<Item> list = new ArrayList<>();
+    private ArrayList<DrawerItem> list = new ArrayList<>();
 
     private ArrayList<String[]> servers = new ArrayList<>();
     private ArrayList<String[]> books = new ArrayList<>();
@@ -372,11 +371,11 @@ public class DataUtils {
         this.storages = storages;
     }
 
-    public ArrayList<Item> getList() {
+    public ArrayList<DrawerItem> getList() {
         return list;
     }
 
-    public synchronized void setList(ArrayList<Item> list) {
+    public synchronized void setList(ArrayList<DrawerItem> list) {
         this.list = list;
     }
 
