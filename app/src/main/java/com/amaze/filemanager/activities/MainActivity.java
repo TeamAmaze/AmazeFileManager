@@ -31,10 +31,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -49,15 +47,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -69,18 +64,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.adapters.DrawerAdapter;
-import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
@@ -99,6 +89,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -109,16 +100,14 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
-import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
+import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
@@ -127,14 +116,11 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.CloudRail;
 import com.cloudrail.si.exceptions.AuthenticationException;
 import com.cloudrail.si.exceptions.ParseException;
@@ -172,9 +158,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public DrawerLayout mDrawerLayout;
-    public ListView mDrawerList;
-    public ScrimInsetsRelativeLayout mDrawerLinear;
     public String path = "", launchPath;
     public FrameLayout frameLayout;
     public boolean mReturnIntent = false;
@@ -182,14 +165,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public int skinStatusBar;
 
-    public volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
-
     public FABsMenu floatingActionButton;
     public LinearLayout pathbar;
     public FrameLayout buttonBarFrame;
-    public boolean isDrawerLocked = false;
 
-    public DrawerAdapter adapter;
     public MainActivityHelper mainActivityHelper;
 
     public int operation = -1;
@@ -201,7 +180,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
     public ArrayList<String> oppatheList;
-    public RelativeLayout drawerHeaderParent;
 
     /**
      * @deprecated use getCurrentMainFragment()
@@ -221,23 +199,19 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private static final int image_selector_request_code = 31;
 
     private AppBar appbar;
+    private Drawer drawer;
     //private HistoryManager history, grid;
     private MainActivity mainActivity = this;
     private Context con = this;
     private String zippath;
-    private FragmentTransaction pending_fragmentTransaction;
-    private String pendingPath;
     private boolean openProcesses = false;
     private int hidemode;
     private MaterialDialog materialDialog;
     private String newPath = null;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
-    private ActionBarDrawerToggle mDrawerToggle;
     private Intent intent;
-    private View drawerHeaderLayout;
-    private View drawerHeaderView, indicator_layout;
-    private ImageLoader mImageLoader;
+    private View indicator_layout;
 
     private TabHandler tabHandler;
     /* A flag indicating that a PendingIntent is in progress and prevents
@@ -248,38 +222,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private AppBarLayout appBarLayout;
 
-    /**
-     * In drawer nothing is selected.
-     */
-    private static final int DRAWER_SELECTED_NONE = -1;
-    /**
-     * In drawer first storage is selected.
-     */
-    private static final int DRAWER_SELECTED_DEFAULT = 0;
-    /**
-     * In drawer {@link ProcessViewerFragment} is selected (which is a special case
-     * of {@link #DRAWER_SELECTED_NONE} as ProcessViewer has no drawer item). //TODO might be wrong
-     */
-    private static final int DRAWER_SELECTED_PROCESSVIEWER = 102;
-    /**
-     * In drawer FTP or Apps list (also Settings for a brief second) are selected.
-     */
-    private static final int DRAWER_SELECTED_LASTSECTION = -2;
-
-    /**
-     * Which item in nav drawer is selected values go from 0 to the length of the nav drawer list,
-     * special values are {@link #DRAWER_SELECTED_DEFAULT}, {@link #DRAWER_SELECTED_NONE},
-     * {@link #DRAWER_SELECTED_PROCESSVIEWER} and {@link #DRAWER_SELECTED_LASTSECTION}.
-     */
-    private int selectedStorage;
-
     private CoordinatorLayout mScreenLayout;
     private View fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
 
-    private static final int REQUEST_CODE_SAF = 223;
-    private static final String VALUE_PREF_OTG_NULL = "n/a";
+    public static final int REQUEST_CODE_SAF = 223;
+    public static final String VALUE_PREF_OTG_NULL = "n/a";
 
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
@@ -348,7 +297,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
-        mImageLoader = AppConfig.getInstance().getImageLoader();
         mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();// TODO: 7/12/2017 not init when actionIntent != null
 
@@ -371,8 +319,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         checkForExternalIntent(intent);
 
         if (savedInstanceState != null) {
-
-            selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
+            drawer.setSelectedStorage(savedInstanceState.getInt(KEY_DRAWER_SELECTED, Drawer.SELECTED_DEFAULT));
         }
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -389,47 +336,17 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
         }
 
-        if (getAppTheme().equals(AppTheme.DARK)) {
-            mDrawerList.setBackgroundColor(ContextCompat.getColor(this, R.color.holo_dark_background));
-        } else if (getAppTheme().equals(AppTheme.BLACK)) {
-            mDrawerList.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black));
-        }
-        mDrawerList.setDivider(null);
-        if (!isDrawerLocked) {
-            mDrawerToggle = new ActionBarDrawerToggle(
-                    this,                  /* host Activity */
-                    mDrawerLayout,         /* DrawerLayout object */
-                    R.drawable.ic_drawer_l,  /* nav drawer image to replace 'Up' caret */
-                    R.string.drawer_open,  /* "open drawer" description for accessibility */
-                    R.string.drawer_close  /* "close drawer" description for accessibility */
-            ) {
-                public void onDrawerClosed(View view) {
-                    mainActivity.onDrawerClosed();
-                }
-
-                public void onDrawerOpened(View drawerView) {
-                    //title.setText("Amaze File Manager");
-                    // creates call to onPrepareOptionsMenu()
-                }
-            };
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_l);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            mDrawerToggle.syncState();
-        }
         /*findViewById(R.id.drawer_buttton).setOnClickListener(new ImageView.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
-                    mDrawerLayout.closeDrawer(mDrawerLinear);
+                if (mDrawerLayout.isOpen(mDrawerLinear)) {
+                    mDrawerLayout.close(mDrawerLinear);
                 } else mDrawerLayout.openDrawer(mDrawerLinear);
             }
         });*/
-        if (mDrawerToggle != null) {
-            mDrawerToggle.setDrawerIndicatorEnabled(true);
-            mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer_l);
-        }
+
+        drawer.setDrawerIndicatorEnabled();
+
         //recents header color implementation
         if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
@@ -465,14 +382,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             @Override
             public Void onPostExecute(Object result) {
 
-                refreshDrawer();
+                drawer.refreshDrawer();
 
                 if (savedInstanceState == null) {
                     if (openProcesses) {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
-                        selectedStorage = DRAWER_SELECTED_PROCESSVIEWER;
+                       drawer.setSelectedStorage(Drawer.SELECTED_PROCESSVIEWER);
                         openProcesses = false;
                         //title.setText(utils.getString(con, R.string.process_viewer));
                         //Commit the transaction
@@ -486,8 +403,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
                         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
-                        selectedStorage = DRAWER_SELECTED_LASTSECTION;
-                        adapter.deselectEverything();
+                        drawer.setSelectedStorage(Drawer.SELECTED_LASTSECTION);
+                        drawer.deselectEverything();
                         transaction2.commit();
                     } else {
                         if (path != null && path.length() > 0) {
@@ -510,9 +427,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
                     oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
                     operation = savedInstanceState.getInt(KEY_OPERATION);
-                    selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
+                    drawer.setSelectedStorage(savedInstanceState.getInt(KEY_DRAWER_SELECTED, Drawer.SELECTED_DEFAULT));
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
-                    adapter.toggleChecked(selectedStorage);
+                    drawer.toggleCheckedSelectedStorage();
                 }
                 return null;
             }
@@ -753,9 +670,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onBackPressed() {
-        if (!isDrawerLocked) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerLinear)) {
-                mDrawerLayout.closeDrawer(mDrawerLinear);
+        if (!drawer.isLocked()) {
+            if (drawer.isOpen()) {
+                drawer.close();
             } else {
                 onbackpressed();
             }
@@ -836,14 +753,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
     }
 
-    public void selectCorrectDrawerItemForPath(final String path) {
-        Integer position = dataUtils.findLongestContainingDrawerItem(path);
-
-        if (adapter != null) {
-            adapter.toggleChecked(position != null? position:-1);
-        }
-    }
-
     public void goToMain(String path) {
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //title.setText(R.string.app_name);
@@ -855,7 +764,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
-        selectedStorage = DRAWER_SELECTED_DEFAULT;
+        drawer.setSelectedStorage(Drawer.SELECTED_DEFAULT);
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         appbar.setTitle(null);
@@ -867,56 +776,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 openRar(zippath);
             }
             zippath = null;
-        }
-    }
-
-    public void selectItem(final int i) {
-        ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getDrawerItems();
-        switch (directoryDrawerItems.get(i).type) {
-            case DrawerItem.ITEM_ENTRY:
-                if ((selectedStorage == DRAWER_SELECTED_NONE || selectedStorage >= directoryDrawerItems.size())) {
-                    TabFragment tabFragment = new TabFragment();
-                    Bundle a = new Bundle();
-                    a.putString("path", directoryDrawerItems.get(i).path);
-
-                    tabFragment.setArguments(a);
-
-                    android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, tabFragment);
-
-                    transaction.addToBackStack("tabt1" + 1);
-                    pending_fragmentTransaction = transaction;
-                    selectedStorage = i;
-                    adapter.toggleChecked(selectedStorage);
-                    if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                    else onDrawerClosed();
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.getMenuButton().show();
-                } else {
-                    pendingPath = directoryDrawerItems.get(i).path;
-
-                    selectedStorage = i;
-                    adapter.toggleChecked(selectedStorage);
-
-                    if (directoryDrawerItems.get(i).path.contains(OTGUtil.PREFIX_OTG) &&
-                            getPrefs().getString(KEY_PREF_OTG, null).equals(VALUE_PREF_OTG_NULL)) {
-                        // we've not gotten otg path yet
-                        // start system request for storage access framework
-                        Toast.makeText(getApplicationContext(),
-                                getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                        startActivityForResult(safIntent, REQUEST_CODE_SAF);
-                    } else {
-                        if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                        else onDrawerClosed();
-                    }
-                }
-                break;
-            case DrawerItem.ITEM_INTENT:
-                directoryDrawerItems.get(i).onClickListener.onClick();
-                selectedStorage = i;
-                adapter.toggleChecked(selectedStorage);
-                break;
         }
     }
 
@@ -1049,9 +908,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        if (drawer.onOptionsItemSelected(item)) return true;
+
         // Handle action buttons
         MainFragment ma = getCurrentMainFragment();
 
@@ -1189,21 +1047,21 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (mDrawerToggle != null) mDrawerToggle.syncState();
+        drawer.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        if (mDrawerToggle != null) mDrawerToggle.onConfigurationChanged(newConfig);
+        drawer.onConfigurationChanged(newConfig);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (selectedStorage != DRAWER_SELECTED_NONE)
-            outState.putInt(KEY_DRAWER_SELECTED, selectedStorage);
+        if (drawer.getSelectedStorage() != Drawer.SELECTED_NONE)
+            outState.putInt(KEY_DRAWER_SELECTED, drawer.getSelectedStorage());
         if(pasteHelper != null) {
             outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
         }
@@ -1270,10 +1128,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                 getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                refreshDrawer();
+                drawer.refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
-                refreshDrawer();
+                drawer.refreshDrawer();
                 goToMain(null);
             }
         }
@@ -1392,190 +1250,22 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         return null;
     }
-    
-    public void refreshDrawer() {
 
-        ArrayList<DrawerItem> sectionDrawerItems = new ArrayList<>();
-        ArrayList<String> storageDirectories = getStorageDirectories();
-        storage_count = 0;
-        for (String file : storageDirectories) {
-            File f = new File(file);
-            String name;
-            Drawable icon1 = ContextCompat.getDrawable(this, R.drawable.ic_sd_storage_white_24dp);
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
-                name = getResources().getString(R.string.storage);
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
-            } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.rootdirectory);
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_drawer_root_white);
-            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
-                name = "OTG";
-                icon1 = ContextCompat.getDrawable(this, R.drawable.ic_usb_white_24dp);
-            } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
-                sectionDrawerItems.add(new DrawerItem(name, file, icon1));
-            }
-        }
-        dataUtils.setStorages(storageDirectories);
-        sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
-
-        if (dataUtils.getServers().size() > 0) {
-            Collections.sort(dataUtils.getServers(), new BookSorter());
-            synchronized (dataUtils.getServers()) {
-                for (String[] file : dataUtils.getServers()) {
-                    sectionDrawerItems.add(new DrawerItem(file[0], file[1], ContextCompat.getDrawable(this,
-                            (file[1].startsWith(SshConnectionPool.SSH_URI_PREFIX)) ?
-                                    R.drawable.ic_linux_grey600_24dp : R.drawable.ic_settings_remote_white_24dp)));
-                }
-            }
-            sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
-        }
-
-        ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
-
-        if (CloudSheetFragment.isCloudProviderAvailable(this)) {
-            for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
-                if (cloudStorage instanceof Dropbox) {
-
-                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_DROPBOX,
-                            CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                            ContextCompat.getDrawable(this, R.drawable.ic_dropbox_white_24dp)));
-
-                    accountAuthenticationList.add(new String[] {
-                            CloudHandler.CLOUD_NAME_DROPBOX,
-                            CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
-                    });
-                } else if (cloudStorage instanceof Box) {
-
-                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_BOX,
-                            CloudHandler.CLOUD_PREFIX_BOX + "/",
-                            ContextCompat.getDrawable(this, R.drawable.ic_box_white_24dp)));
-
-                    accountAuthenticationList.add(new String[] {
-                            CloudHandler.CLOUD_NAME_BOX,
-                            CloudHandler.CLOUD_PREFIX_BOX + "/",
-                    });
-                } else if (cloudStorage instanceof OneDrive) {
-
-                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_ONE_DRIVE,
-                            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                            ContextCompat.getDrawable(this, R.drawable.ic_onedrive_white_24dp)));
-
-                    accountAuthenticationList.add(new String[] {
-                            CloudHandler.CLOUD_NAME_ONE_DRIVE,
-                            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
-                    });
-                } else if (cloudStorage instanceof GoogleDrive) {
-
-                    sectionDrawerItems.add(new DrawerItem(CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-                            CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                            ContextCompat.getDrawable(this, R.drawable.ic_google_drive_white_24dp)));
-
-                    accountAuthenticationList.add(new String[] {
-                            CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-                            CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
-                    });
-                }
-            }
-            Collections.sort(accountAuthenticationList, new BookSorter());
-
-            if (accountAuthenticationList.size() != 0)
-                sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
-        }
-
-        if (getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
-            if (dataUtils.getBooks().size() > 0) {
-
-                Collections.sort(dataUtils.getBooks(), new BookSorter());
-
-                synchronized (dataUtils.getBooks()) {
-                    for (String[] file : dataUtils.getBooks()) {
-                        sectionDrawerItems.add(new DrawerItem(file[0], file[1],
-                                ContextCompat.getDrawable(this, R.drawable.ic_folder_white_24dp)));
-                    }
-                }
-                sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
-            }
-        }
-
-        Boolean[] quickAccessPref = TinyDB.getBooleanArray(getPrefs(), QuickAccessPref.KEY,
-                QuickAccessPref.DEFAULT);
-
-        if (getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
-            if (quickAccessPref[0])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.quick), "5",
-                        ContextCompat.getDrawable(this, R.drawable.ic_star_white_24dp)));
-            if (quickAccessPref[1])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.recent), "6",
-                        ContextCompat.getDrawable(this, R.drawable.ic_history_white_24dp)));
-            if (quickAccessPref[2])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.images), "0",
-                        ContextCompat.getDrawable(this, R.drawable.ic_photo_library_white_24dp)));
-            if (quickAccessPref[3])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.videos), "1",
-                        ContextCompat.getDrawable(this, R.drawable.ic_video_library_white_24dp)));
-            if (quickAccessPref[4])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.audio), "2",
-                        ContextCompat.getDrawable(this, R.drawable.ic_library_music_white_24dp)));
-            if (quickAccessPref[5])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.documents), "3",
-                        ContextCompat.getDrawable(this, R.drawable.ic_library_books_white_24dp)));
-            if (quickAccessPref[6])
-                sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.apks), "4",
-                        ContextCompat.getDrawable(this, R.drawable.ic_apk_library_white_24dp)));
-        } else {
-            sectionDrawerItems.remove(sectionDrawerItems.size() - 1); //Deletes last divider
-        }
-
-        sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
-
-        sectionDrawerItems.add(new DrawerItem(getString(R.string.ftp),
-                ContextCompat.getDrawable(this, R.drawable.ic_ftp_white_24dp), () -> {
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                    transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                    appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                    pending_fragmentTransaction = transaction2;
-                    if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                    else onDrawerClosed();
-        }));
-        sectionDrawerItems.add(new DrawerItem(getString(R.string.apps),
-                ContextCompat.getDrawable(this, R.drawable.ic_android_white_24dp), () -> {
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                    transaction2.replace(R.id.content_frame, new AppsListFragment());
-                    appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-                    pending_fragmentTransaction = transaction2;
-                    if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-                    else onDrawerClosed();
-        }));
-        sectionDrawerItems.add(new DrawerItem(getString(R.string.setting),
-                ContextCompat.getDrawable(this, R.drawable.ic_settings_white_24dp), () -> {
-                    Intent in = new Intent(MainActivity.this, PreferencesActivity.class);
-                    startActivity(in);
-                    finish();
-        }));
-
-        dataUtils.setDrawerItems(sectionDrawerItems);
-
-        adapter = new DrawerAdapter(this, getUtilsProvider(), sectionDrawerItems, this);
-        mDrawerList.setAdapter(adapter);
+    public FABsMenu getFAB() {
+        return floatingActionButton;
     }
 
     public AppBar getAppbar() {
         return appbar;
     }
 
+    public Drawer getDrawer() {
+        return drawer;
+    }
+
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == image_selector_request_code) {
-            if (getPrefs() != null && intent != null && intent.getData() != null) {
-                if (SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    getContentResolver().takePersistableUriPermission(intent.getData(),
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                        intent.getData().toString()).commit();
-                setDrawerHeaderBackground();
-            }
+        if (requestCode == Drawer.image_selector_request_code) {
+            drawer.onActivityResult(requestCode, responseCode, intent);
         } else if (requestCode == 3) {
             Uri treeUri;
             if (responseCode == Activity.RESULT_OK) {
@@ -1660,11 +1350,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             // otg access
             getPrefs().edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
 
-            if (!isDrawerLocked) mDrawerLayout.closeDrawer(mDrawerLinear);
-            else onDrawerClosed();
+            drawer.closeIfNotLocked();
+            if(drawer.isLocked()) drawer.onDrawerClosed();
         } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
             // otg access not provided
-            pendingPath = null;
+            drawer.resetPendingPath();
         }
     }
 
@@ -1684,48 +1374,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         buttonBarFrame = findViewById(R.id.buttonbarframe);
 
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
-        drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
-        drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
-        drawerHeaderView.setOnLongClickListener(v -> {
-            Intent intent1;
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent1 = new Intent();
-                intent1.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
-            }
-            intent1.addCategory(Intent.CATEGORY_OPENABLE);
-            intent1.setType("image/*");
-            startActivityForResult(intent1, image_selector_request_code);
-            return false;
-        });
         setSupportActionBar(getAppbar().getToolbar());
+
+        drawer = new Drawer(this);
+
         frameLayout = findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
-        mDrawerLinear = findViewById(R.id.left_drawer);
-        if (getAppTheme().equals(AppTheme.DARK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-        else if (getAppTheme().equals(AppTheme.BLACK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, android.R.color.black));
-        else mDrawerLinear.setBackgroundColor(Color.WHITE);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-        mDrawerList = findViewById(R.id.menu_drawer);
-        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
 
-        if (findViewById(R.id.tab_frame) != null) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
-            mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-            mDrawerLayout.post(() -> mDrawerLayout.openDrawer(mDrawerLinear));
-            isDrawerLocked = true;
-        } else {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLinear);
-            mDrawerLayout.post(() -> mDrawerLayout.closeDrawer(mDrawerLinear));
-            isDrawerLocked = false;
-        }
-
-        mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         fabBgView = findViewById(R.id.fab_bg);
         if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
@@ -1736,7 +1392,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-        setDrawerHeaderBackground();
+        drawer.setDrawerHeaderBackground();
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1 ? skinTwo : skin))));
 
         // status bar0
@@ -1746,12 +1402,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+            if (!drawer.isLocked()) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if (isDrawerLocked) {
+            if (drawer.isLocked()) {
                 window.setStatusBarColor((skinStatusBar));
             } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             if (colourednavigation)
@@ -1769,10 +1425,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
         // action bar color
         mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
-        // drawer status bar I guess
-        mainActivity.mDrawerLayout.setStatusBarBackgroundColor(colorDrawable.getColor());
-        // drawer header background
-        mainActivity.drawerHeaderParent.setBackgroundColor(colorDrawable.getColor());
+
+        drawer.setBackgroundColor(colorDrawable.getColor());
 
         if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // for lollipop devices, the status bar color
@@ -1862,33 +1516,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
     }
 
-    void onDrawerClosed() {
-        if (pending_fragmentTransaction != null) {
-            pending_fragmentTransaction.commit();
-            pending_fragmentTransaction = null;
-        }
-
-        if (pendingPath != null) {
-            HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
-            hFile.generateMode(this);
-            if (hFile.isSimpleFile()) {
-                FileUtils.openFile(new File(pendingPath), mainActivity, getPrefs());
-                pendingPath = null;
-                return;
-            }
-
-            MainFragment mainFrag = getCurrentMainFragment();
-            if (mainFrag != null) {
-                mainFrag.loadlist(pendingPath, false, OpenMode.UNKNOWN);
-            } else {
-                goToMain(pendingPath);
-                return;
-            }
-            pendingPath = null;
-        }
-        supportInvalidateOptionsMenu();
-    }
-
     public PasteHelper getPaste() {
         return pasteHelper;
     }
@@ -1924,7 +1551,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
-            selectedStorage = DRAWER_SELECTED_PROCESSVIEWER;
+            drawer.setSelectedStorage(Drawer.SELECTED_PROCESSVIEWER);
             openProcesses = false;
             //title.setText(utils.getString(con, R.string.process_viewer));
             //Commit the transaction
@@ -1938,35 +1565,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                     if (getPrefs().getString(KEY_PREF_OTG, null) == null) {
                         getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                        refreshDrawer();
+                        drawer.refreshDrawer();
                     }
                 } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                     getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
-                    refreshDrawer();
+                    drawer.refreshDrawer();
                 }
             }
-        }
-    }
-
-    void setDrawerHeaderBackground() {
-        String path1 = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                null);
-        if (path1 == null) return;
-        try {
-            final ImageView headerImageView = new ImageView(MainActivity.this);
-            headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-            mImageLoader.get(path1, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    headerImageView.setImageBitmap(response.getBitmap());
-                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {}
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -1988,14 +1593,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                refreshDrawer();
+                drawer.refreshDrawer();
                 TabFragment tabFragment = getTabFragment();
                 boolean b = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, true);
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
-                    if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, dataUtils.getDrawerItems().get(1).path, "/"));
+                    if (drawer.getStorageCount() > 1)
+                        tabHandler.addTab(new Tab(1,  dataUtils.getDrawerItems().get(1).path, "/"));
                     else
                         tabHandler.addTab(new Tab(1, "/", "/"));
                     if (!dataUtils.getDrawerItems().get(0).isSection()) {
@@ -2094,7 +1699,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (!edit) {
             if ((dataUtils.containsServer(path)) == -1) {
                 dataUtils.addServer(s);
-                refreshDrawer();
+                drawer.refreshDrawer();
 
                 AppConfig.runInBackground(() -> {
                     utilsHandler.addSmb(name, encryptedPath);
@@ -2117,7 +1722,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             }
             dataUtils.addServer(s);
             Collections.sort(dataUtils.getServers(), new BookSorter());
-            mainActivity.refreshDrawer();
+            drawer.refreshDrawer();
             //mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
         }
     }
@@ -2133,7 +1738,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 utilsHandler.removeSmbPath(name, path);
             });
             //grid.removePath(name, path, DataUtils.SMB);
-            refreshDrawer();
+            drawer.refreshDrawer();
         }
 
     }
@@ -2160,8 +1765,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public void onBookAdded(String[] path, boolean refreshdrawer) {
 
         utilsHandler.addBookmark(path[0], path[1]);
-        if (refreshdrawer)
-            refreshDrawer();
+        if (refreshdrawer) drawer.refreshDrawer();
     }
 
     @Override
@@ -2174,7 +1778,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public void delete(String title, String path) {
 
         utilsHandler.removeBookmarksPath(title, path);
-        refreshDrawer();
+        drawer.refreshDrawer();
 
     }
 
@@ -2182,7 +1786,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public void modify(String oldpath, String oldname, String newPath, String newname) {
 
         utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
-        refreshDrawer();
+        drawer.refreshDrawer();
     }
 
     @Override
@@ -2244,7 +1848,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         cloudHandler.clear(service);
         dataUtils.removeAccount(service);
 
-        runOnUiThread(this::refreshDrawer);
+        runOnUiThread(drawer::refreshDrawer);
     }
 
     @Override
@@ -2554,7 +2158,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             protected void onPostExecute(Boolean refreshDrawer) {
                 super.onPostExecute(refreshDrawer);
                 if (refreshDrawer) {
-                    refreshDrawer();
+                    drawer.refreshDrawer();
                 }
             }
         }.execute();

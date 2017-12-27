@@ -108,8 +108,8 @@ public class TabFragment extends android.support.v4.app.Fragment
             int i = tabs1.size();
             if (i == 0) {
                 // creating tabs in db for the first time, probably the first launch of app
-                if (mainActivity.storage_count > 1)
-                    addTab(new Tab(1, dataUtils.getDrawerItems().get(1).path, "/"), 1, "");
+                if (mainActivity.getDrawer().getStorageCount() > 1)
+                    addTab(new Tab(1,  dataUtils.getDrawerItems().get(1).path, "/"), 1, "");
                 else
                     addTab(new Tab(1,"/", "/"), 1, "");
                 if (!dataUtils.getDrawerItems().get(0).isSection()) {
@@ -208,7 +208,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 if (i - 1 == MainActivity.currentTab && i == pos) {
                     mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results,
                             MainActivityHelper.SEARCH_TEXT, m.openMode, m.folder_count, m.file_count, m);
-                    mainActivity.selectCorrectDrawerItemForPath(m.getCurrentPath());
+                    mainActivity.getDrawer().selectCorrectDrawerItemForPath(m.getCurrentPath());
                 }
                 if (m.openMode == OpenMode.FILE) {
                     tabHandler.addTab(new Tab(i, m.getCurrentPath(), m.home));
@@ -285,7 +285,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (fragment != null && fragment instanceof MainFragment) {
             MainFragment ma = (MainFragment) fragment;
             if (ma.getCurrentPath() != null) {
-                mainActivity.selectCorrectDrawerItemForPath(ma.getCurrentPath());
+                mainActivity.getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
                 mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(),
                         ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
                         ma.folder_count, ma.file_count, ma);

@@ -46,7 +46,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.pm.ShortcutInfoCompat;
 import android.support.v4.content.pm.ShortcutManagerCompat;
 import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -500,10 +499,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
             // do not allow drawer to open when item gets selected
-            if (!getMainActivity().isDrawerLocked) {
-
-                getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED,
-                        getMainActivity().mDrawerLinear);
+            if (!getMainActivity().getDrawer().isLocked()) {
+                getMainActivity().getDrawer().lock();
             }
             return true;
         }
@@ -765,9 +762,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
                     primaryTwoColor : primaryColor));
 
-            if (!getMainActivity().isDrawerLocked) {
-                getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
-                        getMainActivity().mDrawerLinear);
+            if (!getMainActivity().getDrawer().isLocked()) {
+                getMainActivity().getDrawer().unlock();
             }
         }
     };

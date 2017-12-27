@@ -134,12 +134,12 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
                     }
                 }
 
-                m.selectItem(position);
+                m.getDrawer().selectItem(position);
             });
             view.setOnLongClickListener(v -> {
                 if (!getItem(position).isSection())
                     // not to remove the first bookmark (storage) and permanent bookmarks
-                    if (position > m.storage_count && position < values.size() - 7) {
+                    if (position > m.getDrawer().getStorageCount() && position < values.size() - 7) {
                         DrawerItem drawerItem = getItem(position);
                         String title = drawerItem.title;
                         String path = (drawerItem).path;
@@ -165,7 +165,7 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
 
                             GeneralDialogCreation.showCloudDialog(m, utilsProvider.getAppTheme(), OpenMode.ONEDRIVE);
                         }
-                    } else if (position < m.storage_count) {
+                    } else if (position < m.getDrawer().getStorageCount()) {
                         String path = getItem(position).path;
                         if (!path.equals("/"))
                             GeneralDialogCreation.showPropertiesDialogForStorage(RootHelper.generateBaseFile(new File(path), true), m, utilsProvider.getAppTheme());
