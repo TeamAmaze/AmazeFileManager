@@ -39,7 +39,9 @@ import java.io.StringReader;
 import java.security.KeyPair;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Poor man's implementation of SSH connection pool.
@@ -146,12 +148,20 @@ public class SshConnectionPool
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
         try {
             String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
-            KeyPair keyPair = (pem != null && !"".equals(pem)) ?
-                    new PemToKeyPairTask(pem, null).execute().get().result
-                    : null;
+            AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);
+            if(pem != null && !"".equals(pem)) {
+                CountDownLatch latch = new CountDownLatch(1);
+                new PemToKeyPairTask(pem, result -> {
+                    if(result.result != null){
+                        keyPair.set(result.result);
+                        latch.countDown();
+                    }
+                }).execute();
+                latch.await();
+            }
             AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(host, port,
                     utilsHandler.getSshHostKey(uri.toString()),
-                    username, password, keyPair).execute().get();
+                    username, password, keyPair.get()).execute().get();
 
             SSHClient client = taskResult.result;
             return client;

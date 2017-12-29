@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.security.PublicKey;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT_TIMEOUT;
@@ -50,8 +50,8 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT
  * It works by adding a {@link HostKeyVerifier} that accepts all SSH host keys, then obtain the
  * key shown by server, and return to the task's caller.
  *
- * {@link Semaphore} with {@link AtomicReference} combo is used to ensure SSH host key is obtained
- * successfully on returning to the task caller.
+ * {@link CountDownLatch} with {@link AtomicReference} combo is used to ensure SSH host key is
+ * obtained successfully on returning to the task caller.
  *
  * Mainly used by {@link com.amaze.filemanager.ui.dialogs.SftpConnectDialog} on saving SSH
  * connection settings.
@@ -79,26 +79,26 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     protected AsyncTaskResult<PublicKey> doInBackground(Void... voids) {
 
         final AtomicReference<AsyncTaskResult<PublicKey>> holder = new AtomicReference<AsyncTaskResult<PublicKey>>();
-        final Semaphore semaphore = new Semaphore(0);
+        final CountDownLatch latch = new CountDownLatch(1);
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
         sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
         sshClient.addHostKeyVerifier((hostname, port, key) -> {
             holder.set(new AsyncTaskResult<PublicKey>(key));
-            semaphore.release();
+            latch.countDown();
             return true;
         });
 
         try {
             sshClient.connect(mHostname, mPort);
-            semaphore.acquire();
+            latch.await();
         } catch(IOException e) {
             e.printStackTrace();
             holder.set(new AsyncTaskResult<PublicKey>(e));
-            semaphore.release();
+            latch.countDown();
         } catch(InterruptedException e) {
             e.printStackTrace();
             holder.set(new AsyncTaskResult<PublicKey>(e));
-            semaphore.release();
+            latch.countDown();
         }
         finally {
             SshClientUtils.tryDisconnect(sshClient);

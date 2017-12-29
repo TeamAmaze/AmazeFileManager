@@ -143,7 +143,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
             MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
             EditText textfield = new EditText(builder.getContext());
             textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            builder.customView(textfield, false).title("Please enter passphrase for key")
+            builder.customView(textfield, false).title(R.string.ssh_key_prompt_passphrase)
                     .positiveText(R.string.ok)
                     .onPositive(((dialog, which) -> {
                         new PemToKeyPairTask(mPemFile, mCallback, textfield.getText().toString()).execute();
