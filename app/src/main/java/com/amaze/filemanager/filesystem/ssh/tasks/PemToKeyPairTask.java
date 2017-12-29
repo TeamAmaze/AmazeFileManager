@@ -35,6 +35,8 @@ import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile;
 import net.schmizz.sshj.userauth.keyprovider.PuTTYKeyFile;
+import net.schmizz.sshj.userauth.password.PasswordFinder;
+import net.schmizz.sshj.userauth.password.Resource;
 
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
@@ -76,14 +78,37 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> mCallback;
 
+    private final PasswordFinder mPasswordFinder;
+
+    private final boolean mNotifyOnParseError;
+
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this.mPemFile = new InputStreamReader(pemFile);
-        this.mCallback = callback;
+        this(new InputStreamReader(pemFile), callback);
     }
 
     public PemToKeyPairTask(@NonNull Reader reader, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
+        this(reader, callback, null, true);
+    }
+
+    public PemToKeyPairTask(@NonNull Reader reader, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
+                            String keyPassphrase, boolean notifyOnParseError) {
         this.mPemFile = reader;
         this.mCallback = callback;
+        if(keyPassphrase == null)
+            mPasswordFinder = null;
+        else
+            mPasswordFinder = new PasswordFinder() {
+                @Override
+                public char[] reqPassword(Resource<?> resource) {
+                    return keyPassphrase.toCharArray();
+                }
+
+                @Override
+                public boolean shouldRetry(Resource<?> resource) {
+                    return false;
+                }
+            };
+        this.mNotifyOnParseError = notifyOnParseError;
     }
 
     @Override
@@ -119,8 +144,13 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
     }
 
     @Override
+    protected void onProgressUpdate(Void... values) {
+        super.onProgressUpdate(values);
+    }
+
+    @Override
     protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
-        if(result.exception != null) {
+        if(result.exception != null && mNotifyOnParseError) {
             Toast.makeText(AppConfig.getInstance().getActivityContext(), String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error), result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
         }
         if(mCallback != null) {
@@ -150,7 +180,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             OpenSSHKeyFile converter = new OpenSSHKeyFile();
-            converter.init(new StringReader(source));
+            converter.init(new StringReader(source), mPasswordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
@@ -163,7 +193,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             OpenSSHKeyV1KeyFile converter = new OpenSSHKeyV1KeyFile();
-            converter.init(new StringReader(source));
+            converter.init(new StringReader(source), mPasswordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
@@ -176,10 +206,11 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             PuTTYKeyFile converter = new PuTTYKeyFile();
-            converter.init(new StringReader(source));
+            converter.init(new StringReader(source), mPasswordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
+                ignored.printStackTrace();
                 return null;
             }
         }
