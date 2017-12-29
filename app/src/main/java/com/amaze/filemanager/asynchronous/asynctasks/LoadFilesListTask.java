@@ -22,10 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.util.Pair;
@@ -33,7 +29,6 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -42,18 +37,14 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileListSorter;
-import com.bumptech.glide.Glide;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.File;
@@ -252,7 +243,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
             LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
-                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "", !ma.IS_LIST, ma.SHOW_THUMBS);
+                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "", ma.SHOW_THUMBS);
             layoutElement.setMode(baseFile.getMode());
             return layoutElement;
         }

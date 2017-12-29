@@ -1197,7 +1197,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (back == null) {
             back = new LayoutElementParcelable("..", "", "",
                     getString(R.string.goback), 0, false, true,
-                    "", !IS_LIST, SHOW_THUMBS);
+                    "", SHOW_THUMBS);
         }
 
         return back;
@@ -1494,7 +1494,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(name, aMFile.getPath(),
                         "", "", "", 0, false,
-                        aMFile.lastModified() + "", true, !IS_LIST, SHOW_THUMBS);
+                        aMFile.lastModified() + "", true, SHOW_THUMBS);
 
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
@@ -1505,7 +1505,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
                             aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
-                            false, !IS_LIST, SHOW_THUMBS);
+                            false, SHOW_THUMBS);
                     layoutElement.setMode(OpenMode.SMB);
                     searchHelper.add(layoutElement.generateBaseFile());
                     a.add(layoutElement);
@@ -1526,7 +1526,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true, false,
-                        mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
+                        mFile.getDate() + "", SHOW_THUMBS);
 
                 layoutElement.setMode(mFile.getMode());
                 LIST_ELEMENTS.add(layoutElement);
@@ -1548,7 +1548,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 try {
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(),
                             mFile.getPermission(), mFile.getLink(), size, longSize, false,
-                            false, mFile.getDate() + "", !IS_LIST, SHOW_THUMBS);
+                            false, mFile.getDate() + "", SHOW_THUMBS);
                     layoutElement.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);
                     file_count++;
@@ -1728,7 +1728,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     @Override
     public int getRootDrawable() {
-        return R.drawable.root;
+        return R.drawable.ic_root_white_24px;
     }
 
 }

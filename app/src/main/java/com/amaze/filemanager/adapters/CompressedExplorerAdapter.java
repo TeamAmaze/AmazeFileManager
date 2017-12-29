@@ -19,11 +19,11 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -32,6 +32,7 @@ import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -203,7 +204,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             holder.date.setText(R.string.goback);
         } else {
             GlideApp.with(compressedExplorerFragment)
-                    .load(Icons.loadMimeIcon(rowItem.name, false))
+                    .load(Icons.loadMimeIcon(rowItem.name))
                     .into(holder.genericIcon);
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
@@ -225,7 +226,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
                 holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
-                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.name),
+                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(new File(rowItem.name)),
                             gradientDrawable, Color.parseColor(compressedExplorerFragment.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
             }

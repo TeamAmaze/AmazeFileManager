@@ -445,39 +445,38 @@ public class FileUtils {
     }
 
     private static Uri fileToContentUri(Context context, String path, String volume) {
-        String[] projection = null;
         final String where = MediaStore.MediaColumns.DATA + " = ?";
-        Uri baseUri = MediaStore.Files.getContentUri(volume);
-        boolean isMimeTypeImage = false, isMimeTypeVideo = false, isMimeTypeAudio = false;
-        isMimeTypeImage = Icons.isPicture(new File(path));
-        if (!isMimeTypeImage) {
-            isMimeTypeVideo = Icons.isVideo(new File(path));
-            if (!isMimeTypeVideo) {
-                isMimeTypeAudio = Icons.isVideo(new File(path));
-            }
-        }
-        if (isMimeTypeImage || isMimeTypeVideo || isMimeTypeAudio) {
-            projection = new String[]{BaseColumns._ID};
-            if (isMimeTypeImage) {
+        Uri baseUri;
+        String[] projection;
+        int mimeType = Icons.getTypeOfFile(new File(path));
+
+        switch (mimeType) {
+            case Icons.IMAGE:
                 baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            } else if (isMimeTypeVideo) {
+                projection = new String[]{BaseColumns._ID};
+                break;
+            case Icons.VIDEO:
                 baseUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-            } else if (isMimeTypeAudio) {
+                projection = new String[]{BaseColumns._ID};
+                break;
+            case Icons.AUDIO:
                 baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            }
-        } else {
-            projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
+                projection = new String[]{BaseColumns._ID};
+                break;
+            default:
+                baseUri = MediaStore.Files.getContentUri(volume);
+                projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
         }
+
         ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(baseUri, projection, where, new String[]{path}, null);
         try {
             if (c != null && c.moveToNext()) {
                 boolean isValid = false;
-                if (isMimeTypeImage || isMimeTypeVideo || isMimeTypeAudio) {
+                if (mimeType == Icons.IMAGE || mimeType == Icons.VIDEO || mimeType == Icons.AUDIO) {
                     isValid = true;
                 } else {
-                    int type = c.getInt(c.getColumnIndexOrThrow(
-                            MediaStore.Files.FileColumns.MEDIA_TYPE));
+                    int type = c.getInt(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE));
                     isValid = type != 0;
                 }
 
@@ -674,7 +673,7 @@ public class FileUtils {
             Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        }  else if (Icons.isAudio(new File(f.getPath()))) {
+        }  else if (Icons.getTypeOfFile(f) == Icons.AUDIO) {
             final int studio_count = sharedPreferences.getInt("studio", 0);
             Uri uri = Uri.fromFile(f);
             final Intent intent = new Intent();
