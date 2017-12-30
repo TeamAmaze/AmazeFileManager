@@ -297,7 +297,7 @@ public class SftpConnectDialog extends DialogFragment {
 
             } catch(FileNotFoundException e) {
                 Log.e(TAG, "File not found", e);
-            }
+            } catch(IOException shouldNotHappen) {}
         }
     }
 
@@ -326,8 +326,8 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).refreshDrawer();
 
-                        AppConfig.runInBackground(() -> nUtilsHandler.addSsh(connectionName,
-                                encryptedPath, hostKeyFingerprint, selectedParsedKeyPairName, getPemContents()));
+                        nUtilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
+                                selectedParsedKeyPairName, getPemContents());
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
                         ma.loadlist(path, false, OpenMode.UNKNOWN);
