@@ -42,11 +42,8 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.security.KeyPair;
 import java.security.Provider;
@@ -74,7 +71,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         new PuttyPrivateKeyToKeyPairConverter()
     };
 
-    private final Reader mPemFile;
+    private final byte[] mPemFile;
 
     private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> mCallback;
 
@@ -82,17 +79,17 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final boolean mNotifyOnParseError;
 
-    public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(new InputStreamReader(pemFile), callback);
+    public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
+        this(IOUtils.readFully(pemFile).toByteArray(), callback, null, false);
     }
 
-    public PemToKeyPairTask(@NonNull Reader reader, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(reader, callback, null, true);
+    public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
+        this(pemContent.getBytes(), callback, null, false);
     }
 
-    public PemToKeyPairTask(@NonNull Reader reader, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
+    public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
                             String keyPassphrase, boolean notifyOnParseError) {
-        this.mPemFile = reader;
+        this.mPemFile = pemContent;
         this.mCallback = callback;
         if(keyPassphrase == null)
             mPasswordFinder = null;
@@ -117,15 +114,9 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         for(Provider provider : Security.getProviders())
             Log.d(TAG, "Provider: " + provider.getName());
 
-        BufferedReader reader = new BufferedReader(mPemFile);
-        StringBuilder sb = new StringBuilder();
-        String line;
         try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
             for(PemToKeyPairConverter converter : converters) {
-                KeyPair keyPair = converter.convert(sb.toString());
+                KeyPair keyPair = converter.convert(new String(mPemFile));
                 if(keyPair != null) {
                     retval = new AsyncTaskResult<KeyPair>(keyPair);
                     break;
@@ -136,8 +127,6 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         } catch (IOException e) {
             Log.e(TAG, "IOException reading PEM", e);
             retval = new AsyncTaskResult<KeyPair>(e);
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
 
         return retval;
