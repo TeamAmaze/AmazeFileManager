@@ -24,9 +24,12 @@ package com.amaze.filemanager.filesystem.ssh.tasks;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
@@ -77,18 +80,16 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final PasswordFinder mPasswordFinder;
 
-    private final boolean mNotifyOnParseError;
-
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
-        this(IOUtils.readFully(pemFile).toByteArray(), callback, null, false);
+        this(IOUtils.readFully(pemFile).toByteArray(), callback, null);
     }
 
     public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(pemContent.getBytes(), callback, null, false);
+        this(pemContent.getBytes(), callback, null);
     }
 
     public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
-                            String keyPassphrase, boolean notifyOnParseError) {
+                            String keyPassphrase) {
         this.mPemFile = pemContent;
         this.mCallback = callback;
         if(keyPassphrase == null)
@@ -105,7 +106,6 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                     return false;
                 }
             };
-        this.mNotifyOnParseError = notifyOnParseError;
     }
 
     @Override
@@ -139,12 +139,32 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     @Override
     protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
-        if(result.exception != null && mNotifyOnParseError) {
-            Toast.makeText(AppConfig.getInstance().getActivityContext(), String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error), result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
+        if(result.exception != null) {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
+            EditText textfield = new EditText(builder.getContext());
+            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            builder.customView(textfield, false).title("Please enter passphrase for key")
+                    .positiveText(R.string.ok)
+                    .onPositive(((dialog, which) -> {
+                        new PemToKeyPairTask(mPemFile, mCallback, textfield.getText().toString()).execute();
+                        dialog.dismiss();
+                })).negativeText(R.string.cancel)
+                    .onNegative(((dialog, which) -> {
+                        dialog.dismiss();
+                        toastOnParseError(result);
+            }));
+
+            builder.show();
         }
         if(mCallback != null) {
             mCallback.onResult(result);
         }
+    }
+
+    private void toastOnParseError(AsyncTaskResult<KeyPair> result){
+        Toast.makeText(AppConfig.getInstance().getActivityContext(),
+                String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error),
+                        result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 
     private interface PemToKeyPairConverter {

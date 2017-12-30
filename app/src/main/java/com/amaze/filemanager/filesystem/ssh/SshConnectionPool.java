@@ -116,15 +116,12 @@ public class SshConnectionPool
      * @see MainActivity#exit()
      */
     public void expungeAllConnections() {
-        AppConfig.runInBackground(new Runnable() {
-            @Override
-            public void run() {
-                if(!mConnections.isEmpty()) {
-                    for (SSHClient connection : mConnections.values()) {
-                        SshClientUtils.tryDisconnect(connection);
-                    }
-                    mConnections.clear();
+        AppConfig.runInBackground(() -> {
+            if(!mConnections.isEmpty()) {
+                for (SSHClient connection : mConnections.values()) {
+                    SshClientUtils.tryDisconnect(connection);
                 }
+                mConnections.clear();
             }
         });
     }
