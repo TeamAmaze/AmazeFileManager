@@ -1599,15 +1599,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
-                    if (drawer.getStorageCount() > 1)
-                        tabHandler.addTab(new Tab(1,  dataUtils.getDrawerItems().get(1).path, "/"));
-                    else
+
+                    if (drawer.getStorageCount() > 1) {
+                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
+                    } else {
                         tabHandler.addTab(new Tab(1, "/", "/"));
+                    }
                     if (!dataUtils.getDrawerItems().get(0).isSection()) {
-                        String pa = dataUtils.getDrawerItems().get(0).path;
+                        String pa = drawer.getFirstPath();
                         tabHandler.addTab(new Tab(2, pa, pa));
-                    } else
-                        tabHandler.addTab(new Tab(2, dataUtils.getDrawerItems().get(1).path, "/"));
+                    } else {
+                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
+                    }
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)

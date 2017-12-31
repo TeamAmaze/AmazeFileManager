@@ -109,14 +109,14 @@ public class TabFragment extends android.support.v4.app.Fragment
             if (i == 0) {
                 // creating tabs in db for the first time, probably the first launch of app
                 if (mainActivity.getDrawer().getStorageCount() > 1)
-                    addTab(new Tab(1,  dataUtils.getDrawerItems().get(1).path, "/"), 1, "");
+                    addTab(new Tab(1, mainActivity.getDrawer().getSecondPath(), "/"), 1, "");
                 else
-                    addTab(new Tab(1,"/", "/"), 1, "");
+                    addTab(new Tab(1,  "/", "/"), 1, "");
                 if (!dataUtils.getDrawerItems().get(0).isSection()) {
-                    String pa = dataUtils.getDrawerItems().get(0).path;
-                    addTab(new Tab(2, pa, pa), 2, "");
+                    String pa = mainActivity.getDrawer().getFirstPath();
+                    addTab(new Tab(2,  pa, pa), 2, "");
                 } else
-                    addTab(new Tab(2, dataUtils.getDrawerItems().get(1).path, "/"), 2, "");
+                    addTab(new Tab(2, mainActivity.getDrawer().getSecondPath(), "/"), 2, "");
             } else {
                 if (path != null && path.length() != 0) {
                     if (l == 1)

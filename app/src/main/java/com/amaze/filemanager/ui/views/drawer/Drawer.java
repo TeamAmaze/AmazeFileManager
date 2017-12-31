@@ -103,6 +103,7 @@ public class Drawer {
     private FragmentTransaction pending_fragmentTransaction;
     private String pendingPath;
     private ImageLoader mImageLoader;
+    private String firstPath, secondPath;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -217,6 +218,9 @@ public class Drawer {
         }
         dataUtils.setStorages(storageDirectories);
         sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
+
+        firstPath = sectionDrawerItems.get(0).path;
+        secondPath = sectionDrawerItems.get(1).path;
 
         if (dataUtils.getServers().size() > 0) {
             Collections.sort(dataUtils.getServers(), new BookSorter());
@@ -544,5 +548,13 @@ public class Drawer {
 
     public void unlock() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLinear);
+    }
+
+    public String getFirstPath() {
+        return firstPath;
+    }
+
+    public String getSecondPath() {
+        return secondPath;
     }
 }
