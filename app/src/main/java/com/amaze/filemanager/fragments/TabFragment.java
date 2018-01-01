@@ -54,6 +54,8 @@ public class TabFragment extends android.support.v4.app.Fragment
     boolean savepaths;
     FragmentManager fragmentManager;
 
+    private static final String KEY_POSITION = "pos";
+
     // ink indicators for viewpager only for Lollipop+
     private Indicator indicator;
 
@@ -152,7 +154,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                     getActivity().getSupportFragmentManager());
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            int pos1 = savedInstanceState.getInt("pos", 0);
+            int pos1 = savedInstanceState.getInt(KEY_POSITION, 0);
             MainActivity.currentTab = pos1;
             mViewPager.setCurrentItem(pos1);
             mSectionsPagerAdapter.notifyDataSetChanged();
@@ -249,7 +251,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 fragmentManager.putFragment(outState, "tab" + i, fragment);
                 i++;
             }
-            outState.putInt("pos", mViewPager.getCurrentItem());
+            outState.putInt(KEY_POSITION, mViewPager.getCurrentItem());
         }
     }
 
