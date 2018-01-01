@@ -207,11 +207,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
-    private static final String DRAWER_SELECTED_KEY = "selectitem";
-    private static final String OPERATION_PATH_KEY = "oppathe";
-    private static final String OPERATED_ON_PATH_KEY = "oppathe1";
-    private static final String OPERATIONS_PATH_LIST_KEY = "oparraylist";
-    private static final String OPERATION_KEY = "operation";
+    private static final String KEY_DRAWER_SELECTED = "selectitem";
+    private static final String KEY_OPERATION_PATH = "oppathe";
+    private static final String KEY_OPERATED_ON_PATH = "oppathe1";
+    private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
+    private static final String KEY_OPERATION = "operation";
 
     private static final int image_selector_request_code = 31;
 
@@ -428,7 +428,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         if (savedInstanceState != null) {
 
-            selectedStorage = savedInstanceState.getInt(DRAWER_SELECTED_KEY, DRAWER_SELECTED_DEFAULT);
+            selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
         }
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -559,11 +559,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     }
                 } else {
                     pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
-                    oppathe = savedInstanceState.getString(OPERATION_PATH_KEY);
-                    oppathe1 = savedInstanceState.getString(OPERATED_ON_PATH_KEY);
-                    oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
-                    operation = savedInstanceState.getInt(OPERATION_KEY);
-                    selectedStorage = savedInstanceState.getInt(DRAWER_SELECTED_KEY, DRAWER_SELECTED_DEFAULT);
+                    oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+                    oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+                    oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
+                    operation = savedInstanceState.getInt(KEY_OPERATION);
+                    selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
                     adapter.toggleChecked(selectedStorage);
                 }
@@ -1188,12 +1188,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public void onRestoreInstanceState(Bundle savedInstanceState){
         COPY_PATH=savedInstanceState.getStringArrayList("COPY_PATH");
         MOVE_PATH=savedInstanceState.getStringArrayList("MOVE_PATH");
-        oppathe = savedInstanceState.getString(OPERATION_PATH_KEY);
-        oppathe1 = savedInstanceState.getString(OPERATED_ON_PATH_KEY);
-        oparrayList = savedInstanceState.getStringArrayList("oparrayList");
+        oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+        oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+        oparrayList = savedInstanceState.getStringArrayList(KEY_OPERATIONS_PATH_LIST);
         opnameList=savedInstanceState.getStringArrayList("opnameList");
-        operation = savedInstanceState.getInt(OPERATION_KEY);
-        selectedStorage = savedInstanceState.getInt(DRAWER_SELECTED_KEY, 0);
+        operation = savedInstanceState.getInt(KEY_OPERATION);
+        selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
     }*/
 
     @Override
@@ -1214,16 +1214,16 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (selectedStorage != DRAWER_SELECTED_NONE)
-            outState.putInt(DRAWER_SELECTED_KEY, selectedStorage);
+            outState.putInt(KEY_DRAWER_SELECTED, selectedStorage);
         if(pasteHelper != null) {
             outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
         }
 
         if (oppathe != null) {
-            outState.putString(OPERATION_PATH_KEY, oppathe);
-            outState.putString(OPERATED_ON_PATH_KEY, oppathe1);
-            outState.putParcelableArrayList(OPERATIONS_PATH_LIST_KEY, (oparrayList));
-            outState.putInt(OPERATION_KEY, operation);
+            outState.putString(KEY_OPERATION_PATH, oppathe);
+            outState.putString(KEY_OPERATED_ON_PATH, oppathe1);
+            outState.putParcelableArrayList(KEY_OPERATIONS_PATH_LIST, (oparrayList));
+            outState.putInt(KEY_OPERATION, operation);
         }
         /*if (mainFragment!=null) {
             outState.putParcelable("main_fragment", mainFragment);
