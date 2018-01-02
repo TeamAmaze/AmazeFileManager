@@ -23,6 +23,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
@@ -88,7 +89,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths = sharedPrefs.getBoolean("savepaths", true);
-        coloredNavigation = sharedPrefs.getBoolean("colorednavigation", true);
+        coloredNavigation = sharedPrefs.getBoolean(ColorPref.PREFERENCE_COLORED_NAVIGATION, true);
 
         mViewPager = (DisablableViewPager) rootView.findViewById(R.id.pager);
 

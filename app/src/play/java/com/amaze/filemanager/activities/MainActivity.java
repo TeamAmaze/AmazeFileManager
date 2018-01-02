@@ -106,6 +106,8 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
@@ -1676,11 +1678,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     void initialisePreferences() {
         hidemode = getPrefs().getInt("hidemode", 0);
-        showHidden = getPrefs().getBoolean("showHidden", false);
+        showHidden = getPrefs().getBoolean(PrefFrag.PREFERENCE_SHOW_HIDDENFILES, false);
         useGridView = getPrefs().getBoolean("view", true);
         currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-        colourednavigation = getPrefs().getBoolean("colorednavigation", false);
+        colourednavigation = getPrefs().getBoolean(ColorPref.PREFERENCE_COLORED_NAVIGATION, false);
     }
 
     void initialiseViews() {

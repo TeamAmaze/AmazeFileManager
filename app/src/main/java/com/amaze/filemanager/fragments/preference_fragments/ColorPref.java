@@ -34,6 +34,15 @@ import java.util.List;
  * Created by Arpit on 21-06-2015.
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+
+    public static final String PREFERENCE_SKIN = "skin";
+    public static final String PREFERENCE_SKIN_TWO = "skin_two";
+    public static final String PREFERENCE_ACCENT = "accent_skin";
+    public static final String PREFERENCE_ICON_SKIN = "icon_skin";
+    public static final String PREFERENCE_COLORIZE_ICONS = "coloriseIcons";
+    public static final String PREFERENCE_COLORED_NAVIGATION = "colorednavigation";
+    public static final String PREFERENCE_RANDOM_COLOR = "random_checkbox";
+
     private MaterialDialog dialog;
 
     SharedPreferences sharedPref;
@@ -49,7 +58,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final CheckBox checkBoxPreference = (CheckBox) findPreference("random_checkbox");
+        final CheckBox checkBoxPreference = (CheckBox) findPreference(PREFERENCE_RANDOM_COLOR);
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -58,7 +67,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 return true;
             }
         });
-        CheckBox preference8 = (CheckBox) findPreference("colorednavigation");
+        CheckBox preference8 = (CheckBox) findPreference(PREFERENCE_COLORED_NAVIGATION);
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

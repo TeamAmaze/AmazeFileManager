@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
@@ -42,14 +41,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
-import com.amaze.filemanager.utils.MainActivityHelper;
-import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -68,6 +63,18 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             {"columns", "theme", "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT,
                     "colors", "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
 
+    public static final String PREFERENCE_INTELLI_HIDE_TOOLBAR = "intelliHideToolbar";
+
+    public static final String PREFERENCE_SHOW_FILE_SIZE = "showFileSize";
+
+    public static final String PREFERENCE_SHOW_PERMISSIONS = "showPermissions";
+
+    public static final String PREFERENCE_SHOW_DIVIDERS = "showDividers";
+
+    public static final String PREFERENCE_SHOW_HEADERS = "showHeaders";
+
+    public static final String PREFERENCE_SHOW_GOBACK_BUTTON = "goBack_checkbox";
+
     public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "sidebar_folders_enable";
     public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "sidebar_quickaccess_enable";
 
@@ -75,9 +82,19 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
 
     public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
 
+    public static final String PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified";
+
+    public static final String PREFERENCE_USE_CIRCULAR_IMAGES = "circularimages";
+
+    public static final String PREFERENCE_THEME = "theme";
+
     public static final String PREFERENCE_ROOTMODE = "rootmode";
 
     public static final String PREFERENCE_CHANGEPATHS = "typeablepaths";
+
+    public static final String PREFERENCE_GRID_COLUMNS = "columns";
+
+    public static final String PREFERENCE_SHOW_THUMB = "showThumbs";
 
     public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
     public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
@@ -177,27 +194,27 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         MaterialDialog.Builder builder;
 
         switch (preference.getKey()) {
-            case "columns":
+            case PREFERENCE_GRID_COLUMNS:
                 sort = getResources().getStringArray(R.array.columns);
                 builder = new MaterialDialog.Builder(getActivity());
                 builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.gridcolumnno);
-                int current = Integer.parseInt(sharedPref.getString("columns", "-1"));
+                int current = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
                 current = current == -1 ? 0 : current;
                 if (current != 0) current = current - 1;
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString("columns", "" + (which != 0 ? sort[which] : "" + -1)).commit();
+                        sharedPref.edit().putString(PREFERENCE_GRID_COLUMNS, "" + (which != 0 ? sort[which] : "" + -1)).commit();
                         dialog.dismiss();
                         return true;
                     }
                 });
                 builder.build().show();
                 return true;
-            case "theme":
+            case PREFERENCE_THEME:
                 sort = getResources().getStringArray(R.array.theme);
-                current = Integer.parseInt(sharedPref.getString("theme", "0"));
+                current = Integer.parseInt(sharedPref.getString(PrefFrag.PREFERENCE_THEME, "0"));
                 builder = new MaterialDialog.Builder(getActivity());
                 //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {

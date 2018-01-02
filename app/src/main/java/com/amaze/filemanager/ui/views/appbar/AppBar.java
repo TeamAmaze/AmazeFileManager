@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -41,7 +42,7 @@ public class AppBar {
         /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
         TOOLBAR_START_INSET = toolbar.getContentInsetStart();
 
-        if (!sharedPref.getBoolean("intelliHideToolbar", true)) {
+        if (!sharedPref.getBoolean(PrefFrag.PREFERENCE_INTELLI_HIDE_TOOLBAR, true)) {
             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
             params.setScrollFlags(0);
             appbarLayout.setExpanded(true, true);
