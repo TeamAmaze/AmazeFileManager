@@ -55,6 +55,9 @@ import jcifs.smb.SmbFile;
  * Created by Arpit on 04-06-2015.
  */
 public abstract class FileUtil {
+
+    private static final String LOG = "AmazeFileUtils";
+
     /**
      * Determine the camera folder. There seems to be no Android API to work for real devices, so this is a best guess.
      *
@@ -110,7 +113,7 @@ public abstract class FileUtil {
 
             }
         } catch (Exception e) {
-            Log.e("AmazeFileUtils",
+            Log.e(LOG,
                     "Error when copying file from " + source.getAbsolutePath() + " to " + target.getAbsolutePath(), e);
             return false;
         } finally {
@@ -331,7 +334,7 @@ public abstract class FileUtil {
                 resolver.delete(uri, null, null);
                 return !file.exists();
             } catch (Exception e) {
-                Log.e("AmazeFileUtils", "Error when deleting file " + file.getAbsolutePath(), e);
+                Log.e(LOG, "Error when deleting file " + file.getAbsolutePath(), e);
                 return false;
             }
         }
@@ -723,7 +726,7 @@ public abstract class FileUtil {
             if (file != null && !file.equals(context.getExternalFilesDir("external"))) {
                 int index = file.getAbsolutePath().lastIndexOf("/Android/data");
                 if (index < 0) {
-                    Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
+                    Log.w(LOG, "Unexpected external file dir: " + file.getAbsolutePath());
                 } else {
                     String path = file.getAbsolutePath().substring(0, index);
                     try {
@@ -746,7 +749,7 @@ public abstract class FileUtil {
             if (file != null) {
                 int index = file.getAbsolutePath().lastIndexOf("/Android/data");
                 if (index < 0) {
-                    Log.w("AmazeFileUtils", "Unexpected external file dir: " + file.getAbsolutePath());
+                    Log.w(LOG, "Unexpected external file dir: " + file.getAbsolutePath());
                 } else {
                     String path = file.getAbsolutePath().substring(0, index);
                     try {
@@ -952,7 +955,7 @@ public abstract class FileUtil {
             return copyDummyFile(R.raw.temptrack, "mkdirFiles", "temptrack.mp3", c);
 
         } catch (IOException e) {
-            Log.e("AmazeFileUtils", "Could not copy dummy files.", e);
+            Log.e(LOG, "Could not copy dummy files.", e);
             return null;
         }
     }

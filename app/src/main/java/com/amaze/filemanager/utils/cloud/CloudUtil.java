@@ -33,6 +33,8 @@ import java.util.List;
 
 public class CloudUtil {
 
+    public static final String TAG = "Explorer";
+
     /**
      * @deprecated use getCloudFiles()
      */
