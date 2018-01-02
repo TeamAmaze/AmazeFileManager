@@ -46,7 +46,7 @@ import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -174,7 +174,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         if ((Integer.valueOf(rowItem.data.substring(0,
                                 rowItem.data.indexOf("_"))) & ApplicationInfo.FLAG_SYSTEM) != 0) {
                             // system package
-                            if(app.Sp.getBoolean(PrefFrag.PREFERENCE_ROOTMODE,false)) {
+                            if(app.Sp.getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE,false)) {
                                 MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
                                 builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
                                         .content(app.getResources().getString(R.string.unin_system_apk))

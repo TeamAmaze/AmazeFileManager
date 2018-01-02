@@ -58,53 +58,11 @@ import static com.amaze.filemanager.R.string.feedback;
 
 public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
-    private static final String PREFERENCE_KEY_ABOUT = "about";
-    private static final String[] PREFERENCE_KEYS =
-            {"columns", "theme", "rootmode", "showHidden", "feedback", PREFERENCE_KEY_ABOUT,
-                    "colors", "sidebar_folders", "sidebar_quickaccess", "advancedsearch"};
-
-    public static final String PREFERENCE_INTELLI_HIDE_TOOLBAR = "intelliHideToolbar";
-
-    public static final String PREFERENCE_SHOW_FILE_SIZE = "showFileSize";
-
-    public static final String PREFERENCE_SHOW_PERMISSIONS = "showPermissions";
-
-    public static final String PREFERENCE_SHOW_DIVIDERS = "showDividers";
-
-    public static final String PREFERENCE_SHOW_HEADERS = "showHeaders";
-
-    public static final String PREFERENCE_SHOW_GOBACK_BUTTON = "goBack_checkbox";
-
-    public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "sidebar_folders_enable";
-    public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "sidebar_quickaccess_enable";
-
-    public static final String PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack";
-
-    public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
-
-    public static final String PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified";
-
-    public static final String PREFERENCE_USE_CIRCULAR_IMAGES = "circularimages";
-
-    public static final String PREFERENCE_THEME = "theme";
-
-    public static final String PREFERENCE_ROOTMODE = "rootmode";
-
-    public static final String PREFERENCE_CHANGEPATHS = "typeablepaths";
-
-    public static final String PREFERENCE_GRID_COLUMNS = "columns";
-
-    public static final String PREFERENCE_SHOW_THUMB = "showThumbs";
-
-    public static final String PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password";
-    public static final String PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint";
-    public static final String PREFERENCE_CRYPT_WARNING_REMEMBER = "crypt_remember";
-
-    public static final String PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT = "";
-    public static final boolean PREFERENCE_CRYPT_FINGERPRINT_DEFAULT = false;
-    public static final boolean PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT = false;
-    public static final String ENCRYPT_PASSWORD_FINGERPRINT = "fingerprint";
-    public static final String ENCRYPT_PASSWORD_MASTER = "master";
+    private static final String[] PREFERENCE_KEYS = {PreferencesConstants.PREFERENCE_GRID_COLUMNS,
+            PreferencesConstants.PREFERENCE_THEME, PreferencesConstants.PREFERENCE_ROOTMODE,
+            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, "feedback",
+            PreferencesConstants.PREFERENCE_ABOUT, "colors", "sidebar_folders",
+            "sidebar_quickaccess", "advancedsearch"};
 
     private UtilitiesProviderInterface utilsProvider;
     private SharedPreferences sharedPref;
@@ -124,16 +82,16 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         }
 
         // crypt master password
-        final Preference masterPasswordPreference = findPreference(PREFERENCE_CRYPT_MASTER_PASSWORD);
+        final Preference masterPasswordPreference = findPreference(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
-                sharedPref.getBoolean(PREFERENCE_CRYPT_FINGERPRINT, false)) {
+                sharedPref.getBoolean(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT, false)) {
             // encryption feature not available
             masterPasswordPreference.setEnabled(false);
         }
         masterPasswordPreference.setOnPreferenceClickListener(this);
 
-        CheckBox checkBoxFingerprint = (CheckBox) findPreference(PREFERENCE_CRYPT_FINGERPRINT);
+        CheckBox checkBoxFingerprint = (CheckBox) findPreference(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT);
 
         try {
 
@@ -194,27 +152,27 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         MaterialDialog.Builder builder;
 
         switch (preference.getKey()) {
-            case PREFERENCE_GRID_COLUMNS:
+            case PreferencesConstants.PREFERENCE_GRID_COLUMNS:
                 sort = getResources().getStringArray(R.array.columns);
                 builder = new MaterialDialog.Builder(getActivity());
                 builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.gridcolumnno);
-                int current = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
+                int current = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
                 current = current == -1 ? 0 : current;
                 if (current != 0) current = current - 1;
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString(PREFERENCE_GRID_COLUMNS, "" + (which != 0 ? sort[which] : "" + -1)).commit();
+                        sharedPref.edit().putString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "" + (which != 0 ? sort[which] : "" + -1)).commit();
                         dialog.dismiss();
                         return true;
                     }
                 });
                 builder.build().show();
                 return true;
-            case PREFERENCE_THEME:
+            case PreferencesConstants.PREFERENCE_THEME:
                 sort = getResources().getStringArray(R.array.theme);
-                current = Integer.parseInt(sharedPref.getString(PrefFrag.PREFERENCE_THEME, "0"));
+                current = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_THEME, "0"));
                 builder = new MaterialDialog.Builder(getActivity());
                 //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -245,7 +203,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                     Toast.makeText(getActivity(), getResources().getString(R.string.send_email_to)
                             + " vishalmeham2@gmail.com", Toast.LENGTH_LONG).show();
                 return false;
-            case PREFERENCE_KEY_ABOUT:
+            case PreferencesConstants.PREFERENCE_ABOUT:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
                 return false;
             /*FROM HERE BE FRAGMENTS*/
@@ -265,15 +223,15 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.ADVANCEDSEARCH_PREFERENCE);
                 return true;
-            case PREFERENCE_CRYPT_MASTER_PASSWORD:
+            case PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD:
                 MaterialDialog.Builder masterPasswordDialogBuilder = new MaterialDialog.Builder(getActivity());
                 masterPasswordDialogBuilder.title(getResources().getString(R.string.crypt_pref_master_password_title));
 
                 String decryptedPassword = null;
                 try {
-                    String preferencePassword = sharedPref.getString(PREFERENCE_CRYPT_MASTER_PASSWORD,
-                            PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT);
-                    if (!preferencePassword.equals(PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+                    String preferencePassword = sharedPref.getString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                            PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT);
+                    if (!preferencePassword.equals(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
                         // password is set, try to decrypt
                         decryptedPassword = CryptUtil.decryptPassword(getActivity(), preferencePassword);
@@ -305,20 +263,20 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                         try {
 
                             String inputText = dialog.getInputEditText().getText().toString();
-                            if (!inputText.equals(PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+                            if (!inputText.equals(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
-                                sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                         CryptUtil.encryptPassword(getActivity(),
                                                 dialog.getInputEditText().getText().toString())).apply();
                             } else {
                                 // empty password, remove the preference
-                                sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                         "").apply();
                             }
                         } catch (GeneralSecurityException | IOException e) {
                             e.printStackTrace();
-                            sharedPref.edit().putString(PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
+                            sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
                         }
                     }
                 });

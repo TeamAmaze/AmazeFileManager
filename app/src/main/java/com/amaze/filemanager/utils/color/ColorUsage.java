@@ -5,16 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
 /**
  * A ColorUsage is a key used to index color preferences in {@link ColorPreference}
  */
 public enum ColorUsage {
-    PRIMARY(ColorPref.PREFERENCE_SKIN, R.color.primary_indigo),
-    PRIMARY_TWO(ColorPref.PREFERENCE_SKIN_TWO, R.color.primary_indigo),
-    ACCENT(ColorPref.PREFERENCE_ACCENT, R.color.primary_pink),
-    ICON_SKIN(ColorPref.PREFERENCE_ICON_SKIN, R.color.primary_pink),
+    PRIMARY(PreferencesConstants.PREFERENCE_SKIN, R.color.primary_indigo),
+    PRIMARY_TWO(PreferencesConstants.PREFERENCE_SKIN_TWO, R.color.primary_indigo),
+    ACCENT(PreferencesConstants.PREFERENCE_ACCENT, R.color.primary_pink),
+    ICON_SKIN(PreferencesConstants.PREFERENCE_ICON_SKIN, R.color.primary_pink),
     CURRENT_TAB("current_tab", R.color.primary_pink);
 
     /**
@@ -36,13 +36,13 @@ public enum ColorUsage {
     @Nullable
     public static ColorUsage fromString(@NonNull String name) {
         switch (name) {
-            case ColorPref.PREFERENCE_SKIN:
+            case PreferencesConstants.PREFERENCE_SKIN:
                 return PRIMARY;
-            case ColorPref.PREFERENCE_SKIN_TWO:
+            case PreferencesConstants.PREFERENCE_SKIN_TWO:
                 return PRIMARY_TWO;
-            case ColorPref.PREFERENCE_ACCENT:
+            case PreferencesConstants.PREFERENCE_ACCENT:
                 return ACCENT;
-            case ColorPref.PREFERENCE_ICON_SKIN:
+            case PreferencesConstants.PREFERENCE_ICON_SKIN:
                 return ICON_SKIN;
             case "currrent_tab":
                 return CURRENT_TAB;

@@ -18,13 +18,12 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +33,6 @@ import java.util.Map;
  */
 
 public class FoldersPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-
-    public static final String KEY_SHORTCUT_PREF = "add_shortcut";
 
     private SharedPreferences sharedPrefs;
     private PreferencesActivity activity;
@@ -56,7 +53,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
-        findPreference(KEY_SHORTCUT_PREF).setOnPreferenceClickListener(this);
+        findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOnPreferenceClickListener(this);
 
         for (int i = 0; i < dataUtils.getBooks().size(); i++) {
             PathSwitchPreference p = new PathSwitchPreference(getActivity());
@@ -91,9 +88,9 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 default:
                     break;
             }
-        } else if(preference.getKey().equals(KEY_SHORTCUT_PREF)) {
-            if(getPreferenceScreen().getPreferenceCount() >= findPreference(KEY_SHORTCUT_PREF).getOrder())
-                findPreference(KEY_SHORTCUT_PREF).setOrder(getPreferenceScreen().getPreferenceCount()+10);
+        } else if(preference.getKey().equals(PreferencesConstants.PREFERENCE_SHORTCUT)) {
+            if(getPreferenceScreen().getPreferenceCount() >= findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).getOrder())
+                findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOrder(getPreferenceScreen().getPreferenceCount()+10);
 
             loadCreateDialog();
         }
