@@ -80,7 +80,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -1425,7 +1424,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             sortby = t - 4;
         }
 
-        dsort = Integer.parseInt(sharedPref.getString("dirontop", "0"));
+        dsort = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
     }
 
     @Override

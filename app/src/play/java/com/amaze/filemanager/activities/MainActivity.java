@@ -107,7 +107,6 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -1111,12 +1110,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
                 builder.theme(getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.directorysort);
-                int current = Integer.parseInt(getPrefs().getString("dirontop", "0"));
+                int current = Integer.parseInt(getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
 
                 final MainFragment mainFrag = ma;
 
                 builder.items(sort).itemsCallbackSingleChoice(current, (dialog1, view, which, text) -> {
-                    getPrefs().edit().putString("dirontop", "" + which).commit();
+                    getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which).commit();
                     mainFrag.getSortModes();
                     mainFrag.updateList();
                     dialog1.dismiss();
@@ -1580,7 +1579,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (SDK_INT >= Build.VERSION_CODES.KITKAT)
                     getContentResolver().takePersistableUriPermission(intent.getData(),
                             Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getPrefs().edit().putString("drawer_header_path", intent.getData().toString()).commit();
+                getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
+                        intent.getData().toString()).commit();
                 setDrawerHeaderBackground();
             }
         } else if (requestCode == 3) {
@@ -1589,7 +1589,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
                 // Persist URI - this is required for verification of writability.
-                if (treeUri != null) getPrefs().edit().putString("URI", treeUri.toString()).commit();
+                if (treeUri != null) getPrefs().edit().putString(PreferencesConstants.PREFERENCE_URI,
+                        treeUri.toString()).commit();
             } else {
                 // If not confirmed SAF, or if still not writable, then revert settings.
                 /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
@@ -1675,9 +1676,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialisePreferences() {
-        hidemode = getPrefs().getInt("hidemode", 0);
+        hidemode = getPrefs().getInt(PreferencesConstants.PREFERENCE_HIDEMODE, 0);
         showHidden = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
-        useGridView = getPrefs().getBoolean("view", true);
+        useGridView = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_VIEW, true);
         currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
         colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, false);
@@ -1967,7 +1968,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void setDrawerHeaderBackground() {
-        String path1 = getPrefs().getString("drawer_header_path", null);
+        String path1 = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
+                null);
         if (path1 == null) return;
         try {
             final ImageView headerImageView = new ImageView(MainActivity.this);
@@ -2007,7 +2009,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 refreshDrawer();
                 TabFragment tabFragment = getTabFragment();
-                boolean b = getPrefs().getBoolean("needtosethome", true);
+                boolean b = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, true);
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
@@ -2028,7 +2030,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         if (main1 != null)
                             ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
-                    getPrefs().edit().putBoolean("needtosethome", false).commit();
+                    getPrefs().edit().putBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, false).commit();
                 } else {
                     //just refresh list
                     if (tabFragment != null) {

@@ -19,6 +19,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -821,7 +822,8 @@ public abstract class FileUtil {
             originalDirectory = true;
             //continue
         }
-        String as = PreferenceManager.getDefaultSharedPreferences(context).getString("URI", null);
+        String as = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.PREFERENCE_URI,
+                null);
 
         Uri treeUri = null;
         if (as != null) treeUri = Uri.parse(as);

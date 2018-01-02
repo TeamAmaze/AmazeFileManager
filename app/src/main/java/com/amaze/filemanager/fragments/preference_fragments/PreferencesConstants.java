@@ -60,4 +60,13 @@ public class PreferencesConstants {
     //START folders_prefs.xml constants
     public static final String PREFERENCE_SHORTCUT = "add_shortcut";
     //END folders_prefs.xml constants
+
+    //START random preferences
+    public static final String PREFERENCE_DIRECTORY_SORT_MODE = "dirontop";
+    public static final String PREFERENCE_DRAWER_HEADER_PATH = "drawer_header_path";
+    public static final String PREFERENCE_URI = "URI";
+    public static final String PREFERENCE_HIDEMODE = "hidemode";
+    public static final String PREFERENCE_VIEW = "view";
+    public static final String PREFERENCE_NEED_TO_SET_HOME = "needtosethome";
+    //END random preferences
 }
