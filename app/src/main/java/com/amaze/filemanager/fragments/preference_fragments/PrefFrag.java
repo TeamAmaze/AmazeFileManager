@@ -59,10 +59,11 @@ import static com.amaze.filemanager.R.string.feedback;
 public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
     private static final String[] PREFERENCE_KEYS = {PreferencesConstants.PREFERENCE_GRID_COLUMNS,
-            PreferencesConstants.PREFERENCE_THEME, PreferencesConstants.PREFERENCE_ROOTMODE,
-            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, "feedback",
-            PreferencesConstants.PREFERENCE_ABOUT, "colors", "sidebar_folders",
-            "sidebar_quickaccess", "advancedsearch"};
+            PreferencesConstants.FRAGMENT_THEME, PreferencesConstants.PREFERENCE_ROOTMODE,
+            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, PreferencesConstants.FRAGMENT_FEEDBACK,
+            PreferencesConstants.FRAGMENT_ABOUT, PreferencesConstants.FRAGMENT_COLORS,
+            PreferencesConstants.FRAGMENT_FOLDERS, PreferencesConstants.FRAGMENT_QUICKACCESSES,
+            PreferencesConstants.FRAGMENT_ADVANCED_SEARCH};
 
     private UtilitiesProviderInterface utilsProvider;
     private SharedPreferences sharedPref;
@@ -170,9 +171,9 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 });
                 builder.build().show();
                 return true;
-            case PreferencesConstants.PREFERENCE_THEME:
+            case PreferencesConstants.FRAGMENT_THEME:
                 sort = getResources().getStringArray(R.array.theme);
-                current = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_THEME, "0"));
+                current = Integer.parseInt(sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "0"));
                 builder = new MaterialDialog.Builder(getActivity());
                 //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
@@ -187,7 +188,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 builder.title(R.string.theme);
                 builder.build().show();
                 return true;
-            case "feedback":
+            case PreferencesConstants.FRAGMENT_FEEDBACK:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "vishalmeham2@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
@@ -203,23 +204,23 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                     Toast.makeText(getActivity(), getResources().getString(R.string.send_email_to)
                             + " vishalmeham2@gmail.com", Toast.LENGTH_LONG).show();
                 return false;
-            case PreferencesConstants.PREFERENCE_ABOUT:
+            case PreferencesConstants.FRAGMENT_ABOUT:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
                 return false;
             /*FROM HERE BE FRAGMENTS*/
-            case "colors":
+            case PreferencesConstants.FRAGMENT_COLORS:
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.COLORS_PREFERENCE);
                 return true;
-            case "sidebar_folders":
+            case PreferencesConstants.FRAGMENT_FOLDERS:
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.FOLDERS_PREFERENCE);
                 return true;
-            case "sidebar_quickaccess":
+            case PreferencesConstants.FRAGMENT_QUICKACCESSES:
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.QUICKACCESS_PREFERENCE);
                 return true;
-            case "advancedsearch":
+            case PreferencesConstants.FRAGMENT_ADVANCED_SEARCH:
                 ((PreferencesActivity) getActivity())
                         .selectItem(PreferencesActivity.ADVANCEDSEARCH_PREFERENCE);
                 return true;

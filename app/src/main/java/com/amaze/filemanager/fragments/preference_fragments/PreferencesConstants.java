@@ -6,8 +6,17 @@ package com.amaze.filemanager.fragments.preference_fragments;
  */
 
 public class PreferencesConstants {
+    //START fragments
+    public static final String FRAGMENT_THEME = "theme";
+    public static final String FRAGMENT_COLORS = "colors";
+    public static final String FRAGMENT_FOLDERS = "sidebar_folders";
+    public static final String FRAGMENT_QUICKACCESSES = "sidebar_quickaccess";
+    public static final String FRAGMENT_ADVANCED_SEARCH = "advancedsearch";
+    public static final String FRAGMENT_ABOUT = "about";
+    public static final String FRAGMENT_FEEDBACK = "feedback";
+    //END fragments
+
     //START preferences.xml constants
-    public static final String PREFERENCE_ABOUT = "about";
     public static final String PREFERENCE_INTELLI_HIDE_TOOLBAR = "intelliHideToolbar";
     public static final String PREFERENCE_SHOW_FILE_SIZE = "showFileSize";
     public static final String PREFERENCE_SHOW_PERMISSIONS = "showPermissions";
@@ -21,7 +30,6 @@ public class PreferencesConstants {
     public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
     public static final String PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified";
     public static final String PREFERENCE_USE_CIRCULAR_IMAGES = "circularimages";
-    public static final String PREFERENCE_THEME = "theme";
     public static final String PREFERENCE_ROOTMODE = "rootmode";
     public static final String PREFERENCE_CHANGEPATHS = "typeablepaths";
     public static final String PREFERENCE_GRID_COLUMNS = "columns";
