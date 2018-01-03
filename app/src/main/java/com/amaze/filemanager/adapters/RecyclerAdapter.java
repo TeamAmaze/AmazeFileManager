@@ -29,6 +29,7 @@ import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
+import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -620,51 +621,56 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.imageView1.setBackgroundColor(Color.BLACK);
                     modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.imageView1);
                 } else if (rowItem.filetype == Icons.APK) {
-                    holder.genericIcon.setColorFilter(null);
                     modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
-                }
-
-                if (rowItem.isDirectory) {
-                    holder.genericIcon.setColorFilter(iconSkinColor);
                 } else {
-                    switch (rowItem.filetype) {
-                        case Icons.VIDEO:
-                            holder.genericIcon.setColorFilter(videoColor);
-                            break;
-                        case Icons.AUDIO:
-                            holder.genericIcon.setColorFilter(audioColor);
-                            break;
-                        case Icons.PDF:
-                            holder.genericIcon.setColorFilter(pdfColor);
-                            break;
-                        case Icons.CODE:
-                            holder.genericIcon.setColorFilter(codeColor);
-                            break;
-                        case Icons.TEXT:
-                            holder.genericIcon.setColorFilter(textColor);
-                            break;
-                        case Icons.COMPRESSED:
-                            holder.genericIcon.setColorFilter(archiveColor);
-                            break;
-                        case Icons.NOT_KNOWN:
-                            holder.genericIcon.setColorFilter(genericColor);
-                            break;
-                        case Icons.APK:
-                        case Icons.IMAGE:
-                            holder.genericIcon.setColorFilter(null);
-                            break;
-                        default:
-                            holder.genericIcon.setColorFilter(iconSkinColor);
-                            break;
-                    }
+                    ((RoundedImageView) holder.genericIcon).setRelativeSize(1.25f, 1.25f);
                 }
 
-                if (isBackButton)
-                    holder.genericIcon.setColorFilter(goBackColor);
+                if(holder.genericIcon.getVisibility() == View.VISIBLE) {
+                    if (rowItem.isDirectory) {
+                        holder.genericIcon.setBackgroundColor(iconSkinColor);
+                    } else {
+                        switch (rowItem.filetype) {
+                            case Icons.VIDEO:
+                                holder.genericIcon.setBackgroundColor(videoColor);
+                                break;
+                            case Icons.AUDIO:
+                                holder.genericIcon.setBackgroundColor(audioColor);
+                                break;
+                            case Icons.PDF:
+                                holder.genericIcon.setBackgroundColor(pdfColor);
+                                break;
+                            case Icons.CODE:
+                                holder.genericIcon.setBackgroundColor(codeColor);
+                                break;
+                            case Icons.TEXT:
+                                holder.genericIcon.setBackgroundColor(textColor);
+                                break;
+                            case Icons.COMPRESSED:
+                                holder.genericIcon.setBackgroundColor(archiveColor);
+                                break;
+                            case Icons.NOT_KNOWN:
+                                holder.genericIcon.setBackgroundColor(genericColor);
+                                break;
+                            case Icons.APK:
+                            case Icons.IMAGE:
+                                holder.genericIcon.setBackgroundColor(Color.TRANSPARENT);
+                                break;
+                            default:
+                                holder.genericIcon.setBackgroundColor(iconSkinColor);
+                                break;
+                        }
+                    }
+
+                    if (isBackButton)
+                        holder.genericIcon.setBackgroundColor(goBackColor);
+                }
 
                 if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
-                    holder.genericIcon.setColorFilter(iconSkinColor);
-                    //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    if(holder.genericIcon.getVisibility() == View.VISIBLE) {
+                        holder.genericIcon.setBackgroundColor(iconSkinColor);
+                        //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                    }
 
                     holder.checkImageViewGrid.setVisibility(View.VISIBLE);
                     holder.rl.setBackgroundColor(Utils.getColor(context, R.color.item_background));
