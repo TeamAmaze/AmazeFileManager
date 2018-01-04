@@ -5,15 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
 /**
  * A ColorUsage is a key used to index color preferences in {@link ColorPreference}
  */
 public enum ColorUsage {
-    PRIMARY("skin", R.color.primary_indigo),
-    PRIMARY_TWO("skin_two", R.color.primary_indigo),
-    ACCENT("accent_skin", R.color.primary_pink),
-    ICON_SKIN("icon_skin", R.color.primary_pink),
+    PRIMARY(PreferencesConstants.PREFERENCE_SKIN, R.color.primary_indigo),
+    PRIMARY_TWO(PreferencesConstants.PREFERENCE_SKIN_TWO, R.color.primary_indigo),
+    ACCENT(PreferencesConstants.PREFERENCE_ACCENT, R.color.primary_pink),
+    ICON_SKIN(PreferencesConstants.PREFERENCE_ICON_SKIN, R.color.primary_pink),
     CURRENT_TAB("current_tab", R.color.primary_pink);
 
     /**
@@ -35,13 +36,13 @@ public enum ColorUsage {
     @Nullable
     public static ColorUsage fromString(@NonNull String name) {
         switch (name) {
-            case "skin":
+            case PreferencesConstants.PREFERENCE_SKIN:
                 return PRIMARY;
-            case "skin_two":
+            case PreferencesConstants.PREFERENCE_SKIN_TWO:
                 return PRIMARY_TWO;
-            case "accent_skin":
+            case PreferencesConstants.PREFERENCE_ACCENT:
                 return ACCENT;
-            case "icon_skin":
+            case PreferencesConstants.PREFERENCE_ICON_SKIN:
                 return ICON_SKIN;
             case "currrent_tab":
                 return CURRENT_TAB;

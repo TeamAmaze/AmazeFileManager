@@ -32,6 +32,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
@@ -41,8 +42,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
@@ -570,7 +570,7 @@ public class GeneralDialogCreation {
         });
 
         builder.onNegative((dialog, which) -> {
-            preferences.edit().putBoolean(PrefFrag.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
+            preferences.edit().putBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, true).apply();
             try {
                 encryptButtonCallbackInterface.onButtonPressed(intent);
             } catch (Exception e) {
@@ -704,7 +704,7 @@ public class GeneralDialogCreation {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog materialDialog) {
-                        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                        boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
                         FileUtils.openunknown(f, m, false, useNewStack);
                     }
 

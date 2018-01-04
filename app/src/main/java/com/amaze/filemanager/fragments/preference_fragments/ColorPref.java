@@ -34,6 +34,7 @@ import java.util.List;
  * Created by Arpit on 21-06-2015.
  */
 public class ColorPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+
     private MaterialDialog dialog;
 
     SharedPreferences sharedPref;
@@ -49,7 +50,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         activity = (PreferencesActivity) getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final CheckBox checkBoxPreference = (CheckBox) findPreference("random_checkbox");
+        final CheckBox checkBoxPreference = (CheckBox) findPreference(PreferencesConstants.PREFERENCE_RANDOM_COLOR);
         checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -58,7 +59,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 return true;
             }
         });
-        CheckBox preference8 = (CheckBox) findPreference("colorednavigation");
+        CheckBox preference8 = (CheckBox) findPreference(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION);
         preference8.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

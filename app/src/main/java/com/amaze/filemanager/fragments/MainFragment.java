@@ -67,6 +67,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
@@ -79,8 +80,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
@@ -204,13 +204,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
         primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
 
-        SHOW_PERMISSIONS = sharedPref.getBoolean("showPermissions", false);
-        SHOW_SIZE = sharedPref.getBoolean("showFileSize", true);
-        SHOW_DIVIDERS = sharedPref.getBoolean("showDividers", true);
-        SHOW_HEADERS = sharedPref.getBoolean("showHeaders", true);
-        GO_BACK_ITEM = sharedPref.getBoolean("goBack_checkbox", false);
-        CIRCULAR_IMAGES = sharedPref.getBoolean("circularimages", true);
-        SHOW_LAST_MODIFIED = sharedPref.getBoolean("showLastModified", true);
+        SHOW_PERMISSIONS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS, false);
+        SHOW_SIZE = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, true);
+        SHOW_DIVIDERS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
+        SHOW_HEADERS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HEADERS, true);
+        GO_BACK_ITEM = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
+        CIRCULAR_IMAGES = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES, true);
+        SHOW_LAST_MODIFIED = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
     }
 
     public void stopAnimation() {
@@ -250,7 +250,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
 
-        SHOW_THUMBS = sharedPref.getBoolean("showThumbs", true);
+        SHOW_THUMBS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_THUMB, true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
@@ -265,8 +265,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         setHasOptionsMenu(false);
         //getMainActivity() = (MainActivity) getActivity();
         initNoFileLayout();
-        SHOW_HIDDEN = sharedPref.getBoolean("showHidden", false);
-        COLORISE_ICONS = sharedPref.getBoolean("coloriseIcons", true);
+        SHOW_HIDDEN = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
+        COLORISE_ICONS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
         getSortModes();
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
@@ -280,7 +280,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
 
         listView.setHasFixedSize(true);
-        columns = Integer.parseInt(sharedPref.getString("columns", "-1"));
+        columns = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
         if (IS_LIST) {
             mLayoutManager = new LinearLayoutManager(getContext());
             listView.setLayoutManager(mLayoutManager);
@@ -728,7 +728,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    boolean useNewStack = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
                     FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
@@ -1424,7 +1424,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             sortby = t - 4;
         }
 
-        dsort = Integer.parseInt(sharedPref.getString("dirontop", "0"));
+        dsort = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
     }
 
     @Override

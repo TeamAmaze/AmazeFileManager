@@ -9,12 +9,12 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -99,7 +99,7 @@ public class EncryptDecryptUtils {
         }
 
         switch (encryptedEntry.getPassword()) {
-            case PrefFrag.ENCRYPT_PASSWORD_FINGERPRINT:
+            case PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT:
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         GeneralDialogCreation.showDecryptFingerprintDialog(c,
@@ -111,12 +111,12 @@ public class EncryptDecryptUtils {
                     Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
-            case PrefFrag.ENCRYPT_PASSWORD_MASTER:
+            case PreferencesConstants.ENCRYPT_PASSWORD_MASTER:
                 try {
                     GeneralDialogCreation.showDecryptDialog(c,
                             mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                            CryptUtil.decryptPassword(c, preferences1.getString(PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    PrefFrag.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
+                            CryptUtil.decryptPassword(c, preferences1.getString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
                 } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
                     Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();

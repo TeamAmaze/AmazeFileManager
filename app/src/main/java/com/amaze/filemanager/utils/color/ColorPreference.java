@@ -43,6 +43,9 @@ public class ColorPreference {
             R.color.primary_blue_grey,
             R.color.primary_teal_900
     );
+
+    private static final String TAG = "ColorPreference";
+
     private Map<ColorUsage, Integer> colors;
     private Context context;
 
@@ -85,7 +88,7 @@ public class ColorPreference {
                 int val = preferences.getInt(usage.asString(), colorIndex(usage.getDefaultColor()));
                 cp.setRes(usage, getColorByIndex(val));
             } catch (ClassCastException ex) {
-                Log.d("ColorPreference", "Got a ClassCastException while retrieving preference " + usage.asString());
+                Log.d(TAG, "Got a ClassCastException while retrieving preference " + usage.asString());
                 cp.setRes(usage, usage.getDefaultColor());
                 prefCorrupted = true;
             }
@@ -144,7 +147,7 @@ public class ColorPreference {
 
         e.apply();
 
-        Log.d("ColorPreference", "ColorPreference saved to SharedPreferences successfully.");
+        Log.d(TAG, "ColorPreference saved to SharedPreferences successfully.");
 
         return this;
     }
@@ -186,7 +189,7 @@ public class ColorPreference {
         try {
             return Utils.getColor(context, getRes(usage));
         } catch (Resources.NotFoundException ex) {
-            Log.e("ColorPreference", "Color resource not found for " + usage.asString() + ": " + Integer.toString(getRes(usage)));
+            Log.e(TAG, "Color resource not found for " + usage.asString() + ": " + Integer.toString(getRes(usage)));
             return Utils.getColor(context, usage.getDefaultColor());
         }
     }

@@ -42,7 +42,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
@@ -100,7 +101,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
         getSupportActionBar()
                 .setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
 
-        boolean useNewStack = sharedPref.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
@@ -112,7 +113,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= 21) {
-            boolean colourednavigation = getPrefs().getBoolean("colorednavigation", true);
+            boolean colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
