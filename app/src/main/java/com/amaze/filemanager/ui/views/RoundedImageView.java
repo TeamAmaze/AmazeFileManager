@@ -39,16 +39,9 @@ public class RoundedImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (getDrawable() == null || getWidth() == 0 || getHeight() == 0) return;
+
         Drawable drawable = getDrawable();
-
-        if (drawable == null) {
-            return;
-        }
-
-        if (getWidth() == 0 || getHeight() == 0) {
-            return;
-        }
-
         int w = getWidth(), h = getHeight();
 
         if(!isImageAnIcon()) {
@@ -163,7 +156,7 @@ public class RoundedImageView extends ImageView {
         int sizeH = (int) (radius*relativeSize[1]);
 
         if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+            throw new IllegalStateException("Solid colors cannot be represented as images! Use RoundedImageView.setBackgroundColor()");
         } else {
             bitmap = Bitmap.createBitmap(sizeW, sizeH, Bitmap.Config.ARGB_8888);
         }
