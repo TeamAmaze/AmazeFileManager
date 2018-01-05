@@ -598,6 +598,6 @@
         Someone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\n
         Please contact your system administrator or setup a new connection to continue connecting to the server.
     </string>
-    <string name="ssh_key_prompt_passphrase">Please enter key passphraseW</string>
+    <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
 </resources>
 
