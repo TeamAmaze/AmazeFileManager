@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
@@ -31,6 +32,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
     public final ImageButton about;
     public final ImageView checkImageView;
     public final ImageView checkImageViewGrid;
+    public final RelativeLayout iconLayout;
 
     public ItemViewHolder(View view) {
         super(view);
@@ -48,6 +50,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
         checkImageView = view.findViewById(R.id.check_icon);
         genericIcon = view.findViewById(R.id.generic_icon);
         checkImageViewGrid = view.findViewById(R.id.check_icon_grid);
+        iconLayout = view.findViewById(R.id.icon_frame);
     }
 
 }

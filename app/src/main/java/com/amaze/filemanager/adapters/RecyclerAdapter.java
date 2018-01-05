@@ -627,49 +627,53 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 if(holder.genericIcon.getVisibility() == View.VISIBLE) {
+                    View iconBackground = mainFrag.CIRCULAR_IMAGES? holder.genericIcon:holder.iconLayout;
+
                     if (rowItem.isDirectory) {
-                        holder.genericIcon.setBackgroundColor(iconSkinColor);
+                        iconBackground.setBackgroundColor(iconSkinColor);
                     } else {
                         switch (rowItem.filetype) {
                             case Icons.VIDEO:
-                                holder.genericIcon.setBackgroundColor(videoColor);
+                                iconBackground.setBackgroundColor(videoColor);
                                 break;
                             case Icons.AUDIO:
-                                holder.genericIcon.setBackgroundColor(audioColor);
+                                iconBackground.setBackgroundColor(audioColor);
                                 break;
                             case Icons.PDF:
-                                holder.genericIcon.setBackgroundColor(pdfColor);
+                                iconBackground.setBackgroundColor(pdfColor);
                                 break;
                             case Icons.CODE:
-                                holder.genericIcon.setBackgroundColor(codeColor);
+                                iconBackground.setBackgroundColor(codeColor);
                                 break;
                             case Icons.TEXT:
-                                holder.genericIcon.setBackgroundColor(textColor);
+                                iconBackground.setBackgroundColor(textColor);
                                 break;
                             case Icons.COMPRESSED:
-                                holder.genericIcon.setBackgroundColor(archiveColor);
+                                iconBackground.setBackgroundColor(archiveColor);
                                 break;
                             case Icons.NOT_KNOWN:
-                                holder.genericIcon.setBackgroundColor(genericColor);
+                                iconBackground.setBackgroundColor(genericColor);
                                 break;
                             case Icons.APK:
                             case Icons.IMAGE:
-                                holder.genericIcon.setBackgroundColor(Color.TRANSPARENT);
+                                iconBackground.setBackgroundColor(Color.TRANSPARENT);
                                 break;
                             default:
-                                holder.genericIcon.setBackgroundColor(iconSkinColor);
+                                iconBackground.setBackgroundColor(iconSkinColor);
                                 break;
                         }
                     }
 
                     if (isBackButton)
-                        holder.genericIcon.setBackgroundColor(goBackColor);
+                        iconBackground.setBackgroundColor(goBackColor);
                 }
 
                 if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
                     if(holder.genericIcon.getVisibility() == View.VISIBLE) {
-                        holder.genericIcon.setBackgroundColor(iconSkinColor);
-                        //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
+                        View iconBackground = mainFrag.CIRCULAR_IMAGES? holder.genericIcon:holder.iconLayout;
+
+                        iconBackground.setBackgroundColor(iconSkinColor);
+                        //iconBackground.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
                     }
 
                     holder.checkImageViewGrid.setVisibility(View.VISIBLE);
