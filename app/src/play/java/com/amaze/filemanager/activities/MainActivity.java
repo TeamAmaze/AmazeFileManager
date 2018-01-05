@@ -98,6 +98,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -109,9 +110,11 @@ import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
@@ -328,6 +331,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         dataUtils.registerOnDataChangedListener(this);
 
+        CustomSshJConfig.init();
+        AppConfig.setActivityContext(con);
+
         setContentView(R.layout.main_toolbar);
         appbar = new AppBar(this, getPrefs(), queue -> {
             if(!queue.isEmpty()) {
@@ -336,7 +342,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         });
         initialiseViews();
         tabHandler = new TabHandler(this);
-        utilsHandler = new UtilsHandler(this);
+        utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
         mImageLoader = AppConfig.getInstance().getImageLoader();
@@ -509,7 +515,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.setGridfiles(utilsHandler.getGridViewList());
                 dataUtils.setListfiles(utilsHandler.getListViewList());
                 dataUtils.setBooks(utilsHandler.getBookmarksList());
-                dataUtils.setServers(utilsHandler.getSmbList());
+                ArrayList<String[]> servers = new ArrayList<String[]>();
+                servers.addAll(utilsHandler.getSmbList());
+                servers.addAll(utilsHandler.getSftpList());
+                dataUtils.setServers(servers);
 
                 return null;
             }
@@ -800,6 +809,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public void exit() {
         if (backPressedToExitOnce) {
+            SshConnectionPool.getInstance().expungeAllConnections();
             finish();
             if (ThemedActivity.rootMode) {
                 // TODO close all shells
@@ -1318,6 +1328,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         CryptHandler cryptHandler = new CryptHandler(this);
         cryptHandler.close();
+        
+        SshConnectionPool.getInstance().expungeAllConnections();
 
         /*if (mainFragment!=null)
             mainFragment = null;*/
@@ -1434,7 +1446,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             synchronized (dataUtils.getServers()) {
                 for (String[] file : dataUtils.getServers()) {
                     sectionDrawerItems.add(new DrawerItem(file[0], file[1], ContextCompat.getDrawable(this,
-                            R.drawable.ic_settings_remote_white_24dp)));
+                            (file[1].startsWith(SshConnectionPool.SSH_URI_PREFIX)) ?
+                                    R.drawable.ic_linux_grey600_24dp : R.drawable.ic_settings_remote_white_24dp)));
                 }
             }
             sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
@@ -2062,6 +2075,35 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         bundle.putBoolean("edit", edit);
         smbConnectDialog.setArguments(bundle);
         smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    }
+
+    public void showSftpDialog(String name, String path, boolean edit) {
+        if (path.length() > 0 && name.length() == 0) {
+            int i = dataUtils.containsServer(new String[]{name, path});
+            if (i != -1)
+                name = dataUtils.getServers().get(i)[0];
+        }
+        SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+        Uri uri = Uri.parse(path);
+        String userinfo = uri.getUserInfo();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("address", uri.getHost());
+        bundle.putString("port", Integer.toString(uri.getPort()));
+        bundle.putString("path", path);
+        bundle.putString("username", userinfo.indexOf(':') > 0 ?
+                userinfo.substring(0, userinfo.indexOf(':')) : userinfo);
+
+        if(userinfo.indexOf(':') < 0) {
+            bundle.putBoolean("hasPassword", false);
+            bundle.putString("keypairName", utilsHandler.getSshAuthPrivateKeyName(path));
+        } else {
+            bundle.putBoolean("hasPassword", true);
+            bundle.putString("password", userinfo.substring(userinfo.indexOf(':')+1));
+        }
+        bundle.putBoolean("edit", edit);
+        sftpConnectDialog.setArguments(bundle);
+        sftpConnectDialog.show(getFragmentManager(), "sftpdialog");
     }
 
     /**

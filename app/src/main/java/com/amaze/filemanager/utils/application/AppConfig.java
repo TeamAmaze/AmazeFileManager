@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
@@ -29,9 +30,12 @@ public class AppConfig extends GlideApplication {
     private UtilitiesProviderInterface utilsProvider;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private UtilsHandler mUtilsHandler;
+
     private static Handler mApplicationHandler = new Handler();
     private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
     private static Handler sBackgroundHandler;
+    private static Context sActivityContext;
 
     private static AppConfig mInstance;
 
@@ -46,6 +50,7 @@ public class AppConfig extends GlideApplication {
         mInstance = this;
 
         utilsProvider = new UtilitiesProvider(this);
+        mUtilsHandler = new UtilsHandler(this);
 
         sBackgroundHandlerThread.start();
         sBackgroundHandler = new Handler(sBackgroundHandlerThread.getLooper());
@@ -179,6 +184,18 @@ public class AppConfig extends GlideApplication {
             this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
         }
         return mImageLoader;
+    }
+
+    public UtilsHandler getUtilsHandler() {
+        return mUtilsHandler;
+    }
+
+    public static void setActivityContext(Context context) {
+        sActivityContext = context;
+    }
+
+    public Context getActivityContext() {
+        return sActivityContext;
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {

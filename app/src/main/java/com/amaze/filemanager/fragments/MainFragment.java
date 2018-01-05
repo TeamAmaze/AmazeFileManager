@@ -80,6 +80,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -909,6 +910,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                     ex.printStackTrace();
                                 }
                                 break;
+                            case SFTP:
+                                Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
+                                SshClientUtils.launchSftp(e.generateBaseFile(), getMainActivity());
+                                break;
                             case OTG:
                                 FileUtils.openFile(OTGUtil.getDocumentFile(e.desc, getContext(), false),
                                         (MainActivity) getActivity(), sharedPref);
@@ -1303,6 +1308,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             e.printStackTrace();
                         }
 
+                    } else if (openMode == OpenMode.SFTP) {
+                        if(!CURRENT_PATH.substring("ssh://".length()).contains("/"))
+                            loadlist(home, false, OpenMode.FILE);
+                        else
+                            loadlist(currentFile.getParent(getContext()), true, openMode);
                     } else if (CURRENT_PATH.equals("/") || CURRENT_PATH.equals(home) ||
                             CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")

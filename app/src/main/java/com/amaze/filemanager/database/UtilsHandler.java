@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -18,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedList;
 
 /**
@@ -33,7 +36,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private Context context;
 
     private static final String DATABASE_NAME = "utilities.db";
-    private static final int DATABASE_VERSION = 1;  // increment only when making change in schema
+    private static final int DATABASE_VERSION = 2;  // increment only when making change in schema
 
     private static final String TABLE_HISTORY = "history";
     private static final String TABLE_HIDDEN = "hidden";
@@ -41,10 +44,23 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String TABLE_GRID = "grid";
     private static final String TABLE_BOOKMARKS = "bookmarks";
     private static final String TABLE_SMB = "smb";
+    private static final String TABLE_SFTP = "sftp";
 
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_PATH = "path";
     private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_HOST_PUBKEY = "pub_key";
+    private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
+    private static final String COLUMN_PRIVATE_KEY = "ssh_key";
+
+    private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " TEXT,"
+            + COLUMN_PATH + " TEXT,"
+            + COLUMN_HOST_PUBKEY + " TEXT,"
+            + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
+            + COLUMN_PRIVATE_KEY + " TEXT"
+            + ")";
 
     public UtilsHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,18 +102,18 @@ public class UtilsHandler extends SQLiteOpenHelper {
         db.execSQL(queryGrid);
         db.execSQL(queryBookmarks);
         db.execSQL(querySmb);
+        db.execSQL(querySftp);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HISTORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HIDDEN);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRID);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKMARKS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMB);
-
-        onCreate(db);
+        switch(oldVersion){
+            case 1:
+                db.execSQL(querySftp);
+                break;
+            default:
+                break;
+        }
     }
 
     private enum Operation {
@@ -106,7 +122,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         LIST,
         GRID,
         BOOKMARKS,
-        SMB
+        SMB,
+        SFTP
     }
 
     public void addCommonBookmarks() {
@@ -148,6 +165,38 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public void addSmb(String name, String path) {
         setPath(Operation.SMB, name, path);
+    }
+
+    public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_PATH, path);
+        values.put(COLUMN_HOST_PUBKEY, hostKey);
+        if(sshKey != null && !"".equals(sshKey))
+        {
+            values.put(COLUMN_PRIVATE_KEY_NAME, sshKeyName);
+            values.put(COLUMN_PRIVATE_KEY, sshKey);
+        }
+
+        database.insert(getTableForOperation(Operation.SFTP), null, values);
+    }
+
+    public void updateSsh(String connectionName, String oldConnectionName, String path,
+                          String sshKeyName, String sshKey) {
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, connectionName);
+        values.put(COLUMN_PATH, path);
+        if(sshKeyName != null && sshKey != null) {
+            values.put(COLUMN_PRIVATE_KEY_NAME, sshKeyName);
+            values.put(COLUMN_PRIVATE_KEY, sshKey);
+        }
+
+        database.update(getTableForOperation(Operation.SFTP), values, String.format("%s=?", COLUMN_NAME),
+                new String[]{oldConnectionName});
     }
 
     public LinkedList<String> getHistoryLinkedList() {
@@ -245,6 +294,101 @@ public class UtilsHandler extends SQLiteOpenHelper {
         return row;
     }
 
+    public List<String[]> getSftpList()
+    {
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SFTP),
+                new String[]{COLUMN_NAME,COLUMN_PATH},
+                null, null, null, null, COLUMN_ID);
+
+        boolean hasNext = cursor.moveToFirst();
+        ArrayList<String[]> retval = new ArrayList<String[]>();
+        while(hasNext)
+        {
+            String path = SshClientUtils.decryptSshPathAsNecessary(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+
+            if(path == null) {
+                Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+
+                // failing to decrypt the path, removing entry from database
+                Toast.makeText(context,
+                        context.getResources().getString(R.string.failed_smb_decrypt_path),
+                        Toast.LENGTH_LONG).show();
+//                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+//                            "");
+                continue;
+            } else {
+                retval.add(new String[]{
+                    cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                    path
+                });
+            }
+            hasNext = cursor.moveToNext();
+        }
+        cursor.close();
+        return retval;
+    }
+
+    public String getSshHostKey(String uri)
+    {
+        uri = SshClientUtils.encryptSshPathAsNecessary(uri);
+        if(uri != null)
+        {
+            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+            Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY},
+                    COLUMN_PATH + " = ?", new String[]{uri},
+                    null, null, null);
+            if(result.moveToFirst())
+            {
+                String retval = result.getString(0);
+                result.close();
+                return retval;
+            }
+            else
+            {
+                result.close();
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public String getSshAuthPrivateKeyName(String uri)
+    {
+        return getSshAuthPrivateKeyColumn(uri, COLUMN_PRIVATE_KEY_NAME);
+    }
+
+    public String getSshAuthPrivateKey(String uri)
+    {
+        return getSshAuthPrivateKeyColumn(uri, COLUMN_PRIVATE_KEY);
+    }
+
+    private String getSshAuthPrivateKeyColumn(String uri, String columnName) {
+        //If connection is using key authentication, no need to decrypt the path at all
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{columnName},
+                COLUMN_PATH + " = ?", new String[]{uri},
+                null, null, null);
+        if(result.moveToFirst())
+        {
+            try {
+                return result.getString(0);
+            }
+            finally {
+                result.close();
+            }
+        }
+        else {
+            result.close();
+            return null;
+        }
+    }
+
     public void removeHistoryPath(String path) {
         removePath(Operation.HISTORY, path);
     }
@@ -296,6 +440,30 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
+    public void removeSftpPath(String name, String path) {
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        try
+        {
+            if (path.equals("")) {
+                // we don't have a path, remove the entry with this name
+                throw new IOException();
+            }
+
+            sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ? AND " + COLUMN_PATH + " = ?",
+                    new String[] {name, SshClientUtils.encryptSshPathAsNecessary(path)});
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            // force remove entry, we end up deleting all entries with same name
+            sqLiteDatabase.delete(TABLE_SFTP, COLUMN_NAME + " = ?",
+                    new String[] {name});
+        }
+    }
+
     public void clearHistoryTable() {
         clearTable(Operation.HISTORY);
     }
@@ -319,6 +487,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
     public void clearSmbTable() {
         clearTable(Operation.SMB);
     }
+
+    public void clearSshTable() { clearTable(Operation.SFTP); }
 
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
@@ -424,6 +594,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 return TABLE_BOOKMARKS;
             case SMB:
                 return TABLE_SMB;
+            case SFTP:
+                return TABLE_SFTP;
             default:
                 return null;
         }

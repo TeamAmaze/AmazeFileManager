@@ -25,6 +25,7 @@ android {
         targetSdkVersion 26
         versionCode 63
         versionName "3.2.1"
+        multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true;
     }
@@ -38,6 +39,7 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+
         }
 
         release {
@@ -51,6 +53,7 @@ android {
     lintOptions {
         abortOnError false
     }
+
 
     flavorDimensions 'static'
 
@@ -129,6 +132,12 @@ dependencies {
 
     implementation 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
 
+    //SFTP
+    implementation 'com.hierynomus:sshj:0.23.0'
+
+    implementation 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
+    implementation 'com.madgag.spongycastle:prov:1.58.0.0'
+
     //Glide: loads icons seemlessly
     implementation 'com.github.bumptech.glide:glide:4.3.1'
     implementation ("com.github.bumptech.glide:recyclerview-integration:4.3.1") {
@@ -138,6 +147,14 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 
     implementation 'com.github.jahirfiquitiva:FABsMenu:1.0.9'//Floating Action Buttons Menu (aka expandable FAB)
+}
+
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
+        }
+    }
 }
 
 def Properties props = new Properties()

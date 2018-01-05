@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
@@ -29,7 +30,7 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 public class CloudSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private View rootView;
-    private LinearLayout mSmbLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout
+    private LinearLayout mSmbLayout, mScpLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout
             , mGetCloudLayout;
 
     public static final String TAG_FRAGMENT = "cloud_fragment";
@@ -54,6 +55,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         }
 
         mSmbLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_smb);
+        mScpLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_scp);
         mBoxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_box);
         mDropboxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_dropbox);
         mGoogleDriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_google_drive);
@@ -70,6 +72,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         }
 
         mSmbLayout.setOnClickListener(this);
+        mScpLayout.setOnClickListener(this);
         mBoxLayout.setOnClickListener(this);
         mDropboxLayout.setOnClickListener(this);
         mGoogleDriveLayout.setOnClickListener(this);
@@ -99,11 +102,21 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
     @Override
     public void onClick(View v) {
 
+        Log.d(TAG_FRAGMENT, "Clicked: " + v.getId());
+
         switch (v.getId()) {
             case R.id.linear_layout_smb:
                 dismiss();
                 SmbSearchDialog smbDialog=new SmbSearchDialog();
                 smbDialog.show(getActivity().getFragmentManager(), "tab");
+                return;
+            case R.id.linear_layout_scp:
+                dismiss();
+                SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+                Bundle args = new Bundle();
+                args.putBoolean("edit", false);
+                sftpConnectDialog.setArguments(args);
+                sftpConnectDialog.show(getActivity().getFragmentManager(), "tab");
                 return;
             case R.id.linear_layout_box:
                 ((MainActivity) getActivity()).addConnection(OpenMode.BOX);

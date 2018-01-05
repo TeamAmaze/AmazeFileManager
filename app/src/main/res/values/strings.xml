@@ -559,6 +559,7 @@
     <string name="failed_smb_decrypt_path">Failed to load SMB connection</string>
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
+
     <string name="local_inet_addr_error">Error getting local inet address</string>
     <string name="intent_save_as">Save as&#8230;</string>
     <string name="go">Go</string>
@@ -579,4 +580,24 @@
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>
     <string name="failed_no_connection">Failed to load files. Please check your connection.</string>
+
+    <string name="update">UPDATE</string>
+	<string name="scp_con">SCP/SFTP Connection</string>
+    <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">The authenticity of host \'%s\' can\'t be established.\n\n%s key fingerprint is %s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
+    <string name="ssh_select_pem_button">SSH Private Key</string>
+    <string name="ssh_pem_key_parse_error">Unable to read selected PEM: %s</string>
+    <string name="password_unchanged">(unchanged)</string>
+    <string name="ssh_authentication_failure_password">Logon failure: Unable to authenticate with supplied username and password.</string>
+    <string name="ssh_authentication_failure_key">Logon failure: Unable to authenticate with supplied username and private key.</string>
+    <string name="ssh_connect_failed">Unable to connect to %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\n
+        Someone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\n
+        Please contact your system administrator or setup a new connection to continue connecting to the server.
+    </string>
+    <string name="ssh_key_prompt_passphrase">Please enter key passphraseW</string>
 </resources>
+

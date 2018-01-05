@@ -119,6 +119,16 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     return null;
                 }
                 break;
+            case SFTP:
+                HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
+
+                list = new ArrayList<LayoutElementParcelable>();
+
+                sftpHFile.forEachChildrenFile(c, false, file -> {
+                    LayoutElementParcelable elem = createListParcelables(file);
+                    if(elem != null) list.add(elem);
+                });
+                break;
             case CUSTOM:
                 switch (Integer.parseInt(path)) {
                     case 0:
