@@ -51,7 +51,7 @@ import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -656,7 +656,7 @@ public class FileUtils {
     }
 
     public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
-        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         boolean defaultHandler = isSelfDefault(f, m);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         final Toast[] studioCount = {null};
@@ -729,7 +729,7 @@ public class FileUtils {
      * Support file opening for {@link DocumentFile} (eg. OTG)
      */
     public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
-        boolean useNewStack = sharedPrefs.getBoolean(PrefFrag.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
             openunknown(f, m, false, useNewStack);
         } catch (Exception e) {
@@ -904,9 +904,9 @@ public class FileUtils {
 
     public static boolean isPathAccesible(String dir, SharedPreferences pref) {
         File f = new File(dir);
-        boolean showIfHidden = pref.getBoolean(PrefFrag.PREFERENCE_SHOW_HIDDENFILES, false),
+        boolean showIfHidden = pref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false),
                 isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
-                showIfRoot = pref.getBoolean(PrefFrag.PREFERENCE_ROOTMODE, false);
+                showIfRoot = pref.getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
 
         return f.exists() && f.isDirectory()
                 && (!f.isHidden() || (showIfHidden && !isDirSelfOrParent))

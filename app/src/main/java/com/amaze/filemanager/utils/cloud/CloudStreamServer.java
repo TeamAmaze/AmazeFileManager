@@ -364,9 +364,9 @@ public abstract class CloudStreamServer {
 
                 // Decode the header into parms and header java properties
                 decodeHeader(hin, pre, parms, header);
-                Log.d("Explorer", pre.toString());
-                Log.d("Explorer", "Params: "+parms.toString());
-                Log.d("Explorer", "Header: "+header.toString());
+                Log.d(CloudUtil.TAG, pre.toString());
+                Log.d(CloudUtil.TAG, "Params: "+parms.toString());
+                Log.d(CloudUtil.TAG, "Header: "+header.toString());
                 String method = pre.getProperty("method");
                 String uri = pre.getProperty("uri");
 
@@ -820,7 +820,7 @@ public abstract class CloudStreamServer {
                     byte[] buff = new byte[8192];
                     int read = 0;
                     while ((read = data.read(buff))>0){
-                        //if(SolidExplorer.LOG)Log.d("Explorer", "Read: "+ read +", pending: "+ data.available());
+                        //if(SolidExplorer.LOG)Log.d(CloudUtil.TAG, "Read: "+ read +", pending: "+ data.available());
                         out.write( buff, 0, read );
                     }
                 }

@@ -35,12 +35,13 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.util.ArrayList;
@@ -55,12 +56,12 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
 
     public DeleteTask(ContentResolver c, Context cd) {
         this.cd = cd;
-        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
+        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
     }
 
     public DeleteTask(ContentResolver c, Context cd, CompressedExplorerFragment compressedExplorerFragment) {
         this.cd = cd;
-        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean("rootmode", false);
+        rootMode = PreferenceManager.getDefaultSharedPreferences(cd).getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
         this.compressedExplorerFragment = compressedExplorerFragment;
     }
 

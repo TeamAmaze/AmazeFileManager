@@ -50,12 +50,14 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -182,11 +184,11 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
         }
 
-        gobackitem = sp.getBoolean("goBack_checkbox", false);
-        coloriseIcons = sp.getBoolean("coloriseIcons", true);
-        showSize = sp.getBoolean("showFileSize", false);
-        showLastModified = sp.getBoolean("showLastModified", true);
-        showDividers = sp.getBoolean("showDividers", true);
+        gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
+        coloriseIcons = sp.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
+        showSize = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, false);
+        showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
+        showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
         year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
         skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
         accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);

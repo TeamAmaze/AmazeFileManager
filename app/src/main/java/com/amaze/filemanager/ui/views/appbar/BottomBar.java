@@ -25,10 +25,10 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -119,7 +119,7 @@ public class BottomBar implements View.OnTouchListener{
             }
         };
 
-        allowChangePaths = mainActivity.get().getPrefs().getBoolean(PrefFrag.PREFERENCE_CHANGEPATHS, false);
+        allowChangePaths = mainActivity.get().getPrefs().getBoolean(PreferencesConstants.PREFERENCE_CHANGEPATHS, false);
 
         gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override

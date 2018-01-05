@@ -80,6 +80,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.DrawerAdapter;
+import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
@@ -107,6 +108,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -115,7 +117,6 @@ import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
-import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.utils.BookSorter;
@@ -157,8 +158,6 @@ import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PrefFrag.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
 public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
@@ -209,6 +208,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public static final String KEY_PREF_OTG = "uri_usb_otg";
 
     public static final String PASTEHELPER_BUNDLE = "pasteHelper";
+
+    private static final String KEY_DRAWER_SELECTED = "selectitem";
+    private static final String KEY_OPERATION_PATH = "oppathe";
+    private static final String KEY_OPERATED_ON_PATH = "oppathe1";
+    private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
+    private static final String KEY_OPERATION = "operation";
 
     private static final int image_selector_request_code = 31;
 
@@ -428,7 +433,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         if (savedInstanceState != null) {
 
-            selectedStorage = savedInstanceState.getInt("selectitem", DRAWER_SELECTED_DEFAULT);
+            selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
         }
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -562,11 +567,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     }
                 } else {
                     pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
-                    oppathe = savedInstanceState.getString("oppathe");
-                    oppathe1 = savedInstanceState.getString("oppathe1");
-                    oparrayList = savedInstanceState.getParcelableArrayList("oparrayList");
-                    operation = savedInstanceState.getInt("operation");
-                    selectedStorage = savedInstanceState.getInt("selectitem", DRAWER_SELECTED_DEFAULT);
+                    oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+                    oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+                    oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
+                    operation = savedInstanceState.getInt(KEY_OPERATION);
+                    selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, DRAWER_SELECTED_DEFAULT);
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
                     adapter.toggleChecked(selectedStorage);
                 }
@@ -1115,12 +1120,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
                 builder.theme(getAppTheme().getMaterialDialogTheme());
                 builder.title(R.string.directorysort);
-                int current = Integer.parseInt(getPrefs().getString("dirontop", "0"));
+                int current = Integer.parseInt(getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
 
                 final MainFragment mainFrag = ma;
 
                 builder.items(sort).itemsCallbackSingleChoice(current, (dialog1, view, which, text) -> {
-                    getPrefs().edit().putString("dirontop", "" + which).commit();
+                    getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which).commit();
                     mainFrag.getSortModes();
                     mainFrag.updateList();
                     dialog1.dismiss();
@@ -1192,12 +1197,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public void onRestoreInstanceState(Bundle savedInstanceState){
         COPY_PATH=savedInstanceState.getStringArrayList("COPY_PATH");
         MOVE_PATH=savedInstanceState.getStringArrayList("MOVE_PATH");
-        oppathe = savedInstanceState.getString("oppathe");
-        oppathe1 = savedInstanceState.getString("oppathe1");
-        oparrayList = savedInstanceState.getStringArrayList("oparrayList");
+        oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+        oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+        oparrayList = savedInstanceState.getStringArrayList(KEY_OPERATIONS_PATH_LIST);
         opnameList=savedInstanceState.getStringArrayList("opnameList");
-        operation = savedInstanceState.getInt("operation");
-        selectedStorage = savedInstanceState.getInt("selectitem", 0);
+        operation = savedInstanceState.getInt(KEY_OPERATION);
+        selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
     }*/
 
     @Override
@@ -1218,16 +1223,16 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (selectedStorage != DRAWER_SELECTED_NONE)
-            outState.putInt("selectitem", selectedStorage);
+            outState.putInt(KEY_DRAWER_SELECTED, selectedStorage);
         if(pasteHelper != null) {
             outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
         }
 
         if (oppathe != null) {
-            outState.putString("oppathe", oppathe);
-            outState.putString("oppathe1", oppathe1);
-            outState.putParcelableArrayList("oparraylist", (oparrayList));
-            outState.putInt("operation", operation);
+            outState.putString(KEY_OPERATION_PATH, oppathe);
+            outState.putString(KEY_OPERATED_ON_PATH, oppathe1);
+            outState.putParcelableArrayList(KEY_OPERATIONS_PATH_LIST, (oparrayList));
+            outState.putInt(KEY_OPERATION, operation);
         }
         /*if (mainFragment!=null) {
             outState.putParcelable("main_fragment", mainFragment);
@@ -1500,7 +1505,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 sectionDrawerItems.add(new DrawerItem(DrawerItem.ITEM_SECTION));
         }
 
-        if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+        if (getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
             if (dataUtils.getBooks().size() > 0) {
 
                 Collections.sort(dataUtils.getBooks(), new BookSorter());
@@ -1518,7 +1523,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         Boolean[] quickAccessPref = TinyDB.getBooleanArray(getPrefs(), QuickAccessPref.KEY,
                 QuickAccessPref.DEFAULT);
 
-        if (getPrefs().getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+        if (getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0])
                 sectionDrawerItems.add(new DrawerItem(getResources().getString(R.string.quick), "5",
                         ContextCompat.getDrawable(this, R.drawable.ic_star_white_24dp)));
@@ -1587,7 +1592,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (SDK_INT >= Build.VERSION_CODES.KITKAT)
                     getContentResolver().takePersistableUriPermission(intent.getData(),
                             Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getPrefs().edit().putString("drawer_header_path", intent.getData().toString()).commit();
+                getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
+                        intent.getData().toString()).commit();
                 setDrawerHeaderBackground();
             }
         } else if (requestCode == 3) {
@@ -1596,7 +1602,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 // Get Uri from Storage Access Framework.
                 treeUri = intent.getData();
                 // Persist URI - this is required for verification of writability.
-                if (treeUri != null) getPrefs().edit().putString("URI", treeUri.toString()).commit();
+                if (treeUri != null) getPrefs().edit().putString(PreferencesConstants.PREFERENCE_URI,
+                        treeUri.toString()).commit();
             } else {
                 // If not confirmed SAF, or if still not writable, then revert settings.
                 /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
@@ -1682,12 +1689,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialisePreferences() {
-        hidemode = getPrefs().getInt("hidemode", 0);
-        showHidden = getPrefs().getBoolean("showHidden", false);
-        useGridView = getPrefs().getBoolean("view", true);
+        hidemode = getPrefs().getInt(PreferencesConstants.PREFERENCE_HIDEMODE, 0);
+        showHidden = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
+        useGridView = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_VIEW, true);
         currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-        colourednavigation = getPrefs().getBoolean("colorednavigation", false);
+        colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, false);
     }
 
     void initialiseViews() {
@@ -1974,7 +1981,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void setDrawerHeaderBackground() {
-        String path1 = getPrefs().getString("drawer_header_path", null);
+        String path1 = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
+                null);
         if (path1 == null) return;
         try {
             final ImageView headerImageView = new ImageView(MainActivity.this);
@@ -2014,7 +2022,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 refreshDrawer();
                 TabFragment tabFragment = getTabFragment();
-                boolean b = getPrefs().getBoolean("needtosethome", true);
+                boolean b = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, true);
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
@@ -2035,7 +2043,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         if (main1 != null)
                             ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
-                    getPrefs().edit().putBoolean("needtosethome", false).commit();
+                    getPrefs().edit().putBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, false).commit();
                 } else {
                     //just refresh list
                     if (tabFragment != null) {

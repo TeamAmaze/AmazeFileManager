@@ -23,6 +23,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
@@ -53,6 +54,8 @@ public class TabFragment extends android.support.v4.app.Fragment
     MainActivity mainActivity;
     boolean savepaths;
     FragmentManager fragmentManager;
+
+    private static final String KEY_POSITION = "pos";
 
     // ink indicators for viewpager only for Lollipop+
     private Indicator indicator;
@@ -86,7 +89,7 @@ public class TabFragment extends android.support.v4.app.Fragment
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         savepaths = sharedPrefs.getBoolean("savepaths", true);
-        coloredNavigation = sharedPrefs.getBoolean("colorednavigation", true);
+        coloredNavigation = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
 
         mViewPager = (DisablableViewPager) rootView.findViewById(R.id.pager);
 
@@ -152,7 +155,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                     getActivity().getSupportFragmentManager());
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
-            int pos1 = savedInstanceState.getInt("pos", 0);
+            int pos1 = savedInstanceState.getInt(KEY_POSITION, 0);
             MainActivity.currentTab = pos1;
             mViewPager.setCurrentItem(pos1);
             mSectionsPagerAdapter.notifyDataSetChanged();
@@ -249,7 +252,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 fragmentManager.putFragment(outState, "tab" + i, fragment);
                 i++;
             }
-            outState.putInt("pos", mViewPager.getCurrentItem());
+            outState.putInt(KEY_POSITION, mViewPager.getCurrentItem());
         }
     }
 

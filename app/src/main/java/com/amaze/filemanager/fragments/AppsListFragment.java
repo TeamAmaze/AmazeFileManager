@@ -59,6 +59,9 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
 
     public static final int ID_LOADER_APP_LIST = 0;
 
+    private static final String KEY_INDEX = "index";
+    private static final String KEY_TOP = "top";
+
     private AppsAdapterPreloadModel modelProvider;
 
     @Override
@@ -103,9 +106,8 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         getLoaderManager().initLoader(ID_LOADER_APP_LIST, null, this);
 
         if (savedInstanceState != null) {
-
-            index = savedInstanceState.getInt("index");
-            top = savedInstanceState.getInt("top");
+            index = savedInstanceState.getInt(KEY_INDEX);
+            top = savedInstanceState.getInt(KEY_TOP);
         }
     }
 
@@ -118,8 +120,8 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
             int index = vl.getFirstVisiblePosition();
             View vi = vl.getChildAt(0);
             int top = (vi == null) ? 0 : vi.getTop();
-            b.putInt("index", index);
-            b.putInt("top", top);
+            b.putInt(KEY_INDEX, index);
+            b.putInt(KEY_TOP, top);
         }
     }
 

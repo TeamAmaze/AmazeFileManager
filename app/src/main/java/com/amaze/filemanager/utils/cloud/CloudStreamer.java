@@ -76,7 +76,7 @@ public class CloudStreamer extends CloudStreamServer {
                         }
                     }
                 }
-                Log.d("Explorer", "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+                Log.d(CloudUtil.TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
                 // Change return code and add Content-Range header when skipping
                 // is requested
@@ -93,10 +93,10 @@ public class CloudStreamer extends CloudStreamServer {
                         long newLen = fileLen - startFrom;
                         if (newLen < 0)
                             newLen = 0;
-                        Log.d("Explorer", "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+                        Log.d(CloudUtil.TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
                         final long dataLen = newLen;
                         source.moveTo(startFrom);
-                        Log.d("Explorer", "Skipped " + startFrom + " bytes");
+                        Log.d(CloudUtil.TAG, "Skipped " + startFrom + " bytes");
 
                         res = new CloudStreamServer.Response(HTTP_PARTIALCONTENT, source.getMimeType(), source);
                         res.addHeader("Content-length", "" + dataLen);

@@ -7,16 +7,19 @@ import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -101,7 +104,7 @@ public class HybridFile {
         } else if(context == null) {
             mode = OpenMode.FILE;
         } else {
-            boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rootMode", false);
+            boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 mode = OpenMode.FILE;
                 if (rootmode && !getFile().canRead()) {

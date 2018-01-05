@@ -2,6 +2,8 @@ package com.amaze.filemanager.utils.SmbStreamer;
 
 import android.util.Log;
 
+import com.amaze.filemanager.utils.cloud.CloudUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -87,7 +89,7 @@ public class Streamer extends StreamServer {
                         }
                     }
                 }
-                Log.d("Explorer", "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+                Log.d(CloudUtil.TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
                 // Change return code and add Content-Range header when skipping
                 // is requested
@@ -104,10 +106,10 @@ public class Streamer extends StreamServer {
                         long newLen = fileLen - startFrom;
                         if (newLen < 0)
                             newLen = 0;
-                        Log.d("Explorer", "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+                        Log.d(CloudUtil.TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
                         final long dataLen = newLen;
                         source.moveTo(startFrom);
-                        Log.d("Explorer", "Skipped " + startFrom + " bytes");
+                        Log.d(CloudUtil.TAG, "Skipped " + startFrom + " bytes");
 
                         res = new Response(HTTP_PARTIALCONTENT, source.getMimeType(), source);
                         res.addHeader("Content-length", "" + dataLen);
