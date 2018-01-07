@@ -23,17 +23,21 @@ public class CircularColorsView extends View {
     private static final int SEMICIRCLE_LINE_WIDTH = 0;
 
     private boolean paintInitialized = false;
-    private Paint blackPaint = new Paint();
+    private Paint dividerPaint = new Paint();
     private Paint[] colors = {new Paint(), new Paint(), new Paint(), new Paint()};
     private RectF semicicleRect = new RectF();
 
     public CircularColorsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        blackPaint.setColor(Color.BLACK);
-        blackPaint.setStyle(Paint.Style.STROKE);
-        blackPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        blackPaint.setStrokeWidth(SEMICIRCLE_LINE_WIDTH);
+        dividerPaint.setColor(Color.BLACK);
+        dividerPaint.setStyle(Paint.Style.STROKE);
+        dividerPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        dividerPaint.setStrokeWidth(SEMICIRCLE_LINE_WIDTH);
+    }
+
+    public void setDividerColor(int color) {
+        dividerPaint.setColor(color);
     }
 
     public void setColors(int color, int color1, int color2, int color3) {
@@ -64,7 +68,7 @@ public class CircularColorsView extends View {
         canvas.drawArc(semicicleRect, 270, 180, true, colors[1]);
 
         canvas.drawLine(semicicleRect.centerX(), semicicleRect.top, semicicleRect.centerX(),
-                semicicleRect.bottom, blackPaint);
+                semicicleRect.bottom, dividerPaint);
 
         canvas.drawCircle(positionX[1], centerY, RADIUS, colors[2]);
         canvas.drawCircle(positionX[2], centerY, RADIUS, colors[3]);

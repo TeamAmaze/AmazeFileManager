@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -18,12 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.CircularColorsView;
 import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference;
 import com.amaze.filemanager.utils.color.ColorPreference;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
  * This is only the dialog, that shows a list of color combinations and
@@ -55,6 +58,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
 
     private SharedPreferences sharedPrefs;
     private ColorPreference colorPref;
+    private AppTheme appTheme;
     private OnAcceptedConfig listener;
     private View selectedItem = null;
     private int selectedIndex = -1;
@@ -69,8 +73,9 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         setDialogIcon(null);
     }
 
-    public void setColorPreference(ColorPreference color) {
+    public void setColorPreference(ColorPreference color, AppTheme theme) {
         colorPref = color;
+        appTheme = theme;
     }
 
     public void setListener(OnAcceptedConfig l) {
@@ -119,8 +124,10 @@ public class ColorPickerDialog extends SelectedColorsPreference {
             }
 
             ((TextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
-            ((CircularColorsView) child.findViewById(R.id.circularColorsView))
-                    .setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
+            CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
+            colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
+            if (appTheme.getMaterialDialogTheme() == Theme.LIGHT) colorsView.setDividerColor(Color.WHITE);
+            else colorsView.setDividerColor(Color.BLACK);
             container.addView(child);
         }
         /*CUSTOM*/ {

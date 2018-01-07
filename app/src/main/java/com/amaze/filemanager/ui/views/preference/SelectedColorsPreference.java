@@ -21,6 +21,7 @@ import com.amaze.filemanager.ui.views.CircularColorsView;
 public class SelectedColorsPreference extends DialogPreference {
 
     private int[] colors = {Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT};
+    private int backgroundColor;
     private int visibility = View.VISIBLE;
 
     public SelectedColorsPreference(Context context, AttributeSet attrs) {
@@ -40,12 +41,17 @@ public class SelectedColorsPreference extends DialogPreference {
 
         CircularColorsView colorsView = view.findViewById(R.id.colorsection);
         colorsView.setColors(colors[0], colors[1], colors[2], colors[3]);
+        colorsView.setDividerColor(backgroundColor);
         colorsView.setVisibility(visibility);
     }
 
     public void setColorsVisibility(int visibility) {
         this.visibility = visibility;
         notifyChanged();
+    }
+
+    public void setDividerColor(int color) {
+        backgroundColor = color;
     }
 
     public void setColors(int color, int color1, int color2, int color3) {

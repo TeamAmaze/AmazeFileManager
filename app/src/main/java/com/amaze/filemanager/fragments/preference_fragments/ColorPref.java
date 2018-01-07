@@ -2,6 +2,7 @@ package com.amaze.filemanager.fragments.preference_fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
@@ -185,7 +187,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         ColorPickerDialog selectedColors = (ColorPickerDialog) findPreference(KEY_PRESELECTED_CONFIGS);
         invalidateColorPreference(selectedColors);
-        selectedColors.setColorPreference(activity.getColorPreference());
+        selectedColors.setColorPreference(activity.getColorPreference(), activity.getAppTheme());
         selectedColors.setListener(() -> {
             if (activity != null) activity.setChanged();
             checkCustomization();
@@ -244,8 +246,13 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             int skin_two = activity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
             int accent_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
             int icon_skin = activity.getColorPreference().getColor(ColorUsage.ICON_SKIN);
-
             selectedColors.setColors(skin, skin_two, accent_skin, icon_skin);
+
+            if(activity.getAppTheme().getMaterialDialogTheme() == Theme.LIGHT) {
+                selectedColors.setDividerColor(Color.WHITE);
+            } else {
+                selectedColors.setDividerColor(Color.BLACK);
+            }
         } else{
             selectedColors.setColorsVisibility(View.GONE);
         }
