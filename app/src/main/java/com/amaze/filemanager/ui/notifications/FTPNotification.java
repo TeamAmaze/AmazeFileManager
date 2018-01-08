@@ -63,7 +63,7 @@ public class FTPNotification extends BroadcastReceiver {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        Notification.Builder notificationBuilder = new Notification.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+        Notification.Builder notificationBuilder = new Notification.Builder(context)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
@@ -71,6 +71,9 @@ public class FTPNotification extends BroadcastReceiver {
                 .setTicker(tickerText)
                 .setWhen(when)
                 .setOngoing(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            notificationBuilder.setChannelId(NotificationConstants.CHANNEL_NORMAL_ID);
 
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
