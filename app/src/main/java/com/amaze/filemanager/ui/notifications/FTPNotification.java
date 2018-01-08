@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -63,7 +64,7 @@ public class FTPNotification extends BroadcastReceiver {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        Notification.Builder notificationBuilder = new Notification.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
@@ -71,6 +72,8 @@ public class FTPNotification extends BroadcastReceiver {
                 .setTicker(tickerText)
                 .setWhen(when)
                 .setOngoing(true);
+
+        NotificationConstants.setMetadata(context, notificationBuilder);
 
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
