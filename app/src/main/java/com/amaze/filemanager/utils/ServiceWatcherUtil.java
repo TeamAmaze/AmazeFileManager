@@ -9,6 +9,7 @@ package com.amaze.filemanager.utils;
  */
 
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.ArrayList;
@@ -27,13 +29,14 @@ public class ServiceWatcherUtil {
     private ProgressHandler progressHandler;
     long totalSize;
     private Runnable runnable;
+    private ServiceWatcherInteractionInterface.STATE STATE;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
     // position of byte in total byte size to be copied
-    public static long POSITION = 0L;
+    public static volatile long POSITION = 0L;
 
-    private static int HAULT_COUNTER = -1;
+    private static int HALT_COUNTER = -1;
 
     public static final int ID_NOTIFICATION_WAIT =  9248;
 
@@ -46,7 +49,7 @@ public class ServiceWatcherUtil {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
         POSITION = 0L;
-        HAULT_COUNTER = -1;
+        HALT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -57,7 +60,7 @@ public class ServiceWatcherUtil {
      * Watches over the service progress without interrupting the worker thread in respective services
      * Method frees up all the resources and handlers after operation completes.
      */
-    public void watch() {
+    public void watch(ServiceWatcherInteractionInterface interactionInterface) {
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -75,20 +78,26 @@ public class ServiceWatcherUtil {
                     return;
                 }
 
-                if (POSITION == progressHandler.getWrittenSize()) {
-                    HAULT_COUNTER++;
+                if (POSITION == progressHandler.getWrittenSize() && ++HALT_COUNTER>5) {
+                    // we waited 5 secs for progress to start again
 
-                    if (HAULT_COUNTER>10) {
-                        // we suspect the progress has been haulted for some reason, stop the watcher
+                    if (interactionInterface.getServiceType() instanceof EncryptService) {
 
-                        // workaround for decryption when we have a length retreived by
-                        // CipherInputStream less than the orginal stream, and hence the total size
+                        // workaround for decryption when we have a length retrieved by
+                        // CipherInputStream less than the original stream, and hence the total size
                         // we passed at the beginning is never reached
                         progressHandler.addWrittenLength(totalSize);
                         handler.removeCallbacks(this);
                         handlerThread.quit();
-                        return;
                     }
+
+                    HALT_COUNTER = 0;
+                    STATE = ServiceWatcherInteractionInterface.STATE.HALTED;
+                    interactionInterface.progressHalted();
+                } else if (STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
+
+                    STATE = ServiceWatcherInteractionInterface.STATE.RESUMED;
+                    interactionInterface.progressResumed();
                 }
                 handler.postDelayed(this, 1000);
             }
@@ -139,9 +148,10 @@ public class ServiceWatcherUtil {
         }*/
 
         if (pendingIntents.size()==0) {
+
+            pendingIntents.add(intent);
             init(context);
         }
-        pendingIntents.add(intent);
 
     }
 
@@ -191,5 +201,25 @@ public class ServiceWatcherUtil {
         };
 
         handler.postDelayed(runnable, 0);
+    }
+
+    public interface ServiceWatcherInteractionInterface {
+
+        enum STATE {
+            HALTED,
+            RESUMED
+        }
+
+        /**
+         * Progress has been halted for some reason
+         */
+        void progressHalted();
+
+        /**
+         * Future extension for possible implementation of pause/resume of services
+         */
+        void progressResumed();
+
+        <T extends Service> T getServiceType();
     }
 }

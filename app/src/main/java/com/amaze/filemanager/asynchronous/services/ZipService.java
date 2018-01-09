@@ -57,7 +57,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends Service {
+public class ZipService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
@@ -119,6 +119,25 @@ public class ZipService extends Service {
         new DoWork().execute(b);
         // If we get killed, after returning from here, restart
         return START_STICKY;
+    }
+
+    @Override
+    public void progressHalted() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, true);
+    }
+
+    @Override
+    public void progressResumed() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, false);
+    }
+
+    @Override
+    public ZipService getServiceType() {
+        return this;
     }
 
     public class LocalBinder extends Binder {
@@ -192,7 +211,7 @@ public class ZipService extends Service {
             OutputStream out;
             File zipDirectory = new File(zipPath);
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ZipService.this);
 
             try {
                 out = FileUtil.getOutputStream(zipDirectory, c, totalBytes);

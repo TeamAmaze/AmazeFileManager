@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17.
  */
 
-public class EncryptService extends Service {
+public class EncryptService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
@@ -110,6 +110,25 @@ public class EncryptService extends Service {
         return START_STICKY;
     }
 
+    @Override
+    public void progressHalted() {
+
+        // set notification to indeterminate unless progress resumes
+        notificationBuilder.setProgress(0, 0, true);
+    }
+
+    @Override
+    public void progressResumed() {
+
+        // set notification to indeterminate unless progress resumes
+        notificationBuilder.setProgress(0, 0, false);
+    }
+
+    @Override
+    public EncryptService getServiceType() {
+        return this;
+    }
+
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -129,7 +148,7 @@ public class EncryptService extends Service {
             putDataPackage(dataPackage);
 
             if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
-                serviceWatcherUtil.watch();
+                serviceWatcherUtil.watch(EncryptService.this);
 
                 if (cryptEnum == CryptEnum.ENCRYPT) {
                     // we're here to encrypt

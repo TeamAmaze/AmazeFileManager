@@ -62,7 +62,7 @@ import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends Service {
+public class CopyService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -134,6 +134,25 @@ public class CopyService extends Service {
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
+    }
+
+    @Override
+    public void progressHalted() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, true);
+    }
+
+    @Override
+    public void progressResumed() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, false);
+    }
+
+    @Override
+    public CopyService getServiceType() {
+        return this;
     }
 
     private class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
@@ -264,7 +283,7 @@ public class CopyService extends Service {
                                 final boolean move, OpenMode mode) {
 
                 // initial start of copy, initiate the watcher
-                watcherUtil.watch();
+                watcherUtil.watch(CopyService.this);
 
                 if (FileUtil.checkFolder((targetPath), c) == 1) {
                     for (int i = 0; i < sourceFiles.size(); i++) {

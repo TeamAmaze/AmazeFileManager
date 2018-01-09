@@ -62,7 +62,7 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-public class ExtractService extends Service {
+public class ExtractService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     Context context;
 
@@ -130,6 +130,25 @@ public class ExtractService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
 
+    @Override
+    public void progressHalted() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, true);
+    }
+
+    @Override
+    public void progressResumed() {
+
+        // set notification to indeterminate unless progress resumes
+        mBuilder.setProgress(0, 0, false);
+    }
+
+    @Override
+    public ExtractService getServiceType() {
+        return this;
+    }
+
     public class LocalBinder extends Binder {
         public ExtractService getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -188,7 +207,7 @@ public class ExtractService extends Service {
         }
     }
 
-    public static class DoWork extends AsyncTask<Void, Void, Void> {
+    public class DoWork extends AsyncTask<Void, Void, Void> {
 
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
@@ -380,7 +399,7 @@ public class ExtractService extends Service {
             setInitDataPackage(totalBytes, entry1.get(0).getName(), entryNamesList.length);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ExtractService.this);
 
             int i = 0;
             for (ZipEntry entry : entry1) {
@@ -414,7 +433,7 @@ public class ExtractService extends Service {
             setInitDataPackage(totalBytes, arrayList.get(0).getName(), 1);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ExtractService.this);
 
             for (ZipEntry entry : arrayList) {
                 if (!progressHandler.getCancelled()) {
@@ -448,7 +467,7 @@ public class ExtractService extends Service {
             setInitDataPackage(totalBytes, archiveEntries.get(0).getName(), 1);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ExtractService.this);
 
             inputStream = createTarInputStream(archive);
 
@@ -496,7 +515,7 @@ public class ExtractService extends Service {
             setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), 1);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ExtractService.this);
 
             for (FileHeader header : arrayList) {
 
@@ -537,7 +556,7 @@ public class ExtractService extends Service {
             setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), arrayList.size());
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil.watch(ExtractService.this);
 
             int i = 0;
             for (FileHeader entry : arrayList) {
