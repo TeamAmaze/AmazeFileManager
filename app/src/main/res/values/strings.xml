@@ -576,6 +576,8 @@
     <string name="nobitcoinapp">Please install a bitcoin wallet</string>
     <string name="channelname_normal">Amaze Notifications</string>
     <string name="channeldescription_normal">Amaze File Manager\'s Notifications</string>
+    <string name="channelname_ftp">Amaze FTP Sever</string>
+    <string name="channeldescription_ftp">Amaze File Manager FTP Sever\'s Notifications</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>

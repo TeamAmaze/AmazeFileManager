@@ -108,7 +108,7 @@ public class ZipService extends ProgressiveService {
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
 
-        NotificationConstants.setMetadata(this, mBuilder);
+        NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);

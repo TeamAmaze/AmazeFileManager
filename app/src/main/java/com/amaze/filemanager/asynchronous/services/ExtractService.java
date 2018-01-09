@@ -112,7 +112,7 @@ public class ExtractService extends ProgressiveService {
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
 
-        NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
+        NotificationConstants.setMetadata(getApplicationContext(), mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
