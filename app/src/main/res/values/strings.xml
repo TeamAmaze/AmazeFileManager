@@ -599,5 +599,6 @@
         Please contact your system administrator or setup a new connection to continue connecting to the server.
     </string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
+    <string name="addshortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
 </resources>
 
