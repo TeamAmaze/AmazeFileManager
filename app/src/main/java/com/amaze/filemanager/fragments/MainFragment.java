@@ -521,13 +521,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
-            if (openMode == OpenMode.SMB) {
+
+            if (openMode != OpenMode.FILE) {
                 hideOption(R.id.addshortcut, menu);
-                hideOption(R.id.openwith, menu);
-                hideOption(R.id.share, menu);
                 hideOption(R.id.compress, menu);
                 return true;
             }
+
             if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16)
                     showOption(R.id.openmulti, menu);
@@ -567,7 +567,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         e.printStackTrace();
                     }
                     hideOption(R.id.openwith, menu);
-
+                    hideOption(R.id.addshortcut, menu);
                 }
             } else {
                 if (positions.size() == 1) {
@@ -589,6 +589,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 } else {
                     hideOption(R.id.openparent, menu);
+                    hideOption(R.id.addshortcut, menu);
 
                     if (getMainActivity().mReturnIntent)
                         if (Build.VERSION.SDK_INT >= 16)
