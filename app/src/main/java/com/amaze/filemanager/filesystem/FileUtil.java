@@ -204,7 +204,7 @@ public abstract class FileUtil {
                         switch (hFile.getMode()) {
                             case FILE:
                             case ROOT:
-                                if (!FileUtil.isWritable(new File(currentPath))) {
+                                if (!FileUtil.isWritable(new File(finalFilePath))) {
                                     AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
