@@ -510,7 +510,7 @@ public abstract class FileUtil {
             DocumentFile document = getDocumentFile(file.getParentFile(), true, context);
             // getDocumentFile implicitly creates the directory.
             try {
-                return document.createFile(MimeTypes.getMimeType(file), file.getName()) != null;
+                return document.createFile(MimeTypes.getMimeType(file.getPath(), file.isDirectory()), file.getName()) != null;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
