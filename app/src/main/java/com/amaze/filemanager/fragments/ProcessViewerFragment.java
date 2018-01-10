@@ -68,6 +68,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
 
+    /**
+     * Helps defining the result type for {@link #processResults(DatapointParcelable, int)}
+     * to process
+     */
+    private static final int SERVICE_COPY = 0, SERVICE_EXTRACT = 1, SERVICE_COMPRESS = 2,
+            SERVICE_ENCRYPT = 3, SERVICE_DECRYPT = 4;
+
     private boolean isInitialized = false;
     private MainActivity mainActivity;
     private int accentColor, primaryColor;
@@ -121,11 +128,11 @@ public class ProcessViewerFragment extends Fragment {
             mCardView.setCardElevation(0f);
         }
 
-        mCopyConnection = new CustomServiceConnection(this, mLineChart, ServiceType.COPY);
-        mExtractConnection = new CustomServiceConnection(this, mLineChart, ServiceType.EXTRACT);
-        mCompressConnection = new CustomServiceConnection(this, mLineChart, ServiceType.COMPRESS);
-        mEncryptConnection = new CustomServiceConnection(this, mLineChart, ServiceType.ENCRYPT);
-        mDecryptConnection = new CustomServiceConnection(this, mLineChart, ServiceType.DECRYPT);
+        mCopyConnection = new CustomServiceConnection(this, mLineChart, SERVICE_COPY);
+        mExtractConnection = new CustomServiceConnection(this, mLineChart, SERVICE_EXTRACT);
+        mCompressConnection = new CustomServiceConnection(this, mLineChart, SERVICE_COMPRESS);
+        mEncryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_ENCRYPT);
+        mDecryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_DECRYPT);
 
         return rootView;
     }
@@ -160,15 +167,7 @@ public class ProcessViewerFragment extends Fragment {
         getActivity().unbindService(mDecryptConnection);
     }
 
-    /**
-     * Enum helps defining the result type for {@link #processResults(DatapointParcelable, ServiceType)}
-     * to process
-     */
-    enum ServiceType {
-        COPY, EXTRACT, COMPRESS, ENCRYPT, DECRYPT
-    }
-
-    public void processResults(final DatapointParcelable dataPackage, ServiceType serviceType) {
+    public void processResults(final DatapointParcelable dataPackage, int serviceType) {
         if (dataPackage != null) {
             String name = dataPackage.name;
             long total = dataPackage.totalSize;
@@ -231,12 +230,11 @@ public class ProcessViewerFragment extends Fragment {
     }
 
     /**
-     * Setup drawables and click listeners based on the {@link ServiceType}
-     * @param serviceType
+     * Setup drawables and click listeners based on the SERVICE_* constants
      */
-    private void setupDrawables(ServiceType serviceType, boolean isMove) {
+    private void setupDrawables(int serviceType, boolean isMove) {
         switch (serviceType) {
-            case COPY:
+            case SERVICE_COPY:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -249,7 +247,7 @@ public class ProcessViewerFragment extends Fragment {
                         : getResources().getString(R.string.copying));
                 cancelBroadcast(new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL));
                 break;
-            case EXTRACT:
+            case SERVICE_EXTRACT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -261,7 +259,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.extracting));
                 cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
                 break;
-            case COMPRESS:
+            case SERVICE_COMPRESS:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -273,7 +271,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.compressing));
                 cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
-            case ENCRYPT:
+            case SERVICE_ENCRYPT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -285,7 +283,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.crypt_encrypting));
                 cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
                 break;
-            case DECRYPT:
+            case SERVICE_DECRYPT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -395,9 +393,9 @@ public class ProcessViewerFragment extends Fragment {
 
         private ProcessViewerFragment fragment;
         private LineChart lineChart;
-        private ServiceType serviceType;
+        private int serviceType;
 
-        public CustomServiceConnection(ProcessViewerFragment frag, LineChart lineChart, ServiceType serviceType) {
+        public CustomServiceConnection(ProcessViewerFragment frag, LineChart lineChart, int serviceType) {
             fragment = frag;
             this.lineChart = lineChart;
             this.serviceType = serviceType;
