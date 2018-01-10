@@ -85,6 +85,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
+    private String notificationID;
     private int sourceProgress = 0;
 
     @Override
@@ -118,7 +119,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
         NotificationConstants.setMetadata(c, mBuilder);
 
-        startForeground(Integer.parseInt("456" + startId), mBuilder.build());
+        startForeground(Integer.parseInt((notificationID = "456" + startId)), mBuilder.build());
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
@@ -141,6 +142,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(0, 0, true);
+        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
     @Override
@@ -148,6 +150,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(0, 0, false);
+        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
     @Override
