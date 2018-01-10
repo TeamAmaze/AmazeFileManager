@@ -78,8 +78,8 @@ public class ServiceWatcherUtil {
                     return;
                 }
 
-                if (POSITION == progressHandler.getWrittenSize() && ++HALT_COUNTER>5) {
-                    // we waited 5 secs for progress to start again
+                if (POSITION == progressHandler.getWrittenSize() &&
+                        STATE != ServiceWatcherInteractionInterface.STATE.HALTED) {
 
                     if (interactionInterface.getServiceType() instanceof EncryptService) {
 
@@ -91,10 +91,10 @@ public class ServiceWatcherUtil {
                         handlerThread.quit();
                     }
 
-                    HALT_COUNTER = 0;
                     STATE = ServiceWatcherInteractionInterface.STATE.HALTED;
                     interactionInterface.progressHalted();
-                } else if (STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
+                } else if (POSITION != progressHandler.getWrittenSize() &&
+                        STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
 
                     STATE = ServiceWatcherInteractionInterface.STATE.RESUMED;
                     interactionInterface.progressResumed();
