@@ -324,19 +324,16 @@ public class ProcessViewerFragment extends Fragment {
      * @param yValue the y-axis value, bytes processed per sec
      */
     private void addEntry(float xValue, float yValue) {
-
         ILineDataSet dataSet = mLineData.getDataSetByIndex(0);
-        if (dataSet==null) {
-            // adding set for first time
+
+        if (dataSet == null) {// adding set for first time
             dataSet = createDataSet();
             mLineData.addDataSet(dataSet);
         }
 
-        int randomDataSetIndex = (int) (Math.random() * mLineData.getDataSetCount());
-        mLineData.addEntry(new Entry(xValue, yValue), randomDataSetIndex);
-        mLineData.notifyDataChanged();
+        dataSet.addEntry(new Entry(xValue, yValue));
 
-        // let the chart know it's data has changed
+        mLineData.notifyDataChanged();
         mLineChart.notifyDataSetChanged();
         mLineChart.invalidate();
     }
