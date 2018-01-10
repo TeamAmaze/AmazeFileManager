@@ -68,6 +68,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+    private String notificationID;
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -111,7 +112,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         NotificationConstants.setMetadata(this, mBuilder);
-        startForeground(Integer.parseInt("789" + startId), mBuilder.build());
+        startForeground(Integer.parseInt((notificationID = "789" + startId)), mBuilder.build());
 
         b.putInt("id", startId);
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
@@ -126,6 +127,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
 
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(0, 0, true);
+        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
     @Override

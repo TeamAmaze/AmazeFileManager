@@ -72,6 +72,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private ProgressHandler progressHandler;
+    private String notificationID;
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -110,7 +111,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
-        startForeground(Integer.parseInt("123" + startId), mBuilder.build());
+        startForeground(Integer.parseInt((notificationID = "123" + startId)), mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
@@ -135,6 +136,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
 
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(0, 0, true);
+        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
     @Override

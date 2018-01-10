@@ -115,6 +115,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
 
         // set notification to indeterminate unless progress resumes
         notificationBuilder.setProgress(0, 0, true);
+        notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
     }
 
     @Override
