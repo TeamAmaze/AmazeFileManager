@@ -558,7 +558,14 @@ public class HybridFile {
 
         switch (mode) {
             case SFTP:
-                return folderSize(AppConfig.getInstance());
+                return SshClientUtils.execute(new SFtpClientTemplate(path, false) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        Long retval = client.size(SshClientUtils.extractRemotePathFrom(path));
+                        client.close();
+                        return retval;
+                    }
+                });
             case SMB:
                 try {
                     size = FileUtils.folderSize(new SmbFile(path));
@@ -595,18 +602,13 @@ public class HybridFile {
                 return SshClientUtils.execute(new SshClientSessionTemplate(path) {
                     @Override
                     public Long execute(Session session) throws IOException {
-                        String cmdString = String.format("du -b -s \"%s\"",
-                                SshClientUtils.extractRemotePathFrom(path));
-
-                        Log.d("DEBUG", "Execute: " + cmdString);
-                        Session.Command cmd = session.exec(cmdString);
+                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
+                                SshClientUtils.extractRemotePathFrom(path)));
 
                         String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
                         cmd.close();
-                        Log.d("DEBUG", result);
                         if(cmd.getExitStatus() == 0) {
                             result = result.substring(0, result.indexOf('/') - 1).trim();
-                            Log.d("DEBUG", "Result: [" + result + "]");
                             return Long.parseLong(result);
                         }
                         else {
