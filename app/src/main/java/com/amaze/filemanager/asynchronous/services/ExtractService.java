@@ -73,6 +73,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
     private NotificationCompat.Builder mBuilder;
     private ProgressHandler progressHandler;
     private String notificationID;
+    private volatile float progressPercent = 0f;
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -143,7 +144,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
     public void progressResumed() {
 
         // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, false);
+        mBuilder.setProgress(100, Math.round(progressPercent), false);
     }
 
     @Override
@@ -174,7 +175,7 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
             mBuilder.setContentTitle(getResources().getString(R.string.extracting));
-            float progressPercent = ((float) done / total) * 100;
+            progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"

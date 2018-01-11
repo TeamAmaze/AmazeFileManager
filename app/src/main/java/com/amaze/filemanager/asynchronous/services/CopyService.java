@@ -87,6 +87,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
     private int totalSourceFiles = 0;
     private String notificationID;
     private int sourceProgress = 0;
+    private volatile float progressPercent = 0f;
 
     @Override
     public void onCreate() {
@@ -149,7 +150,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
     public void progressResumed() {
 
         // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, false);
+        mBuilder.setProgress(100, Math.round(progressPercent), false);
         mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
@@ -488,7 +489,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
         if (!progressHandler.getCancelled()) {
 
             //notification
-            float progressPercent = ((float) writtenSize / totalSize) * 100;
+            progressPercent = ((float) writtenSize / totalSize) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.copying;

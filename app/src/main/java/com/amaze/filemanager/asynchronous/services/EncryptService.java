@@ -62,6 +62,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
     private boolean broadcastResult = false;
+    private volatile float progressPercent = 0f;
 
     @Override
     public void onCreate() {
@@ -122,7 +123,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
     public void progressResumed() {
 
         // set notification to indeterminate unless progress resumes
-        notificationBuilder.setProgress(0, 0, false);
+        notificationBuilder.setProgress(100, Math.round(progressPercent), false);
     }
 
     @Override
@@ -202,7 +203,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
         if (!progressHandler.getCancelled()) {
 
             //notification
-            float progressPercent = ((float) writtenSize/totalSize)*100;
+            progressPercent = ((float) writtenSize/totalSize)*100;
             notificationBuilder.setProgress(100, Math.round(progressPercent), false);
             notificationBuilder.setOngoing(true);
             int title = R.string.crypt_encrypting;

@@ -69,6 +69,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
     private ProgressHandler progressHandler;
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private String notificationID;
+    private volatile float progressPercent = 0f;
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -134,7 +135,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
     public void progressResumed() {
 
         // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, false);
+        mBuilder.setProgress(100, Math.round(progressPercent), false);
     }
 
     @Override
@@ -271,7 +272,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
     private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
-            float progressPercent = ((float) done / total) * 100;
+            progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.compressing;

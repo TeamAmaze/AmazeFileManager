@@ -79,7 +79,8 @@ public class ServiceWatcherUtil {
                 }
 
                 if (POSITION == progressHandler.getWrittenSize() &&
-                        STATE != ServiceWatcherInteractionInterface.STATE.HALTED) {
+                        (STATE != ServiceWatcherInteractionInterface.STATE.HALTED
+                        && ++HALT_COUNTER>5)) {
 
                     if (interactionInterface.getServiceType() instanceof EncryptService) {
 
@@ -91,14 +92,24 @@ public class ServiceWatcherUtil {
                         handlerThread.quit();
                     }
 
+                    HALT_COUNTER = 0;
                     STATE = ServiceWatcherInteractionInterface.STATE.HALTED;
                     interactionInterface.progressHalted();
-                } else if (POSITION != progressHandler.getWrittenSize() &&
-                        STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
+                } else if (POSITION != progressHandler.getWrittenSize()) {
 
-                    STATE = ServiceWatcherInteractionInterface.STATE.RESUMED;
-                    interactionInterface.progressResumed();
+                    if (STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
+
+                        STATE = ServiceWatcherInteractionInterface.STATE.RESUMED;
+                        interactionInterface.progressResumed();
+                    } else {
+
+                        // reset the halt counter everytime there is a progress
+                        // so that it increments only when
+                        // progress was halted for consecutive time period
+                        HALT_COUNTER = 0;
+                    }
                 }
+
                 handler.postDelayed(this, 1000);
             }
         };
