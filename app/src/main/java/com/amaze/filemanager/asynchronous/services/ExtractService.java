@@ -63,7 +63,7 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-public class ExtractService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class ExtractService extends ServiceWatcherProgressAbstract {
 
     Context context;
 

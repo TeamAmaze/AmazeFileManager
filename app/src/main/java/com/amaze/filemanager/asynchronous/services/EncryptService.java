@@ -35,7 +35,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17.
  */
 
-public class EncryptService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class EncryptService extends ServiceWatcherProgressAbstract {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";

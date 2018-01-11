@@ -61,7 +61,7 @@ import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends ServiceWatcherProgressAbstract implements com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class CopyService extends ServiceWatcherProgressAbstract {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";

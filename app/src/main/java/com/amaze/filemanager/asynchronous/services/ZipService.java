@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class ZipService extends ServiceWatcherProgressAbstract {
 
     String mZipPath;
     Context c;
