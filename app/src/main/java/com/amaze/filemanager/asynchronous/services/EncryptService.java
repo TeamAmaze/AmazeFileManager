@@ -1,6 +1,7 @@
 package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -20,6 +21,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.OpenMode;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17.
  */
 
-public class EncryptService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class EncryptService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
@@ -48,8 +50,6 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
 
     // list of data packages which contains progress
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
     private Context context;
     private IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
@@ -62,7 +62,6 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private ProgressListener progressListener;
     private boolean broadcastResult = false;
-    private volatile float progressPercent = 0f;
 
     @Override
     public void onCreate() {
@@ -80,50 +79,35 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
         broadcastResult = intent.getBooleanExtra(TAG_BROADCAST_RESULT, false);
 
         openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
-        notificationBuilder.setContentIntent(pendingIntent);
+        mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
+        mBuilder.setContentIntent(pendingIntent);
 
         if (cryptEnum == CryptEnum.ENCRYPT) {
             // we have to encrypt the source
 
-            notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
-            notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
+            mBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
+            mBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
         } else {
 
             decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
-            notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
-            notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
+            mBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
+            mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
         }
 
-        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder);
+        NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
 
-        startForeground(ID_NOTIFICATION, notificationBuilder.build());
+        startForeground((notificationID=startId), mBuilder.build());
 
         new BackgroundTask().execute();
 
 
         return START_STICKY;
-    }
-
-    @Override
-    public void progressHalted() {
-
-        // set notification to indeterminate unless progress resumes
-        notificationBuilder.setProgress(0, 0, true);
-        notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
-    }
-
-    @Override
-    public void progressResumed() {
-
-        // set notification to indeterminate unless progress resumes
-        notificationBuilder.setProgress(100, Math.round(progressPercent), false);
     }
 
     @Override
@@ -204,22 +188,22 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
 
             //notification
             progressPercent = ((float) writtenSize/totalSize)*100;
-            notificationBuilder.setProgress(100, Math.round(progressPercent), false);
-            notificationBuilder.setOngoing(true);
+            mBuilder.setProgress(100, Math.round(progressPercent), false);
+            mBuilder.setOngoing(true);
             int title = R.string.crypt_encrypting;
             if (cryptEnum == CryptEnum.DECRYPT) title = R.string.crypt_decrypting;
-            notificationBuilder.setContentTitle(context.getResources().getString(title));
-            notificationBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
+            mBuilder.setContentTitle(context.getResources().getString(title));
+            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
                     writtenSize) + "/" +
                     Formatter.formatFileSize(context, totalSize));
 
-            notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
+            mNotifyManager.notify(ID_NOTIFICATION, mBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
 
-                notificationBuilder.setContentText("");
-                notificationBuilder.setOngoing(false);
-                notificationBuilder.setAutoCancel(true);
-                notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
+                mBuilder.setContentText("");
+                mBuilder.setOngoing(false);
+                mBuilder.setAutoCancel(true);
+                mNotifyManager.notify(ID_NOTIFICATION, mBuilder.build());
                 publishCompletedResult();
             }
 
@@ -236,7 +220,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
 
     public void publishCompletedResult(){
         try {
-            notificationManager.cancel(ID_NOTIFICATION);
+            mNotifyManager.cancel(ID_NOTIFICATION);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -267,7 +251,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
      * @param move
      */
     void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
-        notificationManager.cancelAll();
+        mNotifyManager.cancelAll();
 
         if(failedOps.size()==0)return;
 
@@ -295,7 +279,7 @@ public class EncryptService extends Service implements ServiceWatcherUtil.Servic
             mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
         }
 
-        notificationManager.notify(741,mBuilder.build());
+        mNotifyManager.notify(741,mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);

@@ -43,6 +43,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -57,10 +58,8 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class ZipService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
-    NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
     String mZipPath;
     Context c;
     ProgressListener progressListener;
@@ -68,8 +67,6 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private String notificationID;
-    private volatile float progressPercent = 0f;
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -113,7 +110,7 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         NotificationConstants.setMetadata(this, mBuilder);
-        startForeground(Integer.parseInt((notificationID = "789" + startId)), mBuilder.build());
+        startForeground((notificationID=startId), mBuilder.build());
 
         b.putInt("id", startId);
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
@@ -121,21 +118,6 @@ public class ZipService extends Service implements ServiceWatcherUtil.ServiceWat
         new DoWork().execute(b);
         // If we get killed, after returning from here, restart
         return START_STICKY;
-    }
-
-    @Override
-    public void progressHalted() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, true);
-        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
-    }
-
-    @Override
-    public void progressResumed() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(100, Math.round(progressPercent), false);
     }
 
     @Override

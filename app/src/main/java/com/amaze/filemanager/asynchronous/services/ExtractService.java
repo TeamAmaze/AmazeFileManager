@@ -41,6 +41,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -62,18 +63,13 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-public class ExtractService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class ExtractService extends ServiceWatcherProgressAbstract implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     Context context;
 
     // list of data packages,// to initiate chart in process viewer fragment
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-
-    private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
     private ProgressHandler progressHandler;
-    private String notificationID;
-    private volatile float progressPercent = 0f;
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -112,7 +108,8 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
-        startForeground(Integer.parseInt((notificationID = "123" + startId)), mBuilder.build());
+
+        startForeground((notificationID=startId), mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
@@ -131,21 +128,6 @@ public class ExtractService extends Service implements ServiceWatcherUtil.Servic
     }
 
     private final IBinder mBinder = new LocalBinder();
-
-    @Override
-    public void progressHalted() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, true);
-        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
-    }
-
-    @Override
-    public void progressResumed() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(100, Math.round(progressPercent), false);
-    }
 
     @Override
     public ExtractService getServiceType() {

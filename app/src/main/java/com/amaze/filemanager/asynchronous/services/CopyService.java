@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,20 +48,20 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public class CopyService extends ServiceWatcherProgressAbstract implements com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -74,20 +73,16 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
     private Context c;
 
     private ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
     private ProgressHandler progressHandler;
-    private ServiceWatcherUtil watcherUtil;
+    private com.amaze.filemanager.utils.ServiceWatcherUtil watcherUtil;
 
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
-    private String notificationID;
     private int sourceProgress = 0;
-    private volatile float progressPercent = 0f;
 
     @Override
     public void onCreate() {
@@ -120,7 +115,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
         NotificationConstants.setMetadata(c, mBuilder);
 
-        startForeground(Integer.parseInt((notificationID = "456" + startId)), mBuilder.build());
+        startForeground((notificationID=startId), mBuilder.build());
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
@@ -136,22 +131,6 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
-    }
-
-    @Override
-    public void progressHalted() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, true);
-        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
-    }
-
-    @Override
-    public void progressResumed() {
-
-        // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(100, Math.round(progressPercent), false);
-        mNotifyManager.notify(Integer.parseInt(notificationID), mBuilder.build());
     }
 
     @Override
@@ -181,7 +160,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
                 publishResults(id, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
 
-            watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            watcherUtil = new com.amaze.filemanager.utils.ServiceWatcherUtil(progressHandler, totalSize);
 
             CopyDataParcelable intent1 = new CopyDataParcelable(sourceFiles.get(0).getName(),
                     sourceFiles.size(), totalSize, move);
@@ -374,7 +353,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
                 try {
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
-                    ServiceWatcherUtil.POSITION += sourceFile.getSize();
+                    com.amaze.filemanager.utils.ServiceWatcherUtil.POSITION += sourceFile.getSize();
                 } catch (ShellNotRunningException e) {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
@@ -614,7 +593,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
      * Returns the {@link #dataPackages} list which contains
      * data to be transferred to {@link ProcessViewerFragment}
      * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * by {@link com.amaze.filemanager.utils.ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @return
@@ -630,7 +609,7 @@ public class CopyService extends Service implements ServiceWatcherUtil.ServiceWa
     /**
      * Puts a {@link CopyDataParcelable} into a list
      * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
+     * by {@link com.amaze.filemanager.utils.ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      *
      * @param dataPackage
