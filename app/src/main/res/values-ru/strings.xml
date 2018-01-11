@@ -517,4 +517,5 @@
   <!-- end of plurals -->
   <string name="no_name">Файл должен иметь имя</string>
   <string name="add_item">Добавить элемент</string>
+  <string name="addshortcut_not_supported_by_launcher">Создание ярлыков не поддерживается Вашим лаунчером.</string>
 </resources>

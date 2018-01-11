@@ -43,6 +43,9 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.drawable.IconCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
@@ -518,13 +521,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
-            if (openMode == OpenMode.SMB) {
+
+            if (openMode != OpenMode.FILE) {
                 hideOption(R.id.addshortcut, menu);
-                hideOption(R.id.openwith, menu);
-                hideOption(R.id.share, menu);
                 hideOption(R.id.compress, menu);
                 return true;
             }
+
             if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16)
                     showOption(R.id.openmulti, menu);
@@ -564,7 +567,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         e.printStackTrace();
                     }
                     hideOption(R.id.openwith, menu);
-
+                    hideOption(R.id.addshortcut, menu);
                 }
             } else {
                 if (positions.size() == 1) {
@@ -586,6 +589,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 } else {
                     hideOption(R.id.openparent, menu);
+                    hideOption(R.id.addshortcut, menu);
 
                     if (getMainActivity().mReturnIntent)
                         if (Build.VERSION.SDK_INT >= 16)
@@ -1594,18 +1598,30 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private void addShortcut(LayoutElementParcelable path) {
         //Adding shortcut for MainActivity
         //on Home screen
-        Intent shortcutIntent = new Intent(getActivity().getApplicationContext(),
-                MainActivity.class);
+        final Context ctx = getContext();
+
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(ctx)) {
+            Toast.makeText(getActivity(),
+                getString(R.string.addshortcut_not_supported_by_launcher),
+                Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent shortcutIntent = new Intent(ctx, MainActivity.class);
         shortcutIntent.putExtra("path", path.desc);
         shortcutIntent.setAction(Intent.ACTION_MAIN);
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Intent addIntent = new Intent();
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, new File(path.desc).getName());
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.ic_launcher));
-        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        getActivity().sendBroadcast(addIntent);
+
+        // Using file path as shortcut id.
+        ShortcutInfoCompat info = new ShortcutInfoCompat.Builder(ctx, path.desc)
+                .setActivity(getMainActivity().getComponentName())
+                .setIcon(IconCompat.createWithResource(ctx, R.mipmap.ic_launcher))
+                .setIntent(shortcutIntent)
+                .setLongLabel(path.desc)
+                .setShortLabel(new File(path.desc).getName())
+                .build();
+
+        ShortcutManagerCompat.requestPinShortcut(ctx, info, null);
     }
 
     // This method is used to implement the modification for the pre Searching
