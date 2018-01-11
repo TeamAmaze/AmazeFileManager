@@ -558,14 +558,7 @@ public class HybridFile {
 
         switch (mode) {
             case SFTP:
-                return SshClientUtils.execute(new SFtpClientTemplate(path, false) {
-                    @Override
-                    public Long execute(SFTPClient client) throws IOException {
-                        Long retval = client.size(SshClientUtils.extractRemotePathFrom(path));
-                        client.close();
-                        return retval;
-                    }
-                });
+                return folderSize(AppConfig.getInstance());
             case SMB:
                 try {
                     size = FileUtils.folderSize(new SmbFile(path));
@@ -599,20 +592,32 @@ public class HybridFile {
 
         switch (mode){
             case SFTP:
-                return SshClientUtils.execute(new SshClientSessionTemplate(path) {
+                return SshClientUtils.execute(new SshClientTemplate(path) {
                     @Override
-                    public Long execute(Session session) throws IOException {
+                    public Long execute(SSHClient client) throws IOException {
+                        Session session = client.startSession();
+                        String remotePath = SshClientUtils.extractRemotePathFrom(path);
                         Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
-                                SshClientUtils.extractRemotePathFrom(path)));
+                                remotePath));
 
                         String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+                        Long retval = 0L;
+
                         cmd.close();
-                        if(cmd.getExitStatus() == 0) {
-                            result = result.substring(0, result.indexOf('/') - 1).trim();
-                            return Long.parseLong(result);
+                        session.close();
+                        result = result.substring(0, result.indexOf('/') - 1).trim();
+                        //In some cases, du may still return valid value even it got permission denied.
+                        //So just parse as-is, and resort to FileUtils.folderSizeSftp() if parse fails
+                        try {
+                            retval = Long.parseLong(result);
+                        } catch (NumberFormatException whenParseFailed) {
+                            Log.w(TAG, "Error running du, fallback to FileUtils.folderSizeSftp()");
+                            SFTPClient sftpClient = client.newSFTPClient();
+                            retval = FileUtils.folderSizeSftp(sftpClient, remotePath);
+                            sftpClient.close();
                         }
-                        else {
-                            return 0L;
+                        finally {
+                            return retval;
                         }
                     }
                 });
