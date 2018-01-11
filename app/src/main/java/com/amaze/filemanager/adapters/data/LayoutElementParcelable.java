@@ -56,7 +56,7 @@ public class LayoutElementParcelable implements Parcelable {
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs) {
         filetype = Icons.getTypeOfFile(new File(path));
-        @DrawableRes int fallbackIcon = (isDirectory) ? R.drawable.ic_grid_folder_new : Icons.loadMimeIcon(path);
+        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path);
 
         if(useThumbs) {
             if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
