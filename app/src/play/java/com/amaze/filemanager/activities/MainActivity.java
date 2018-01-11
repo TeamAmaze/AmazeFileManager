@@ -358,78 +358,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
         intent = getIntent();
 
-        String actionIntent = intent.getAction();
-        String typeIntent = intent.getType();
         if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<HybridFileParcelable> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
                 mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
             }
         }
-        if (actionIntent != null) {
-            if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
 
-                // file picker intent
-                mReturnIntent = true;
-                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-
-                // disable screen rotation just for convenience purpose
-                // TODO: Support screen rotation when picking file
-                Utils.disableScreenRotation(this);
-            } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-                // ringtone picker intent
-                mReturnIntent = true;
-                mRingtonePickerIntent = true;
-                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-
-                // disable screen rotation just for convenience purpose
-                // TODO: Support screen rotation when picking file
-                Utils.disableScreenRotation(this);
-            } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
-
-                // zip viewer intent
-                Uri uri = intent.getData();
-                String type = intent.getType();
-
-                if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
-                    // support for syncting or intents from external apps that
-                    // need to start file manager from a specific path
-
-                    if (uri != null) {
-
-                        path = Utils.sanitizeInput(uri.getPath());
-                    } else {
-                        // no data field, open home for the tab in later processing
-                        path = null;
-                    }
-                } else {
-                    // we don't have folder resource mime type set, supposed to be zip/rar
-                    openzip = true;
-                    zippath = Utils.sanitizeInput(uri.toString());
-                }
-
-            } else if (actionIntent.equals(Intent.ACTION_SEND) && typeIntent != null) {
-                // save a single file to filesystem
-
-                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                ArrayList<Uri> uris = new ArrayList<>();
-                uris.add(uri);
-                initFabToSave(uris);
-
-                // disable screen rotation just for convenience purpose
-                // TODO: Support screen rotation when saving a file
-                Utils.disableScreenRotation(this);
-            } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && typeIntent != null) {
-                // save multiple files to filesystem
-
-                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                initFabToSave(arrayList);
-
-                // disable screen rotation just for convenience purpose
-                // TODO: Support screen rotation when saving a file
-                Utils.disableScreenRotation(this);
-            }
-        }
+        checkForExternalIntent(intent);
 
         if (savedInstanceState != null) {
 
@@ -593,6 +529,80 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 return null;
             }
         });
+    }
+
+    /**
+     * Checks for the action to take when Amaze receives an intent from external source
+     * @param intent
+     */
+    private void checkForExternalIntent(Intent intent) {
+
+        String actionIntent = intent.getAction();
+        String type = intent.getType();
+
+        if (actionIntent != null) {
+            if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+
+                // file picker intent
+                mReturnIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+                // ringtone picker intent
+                mReturnIntent = true;
+                mRingtonePickerIntent = true;
+                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when picking file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
+
+                // zip viewer intent
+                Uri uri = intent.getData();
+
+                if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+                    // support for syncting or intents from external apps that
+                    // need to start file manager from a specific path
+
+                    if (uri != null) {
+
+                        path = Utils.sanitizeInput(uri.getPath());
+                    } else {
+                        // no data field, open home for the tab in later processing
+                        path = null;
+                    }
+                } else {
+                    // we don't have folder resource mime type set, supposed to be zip/rar
+                    openzip = true;
+                    zippath = Utils.sanitizeInput(uri.toString());
+                }
+
+            } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
+                // save a single file to filesystem
+
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                ArrayList<Uri> uris = new ArrayList<>();
+                uris.add(uri);
+                initFabToSave(uris);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
+            } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
+                // save multiple files to filesystem
+
+                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                initFabToSave(arrayList);
+
+                // disable screen rotation just for convenience purpose
+                // TODO: Support screen rotation when saving a file
+                Utils.disableScreenRotation(this);
+            }
+        }
     }
 
     /**
@@ -1950,21 +1960,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
         } else if (intent.getAction() != null) {
-            if (intent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
-                // file picker intent
-                mReturnIntent = true;
-                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-            } else if (intent.getAction().equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-                // ringtone picker intent
-                mReturnIntent = true;
-                mRingtonePickerIntent = true;
-                Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
-            } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
-                // zip viewer intent
-                Uri uri = intent.getData();
-                zippath = uri.toString();
-                openZip(zippath);
-            }
+
+            checkForExternalIntent(intent);
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
