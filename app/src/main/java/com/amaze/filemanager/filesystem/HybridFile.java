@@ -558,14 +558,7 @@ public class HybridFile {
 
         switch (mode) {
             case SFTP:
-                return SshClientUtils.execute(new SFtpClientTemplate(path, false) {
-                    @Override
-                    public Long execute(SFTPClient client) throws IOException {
-                        Long retval = client.size(SshClientUtils.extractRemotePathFrom(path));
-                        client.close();
-                        return retval;
-                    }
-                });
+                return folderSize(AppConfig.getInstance());
             case SMB:
                 try {
                     size = FileUtils.folderSize(new SmbFile(path));
@@ -599,20 +592,28 @@ public class HybridFile {
 
         switch (mode){
             case SFTP:
-                return SshClientUtils.execute(new SshClientSessionTemplate(path) {
+                return SshClientUtils.execute(new SshClientTemplate(path, false) {
                     @Override
-                    public Long execute(Session session) throws IOException {
-                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
-                                SshClientUtils.extractRemotePathFrom(path)));
+                    public Long execute(SSHClient client) throws IOException {
+                        Session session = client.startSession();
+                        String remotePath = SshClientUtils.extractRemotePathFrom(path);
+                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"", remotePath));
 
                         String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
                         cmd.close();
-                        if(cmd.getExitStatus() == 0) {
-                            result = result.substring(0, result.indexOf('/') - 1).trim();
+                        session.close();
+                        result = result.substring(0, result.indexOf('/') - 1).trim();
+
+                        // It is possible du may still return valid value even getting permission problems,
+                        // so we check if result is a valid number.
+                        try {
                             return Long.parseLong(result);
-                        }
-                        else {
-                            return 0L;
+                        } catch (NumberFormatException whenParseFailed){
+                            Log.w(TAG, "Error running du, fallback to FileUtils.folderSizeSftp()");
+                            SFTPClient sftpClient = client.newSFTPClient();
+                            Long retval = FileUtils.folderSizeSftp(sftpClient, remotePath);
+                            sftpClient.close();
+                            return retval;
                         }
                     }
                 });
