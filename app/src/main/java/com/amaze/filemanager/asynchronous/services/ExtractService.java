@@ -21,7 +21,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,13 +30,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -67,14 +64,11 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
 
     Context context;
 
-    // list of data packages,// to initiate chart in process viewer fragment
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private ProgressHandler progressHandler;
-
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
     public static final String TAG_BROADCAST_EXTRACT_CANCEL = "excancel";
     public static final String KEY_PATH_EXTRACT = "extractpath";
+    public static final int ID_NOTIFICATION = 3987;
 
     @Override
     public void onCreate() {
@@ -94,7 +88,7 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
         progressHandler = new ProgressHandler(1, totalSize);
 
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
-            publishResults(startId, fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
+            publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false, false);
         });
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -109,7 +103,7 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
 
-        startForeground((notificationID=startId), mBuilder.build());
+        startForeground((notificationID = ID_NOTIFICATION), mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
@@ -138,57 +132,6 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
         public ExtractService getService() {
             // Return this instance of LocalService so clients can call public methods
             return ExtractService.this;
-        }
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    ProgressListener progressListener;
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
-                                long total, long done, int speed, boolean isCompleted) {
-        if (!progressHandler.getCancelled()) {
-            mBuilder.setContentTitle(getResources().getString(R.string.extracting));
-            progressPercent = ((float) done / total) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"
-                    + Formatter.formatFileSize(context, total));
-            int id1 = Integer.parseInt("123" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
-            if (progressPercent == 100 || total == 0) {
-                mBuilder.setContentTitle(getString(R.string.extract_complete));
-                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, total));
-                mBuilder.setProgress(100, 100, false);
-                mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult("", id1);
-            }
-
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, false, isCompleted);
-            putDataPackage(intent);
-
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isCompleted) progressListener.refresh();
-            }
-        } else publishCompletedResult(fileName, Integer.parseInt("123" + id));
-    }
-
-    public void publishCompletedResult(String a, int id1) {
-        try {
-            mNotifyManager.cancel(id1);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -604,35 +547,5 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
         // TODO Auto-generated method stub
         return mBinder;
     }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
-    }
-
 }
 

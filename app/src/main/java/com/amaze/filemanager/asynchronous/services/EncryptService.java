@@ -1,9 +1,7 @@
 package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,21 +10,18 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherProgressAbstract;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 
 import java.util.ArrayList;
@@ -43,24 +38,17 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
     public static final String TAG_CRYPT_MODE = "crypt_mode";   // ordinal of type of service
                                                                 // expected (encryption or decryption)
     public static final String TAG_BROADCAST_RESULT = "broadcast_result";
-
-    private static final int ID_NOTIFICATION = 27978;
-
     public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
+    public static final int ID_NOTIFICATION = 3627;
 
-    // list of data packages which contains progress
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
     private Context context;
     private IBinder mBinder = new LocalBinder();
-    private ProgressHandler progressHandler;
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
-    private OpenMode openMode;
     private String decryptPath;
     private HybridFileParcelable baseFile;
     private CryptEnum cryptEnum;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
-    private ProgressListener progressListener;
     private boolean broadcastResult = false;
 
     @Override
@@ -78,7 +66,6 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
         cryptEnum = CryptEnum.values()[intent.getIntExtra(TAG_CRYPT_MODE, CryptEnum.ENCRYPT.ordinal())];
         broadcastResult = intent.getBooleanExtra(TAG_BROADCAST_RESULT, false);
 
-        openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -102,7 +89,7 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
 
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
 
-        startForeground((notificationID=startId), mBuilder.build());
+        startForeground((notificationID = ID_NOTIFICATION), mBuilder.build());
 
         new BackgroundTask().execute();
 
@@ -124,7 +111,10 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
             else totalSize = baseFile.length(context);
 
             progressHandler = new ProgressHandler(1, totalSize);
-            progressHandler.setProgressListener(EncryptService.this::publishResults);
+            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
+                publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize,
+                        writtenSize, speed, false, cryptEnum==CryptEnum.ENCRYPT ? false : true);
+            });
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
             CopyDataParcelable dataPackage = new CopyDataParcelable(baseFile.getName(),
@@ -178,51 +168,6 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
                 sendBroadcast(intent);
             }
             stopSelf();
-        }
-    }
-
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long totalSize, long writtenSize, int speed) {
-
-        if (!progressHandler.getCancelled()) {
-
-            //notification
-            progressPercent = ((float) writtenSize/totalSize)*100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            int title = R.string.crypt_encrypting;
-            if (cryptEnum == CryptEnum.DECRYPT) title = R.string.crypt_decrypting;
-            mBuilder.setContentTitle(context.getResources().getString(title));
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
-                    writtenSize) + "/" +
-                    Formatter.formatFileSize(context, totalSize));
-
-            mNotifyManager.notify(ID_NOTIFICATION, mBuilder.build());
-            if (writtenSize == totalSize || totalSize == 0) {
-
-                mBuilder.setContentText("");
-                mBuilder.setOngoing(false);
-                mBuilder.setAutoCancel(true);
-                mNotifyManager.notify(ID_NOTIFICATION, mBuilder.build());
-                publishCompletedResult();
-            }
-
-            //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, cryptEnum==CryptEnum.ENCRYPT ? false : true, false);
-            putDataPackage(intent);
-            if(progressListener!=null) {
-                progressListener.onUpdate(intent);
-                if(false) progressListener.refresh();
-            }
-        } else publishCompletedResult();
-    }
-
-    public void publishCompletedResult(){
-        try {
-            mNotifyManager.cancel(ID_NOTIFICATION);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -302,40 +247,4 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
         }
     };
 
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-        void refresh();
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
-    }
 }
