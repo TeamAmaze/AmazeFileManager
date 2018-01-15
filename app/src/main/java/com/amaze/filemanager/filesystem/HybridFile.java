@@ -592,29 +592,10 @@ public class HybridFile {
 
         switch (mode){
             case SFTP:
-                return SshClientUtils.execute(new SshClientTemplate(path, false) {
+                return SshClientUtils.execute(new SFtpClientTemplate(path) {
                     @Override
-                    public Long execute(SSHClient client) throws IOException {
-                        Session session = client.startSession();
-                        String remotePath = SshClientUtils.extractRemotePathFrom(path);
-                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"", remotePath));
-
-                        String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
-                        cmd.close();
-                        session.close();
-                        result = result.substring(0, result.indexOf('/') - 1).trim();
-
-                        // It is possible du may still return valid value even getting permission problems,
-                        // so we check if result is a valid number.
-                        try {
-                            return Long.parseLong(result);
-                        } catch (NumberFormatException whenParseFailed){
-                            Log.w(TAG, "Error running du, fallback to FileUtils.folderSizeSftp()");
-                            SFTPClient sftpClient = client.newSFTPClient();
-                            Long retval = FileUtils.folderSizeSftp(sftpClient, remotePath);
-                            sftpClient.close();
-                            return retval;
-                        }
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(SshClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
