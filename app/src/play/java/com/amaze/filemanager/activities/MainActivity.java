@@ -2365,6 +2365,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
             @Override
             protected Boolean doInBackground(Void... params) {
+                boolean hasUpdatedDrawer = false;
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
                     do {
@@ -2383,10 +2384,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             case 2:
                                 // DRIVE
                                 try {
-
                                     CloudEntry cloudEntryGdrive = null;
                                     CloudEntry savedCloudEntryGdrive;
-
 
                                     GoogleDrive cloudStorageDrive = new GoogleDrive(getApplicationContext(),
                                             data.getString(1), "", CLOUD_AUTHENTICATOR_REDIRECT_URI, data.getString(2));
@@ -2405,17 +2404,15 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                                             cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
                                             cloudHandler.updateEntry(OpenMode.GDRIVE, cloudEntryGdrive);
                                         }
-
                                     } else {
-
                                         cloudStorageDrive.login();
                                         cloudEntryGdrive = new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
                                         cloudHandler.addEntry(cloudEntryGdrive);
                                     }
 
                                     dataUtils.addAccount(cloudStorageDrive);
+                                    hasUpdatedDrawer = true;
                                 } catch (CloudPluginException e) {
-
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
                                     deleteConnection(OpenMode.GDRIVE);
@@ -2436,7 +2433,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             case 3:
                                 // DROPBOX
                                 try {
-
                                     CloudEntry cloudEntryDropbox = null;
                                     CloudEntry savedCloudEntryDropbox;
 
@@ -2445,7 +2441,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
                                     if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
                                         // we already have the entry and saved state, get it
-
                                         try {
                                             cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData());
                                         } catch (ParseException e) {
@@ -2456,15 +2451,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                                             cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
                                             cloudHandler.updateEntry(OpenMode.DROPBOX, cloudEntryDropbox);
                                         }
-
                                     } else {
-
                                         cloudStorageDropbox.login();
                                         cloudEntryDropbox = new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
                                         cloudHandler.addEntry(cloudEntryDropbox);
                                     }
 
                                     dataUtils.addAccount(cloudStorageDropbox);
+                                    hasUpdatedDrawer = true;
                                 } catch (CloudPluginException e) {
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
@@ -2486,7 +2480,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             case 4:
                                 // BOX
                                 try {
-
                                     CloudEntry cloudEntryBox = null;
                                     CloudEntry savedCloudEntryBox;
 
@@ -2495,28 +2488,24 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
                                     if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
                                         // we already have the entry and saved state, get it
-
                                         try {
                                             cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                             // we need to persist data again
-
                                             cloudStorageBox.login();
                                             cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
                                             cloudHandler.updateEntry(OpenMode.BOX, cloudEntryBox);
                                         }
-
                                     } else {
-
                                         cloudStorageBox.login();
                                         cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
                                         cloudHandler.addEntry(cloudEntryBox);
                                     }
 
                                     dataUtils.addAccount(cloudStorageBox);
+                                    hasUpdatedDrawer = true;
                                 } catch (CloudPluginException e) {
-
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
                                     deleteConnection(OpenMode.BOX);
@@ -2537,7 +2526,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             case 5:
                                 // ONEDRIVE
                                 try {
-
                                     CloudEntry cloudEntryOnedrive = null;
                                     CloudEntry savedCloudEntryOnedrive;
 
@@ -2546,7 +2534,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
                                     if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
                                         // we already have the entry and saved state, get it
-
                                         try {
                                             cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData());
                                         } catch (ParseException e) {
@@ -2557,17 +2544,15 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                                             cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
                                             cloudHandler.updateEntry(OpenMode.ONEDRIVE, cloudEntryOnedrive);
                                         }
-
                                     } else {
-
                                         cloudStorageOnedrive.login();
                                         cloudEntryOnedrive = new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
                                         cloudHandler.addEntry(cloudEntryOnedrive);
                                     }
 
                                     dataUtils.addAccount(cloudStorageOnedrive);
+                                    hasUpdatedDrawer = true;
                                 } catch (CloudPluginException e) {
-
                                     e.printStackTrace();
                                     AppConfig.toast(MainActivity.this, getResources().getString(R.string.cloud_error_plugin));
                                     deleteConnection(OpenMode.ONEDRIVE);
@@ -2592,7 +2577,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         }
                     } while (data.moveToNext());
                 }
-                return true;
+                return hasUpdatedDrawer;
             }
 
             @Override
