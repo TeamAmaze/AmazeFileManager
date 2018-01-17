@@ -206,6 +206,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
 
             mFile = new HybridFileParcelable(Utils.sanitizeInput(getIntent().getData().getPath()));
+        } else {
+            Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         String fileName;
