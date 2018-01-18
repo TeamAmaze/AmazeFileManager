@@ -68,5 +68,10 @@ public class PreferencesConstants {
     public static final String PREFERENCE_HIDEMODE = "hidemode";
     public static final String PREFERENCE_VIEW = "view";
     public static final String PREFERENCE_NEED_TO_SET_HOME = "needtosethome";
+
+    /**
+     * The value is an int with values RANDOM_INDEX, CUSTOM_INDEX, NO_DATA or [0, ...]
+     */
+    public static final String PREFERENCE_COLOR_CONFIG = "color config";
     //END random preferences
 }

@@ -982,8 +982,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (getMainActivity().mRingtonePickerIntent) {
 
             Uri mediaStoreUri = MediaStoreHack.getUriFromFile(baseFile.getPath(), getActivity());
-            Log.d(getClass().getSimpleName(), mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(new File(baseFile.getPath())));
-            intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(new File(baseFile.getPath())));
+            Log.d(getClass().getSimpleName(), mediaStoreUri.toString() + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+            intent.setDataAndType(mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
             getActivity().setResult(FragmentActivity.RESULT_OK, intent);
             getActivity().finish();
@@ -1698,7 +1698,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         try {
                             Uri uri = Uri.parse(Streamer.URL + Uri.fromFile(new File(Uri.parse(smbFile.getPath()).getPath())).getEncodedPath());
                             Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setDataAndType(uri, MimeTypes.getMimeType(new File(smbFile.getPath())));
+                            i.setDataAndType(uri, MimeTypes.getMimeType(smbFile.getPath(), smbFile.isDirectory()));
                             PackageManager packageManager = activity.getPackageManager();
                             List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                             if (resInfos != null && resInfos.size() > 0)
@@ -1707,7 +1707,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 Toast.makeText(activity,
                                         activity.getResources().getString(R.string.smb_launch_error),
                                         Toast.LENGTH_SHORT).show();
-                        } catch (ActivityNotFoundException e) {
+                        } catch (ActivityNotFoundException | SmbException e) {
                             e.printStackTrace();
                         }
                     });

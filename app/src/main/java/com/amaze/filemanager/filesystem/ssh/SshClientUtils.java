@@ -244,7 +244,7 @@ public abstract class SshClientUtils
                         File file = new File(SshClientUtils.extractRemotePathFrom(baseFile.getPath()));
                         Uri uri = Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setDataAndType(uri, MimeTypes.getMimeType(file));
+                        i.setDataAndType(uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0)
