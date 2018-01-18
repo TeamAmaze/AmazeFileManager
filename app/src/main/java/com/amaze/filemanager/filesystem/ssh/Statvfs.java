@@ -119,7 +119,7 @@ public class Statvfs
         public final Long availableFileInodes;
 
         // f_fsid
-        public final Long fileSystemId;
+        public final BigInteger fileSystemId;
 
         // f_flag
         public final Long fileSystemFlag;
@@ -145,7 +145,7 @@ public class Statvfs
             totalFileInodes = mResponse.readUInt64();
             freeFileInodes = mResponse.readUInt64();
             availableFileInodes = mResponse.readUInt64();
-            fileSystemId = mResponse.readUInt64();
+            fileSystemId = mResponse.readUInt64AsBigInteger();
             fileSystemFlag = mResponse.readUInt64();
             filenameMaxLength = mResponse.readUInt64();
         }
