@@ -29,7 +29,7 @@ public class ServiceWatcherUtil {
     private ProgressHandler progressHandler;
     long totalSize;
     private Runnable runnable;
-    private ServiceWatcherInteractionInterface.STATE STATE;
+    private int STATE;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class ServiceWatcherUtil {
                 }
 
                 if (POSITION == progressHandler.getWrittenSize() &&
-                        (STATE != ServiceWatcherInteractionInterface.STATE.HALTED
+                        (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
                         && ++HALT_COUNTER>5)) {
 
                     if (interactionInterface.getServiceType() instanceof EncryptService) {
@@ -93,13 +93,13 @@ public class ServiceWatcherUtil {
                     }
 
                     HALT_COUNTER = 0;
-                    STATE = ServiceWatcherInteractionInterface.STATE.HALTED;
+                    STATE = ServiceWatcherInteractionInterface.STATE_HALTED;
                     interactionInterface.progressHalted();
                 } else if (POSITION != progressHandler.getWrittenSize()) {
 
-                    if (STATE == ServiceWatcherInteractionInterface.STATE.HALTED) {
+                    if (STATE == ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                        STATE = ServiceWatcherInteractionInterface.STATE.RESUMED;
+                        STATE = ServiceWatcherInteractionInterface.STATE_RESUMED;
                         interactionInterface.progressResumed();
                     } else {
 
@@ -216,10 +216,8 @@ public class ServiceWatcherUtil {
 
     public interface ServiceWatcherInteractionInterface {
 
-        enum STATE {
-            HALTED,
-            RESUMED
-        }
+        int STATE_HALTED = 0;
+        int STATE_RESUMED = 1;
 
         /**
          * Progress has been halted for some reason
