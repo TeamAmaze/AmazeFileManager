@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -8,11 +8,10 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
-import com.amaze.filemanager.asynchronous.services.ExtractService;
-import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.ServiceWatcherUtil;
 
 import java.util.ArrayList;
 
