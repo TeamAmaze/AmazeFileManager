@@ -12,7 +12,7 @@
         android:paddingBottom="6dp"
         android:orientation="vertical">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -22,13 +22,15 @@
             android:foregroundGravity="fill"
             >
 
-            <ImageView
+            <com.amaze.filemanager.ui.views.RoundedImageView
                 android:id="@+id/generic_icon"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/icon"
                 android:scaleType="centerInside"
-                android:contentDescription="@null" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+
             <ImageView
                 android:id="@+id/icon_thumb"
                 android:layout_width="match_parent"
@@ -63,7 +65,7 @@
                 android:textAlignment="viewEnd"
                 style="@android:style/TextAppearance.Small" />
 
-        </FrameLayout>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
