@@ -39,7 +39,6 @@ import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -570,7 +569,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         if (rowItem.isDirectory) {
                             gradientDrawable.setColor(iconSkinColor);
                         } else {
-                            ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(new File(rowItem.desc)),
+                            ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.desc, rowItem.isDirectory),
                                     gradientDrawable, iconSkinColor);
                         }
                     } else gradientDrawable.setColor(iconSkinColor);
