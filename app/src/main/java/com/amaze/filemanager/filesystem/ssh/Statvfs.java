@@ -95,10 +95,10 @@ public class Statvfs
          */
 
         // f_bsize
-        public final Long fileSystemBlockSize;
+        public final Integer fileSystemBlockSize;
 
         // f_frsize
-        public final Long fundermentalFileSystemBlockSize;
+        public final Integer fundamentalFileSystemBlockSize;
 
         // f_blocks
         public final Long fileSystemBlocks;
@@ -122,10 +122,10 @@ public class Statvfs
         public final BigInteger fileSystemId;
 
         // f_flag
-        public final Long fileSystemFlag;
+        public final Integer fileSystemFlag;
 
         // f_namemax
-        public final Long filenameMaxLength;
+        public final Integer filenameMaxLength;
 
         public Response(net.schmizz.sshj.sftp.Response response) throws SFTPException, Buffer.BufferException
         {
@@ -137,8 +137,8 @@ public class Statvfs
 
             mResponse = response;
 
-            fileSystemBlockSize = mResponse.readUInt32();
-            fundermentalFileSystemBlockSize = mResponse.readUInt64();
+            fileSystemBlockSize = Long.valueOf(mResponse.readUInt32()).intValue();
+            fundamentalFileSystemBlockSize = Long.valueOf(mResponse.readUInt64()).intValue();
             fileSystemBlocks = mResponse.readUInt64();
             freeFileSystemBlocks = mResponse.readUInt64();
             availableFileSystemBlocks = mResponse.readUInt64();
@@ -146,8 +146,8 @@ public class Statvfs
             freeFileInodes = mResponse.readUInt64();
             availableFileInodes = mResponse.readUInt64();
             fileSystemId = mResponse.readUInt64AsBigInteger();
-            fileSystemFlag = mResponse.readUInt64();
-            filenameMaxLength = mResponse.readUInt64();
+            fileSystemFlag = Long.valueOf(mResponse.readUInt64()).intValue();
+            filenameMaxLength = Long.valueOf(mResponse.readUInt64()).intValue();
         }
 
         /**
