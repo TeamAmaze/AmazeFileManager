@@ -87,15 +87,6 @@ public class Statvfs
 
         public final net.schmizz.sshj.sftp.Response mResponse;
 
-        /*
-            Regarding choice of number types:
-
-            - fileSystemFlag is only 0x0, 0x1 and 0x2
-            - filenameMaxLength should be well within Long.VALUE_MAX
-
-            Others, can use BigInteger to prepare for the ever increasing disk size for years to come.
-         */
-
         // f_bsize
         public final int fileSystemBlockSize;
 
@@ -121,7 +112,7 @@ public class Statvfs
         public final long availableFileInodes;
 
         // f_fsid
-        public final BigInteger fileSystemId;
+        private final long fileSystemId;
 
         // f_flag
         public final int fileSystemFlag;
@@ -148,7 +139,7 @@ public class Statvfs
             totalFileInodes = mResponse.readUInt64();
             freeFileInodes = mResponse.readUInt64();
             availableFileInodes = mResponse.readUInt64();
-            fileSystemId = mResponse.readUInt64AsBigInteger();
+            fileSystemId = readUInt64FromBuffer(mResponse);
             fileSystemFlag = (int) mResponse.readUInt64();
             filenameMaxLength = (int) mResponse.readUInt64();
         }
@@ -179,6 +170,42 @@ public class Statvfs
             return availableFileSystemBlocks * fileSystemBlockSize;
         }
 
+        /**
+         * Returns fileSystemId wrapped in {@link BigInteger}.
+         *
+         * @return {@link BigInteger} version of fileSystemId
+         */
+        public BigInteger getFileSystemId()
+        {
+            return BigInteger.valueOf(fileSystemId);
+        }
+
+        /**
+         * Returns fileSystemId as is.
+         *
+         * @return fileSystemId
+         */
+        public long getRawFileSystemId()
+        {
+            return fileSystemId;
+        }
+
+        /**
+         * Read an uint64 from the buffer. This workarounds sshj's original method to prevent
+         * exception thrown which calls for {@link BigInteger} to store negative {@link Long}s.
+         *
+         * Many thanks to Alexander--@github for the comments.
+         *
+         * @see {@link Buffer#readUInt64()}
+         * @param buffer
+         * @return
+         */
+        private long readUInt64FromBuffer(Buffer buffer) throws Buffer.BufferException
+        {
+            long uint64 = (buffer.readUInt32() << 32) + (buffer.readUInt32() & 0xffffffffL);
+            return uint64;
+        }
+
         @Override
         public String toString() {
             return new StringBuilder()
@@ -191,7 +218,7 @@ public class Statvfs
                     .append("totalFileInodes=").append(totalFileInodes).append(',')
                     .append("freeFileInodes=").append(freeFileInodes).append(',')
                     .append("availableFileInodes=").append(availableFileInodes).append(',')
-                    .append("fileSystemId=").append(fileSystemId).append(',')
+                    .append("fileSystemId=").append(getFileSystemId()).append(',')
                     .append("fileSystemFlag=").append(fileSystemFlag).append(',')
                     .append("filenameMaxLength=").append(filenameMaxLength)
                     .toString();
