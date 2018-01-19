@@ -83,6 +83,8 @@ public class Statvfs
      */
     public static class Response
     {
+        public final String mRemotePath;
+
         public final net.schmizz.sshj.sftp.Response mResponse;
 
         /*
@@ -127,7 +129,7 @@ public class Statvfs
         // f_namemax
         public final Integer filenameMaxLength;
 
-        public Response(net.schmizz.sshj.sftp.Response response) throws SFTPException, Buffer.BufferException
+        public Response(String remotePath, net.schmizz.sshj.sftp.Response response) throws SFTPException, Buffer.BufferException
         {
             response.ensurePacketTypeIs(PacketType.EXTENDED_REPLY);
 
@@ -135,6 +137,7 @@ public class Statvfs
                 throw new SFTPException("Bad response code: " + response.readStatusCode());
             }
 
+            mRemotePath = remotePath;
             mResponse = response;
 
             fileSystemBlockSize = Long.valueOf(mResponse.readUInt32()).intValue();
@@ -174,6 +177,24 @@ public class Statvfs
         public Long diskFreeSpace()
         {
             return availableFileSystemBlocks * fileSystemBlockSize;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder()
+                    .append("Response statvfs@openssh.com query for [").append(mRemotePath).append("], ")
+                    .append("fileSystemBlockSize=").append(fileSystemBlockSize).append(',')
+                    .append("fundamentalFileSystemBlockSize=").append(fundamentalFileSystemBlockSize).append(',')
+                    .append("fileSystemBlocks=").append(fileSystemBlocks).append(',')
+                    .append("freeFileSystemBlocks=").append(freeFileSystemBlocks).append(',')
+                    .append("availableFileSystemBlocks=").append(availableFileSystemBlocks).append(',')
+                    .append("totalFileInodes=").append(totalFileInodes).append(',')
+                    .append("freeFileInodes=").append(freeFileInodes).append(',')
+                    .append("availableFileInodes=").append(availableFileInodes).append(',')
+                    .append("fileSystemId=").append(fileSystemId).append(',')
+                    .append("fileSystemFlag=").append(fileSystemFlag).append(',')
+                    .append("filenameMaxLength=").append(filenameMaxLength)
+                    .toString();
         }
     }
 }

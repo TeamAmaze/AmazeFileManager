@@ -685,7 +685,8 @@ public class HybridFile {
                     @Override
                     public Long execute(@NonNull SFTPClient client) throws IOException {
                         try {
-                            Statvfs.Response response = new Statvfs.Response(client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                            Statvfs.Response response = new Statvfs.Response(path,
+                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
                             return response.diskFreeSpace();
                         } catch (SFTPException e) {
                             Log.e(TAG, "Error querying server", e);
@@ -739,7 +740,8 @@ public class HybridFile {
                     @Override
                     public Long execute(@NonNull SFTPClient client) throws IOException {
                         try {
-                            Statvfs.Response response = new Statvfs.Response(client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                            Statvfs.Response response = new Statvfs.Response(path,
+                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
                             return response.diskSize();
                         } catch (SFTPException e) {
                             Log.e(TAG, "Error querying server", e);
