@@ -97,37 +97,37 @@ public class Statvfs
          */
 
         // f_bsize
-        public final Integer fileSystemBlockSize;
+        public final int fileSystemBlockSize;
 
         // f_frsize
-        public final Integer fundamentalFileSystemBlockSize;
+        public final int fundamentalFileSystemBlockSize;
 
         // f_blocks
-        public final Long fileSystemBlocks;
+        public final long fileSystemBlocks;
 
         // f_bfree
-        public final Long freeFileSystemBlocks;
+        public final long freeFileSystemBlocks;
 
         // f_bavail
-        public final Long availableFileSystemBlocks;
+        public final long availableFileSystemBlocks;
 
         // f_files
-        public final Long totalFileInodes;
+        public final long totalFileInodes;
 
         // f_ffree
-        public final Long freeFileInodes;
+        public final long freeFileInodes;
 
         // f_favail
-        public final Long availableFileInodes;
+        public final long availableFileInodes;
 
         // f_fsid
         public final BigInteger fileSystemId;
 
         // f_flag
-        public final Integer fileSystemFlag;
+        public final int fileSystemFlag;
 
         // f_namemax
-        public final Integer filenameMaxLength;
+        public final int filenameMaxLength;
 
         public Response(String remotePath, net.schmizz.sshj.sftp.Response response) throws SFTPException, Buffer.BufferException
         {
@@ -140,8 +140,8 @@ public class Statvfs
             mRemotePath = remotePath;
             mResponse = response;
 
-            fileSystemBlockSize = Long.valueOf(mResponse.readUInt32()).intValue();
-            fundamentalFileSystemBlockSize = Long.valueOf(mResponse.readUInt64()).intValue();
+            fileSystemBlockSize = (int) mResponse.readUInt32();
+            fundamentalFileSystemBlockSize = (int) mResponse.readUInt64();
             fileSystemBlocks = mResponse.readUInt64();
             freeFileSystemBlocks = mResponse.readUInt64();
             availableFileSystemBlocks = mResponse.readUInt64();
@@ -149,8 +149,8 @@ public class Statvfs
             freeFileInodes = mResponse.readUInt64();
             availableFileInodes = mResponse.readUInt64();
             fileSystemId = mResponse.readUInt64AsBigInteger();
-            fileSystemFlag = Long.valueOf(mResponse.readUInt64()).intValue();
-            filenameMaxLength = Long.valueOf(mResponse.readUInt64()).intValue();
+            fileSystemFlag = (int) mResponse.readUInt64();
+            filenameMaxLength = (int) mResponse.readUInt64();
         }
 
         /**
@@ -161,7 +161,7 @@ public class Statvfs
          *
          * @return disk size in bytes
          */
-        public Long diskSize()
+        public long diskSize()
         {
             return fileSystemBlocks * fileSystemBlockSize;
         }
@@ -174,7 +174,7 @@ public class Statvfs
          *
          * @return disk free space in bytes
          */
-        public Long diskFreeSpace()
+        public long diskFreeSpace()
         {
             return availableFileSystemBlocks * fileSystemBlockSize;
         }
