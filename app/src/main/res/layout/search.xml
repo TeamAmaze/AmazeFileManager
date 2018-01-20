@@ -44,8 +44,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:id="@+id/editscroll"
-        android:layout_height="match_parent">
-    <EditText
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <EditText
             android:id="@+id/fname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
