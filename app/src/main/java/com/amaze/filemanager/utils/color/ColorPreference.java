@@ -41,7 +41,11 @@ public class ColorPreference {
             R.color.primary_brown,
             R.color.primary_grey_900,
             R.color.primary_blue_grey,
-            R.color.primary_teal_900
+            R.color.primary_teal_900,
+            R.color.accent_pink,
+            R.color.accent_amber,
+            R.color.accent_light_blue,
+            R.color.accent_light_green
     );
 
     private static final String TAG = "ColorPreference";
