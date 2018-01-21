@@ -1754,8 +1754,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             isDrawerLocked = false;
             initDrawerOpen = false;
         }
-        mDrawerLayout.post(() ->
-        {
+        mDrawerLayout.post(() -> {
             if (initDrawerOpen) {
                 mDrawerLayout.openDrawer(mDrawerLinear);
             } else {
