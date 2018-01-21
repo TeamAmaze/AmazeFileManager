@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Asombro</string>
+    <string name="app_name">Administrador de Archivos Amaze</string>
     <string name="drawer_open">Abrir panel de navegación</string>
     <string name="drawer_close">Cerrar panel de navegación</string>
     <string name="icon">icono</string>
@@ -43,6 +43,7 @@
     <string name="loading">Cargando&#8230;</string>
     <string name="file_empty">El fichero está vacío</string>
     <string name="error">Error</string>
+    <string name="searchresults">Resultados de buscar %s</string>
     <string name="rename">Renombrar</string>
     <string name="save">Guardar</string>
     <string name="bookmarksadded">Marcadores Añadidos</string>
@@ -123,6 +124,9 @@
     <string name="goback">Regresar</string>
     <string name="newfile">Nuevo archivo</string>
     <string name="nofiles">No hay archivos</string>
+    <string name="used">espacio usado</string>
+    <string name="used_by_others">usado por otros</string>
+    <string name="free">espacio libre</string>
     <string name="listview">Vista de lista</string>
     <string name="gridview">Vista de cuadrícula</string>
     <string name="permission">Permisos</string>
@@ -244,6 +248,7 @@
     <string name="images">Imágenes</string>
     <string name="clear">Limpiar</string>
     <string name="md5">MD5:</string>
+    <string name="total">Total:</string>
     <string name="calculating">calculando</string>
     <string name="sort">Ordenar</string>
     <string name="ascending">Ascendente</string>
@@ -306,6 +311,58 @@
     <string name="searchingdevices">Buscando dispositivos</string>
     <string name="use_custom_ip">Utilizar IP personalizada</string>
     <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Como acceder a una carpeta compartida desde Windows (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Activar Compartición de Archivos</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Abrir el Panel de Control, debajo de "Redes e Internet" seleccionar "Elegir
+                        grupo en el hogar y opciones de compartido" y seleccionar "Cambiar
+                        configuracion de uso compartido avanzado...". Activar las opciones de compartido
+                        de archivos e impresoras.\n\n
+                    </p>
+
+                    <li>
+                        <b>Opciones adicionales de comparticion de archivos</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Puede que quiera configurar las otras opciones avanzadas de compartido aquí. \n
+                        Por ejemplo, podria activar acceso a sus archivos sin contraseña si confia en
+                        todos los dispositivos en su red local. Una vez que el compatido de archivos
+                        e impresoras está activado puede abrir su navigador de archivos en su PC y
+                        hacer click derecho sobre la carpeta que desea compartir y seleccionar
+                        "Propiedades" y, luego, "Uso compartido" (pestaña), "Compartir...".\n\n
+                        </p>
+
+                    <li>
+                        <b>Ambos dispositivos deben estar en la misma red WiFi</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Esta característica hace que archivos esten disponibles en la red local,
+                        por lo que su PC o móvil deben estar conectados a la misma. No podrá
+                        acceder a sus archivos desde otras redes (incluyendo redes moviles).\n\n
+                    </p>
+
+                    <li>
+                        <b>Encontrar dirección IP</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Abra una consola de comandos. Ingrese "ipconfig". \n
+                        Debajo del adaptador de red, busque la sección "Puerta de enlace predeterminada"
+                        para obtener la IP de su enrutador (busque "Dirección IPv4" debajo de la
+                        sección con la IP de su PC).\n\n
+                    </p>
+
+                    <b>Ingrese los detalles el dialogo de conexión SMB</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
     <string name="share_limit">No se pueden compartir más de 100 archivos</string>
     <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
     <string name="opening">Abriendo...</string>
@@ -384,6 +441,14 @@
     <string name="clipboard_path_copy">Ruta copiada al portapapeles</string>
     <string name="service_timer">Tiempo transcurrido</string>
     <string name="please_wait">Por favor, espere</string>
+
+    <string name="cloud_connection">Conexión a la nube</string>
+    <string name="cloud_connection_new">Nueva conexión a la nube</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Obtener complemento para conectar a la nube</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
     <string name="no_applications">No hay aplicaciones</string>
     <string name="ftp_path">Directorio guardado</string>
@@ -412,9 +477,113 @@
     <string name="contributors_5_summary">Transición de color al barrer pestañas</string>
     <string name="contributors_6_summary">Servidor FTP</string>
     <string name="contributors_7_summary">Creando una pantalla de comandos interactiva</string>
+    <string name="connection_exists">La conexión ya existe</string>
+
+    <string name="crypt_encrypting">Encriptando</string>
+    <string name="crypt_decrypting">Desencriptando</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Encriptado</string>
+    <string name="crypt_decrypted">No encriptado</string>
+    <string name="crypt_encrypt">Encriptar</string>
+    <string name="crypt_decrypt">Desencriptar</string>
+    <string name="operation_fail_following">La operación falló para los siguientes archivos</string>
+    <string name="crypt_pref_master_password_title">Contraseña Maestra</string>
+    <string name="crypt_pref_master_password_summary">Establecer una contraseña maestra para la excriptación
+        Dejar vacio para remover.</string>
+    <string name="crypt_pref_fingerprint_title">Huella dactilar</string>
+    <string name="crypt_pref_fingerprint_summary">Usar huella dactilar para autenticar encriptación.</string>
+    <string name="crypt_fingerprint_no_permission">Permiso de huella dactilar faltante</string>
+    <string name="crypt_fingerprint_not_enrolled">Ninguna hulla dactilar ingresada</string>
+    <string name="crypt_fingerprint_no_security">No se encontró seguridad extra en el bloqueo de pantalla</string>
+    <string name="crypt_warning_key">Sepa que si cambie el patrón de contraseña de los Ajustes
+        no podrá desencriptar este archivo.</string>
+    <string name="warning_never_show">No informarme más</string>
+        <string name="warning_confirm">Entiendo</string>
+    <string name="crypt_encryption_fail">Falló al encriptar</string>
+    <string name="crypt_decryption_fail">Falló al desencriptar</string>
+    <string name="crypt_decryption_fail_password">Contraseña erronea!</string>
+    <string name="crypt_fingerprint_authenticate">Toca el sensor para continuar</string>
+    <string name="authenticate_password">Ingrese contraseña</string>
+
+    <string name="sidebar_preferences">Barra lateral</string>
+    <string name="sidebarfolders_title">Accesos directos de la barra lateral</string>
+    <string name="sidebarquickaccess_title">Accesos rapidos de la barra lateral</string>
+    <string name="showfolders_pref_title">Mostrar accesos directos</string>
+    <string name="showfolders_pref">Accesos directos</string>
+    <string name="showquickaccess_pref_title">Mostrar accesos rapidos</string>
+    <string name="showquickaccess_pref">Accesos rapidos</string>
+    <string name="create_shortcut">Crear acceso directo</string>
+    <string name="edit_shortcut">Editar acceso directo</string>
+    <string name="directory">Directorio</string>
+    <string name="questiondelete_shortcut">Eliminar acceso directo?</string>
+
+    <string name="cloud_error_plugin">La app "Amaze Cloud plug-in" no pudo ser encontrada. Por favor descargar del Play Store.</string>
+    <string name="cloud_error_failed_restart">Falló al cargar la conexión.
+       Por favor abra "Amaze Cloud pug-in" y reintente.</string>
+    <string name="cloud_remove">Desea eliminar esta conexión?</string>
+    <string name="cloud_fail_authenticate">Falló al autenticar</string>
+    <string name="cloud_share_copied">Link compartible copiado al portapapeles</string>
+    <!--copy_low_memory missing-->
+    <string name="cloud_token_lost">Se perdió la información de conexión, porfavor inicie seción de vuelta</string>
+    <string name="monofont">Tipografía monoespaciada</string>
+    <string name="showHeaders">Mostrar Encabezados</string>
+
     <!-- references to 'Some files weren't successfully %s -->
     <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-    <string name="item">Elemento</string>
-    <string name="items">Elementos</string>
+    <string name="noitems">No hay elemetos</string>
+    <string name="item">elemento</string>
+    <string name="items">elementos</string>
+
+    <string name="byte_singular">byte</string>
+    <string name="bytes">bytes</string>
     <!-- end of plurals -->
+
+    <string name="no_name">El archivo deberia tener un nombre</string>
+    <string name="add_item">Añadir Elemento</string>
+    <string name="failed_smb_decrypt_path">Falló al cargar la conexión SMB</string>
+    <string name="failed_cloud_new_connection">Falló al añadir una nueva conexión a la nube</string>
+    <string name="failed_cloud_api_key">Falló al autenticar el Cloud plugin</string>
+
+    <string name="local_inet_addr_error">Error obteniendo la direccion inet local</string>
+    <string name="intent_save_as">Guardar como&#8230;</string>
+    <string name="go">Ir</string>
+    <string name="advanced">Avanzado</string>
+    <string name="typeablepaths_title">Ruta personalizada</string>
+    <string name="typeablepaths_summary">Presiona la barra de ruta para insertar una ruta personalizada</string>
+    <string name="send_email_to">Enviar un email a</string>
+
+    <string name="text_editor">Configuración del editor de texto</string>
+    <string name="preference_newstack_title">Abrir archivos como una nueva tarea</string>
+    <string name="preference_newstack_summary">Te permite abrir archivos en tareas independientes. Accede a ellas desde la pantalla recientes del sistema.</string>
+    <string name="developers">Desarrolladores</string>
+    <string name="nobitcoinapp">Por favor instala un monedero de Bitcoins</string>
+    <string name="channelname_normal">Notificaciones de Amaze</string>
+    <string name="channeldescription_normal">Las notificaciones del explorador de archivos Amaze</string>
+
+    <string name="processing">Procesando&#8230;</string>
+    <string name="failed_no_connection">Falló al cargar archivos. Por favor chequee la conexión</string>
+
+    <string name="update">ACTUALIZAR</string>
+    <string name="scp_con">Conexión SCP/SFTP</string>
+    <string name="scp_port">Puerto</string>
+    <!-- ssh_host_key_verification_prompt missing-->
+    <string name="ssh_host_key_verification_prompt_title">Verificar Host</string>
+    <string name="ssh_select_pem_button">Llave Privada SSH</string>
+    <string name="ssh_pem_key_parse_error">No pude leer el PEM: %s</string>
+    <string name="password_unchanged">(no modificado)</string>
+    <string name="ssh_authentication_failure_password">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y contraseña.</string>
+    <string name="ssh_authentication_failure_key">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y la llave de privada.</string>
+    <string name="ssh_connect_failed">No se pudo conectar a %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">ADVERTECIA: LA IDENTIFICACIÓN DEL HOST REMOTO A CAMBIADO!</string>
+    <!-- ssh_connect_failed_host_key_changed_message missing-->
+    <string name="ssh_key_prompt_passphrase">Por favor ingrese la frase de contraseña.</string>
+    <string name="addshortcut_not_supported_by_launcher">No es posible la creación de accesos directos en su lanzador de apps.</string>
+
+    <string name="selectcolorconfig">Selccione la configuración de color</string>
+    <string name="customize">Personalizar</string>
+    <string name="custom">Personalizado</string>
+    <string name="preselectedconfigs_title">Configuraciones preseleccionadas</string>
+    <string name="orange">Naranja</string>
+    <string name="blue">Azul</string>
+    <string name="green">Verde</string>
 </resources>
