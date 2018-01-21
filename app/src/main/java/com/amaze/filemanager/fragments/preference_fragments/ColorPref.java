@@ -135,7 +135,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                                 @Override
                                 public void onNeutral(MaterialDialog dialog) {
                                     super.onNeutral(dialog);
-                                    if (activity != null) activity.setChanged();
+                                    if (activity != null) activity.setRestartActivity();
                                     activity.getColorPreference()
                                             .setRes(usage, usage.getDefaultColor())
                                             .saveToPreferences(sharedPref);
@@ -172,7 +172,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
     }
 
     private void loadSection0() {
-        if(((PreferencesActivity) getActivity()).getChanged()) {
+        if(((PreferencesActivity) getActivity()).getRestartActivity()) {
             ((PreferencesActivity) getActivity()).restartActivity(getActivity());
         }
 
@@ -189,7 +189,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         invalidateColorPreference(selectedColors);
         selectedColors.setColorPreference(activity.getColorPreference(), activity.getAppTheme());
         selectedColors.setListener(() -> {
-            if (activity != null) activity.setChanged();
+            if (activity != null) activity.setRestartActivity();
             checkCustomization();
             invalidateEverything();
 
