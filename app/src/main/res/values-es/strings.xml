@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources>
     <string name="app_name">Administrador de Archivos Amaze</string>
     <string name="drawer_open">Abrir panel de navegación</string>
     <string name="drawer_close">Cerrar panel de navegación</string>
@@ -48,11 +48,12 @@
     <string name="save">Guardar</string>
     <string name="bookmarksadded">Marcadores Añadidos</string>
     <string name="fileexist">Ya existe un archivo con el mismo nombre </string>
-    <string name="name">Nombre </string>
-    <string name="date">Fecha: </string>
+    <string name="name">Nombre</string>
+    <string name="date">Fecha</string>
     <string name="location">Ubicado en: </string>
     <string name="size_capitalized">Tamaño</string>
-    <string name="enterzipname">Introducir nombre del Zip</string>
+    <string name="size">tamaño de la carpeta</string>
+    <string name="enterzipname">Introducir el nombre del ficero zip</string>
     <string name="noappfound">No se encontró una aplicación para abrir este archivo</string>
     <string name="copying">Copiando</string>
     <string name="moving">Moviendo</string>
@@ -69,18 +70,18 @@
     <string name="extract">Extraer</string>
     <string name="compress">Comprimir</string>
     <string name="yes">Sí</string>
-    <string name="no">no</string>
+    <string name="no">No</string>
     <string name="dialog_delete_category_directories">Directorios</string>
     <string name="dialog_delete_category_files">Archivos</string>
     <string name="dialog_delete_disclaimer">¿De verdad quiere eliminar los siguientes archivos?</string>
-    <string name="dialog_delete_title">Confirmar</string>
+    <string name="dialog_delete_title">¿Eliminar irreversiblemente?</string>
     <string name="deleting">Eliminando</string>
-    <string name="questionset">¿Quieres establecer la ruta actual como base para esta pestaña?</string>
-    <string name="directorysort">Modo de ordenación del directorio</string>
+    <string name="questionset">¿Quieres establecer la ruta actual como ruta de inicio para esta pestaña?</string>
+    <string name="directorysort">Modo de ordenado del directorio</string>
     <string name="sortby">Ordenar por</string>
     <string name="theme">Tema</string>
-    <string name="random">Piel Aleatoria</string>
-    <string name="random_summary">Establece tema al azar al iniciar</string>
+    <string name="random">Colores Aleatorios</string>
+    <string name="random_summary">Usa un esquema de colores al azar al iniciar</string>
     <string name="colorize">Colorear Iconos</string>
     <string name="colorize_summary">Establece un color diferente al tema para algunos iconos. No sobrescribe la preferencia del color para los iconos de los directorios.</string>
     <string name="home">Inicio</string>
@@ -88,23 +89,24 @@
     <string name="history">Historial</string>
     <string name="copy">Copiar</string>
     <string name="rootmode">Explorador Root</string>
-    <string name="rootmodesummary">Para el dispositivos root solamente. Activar solo si estas seguro de ello.</string>
-    <string name="rootfailure">Acceso Root no concedido</string>
+    <string name="rootmodesummary">Para el dispositivos rooteados solamente. Activar solo si esta seguro.</string>
+    <string name="rootfailure">Acceso root no concedido</string>
     <string name="selectall">Seleccionar todo</string>
     <string name="delete">Borrar</string>
-    <string name="setashome"> Establecer como carpeta principal</string>
+    <string name="setashome"> Establecer como directorio de inicio</string>
     <!-- New -->
     <!-- Array -->
     <!-- UI -->
     <!-- Theme -->
     <string name="light">Claro</string>
     <string name="dark">Oscuro</string>
-    <string name="daytime">Durante el día</string>
+    <string name="daytime">De acuerdo a la hora</string>
+    <string name="black">Negro (para AMOLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Carpetas primero</string>
     <string name="filesOnTop">Archivos primero</string>
-    <string name="noneOnTop">Ninguno encima</string>
+    <string name="noneOnTop">Mezclados</string>
     <!--SortBy-->
     <string name="sortName">Nombre</string>
     <string name="lastModified">Última modificación</string>
@@ -114,10 +116,11 @@
     <string name="pick_a_file">Escoja un archivo</string>
     <string name="process_viewer">Visor de procesos</string>
     <string name="in_safe">Espacio insuficiente</string>
-    <string name="no_file_overwrite">No se ha sobreescrito el archivo</string>
+    <string name="no_file_overwrite">No se han sobreescrito archivos</string>
     <string name="skip">Saltar</string>
     <string name="overwrite">Sobreescribir</string>
     <string name="not_allowed">No permitido</string>
+    <string name="searching">Buscando %s</string>
     <string name="done">Hecho</string>
     <string name="set">Ajustar</string>
     <string name="enablerootmde">Activar modo Root</string>
@@ -132,7 +135,7 @@
     <string name="permission">Permisos</string>
     <string name="hide">Ocultar</string>
     <string name="exit">Salir</string>
-    <string name="doforall">Aplicar para todos los elementos</string>
+    <string name="doforall">Aplicar a todos los elementos</string>
     <string name="gridcolumnno">Número de columnas en la vista de cuadrícula</string>
     <string name="setRandom">Los cambios tendrán lugar después de reiniciar la aplicación</string>
     <string name="authors">Autores</string>
@@ -143,14 +146,14 @@
     <string name="thumbSummary">Mostrar miniaturas de aplicaciones e imágenes</string>
     <string name="thumb">Mostrar miniaturas</string>
     <string name="hidden">Mostrar archivos y carpetas ocultos</string>
-    <string name="lastModifiedSummary">Mostrar la fecha y hora en que el archivo fue modificado por última vez</string>
+    <string name="lastModifiedSummary">Mostrar fecha y hora de la última modificación</string>
     <string name="lastModifiedPref">Mostrar la última modificación</string>
     <string name="sizePrefSummary">Mostrar tamaño de los archivos y el número de elementos de las carpetas</string>
     <string name="sizePref">Mostrar Tamaños</string>
     <string name="miscellaneous">Otros</string>
-    <string name="rootPrefSummary">Mostrar permisos de archivos y carpetas</string>
+    <string name="rootPrefSummary">Mostrar sus permisos sobre archivos y carpetas</string>
     <string name="rootPref">Mostrar permisos</string>
-    <string name="aboutFileManager">Acerca de Amaze File Manager</string>
+    <string name="aboutFileManager">Acerca de el Administrador de Archivos Amaze</string>
     <string name="version">Versión</string>
     <string name="rate">Calificar la aplicacion</string>
     <string name="license">Licencias de código abierto</string>
@@ -160,20 +163,20 @@
     <string name="rootdirectory">Raíz</string>
     <string name="addshortcut">Añadir acceso directo</string>
     <string name="unsavedchanges">Cambios sin guardar</string>
-    <string name="unsavedchangesdesc">Tienes cambios sin guardar, ¿quieres guardarlos antes de salir?</string>
+    <string name="unsavedchangesdesc">Tiene cambios sin guardar ¿quiere guardarlos antes de salir?</string>
     <string name="saving">Guardando</string>
-    <string name="packageinstaller">Paquete de instalación</string>
+    <string name="packageinstaller">Instalador de Paquetes</string>
     <string name="view">Vista</string>
     <string name="install">Instalar</string>
     <string name="archive">Archivador</string>
-    <string name="archtext">El fichero es  un archivador. ¿Qué le gustaría hacer?</string>
+    <string name="archtext">Este es un archivador. ¿Qué le gustaría hacer?</string>
     <string name="pitext">El archivo es un paquete de instalación. ¿Qué le gustaría hacer?</string>
     <string name="xda_title">Hilo en XDA</string>
-    <string name="xda_summary">Q&amp;A, ayuda y resolución de problemas</string>
-    <string name="circularimages">Usar iconos para imágenes y vídeos</string>
+    <string name="xda_summary">Preguntas respondidas, ayuda y resolución de problemas</string>
+    <string name="circularimages">Usar iconos circulares para imágenes y vídeos</string>
     <string name="circularicons">Usar iconos circulares</string>
     <string name="back_title">Navegación hacia atrás</string>
-    <string name="back_summary">Habilitar botón personalizado para retroceder en la parte superior de la lista</string>
+    <string name="back_summary">Habilitar item para acceder a la carpeta anterior en la lista de archivos</string>
     <string name="details">Detalles</string>
     <string name="translators">Traductores</string>
     <string name="german_translation_title">Alemán</string>
@@ -195,14 +198,15 @@
     <string name="vietnamese_translation_title">Vietnamita</string>
     <string name="japanese_translation_title">Japones</string>
     <string name="tamil_translation_title">Tamil</string>
+
     <string name="zip_viewer">Visor de ZIP</string>
     <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
     <string name="warning">Precaución</string>
     <string name="donate">Donar</string>
-    <string name="archive_preferences">Archivadores</string>
+    <string name="archive_preferences">Preferencias de los archivadores</string>
     <string name="archive_extract_folder">Carpeta donde extraer los archivadores</string>
     <string name="zip_create_folder">Carpeta para crear ZIPs</string>
-    <string name="archive_summary">Los ficheros del archivador se extraerán en esta carpeta. El valor por defecto es el directorio donde se encuentre el archivador</string>
+    <string name="archive_summary">Los archivos del archivador se extraerán en esta carpeta. El valor por defecto es el directorio donde se encuentre el archivador</string>
     <string name="zip_summary">Los nuevos archivos ZIP se crearán en esta carpeta. El valor por defecto es el directorio donde los ficheros se encuentran.</string>
     <string name="openas">Abrir como</string>
     <string name="text">Texto</string>
@@ -217,9 +221,10 @@
     <string name="database">Base de datos</string>
     <string name="colourednavigation">Barra de navegación coloreada</string>
     <string name="colourednavigationsum">Establece si la barra de navegación del sistema se colorea en función del tema</string>
+
     <string name="color_title">Color</string>
     <string name="color_summary">Establecer el color de varios componentes gráficos</string>
-    <string name="primary_color_title">Color principal</string>
+    <string name="primary_color_title">Color primario (pestaña izquierda)</string>
     <string name="primary_color_summary">Establecer color para grande elementos gráficos</string>
     <string name="accent_color_title">Color de énfasis</string>
     <string name="accent_color_summary">Establecer color del botón flotante y otros elementos gráficos</string>
@@ -241,7 +246,7 @@
     <string name="anonymous">Anónimo</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Almacenamiento externo</string>
-    <string name="folders">Directorios</string>
+    <string name="folders">Carpetas</string>
     <string name="videos">Vídeos</string>
     <string name="apks">APKs</string>
     <string name="documents">Documentos</string>
@@ -281,8 +286,9 @@
     <string name="advanced_search">Búsqueda avanzada</string>
     <string name="regular_expression">Expresión regular</string>
     <string name="regular_expression_summary">Buscar usando una expresión regular de BASH</string>
-    <string name="match_content">Igualar contenido</string>
-    <string name="match_content_summary">Si se activa, las expresiones regulares se aplicarán al completo del nombre del archivo;         si no, se buscarán ocurrencias.</string>
+    <string name="match_content">Buscar contenido identico</string>
+    <string name="match_content_summary">Si se activa, las expresiones regulares se aplicarán al completo del nombre del archivo;
+        si no, se buscarán ocurrencias.</string>
     <string name="start_ftp">Iniciar</string>
     <string name="stop_ftp">Parar</string>
     <string name="ftp_status_running">Funcionando</string>
@@ -296,7 +302,7 @@
     <string name="ftp_notif_stop_server">PARAR</string>
     <string name="ftp_port_edit_menu_title">Elija el puerto FTP</string>
     <string name="ftp_port_change_success">Puerto FTB cambiado con éxito</string>
-    <string name="ftp_port_change_error_invalid">Numero de puerto seleccionado no valido</string>
+    <string name="ftp_port_change_error_invalid">Numero de puerto invalido</string>
     <string name="primary_two_title">Color primario (pestaña derecha)</string>
     <string name="primary_two_summary">Establecer el color para los elementos de la interfaz de usuario de la pestaña derecha</string>
     <string name="g_plus">Google Plus</string>
@@ -304,7 +310,7 @@
     <string name="report_bugs_title">Reportar de errores</string>
     <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
     <string name="translate_title">Traducir</string>
-    <string name="translate_summary">Asombro</string>
+    <string name="translate_summary">Traducir Amaze a tu idioma</string>
     <string name="g_plus_community_summary">Participar en pruebas beta y debates relacionados con el desarrollo</string>
     <string name="easter_egg_title">Modo de estudio</string>
     <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
@@ -365,12 +371,13 @@
     </string>
     <string name="share_limit">No se pueden compartir más de 100 archivos</string>
     <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
-    <string name="opening">Abriendo...</string>
+    <string name="opening">Abriendo…</string>
     <string name="information">Información</string>
     <!-- reference to file accessed date -->
-    <string name="accessed">Accedido</string>
+    <string name="accessed">Se ingresó</string>
     <!-- reference to file modified date -->
     <string name="modified">Modificado</string>
+
     <string name="title">Título</string>
     <string name="artist">Artista</string>
     <string name="album">Álbum</string>
@@ -387,8 +394,8 @@
     <string name="frame_rate">Frecuencia de imagen</string>
     <string name="image_type">Tipo de imagen</string>
     <string name="width">Ancho</string>
-    <string name="height">Altura</string>
-    <string name="date_modified">Fecha modificada</string>
+    <string name="height">Alto</string>
+    <string name="date_modified">Fecha de modificación</string>
     <string name="software">Software</string>
     <string name="creator">Autor</string>
     <string name="camera_brand">Marca de cámara</string>
@@ -410,20 +417,21 @@
     <string name="optimized">Optimizado</string>
     <string name="security">Seguridad</string>
     <string name="paper_size">Tamaño del papel</string>
+
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Algunos archivos no fueron correctamente %s</string>
-    <string name="copied">copiado</string>
-    <string name="moved">movido</string>
+    <string name="copied">copiados</string>
+    <string name="moved">movidos</string>
     <string name="copy_complete">Copia completada</string>
     <string name="waiting_title">Esperando</string>
-    <string name="waiting_content">A la espera de completar la operación</string>
+    <string name="waiting_content">Esperando que la operación termine</string>
     <string name="extract_complete">Extracción completada</string>
     <string name="compression_complete">Compresión completada</string>
     <string name="compressing">Comprimiendo</string>
     <string name="cancelled">Cancelado</string>
     <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Escrito</string>
-    <string name="out_of">fuera de</string>
+    <string name="out_of">de</string>
     <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">de</string>
     <string name="processing_file">Procesando el archivo</string>
@@ -431,8 +439,8 @@
     <string name="smb_launch_error">Necesitará copiar este archivo al almacenamiento para abrirlo</string>
     <string name="error_file_not_found">Error: Archivo no encontrado</string>
     <string name="error_io">Error de E/S</string>
-    <string name="medium_text">Texto medio</string>
-    <string name="permission_read">Leido</string>
+    <string name="medium_text">Texto intermedio</string>
+    <string name="permission_read">Leído</string>
     <string name="permission_write">Escribir</string>
     <string name="permission_execute">Ejecutar</string>
     <string name="permission_owner">Propietario</string>
@@ -450,23 +458,25 @@
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obtener complemento para conectar a la nube</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
     <string name="no_applications">No hay aplicaciones</string>
-    <string name="ftp_path">Directorio guardado</string>
+    <string name="ftp_path">Directorio compartido</string>
     <string name="ftp_path_hint">Ruta a la raíz del directorio para compartir</string>
     <string name="change">Cambio</string>
     <string name="unknown_error">Uyyy, algo ha salido mal!</string>
+
     <string name="ftp_path_change_success">Directorio FTP cambiado correctamente</string>
     <string name="ftp_path_change_error_invalid">Ruta inválida</string>
     <string name="ftp_status_no_connection">No hay conexión</string>
     <string name="ftp_status_secure_connection">Conexión segura</string>
     <string name="ftp_status_title">Estado</string>
     <string name="ftp_port">Puerto</string>
-    <string name="ftp_login">Entrar</string>
+    <string name="ftp_login">Iniciar sesión</string>
     <string name="field_empty">El campo no puede estar vacio</string>
     <string name="ftp_timeout">Tiempo de inactividad</string>
     <string name="ftp_seconds">Segundos</string>
     <string name="intellihide_toolbar_title">Barra de herramientas Intellihide</string>
-    <string name="intellihide_toolbar_summary">Barra de herramientas que se oculta automáticamente mientas se desplaza</string>
+    <string name="intellihide_toolbar_summary">Barra de herramientas que se oculta automáticamente al desplaza</string>
     <string name="hash_sha256">SHA-256</string>
     <!-- references 'name/size/location/hash' copied to clipboard -->
     <string name="properties_copied_clipboard">copiado al portapapeles</string>
@@ -474,9 +484,9 @@
     <string name="contributors_2_summary">Iconos y banners</string>
     <string name="contributors_3_summary">Motor de tema</string>
     <string name="contributors_4_summary">Sombra detrás de FAB</string>
-    <string name="contributors_5_summary">Transición de color al barrer pestañas</string>
+    <string name="contributors_5_summary">Transición de color al moverse entre pestañas</string>
     <string name="contributors_6_summary">Servidor FTP</string>
-    <string name="contributors_7_summary">Creando una pantalla de comandos interactiva</string>
+    <string name="contributors_7_summary">Pantalla de comandos interactiva</string>
     <string name="connection_exists">La conexión ya existe</string>
 
     <string name="crypt_encrypting">Encriptando</string>
@@ -545,7 +555,7 @@
     <string name="failed_cloud_api_key">Falló al autenticar el Cloud plugin</string>
 
     <string name="local_inet_addr_error">Error obteniendo la direccion inet local</string>
-    <string name="intent_save_as">Guardar como&#8230;</string>
+    <string name="intent_save_as">Guardar como…</string>
     <string name="go">Ir</string>
     <string name="advanced">Avanzado</string>
     <string name="typeablepaths_title">Ruta personalizada</string>
@@ -586,4 +596,5 @@
     <string name="orange">Naranja</string>
     <string name="blue">Azul</string>
     <string name="green">Verde</string>
+    <string name="folderfilecount">%1$d carpetas y %2$d archivos</string>
 </resources>
