@@ -119,8 +119,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
 
-        disableButtonIfTitleEmpty(editText1, dialog);
-        disableButtonIfNotPath(editText2, dialog);
+        disableButtonIfNotValid(editText1, editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(new View.OnClickListener() {
@@ -179,8 +178,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setEnabled(FileUtils.isPathAccesible(editText2.getText().toString(), sharedPrefs));
 
-        disableButtonIfTitleEmpty(editText1, dialog);
-        disableButtonIfNotPath(editText2, dialog);
+        disableButtonIfNotValid(editText1, editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(new View.OnClickListener() {
@@ -257,22 +255,27 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         dialog.show();
     }
 
-    private void disableButtonIfNotPath(EditText path, final MaterialDialog dialog) {
+    private void disableButtonIfNotValid(EditText title, EditText path, final MaterialDialog dialog) {
         path.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(FileUtils.isPathAccesible(s.toString(), sharedPrefs));
+                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(
+                        isShortcutValid(title.getEditableText(), s));
             }
         });
-    }
-
-    private void disableButtonIfTitleEmpty(final EditText title, final MaterialDialog dialog) {
+    
         title.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(title.length() > 0);
+                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(
+                    isShortcutValid(s, path.getEditableText()));
             }
         });
+    }
+    
+    private boolean isShortcutValid(Editable title, Editable path) {
+        boolean isPath = FileUtils.isPathAccesible(path.toString(), sharedPrefs);
+        boolean hasTitle = title.length() > 0;
+        return isPath && hasTitle;
     }
 }
