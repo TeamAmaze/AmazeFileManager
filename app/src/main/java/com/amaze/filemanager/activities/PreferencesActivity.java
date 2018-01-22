@@ -62,7 +62,7 @@ public class PreferencesActivity extends ThemedActivity {
     public static final int QUICKACCESS_PREFERENCE = 3;
     public static final int ADVANCEDSEARCH_PREFERENCE = 4;
 
-    private boolean changed = false;
+    private boolean restartActivity = false;
     //The preference fragment currently selected
     private int selectedItem = 0;
 
@@ -103,7 +103,7 @@ public class PreferencesActivity extends ThemedActivity {
             if(((ColorPref) currentFragment).onBackPressed()) return;
         }
 
-        if (selectedItem != START_PREFERENCE && changed) {
+        if (selectedItem != START_PREFERENCE && restartActivity) {
             restartActivity(this);
         } else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
@@ -122,7 +122,7 @@ public class PreferencesActivity extends ThemedActivity {
             case android.R.id.home:
                 if(currentFragment.onOptionsItemSelected(item)) return true;
 
-                if (selectedItem != START_PREFERENCE && changed) {
+                if (selectedItem != START_PREFERENCE && restartActivity) {
                     restartActivity(this);
                 } else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
@@ -144,12 +144,12 @@ public class PreferencesActivity extends ThemedActivity {
         return false;
     }
 
-    public void setChanged() {
-        changed = true;
+    public void setRestartActivity() {
+        restartActivity = true;
     }
 
-    public boolean getChanged() {
-        return changed;
+    public boolean getRestartActivity() {
+        return restartActivity;
     }
 
     public void invalidateRecentsColorAndIcon() {
