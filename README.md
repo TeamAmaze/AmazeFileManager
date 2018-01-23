@@ -27,16 +27,8 @@ Warning
 
 Basic r/w operations might not work on external memory on Kitkat devices. Don't use cut/paste from or to external SD Card. You might lose your files.
 
-    You are using an open source project!
-        
-    We are not responsible for stolen passwords, dead SD cards,
-    thermonuclear war, or you getting fired because the files got wiped. Please
-    do some research if you have any concerns about features included in this app
-    before installing it! YOU are choosing to install this application, and if
-    you point the finger at us for messing up your files, We will laugh at you. 
-        
-    A lot.
-    
+***Under the license we are not responsible for damages.***
+
 See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
 
 Translators
