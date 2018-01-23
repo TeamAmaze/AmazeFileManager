@@ -56,7 +56,6 @@ public class QuickAccessPref extends PreferenceFragment implements Preference.On
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preferences != null) ((PreferencesActivity) getActivity()).setChanged();
         currentValue[prefPos.get(preference.getKey())] = ((SwitchPreference) preference).isChecked();
         TinyDB.putBooleanArray(preferences, KEY, currentValue);
         return true;

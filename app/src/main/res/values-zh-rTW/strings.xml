@@ -521,4 +521,51 @@
   <string name="failed_smb_decrypt_path">載入 SMB 連線失敗</string>
   <string name="failed_cloud_new_connection">新增雲端硬碟失敗</string>
   <string name="failed_cloud_api_key">認證雲端硬碟套件失敗</string>
+  <string name="scp_port">埠口</string>
+  <string name="green">綠色</string>
+  <string name="blue">藍色</string>
+  <string name="orange">橙色</string>
+  <string name="ssh_key_prompt_passphrase">請輸入私鑰密碼。</string>
+  <string name="update">更新</string>
+  <string name="scp_con">SCP/SFTP連線</string>
+  <string name="ssh_select_pem_button">SSH私鑰</string>
+  <string name="password_unchanged">（未變更）</string>
+  <string name="ssh_connect_failed_host_key_changed_title">警告：遠端伺服器的公鑰已變更！</string>
+  <string name="channelname_normal">Amaze通知</string>
+  <string name="channeldescription_normal">Amaze檔案管理員的通知</string>
+  <string name="advanced">進階</string>
+  <string name="processing">正在處理中&#8230;</string>
+  <string name="customize">自訂</string>
+  <string name="custom">自訂</string>
+  <string name="black">黑色（AMOLED用）</string>
+  <string name="send_email_to">發送電郵至</string>
+  <string name="ssh_pem_key_parse_error">不能讀取所選擇的 PEM檔： %s</string>
+  <string name="developers">開發人員</string>
+  <string name="intent_save_as">儲存為&#8230;</string>
+  <string name="typeablepaths_title">自訂路徑</string>
+  <string name="text_editor">文字編輯器設定</string>
+  <string name="go">去</string>
+  <string name="local_inet_addr_error">無法取得本機 IP位址</string>
+  <string name="typeablepaths_summary">長按路徑列以輸入路徑</string>
+  <string name="sidebar_preferences">邊欄</string>
+  <string name="searchresults">%s 的搜尋結果</string>
+  <string name="searching">搜尋中：%s</string>
+  <string name="nobitcoinapp">請安裝比特幣錢包</string>
+  <string name="folderfilecount">%1$d 個檔案夾和 %2$d個檔案</string>
+  <string name="preference_newstack_title">以新工作開啟檔案</string>
+  <string name="preference_newstack_summary">可以新工作開啟檔案，它會出現在系統的總覽畫面。</string>
+  <string name="ssh_connect_failed">不能連線到 %s:%d: %s</string>
+  <string name="ssh_authentication_failure_password">登入失敗：未能以所設用戶名稱及密碼登入。</string>
+  <string name="ssh_authentication_failure_key">登入失敗：未能以所設用戶名稱及私鑰登入。</string>
+  <string name="failed_no_connection">無法載入檔案。請檢查網路連線。</string>
+  <string name="addshortcut_not_supported_by_launcher">你的 Launcher不支援建立捷徑。</string>
+  <string name="selectcolorconfig">選擇配色</string>
+  <string name="preselectedconfigs_title">已選擇的配色</string>
+  <string name="ssh_host_key_verification_prompt_title">確認遠端主機</string>
+  <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%s\'的身份。\n\n%s的公鑰指紋碼為 %s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
+  <string name="ssh_connect_failed_host_key_changed_message">
+        似乎有人有不軌企圖！\n\n
+        可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n
+        請聯絡你的系統管理員，或重新設定連線。
+    </string>
 </resources>
