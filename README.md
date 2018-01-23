@@ -40,11 +40,9 @@ Find the folder `values-` for your language [here](https://github.com/TeamAmaze/
 
 Vendors/Developers
 ----
-The device vendors/ROM developers are free to include Amaze apk pre-installed in system. There is no fee required, neither are any royality/credits elsewhere.
+The device vendors/ROM developers are free to include Amaze apk pre-installed in system. There is no fee required; *but you must comply with the license* (for more information read the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) or newer).
 
-We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after distribution. Furthermore, a change in digital signature will break certain critical features too. 
-    
-Lastly, just to remind, license allows distribution only when source is not modified. If you do modify our code, you must make it open-source somewhere before distributing.
+We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after distribution. Furthermore, a change in digital signature will break plug-ins.
 
 Social
 ---
