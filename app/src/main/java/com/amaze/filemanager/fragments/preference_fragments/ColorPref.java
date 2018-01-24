@@ -116,7 +116,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             case PreferencesConstants.PREFERENCE_ICON_SKIN:
                 final ColorUsage usage = ColorUsage.fromString(preference.getKey());
                 if (usage != null) {
-                    ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.availableColors, usage);
+                    ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.getUniqueAvailableColors(getContext()), usage);
 
                     GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
                     v.setAdapter(adapter);
