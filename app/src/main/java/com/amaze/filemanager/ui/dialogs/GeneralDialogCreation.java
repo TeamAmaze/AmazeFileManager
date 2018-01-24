@@ -16,6 +16,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -707,6 +708,7 @@ public class GeneralDialogCreation {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
         builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {});
+        builder.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         builder.theme(appTheme.getMaterialDialogTheme());
         builder.positiveText(c.getString(R.string.ok));
         builder.negativeText(c.getString(R.string.cancel));
