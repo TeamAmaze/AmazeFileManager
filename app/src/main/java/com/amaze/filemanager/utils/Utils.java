@@ -21,6 +21,8 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -212,6 +214,15 @@ public class Utils {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Converts ArrayList of HybridFileParcelable to ArrayList of File
+     */
+    public static ArrayList<File> hybridListToFileArrayList(List<HybridFileParcelable> a) {
+        ArrayList<File> b = new ArrayList<>(a.size());
+        for (HybridFileParcelable hybrid : a) b.add(new File(hybrid.getPath()));
+        return b;
     }
 
 }

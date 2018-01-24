@@ -267,8 +267,8 @@ public class ExtractService extends Service {
 
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
-            BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, 0));
+            BufferedOutputStream outputStream =
+                    new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -298,8 +298,8 @@ public class ExtractService extends Service {
             //	Log.i("Amaze", "Extracting: " + entry);
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
-            BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, entry.getFullUnpackSize()));
+            BufferedOutputStream outputStream =
+                    new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -326,8 +326,8 @@ public class ExtractService extends Service {
                 FileUtil.mkdir(outputFile.getParentFile(), context);
             }
 
-            BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, entry.getRealSize()));
+            BufferedOutputStream outputStream =
+                    new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
