@@ -268,6 +268,25 @@ public class PreferenceUtils {
             "&nbsp;* limitations under the License.<br>" +
             "&nbsp;*/ " +
             "<br><br></code></p>" +
+            "<h3>Notices for libraries:</h3>" +
+            "<ul><li>sshj</li></ul>" +
+            "<p style = 'background-color:#eeeeee;padding-left:1em'><code>" +
+            "<br>/*<br>"+
+            "&nbsp;*  Copyright (C)2009 - SSHJ Contributors<br>"+
+            "&nbsp;*  <br>"+
+            "&nbsp;*  Licensed under the Apache License, Version 2.0 (the \"License\");<br>"+
+            "&nbsp;*  you may not use this file except in compliance with the License.<br>"+
+            "&nbsp;*  You may obtain a copy of the License at<br>"+
+            "&nbsp;*  <br>"+
+            "&nbsp;*  &nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0<br>"+
+            "&nbsp;*  <br>"+
+            "&nbsp;*  Unless required by applicable law or agreed to in writing, software<br>"+
+            "&nbsp;*  distributed under the License is distributed on an \"AS IS\" BASIS,<br>"+
+            "&nbsp;*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>"+
+            "&nbsp;*  See the License for the specific language governing permissions and<br>"+
+            "&nbsp;*  limitations under the License.<br>"+
+            "&nbsp;* / "+
+            "<br><br></code></p>" +
             "</body></html>";
 
 }
