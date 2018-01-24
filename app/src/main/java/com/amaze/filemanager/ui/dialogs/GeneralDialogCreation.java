@@ -11,8 +11,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -47,6 +50,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -600,6 +604,35 @@ public class GeneralDialogCreation {
         final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
                 rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
 
+        TextInputLayout textInputLayoutPassword = rootView.findViewById(R.id.til_encrypt_password);
+        TextInputLayout textInputLayoutPasswordConfirm = rootView.findViewById(R.id.til_encrypt_password_confirm);
+
+        passwordEditText.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+
+                if (TextUtils.isEmpty(s.toString())) {
+                    textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
+                            c.getResources().getString(R.string.password)));
+                } else {
+
+                    textInputLayoutPassword.setError("");
+                }
+            }
+        });
+
+        passwordConfirmEditText.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+
+                if (s.toString().equals(passwordEditText.getText().toString())) {
+                    textInputLayoutPasswordConfirm.setError("");
+                }
+            }
+        });
+
         builder.customView(rootView, true);
 
         builder.positiveText(c.getString(R.string.ok));
@@ -610,18 +643,25 @@ public class GeneralDialogCreation {
 
         builder.onNegative((dialog, which) -> dialog.cancel());
 
-        builder.onPositive((dialog, which) -> {
-            if (TextUtils.isEmpty(passwordEditText.getText()) ||
-                    TextUtils.isEmpty(passwordConfirmEditText.getText())) {
-                dialog.cancel();
-                return;
-            }
+        builder.autoDismiss(false);
 
-            try {
-                encryptButtonCallbackInterface.onButtonPressed(intent, passwordEditText.getText().toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
+        builder.onPositive((dialog, which) -> {
+
+            if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+                textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
+                        c.getResources().getString(R.string.password)));
+            } else if (!passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString())) {
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.password_no_match));
+            } else {
+
+                try {
+                    encryptButtonCallbackInterface.onButtonPressed(intent, passwordEditText.getText().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
+                } finally {
+                    dialog.dismiss();
+                }
             }
         });
 
