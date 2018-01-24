@@ -24,7 +24,6 @@ import android.support.annotation.DrawableRes;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class Icons {
@@ -197,11 +196,10 @@ public class Icons {
         );
     }
 
-    public static @DrawableRes int loadMimeIcon(String path) {
+    public static @DrawableRes int loadMimeIcon(String path, boolean isDirectory) {
         if(path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
 
-        File f = new File(path);
-        int type = getTypeOfFile(f);
+        int type = getTypeOfFile(path, isDirectory);
 
         switch (type) {
             case APK:
@@ -225,17 +223,17 @@ public class Icons {
             case ENCRYPTED:
                 return R.drawable.ic_folder_lock_white_36dp;
             default:
-                if(f.isDirectory()) return R.drawable.ic_grid_folder_new;
+                if(isDirectory) return R.drawable.ic_grid_folder_new;
                 else {
                     return R.drawable.ic_doc_generic_am;
                 }
         }
     }
 
-    public static int getTypeOfFile(File file) {
-        if(file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) return ENCRYPTED;
+    public static int getTypeOfFile(String path, boolean isDirectory) {
+        if(path.endsWith(CryptUtil.CRYPT_EXTENSION)) return ENCRYPTED;
 
-        String mimeType = MimeTypes.getMimeType(file);
+        String mimeType = MimeTypes.getMimeType(path, isDirectory);
         if(mimeType == null) return NOT_KNOWN;
 
         Integer type = sMimeIconIds.get(mimeType);

@@ -132,7 +132,7 @@ public class CloudUtil {
                         File file = new File(Uri.parse(CloudUtil.stripPath(serviceType, baseFile.getPath())).getPath());
                         Uri uri = Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setDataAndType(uri, MimeTypes.getMimeType(file));
+                        i.setDataAndType(uri, MimeTypes.getMimeType(baseFile.getPath(),baseFile.isDirectory()));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0)

@@ -74,8 +74,6 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
-        if (sharedPrefs != null) activity.setChanged();
-
         if (preference instanceof PathSwitchPreference) {
             PathSwitchPreference p = (PathSwitchPreference) preference;
             switch (p.getLastItemClicked()) {

@@ -24,6 +24,7 @@ import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -61,51 +62,33 @@ public class PreferencesActivity extends ThemedActivity {
     public static final int QUICKACCESS_PREFERENCE = 3;
     public static final int ADVANCEDSEARCH_PREFERENCE = 4;
 
-    private boolean changed = false;
+    private boolean restartActivity = false;
     //The preference fragment currently selected
     private int selectedItem = 0;
+
+    private PreferenceFragment currentFragment;
 
     private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prefsfrag);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (SDK_INT >= 21) {
-            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
-                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            setTaskDescription(taskDescription);
-        }
+        invalidateRecentsColorAndIcon();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_HOME_AS_UP | android.support.v7.app.ActionBar.DISPLAY_SHOW_TITLE);
-        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+        invalidateToolbarColor();
+        invalidateNavBar();
 
-        if (SDK_INT == 20 || SDK_INT == 19) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
-            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-        } else if (SDK_INT >= 21) {
-            boolean colourednavigation = Sp.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, false);
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-            if (colourednavigation)
-                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-
-        }
-        if (getAppTheme().equals(AppTheme.BLACK)) getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
         if (savedInstanceState != null){
             selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+        } else if(getIntent().getExtras() != null) {
+            selectItem(getIntent().getExtras().getInt(KEY_CURRENT_FRAG_OPEN));
+        } else {
+            selectItem(0);
         }
-        selectItem(selectedItem);
     }
 
     @Override
@@ -116,9 +99,13 @@ public class PreferencesActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
-        if (selectedItem != START_PREFERENCE && changed)
-            restartPC(this);
-        else if (selectedItem != START_PREFERENCE) {
+        if(currentFragment instanceof ColorPref) {
+            if(((ColorPref) currentFragment).onBackPressed()) return;
+        }
+
+        if (selectedItem != START_PREFERENCE && restartActivity) {
+            restartActivity(this);
+        } else if (selectedItem != START_PREFERENCE) {
             selectItem(START_PREFERENCE);
         } else {
             Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
@@ -133,10 +120,11 @@ public class PreferencesActivity extends ThemedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // Navigate "up" the demo structure to the launchpad activity.
-                if (selectedItem != START_PREFERENCE && changed)
-                    restartPC(this);
-                else if (selectedItem != START_PREFERENCE) {
+                if(currentFragment.onOptionsItemSelected(item)) return true;
+
+                if (selectedItem != START_PREFERENCE && restartActivity) {
+                    restartActivity(this);
+                } else if (selectedItem != START_PREFERENCE) {
                     selectItem(START_PREFERENCE);
                 } else {
                     Intent in = new Intent(PreferencesActivity.this, MainActivity.class);
@@ -153,31 +141,83 @@ public class PreferencesActivity extends ThemedActivity {
                 }
                 return true;
         }
-        return true;
+        return false;
     }
 
-    public void setChanged() {
-        changed = true;
+    public void setRestartActivity() {
+        restartActivity = true;
     }
 
-    public void restartPC(final Activity activity) {
-        if (activity == null)
-            return;
+    public boolean getRestartActivity() {
+        return restartActivity;
+    }
+
+    public void invalidateRecentsColorAndIcon() {
+        if (SDK_INT >= 21) {
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
+                    ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
+                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+            setTaskDescription(taskDescription);
+        }
+    }
+
+    public void invalidateToolbarColor() {
+        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+    }
+
+    public void invalidateNavBar() {
+        if (SDK_INT == 20 || SDK_INT == 19) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+            p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+        } else if (SDK_INT >= 21) {
+            SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean colourednavigation = Sp.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            int tabStatusColor = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
+            window.setStatusBarColor(tabStatusColor);
+            if (colourednavigation) {
+                window.setNavigationBarColor(tabStatusColor);
+            } else if(window.getNavigationBarColor() != Color.BLACK){
+                window.setNavigationBarColor(Color.BLACK);
+            }
+        }
+
+        if (getAppTheme().equals(AppTheme.BLACK)) getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
+    }
+
+    /**
+     * This 'elegantly' destroys the activity and recreates it so that the different widgets and texts
+     * change their inner states's colors.
+     */
+    public void restartActivity(final Activity activity) {
+        if (activity == null) throw new NullPointerException();
+
         final int enter_anim = android.R.anim.fade_in;
         final int exit_anim = android.R.anim.fade_out;
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
+        if(selectedItem != START_PREFERENCE) {
+            Intent i = activity.getIntent();
+            i.putExtra(KEY_CURRENT_FRAG_OPEN, selectedItem);
+        }
         activity.startActivity(activity.getIntent());
     }
 
     /**
      * When a Preference (that requires an independent fragment) is selected this is called.
-     * @param i the Preference in question
+     * @param item the Preference in question
      */
-    public void selectItem(int i) {
-        selectedItem = i;
-        switch (i) {
+    public void selectItem(int item) {
+        selectedItem = item;
+        switch (item) {
             case START_PREFERENCE:
                 loadPrefFragment(new PrefFrag(), R.string.setting);
                 break;
@@ -197,9 +237,12 @@ public class PreferencesActivity extends ThemedActivity {
     }
 
     private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {
+        currentFragment = fragment;
+
         FragmentTransaction t = getFragmentManager().beginTransaction();
         t.replace(R.id.prefsfragment, fragment);
         t.commit();
         getSupportActionBar().setTitle(titleBarName);
     }
+
 }

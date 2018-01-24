@@ -32,7 +32,6 @@ import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -204,7 +203,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             holder.date.setText(R.string.goback);
         } else {
             GlideApp.with(compressedExplorerFragment)
-                    .load(Icons.loadMimeIcon(rowItem.name))
+                    .load(Icons.loadMimeIcon(rowItem.name, rowItem.directory))
                     .into(holder.genericIcon);
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
@@ -226,7 +225,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
                 holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
-                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(new File(rowItem.name)),
+                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.name, rowItem.directory),
                             gradientDrawable, Color.parseColor(compressedExplorerFragment.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
             }

@@ -305,10 +305,10 @@ public class FileUtils {
             uris.add(Uri.fromFile(f));
         }
 
-        String mime = MimeTypes.getMimeType(a.get(0));
+        String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
         if (a.size() > 1)
             for (File f : a) {
-                if (!mime.equals(MimeTypes.getMimeType(f))) {
+                if (!mime.equals(MimeTypes.getMimeType(f.getPath(), f.isDirectory()))) {
                     b = false;
                 }
             }
@@ -338,7 +338,7 @@ public class FileUtils {
         Intent chooserIntent = new Intent();
         chooserIntent.setAction(Intent.ACTION_VIEW);
 
-        String type = MimeTypes.getMimeType(f);
+        String type = MimeTypes.getMimeType(f.getPath(), f.isDirectory());
         if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
             Uri uri = fileToContentUri(c, f);
             if (uri == null) uri = Uri.fromFile(f);
@@ -433,22 +433,22 @@ public class FileUtils {
         final String normalizedPath = normalizeMediaPath(file.getAbsolutePath());
 
         // Check in external and internal storages
-        Uri uri = fileToContentUri(context, normalizedPath, EXTERNAL_VOLUME);
+        Uri uri = fileToContentUri(context, normalizedPath, file.isDirectory(), EXTERNAL_VOLUME);
         if (uri != null) {
             return uri;
         }
-        uri = fileToContentUri(context, normalizedPath, INTERNAL_VOLUME);
+        uri = fileToContentUri(context, normalizedPath, file.isDirectory(), INTERNAL_VOLUME);
         if (uri != null) {
             return uri;
         }
         return null;
     }
 
-    private static Uri fileToContentUri(Context context, String path, String volume) {
+    private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
         final String where = MediaStore.MediaColumns.DATA + " = ?";
         Uri baseUri;
         String[] projection;
-        int mimeType = Icons.getTypeOfFile(new File(path));
+        int mimeType = Icons.getTypeOfFile(path, isDirectory);
 
         switch (mimeType) {
             case Icons.IMAGE:
@@ -673,7 +673,7 @@ public class FileUtils {
             Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
             m.startActivity(intent);
-        }  else if (Icons.getTypeOfFile(f) == Icons.AUDIO) {
+        }  else if (Icons.getTypeOfFile(f.getPath(), f.isDirectory()) == Icons.AUDIO) {
             final int studio_count = sharedPreferences.getInt("studio", 0);
             Uri uri = Uri.fromFile(f);
             final Intent intent = new Intent();
@@ -717,7 +717,7 @@ public class FileUtils {
     private static boolean isSelfDefault(File f, Context c){
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f));
+        intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f.getPath(), f.isDirectory()));
         String s="";
         ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;

@@ -39,7 +39,6 @@ package com.amaze.filemanager.ui.icons;
 
 import android.webkit.MimeTypeMap;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -139,16 +138,16 @@ public final class MimeTypes {
 
     /**
      * Get Mime Type of a file
-     * @param file the file of which mime type to get
+     * @param path the file of which mime type to get
      * @return Mime type in form of String
      */
-    public static String getMimeType(File file) {
-        if (file.isDirectory()) {
+    public static String getMimeType(String path, boolean isDirectory) {
+        if (isDirectory) {
             return null;
         }
 
         String type = ALL_MIME_TYPES;
-        final String extension = getExtension(file.getName());
+        final String extension = getExtension(path);
 
         // mapping extension to system mime types
         if (extension != null && !extension.isEmpty()) {
@@ -170,14 +169,13 @@ public final class MimeTypes {
 
 
     /**
-     * Helper method for {@link #getMimeType(File)}
+     * Helper method for {@link #getMimeType(String, boolean)}
      * to calculate the last '.' extension of files
-     * @param a the name of file
-     * @return extension extracted from name
+     * @param path the path of file
+     * @return extension extracted from name in lowercase
      */
-    public static String getExtension(String a) {
-        if(a.contains("."))
-        return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
+    public static String getExtension(String path) {
+        if(path.contains(".")) return path.substring(path.lastIndexOf(".") + 1).toLowerCase();
         else return "";
     }
 
