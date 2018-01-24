@@ -1743,17 +1743,24 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         mDrawerList = findViewById(R.id.menu_drawer);
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
         //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+        boolean initDrawerOpen;
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
-            mDrawerLayout.openDrawer(mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             isDrawerLocked = true;
-        } else if (findViewById(R.id.tab_frame) == null) {
-
+            initDrawerOpen = true;
+        } else {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLinear);
-            mDrawerLayout.closeDrawer(mDrawerLinear);
             isDrawerLocked = false;
+            initDrawerOpen = false;
         }
+        mDrawerLayout.post(() -> {
+            if (initDrawerOpen) {
+                mDrawerLayout.openDrawer(mDrawerLinear);
+            } else {
+                mDrawerLayout.closeDrawer(mDrawerLinear);
+            }
+        });
         mDrawerList.addHeaderView(drawerHeaderLayout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         fabBgView = findViewById(R.id.fab_bg);
