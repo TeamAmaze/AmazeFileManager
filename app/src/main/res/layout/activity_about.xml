@@ -173,7 +173,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_marginLeft="@dimen/material_generic"
                             android:layout_marginRight="@dimen/material_generic_medium"
-                            android:src="@drawable/ic_linux_grey600_24dp"
+                            app:srcCompat="@drawable/ic_library_code_white_24dp"
                             android:layout_centerVertical="true"
                             />
                         <RelativeLayout

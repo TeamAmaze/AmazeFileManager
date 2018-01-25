@@ -30,8 +30,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import java.util.Random;
-
 /**
  * Created by vishal on 27/7/16.
  */
@@ -96,12 +94,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         switchIcons();
-
-        // license icon easter
-        Random random = new Random();
-        if (random.nextInt(2) == 0) {
-            mLicensesIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_apple_ios_grey600_24dp));
-        }
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.about_header);
