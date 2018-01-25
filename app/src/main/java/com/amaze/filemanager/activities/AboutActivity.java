@@ -1,6 +1,5 @@
 package com.amaze.filemanager.activities;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -21,16 +20,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.util.Random;
 
@@ -193,13 +191,20 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_licenses:
-                Dialog dialog = new Dialog(this, android.R.style.Theme_Holo_Light);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                final View dialog_view = getLayoutInflater().inflate(R.layout.open_source_licenses, null);
-                WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
-                dialog.setContentView(dialog_view);
-                wv.loadData(PreferenceUtils.LICENCE_TERMS, "text/html", null);
-                dialog.show();
+                Libs.ActivityStyle style = getAppTheme().getSimpleTheme() == AppTheme.LIGHT?
+                        Libs.ActivityStyle.LIGHT:Libs.ActivityStyle.DARK;
+
+                new LibsBuilder()
+                        .withActivityStyle(style)
+                        .withActivityTitle(getString(R.string.libraries))
+                        .withAboutIconShown(true)
+                        .withAboutVersionShownName(true)
+                        .withAboutVersionShownCode(false)
+                        .withAboutDescription(getString(R.string.about_amaze))
+                        .withAboutSpecial1(getString(R.string.license))
+                        .withAboutSpecial1Description(getString(R.string.amaze_license))
+                        .withLicenseShown(true)
+                        .start(this);
                 break;
 
             case R.id.text_view_author_1_g_plus:

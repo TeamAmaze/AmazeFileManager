@@ -19,8 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
+<resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -161,7 +160,6 @@
     <string name="aboutFileManager">About Amaze File Manager</string>
     <string name="version">Version</string>
     <string name="rate">Rate the app</string>
-    <string name="license">Open Source Licenses</string>
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
@@ -609,5 +607,9 @@
     <string name="blue">Blue</string>
     <string name="green">Green</string>
     <string name="deselect_all">Deselect All</string>
+
+    <string name="about_amaze">Material design file manager for Android</string>
+    <string name="license">License</string>
+    <string name="libraries">Libraries</string>
 </resources>
 
