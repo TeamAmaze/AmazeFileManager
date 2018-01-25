@@ -50,6 +50,14 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private boolean broadcastResult = false;
 
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -92,13 +100,25 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
 
         new BackgroundTask().execute();
 
-
+        super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
     @Override
     public EncryptService getServiceType() {
         return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = ID_NOTIFICATION;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
@@ -109,7 +129,8 @@ public class EncryptService extends ServiceWatcherProgressAbstract {
             if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
-            progressHandler = new ProgressHandler(1, totalSize);
+            progressHandler.setSourceSize(1);
+            progressHandler.setTotalSize(totalSize);
             progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
                 publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize,
                         writtenSize, speed, false, cryptEnum==CryptEnum.ENCRYPT ? false : true);

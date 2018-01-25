@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -77,15 +78,25 @@ public class CopyService extends ServiceWatcherProgressAbstract {
     private int totalSourceFiles = 0;
     private int sourceProgress = 0;
 
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
+
         c = getApplicationContext();
         registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
+
         Bundle b = new Bundle();
         ArrayList<HybridFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
@@ -107,12 +118,14 @@ public class CopyService extends ServiceWatcherProgressAbstract {
 
         NotificationConstants.setMetadata(c, mBuilder);
 
-        startForeground((notificationID = NOTIFICATION_ID), mBuilder.build());
+        startForeground(NOTIFICATION_ID, mBuilder.build());
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
+
+        super.onStartCommand(intent, flags, startId);
 
         //going async
         new DoInBackground().execute(b);
@@ -130,6 +143,18 @@ public class CopyService extends ServiceWatcherProgressAbstract {
         return this;
     }
 
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = NOTIFICATION_ID;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
+    }
+
     private class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<HybridFileParcelable> sourceFiles;
         boolean move;
@@ -145,8 +170,9 @@ public class CopyService extends ServiceWatcherProgressAbstract {
             // finding total size on background thread (this is necessary condition for SMB!)
             totalSize = FileUtils.getTotalBytes(sourceFiles, c);
             totalSourceFiles = sourceFiles.size();
-            progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
+            progressHandler.setSourceSize(totalSourceFiles);
+            progressHandler.setTotalSize(totalSize);
             progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
                 publishResults(NOTIFICATION_ID, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
@@ -167,7 +193,14 @@ public class CopyService extends ServiceWatcherProgressAbstract {
 
                 // adding/updating new encrypted db entry if any encrypted file was copied/moved
                 for (HybridFileParcelable sourceFile : sourceFiles) {
-                    findAndReplaceEncryptedEntry(sourceFile);
+
+                    try {
+
+                        findAndReplaceEncryptedEntry(sourceFile);
+                    } catch (Exception e) {
+                        // unable to modify encrypted entry in database
+                        Toast.makeText(c, getResources().getString(R.string.encryption_fail_copy), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             return NOTIFICATION_ID;

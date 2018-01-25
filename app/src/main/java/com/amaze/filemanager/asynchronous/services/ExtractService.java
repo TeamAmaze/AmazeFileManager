@@ -69,6 +69,7 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
     public static final String KEY_PATH_EXTRACT = "extractpath";
     public static final int ID_NOTIFICATION = 3987;
 
+
     @Override
     public void onCreate() {
         registerReceiver(receiver1, new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL));
@@ -84,8 +85,9 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         long totalSize = getTotalSize(file);
-        progressHandler = new ProgressHandler(1, totalSize);
 
+        progressHandler.setSourceSize(1);
+        progressHandler.setTotalSize(totalSize);
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
             publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false, false);
         });
@@ -125,6 +127,18 @@ public class ExtractService extends ServiceWatcherProgressAbstract {
     @Override
     public ExtractService getServiceType() {
         return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = ID_NOTIFICATION;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
     }
 
     public class LocalBinder extends Binder {

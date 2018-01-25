@@ -46,6 +46,11 @@ public class ProgressHandler {
         this.totalSize = totalSize;
     }
 
+    public ProgressHandler() {
+        this.sourceFiles = 0;
+        this.totalSize = 0;
+    }
+
     /**
      * publish progress after calculating the write length
      *
@@ -70,6 +75,10 @@ public class ProgressHandler {
 
     public synchronized void setSourceFilesProcessed(int sourceFilesProcessed) {
         this.sourceFilesProcessed = sourceFilesProcessed;
+    }
+
+    public void setSourceSize(int sourceFiles) {
+        this.sourceFiles = sourceFiles;
     }
 
     // dynamically setting total size, useful in case files are compressed

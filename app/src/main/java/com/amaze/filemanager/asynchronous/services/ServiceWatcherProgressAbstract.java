@@ -3,6 +3,7 @@ package com.amaze.filemanager.asynchronous.services;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 
@@ -31,8 +32,24 @@ public abstract class ServiceWatcherProgressAbstract extends Service implements 
     public ProgressHandler progressHandler;
     public Context context;
     // list of data packages, to initiate chart in process viewer fragment
-    public ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+    public ArrayList<CopyDataParcelable> dataPackages;
     public ProgressListener progressListener;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        initVariables();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        initVariables();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    public abstract void initVariables();
 
     @Override
     public void progressHalted() {
@@ -68,6 +85,7 @@ public abstract class ServiceWatcherProgressAbstract extends Service implements 
     public final void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
                                 long totalSize, long writtenSize, int speed, boolean isComplete,
                                 boolean move) {
+
         if (!progressHandler.getCancelled()) {
 
             context = getApplicationContext();
@@ -138,6 +156,7 @@ public abstract class ServiceWatcherProgressAbstract extends Service implements 
     }
 
     public interface ProgressListener {
+
         void onUpdate(CopyDataParcelable dataPackage);
 
         void refresh();

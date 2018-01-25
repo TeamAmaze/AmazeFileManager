@@ -66,6 +66,14 @@ public class ZipService extends ServiceWatcherProgressAbstract {
     public static final String KEY_COMPRESS_BROADCAST_CANCEL = "zip_cancel";
     public static final int ID_NOTIFICATION = 2667;
 
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+
     @Override
     public void onCreate() {
         c = getApplicationContext();
@@ -109,6 +117,9 @@ public class ZipService extends ServiceWatcherProgressAbstract {
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
         b.putString(KEY_COMPRESS_PATH, mZipPath);
         new DoWork().execute(b);
+
+        super.onStartCommand(intent, flags, startId);
+
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
@@ -116,6 +127,18 @@ public class ZipService extends ServiceWatcherProgressAbstract {
     @Override
     public ZipService getServiceType() {
         return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = ID_NOTIFICATION;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
     }
 
     public class LocalBinder extends Binder {
@@ -150,7 +173,9 @@ public class ZipService extends ServiceWatcherProgressAbstract {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
-            progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
+
+            progressHandler.setSourceSize(baseFiles.size());
+            progressHandler.setTotalSize(totalBytes);
             progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
                 publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize,
                         writtenSize, speed, false, false);
