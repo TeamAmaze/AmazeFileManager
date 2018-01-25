@@ -2,7 +2,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,20 +10,17 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.CopyDataParcelable;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17.
  */
 
-public class EncryptService extends Service {
+public class EncryptService extends ServiceWatcherProgressAbstract {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
@@ -41,27 +37,26 @@ public class EncryptService extends Service {
     public static final String TAG_CRYPT_MODE = "crypt_mode";   // ordinal of type of service
                                                                 // expected (encryption or decryption)
     public static final String TAG_BROADCAST_RESULT = "broadcast_result";
-
-    private static final int ID_NOTIFICATION = 27978;
-
     public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
+    public static final int ID_NOTIFICATION = 3627;
 
-    // list of data packages which contains progress
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
     private Context context;
     private IBinder mBinder = new LocalBinder();
-    private ProgressHandler progressHandler;
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
-    private OpenMode openMode;
     private String decryptPath;
     private HybridFileParcelable baseFile;
     private CryptEnum cryptEnum;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
-    private ProgressListener progressListener;
     private boolean broadcastResult = false;
+
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -78,36 +73,52 @@ public class EncryptService extends Service {
         cryptEnum = CryptEnum.values()[intent.getIntExtra(TAG_CRYPT_MODE, CryptEnum.ENCRYPT.ordinal())];
         broadcastResult = intent.getBooleanExtra(TAG_BROADCAST_RESULT, false);
 
-        openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
-        notificationBuilder.setContentIntent(pendingIntent);
+        mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
+        mBuilder.setContentIntent(pendingIntent);
 
         if (cryptEnum == CryptEnum.ENCRYPT) {
             // we have to encrypt the source
 
-            notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
-            notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
+            mBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
+            mBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
         } else {
 
             decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
-            notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
-            notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
+            mBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
+            mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
         }
 
-        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder);
+        NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
 
-        startForeground(ID_NOTIFICATION, notificationBuilder.build());
+        startForeground((notificationID = ID_NOTIFICATION), mBuilder.build());
 
         new BackgroundTask().execute();
 
-
+        super.onStartCommand(intent, flags, startId);
         return START_STICKY;
+    }
+
+    @Override
+    public EncryptService getServiceType() {
+        return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = ID_NOTIFICATION;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
@@ -118,8 +129,12 @@ public class EncryptService extends Service {
             if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
-            progressHandler = new ProgressHandler(1, totalSize);
-            progressHandler.setProgressListener(EncryptService.this::publishResults);
+            progressHandler.setSourceSize(1);
+            progressHandler.setTotalSize(totalSize);
+            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
+                publishResults(ID_NOTIFICATION, fileName, sourceFiles, sourceProgress, totalSize,
+                        writtenSize, speed, false, cryptEnum==CryptEnum.ENCRYPT ? false : true);
+            });
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
             CopyDataParcelable dataPackage = new CopyDataParcelable(baseFile.getName(),
@@ -129,7 +144,7 @@ public class EncryptService extends Service {
             putDataPackage(dataPackage);
 
             if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
-                serviceWatcherUtil.watch();
+                serviceWatcherUtil.watch(EncryptService.this);
 
                 if (cryptEnum == CryptEnum.ENCRYPT) {
                     // we're here to encrypt
@@ -176,51 +191,6 @@ public class EncryptService extends Service {
         }
     }
 
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long totalSize, long writtenSize, int speed) {
-
-        if (!progressHandler.getCancelled()) {
-
-            //notification
-            float progressPercent = ((float) writtenSize/totalSize)*100;
-            notificationBuilder.setProgress(100, Math.round(progressPercent), false);
-            notificationBuilder.setOngoing(true);
-            int title = R.string.crypt_encrypting;
-            if (cryptEnum == CryptEnum.DECRYPT) title = R.string.crypt_decrypting;
-            notificationBuilder.setContentTitle(context.getResources().getString(title));
-            notificationBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
-                    writtenSize) + "/" +
-                    Formatter.formatFileSize(context, totalSize));
-
-            notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
-            if (writtenSize == totalSize || totalSize == 0) {
-
-                notificationBuilder.setContentText("");
-                notificationBuilder.setOngoing(false);
-                notificationBuilder.setAutoCancel(true);
-                notificationManager.notify(ID_NOTIFICATION, notificationBuilder.build());
-                publishCompletedResult();
-            }
-
-            //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, cryptEnum==CryptEnum.ENCRYPT ? false : true, false);
-            putDataPackage(intent);
-            if(progressListener!=null) {
-                progressListener.onUpdate(intent);
-                if(false) progressListener.refresh();
-            }
-        } else publishCompletedResult();
-    }
-
-    public void publishCompletedResult(){
-        try {
-            notificationManager.cancel(ID_NOTIFICATION);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
@@ -246,7 +216,7 @@ public class EncryptService extends Service {
      * @param move
      */
     void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
-        notificationManager.cancelAll();
+        mNotifyManager.cancelAll();
 
         if(failedOps.size()==0)return;
 
@@ -274,7 +244,7 @@ public class EncryptService extends Service {
             mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
         }
 
-        notificationManager.notify(741,mBuilder.build());
+        mNotifyManager.notify(741,mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
@@ -297,40 +267,4 @@ public class EncryptService extends Service {
         }
     };
 
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-        void refresh();
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
-    }
 }

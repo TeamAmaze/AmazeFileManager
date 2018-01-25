@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,8 +31,8 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -42,60 +41,62 @@ import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends Service {
+public class CopyService extends ServiceWatcherProgressAbstract {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
     public static final String TAG_COPY_OPEN_MODE = "MODE"; // target open mode
     public static final String TAG_COPY_MOVE = "move";
-    private static final String TAG_COPY_START_ID = "id";
 
     public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
+    public static final int NOTIFICATION_ID = 2679;
 
-    // list of data packages, to initiate chart in process viewer fragment
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
-    private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
     private Context c;
 
-    private ProgressListener progressListener;
     private final IBinder mBinder = new LocalBinder();
-    private ProgressHandler progressHandler;
-    private ServiceWatcherUtil watcherUtil;
+    private com.amaze.filemanager.utils.ServiceWatcherUtil watcherUtil;
 
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
     private int sourceProgress = 0;
 
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
+
         c = getApplicationContext();
         registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
+
         Bundle b = new Bundle();
         ArrayList<HybridFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
@@ -103,7 +104,6 @@ public class CopyService extends Service {
         final boolean move = intent.getBooleanExtra(TAG_COPY_MOVE, false);
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        b.putInt(TAG_COPY_START_ID, startId);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -118,12 +118,14 @@ public class CopyService extends Service {
 
         NotificationConstants.setMetadata(c, mBuilder);
 
-        startForeground(Integer.parseInt("456" + startId), mBuilder.build());
+        startForeground(NOTIFICATION_ID, mBuilder.build());
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
+
+        super.onStartCommand(intent, flags, startId);
 
         //going async
         new DoInBackground().execute(b);
@@ -136,6 +138,23 @@ public class CopyService extends Service {
         this.unregisterReceiver(receiver3);
     }
 
+    @Override
+    public CopyService getServiceType() {
+        return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = NOTIFICATION_ID;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
+    }
+
     private class DoInBackground extends AsyncTask<Bundle, Void, Integer> {
         ArrayList<HybridFileParcelable> sourceFiles;
         boolean move;
@@ -146,19 +165,19 @@ public class CopyService extends Service {
         protected Integer doInBackground(Bundle... p1) {
 
             sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
-            final int id = p1[0].getInt(TAG_COPY_START_ID);
 
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
             totalSize = FileUtils.getTotalBytes(sourceFiles, c);
             totalSourceFiles = sourceFiles.size();
-            progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
 
+            progressHandler.setSourceSize(totalSourceFiles);
+            progressHandler.setTotalSize(totalSize);
             progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
-                publishResults(id, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
+                publishResults(NOTIFICATION_ID, fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
 
-            watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            watcherUtil = new com.amaze.filemanager.utils.ServiceWatcherUtil(progressHandler, totalSize);
 
             CopyDataParcelable intent1 = new CopyDataParcelable(sourceFiles.get(0).getName(),
                     sourceFiles.size(), totalSize, move);
@@ -174,10 +193,17 @@ public class CopyService extends Service {
 
                 // adding/updating new encrypted db entry if any encrypted file was copied/moved
                 for (HybridFileParcelable sourceFile : sourceFiles) {
-                    findAndReplaceEncryptedEntry(sourceFile);
+
+                    try {
+
+                        findAndReplaceEncryptedEntry(sourceFile);
+                    } catch (Exception e) {
+                        // unable to modify encrypted entry in database
+                        Toast.makeText(c, getResources().getString(R.string.encryption_fail_copy), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-            return id;
+            return NOTIFICATION_ID;
         }
 
         @Override
@@ -204,14 +230,11 @@ public class CopyService extends Service {
 
             // even directories can end with CRYPT_EXTENSION
             if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                sourceFile.forEachChildrenFile(getApplicationContext(), ThemedActivity.rootMode, new OnFileFound() {
-                    @Override
-                    public void onFileFound(HybridFileParcelable file) {
-                        // iterating each file inside source files which were copied to find instance of
-                        // any copied / moved encrypted file
+                sourceFile.forEachChildrenFile(getApplicationContext(), ThemedActivity.rootMode, file -> {
+                    // iterating each file inside source files which were copied to find instance of
+                    // any copied / moved encrypted file
 
-                        findAndReplaceEncryptedEntry(file);
-                    }
+                    findAndReplaceEncryptedEntry(file);
                 });
             } else {
 
@@ -264,7 +287,7 @@ public class CopyService extends Service {
                                 final boolean move, OpenMode mode) {
 
                 // initial start of copy, initiate the watcher
-                watcherUtil.watch();
+                watcherUtil.watch(CopyService.this);
 
                 if (FileUtil.checkFolder((targetPath), c) == 1) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
@@ -351,7 +374,7 @@ public class CopyService extends Service {
                 try {
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
-                    ServiceWatcherUtil.POSITION += sourceFile.getSize();
+                    com.amaze.filemanager.utils.ServiceWatcherUtil.POSITION += sourceFile.getSize();
                 } catch (ShellNotRunningException e) {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
@@ -446,73 +469,6 @@ public class CopyService extends Service {
         sendBroadcast(intent);
     }
 
-    /**
-     * Publish the results of the progress to notification and {@link CopyDataParcelable}
-     * and eventually to {@link ProcessViewerFragment}
-     *
-     * @param id             id of current service
-     * @param fileName       file name of current file being copied
-     * @param sourceFiles    total number of files selected by user for copy
-     * @param sourceProgress files been copied out of them
-     * @param totalSize      total size of selected items to copy
-     * @param writtenSize    bytes successfully copied
-     * @param speed          number of bytes being copied per sec
-     * @param isComplete     whether operation completed or ongoing (not supported at the moment)
-     * @param move           if the files are to be moved
-     */
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
-                                long totalSize, long writtenSize, int speed, boolean isComplete,
-                                boolean move) {
-        if (!progressHandler.getCancelled()) {
-
-            //notification
-            float progressPercent = ((float) writtenSize / totalSize) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            int title = R.string.copying;
-            if (move) title = R.string.moving;
-            mBuilder.setContentTitle(c.getResources().getString(title));
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(c, writtenSize) + "/" +
-                    Formatter.formatFileSize(c, totalSize));
-            int id1 = Integer.parseInt("456" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
-            if (writtenSize == totalSize || totalSize == 0) {
-                if (move) {
-
-                    //mBuilder.setContentTitle(getString(R.string.move_complete));
-                    // set progress to indeterminate as deletion might still be going on from source
-                    mBuilder.setProgress(0, 0, true);
-                } else {
-
-                    mBuilder.setContentTitle(getString(R.string.copy_complete));
-                    mBuilder.setProgress(0, 0, false);
-                }
-                mBuilder.setContentText("");
-                mBuilder.setOngoing(false);
-                mBuilder.setAutoCancel(true);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id1);
-            }
-
-            //for processviewer
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, move, isComplete);
-            putDataPackage(intent);
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isComplete) progressListener.refresh();
-            }
-        } else publishCompletedResult(Integer.parseInt("456" + id));
-    }
-
-    public void publishCompletedResult(int id1) {
-        try {
-            mNotifyManager.cancel(id1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     //check if copy is successful
     // avoid using the method as there is no way to know when we would be returning from command callbacks
     // rather confirm from the command result itself, inside it's callback
@@ -575,45 +531,6 @@ public class CopyService extends Service {
             // Return this instance of LocalService so clients can call public methods
             return CopyService.this;
         }
-    }
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
     }
 
 }

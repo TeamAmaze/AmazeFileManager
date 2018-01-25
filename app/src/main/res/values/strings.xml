@@ -608,5 +608,6 @@
     <string name="orange">Orange</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="encryption_fail_copy">Failed to update encryption entry in database</string>
 </resources>
 
