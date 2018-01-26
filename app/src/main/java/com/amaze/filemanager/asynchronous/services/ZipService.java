@@ -94,32 +94,34 @@ public class ZipService extends ProgressiveService {
             }
         }
 
-        mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        mBuilder.setContentIntent(pendingIntent)
+        mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
+                .setContentIntent(pendingIntent)
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
 
         NotificationConstants.setMetadata(this, mBuilder);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
-        b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
-        b.putString(KEY_COMPRESS_PATH, mZipPath);
-        new DoWork().execute(b);
+        new DoWork(baseFiles, mZipPath).execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
-    public class DoWork extends AsyncTask<Bundle, Void, Void> {
+    public class DoWork extends AsyncTask<Void, Void, Void> {
 
         ZipOutputStream zos;
 
         String zipPath;
         ServiceWatcherUtil watcherUtil;
 
-        public DoWork() {
+        private ArrayList<HybridFileParcelable> baseFiles;
+
+        public DoWork(ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+            this.baseFiles = baseFiles;
+            this.zipPath = zipPath;
         }
 
         public ArrayList<File> toFileArray(ArrayList<HybridFileParcelable> a) {
@@ -130,9 +132,7 @@ public class ZipService extends ProgressiveService {
             return b;
         }
 
-        protected Void doInBackground(Bundle... p1) {
-            ArrayList<HybridFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
-
+        protected Void doInBackground(Void... p1) {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
@@ -143,7 +143,6 @@ public class ZipService extends ProgressiveService {
 
             addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
-            zipPath = p1[0].getString(KEY_COMPRESS_PATH);
             execute(toFileArray(baseFiles), zipPath);
             return null;
         }
