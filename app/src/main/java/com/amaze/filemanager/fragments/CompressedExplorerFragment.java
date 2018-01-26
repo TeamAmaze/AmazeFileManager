@@ -295,6 +295,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                 case R.id.all:
                     compressedExplorerAdapter.toggleChecked(true);
                     mode.invalidate();
+                    item.setTitle(item.getTitle().equals(getResources().getString(R.string.selectall)) ? R.string.deselect_all : R.string.selectall);
                     return true;
                 case R.id.ex:
                     Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();

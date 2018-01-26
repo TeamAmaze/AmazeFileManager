@@ -688,6 +688,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     } else {
                         adapter.toggleChecked(true, CURRENT_PATH);
                     }
+                    item.setTitle(item.getTitle().equals(getResources().getString(R.string.selectall)) ? R.string.deselect_all : R.string.selectall);
                     mode.invalidate();
 
                     return true;
