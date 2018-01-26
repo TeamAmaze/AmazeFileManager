@@ -63,9 +63,8 @@ public class ZipService extends ProgressiveService {
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
-    NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
-    String mZipPath;
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
     private DoWork asyncTask;
 
     @Override
@@ -75,7 +74,7 @@ public class ZipService extends ProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-        mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
+        String mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
 
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
