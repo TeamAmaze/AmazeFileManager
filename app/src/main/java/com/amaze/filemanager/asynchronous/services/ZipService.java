@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
@@ -76,7 +75,6 @@ public class ZipService extends ProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-        Bundle b = new Bundle();
         mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
 
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
@@ -124,14 +122,6 @@ public class ZipService extends ProgressiveService {
             this.zipPath = zipPath;
         }
 
-        public ArrayList<File> toFileArray(ArrayList<HybridFileParcelable> a) {
-            ArrayList<File> b = new ArrayList<>();
-            for (int i = 0; i < a.size(); i++) {
-                b.add(new File(a.get(i).getPath()));
-            }
-            return b;
-        }
-
         protected Void doInBackground(Void... p1) {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
@@ -143,7 +133,7 @@ public class ZipService extends ProgressiveService {
 
             addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
-            execute(toFileArray(baseFiles), zipPath);
+            execute(FileUtils.hybridListToFileArrayList(baseFiles), zipPath);
             return null;
         }
 
