@@ -361,7 +361,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<HybridFileParcelable> failedOps = intent.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
-                mainActivityHelper.showFailedOperationDialog(failedOps, intent.getBooleanExtra("move", false), this);
+                mainActivityHelper.showFailedOperationDialog(failedOps, this);
             }
         }
 
@@ -1949,7 +1949,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
             ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
             if (failedOps != null) {
-                mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), this);
+                mainActivityHelper.showFailedOperationDialog(failedOps, this);
             }
         } else if (i.getCategories() != null && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
 
@@ -2012,7 +2012,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
                 ArrayList<HybridFileParcelable> failedOps = i.getParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS);
                 if (failedOps != null) {
-                    mainActivityHelper.showFailedOperationDialog(failedOps, i.getBooleanExtra("move", false), mainActivity);
+                    mainActivityHelper.showFailedOperationDialog(failedOps, mainActivity);
                 }
             }
         }

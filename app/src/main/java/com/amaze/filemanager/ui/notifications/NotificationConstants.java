@@ -11,11 +11,20 @@ import android.support.v4.app.NotificationCompat;
 import com.amaze.filemanager.R;
 
 /**
- * @author Emmanuel
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *         on 17/9/2017, at 13:34.
  */
 
 public class NotificationConstants {
+
+    public static final int WAIT_ID = -1;
+    public static final int COPY_ID = 0;
+    public static final int EXTRACT_ID = 1;
+    public static final int ZIP_ID = 2;
+    public static final int DECRYPT_ID = 3;
+    public static final int ENCRYPT_ID = 4;
+    public static final int FTP_ID = 5;
+    public static final int FAILED_ID = 6;
 
     public static final String CHANNEL_NORMAL_ID = "normalChannel";
 
