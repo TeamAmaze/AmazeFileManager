@@ -77,17 +77,13 @@ public class ZipService extends ProgressiveService {
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
         Bundle b = new Bundle();
-        String path = intent.getStringExtra(KEY_COMPRESS_PATH);
+        mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH);
 
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
-        File zipFile = new File(path);
-        mZipPath = path;
-        
+        File zipFile = new File(mZipPath);
+
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (!mZipPath.equals(path)) {
-            mZipPath.concat(mZipPath.endsWith("/") ? (zipFile.getName()) : ("/" + zipFile.getName()));
-        }
 
         if (!zipFile.exists()) {
             try {
