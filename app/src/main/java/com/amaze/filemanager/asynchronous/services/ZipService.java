@@ -65,7 +65,7 @@ public class ZipService extends ProgressiveService {
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
-    private DoWork asyncTask;
+    private CompressAsyncTask asyncTask;
 
     @Override
     public void onCreate() {
@@ -101,13 +101,13 @@ public class ZipService extends ProgressiveService {
         NotificationConstants.setMetadata(this, mBuilder);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
-        asyncTask = new DoWork(this, baseFiles, mZipPath);
+        asyncTask = new CompressAsyncTask(this, baseFiles, mZipPath);
         asyncTask.execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
-    public static class DoWork extends AsyncTask<Void, Void, Void> {
+    public static class CompressAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @SuppressLint("StaticFieldLeak")
         private ZipService zipService;
@@ -118,7 +118,7 @@ public class ZipService extends ProgressiveService {
         private long totalBytes = 0L;
         private ArrayList<HybridFileParcelable> baseFiles;
 
-        public DoWork(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+        public CompressAsyncTask(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
             this.zipService = zipService;
             this.baseFiles = baseFiles;
             this.zipPath = zipPath;
