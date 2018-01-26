@@ -66,12 +66,10 @@ public class ZipService extends ProgressiveService {
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String mZipPath;
-    Context c;
     private DoWork asyncTask;
 
     @Override
     public void onCreate() {
-        c = getApplicationContext();
         registerReceiver(receiver1, new IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL));
     }
 
@@ -89,7 +87,6 @@ public class ZipService extends ProgressiveService {
             try {
                 zipFile.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -159,7 +156,6 @@ public class ZipService extends ProgressiveService {
         }
 
         public void execute(final @NonNull Context context, ArrayList<File> baseFiles, String zipPath) {
-
             OutputStream out;
             File zipDirectory = new File(zipPath);
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
@@ -190,7 +186,6 @@ public class ZipService extends ProgressiveService {
         }
 
         private void compressFile(File file, String path) throws IOException, NullPointerException {
-
             if (!file.isDirectory()) {
                 if (progressHandler.getCancelled()) return;
 
@@ -205,13 +200,11 @@ public class ZipService extends ProgressiveService {
                 in.close();
                 return;
             }
-            if (file.list() == null) {
-                return;
-            }
+
+            if (file.list() == null) return;
+
             for (File currentFile : file.listFiles()) {
-
                 compressFile(currentFile, path + File.separator + file.getName());
-
             }
         }
     }
@@ -225,9 +218,9 @@ public class ZipService extends ProgressiveService {
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
             int title = R.string.compressing;
-            mBuilder.setContentTitle(c.getResources().getString(title));
+            mBuilder.setContentTitle(getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " +
-                    Formatter.formatFileSize(c, done) + "/" + Formatter.formatFileSize(c, total));
+                    Formatter.formatFileSize(this, done) + "/" + Formatter.formatFileSize(this, total));
             mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
             if (done == total || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.compression_complete));
@@ -254,7 +247,6 @@ public class ZipService extends ProgressiveService {
      */
 
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             asyncTask.cancel(true);
@@ -263,7 +255,6 @@ public class ZipService extends ProgressiveService {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
         return mBinder;
     }
 
