@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -28,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 
@@ -55,17 +57,17 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipService extends ProgressiveService {
 
+    public static final String KEY_COMPRESS_PATH = "zip_path";
+    public static final String KEY_COMPRESS_FILES = "zip_files";
+    public static final String KEY_COMPRESS_BROADCAST_CANCEL = "zip_cancel";
+
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
+
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String mZipPath;
     Context c;
-    long totalBytes = 0L;
-    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
-    private ProgressHandler progressHandler;
-
-    public static final String KEY_COMPRESS_PATH = "zip_path";
-    public static final String KEY_COMPRESS_FILES = "zip_files";
-    public static final String KEY_COMPRESS_BROADCAST_CANCEL = "zip_cancel";
+    private DoWork asyncTask;
 
     @Override
     public void onCreate() {
@@ -103,21 +105,25 @@ public class ZipService extends ProgressiveService {
         NotificationConstants.setMetadata(this, mBuilder);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
-        new DoWork(baseFiles, mZipPath).execute();
+        asyncTask = new DoWork(this, baseFiles, mZipPath);
+        asyncTask.execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
-    public class DoWork extends AsyncTask<Void, Void, Void> {
+    public static class DoWork extends AsyncTask<Void, Void, Void> {
 
-        ZipOutputStream zos;
-
-        String zipPath;
-        ServiceWatcherUtil watcherUtil;
-
+        @SuppressLint("StaticFieldLeak")
+        private ZipService zipService;
+        private ZipOutputStream zos;
+        private String zipPath;
+        private ServiceWatcherUtil watcherUtil;
+        private ProgressHandler progressHandler;
+        private long totalBytes = 0L;
         private ArrayList<HybridFileParcelable> baseFiles;
 
-        public DoWork(ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+        public DoWork(ZipService zipService, ArrayList<HybridFileParcelable> baseFiles, String zipPath) {
+            this.zipService = zipService;
             this.baseFiles = baseFiles;
             this.zipPath = zipPath;
         }
@@ -125,27 +131,34 @@ public class ZipService extends ProgressiveService {
         protected Void doInBackground(Void... p1) {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
-            totalBytes = FileUtils.getTotalBytes(baseFiles, c);
+            totalBytes = FileUtils.getTotalBytes(baseFiles, zipService.getApplicationContext());
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-            progressHandler.setProgressListener(ZipService.this::publishResults);
+            progressHandler.setProgressListener(zipService::publishResults);
 
-            addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
+            zipService.addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
-            execute(FileUtils.hybridListToFileArrayList(baseFiles), zipPath);
+            execute(zipService.getApplicationContext(), FileUtils.hybridListToFileArrayList(baseFiles), zipPath);
             return null;
         }
 
         @Override
-        public void onPostExecute(Void a) {
-
-            watcherUtil.stopWatch();
-            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, mZipPath);
-            sendBroadcast(intent);
-            stopSelf();
+        protected void onCancelled() {
+            super.onCancelled();
+            progressHandler.setCancelled(true);
+            File zipFile = new File(zipPath);
+            if (zipFile.exists()) zipFile.delete();
         }
 
-        public void execute(ArrayList<File> baseFiles, String zipPath) {
+        @Override
+        public void onPostExecute(Void a) {
+            watcherUtil.stopWatch();
+            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath);
+            zipService.sendBroadcast(intent);
+            zipService.stopSelf();
+        }
+
+        public void execute(final @NonNull Context context, ArrayList<File> baseFiles, String zipPath) {
 
             OutputStream out;
             File zipDirectory = new File(zipPath);
@@ -153,17 +166,16 @@ public class ZipService extends ProgressiveService {
             watcherUtil.watch();
 
             try {
-                out = FileUtil.getOutputStream(zipDirectory, c);
+                out = FileUtil.getOutputStream(zipDirectory, context);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
 
                 int fileProgress = 0;
                 for (File file : baseFiles) {
-                    if (!progressHandler.getCancelled()) {
+                    if (isCancelled()) return;
 
-                        progressHandler.setFileName(file.getName());
-                        progressHandler.setSourceFilesProcessed(++fileProgress);
-                        compressFile(file, "");
-                    } else return;
+                    progressHandler.setFileName(file.getName());
+                    progressHandler.setSourceFilesProcessed(++fileProgress);
+                    compressFile(file, "");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -187,7 +199,6 @@ public class ZipService extends ProgressiveService {
                 BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
-
                     zos.write(buf, 0, len);
                     ServiceWatcherUtil.POSITION += len;
                 }
@@ -209,7 +220,7 @@ public class ZipService extends ProgressiveService {
                                 long total, long done, int speed) {
         boolean isCompleted = false;
 
-        if (!progressHandler.getCancelled()) {
+        if (!asyncTask.isCancelled()) {
             float progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
             mBuilder.setOngoing(true);
@@ -246,7 +257,7 @@ public class ZipService extends ProgressiveService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            progressHandler.setCancelled(true);
+            asyncTask.cancel(true);
         }
     };
 
