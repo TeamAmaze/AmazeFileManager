@@ -36,13 +36,6 @@ public abstract class ServiceWatcherProgressAbstract extends Service implements 
     public ProgressListener progressListener;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        initVariables();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         initVariables();
