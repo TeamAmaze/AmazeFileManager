@@ -127,9 +127,7 @@ public class ZipService extends ProgressiveService {
             // finding total size on background thread (this is necessary condition for SMB!)
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
-                publishResults(fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
-            });
+            progressHandler.setProgressListener(ZipService.this::publishResults);
 
             addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
@@ -208,7 +206,9 @@ public class ZipService extends ProgressiveService {
     }
 
     private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long total, long done, int speed, boolean isCompleted) {
+                                long total, long done, int speed) {
+        boolean isCompleted = false;
+
         if (!progressHandler.getCancelled()) {
             float progressPercent = ((float) done / total) * 100;
             mBuilder.setProgress(100, Math.round(progressPercent), false);
