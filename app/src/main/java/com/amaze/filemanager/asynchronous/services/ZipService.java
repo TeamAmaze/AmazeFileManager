@@ -153,7 +153,7 @@ public class ZipService extends ProgressiveService {
             watcherUtil.watch();
 
             try {
-                out = FileUtil.getOutputStream(zipDirectory, c, totalBytes);
+                out = FileUtil.getOutputStream(zipDirectory, c);
                 zos = new ZipOutputStream(new BufferedOutputStream(out));
 
                 int fileProgress = 0;
