@@ -285,6 +285,8 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
             ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
+            menu.findItem(R.id.all).setTitle(positions.size() == folder + file ?
+                    R.string.deselect_all : R.string.selectall);
 
             return false; // Return false if nothing is done
         }
@@ -293,9 +295,17 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.all:
-                    compressedExplorerAdapter.toggleChecked(true);
+                    ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
+                    boolean shouldDeselectAll = positions.size() != folder + file;
+                    compressedExplorerAdapter.toggleChecked(shouldDeselectAll);
                     mode.invalidate();
-                    item.setTitle(item.getTitle().equals(getResources().getString(R.string.selectall)) ? R.string.deselect_all : R.string.selectall);
+                    item.setTitle(shouldDeselectAll ? R.string.deselect_all : R.string.selectall);
+                    if(!shouldDeselectAll)
+                    {
+                        selection = false;
+                        mActionMode.finish();
+                        mActionMode = null;
+                    }
                     return true;
                 case R.id.ex:
                     Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
