@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="define_libsuperuser"/>
+    <string name="library_libsuperuser_author">Jorrit \"Chainfire\" Jongma</string>
+    <string name="library_libsuperuser_authorWebsite">https://twitter.com/ChainfireXDA</string>
+    <string name="library_libsuperuser_libraryName">Example code for "How-To SU"</string>
+    <string name="library_libsuperuser_libraryWebsite">http://su.chainfire.eu/</string>
+    <string name="library_libsuperuser_libraryDescription">The goal is to demonstrate techniques you may want to reuse in your root app that work around common problems, in as little code as possible. Advanced techniques like for example maintaining a background su session and using that session when needed are not covered by this article, for the sake of keeping it simple. The library does however include the Shell.Interactive class to make that possible..</string>
+    <string name="library_libsuperuser_libraryVersion">1.0.0.+</string>
+    <string name="library_libsuperuser_licenseId">apache_2_0</string>
+    <string name="library_libsuperuser_isOpenSource">true</string>
+    <string name="library_libsuperuser_repositoryLink">https://github.com/Chainfire/libsuperuser</string>
+</resources>

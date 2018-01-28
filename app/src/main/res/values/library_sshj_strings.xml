@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>SSHv2 library for Java
+    <string name="define_sshj"/>
+    <string name="library_sshj_author">Jeroen van Erp</string>
+    <string name="library_sshj_authorWebsite">http://www.javadude.nl/</string>
+    <string name="library_sshj_libraryName">sshj</string>
+    <string name="library_sshj_libraryWebsite">https://github.com/hierynomus/sshj</string>
+    <string name="library_sshj_libraryDescription">SSHv2 library for Java</string>
+    <string name="library_sshj_libraryVersion">0.23.0</string>
+    <string name="library_sshj_licenseId">apache_2_0</string>
+    <string name="library_sshj_licenseContent">
+        <![CDATA[
+            Copyright (C)2009 - SSHJ Contributors<br /><br />
+
+            Licensed under the Apache License, Version 2.0 (the "License");
+            you may not use this file except in compliance with the License.
+            You may obtain a copy of the License at<br /><br />
+
+                http://www.apache.org/licenses/LICENSE-2.0<br /><br />
+
+            Unless required by applicable law or agreed to in writing, software
+            distributed under the License is distributed on an "AS IS" BASIS,
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            See the License for the specific language governing permissions and
+            limitations under the License.
+        ]]>
+    </string>
+    <string name="library_sshj_isOpenSource">true</string>
+    <string name="library_sshj_repositoryLink">https://github.com/hierynomus/sshj</string>
+</resources>

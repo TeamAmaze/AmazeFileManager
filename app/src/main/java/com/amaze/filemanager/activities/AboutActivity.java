@@ -187,6 +187,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                         Libs.ActivityStyle.LIGHT:Libs.ActivityStyle.DARK;
 
                 new LibsBuilder()
+                        .withFields(R.string.class.getFields())
                         .withActivityStyle(style)
                         .withActivityTitle(getString(R.string.libraries))
                         .withAboutIconShown(true)
