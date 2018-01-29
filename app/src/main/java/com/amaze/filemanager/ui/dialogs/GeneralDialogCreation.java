@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -824,32 +825,48 @@ public class GeneralDialogCreation {
         b.show();
     }
 
+    static final Pattern ZIP_FILE_REGEX = Pattern.compile(".*\\.zip", Pattern.CASE_INSENSITIVE);
+
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, (materialDialog, charSequence) -> {});
-        a.widgetColor(accentColor);
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(m.getResources().getString(R.string.enterzipname));
-        a.positiveText(R.string.create);
-        a.positiveColor(accentColor);
-        a.onPositive((materialDialog, dialogAction) -> {
-            if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
-            else {
-                String name = current + "/" + materialDialog.getInputEditText().getText().toString();
-                m.mainActivityHelper.compressFiles(new File(name), b);
+
+        final EditText etFilename = new EditText(a.getContext());
+        etFilename.setHint(R.string.enterzipname);
+        etFilename.setText(".zip");
+        etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        a.customView(etFilename, false)
+            .widgetColor(accentColor)
+            .theme(m.getAppTheme().getMaterialDialogTheme())
+            .title(m.getResources().getString(R.string.enterzipname))
+            .positiveText(R.string.create)
+            .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
+                if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
+                    Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
+                else {
+                    String name = current + "/" + materialDialog.getInputEditText().getText().toString();
+                    m.mainActivityHelper.compressFiles(new File(name), b);
+                }
+            }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
+
+        final MaterialDialog materialDialog = a.build();
+        final View btnOK = materialDialog.getActionButton(DialogAction.POSITIVE);
+        btnOK.setEnabled(false);
+
+        etFilename.addTextChangedListener(new SimpleTextWatcher(){
+            @Override
+            public void afterTextChanged(Editable s) {
+                btnOK.setEnabled(ZIP_FILE_REGEX.matcher(etFilename.getText().toString()).matches());
             }
         });
-        a.negativeText(m.getResources().getString(R.string.cancel));
-        a.negativeColor(accentColor);
-        final MaterialDialog materialDialog = a.build();
+
         materialDialog.show();
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll
         // reset calls to selection if not posted in message queue
-        materialDialog.getInputEditText().post(() -> materialDialog.getInputEditText().setSelection(0));
+        etFilename.post(() -> etFilename.setSelection(0));
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
