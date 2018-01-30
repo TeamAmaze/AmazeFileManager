@@ -757,7 +757,7 @@ public class GeneralDialogCreation {
         b.show();
     }
 
-    static final Pattern ZIP_FILE_REGEX = Pattern.compile(".*\\.zip", Pattern.CASE_INSENSITIVE);
+    static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
@@ -789,7 +789,7 @@ public class GeneralDialogCreation {
         etFilename.addTextChangedListener(new SimpleTextWatcher(){
             @Override
             public void afterTextChanged(Editable s) {
-                btnOK.setEnabled(ZIP_FILE_REGEX.matcher(etFilename.getText().toString()).matches());
+                btnOK.setEnabled(!ZIP_FILE_REGEX.matcher(etFilename.getText().toString()).find());
             }
         });
 
