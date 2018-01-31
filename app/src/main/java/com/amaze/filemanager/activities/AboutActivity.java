@@ -183,12 +183,8 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_licenses:
-                Libs.ActivityStyle style = getAppTheme().getSimpleTheme() == AppTheme.LIGHT?
-                        Libs.ActivityStyle.LIGHT:Libs.ActivityStyle.DARK;
-
-                new LibsBuilder()
+                LibsBuilder libsBuilder = new LibsBuilder()
                         .withFields(R.string.class.getFields())
-                        .withActivityStyle(style)
                         .withActivityTitle(getString(R.string.libraries))
                         .withAboutIconShown(true)
                         .withAboutVersionShownName(true)
@@ -196,8 +192,22 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                         .withAboutDescription(getString(R.string.about_amaze))
                         .withAboutSpecial1(getString(R.string.license))
                         .withAboutSpecial1Description(getString(R.string.amaze_license))
-                        .withLicenseShown(true)
-                        .start(this);
+                        .withLicenseShown(true);
+
+                switch(getAppTheme().getSimpleTheme()) {
+                    case LIGHT:
+                        libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
+                        break;
+                    case DARK:
+                        libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
+                        break;
+                    case BLACK:
+                        libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
+                        break;
+                }
+
+                libsBuilder.start(this);
+
                 break;
 
             case R.id.text_view_author_1_g_plus:
