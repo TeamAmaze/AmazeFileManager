@@ -774,10 +774,10 @@ public class GeneralDialogCreation {
             .title(m.getResources().getString(R.string.enterzipname))
             .positiveText(R.string.create)
             .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
-                if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
+                if ("".equals(etFilename.getText().toString()))
                     Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
                 else {
-                    String name = current + "/" + materialDialog.getInputEditText().getText().toString();
+                    String name = current + "/" + etFilename.getText().toString();
                     m.mainActivityHelper.compressFiles(new File(name), b);
                 }
             }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
