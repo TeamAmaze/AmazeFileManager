@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -759,6 +760,63 @@ public class GeneralDialogCreation {
 
     static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
+    static final class CompressFileDialogTextValidator extends SimpleTextWatcher implements View.OnFocusChangeListener
+    {
+        final WeakReference<Context> mContext;
+        final EditText mEditText;
+        final TextInputLayout mTextInputLayout;
+        final View mPositiveButton;
+
+        CompressFileDialogTextValidator(Context context, EditText editText, TextInputLayout textInputLayout, View positiveButton)
+        {
+            mContext = new WeakReference<Context>(context);
+            mEditText = editText;
+            mTextInputLayout = textInputLayout;
+            mPositiveButton = positiveButton;
+        }
+
+        private void doValidate()
+        {
+            Context context = mContext.get();
+            String value = mEditText.getText().toString();
+            //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
+            //So we simply use equality to check them
+            boolean isValidFilename = (!ZIP_FILE_REGEX.matcher(value).find()) && !".".equals(value) && !"..".equals(value);
+
+            if(isValidFilename && value.length() > 0) {
+                mTextInputLayout.setError(null);
+                mPositiveButton.setEnabled(true);
+                if(!value.toLowerCase().endsWith(".zip"))
+                    mTextInputLayout.setHint(context.getResources().getString(R.string.compress_file_suggest_zip_extension));
+                else
+                    mTextInputLayout.setHint(context.getResources().getString(R.string.enterzipname));
+            } else {
+                mTextInputLayout.setHint(context.getResources().getString(R.string.enterzipname));
+
+                if(!isValidFilename)
+                    mTextInputLayout.setError(String.format(context.getText(R.string.invalid).toString(),
+                            context.getString(R.string.filename)));
+                else if(value.length() < 1)
+                    mTextInputLayout.setError(String.format(context.getText(R.string.cantbeempty).toString(),
+                            context.getString(R.string.filename)));
+
+                mPositiveButton.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            doValidate();
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus)
+        {
+            if(!hasFocus)
+                doValidate();
+        }
+    }
+
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
@@ -768,30 +826,28 @@ public class GeneralDialogCreation {
         etFilename.setText(".zip");
         etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        a.customView(etFilename, false)
+        final TextInputLayout tilFilename = new TextInputLayout(a.getContext());
+        tilFilename.addView(etFilename);
+
+        a.customView(tilFilename, false)
             .widgetColor(accentColor)
             .theme(m.getAppTheme().getMaterialDialogTheme())
             .title(m.getResources().getString(R.string.enterzipname))
             .positiveText(R.string.create)
             .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
-                if ("".equals(etFilename.getText().toString()))
-                    Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
-                else {
-                    String name = current + "/" + etFilename.getText().toString();
-                    m.mainActivityHelper.compressFiles(new File(name), b);
-                }
+                String name = current + "/" + etFilename.getText().toString();
+                m.mainActivityHelper.compressFiles(new File(name), b);
             }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
 
         final MaterialDialog materialDialog = a.build();
         final View btnOK = materialDialog.getActionButton(DialogAction.POSITIVE);
         btnOK.setEnabled(false);
 
-        etFilename.addTextChangedListener(new SimpleTextWatcher(){
-            @Override
-            public void afterTextChanged(Editable s) {
-                btnOK.setEnabled(!ZIP_FILE_REGEX.matcher(etFilename.getText().toString()).find());
-            }
-        });
+        CompressFileDialogTextValidator validator = new CompressFileDialogTextValidator(a.getContext(), etFilename, tilFilename, btnOK);
+
+        etFilename.addTextChangedListener(validator);
+        etFilename.setOnFocusChangeListener(validator);
+        tilFilename.setOnFocusChangeListener(validator);
 
         materialDialog.show();
 
