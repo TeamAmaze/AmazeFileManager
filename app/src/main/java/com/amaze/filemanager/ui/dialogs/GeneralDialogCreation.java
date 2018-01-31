@@ -11,16 +11,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.afollestad.materialdialogs.util.DialogUtils;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -51,10 +49,12 @@ import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.CompressFileDialogTextValidator;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -78,7 +78,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -833,7 +832,7 @@ public class GeneralDialogCreation {
         etFilename.setText(".zip");
         etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        final TextInputLayout tilFilename = new TextInputLayout(a.getContext());
+        final WarnableTextInputLayout tilFilename = new WarnableTextInputLayout(a.getContext(), null);
         tilFilename.addView(etFilename);
 
         a.customView(tilFilename, false)

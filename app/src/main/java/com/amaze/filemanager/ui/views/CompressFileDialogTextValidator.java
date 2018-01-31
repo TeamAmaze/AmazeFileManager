@@ -1,7 +1,6 @@
 package com.amaze.filemanager.ui.views;
 
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
@@ -16,10 +15,10 @@ public final class CompressFileDialogTextValidator extends SimpleTextWatcher imp
 
     private final Context mContext;
     private final EditText mEditText;
-    private final TextInputLayout mTextInputLayout;
+    private final WarnableTextInputLayout mTextInputLayout;
     private final View mPositiveButton;
 
-    public CompressFileDialogTextValidator(Context context, EditText editText, TextInputLayout textInputLayout, View positiveButton) {
+    public CompressFileDialogTextValidator(Context context, EditText editText, WarnableTextInputLayout textInputLayout, View positiveButton) {
         mContext = context;
         mEditText = editText;
         mTextInputLayout = textInputLayout;
@@ -36,7 +35,7 @@ public final class CompressFileDialogTextValidator extends SimpleTextWatcher imp
             mTextInputLayout.setError(null);
             mPositiveButton.setEnabled(true);
             if (!value.toLowerCase().endsWith(".zip")) {
-                mTextInputLayout.setHint(mContext.getString(R.string.compress_file_suggest_zip_extension));
+                mTextInputLayout.setWarning(R.string.compress_file_suggest_zip_extension);
             } else {
                 mTextInputLayout.setHint(mContext.getString(R.string.enterzipname));
             }

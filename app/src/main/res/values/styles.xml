@@ -107,6 +107,16 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <!-- Error error for InputTextLayout -->
+    <style name="error_inputTextLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/error_color_material</item>
+    </style>
+
+    <!-- Warning error for InputTextLayout -->
+    <style name="warning_inputTextLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/warningColor</item>
+    </style>
+
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">
