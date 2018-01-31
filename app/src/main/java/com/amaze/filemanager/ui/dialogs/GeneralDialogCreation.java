@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
@@ -46,6 +45,7 @@ import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.CompressFileDialogTextValidator;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
@@ -73,7 +73,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -766,7 +765,7 @@ public class GeneralDialogCreation {
         etFilename.setText(".zip");
         etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        final TextInputLayout tilFilename = new TextInputLayout(a.getContext());
+        final WarnableTextInputLayout tilFilename = new WarnableTextInputLayout(a.getContext(), null);
         tilFilename.addView(etFilename);
 
         a.customView(tilFilename, false)
