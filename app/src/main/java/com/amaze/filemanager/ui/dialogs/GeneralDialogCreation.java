@@ -48,7 +48,7 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.views.CompressFileDialogTextValidator;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
@@ -78,6 +78,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -823,6 +824,8 @@ public class GeneralDialogCreation {
         b.show();
     }
 
+    private static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
+
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
@@ -834,6 +837,7 @@ public class GeneralDialogCreation {
 
         final WarnableTextInputLayout tilFilename = new WarnableTextInputLayout(a.getContext(), null);
         tilFilename.addView(etFilename);
+        tilFilename.setHint(m.getString(R.string.enterzipname));
 
         a.customView(tilFilename, false)
             .widgetColor(accentColor)
@@ -846,14 +850,30 @@ public class GeneralDialogCreation {
             }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
 
         final MaterialDialog materialDialog = a.build();
-        final View btnOK = materialDialog.getActionButton(DialogAction.POSITIVE);
-        btnOK.setEnabled(false);
 
-        CompressFileDialogTextValidator validator = new CompressFileDialogTextValidator(a.getContext(), etFilename, tilFilename, btnOK);
+        new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
+                        materialDialog.getActionButton(DialogAction.POSITIVE),
+                        (text) -> {
+                    //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
+                    //So we simply use equality to check them
+                    boolean isValidFilename = (!ZIP_FILE_REGEX.matcher(text).find())
+                            && !".".equals(text) && !"..".equals(text);
 
-        etFilename.addTextChangedListener(validator);
-        etFilename.setOnFocusChangeListener(validator);
-        tilFilename.setOnFocusChangeListener(validator);
+                    if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.compress_file_suggest_zip_extension);
+                    } else {
+                        if (!isValidFilename) {
+                            return new WarnableTextInputValidator.ReturnState(
+                                    WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                        } else if (text.length() < 1) {
+                            return new WarnableTextInputValidator.ReturnState(
+                                    WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                        }
+                    }
+
+                    return new WarnableTextInputValidator.ReturnState();
+                });
 
         materialDialog.show();
 
