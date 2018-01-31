@@ -608,9 +608,9 @@
     <string name="orange">Orange</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="deselect_all">Deselect All</string>
 
     <string name="filename">Filename</string>
     <string name="compress_file_suggest_zip_extension">It\'s recommended to use \".zip\" as the file extension.</string>
-
 </resources>
 
