@@ -6,6 +6,7 @@ android {
 
     dexOptions {
         jumboMode = true
+        javaMaxHeapSize "4g"
     }
 
     packagingOptions {
@@ -81,6 +82,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
+    implementation 'com.android.support:animated-vector-drawable:26.1.0'
     implementation 'com.android.support:support-v13:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -148,6 +150,11 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
 
     implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.1'//Floating Action Buttons Menu (aka expandable FAB)
+
+    //Simple library show
+    implementation('com.mikepenz:aboutlibraries:6.0.2@aar') {
+        transitive = true
+    }
 }
 
 configurations.all {
