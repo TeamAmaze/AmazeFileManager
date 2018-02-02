@@ -26,6 +26,7 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher implemen
         mTextInputLayout = textInputLayout;
         mButton = positiveButton;
         mButton.setOnTouchListener(this);
+        mButton.setEnabled(false);
         mValidator = validator;
     }
 
@@ -49,7 +50,7 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher implemen
 
     @Override
     public void afterTextChanged(Editable s) {
-        doValidate(true);
+        doValidate(false);
     }
 
     /**
@@ -60,12 +61,15 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher implemen
         switch (state.state) {
             case ReturnState.STATE_NORMAL:
                 mTextInputLayout.removeError();
+                mButton.setEnabled(true);
                 break;
             case ReturnState.STATE_ERROR:
                 if(!onlySetWarning) mTextInputLayout.setError(mContext.getString(state.text));
+                mButton.setEnabled(false);
                 break;
             case ReturnState.STATE_WARNING:
                 mTextInputLayout.setWarning(state.text);
+                mButton.setEnabled(true);
                 break;
         }
 
