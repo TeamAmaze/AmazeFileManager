@@ -129,8 +129,6 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.encrypt:
                 final Intent encryptIntent = new Intent(context, EncryptService.class);
                 encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
-                encryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
-                        EncryptService.CryptEnum.ENCRYPT.ordinal());
                 encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
 
                 final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

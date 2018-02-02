@@ -22,8 +22,6 @@ import java.net.InetAddress;
  */
 public class FTPNotification extends BroadcastReceiver {
 
-    private static final int NOTIFICATION_ID = 2123;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
@@ -96,7 +94,7 @@ public class FTPNotification extends BroadcastReceiver {
         }
 
         // Pass Notification to NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        notificationManager.notify(NotificationConstants.FTP_ID, notification);
     }
 
     private void removeNotification(Context context){
