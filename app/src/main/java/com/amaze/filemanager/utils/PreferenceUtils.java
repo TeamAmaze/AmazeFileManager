@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 /**
  * Created by Vishal on 12-05-2015
- *      edited by Emmanuel Messulam <emmanuelbendavid@gmai.com>
+ *      edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class PreferenceUtils {
 
