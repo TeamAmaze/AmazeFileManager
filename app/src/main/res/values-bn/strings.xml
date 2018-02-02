@@ -290,8 +290,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="rate">Rate the app</string>
 
-    <string name="license">Open Source Licenses</string>
-
     <string name="feedback">Send Feedback</string>
 
     <string name="hiddenfiles">Hidden Files</string>

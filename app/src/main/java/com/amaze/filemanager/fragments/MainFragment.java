@@ -685,8 +685,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
                         adapter.toggleChecked(false, CURRENT_PATH);
+                        item.setTitle(R.string.selectall);
                     } else {
                         adapter.toggleChecked(true, CURRENT_PATH);
+                        item.setTitle(R.string.deselect_all);
                     }
                     mode.invalidate();
 
