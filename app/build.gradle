@@ -155,6 +155,8 @@ dependencies {
     implementation('com.mikepenz:aboutlibraries:6.0.2@aar') {
         transitive = true
     }
+
+    compile 'com.android.support:multidex:1.0.2'//Multiple dex files
 }
 
 configurations.all {
