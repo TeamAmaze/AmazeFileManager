@@ -634,6 +634,17 @@ public class GeneralDialogCreation {
             }
         });
 
+        passwordConfirmEditText.setOnFocusChangeListener((v, hasFocus) -> {
+
+            if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+                textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
+                        c.getResources().getString(R.string.password)));
+            } else {
+
+                textInputLayoutPassword.setError("");
+            }
+        });
+
         builder.customView(rootView, true);
 
         builder.positiveText(c.getString(R.string.ok));

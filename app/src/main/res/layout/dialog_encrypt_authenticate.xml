@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:hint="@string/password"
+            android:hint="@string/password_repeat"
             android:id="@+id/edit_text_dialog_encrypt_password_confirm"
             android:layout_gravity="center_horizontal" />
     </android.support.design.widget.TextInputLayout>

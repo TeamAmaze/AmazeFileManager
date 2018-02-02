@@ -611,5 +611,6 @@
     <string name="about_amaze">Material design file manager for Android</string>
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
+    <string name="password_repeat">Repeat password</string>
 </resources>
 
