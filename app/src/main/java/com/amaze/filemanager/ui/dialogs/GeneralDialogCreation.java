@@ -645,6 +645,14 @@ public class GeneralDialogCreation {
             }
         });
 
+        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> {
+
+            boolean isPasswordSame = passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString());
+            if (!isPasswordSame && !TextUtils.isEmpty(passwordConfirmEditText.getText().toString())) {
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.password_no_match));
+            }
+        });
+
         builder.customView(rootView, true);
 
         builder.positiveText(c.getString(R.string.ok));
