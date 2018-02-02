@@ -563,7 +563,7 @@
     <string name="go">Go</string>
     <string name="advanced">Advanced</string>
     <string name="typeablepaths_title">Custom paths</string>
-    <string name="typeablepaths_summary">Long press path bar type a custom path</string>
+    <string name="typeablepaths_summary">Long press path bar to type a custom path</string>
     <string name="send_email_to">Send an e-mail to</string>
 
     <string name="text_editor">Text editor settings</string>
