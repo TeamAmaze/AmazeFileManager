@@ -763,16 +763,11 @@ public class GeneralDialogCreation {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
 
-        final EditText etFilename = new EditText(a.getContext());
-        etFilename.setHint(R.string.enterzipname);
-        etFilename.setText(".zip");
-        etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
+        View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
+        EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
+        WarnableTextInputLayout tilFilename = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
-        final WarnableTextInputLayout tilFilename = new WarnableTextInputLayout(a.getContext(), null);
-        tilFilename.addView(etFilename);
-        tilFilename.setHint(m.getString(R.string.enterzipname));
-
-        a.customView(tilFilename, false)
+        a.customView(dialogView, false)
             .widgetColor(accentColor)
             .theme(m.getAppTheme().getMaterialDialogTheme())
             .title(m.getResources().getString(R.string.enterzipname))
