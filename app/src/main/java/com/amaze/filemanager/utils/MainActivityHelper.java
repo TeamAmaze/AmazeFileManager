@@ -68,7 +68,7 @@ public class MainActivityHelper {
         accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
     }
 
-    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, boolean move, Context contextc) {
+    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, Context contextc) {
         MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
         mat.title(contextc.getString(R.string.operationunsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());

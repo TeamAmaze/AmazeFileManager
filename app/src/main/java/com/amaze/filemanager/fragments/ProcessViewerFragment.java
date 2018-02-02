@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,13 +23,11 @@ package com.amaze.filemanager.fragments;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Html;
@@ -45,10 +44,13 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
+import com.amaze.filemanager.asynchronous.services.ProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -66,13 +68,18 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
 
-    boolean isInitialized = false;
-    SharedPreferences sharedPrefs;
-    MainActivity mainActivity;
-    int accentColor, primaryColor;
-    ImageButton mCancelButton;
-    ImageView mProgressImage;
+    /**
+     * Helps defining the result type for {@link #processResults(DatapointParcelable, int)}
+     * to process
+     */
+    private static final int SERVICE_COPY = 0, SERVICE_EXTRACT = 1, SERVICE_COMPRESS = 2,
+            SERVICE_ENCRYPT = 3, SERVICE_DECRYPT = 4;
 
+    private boolean isInitialized = false;
+    private MainActivity mainActivity;
+    private int accentColor, primaryColor;
+    private ImageButton mCancelButton;
+    private ImageView mProgressImage;
     private View rootView;
     private CardView mCardView;
     private LineChart mLineChart;
@@ -80,6 +87,9 @@ public class ProcessViewerFragment extends Fragment {
     private long time = 0L;
     private TextView mProgressTypeText, mProgressFileNameText,
             mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
+
+    private ServiceConnection mCopyConnection, mExtractConnection, mCompressConnection,
+            mEncryptConnection, mDecryptConnection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,7 +106,7 @@ public class ProcessViewerFragment extends Fragment {
         mainActivity.updateViews(new ColorDrawable(primaryColor));
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
         mainActivity.floatingActionButton.getMenuButton().hide();
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        
         mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = (CardView) rootView.findViewById(R.id.card_view);
@@ -118,178 +128,21 @@ public class ProcessViewerFragment extends Fragment {
             mCardView.setCardElevation(0f);
         }
 
+        mCopyConnection = new CustomServiceConnection(this, mLineChart, SERVICE_COPY);
+        mExtractConnection = new CustomServiceConnection(this, mLineChart, SERVICE_EXTRACT);
+        mCompressConnection = new CustomServiceConnection(this, mLineChart, SERVICE_COMPRESS);
+        mEncryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_ENCRYPT);
+        mDecryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_DECRYPT);
+
         return rootView;
     }
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-
-            CopyService.LocalBinder localBinder = (CopyService.LocalBinder) service;
-            CopyService copyService = localBinder.getService();
-
-            for (int i=0; i<copyService.getDataPackageSize(); i++) {
-
-                processResults(copyService.getDataPackage(i), ServiceType.COPY);
-            }
-
-            // animate the chart a little after initial values have been applied
-            mLineChart.animateXY(500, 500);
-
-            copyService.setProgressListener(new CopyService.ProgressListener() {
-                @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
-                    if (getActivity() == null || getActivity().getSupportFragmentManager().
-                            findFragmentByTag(MainActivity.KEY_INTENT_PROCESS_VIEWER) == null) {
-                        // callback called when we're not inside the app
-                        return;
-                    }
-                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COPY));
-                }
-
-                @Override
-                public void refresh() {
-
-                }
-            });
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
-
-    private ServiceConnection mExtractConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ExtractService.LocalBinder localBinder = (ExtractService.LocalBinder) service;
-            ExtractService extractService = localBinder.getService();
-
-            for (int i=0; i<extractService.getDataPackageSize(); i++) {
-
-                processResults(extractService.getDataPackage(i), ServiceType.EXTRACT);
-            }
-
-            // animate the chart a little after initial values have been applied
-            mLineChart.animateXY(500, 500);
-
-            extractService.setProgressListener(new ExtractService.ProgressListener() {
-                @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
-                    if (getActivity()==null) {
-                        // callback called when we're not inside the app
-                        return;
-                    }
-                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.EXTRACT));
-                }
-
-                @Override
-                public void refresh() {
-
-                }
-            });
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-        }
-    };
-
-    private ServiceConnection mCompressConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ZipService.LocalBinder localBinder = (ZipService.LocalBinder) service;
-            ZipService zipService = localBinder.getService();
-
-            for (int i = 0; i< zipService.getDataPackageSize(); i++) {
-
-                processResults(zipService.getDataPackage(i), ServiceType.COMPRESS);
-            }
-
-            // animate the chart a little after initial values have been applied
-            mLineChart.animateXY(500, 500);
-
-            zipService.setProgressListener(new ZipService.ProgressListener() {
-                @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
-                    if (getActivity() == null) {
-                        // callback called when we're not inside the app
-                        return;
-                    }
-                    getActivity().runOnUiThread(() -> processResults(dataPackage, ServiceType.COMPRESS));
-                }
-
-                @Override
-                public void refresh() {
-
-                }
-            });
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-
-        }
-    };
-
-    private ServiceConnection mCryptConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            EncryptService.LocalBinder binder = (EncryptService.LocalBinder) service;
-            EncryptService encryptService = binder.getService();
-
-            for (int i=0; i<encryptService.getDataPackageSize(); i++) {
-                CopyDataParcelable dataPackage = encryptService.getDataPackage(i);
-                processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
-                        : ServiceType.ENCRYPT);
-            }
-
-            // animate the chart a little after initial values have been applied
-            mLineChart.animateXY(500, 500);
-
-            encryptService.setProgressListener(new EncryptService.ProgressListener() {
-                @Override
-                public void onUpdate(final CopyDataParcelable dataPackage) {
-                    if (getActivity() == null) {
-                        // callback called when we're not inside the app
-                        return;
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            processResults(dataPackage, dataPackage.move? ServiceType.DECRYPT
-                                    : ServiceType.ENCRYPT);
-                        }
-                    });
-                }
-
-                @Override
-                public void refresh() {
-
-                }
-            });
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
     @Override
     public void onResume() {
         super.onResume();
 
         Intent intent = new Intent(getActivity(), CopyService.class);
-        getActivity().bindService(intent, mConnection, 0);
+        getActivity().bindService(intent, mCopyConnection, 0);
 
         Intent intent1 = new Intent(getActivity(), ExtractService.class);
         getActivity().bindService(intent1, mExtractConnection, 0);
@@ -298,33 +151,23 @@ public class ProcessViewerFragment extends Fragment {
         getActivity().bindService(intent2, mCompressConnection, 0);
 
         Intent intent3 = new Intent(getActivity(), EncryptService.class);
-        getActivity().bindService(intent3, mCryptConnection, 0);
+        getActivity().bindService(intent3, mEncryptConnection, 0);
+
+        Intent intent4 = new Intent(getActivity(), DecryptService.class);
+        getActivity().bindService(intent4, mDecryptConnection, 0);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unbindService(mConnection);
+        getActivity().unbindService(mCopyConnection);
         getActivity().unbindService(mExtractConnection);
         getActivity().unbindService(mCompressConnection);
-        getActivity().unbindService(mCryptConnection);
+        getActivity().unbindService(mEncryptConnection);
+        getActivity().unbindService(mDecryptConnection);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
-     * Enum helps defining the result type for {@link #processResults(CopyDataParcelable, ServiceType)}
-     * to process
-     */
-    enum ServiceType {
-
-        COPY, EXTRACT, COMPRESS, ENCRYPT, DECRYPT
-    }
-
-    public void processResults(final CopyDataParcelable dataPackage, ServiceType serviceType) {
+    public void processResults(final DatapointParcelable dataPackage, int serviceType) {
         if (dataPackage != null) {
             String name = dataPackage.name;
             long total = dataPackage.totalSize;
@@ -370,6 +213,8 @@ public class ProcessViewerFragment extends Fragment {
                     + "</font></i>");
 
             mProgressTimer.setText(timerSpan);
+
+            if(dataPackage.completed) mCancelButton.setVisibility(View.GONE);
         }
     }
 
@@ -385,12 +230,11 @@ public class ProcessViewerFragment extends Fragment {
     }
 
     /**
-     * Setup drawables and click listeners based on the {@link ServiceType}
-     * @param serviceType
+     * Setup drawables and click listeners based on the SERVICE_* constants
      */
-    private void setupDrawables(ServiceType serviceType, boolean isMove) {
+    private void setupDrawables(int serviceType, boolean isMove) {
         switch (serviceType) {
-            case COPY:
+            case SERVICE_COPY:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -403,7 +247,7 @@ public class ProcessViewerFragment extends Fragment {
                         : getResources().getString(R.string.copying));
                 cancelBroadcast(new Intent(CopyService.TAG_BROADCAST_COPY_CANCEL));
                 break;
-            case EXTRACT:
+            case SERVICE_EXTRACT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -415,7 +259,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.extracting));
                 cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
                 break;
-            case COMPRESS:
+            case SERVICE_COMPRESS:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -427,7 +271,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.compressing));
                 cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));
                 break;
-            case ENCRYPT:
+            case SERVICE_ENCRYPT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -439,7 +283,7 @@ public class ProcessViewerFragment extends Fragment {
                 mProgressTypeText.setText(getResources().getString(R.string.crypt_encrypting));
                 cancelBroadcast(new Intent(EncryptService.TAG_BROADCAST_CRYPT_CANCEL));
                 break;
-            case DECRYPT:
+            case SERVICE_DECRYPT:
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
@@ -480,19 +324,16 @@ public class ProcessViewerFragment extends Fragment {
      * @param yValue the y-axis value, bytes processed per sec
      */
     private void addEntry(float xValue, float yValue) {
-
         ILineDataSet dataSet = mLineData.getDataSetByIndex(0);
-        if (dataSet==null) {
-            // adding set for first time
+
+        if (dataSet == null) {// adding set for first time
             dataSet = createDataSet();
             mLineData.addDataSet(dataSet);
         }
 
-        int randomDataSetIndex = (int) (Math.random() * mLineData.getDataSetCount());
-        mLineData.addEntry(new Entry(xValue, yValue), randomDataSetIndex);
-        mLineData.notifyDataChanged();
+        dataSet.addEntry(new Entry(xValue, yValue));
 
-        // let the chart know it's data has changed
+        mLineData.notifyDataChanged();
         mLineChart.notifyDataSetChanged();
         mLineChart.invalidate();
     }
@@ -544,4 +385,50 @@ public class ProcessViewerFragment extends Fragment {
         mLineChart.setData(mLineData);
         mLineChart.invalidate();
     }
+
+    private static class CustomServiceConnection implements ServiceConnection {
+
+        private ProcessViewerFragment fragment;
+        private LineChart lineChart;
+        private int serviceType;
+
+        public CustomServiceConnection(ProcessViewerFragment frag, LineChart lineChart, int serviceType) {
+            fragment = frag;
+            this.lineChart = lineChart;
+            this.serviceType = serviceType;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            ObtainableServiceBinder<? extends ProgressiveService> binder =
+                    (ObtainableServiceBinder<? extends ProgressiveService>) service;
+            ProgressiveService specificService = binder.getService();
+
+            for (int i = 0; i < specificService.getDataPackageSize(); i++) {
+                DatapointParcelable dataPackage = specificService.getDataPackage(i);
+                fragment.processResults(dataPackage, serviceType);
+            }
+
+            // animate the chart a little after initial values have been applied
+            lineChart.animateXY(500, 500);
+
+            specificService.setProgressListener(new EncryptService.ProgressListener() {
+                @Override
+                public void onUpdate(final DatapointParcelable dataPackage) {
+                    if (fragment.getActivity() == null) {
+                        // callback called when we're not inside the app
+                        return;
+                    }
+                    fragment.getActivity().runOnUiThread(() -> fragment.processResults(dataPackage, serviceType));
+                }
+
+                @Override
+                public void refresh() {}
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {}
+    }
+
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,13 +22,11 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -38,9 +37,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -57,17 +56,15 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends Service {
+public class ZipService extends ProgressiveService {
 
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
     String mZipPath;
     Context c;
-    ProgressListener progressListener;
     long totalBytes = 0L;
-    private final IBinder mBinder = new LocalBinder();
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler;
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -110,10 +107,10 @@ public class ZipService extends Service {
         mBuilder.setContentIntent(pendingIntent)
                 .setContentTitle(getResources().getString(R.string.compressing))
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
-        NotificationConstants.setMetadata(this, mBuilder);
-        startForeground(Integer.parseInt("789" + startId), mBuilder.build());
 
-        b.putInt("id", startId);
+        NotificationConstants.setMetadata(this, mBuilder);
+        startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
+
         b.putParcelableArrayList(KEY_COMPRESS_FILES, baseFiles);
         b.putString(KEY_COMPRESS_PATH, mZipPath);
         new DoWork().execute(b);
@@ -121,24 +118,7 @@ public class ZipService extends Service {
         return START_STICKY;
     }
 
-    public class LocalBinder extends Binder {
-        public ZipService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return ZipService.this;
-        }
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
-    public class DoWork extends AsyncTask<Bundle, Void, Integer> {
+    public class DoWork extends AsyncTask<Bundle, Void, Void> {
 
         ZipOutputStream zos;
 
@@ -156,8 +136,7 @@ public class ZipService extends Service {
             return b;
         }
 
-        protected Integer doInBackground(Bundle... p1) {
-            final int id = p1[0].getInt("id");
+        protected Void doInBackground(Bundle... p1) {
             ArrayList<HybridFileParcelable> baseFiles = p1[0].getParcelableArrayList(KEY_COMPRESS_FILES);
 
             // setting up service watchers and initial data packages
@@ -165,20 +144,18 @@ public class ZipService extends Service {
             totalBytes = FileUtils.getTotalBytes(baseFiles, c);
             progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
             progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
-                publishResults(id, fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
+                publishResults(fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed, false);
             });
 
-            CopyDataParcelable intent1 = new CopyDataParcelable(baseFiles.get(0).getName(),
-                    baseFiles.size(), totalBytes, false);
-            putDataPackage(intent1);
+            addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
             zipPath = p1[0].getString(KEY_COMPRESS_PATH);
             execute(toFileArray(baseFiles), zipPath);
-            return id;
+            return null;
         }
 
         @Override
-        public void onPostExecute(Integer b) {
+        public void onPostExecute(Void a) {
 
             watcherUtil.stopWatch();
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
@@ -247,7 +224,7 @@ public class ZipService extends Service {
         }
     }
 
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
             float progressPercent = ((float) done / total) * 100;
@@ -257,36 +234,23 @@ public class ZipService extends Service {
             mBuilder.setContentTitle(c.getResources().getString(title));
             mBuilder.setContentText(new File(fileName).getName() + " " +
                     Formatter.formatFileSize(c, done) + "/" + Formatter.formatFileSize(c, total));
-            int id1 = Integer.parseInt("789" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
+            mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
             if (done == total || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.compression_complete));
                 mBuilder.setContentText("");
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult(id1);
+                mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
+                mNotifyManager.cancel(NotificationConstants.ZIP_ID);
                 isCompleted = true;
             }
 
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, false, isCompleted);
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
+                    total, done, speed, isCompleted);
 
-            putDataPackage(intent);
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isCompleted) progressListener.refresh();
-            }
+            addDatapoint(intent);
         } else {
-            publishCompletedResult(Integer.parseInt("789" + id));
-        }
-    }
-
-    public void publishCompletedResult(int id1) {
-        try {
-            mNotifyManager.cancel(id1);
-        } catch (Exception e) {
-            e.printStackTrace();
+            mNotifyManager.cancel(NotificationConstants.ZIP_ID);
         }
     }
 
@@ -312,35 +276,6 @@ public class ZipService extends Service {
     @Override
     public void onDestroy() {
         this.unregisterReceiver(receiver1);
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
     }
 
 }

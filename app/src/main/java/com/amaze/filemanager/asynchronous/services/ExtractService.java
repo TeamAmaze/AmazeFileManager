@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ *                       Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,13 +22,11 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -37,9 +36,9 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.CopyDataParcelable;
+import com.amaze.filemanager.utils.DatapointParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -62,12 +61,15 @@ import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-public class ExtractService extends Service {
+
+public class ExtractService extends ProgressiveService {
 
     Context context;
 
+    private final IBinder mBinder = new ObtainableServiceBinder<>(this);
+
     // list of data packages,// to initiate chart in process viewer fragment
-    private ArrayList<CopyDataParcelable> dataPackages = new ArrayList<>();
+    private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
@@ -96,7 +98,7 @@ public class ExtractService extends Service {
         progressHandler = new ProgressHandler(1, totalSize);
 
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
-            publishResults(startId, fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
+            publishResults(fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
         });
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -109,47 +111,28 @@ public class ExtractService extends Service {
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder);
-        startForeground(Integer.parseInt("123" + startId), mBuilder.build());
+        startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
 
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
         return START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(receiver1);
+    }
+
     /**
      * Method calculates zip file size to initiate progress
      * Supporting local file extraction progress for now
-     *
-     * @param filePath
-     * @return
      */
     private long getTotalSize(String filePath) {
-
         return new File(filePath).length();
     }
 
-    private final IBinder mBinder = new LocalBinder();
-
-    public class LocalBinder extends Binder {
-        public ExtractService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return ExtractService.this;
-        }
-    }
-
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    ProgressListener progressListener;
-
-    public interface ProgressListener {
-        void onUpdate(CopyDataParcelable dataPackage);
-
-        void refresh();
-    }
-
-    private void publishResults(int id, String fileName, int sourceFiles, int sourceProgress,
+    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                 long total, long done, int speed, boolean isCompleted) {
         if (!progressHandler.getCancelled()) {
             mBuilder.setContentTitle(getResources().getString(R.string.extracting));
@@ -158,34 +141,20 @@ public class ExtractService extends Service {
             mBuilder.setOngoing(true);
             mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"
                     + Formatter.formatFileSize(context, total));
-            int id1 = Integer.parseInt("123" + id);
-            mNotifyManager.notify(id1, mBuilder.build());
+            mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
             if (progressPercent == 100 || total == 0) {
                 mBuilder.setContentTitle(getString(R.string.extract_complete));
                 mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, total));
                 mBuilder.setProgress(100, 100, false);
                 mBuilder.setOngoing(false);
-                mNotifyManager.notify(id1, mBuilder.build());
-                publishCompletedResult("", id1);
+                mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
+                mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
             }
 
-            CopyDataParcelable intent = new CopyDataParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, false, isCompleted);
-            putDataPackage(intent);
-
-            if (progressListener != null) {
-                progressListener.onUpdate(intent);
-                if (isCompleted) progressListener.refresh();
-            }
-        } else publishCompletedResult(fileName, Integer.parseInt("123" + id));
-    }
-
-    public void publishCompletedResult(String a, int id1) {
-        try {
-            mNotifyManager.cancel(id1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
+                    total, done, speed, isCompleted);
+            addDatapoint(intent);
+        } else mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
     }
 
     public static class DoWork extends AsyncTask<Void, Void, Void> {
@@ -209,8 +178,8 @@ public class ExtractService extends Service {
 
         @Override
         protected Void doInBackground(Void... p) {
-            final Context context = this.extractService.get();
-            if(context == null) return null;
+            final ExtractService extractService = this.extractService.get();
+            if(extractService == null) return null;
 
             File f = new File(compressedPath);
 
@@ -227,16 +196,16 @@ public class ExtractService extends Service {
                 boolean isRar = path.endsWith(".rar");
 
                 if (entriesToExtract != null && entriesToExtract.length != 0) {
-                    if (isZip) extract(context, f, extractionPath, entriesToExtract);
-                    else if (isRar) extractRar(context, f, extractionPath, entriesToExtract);
+                    if (isZip) extract(extractService, f, extractionPath, entriesToExtract);
+                    else if (isRar) extractRar(extractService, f, extractionPath, entriesToExtract);
                 } else {
-                    if (isZip) extract(context, f, extractionPath);
-                    else if (isRar) extractRar(context, f, extractionPath);
-                    else if (isTar) extractTar(context, f, extractionPath);
+                    if (isZip) extract(extractService, f, extractionPath);
+                    else if (isRar) extractRar(extractService, f, extractionPath);
+                    else if (isTar) extractTar(extractService, f, extractionPath);
                 }
             } catch (IOException | RarException e) {
                 Log.e("amaze", "Error while extracting file " + compressedPath, e);
-                AppConfig.toast(context, context.getString(R.string.error));
+                AppConfig.toast(extractService, extractService.getString(R.string.error));
             }
             return null;
         }
@@ -347,9 +316,8 @@ public class ExtractService extends Service {
          * @param archive         the file pointing to archive
          * @param destinationPath the where to extract
          * @param entryNamesList  names of files to be extracted from the archive
-         * @return
          */
-        private void extract(@NonNull final Context context, File archive, String destinationPath,
+        private void extract(@NonNull final ExtractService extractService, File archive, String destinationPath,
                                 String[] entryNamesList) throws IOException {
 
             ArrayList<ZipEntry> entry1 = new ArrayList<>();
@@ -377,7 +345,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, entry1.get(0).getName(), entryNamesList.length);
+            extractService.addFirstDatapoint(entry1.get(0).getName(), entryNamesList.length, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -387,13 +355,13 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getName());
-                    unzipEntry(context, zipfile, entry, destinationPath);
+                    unzipEntry(extractService, zipfile, entry, destinationPath);
                     progressHandler.setSourceFilesProcessed(++i);
                 }
             }
         }
 
-        private void extract(@NonNull final Context context, File archive, String destinationPath) throws IOException {
+        private void extract(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException {
             ArrayList<ZipEntry> arrayList = new ArrayList<>();
             ZipFile zipfile = new ZipFile(archive);
             for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
@@ -411,7 +379,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getName(), 1);
+            extractService.addFirstDatapoint(arrayList.get(0).getName(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -420,13 +388,13 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getName());
-                    unzipEntry(context, zipfile, entry, destinationPath);
+                    unzipEntry(extractService, zipfile, entry, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
         }
 
-        private void extractTar(@NonNull final Context context, File archive, String destinationPath) throws IOException {
+        private void extractTar(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException {
             ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
 
             TarArchiveInputStream inputStream = createTarInputStream(archive);
@@ -445,7 +413,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, archiveEntries.get(0).getName(), 1);
+            extractService.addFirstDatapoint(archiveEntries.get(0).getName(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -458,7 +426,7 @@ public class ExtractService extends Service {
 
                     inputStream.getNextTarEntry();
                     progressHandler.setFileName(entry.getName());
-                    unzipTAREntry(context, inputStream, entry, destinationPath);
+                    unzipTAREntry(extractService, inputStream, entry, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
@@ -475,7 +443,7 @@ public class ExtractService extends Service {
             }
         }
 
-        private void extractRar(@NonNull final Context context, File archive, String destinationPath) throws IOException, RarException {
+        private void extractRar(@NonNull final ExtractService extractService, File archive, String destinationPath) throws IOException, RarException {
             ArrayList<FileHeader> arrayList = new ArrayList<>();
             Archive zipFile = new Archive(archive);
             FileHeader fh = zipFile.nextFileHeader();
@@ -493,7 +461,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entriesToExtract
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), 1);
+            extractService.addFirstDatapoint(arrayList.get(0).getFileNameString(), 1, totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -503,16 +471,15 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(header.getFileNameString());
-                    unzipRAREntry(context, zipFile, header, destinationPath);
+                    unzipRAREntry(extractService, zipFile, header, destinationPath);
                 }
             }
             progressHandler.setSourceFilesProcessed(1);
         }
 
-        private void extractRar(@NonNull final Context context, File archive, String destinationPath,
+        private void extractRar(@NonNull final ExtractService extractService, File archive, String destinationPath,
                                 String[] entriesToExtract) throws IOException, RarException {
             Archive rarFile = new Archive(archive);
-
             ArrayList<FileHeader> arrayList = new ArrayList<>();
 
             // iterating archive elements to find file names that are to be extracted
@@ -534,7 +501,7 @@ public class ExtractService extends Service {
             // setting total bytes calculated from zip entries
             progressHandler.setTotalSize(totalBytes);
 
-            setInitDataPackage(totalBytes, arrayList.get(0).getFileNameString(), arrayList.size());
+            extractService.addFirstDatapoint(arrayList.get(0).getFileNameString(), arrayList.size(), totalBytes, false);
 
             watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
             watcherUtil.watch();
@@ -544,7 +511,7 @@ public class ExtractService extends Service {
                 if (!progressHandler.getCancelled()) {
 
                     progressHandler.setFileName(entry.getFileNameString());
-                    unzipRAREntry(context, rarFile, entry, destinationPath);
+                    unzipRAREntry(extractService, rarFile, entry, destinationPath);
                     progressHandler.setSourceFilesProcessed(++i);
                 }
             }
@@ -563,24 +530,6 @@ public class ExtractService extends Service {
             extractService.sendBroadcast(intent);
             extractService.stopSelf();
         }
-
-        /**
-         * Setting initial package to initialize charts in process viewer properly
-         */
-        private void setInitDataPackage(long totalSize, String fileName, int sourceTotal) {
-            final ExtractService extractService = this.extractService.get();
-            if(extractService == null) return;
-
-            CopyDataParcelable intent1 = new CopyDataParcelable(fileName, sourceTotal, totalSize, false);
-            extractService.putDataPackage(intent1);
-        }
-
-    }
-
-
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(receiver1);
     }
 
     /**
@@ -588,7 +537,6 @@ public class ExtractService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             progressHandler.setCancelled(true);
@@ -596,38 +544,8 @@ public class ExtractService extends Service {
     };
 
     @Override
-    public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
+    public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    /**
-     * Returns the {@link #dataPackages} list which contains
-     * data to be transferred to {@link ProcessViewerFragment}
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @return
-     */
-    public synchronized CopyDataParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
-    }
-
-    public synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
-    }
-
-    /**
-     * Puts a {@link CopyDataParcelable} into a list
-     * Method call is synchronized so as to avoid modifying the list
-     * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
-     * is executing the callbacks in {@link ProcessViewerFragment}
-     *
-     * @param dataPackage
-     */
-    private synchronized void putDataPackage(CopyDataParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
     }
 
 }

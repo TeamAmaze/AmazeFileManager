@@ -17,21 +17,22 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 
 import java.util.ArrayList;
 
 /**
- * Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ *         on 28/11/2017, at 20:59.
  */
 
-public class EncryptService extends ProgressiveService {
-
+public class DecryptService extends ProgressiveService {
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
     public static final String TAG_OPEN_MODE = "open_mode";
@@ -46,6 +47,7 @@ public class EncryptService extends ProgressiveService {
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
     private OpenMode openMode;
+    private String decryptPath;
     private HybridFileParcelable baseFile;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
 
@@ -59,7 +61,6 @@ public class EncryptService extends ProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         baseFile = intent.getParcelableExtra(TAG_SOURCE);
 
         openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
@@ -69,19 +70,17 @@ public class EncryptService extends ProgressiveService {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
+        notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setContentIntent(pendingIntent);
 
-        // we have to encrypt the source
+        decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
+        notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
+        notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
-        notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
-        notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
 
-        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder);
+        startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
 
-        startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
-
-        new BackgroundTask().execute();
+        new DecryptService.BackgroundTask().execute();
 
 
         return START_STICKY;
@@ -91,22 +90,27 @@ public class EncryptService extends ProgressiveService {
 
         @Override
         protected Void doInBackground(Void... params) {
+            String baseFileFolder = baseFile.isDirectory()?
+                    baseFile.getPath():
+                    baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
 
             if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
             progressHandler = new ProgressHandler(1, totalSize);
-            progressHandler.setProgressListener(EncryptService.this::publishResults);
+            progressHandler.setProgressListener(DecryptService.this::publishResults);
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
 
-            addFirstDatapoint(baseFile.getName(), 1, totalSize, true);// we're using encrypt as move flag false
+            addFirstDatapoint(baseFile.getName(), 1, totalSize, false);// we're using encrypt as move flag false
 
-            if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
+            if (FileUtil.checkFolder(baseFileFolder, context) == 1) {
                 serviceWatcherUtil.watch();
 
-                // we're here to encrypt
+                // we're here to decrypt, we'll decrypt at a custom path.
+                // the path is to the same directory as in encrypted one in normal case
+                // and the cache directory in case we're here because of the viewer
                 try {
-                    new CryptUtil(context, baseFile, progressHandler, failedOps);
+                    new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps);
                 } catch (Exception e) {
                     e.printStackTrace();
                     failedOps.add(baseFile);
@@ -123,11 +127,8 @@ public class EncryptService extends ProgressiveService {
             serviceWatcherUtil.stopWatch();
             generateNotification(failedOps);
 
-            Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
+            Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
             sendBroadcast(intent);
-
-            stopSelf();
         }
     }
 
@@ -141,26 +142,27 @@ public class EncryptService extends ProgressiveService {
             notificationBuilder.setProgress(100, Math.round(progressPercent), false);
             notificationBuilder.setOngoing(true);
             int title = R.string.crypt_encrypting;
+            title = R.string.crypt_decrypting;
             notificationBuilder.setContentTitle(context.getResources().getString(title));
             notificationBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
                     writtenSize) + "/" +
                     Formatter.formatFileSize(context, totalSize));
 
-            notificationManager.notify(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
+            notificationManager.notify(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
             if (writtenSize == totalSize || totalSize == 0) {
 
                 notificationBuilder.setContentText("");
                 notificationBuilder.setOngoing(false);
                 notificationBuilder.setAutoCancel(true);
-                notificationManager.notify(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
-                notificationManager.cancel(NotificationConstants.ENCRYPT_ID);
+                notificationManager.notify(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
+                notificationManager.cancel(NotificationConstants.DECRYPT_ID);
             }
 
             //for processviewer
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, false);
+            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles,
+                    sourceProgress, totalSize, writtenSize, speed, false);
             addDatapoint(intent);
-        } else notificationManager.cancel(NotificationConstants.ENCRYPT_ID);
+        } else notificationManager.cancel(NotificationConstants.DECRYPT_ID);
     }
 
     @Override
@@ -178,33 +180,30 @@ public class EncryptService extends ProgressiveService {
      * Displays a notification, sends intent and cancels progress if there were some failures
      * in copy progress
      * @param failedOps
-     *
      */
     void generateNotification(ArrayList<HybridFile> failedOps) {
         notificationManager.cancelAll();
 
         if(failedOps.size()==0)return;
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
-            .setContentTitle(context.getString(R.string.operationunsuccesful))
-            .setContentText(context.getString(R.string.copy_error, context.getString(R.string.copy_error).replace("%s",
-                    context.getString(R.string.crypt_encrypted).toLowerCase())))
-            .setAutoCancel(true);
-
-        NotificationConstants.setMetadata(context, mBuilder);
+        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context);
+        mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
+        mBuilder.setContentText(context.getString(R.string.copy_error).replace("%s",
+                        context.getString(R.string.crypt_decrypted).toLowerCase()));
+        mBuilder.setAutoCancel(true);
 
         progressHandler.setCancelled(true);
 
         Intent intent= new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
-        intent.putExtra("move", true);
+        intent.putExtra("move", false);
 
         PendingIntent pIntent = PendingIntent.getActivity(this, 101, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         mBuilder.setContentIntent(pIntent);
-        mBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
+        mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
-        notificationManager.notify(NotificationConstants.FAILED_ID, mBuilder.build());
+        notificationManager.notify(NotificationConstants.FAILED_ID,mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -57,13 +58,10 @@ public class EncryptDecryptUtils {
                                    UtilitiesProviderInterface utilsProvider,
                                    boolean broadcastResult) {
 
-        Intent decryptIntent = new Intent(main.getContext(), EncryptService.class);
+        Intent decryptIntent = new Intent(main.getContext(), DecryptService.class);
         decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
-        decryptIntent.putExtra(EncryptService.TAG_CRYPT_MODE,
-                EncryptService.CryptEnum.DECRYPT.ordinal());
         decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
         decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
-        decryptIntent.putExtra(EncryptService.TAG_BROADCAST_RESULT, broadcastResult);
         SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
 
         EncryptedEntry encryptedEntry;
