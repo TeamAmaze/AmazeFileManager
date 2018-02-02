@@ -1,6 +1,5 @@
 package com.amaze.filemanager.activities;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -21,18 +20,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
-
-import java.util.Random;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 /**
  * Created by vishal on 27/7/16.
@@ -98,12 +94,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         switchIcons();
-
-        // license icon easter
-        Random random = new Random();
-        if (random.nextInt(2) == 0) {
-            mLicensesIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_apple_ios_grey600_24dp));
-        }
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.about_header);
@@ -193,13 +183,31 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 break;
 
             case R.id.relative_layout_licenses:
-                Dialog dialog = new Dialog(this, android.R.style.Theme_Holo_Light);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                final View dialog_view = getLayoutInflater().inflate(R.layout.open_source_licenses, null);
-                WebView wv = (WebView) dialog_view.findViewById(R.id.webView1);
-                dialog.setContentView(dialog_view);
-                wv.loadData(PreferenceUtils.LICENCE_TERMS, "text/html", null);
-                dialog.show();
+                LibsBuilder libsBuilder = new LibsBuilder()
+                        .withFields(R.string.class.getFields())
+                        .withActivityTitle(getString(R.string.libraries))
+                        .withAboutIconShown(true)
+                        .withAboutVersionShownName(true)
+                        .withAboutVersionShownCode(false)
+                        .withAboutDescription(getString(R.string.about_amaze))
+                        .withAboutSpecial1(getString(R.string.license))
+                        .withAboutSpecial1Description(getString(R.string.amaze_license))
+                        .withLicenseShown(true);
+
+                switch(getAppTheme().getSimpleTheme()) {
+                    case LIGHT:
+                        libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
+                        break;
+                    case DARK:
+                        libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
+                        break;
+                    case BLACK:
+                        libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
+                        break;
+                }
+
+                libsBuilder.start(this);
+
                 break;
 
             case R.id.text_view_author_1_g_plus:
