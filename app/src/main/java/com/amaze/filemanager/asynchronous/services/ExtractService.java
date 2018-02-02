@@ -57,7 +57,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -198,6 +200,7 @@ public class ExtractService extends ProgressiveService {
                 if (entriesToExtract != null && entriesToExtract.length != 0) {
                     if (isZip) extract(extractService, f, extractionPath, entriesToExtract);
                     else if (isRar) extractRar(extractService, f, extractionPath, entriesToExtract);
+                    else if (isTar) extractTar(extractService, f, extractionPath, entriesToExtract);
                 } else {
                     if (isZip) extract(extractService, f, extractionPath);
                     else if (isRar) extractRar(extractService, f, extractionPath);
@@ -403,6 +406,53 @@ public class ExtractService extends ProgressiveService {
 
             while (tarArchiveEntry != null) {
                 archiveEntries.add(tarArchiveEntry);
+                tarArchiveEntry = inputStream.getNextTarEntry();
+            }
+
+            for (TarArchiveEntry entry : archiveEntries) {
+                totalBytes += entry.getSize();
+            }
+
+            // setting total bytes calculated from zip entries
+            progressHandler.setTotalSize(totalBytes);
+
+            extractService.addFirstDatapoint(archiveEntries.get(0).getName(), 1, totalBytes, false);
+
+            watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
+            watcherUtil.watch();
+
+            inputStream = createTarInputStream(archive);
+
+            for (TarArchiveEntry entry : archiveEntries) {
+
+                if (!progressHandler.getCancelled()) {
+
+                    inputStream.getNextTarEntry();
+                    progressHandler.setFileName(entry.getName());
+                    unzipTAREntry(extractService, inputStream, entry, destinationPath);
+                }
+            }
+            progressHandler.setSourceFilesProcessed(1);
+
+            // operating finished
+            inputStream.close();
+        }
+
+        private void extractTar(@NonNull final ExtractService extractService, File archive,
+                                            String destinationPath, String[] entryNamesList) throws IOException {
+            List<String> entriesToDecompress = new ArrayList<>(Arrays.asList(entryNamesList));
+            ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
+
+            TarArchiveInputStream inputStream = createTarInputStream(archive);
+
+            TarArchiveEntry tarArchiveEntry = inputStream.getNextTarEntry();
+
+            while (tarArchiveEntry != null) {
+                if(entriesToDecompress.contains(tarArchiveEntry.getName())) {
+                    entriesToDecompress.remove(tarArchiveEntry.getName());
+                    archiveEntries.add(tarArchiveEntry);
+                }
+
                 tarArchiveEntry = inputStream.getNextTarEntry();
             }
 
