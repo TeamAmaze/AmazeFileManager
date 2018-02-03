@@ -2,9 +2,14 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
-import com.amaze.filemanager.filesystem.compressed.helpers.RarDecompressor;
-import com.amaze.filemanager.filesystem.compressed.helpers.ZipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.helpers.TarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 
 import java.io.File;
 
@@ -14,6 +19,27 @@ import java.io.File;
  */
 
 public class CompressedHelper {
+
+    /**
+     * To add compatibility with other compressed file types edit this method
+     */
+    public static Extractor getExtractorInstance(Context context, File file, String outputPath,
+                                                 Extractor.OnUpdate listener) {
+        Extractor extractor;
+        String type = file.getPath().substring(file.getPath().lastIndexOf('.')+1, file.getPath().length()).toLowerCase();
+
+        if (isZip(type)) {
+            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener);
+        } else if (isRar(type)) {
+            extractor = new RarExtractor(context, file.getPath(), outputPath, listener);
+        } else if(isTar(type)) {
+            extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
+        } else {
+            return null;
+        }
+
+        return extractor;
+    }
 
     /**
      * To add compatibility with other compressed file types edit this method

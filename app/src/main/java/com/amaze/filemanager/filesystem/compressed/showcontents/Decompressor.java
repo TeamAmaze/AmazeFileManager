@@ -1,4 +1,4 @@
-package com.amaze.filemanager.filesystem.compressed;
+package com.amaze.filemanager.filesystem.compressed.showcontents;
 
 import android.content.Context;
 import android.content.Intent;
