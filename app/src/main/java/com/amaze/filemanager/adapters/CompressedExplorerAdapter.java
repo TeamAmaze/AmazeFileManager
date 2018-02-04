@@ -22,7 +22,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
+import com.amaze.filemanager.filesystem.compressed.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -48,7 +48,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     private Drawable folder;
     private ArrayList<CompressedObjectParcelable> items;
     private CompressedExplorerFragment compressedExplorerFragment;
-    private CompressedInterface compressedInterface;
+    private Decompressor decompressor;
     private LayoutInflater mInflater;
     private boolean[] itemsChecked;
     private int offset = 0;
@@ -56,12 +56,12 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     public CompressedExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider,
                                      ArrayList<CompressedObjectParcelable> items,
                                      CompressedExplorerFragment compressedExplorerFragment,
-                                     CompressedInterface compressedInterface) {
+                                     Decompressor decompressor) {
         setHasStableIds(true);
 
         this.utilsProvider = utilsProvider;
         this.items = items;
-        this.compressedInterface = compressedInterface;
+        this.decompressor = decompressor;
 
         itemsChecked = new boolean[items.size()];
 
@@ -285,7 +285,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         Toast.makeText(compressedExplorerFragment.getContext(),
                                 compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
-                        compressedInterface.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
+                        decompressor.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
                                 new String[]{rowItem.name});
                     }
                 }

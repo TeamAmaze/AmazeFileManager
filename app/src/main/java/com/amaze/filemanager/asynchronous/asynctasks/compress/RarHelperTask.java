@@ -3,7 +3,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 import android.os.AsyncTask;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
-import com.amaze.filemanager.filesystem.compressed.helpers.RarHelper;
+import com.amaze.filemanager.filesystem.compressed.helpers.RarDecompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
@@ -56,7 +56,7 @@ public class RarHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObj
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(RarHelper.convertName(header), 0, header.getDataSize(), header.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(header), 0, header.getDataSize(), header.isDirectory()));
                 }
             }
             Collections.sort(elements, new CompressedObjectParcelable.Sorter());

@@ -34,7 +34,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.filesystem.compressed.CompressedInterface;
+import com.amaze.filemanager.filesystem.compressed.Decompressor;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
@@ -502,8 +502,8 @@ public class MainActivityHelper {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
-            CompressedInterface compressedInterface = CompressedHelper.getCompressedInterfaceInstance(mainActivity, file);
-            compressedInterface.decompress(null);
+            Decompressor decompressor = CompressedHelper.getCompressedInterfaceInstance(mainActivity, file);
+            decompressor.decompress(null);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

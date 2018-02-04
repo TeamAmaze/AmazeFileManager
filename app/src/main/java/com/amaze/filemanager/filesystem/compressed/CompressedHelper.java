@@ -2,8 +2,8 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
-import com.amaze.filemanager.filesystem.compressed.helpers.RarHelper;
-import com.amaze.filemanager.filesystem.compressed.helpers.ZipHelper;
+import com.amaze.filemanager.filesystem.compressed.helpers.RarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.helpers.ZipDecompressor;
 
 import java.io.File;
 
@@ -17,8 +17,8 @@ public class CompressedHelper {
     /**
      * To add compatibility with other compressed file types edit this method
      */
-    public static CompressedInterface getCompressedInterfaceInstance(Context context, File file) {
-        CompressedInterface compressedInterface;
+    public static Decompressor getCompressedInterfaceInstance(Context context, File file) {
+        Decompressor decompressor;
 
         String path = file.getPath().toLowerCase();
         boolean isZip = path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk");
@@ -26,15 +26,15 @@ public class CompressedHelper {
         boolean isRar = path.endsWith(".rar");
 
         if (isZip || isTar) {
-            compressedInterface = new ZipHelper(context);
+            decompressor = new ZipDecompressor(context);
         } else if (isRar) {
-            compressedInterface = new RarHelper(context);
+            decompressor = new RarDecompressor(context);
         } else {
             return null;
         }
 
-        compressedInterface.setFilePath(file.getPath());
-        return compressedInterface;
+        decompressor.setFilePath(file.getPath());
+        return decompressor;
     }
 
 }
