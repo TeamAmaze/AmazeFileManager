@@ -967,8 +967,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void updateTabWithDb(Tab tab) {
-        CURRENT_PATH = tab.getPath();
-        home = tab.getHome();
+        CURRENT_PATH = tab.path;
+        home = tab.home;
         loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
     }
 

@@ -2025,14 +2025,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (b) {
                     tabHandler.clear();
                     if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, "", dataUtils.getList().get(1).path, "/"));
+                        tabHandler.addTab(new Tab(1, dataUtils.getList().get(1).path, "/"));
                     else
-                        tabHandler.addTab(new Tab(1, "", "/", "/"));
+                        tabHandler.addTab(new Tab(1, "/", "/"));
                     if (!dataUtils.getList().get(0).isSection()) {
                         String pa = dataUtils.getList().get(0).path;
-                        tabHandler.addTab(new Tab(2, "", pa, pa));
+                        tabHandler.addTab(new Tab(2, pa, pa));
                     } else
-                        tabHandler.addTab(new Tab(2, "", dataUtils.getList().get(1).path, "/"));
+                        tabHandler.addTab(new Tab(2, dataUtils.getList().get(1).path, "/"));
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)

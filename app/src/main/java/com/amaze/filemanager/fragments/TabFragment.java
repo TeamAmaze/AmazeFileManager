@@ -110,14 +110,14 @@ public class TabFragment extends android.support.v4.app.Fragment
             if (i == 0) {
                 // creating tabs in db for the first time, probably the first launch of app
                 if (mainActivity.storage_count > 1)
-                    addTab(new Tab(1, "", dataUtils.getList().get(1).path, "/"), 1, "");
+                    addTab(new Tab(1, dataUtils.getList().get(1).path, "/"), 1, "");
                 else
-                    addTab(new Tab(1, "", "/", "/"), 1, "");
+                    addTab(new Tab(1,"/", "/"), 1, "");
                 if (!dataUtils.getList().get(0).isSection()) {
                     String pa = dataUtils.getList().get(0).path;
-                    addTab(new Tab(2, "", pa, pa), 2, "");
+                    addTab(new Tab(2, pa, pa), 2, "");
                 } else
-                    addTab(new Tab(2, "", dataUtils.getList().get(1).path, "/"), 2, "");
+                    addTab(new Tab(2, dataUtils.getList().get(1).path, "/"), 2, "");
             } else {
                 if (path != null && path.length() != 0) {
                     if (l == 1)
@@ -212,9 +212,9 @@ public class TabFragment extends android.support.v4.app.Fragment
                     mainActivity.updateDrawer(m.getCurrentPath());
                 }
                 if (m.openMode == OpenMode.FILE) {
-                    tabHandler.addTab(new Tab(i, m.getCurrentPath(), m.getCurrentPath(), m.home));
+                    tabHandler.addTab(new Tab(i, m.getCurrentPath(), m.home));
                 } else
-                    tabHandler.addTab(new Tab(i, m.home, m.home, m.home));
+                    tabHandler.addTab(new Tab(i, m.home, m.home));
 
                 i++;
             }
@@ -337,7 +337,7 @@ public class TabFragment extends android.support.v4.app.Fragment
             b.putString("lastpath", path);
         else
             b.putString("lastpath", tab.getOriginalPath(savepaths, mainActivity.getPrefs()));
-        b.putString("home", tab.getHome());
+        b.putString("home", tab.home);
         b.putInt("no", pos);
         main.setArguments(b);
         fragments.add(main);

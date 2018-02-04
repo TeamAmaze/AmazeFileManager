@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
  * Copyright (C) 2014 Vishal Nehra <vishalmeham2@gmail.com>
  *
  * This file is part of Amaze File Manager.
@@ -24,63 +25,25 @@ import android.content.SharedPreferences;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 /**
- * Created by Vishal on 9/17/2014.
+ * Created by Vishal on 9/17/2014
  */
 public class Tab {
+    public final int tabNumber;
+    public final String path;
+    public final String home;
 
-    private int _id;
-    private int _tab_no;
-    private String _label;
-    private String _path;
-    private String _home;
-
-    public Tab() {
-        // Empty constructor
+    public Tab(int tabNo, String path, String home) {
+        this.tabNumber = tabNo;
+        this.path = path;
+        this.home = home;
     }
 
-    public Tab( int tab_no, String label, String path,String home) {
-        this._tab_no = tab_no;
-        this._label = label;
-        this._path = path;
-        this._home=home;
-
-    }
-
-    public void setTab(int tab_no) {
-        this._tab_no = tab_no;
-    }
-
-    public int getTab() {
-        return this._tab_no;
-    }
-    public void setHome(String tab_no) {
-        this._home=tab_no;
-    }
-
-    public String getHome() {
-        return this._home;
-    }
-
-    public void setLabel(String label) {
-        this._label = label;
-    }
-
-    public String getLabel() {
-        return this._label;
-    }
-
-    public void setPath(String path) {
-        this._path = path;
-    }
-
-    public String getPath() {
-        return this._path;
-    }
     public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences){
-        if(savePaths && FileUtils.isPathAccesible(getPath(), sharedPreferences)) {
-            return getPath();
+        if(savePaths && FileUtils.isPathAccesible(path, sharedPreferences)) {
+            return path;
         } else {
-            return getHome();
+            return home;
         }
     }
+
 }
