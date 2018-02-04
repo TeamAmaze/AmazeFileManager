@@ -184,11 +184,12 @@ public class ExtractService extends ProgressiveService {
             if(extractService == null) return null;
 
             File f = new File(compressedPath);
+            String extractDirName = CompressedHelper.getFileName(f.getName());
 
             if (!compressedPath.equals(extractionPath)) {// custom extraction path not set, extract at default path
-                extractionPath = f.getParent() + "/" + f.getName().substring(0, f.getName().lastIndexOf("."));
+                extractionPath = f.getParent() + "/" + extractDirName;
             } else if (extractionPath.endsWith("/")) {
-                extractionPath = extractionPath + f.getName().substring(0, f.getName().lastIndexOf("."));
+                extractionPath = extractionPath + extractDirName;
             }
 
             try {

@@ -749,7 +749,7 @@ public class GeneralDialogCreation {
         if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
-        if (!CompressedHelper.isFileExtractable(f)) {
+        if (!CompressedHelper.isFileExtractable(f.getPath())) {
             b.getActionButton(DialogAction.NEGATIVE).setEnabled(false);
         }
         b.show();
