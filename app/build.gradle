@@ -152,7 +152,7 @@ dependencies {
     implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.1'//Floating Action Buttons Menu (aka expandable FAB)
 
     //Simple library show
-    implementation('com.mikepenz:aboutlibraries:6.0.2@aar') {
+    implementation('com.mikepenz:aboutlibraries:6.0.3@aar') {
         transitive = true
     }
 

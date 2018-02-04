@@ -184,7 +184,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
             case R.id.relative_layout_licenses:
                 LibsBuilder libsBuilder = new LibsBuilder()
-                        .withFields(R.string.class.getFields())
+                        .withLibraries("commonscompress", "apachemina", "volley")//Not autodetected for some reason
                         .withActivityTitle(getString(R.string.libraries))
                         .withAboutIconShown(true)
                         .withAboutVersionShownName(true)
