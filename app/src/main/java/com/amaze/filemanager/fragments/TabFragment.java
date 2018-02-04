@@ -32,7 +32,6 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,14 +109,14 @@ public class TabFragment extends android.support.v4.app.Fragment
             if (i == 0) {
                 // creating tabs in db for the first time, probably the first launch of app
                 if (mainActivity.storage_count > 1)
-                    addTab(new Tab(1, dataUtils.getList().get(1).path, "/"), 1, "");
+                    addTab(new Tab(1, dataUtils.getDrawerItems().get(1).path, "/"), 1, "");
                 else
                     addTab(new Tab(1,"/", "/"), 1, "");
-                if (!dataUtils.getList().get(0).isSection()) {
-                    String pa = dataUtils.getList().get(0).path;
+                if (!dataUtils.getDrawerItems().get(0).isSection()) {
+                    String pa = dataUtils.getDrawerItems().get(0).path;
                     addTab(new Tab(2, pa, pa), 2, "");
                 } else
-                    addTab(new Tab(2, dataUtils.getList().get(1).path, "/"), 2, "");
+                    addTab(new Tab(2, dataUtils.getDrawerItems().get(1).path, "/"), 2, "");
             } else {
                 if (path != null && path.length() != 0) {
                     if (l == 1)
@@ -209,7 +208,7 @@ public class TabFragment extends android.support.v4.app.Fragment
                 if (i - 1 == MainActivity.currentTab && i == pos) {
                     mainActivity.getAppbar().getBottomBar().updatePath(m.getCurrentPath(), m.results,
                             MainActivityHelper.SEARCH_TEXT, m.openMode, m.folder_count, m.file_count, m);
-                    mainActivity.updateDrawer(m.getCurrentPath());
+                    mainActivity.selectCorrectDrawerItemForPath(m.getCurrentPath());
                 }
                 if (m.openMode == OpenMode.FILE) {
                     tabHandler.addTab(new Tab(i, m.getCurrentPath(), m.home));
@@ -286,7 +285,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (fragment != null && fragment instanceof MainFragment) {
             MainFragment ma = (MainFragment) fragment;
             if (ma.getCurrentPath() != null) {
-                mainActivity.updateDrawer(ma.getCurrentPath());
+                mainActivity.selectCorrectDrawerItemForPath(ma.getCurrentPath());
                 mainActivity.getAppbar().getBottomBar().updatePath(ma.getCurrentPath(),
                         ma.results, MainActivityHelper.SEARCH_TEXT, ma.openMode,
                         ma.folder_count, ma.file_count, ma);

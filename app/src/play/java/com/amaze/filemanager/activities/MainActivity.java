@@ -143,6 +143,9 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
+import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -833,45 +836,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
     }
 
-    public void updateDrawer(String path) {
-        new AsyncTask<String, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(String... strings) {
-                String path = strings[0];
-                int k = 0, i = 0;
-                String entryItemPathOld = "";
-                for (DrawerItem drawerItem : dataUtils.getList()) {
-                    if (drawerItem.type == DrawerItem.ITEM_ENTRY) {
+    public void selectCorrectDrawerItemForPath(final String path) {
+        Integer position = dataUtils.findLongestContainingDrawerItem(path);
 
-                        String entryItemPath = drawerItem.path;
-
-                        if (path.contains(drawerItem.path)) {
-
-                            if (entryItemPath.length() > entryItemPathOld.length()) {
-
-
-                                // we don't need to match with the quick search drawer items
-                                // whether current entry item path is bigger than the older one found,
-                                // for eg. when we have /storage and /storage/Movies as entry items
-                                // we would choose to highlight /storage/Movies in drawer adapter
-                                k = i;
-
-                                entryItemPathOld = entryItemPath;
-                            }
-                        }
-                    }
-                    i++;
-                }
-                return k;
-            }
-
-            @Override
-            public void onPostExecute(Integer integers) {
-                if (adapter != null)
-                    adapter.toggleChecked(integers);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, path);
-
+        if (adapter != null) {
+            adapter.toggleChecked(position != null? position:-1);
+        }
     }
 
     public void goToMain(String path) {
@@ -901,7 +871,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     public void selectItem(final int i) {
-        ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getList();
+        ArrayList<DrawerItem> directoryDrawerItems = dataUtils.getDrawerItems();
         switch (directoryDrawerItems.get(i).type) {
             case DrawerItem.ITEM_ENTRY:
                 if ((selectedStorage == DRAWER_SELECTED_NONE || selectedStorage >= directoryDrawerItems.size())) {
@@ -1586,7 +1556,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     finish();
         }));
 
-        dataUtils.setList(sectionDrawerItems);
+        dataUtils.setDrawerItems(sectionDrawerItems);
 
         adapter = new DrawerAdapter(this, this, sectionDrawerItems, this);
         mDrawerList.setAdapter(adapter);
@@ -2025,14 +1995,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (b) {
                     tabHandler.clear();
                     if (storage_count > 1)
-                        tabHandler.addTab(new Tab(1, dataUtils.getList().get(1).path, "/"));
+                        tabHandler.addTab(new Tab(1, dataUtils.getDrawerItems().get(1).path, "/"));
                     else
                         tabHandler.addTab(new Tab(1, "/", "/"));
-                    if (!dataUtils.getList().get(0).isSection()) {
-                        String pa = dataUtils.getList().get(0).path;
+                    if (!dataUtils.getDrawerItems().get(0).isSection()) {
+                        String pa = dataUtils.getDrawerItems().get(0).path;
                         tabHandler.addTab(new Tab(2, pa, pa));
                     } else
-                        tabHandler.addTab(new Tab(2, dataUtils.getList().get(1).path, "/"));
+                        tabHandler.addTab(new Tab(2, dataUtils.getDrawerItems().get(1).path, "/"));
                     if (tabFragment != null) {
                         Fragment main = tabFragment.getFragmentAtIndex(0);
                         if (main != null)

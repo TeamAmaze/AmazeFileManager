@@ -1,5 +1,7 @@
 package com.amaze.filemanager.utils;
 
+import android.support.annotation.Nullable;
+
 import com.amaze.filemanager.adapters.data.DrawerItem;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -10,6 +12,8 @@ import com.cloudrail.si.services.OneDrive;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
+import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +39,8 @@ public class DataUtils {
     private LinkedList<String> history = new LinkedList<>();
     private ArrayList<String> storages = new ArrayList<>();
 
-    private ArrayList<DrawerItem> list = new ArrayList<>();
+    private ArrayList<DrawerItem> drawerItems = new ArrayList<>();
+    private InvertedRadixTree<Integer> tree;
 
     private ArrayList<String[]> servers = new ArrayList<>();
     private ArrayList<String[]> books = new ArrayList<>();
@@ -371,12 +376,25 @@ public class DataUtils {
         this.storages = storages;
     }
 
-    public ArrayList<DrawerItem> getList() {
-        return list;
+    public ArrayList<DrawerItem> getDrawerItems() {
+        return drawerItems;
     }
 
-    public synchronized void setList(ArrayList<DrawerItem> list) {
-        this.list = list;
+    public synchronized void setDrawerItems(ArrayList<DrawerItem> drawerItems) {
+        tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+        for (int i = 0; i < drawerItems.size(); i++) {
+            String path = drawerItems.get(i).path;
+            if(path != null) tree.put(path, i);
+        }
+        this.drawerItems = drawerItems;
+    }
+
+    /**
+     * @param path the path to find
+     * @return the index of the longest containing DrawerItem in getDrawerItems() or null
+     */
+    public @Nullable Integer findLongestContainingDrawerItem(CharSequence path) {
+        return tree.getValueForLongestKeyPrefixing(path);
     }
 
     /**
