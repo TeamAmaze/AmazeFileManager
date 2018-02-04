@@ -32,6 +32,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -335,7 +336,7 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (path != null && path.length() != 0)
             b.putString("lastpath", path);
         else
-            b.putString("lastpath", tab.getOriginalPath(savepaths));
+            b.putString("lastpath", tab.getOriginalPath(savepaths, mainActivity.getPrefs()));
         b.putString("home", tab.getHome());
         b.putInt("no", pos);
         main.setArguments(b);

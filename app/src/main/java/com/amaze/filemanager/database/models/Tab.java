@@ -19,6 +19,10 @@
 
 package com.amaze.filemanager.database.models;
 
+import android.content.SharedPreferences;
+
+import com.amaze.filemanager.utils.files.FileUtils;
+
 /**
  * Created by Vishal on 9/17/2014.
  */
@@ -72,8 +76,11 @@ public class Tab {
     public String getPath() {
         return this._path;
     }
-    public String getOriginalPath(boolean savePaths){
-        if(savePaths)return getPath();
-        else return getHome();
+    public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences){
+        if(savePaths && FileUtils.isPathAccesible(getPath(), sharedPreferences)) {
+            return getPath();
+        } else {
+            return getHome();
+        }
     }
 }
