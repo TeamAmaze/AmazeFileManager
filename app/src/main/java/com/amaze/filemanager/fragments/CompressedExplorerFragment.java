@@ -200,7 +200,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
             files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
-            decompressor = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
+            decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
 
             changePath("");
         } else {
@@ -228,7 +228,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
         relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
 
-        decompressor = CompressedHelper.getCompressedInterfaceInstance(getContext(), compressedFile);
+        decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
         createViews(elements, relativeDirectory);
     }
 

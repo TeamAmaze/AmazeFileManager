@@ -12,7 +12,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -502,7 +501,7 @@ public class MainActivityHelper {
             mainActivity.oppathe = (file.getPath());
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
-            Decompressor decompressor = CompressedHelper.getCompressedInterfaceInstance(mainActivity, file);
+            Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
             decompressor.decompress(null);
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }

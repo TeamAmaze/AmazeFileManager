@@ -52,6 +52,8 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -693,14 +695,10 @@ public class FileUtils {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         final Toast[] studioCount = {null};
 
-        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
-                f.getName().toLowerCase().endsWith(".jar") ||
-                f.getName().toLowerCase().endsWith(".rar")||
-                f.getName().toLowerCase().endsWith(".tar") ||
-                f.getName().toLowerCase().endsWith(".tar.gz")) {
-            GeneralDialogCreation.showArchiveDialog(f, m);
-        } else if(f.getName().toLowerCase().endsWith(".apk")) {
+        if(f.getName().toLowerCase().endsWith(".apk")) {
             GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
+        } else if (defaultHandler && CompressedHelper.isFileExtractable(f)) {
+            GeneralDialogCreation.showArchiveDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
