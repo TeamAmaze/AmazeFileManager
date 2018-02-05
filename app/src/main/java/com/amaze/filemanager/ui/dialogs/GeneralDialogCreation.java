@@ -765,6 +765,9 @@ public class GeneralDialogCreation {
 
         View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
         EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
+        etFilename.setHint(R.string.enterzipname);
+        etFilename.setText(".zip");
+        etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
         WarnableTextInputLayout tilFilename = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
         a.customView(dialogView, false)
