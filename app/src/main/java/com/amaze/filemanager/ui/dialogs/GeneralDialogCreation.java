@@ -603,10 +603,8 @@ public class GeneralDialogCreation {
 
         View rootView = View.inflate(c, R.layout.dialog_encrypt_authenticate, null);
 
-        final AppCompatEditText passwordEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
-        final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
+        final AppCompatEditText passwordEditText = rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
+        final AppCompatEditText passwordConfirmEditText = rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
         
         passwordEditText.post(() -> {
             InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -621,10 +619,7 @@ public class GeneralDialogCreation {
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
 
-                if (TextUtils.isEmpty(s.toString())) {
-                    textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
-                            c.getResources().getString(R.string.password)));
-                } else {
+                if (!TextUtils.isEmpty(s.toString())) {
 
                     textInputLayoutPassword.setError("");
                 }
@@ -645,7 +640,9 @@ public class GeneralDialogCreation {
         passwordConfirmEditText.setOnFocusChangeListener((v, hasFocus) -> {
 
             if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
-                textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
+
+                textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
+                        + String.format(c.getResources().getString(R.string.cantbeempty),
                         c.getResources().getString(R.string.password)));
             } else {
 
@@ -657,7 +654,8 @@ public class GeneralDialogCreation {
 
             boolean isPasswordSame = passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString());
             if (!isPasswordSame && !TextUtils.isEmpty(passwordConfirmEditText.getText().toString())) {
-                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.password_no_match));
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.error) + ": "
+                        + c.getResources().getString(R.string.password_no_match));
             }
         });
 
@@ -676,10 +674,12 @@ public class GeneralDialogCreation {
         builder.onPositive((dialog, which) -> {
 
             if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
-                textInputLayoutPassword.setError(String.format(c.getResources().getString(R.string.cantbeempty),
+                textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
+                        + String.format(c.getResources().getString(R.string.cantbeempty),
                         c.getResources().getString(R.string.password)));
             } else if (!passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString())) {
-                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.password_no_match));
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.error) + ": "
+                        + c.getResources().getString(R.string.password_no_match));
             } else {
 
                 try {
