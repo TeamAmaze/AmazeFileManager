@@ -21,6 +21,8 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.util.DialogUtils;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -604,6 +607,11 @@ public class GeneralDialogCreation {
                 rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
         final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
                 rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
+        
+        passwordEditText.post(() -> {
+            InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(passwordEditText, InputMethodManager.SHOW_IMPLICIT);
+        });
 
         TextInputLayout textInputLayoutPassword = rootView.findViewById(R.id.til_encrypt_password);
         TextInputLayout textInputLayoutPasswordConfirm = rootView.findViewById(R.id.til_encrypt_password_confirm);
