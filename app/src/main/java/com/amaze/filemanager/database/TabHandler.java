@@ -97,9 +97,9 @@ public class TabHandler extends SQLiteOpenHelper {
 
     public void addTab(Tab tab) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_TAB_NO, tab.getTab());
-        contentValues.put(COLUMN_PATH, tab.getPath());
-        contentValues.put(COLUMN_HOME, tab.getHome());
+        contentValues.put(COLUMN_TAB_NO, tab.tabNumber);
+        contentValues.put(COLUMN_PATH, tab.path);
+        contentValues.put(COLUMN_HOME, tab.home);
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(TABLE_TAB, null, contentValues);
     }
@@ -118,12 +118,10 @@ public class TabHandler extends SQLiteOpenHelper {
         String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + "= \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        Tab tab = new Tab();
+        Tab tab;
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            tab.setTab((cursor.getInt(0)));
-            tab.setPath(cursor.getString(1));
-            tab.setHome(cursor.getString(2));
+            tab = new Tab(cursor.getInt(0), cursor.getString(1),
+                    cursor.getString(2));
             cursor.close();
         } else {
             tab = null;
@@ -144,10 +142,8 @@ public class TabHandler extends SQLiteOpenHelper {
             if (cursor.moveToFirst() && cursor.getCount() > 0) {
 
                 while (cursor.moveToNext()) {
-                    Tab tab = new Tab();
-                    tab.setTab((cursor.getInt(0)));
-                    tab.setPath(cursor.getString(1));
-                    tab.setHome(cursor.getString(2));
+                    Tab tab = new Tab(cursor.getInt(0), cursor.getString(1),
+                            cursor.getString(2));
                     //Adding them to list
                     tabList.add(tab);
                 }
