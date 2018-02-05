@@ -19,7 +19,6 @@ public class WarnableTextInputLayout extends TextInputLayout {
 
     public WarnableTextInputLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setErrorEnabled(true);
     }
 
     /**
@@ -27,11 +26,13 @@ public class WarnableTextInputLayout extends TextInputLayout {
      */
     public void removeError() {
         super.setError(null);
+        setErrorEnabled(false);
     }
 
     @Override
     public void setError(@Nullable CharSequence error) {
         if(isStyleWarning) {
+            setErrorEnabled(true);
             setErrorTextAppearance(R.style.error_inputTextLayout);
             isStyleWarning = false;
         }
@@ -41,6 +42,7 @@ public class WarnableTextInputLayout extends TextInputLayout {
     public void setWarning(@StringRes int text) {
         if(!isStyleWarning) {
             removeError();
+            setErrorEnabled(true);
             setErrorTextAppearance(R.style.warning_inputTextLayout);
             isStyleWarning = true;
         }
