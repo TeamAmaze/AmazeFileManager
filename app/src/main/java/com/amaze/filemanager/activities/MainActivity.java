@@ -1094,6 +1094,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             materialDialog = null;
         }
 
+        drawer.deselectEverything();
+
         IntentFilter newFilter = new IntentFilter();
         newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);

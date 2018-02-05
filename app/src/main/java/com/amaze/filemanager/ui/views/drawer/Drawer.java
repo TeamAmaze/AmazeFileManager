@@ -1,6 +1,7 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -18,10 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
@@ -44,8 +47,8 @@ import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.menu.MenuLongClickHelper;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -59,6 +62,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import eu.chainfire.libsuperuser.Debug;
+
 import static android.os.Build.VERSION.SDK_INT;
 
 /**
@@ -66,8 +71,7 @@ import static android.os.Build.VERSION.SDK_INT;
  *         on 26/12/2017, at 23:08.
  */
 
-public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
-        MenuLongClickHelper.OnNavigationItemLongClickListener {
+public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final int image_selector_request_code = 31;
     
@@ -81,6 +85,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     private Resources resources;
     private DataUtils dataUtils = DataUtils.getInstance();
 
+    private ActionViewStateManager actionViewStateManager;
     private boolean isSomethingSelected;
     private volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
     private boolean isDrawerLocked = false;
@@ -121,7 +126,31 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
 
         navView = mainActivity.findViewById(R.id.navigation);
         navView.setNavigationItemSelectedListener(this);
-        MenuLongClickHelper.setLongClickListeners(mainActivity.getWindow(), navView, this);
+
+        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT),
+                idleColor;
+
+        if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
+            idleColor = mainActivity.getResources().getColor(R.color.item_light_theme);
+        } else {
+            idleColor = Color.WHITE;
+        }
+
+        actionViewStateManager = new ActionViewStateManager(navView, idleColor, accentColor);
+
+        ColorStateList drawerColors = new ColorStateList(
+                new int[][]{
+                        new int[]{android.R.attr.state_checked},
+                        new int[]{android.R.attr.state_enabled},
+                        new int[]{android.R.attr.state_pressed},
+                        new int[]{android.R.attr.state_focused},
+                        new int[]{android.R.attr.state_pressed}
+                },
+                new int[] {accentColor, idleColor, idleColor, idleColor, idleColor}
+        );
+
+        navView.setItemTextColor(drawerColors);
+        navView.setItemIconTintList(drawerColors);
 
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)) navView.setBackgroundColor(Utils.getColor(mainActivity, R.color.holo_dark_background));
         else if (mainActivity.getAppTheme().equals(AppTheme.BLACK)) navView.setBackgroundColor(Utils.getColor(mainActivity, android.R.color.black));
@@ -172,6 +201,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     public void refreshDrawer() {
         Menu menu = navView.getMenu();
         menu.clear();
+        actionViewStateManager.deselectCurrentActionView();
 
         int order = 0;
         ArrayList<String> storageDirectories = mainActivity.getStorageDirectories();
@@ -193,7 +223,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
                 storage_count++;
-                addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1);
+                addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
+                        R.drawable.ic_show_chart_black_24dp);
                 if(order == 0) firstPath = file;
                 else if(order == 1) secondPath = file;
             }
@@ -205,7 +236,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
             synchronized (dataUtils.getServers()) {
                 for (String[] file : dataUtils.getServers()) {
                     addNewItem(menu, SERVERS_GROUP, order++, file[0],
-                            new MenuMetadata(file[1]), R.drawable.ic_settings_remote_white_24dp);
+                            new MenuMetadata(file[1]), R.drawable.ic_settings_remote_white_24dp,
+                            R.drawable.ic_edit_24dp);
                 }
             }
         }
@@ -217,7 +249,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                 if (cloudStorage instanceof Dropbox) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_DROPBOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
-                            R.drawable.ic_dropbox_white_24dp);
+                            R.drawable.ic_dropbox_white_24dp, R.drawable.ic_edit_24dp);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_DROPBOX,
@@ -226,7 +258,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                 } else if (cloudStorage instanceof Box) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_BOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/"),
-                            R.drawable.ic_box_white_24dp);
+                            R.drawable.ic_box_white_24dp, R.drawable.ic_edit_24dp);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_BOX,
@@ -235,7 +267,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                 } else if (cloudStorage instanceof OneDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"),
-                            R.drawable.ic_onedrive_white_24dp);
+                            R.drawable.ic_onedrive_white_24dp, R.drawable.ic_edit_24dp);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_ONE_DRIVE,
@@ -244,7 +276,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                 } else if (cloudStorage instanceof GoogleDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/"),
-                            R.drawable.ic_google_drive_white_24dp);
+                            R.drawable.ic_google_drive_white_24dp, R.drawable.ic_edit_24dp);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
@@ -263,7 +295,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                 synchronized (dataUtils.getBooks()) {
                     for (String[] file : dataUtils.getBooks()) {
                         addNewItem(menu, FOLDERS_GROUP, order++, file[0],
-                                new MenuMetadata(file[1]), R.drawable.ic_folder_white_24dp);
+                                new MenuMetadata(file[1]), R.drawable.ic_folder_white_24dp,
+                                R.drawable.ic_edit_24dp);
                     }
                 }
             }
@@ -275,31 +308,31 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
         if (mainActivity.getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
             if (quickAccessPref[0]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.quick,
-                        new MenuMetadata("5"), R.drawable.ic_star_white_24dp);
+                        new MenuMetadata("5"), R.drawable.ic_star_white_24dp, null);
             }
             if (quickAccessPref[1]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.recent,
-                        new MenuMetadata("6"), R.drawable.ic_history_white_24dp);
+                        new MenuMetadata("6"), R.drawable.ic_history_white_24dp, null);
             }
             if (quickAccessPref[2]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.images,
-                        new MenuMetadata("0"), R.drawable.ic_photo_library_white_24dp);
+                        new MenuMetadata("0"), R.drawable.ic_photo_library_white_24dp, null);
             }
             if (quickAccessPref[3]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.videos,
-                        new MenuMetadata("1"), R.drawable.ic_video_library_white_24dp);
+                        new MenuMetadata("1"), R.drawable.ic_video_library_white_24dp, null);
             }
             if (quickAccessPref[4]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.audio,
-                        new MenuMetadata("2"), R.drawable.ic_library_music_white_24dp);
+                        new MenuMetadata("2"), R.drawable.ic_library_music_white_24dp, null);
             }
             if (quickAccessPref[5]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.documents,
-                        new MenuMetadata("3"), R.drawable.ic_library_books_white_24dp);
+                        new MenuMetadata("3"), R.drawable.ic_library_books_white_24dp, null);
             }
             if (quickAccessPref[6]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.apks,
-                        new MenuMetadata("4"), R.drawable.ic_apk_library_white_24dp);
+                        new MenuMetadata("4"), R.drawable.ic_apk_library_white_24dp, null);
             }
         }
 
@@ -312,7 +345,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                     if (!isDrawerLocked) close();
                     else onDrawerClosed();
                 }),
-                R.drawable.ic_ftp_white_24dp);
+                R.drawable.ic_ftp_white_24dp, null);
 
         addNewItem(menu, LASTGROUP, order++, R.string.apps,
                 new MenuMetadata(() -> {
@@ -323,7 +356,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                     if (!isDrawerLocked) close();
                     else onDrawerClosed();
                 }),
-                R.drawable.ic_android_white_24dp);
+                R.drawable.ic_android_white_24dp, null);
 
 
         addNewItem(menu, LASTGROUP, order++, R.string.setting,
@@ -331,7 +364,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                     Intent in = new Intent(mainActivity, PreferencesActivity.class);
                     mainActivity.startActivity(in);
                 }),
-                R.drawable.ic_settings_white_24dp);
+                R.drawable.ic_settings_white_24dp, null);
 
         for(int i = 0; i < navView.getMenu().size(); i++) {
             navView.getMenu().getItem(i).setEnabled(true);
@@ -343,15 +376,42 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     }
 
     private void addNewItem(Menu menu, int group, int order, @StringRes int text, MenuMetadata meta,
-                            @DrawableRes int icon) {
-        MenuItem item = menu.add(group, Menu.NONE, order, text).setIcon(icon);
+                            @DrawableRes int icon, @DrawableRes Integer actionViewIcon) {
+        if(BuildConfig.DEBUG && menu.findItem(order) != null) throw new IllegalStateException("Item already id exists: " + order);
+
+        MenuItem item = menu.add(group, order, order, text).setIcon(icon);
         dataUtils.putDrawerMetadata(item, meta);
+        if(actionViewIcon != null) {
+            item.setActionView(R.layout.layout_draweractionview);
+
+            ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
+            imageView.setImageResource(actionViewIcon);
+            if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
+                imageView.setColorFilter(Color.WHITE);
+            }
+
+            item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
+        }
     }
 
     private void addNewItem(Menu menu, int group, int order, String text, MenuMetadata meta,
-                            @DrawableRes int icon) {
-        MenuItem item = menu.add(group, Menu.NONE, order, text).setIcon(icon);
+                            @DrawableRes int icon, @DrawableRes Integer actionViewIcon) {
+        if(BuildConfig.DEBUG && menu.findItem(order) != null) throw new IllegalStateException("Item already id exists: " + order);
+
+        MenuItem item = menu.add(group, order, order, text).setIcon(icon);
         dataUtils.putDrawerMetadata(item, meta);
+
+        if(actionViewIcon != null) {
+            item.setActionView(R.layout.layout_draweractionview);
+
+            ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
+            imageView.setImageResource(actionViewIcon);
+            if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
+                imageView.setColorFilter(Color.WHITE);
+            }
+
+            item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
+        }
     }
 
     public void onActivityResult(int requestCode, int responseCode, Intent intent) {
@@ -414,6 +474,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        actionViewStateManager.deselectCurrentActionView();
+        actionViewStateManager.selectActionView(item);
+
         String title = item.getTitle().toString();
         MenuMetadata meta = dataUtils.getDrawerMetadata(item);
 
@@ -479,8 +542,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
         return true;
     }
 
-    @Override
-    public boolean onNavigationItemLongClick(MenuItem item) {
+    public void onNavigationItemActionClick(MenuItem item) {
         String title = item.getTitle().toString();
         MenuMetadata meta = dataUtils.getDrawerMetadata(item);
         String path = meta.path;
@@ -513,8 +575,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
                     GeneralDialogCreation.showCloudDialog(mainActivity, mainActivity.getAppTheme(), OpenMode.ONEDRIVE);
                 }
         }
-
-        return true;
     }
 
     public boolean isSomethingSelected() {
@@ -553,7 +613,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     public void selectCorrectDrawerItemForPath(final String path) {
         Integer id = dataUtils.findLongestContainingDrawerItem(path);
 
-        navView.setCheckedItem(id != null? id:-1);
+        if(id == null) deselectEverything();
+        else {
+            navView.getMenu().findItem(id).setChecked(true);
+            actionViewStateManager.selectActionView(navView.getMenu().findItem(id));
+        }
     }
 
     public void setBackgroundColor(@ColorInt int color) {
@@ -585,8 +649,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     }
 
     public void deselectEverything() {
+        actionViewStateManager.deselectCurrentActionView();//If you set the item as checked the listener doesn't trigger
         if(!isSomethingSelected) return;
-        
+
         for(int i = 0; i < navView.getMenu().size(); i++) {
             navView.getMenu().getItem(i).setChecked(false);
         }
@@ -616,5 +681,4 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener,
     public String getSecondPath() {
         return secondPath;
     }
-
 }

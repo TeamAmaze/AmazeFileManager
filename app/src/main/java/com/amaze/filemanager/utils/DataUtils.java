@@ -128,6 +128,8 @@ public class DataUtils {
         listfiles = new ArrayList<>();
         history.clear();
         storages = new ArrayList<>();
+        tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+        menuMetadataMap.clear();
         servers = new ArrayList<>();
         books = new ArrayList<>();
         accounts = new ArrayList<>();

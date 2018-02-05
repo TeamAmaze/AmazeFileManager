@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
@@ -12,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.Toast;
 

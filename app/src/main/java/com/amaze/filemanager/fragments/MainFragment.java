@@ -1447,6 +1447,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
 
+        getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getPath());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
             (getActivity()).registerReceiver(decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
