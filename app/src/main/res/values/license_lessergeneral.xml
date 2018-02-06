@@ -1,8 +1,8 @@
 <resources>
-    <string name="define_license_lessergeneral"/>
-    <string name="license_lessergeneral_licenseName">GNU LESSER GENERAL LICENSE</string>
-    <string name="license_lessergeneral_licenseWebsite">https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</string>
-    <string name="license_lessergeneral_licenseShortDescription">
+    <string name="define_license_lessergeneral" translatable="false" />
+    <string name="license_lessergeneral_licenseName" translatable="false">GNU LESSER GENERAL LICENSE</string>
+    <string name="license_lessergeneral_licenseWebsite" translatable="false">https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</string>
+    <string name="license_lessergeneral_licenseShortDescription" translatable="false">
         <![CDATA[
         <<<one line to give the library\'s name and a brief idea of what it does.>>><br />
         Copyright &#169; <<<year>>>  <<<name of author>>><br /><br />
@@ -22,7 +22,7 @@
         Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         ]]>
     </string>
-    <string name="license_lessergeneral_licenseDescription">
+    <string name="license_lessergeneral_licenseDescription" translatable="false">
         <![CDATA[
                     GNU LESSER GENERAL PUBLIC LICENSE<br />
                        Version 2.1, February 1999<br />

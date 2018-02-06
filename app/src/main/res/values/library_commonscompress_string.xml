@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_commonscompress"></string>
-    <string name="library_commonscompress_author">The Apache Software Foundation</string>
-    <string name="library_commonscompress_authorWebsite">https://commons.apache.org/proper/commons-compress/</string>
-    <string name="library_commonscompress_libraryName">Apache Commons Compress</string>
-    <string name="library_commonscompress_libraryWebsite">https://commons.apache.org/</string>
-    <string name="library_commonscompress_libraryDescription">The Apache Commons Compress library defines an API for working with ar, cpio, Unix dump, tar, zip, gzip, XZ, Pack200, bzip2, 7z, arj, lzma, snappy, DEFLATE, lz4, Brotli and Z files. </string>
-    <string name="library_commonscompress_libraryVersion">1.15</string>
-    <string name="library_commonscompress_licenseId">apache_2_0</string>
-    <string name="library_commonscompress_isOpenSource">true</string>
-    <string name="library_commonscompress_repositoryLink">https://github.com/apache/commons-compress</string>
+    <string name="define_commonscompress" translatable="false"></string>
+    <string name="library_commonscompress_author" translatable="false">The Apache Software Foundation</string>
+    <string name="library_commonscompress_authorWebsite" translatable="false">https://commons.apache.org/proper/commons-compress/</string>
+    <string name="library_commonscompress_libraryName" translatable="false">Apache Commons Compress</string>
+    <string name="library_commonscompress_libraryWebsite" translatable="false">https://commons.apache.org/</string>
+    <string name="library_commonscompress_libraryDescription" translatable="false">The Apache Commons Compress library defines an API for working with ar, cpio, Unix dump, tar, zip, gzip, XZ, Pack200, bzip2, 7z, arj, lzma, snappy, DEFLATE, lz4, Brotli and Z files. </string>
+    <string name="library_commonscompress_libraryVersion" translatable="false">1.15</string>
+    <string name="library_commonscompress_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_commonscompress_isOpenSource" translatable="false">true</string>
+    <string name="library_commonscompress_repositoryLink" translatable="false">https://github.com/apache/commons-compress</string>
 </resources>

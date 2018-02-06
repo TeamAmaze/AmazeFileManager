@@ -2,13 +2,13 @@
 <resources>
     <!-- If you include it in your own library use this pattern: define_* -->
     <!-- If it should be included in the AboutLibraries lib use this pattern: define_int_* -->
-    <string name="define_systembartint"></string>
-    <string name="library_systembartint_author">readyState Software Limited</string>
-    <string name="library_systembartint_libraryName">Android System Bar Tint</string>
-    <string name="library_systembartint_libraryDescription">Apply background tinting to the Android system UI when using KitKat translucent modes.</string>
-    <string name="library_systembartint_libraryVersion">1.0.3</string>
-    <string name="library_systembartint_licenseId">apache_2_0</string>
-    <string name="library_systembartint_licenseContent">
+    <string name="define_systembartint" translatable="false"></string>
+    <string name="library_systembartint_author" translatable="false">readyState Software Limited</string>
+    <string name="library_systembartint_libraryName" translatable="false">Android System Bar Tint</string>
+    <string name="library_systembartint_libraryDescription" translatable="false">Apply background tinting to the Android system UI when using KitKat translucent modes.</string>
+    <string name="library_systembartint_libraryVersion" translatable="false">1.0.3</string>
+    <string name="library_systembartint_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_systembartint_licenseContent" translatable="false">
         <![CDATA[
             Copyright 2013 readyState Software Limited
 
@@ -27,6 +27,6 @@
     </string>
     <!-- you still can define the license within your library definition, but it is recommend to use the id -->
     <!-- possible fields for a custom license: *_licenseVersion, *_licenseLink, *_licenseContent -->
-    <string name="library_systembartint_isOpenSource">true</string>
-    <string name="library_systembartint_repositoryLink">https://github.com/jgilfelt/SystemBarTint</string>
+    <string name="library_systembartint_isOpenSource" translatable="false">true</string>
+    <string name="library_systembartint_repositoryLink" translatable="false">https://github.com/jgilfelt/SystemBarTint</string>
 </resources>

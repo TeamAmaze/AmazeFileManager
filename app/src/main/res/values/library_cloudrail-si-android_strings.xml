@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_cloudrail"/>
-    <string name="library_cloudrail_author">CloudRAIL</string>
-    <string name="library_cloudrail_authorWebsite">https://cloudrail.com/</string>
-    <string name="library_cloudrail_libraryName">CloudRail SI for Android</string>
-    <string name="library_cloudrail_libraryWebsite">https://github.com/CloudRail/cloudrail-si-android-sdk</string>
-    <string name="library_cloudrail_libraryDescription">CloudRail is an API integration solution which abstracts multiple APIs from different providers into a single and universal interface.</string>
-    <string name="library_cloudrail_libraryVersion">2.17.0</string>
-    <string name="library_cloudrail_licenseId"/>
-    <string name="library_cloudrail_isOpenSource">false</string>
+    <string name="define_cloudrail" translatable="false" />
+    <string name="library_cloudrail_author" translatable="false">CloudRAIL</string>
+    <string name="library_cloudrail_authorWebsite" translatable="false">https://cloudrail.com/</string>
+    <string name="library_cloudrail_libraryName" translatable="false">CloudRail SI for Android</string>
+    <string name="library_cloudrail_libraryWebsite" translatable="false">https://github.com/CloudRail/cloudrail-si-android-sdk</string>
+    <string name="library_cloudrail_libraryDescription" translatable="false">CloudRail is an API integration solution which abstracts multiple APIs from different providers into a single and universal interface.</string>
+    <string name="library_cloudrail_libraryVersion" translatable="false">2.17.0</string>
+    <string name="library_cloudrail_licenseId" translatable="false" />
+    <string name="library_cloudrail_isOpenSource" translatable="false">false</string>
 </resources>

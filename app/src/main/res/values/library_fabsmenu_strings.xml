@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_fabsmenu"/>
-    <string name="library_fabsmenu_author">Jahir Fiquitiva</string>
-    <string name="library_fabsmenu_authorWebsite">https://www.jahirfiquitiva.me/</string>
-    <string name="library_fabsmenu_libraryName">FloatingActionButtons Menu (FABsMenu)</string>
-    <string name="library_fabsmenu_libraryDescription">Just a simple library to use a menu of FloatingActionButtons from Design Support Library that follows Material Design guidelines.</string>
-    <string name="library_fabsmenu_libraryVersion">1.1.1</string>
-    <string name="library_fabsmenu_licenseId">apache_2_0</string>
-    <string name="library_fabsmenu_licenseContent">
+    <string name="define_fabsmenu" translatable="false" />
+    <string name="library_fabsmenu_author" translatable="false">Jahir Fiquitiva</string>
+    <string name="library_fabsmenu_authorWebsite" translatable="false">https://www.jahirfiquitiva.me/</string>
+    <string name="library_fabsmenu_libraryName" translatable="false">FloatingActionButtons Menu (FABsMenu)</string>
+    <string name="library_fabsmenu_libraryDescription" translatable="false">Just a simple library to use a menu of FloatingActionButtons from Design Support Library that follows Material Design guidelines.</string>
+    <string name="library_fabsmenu_libraryVersion" translatable="false">1.1.1</string>
+    <string name="library_fabsmenu_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_fabsmenu_licenseContent" translatable="false">
         <![CDATA[
             Copyright (c) 2017 Jahir Fiquitiva<br />
             Copyright (c) 2014 Jerzy Chalupski<br /><br />
@@ -25,6 +25,6 @@
             limitations under the License.
         ]]>
     </string>
-    <string name="library_fabsmenu_isOpenSource">true</string>
-    <string name="library_fabsmenu_repositoryLink">https://github.com/jahirfiquitiva/FABsMenu</string>
+    <string name="library_fabsmenu_isOpenSource" translatable="false">true</string>
+    <string name="library_fabsmenu_repositoryLink" translatable="false">https://github.com/jahirfiquitiva/FABsMenu</string>
 </resources>
