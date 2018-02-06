@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_spongycastle"/>
-    <string name="library_spongycastle_author">Roberto Tyley</string>
-    <string name="library_spongycastle_authorWebsite">https://twitter.com/rtyley</string>
-    <string name="library_spongycastle_libraryName">Spongy Castle</string>
-    <string name="library_spongycastle_libraryWebsite">https://rtyley.github.io/spongycastle/</string>
-    <string name="library_spongycastle_libraryDescription">Spongy Castle is the stock Bouncy Castle libraries with a couple of small changes to make it work on Android.</string>
-    <string name="library_spongycastle_libraryVersion">1.58.0.0 (from BC v1.58)</string>
-    <string name="library_spongycastle_licenseId">mit</string>
-    <string name="library_spongycastle_licenseContent">
+    <string name="define_spongycastle" translatable="false" />
+    <string name="library_spongycastle_author" translatable="false">Roberto Tyley</string>
+    <string name="library_spongycastle_authorWebsite" translatable="false">https://twitter.com/rtyley</string>
+    <string name="library_spongycastle_libraryName" translatable="false">Spongy Castle</string>
+    <string name="library_spongycastle_libraryWebsite" translatable="false">https://rtyley.github.io/spongycastle/</string>
+    <string name="library_spongycastle_libraryDescription" translatable="false">Spongy Castle is the stock Bouncy Castle libraries with a couple of small changes to make it work on Android.</string>
+    <string name="library_spongycastle_libraryVersion" translatable="false">1.58.0.0 (from BC v1.58)</string>
+    <string name="library_spongycastle_licenseId" translatable="false">mit</string>
+    <string name="library_spongycastle_licenseContent" translatable="false">
         <![CDATA[
             Copyright (c) 2000 - 2017 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)<br/><br/>
 
@@ -19,6 +19,6 @@
             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         ]]>
     </string>
-    <string name="library_spongycastle_isOpenSource">true</string>
-    <string name="library_spongycastle_repositoryLink">https://github.com/rtyley/spongycastle</string>
+    <string name="library_spongycastle_isOpenSource" translatable="false">true</string>
+    <string name="library_spongycastle_repositoryLink" translatable="false">https://github.com/rtyley/spongycastle</string>
 </resources>

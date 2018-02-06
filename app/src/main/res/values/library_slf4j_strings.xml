@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_slf4j"></string>
-    <string name="library_slf4j_author">QOS.ch</string>
-    <string name="library_slf4j_authorWebsite">http://www.qos.ch</string>
-    <string name="library_slf4j_libraryName">Simple Logging Facade for Java</string>
-    <string name="library_slf4j_libraryWebsite">https://www.slf4j.org/</string>
-    <string name="library_slf4j_libraryDescription">The Simple Logging Facade for Java (SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.</string>
-    <string name="library_slf4j_libraryVersion">1.7.25</string>
-    <string name="library_slf4j_licenseId">mit</string>
-    <string name="library_slf4j_licenseContent">
+    <string name="define_slf4j" translatable="false"></string>
+    <string name="library_slf4j_author" translatable="false">QOS.ch</string>
+    <string name="library_slf4j_authorWebsite" translatable="false">http://www.qos.ch</string>
+    <string name="library_slf4j_libraryName" translatable="false">Simple Logging Facade for Java</string>
+    <string name="library_slf4j_libraryWebsite" translatable="false">https://www.slf4j.org/</string>
+    <string name="library_slf4j_libraryDescription" translatable="false">The Simple Logging Facade for Java (SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.</string>
+    <string name="library_slf4j_libraryVersion" translatable="false">1.7.25</string>
+    <string name="library_slf4j_licenseId" translatable="false">mit</string>
+    <string name="library_slf4j_licenseContent" translatable="false">
         <![CDATA[
             Copyright (c) 2004-2017 QOS.ch<br />
             All rights reserved.<br /><br />
@@ -33,6 +33,6 @@
             THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         ]]>
     </string>
-    <string name="library_slf4j_isOpenSource">true</string>
-    <string name="library_slf4j_repositoryLink">https://github.com/qos-ch/slf4j</string>
+    <string name="library_slf4j_isOpenSource" translatable="false">true</string>
+    <string name="library_slf4j_repositoryLink" translatable="false">https://github.com/qos-ch/slf4j</string>
 </resources>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_volley"/>
-    <string name="library_volley_author">Google</string>
-    <string name="library_volley_libraryName">Volley</string>
-    <string name="library_volley_libraryWebsite">https://developer.android.com/training/volley/index.html</string>
-    <string name="library_volley_libraryDescription">Volley is an HTTP library that makes networking for Android apps easier and most importantly, faster.</string>
-    <string name="library_volley_libraryVersion">1.0.0</string>
-    <string name="library_volley_licenseId">apache_2_0</string>
-    <string name="library_volley_isOpenSource">true</string>
-    <string name="library_volley_repositoryLink">https://github.com/google/volley</string>
+    <string name="define_volley" translatable="false" />
+    <string name="library_volley_author" translatable="false">Google</string>
+    <string name="library_volley_libraryName" translatable="false">Volley</string>
+    <string name="library_volley_libraryWebsite" translatable="false">https://developer.android.com/training/volley/index.html</string>
+    <string name="library_volley_libraryDescription" translatable="false">Volley is an HTTP library that makes networking for Android apps easier and most importantly, faster.</string>
+    <string name="library_volley_libraryVersion" translatable="false">1.0.0</string>
+    <string name="library_volley_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_volley_isOpenSource" translatable="false">true</string>
+    <string name="library_volley_repositoryLink" translatable="false">https://github.com/google/volley</string>
 </resources>

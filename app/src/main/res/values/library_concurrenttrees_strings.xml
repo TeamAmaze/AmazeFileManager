@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_concurrenttrees"/>
-    <string name="library_concurrenttrees_author">Niall Gallagher</string>
-    <string name="library_concurrenttrees_authorWebsite">http://www.npgall.com/</string>
-    <string name="library_concurrenttrees_libraryName">Concurrent Trees</string>
-    <string name="library_concurrenttrees_libraryWebsite">https://github.com/npgall/concurrent-trees</string>
-    <string name="library_concurrenttrees_libraryDescription">Concurrent Radix and Suffix Trees for Java</string>
-    <string name="library_concurrenttrees_libraryVersion">2.6.1</string>
-    <string name="library_concurrenttrees_licenseId">apache_2_0</string>
-    <string name="library_concurrenttrees_isOpenSource">true</string>
-    <string name="library_concurrenttrees_repositoryLink">https://github.com/npgall/concurrent-trees</string>
+    <string name="define_concurrenttrees" translatable="false" />
+    <string name="library_concurrenttrees_author" translatable="false">Niall Gallagher</string>
+    <string name="library_concurrenttrees_authorWebsite" translatable="false">http://www.npgall.com/</string>
+    <string name="library_concurrenttrees_libraryName" translatable="false">Concurrent Trees</string>
+    <string name="library_concurrenttrees_libraryWebsite" translatable="false">https://github.com/npgall/concurrent-trees</string>
+    <string name="library_concurrenttrees_libraryDescription" translatable="false">Concurrent Radix and Suffix Trees for Java</string>
+    <string name="library_concurrenttrees_libraryVersion" translatable="false">2.6.1</string>
+    <string name="library_concurrenttrees_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_concurrenttrees_isOpenSource" translatable="false">true</string>
+    <string name="library_concurrenttrees_repositoryLink" translatable="false">https://github.com/npgall/concurrent-trees</string>
 </resources>

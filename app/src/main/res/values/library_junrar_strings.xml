@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="define_junrar"></string>
-    <string name="library_junrar_author">Edmund Wagner</string>
-    <string name="library_junrar_authorWebsite">https://github.com/edmund-wagner</string>
-    <string name="library_junrar_libraryName">Junrar</string>
-    <string name="library_junrar_libraryDescription">Plain java unrar util (former sf project).</string>
-    <string name="library_junrar_libraryVersion">1.0.3</string>
-    <string name="library_junrar_licenseId"/>
-    <string name="library_junrar_isOpenSource">true</string>
-    <string name="library_junrar_repositoryLink">https://github.com/junrar/junrar</string>
+    <string name="define_junrar" translatable="false"></string>
+    <string name="library_junrar_author" translatable="false">Edmund Wagner</string>
+    <string name="library_junrar_authorWebsite" translatable="false">https://github.com/edmund-wagner</string>
+    <string name="library_junrar_libraryName" translatable="false">Junrar</string>
+    <string name="library_junrar_libraryDescription" translatable="false">Plain java unrar util (former sf project).</string>
+    <string name="library_junrar_libraryVersion" translatable="false">1.0.3</string>
+    <string name="library_junrar_licenseId" translatable="false" />
+    <string name="library_junrar_isOpenSource" translatable="false">true</string>
+    <string name="library_junrar_repositoryLink" translatable="false">https://github.com/junrar/junrar</string>
 </resources>

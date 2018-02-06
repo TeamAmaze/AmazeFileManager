@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>SSHv2 library for Java
-    <string name="define_sshj"/>
-    <string name="library_sshj_author">Jeroen van Erp</string>
-    <string name="library_sshj_authorWebsite">http://www.javadude.nl/</string>
-    <string name="library_sshj_libraryName">sshj</string>
-    <string name="library_sshj_libraryWebsite">https://github.com/hierynomus/sshj</string>
-    <string name="library_sshj_libraryDescription">SSHv2 library for Java</string>
-    <string name="library_sshj_libraryVersion">0.23.0</string>
-    <string name="library_sshj_licenseId">apache_2_0</string>
-    <string name="library_sshj_licenseContent">
+    <string name="define_sshj" translatable="false" />
+    <string name="library_sshj_author" translatable="false">Jeroen van Erp</string>
+    <string name="library_sshj_authorWebsite" translatable="false">http://www.javadude.nl/</string>
+    <string name="library_sshj_libraryName" translatable="false">sshj</string>
+    <string name="library_sshj_libraryWebsite" translatable="false">https://github.com/hierynomus/sshj</string>
+    <string name="library_sshj_libraryDescription" translatable="false">SSHv2 library for Java</string>
+    <string name="library_sshj_libraryVersion" translatable="false">0.23.0</string>
+    <string name="library_sshj_licenseId" translatable="false">apache_2_0</string>
+    <string name="library_sshj_licenseContent" translatable="false">
         <![CDATA[
             Copyright (C)2009 - SSHJ Contributors<br /><br />
 
@@ -25,6 +25,6 @@
             limitations under the License.
         ]]>
     </string>
-    <string name="library_sshj_isOpenSource">true</string>
-    <string name="library_sshj_repositoryLink">https://github.com/hierynomus/sshj</string>
+    <string name="library_sshj_isOpenSource" translatable="false">true</string>
+    <string name="library_sshj_repositoryLink" translatable="false">https://github.com/hierynomus/sshj</string>
 </resources>
