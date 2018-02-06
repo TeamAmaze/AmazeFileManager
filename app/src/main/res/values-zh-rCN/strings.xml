@@ -559,4 +559,8 @@
   <string name="blue">"蓝色"</string>
   <string name="custom">自定义</string>
   <string name="preselectedconfigs_title">上次选择的颜色配置</string>
+  <string name="libraries">依赖的第三方库</string>
+  <string name="about_amaze">Android 文件管理器</string>
+  <string name="deselect_all">取消全选</string>
+  <string name="license">软件协议</string>
 </resources>
