@@ -6,11 +6,13 @@ import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +43,11 @@ public class ColorPreference {
             R.color.primary_brown,
             R.color.primary_grey_900,
             R.color.primary_blue_grey,
-            R.color.primary_teal_900
+            R.color.primary_teal_900,
+            R.color.accent_pink,
+            R.color.accent_amber,
+            R.color.accent_light_blue,
+            R.color.accent_light_green
     );
 
     private static final String TAG = "ColorPreference";
@@ -213,6 +219,19 @@ public class ColorPreference {
     @Deprecated
     public String getColorAsString(ColorUsage usage) {
         return String.format("#%06X", (0xFFFFFF & getColor(usage)));
+    }
+    
+    public static List<Integer> getUniqueAvailableColors(Context context) {
+        List<Integer> uniqueAvailableColors = new ArrayList<>();
+        List<Integer> tempColorsHex = new ArrayList<>();
+        for(Integer color : availableColors) {
+            Integer colorHex = ContextCompat.getColor(context, color);
+            if(!(tempColorsHex.contains(colorHex))) {
+                uniqueAvailableColors.add(color);
+            }
+            tempColorsHex.add(colorHex);
+        }
+        return uniqueAvailableColors;
     }
 
 }
