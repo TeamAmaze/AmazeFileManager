@@ -1075,7 +1075,7 @@ public class HybridFile {
                 break;
             default:
                 try {
-                    outputStream = FileUtil.getOutputStream(new File(path), context, length());
+                    outputStream = FileUtil.getOutputStream(new File(path), context);
                 } catch (Exception e) {
                     outputStream=null;
                     e.printStackTrace();

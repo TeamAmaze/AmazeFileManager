@@ -237,7 +237,7 @@ public class ExtractService extends ProgressiveService {
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, 0));
+                    FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -268,7 +268,7 @@ public class ExtractService extends ProgressiveService {
             BufferedInputStream inputStream = new BufferedInputStream(
                     zipFile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, entry.getFullUnpackSize()));
+                    FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -296,7 +296,7 @@ public class ExtractService extends ProgressiveService {
             }
 
             BufferedOutputStream outputStream = new BufferedOutputStream(
-                    FileUtil.getOutputStream(outputFile, context, entry.getRealSize()));
+                    FileUtil.getOutputStream(outputFile, context));
             try {
                 int len;
                 byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];

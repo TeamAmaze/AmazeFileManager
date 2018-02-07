@@ -145,10 +145,6 @@ public abstract class FileUtil {
     }
 
     public static OutputStream getOutputStream(final File target, Context context) throws FileNotFoundException {
-        return getOutputStream(target, context, 0);
-    }
-
-    public static OutputStream getOutputStream(final File target, Context context, long s) throws FileNotFoundException {
         OutputStream outStream = null;
         // First try the normal way
         if (isWritable(target)) {
