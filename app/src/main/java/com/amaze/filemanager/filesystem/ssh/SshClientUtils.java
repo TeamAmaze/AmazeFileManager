@@ -73,7 +73,7 @@ public abstract class SshClientUtils
                 retval = template.execute(client);
             else
                 throw new RuntimeException("Unable to execute template");
-        } catch(IOException e) {
+        } catch(Exception e) {
             Log.e(TAG, "Error executing template method", e);
         } finally {
             if(client != null && template.closeClientOnFinish) {
