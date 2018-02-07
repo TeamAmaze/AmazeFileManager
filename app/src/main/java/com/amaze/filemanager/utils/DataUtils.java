@@ -34,8 +34,10 @@ public class DataUtils {
 
     private ConcurrentRadixTree<VoidValue> hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 
-    private ArrayList<String> gridfiles = new ArrayList<>();
-    private ArrayList<String> listfiles = new ArrayList<>();
+    public static final int LIST = 0, GRID = 1;
+
+    private InvertedRadixTree<Integer> filesGridOrList = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+
     private LinkedList<String> history = new LinkedList<>();
     private ArrayList<String> storages = new ArrayList<>();
 
@@ -121,8 +123,7 @@ public class DataUtils {
 
     public void clear() {
         hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
-        gridfiles = new ArrayList<>();
-        listfiles = new ArrayList<>();
+        filesGridOrList = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
         history.clear();
         storages = new ArrayList<>();
         servers = new ArrayList<>();
@@ -338,22 +339,29 @@ public class DataUtils {
         if (hiddenfiles != null) this.hiddenfiles = hiddenfiles;
     }
 
-    public ArrayList<String> getGridFiles() {
-        return gridfiles;
-    }
-
     public synchronized void setGridfiles(ArrayList<String> gridfiles) {
-        if (gridfiles != null)
-            this.gridfiles = gridfiles;
-    }
-
-    public ArrayList<String> getListfiles() {
-        return listfiles;
+        if (gridfiles != null) {
+            for (String gridfile : gridfiles) {
+                setPathAsGridOrList(gridfile, GRID);
+            }
+        }
     }
 
     public synchronized void setListfiles(ArrayList<String> listfiles) {
-        if (listfiles != null)
-            this.listfiles = listfiles;
+        if (listfiles != null) {
+            for (String gridfile : listfiles) {
+                setPathAsGridOrList(gridfile, LIST);
+            }
+        }
+    }
+
+    public void setPathAsGridOrList(String path, int value) {
+        filesGridOrList.put(path, value);
+    }
+
+    public int getListOrGridForPath(String path, int defaultValue) {
+        Integer value = filesGridOrList.getValueForLongestKeyPrefixing(path);
+        return value != null? value:defaultValue;
     }
 
     public void clearHistory() {

@@ -202,7 +202,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
 
-        IS_LIST = !checkPathIsGrid(CURRENT_PATH);
+        IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
         accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
@@ -385,7 +385,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void switchView() {
-        reloadListElements(false, results, checkPathIsGrid(CURRENT_PATH));
+        boolean isPathLayoutGrid = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.GRID;
+        reloadListElements(false, results, isPathLayoutGrid);
     }
 
     @Override
@@ -1029,7 +1030,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode, (data) -> {
             if (data != null && data.second != null) {
-                setListElements(data.second, back, path, data.first, false, checkPathIsGrid(path));
+                boolean isPathLayoutGrid = dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
+                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -1053,41 +1055,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
             ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
         }
-    }
-
-    /**
-     * Probably checks if path is supposed to be shown as a list or as a grid of files.
-     * @param path path to check
-     * @return should be shown as grid
-     */
-    public boolean checkPathIsGrid(String path) {
-        boolean grid = false, both_contain = false;
-        int i1 = -1, i2 = -1;
-        for (String s : dataUtils.getGridFiles()) {
-            i1++;
-            if ((path).contains(s)) {
-                grid = true;
-                break;
-            }
-        }
-        for (String s : dataUtils.getListfiles()) {
-            i2++;
-            if (path.contains(s)) {
-                if (grid) both_contain = true;
-                grid = false;
-                break;
-            }
-        }
-        
-        if (!both_contain) return grid;
-        String path1 = dataUtils.getGridFiles().get(i1), path2 = dataUtils.getListfiles().get(i2);
-
-        if (path1.contains(path2))
-            return true;
-        else if (path2.contains(path1))
-            return false;
-        else
-            return grid;
     }
 
     /**
