@@ -97,6 +97,9 @@ dependencies {
 
     implementation ('com.github.junrar:junrar:0.7') {
         exclude module: 'commons-logging'
+        exclude module: 'commons-logging-api'
+        exclude module: 'maven-scm-api'
+        exclude module: 'maven-scm-provider-svnexe'
     }
 
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
