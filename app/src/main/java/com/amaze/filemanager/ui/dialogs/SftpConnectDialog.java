@@ -51,6 +51,7 @@ import com.amaze.filemanager.filesystem.ssh.tasks.PemToKeyPairTask;
 import com.amaze.filemanager.filesystem.ssh.tasks.SshAuthenticationTask;
 import com.amaze.filemanager.filesystem.ssh.tasks.GetSshHostFingerprintTask;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -68,7 +69,6 @@ import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 /**
  * SSH/SFTP connection setup dialog.
@@ -80,28 +80,28 @@ public class SftpConnectDialog extends DialogFragment {
     //FIXME: agree code on
     private static final int SELECT_PEM_INTENT = 0x01010101;
 
-    private UtilitiesProviderInterface mUtilsProvider;
+    private UtilitiesProviderInterface utilsProvider;
 
-    private UtilsHandler nUtilsHandler;
+    private UtilsHandler utilsHandler;
 
-    private Context mContext;
+    private Context context;
 
-    private Uri mSelectedPem = null;
+    private Uri selectedPem = null;
 
-    private KeyPair mSelectedParsedKeyPair = null;
+    private KeyPair selectedParsedKeyPair = null;
 
-    private String mSelectedParsedKeyPairName = null;
+    private String selectedParsedKeyPairName = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUtilsProvider = (UtilitiesProviderInterface) getActivity();
-        nUtilsHandler = AppConfig.getInstance().getUtilsHandler();
+        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsHandler = AppConfig.getInstance().getUtilsHandler();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mContext = getActivity();
+        context = getActivity();
         final boolean edit=getArguments().getBoolean("edit",false);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.sftp_dialog, null);
         final EditText connectionET = v2.findViewById(R.id.connectionET);
@@ -124,8 +124,8 @@ public class SftpConnectDialog extends DialogFragment {
             if(getArguments().getBoolean("hasPassword")) {
                 passwordET.setHint(R.string.password_unchanged);
             } else {
-                mSelectedParsedKeyPairName = getArguments().getString("keypairName");
-                selectPemBTN.setText(mSelectedParsedKeyPairName);
+                selectedParsedKeyPairName = getArguments().getString("keypairName");
+                selectPemBTN.setText(selectedParsedKeyPairName);
             }
         }
 
@@ -135,7 +135,7 @@ public class SftpConnectDialog extends DialogFragment {
             portET.selectAll();
         });
 
-        int accentColor = mUtilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
 
         //Use system provided action to get Uri to PEM.
         //If MaterialDialog.Builder can be upgraded we may use their file selection dialog too
@@ -148,11 +148,11 @@ public class SftpConnectDialog extends DialogFragment {
         });
 
         //Define action for buttons
-        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(mContext);
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
         dialogBuilder.title((R.string.scp_con));
         dialogBuilder.autoDismiss(false);
         dialogBuilder.customView(v2, true);
-        dialogBuilder.theme(mUtilsProvider.getAppTheme().getMaterialDialogTheme());
+        dialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.negativeText(R.string.cancel);
         dialogBuilder.positiveText(edit ? R.string.update : R.string.create);
         dialogBuilder.positiveColor(accentColor);
@@ -167,12 +167,12 @@ public class SftpConnectDialog extends DialogFragment {
             final String password = passwordET.getText() != null ?
                     passwordET.getText().toString() : null;
 
-            String sshHostKey = nUtilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
-                    username, password, mSelectedParsedKeyPair));
+            String sshHostKey = utilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
+                    username, password, selectedParsedKeyPair));
 
             if (sshHostKey != null) {
                 authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username,
-                        password, mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit);
+                        password, selectedParsedKeyPairName, selectedParsedKeyPair, edit);
             } else {
                 new GetSshHostFingerprintTask(hostname, port, taskResult -> {
                     PublicKey hostKey = taskResult.result;
@@ -184,7 +184,7 @@ public class SftpConnectDialog extends DialogFragment {
 
                         final String hostAndPort = sb.toString();
 
-                        new AlertDialog.Builder(mContext).setTitle(R.string.ssh_host_key_verification_prompt_title)
+                        new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
                                 .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt),
                                         hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
                                 .setCancelable(true)
@@ -193,7 +193,7 @@ public class SftpConnectDialog extends DialogFragment {
                                     dialog1.dismiss();
                                     if (authenticateAndSaveSetup(connectionName, hostname, port,
                                             hostKeyFingerprint, username, password,
-                                            mSelectedParsedKeyPairName, mSelectedParsedKeyPair, edit)) {
+                                            selectedParsedKeyPairName, selectedParsedKeyPair, edit)) {
                                         dialog1.dismiss();
                                         Log.d(TAG, "Saved setup");
                                         dismiss();
@@ -215,14 +215,14 @@ public class SftpConnectDialog extends DialogFragment {
             final String username = usernameET.getText().toString();
 
             final String path = deriveSftpPathFrom(hostname, port, username,
-                    getArguments().getString("password", null), mSelectedParsedKeyPair);
+                    getArguments().getString("password", null), selectedParsedKeyPair);
             int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
 
             if (i != -1) {
                 DataUtils.getInstance().removeServer(i);
 
                 AppConfig.runInBackground(() -> {
-                    nUtilsHandler.removeSftpPath(connectionName, path);
+                    utilsHandler.removeSftpPath(connectionName, path);
                 });
                 ((MainActivity) getActivity()).refreshDrawer();
             }
@@ -238,21 +238,16 @@ public class SftpConnectDialog extends DialogFragment {
         if(!edit)
             okBTN.setEnabled(false);
 
-        TextWatcher validator = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
+        TextWatcher validator = new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
+                int port = portET.getText().toString().length() > 0 ? Integer.parseInt(portET.getText().toString()) : -1;
                 okBTN.setEnabled(
                         (connectionET.getText().length() > 0
                      && addressET.getText().length() > 0
-                     && portET.getText().length() > 0
+                     && port > 0 && port < 65536
                      && usernameET.getText().length() > 0
-                     && (passwordET.getText().length() > 0 || mSelectedParsedKeyPair != null))
+                     && (passwordET.getText().length() > 0 || selectedParsedKeyPair != null))
                 );
             }
         };
@@ -273,25 +268,25 @@ public class SftpConnectDialog extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(SELECT_PEM_INTENT == requestCode && Activity.RESULT_OK == resultCode)
         {
-            mSelectedPem = data.getData();
-            Log.d(TAG, "Selected PEM: " + mSelectedPem.toString() + "/ "
-                    + mSelectedPem.getLastPathSegment());
+            selectedPem = data.getData();
+            Log.d(TAG, "Selected PEM: " + selectedPem.toString() + "/ "
+                    + selectedPem.getLastPathSegment());
             
             try {
-                InputStream selectedKeyContent = mContext.getContentResolver()
-                        .openInputStream(mSelectedPem);
+                InputStream selectedKeyContent = context.getContentResolver()
+                        .openInputStream(selectedPem);
                 new PemToKeyPairTask(selectedKeyContent, result -> {
                     if(result.result != null)
                     {
-                        mSelectedParsedKeyPair = result.result;
-                        mSelectedParsedKeyPairName = mSelectedPem.getLastPathSegment()
-                                .substring(mSelectedPem.getLastPathSegment().indexOf('/')+1);
+                        selectedParsedKeyPair = result.result;
+                        selectedParsedKeyPairName = selectedPem.getLastPathSegment()
+                                .substring(selectedPem.getLastPathSegment().indexOf('/')+1);
                         MDButton okBTN = ((MaterialDialog)getDialog())
                                 .getActionButton(DialogAction.POSITIVE);
                         okBTN.setEnabled(okBTN.isEnabled() || true);
 
                         Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
-                        selectPemBTN.setText(mSelectedParsedKeyPairName);
+                        selectPemBTN.setText(selectedParsedKeyPairName);
                     }
                 }).execute();
 
@@ -326,7 +321,7 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).refreshDrawer();
 
-                        nUtilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
+                        utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
                                 selectedParsedKeyPairName, getPemContents());
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
@@ -353,7 +348,7 @@ public class SftpConnectDialog extends DialogFragment {
             ((MainActivity) getActivity()).refreshDrawer();
 
             AppConfig.runInBackground(() -> {
-                nUtilsHandler.updateSsh(connectionName,
+                utilsHandler.updateSsh(connectionName,
                         getArguments().getString("name"), encryptedPath,
                         selectedParsedKeyPairName, getPemContents());
             });
@@ -373,11 +368,11 @@ public class SftpConnectDialog extends DialogFragment {
 
     //Read the PEM content from InputStream to String.
     private String getPemContents() {
-        if(mSelectedPem == null)
+        if(selectedPem == null)
             return null;
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(mContext.getContentResolver().openInputStream(mSelectedPem)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getContentResolver().openInputStream(selectedPem)));
             StringBuilder sb = new StringBuilder();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
