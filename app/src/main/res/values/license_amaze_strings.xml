@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="amaze_license">
+    <string name="amaze_license" translatable="false">
         <![CDATA[
         Copyright &#169; 2014-2018 Arpit Khurana, Vishal Nehra<br />
         Copyright &#169; 2017-2018 Emmanuel Messulam <emmanuelbendavid@gmail.com><br />
