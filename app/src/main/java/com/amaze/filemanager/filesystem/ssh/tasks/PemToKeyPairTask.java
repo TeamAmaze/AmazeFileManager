@@ -74,11 +74,11 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         new PuttyPrivateKeyToKeyPairConverter()
     };
 
-    private final byte[] mPemFile;
+    private final byte[] pemFile;
 
-    private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> mCallback;
+    private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback;
 
-    private final PasswordFinder mPasswordFinder;
+    private final PasswordFinder passwordFinder;
 
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
         this(IOUtils.readFully(pemFile).toByteArray(), callback, null);
@@ -90,12 +90,12 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
                             String keyPassphrase) {
-        this.mPemFile = pemContent;
-        this.mCallback = callback;
+        this.pemFile = pemContent;
+        this.callback = callback;
         if(keyPassphrase == null)
-            mPasswordFinder = null;
+            passwordFinder = null;
         else
-            mPasswordFinder = new PasswordFinder() {
+            passwordFinder = new PasswordFinder() {
                 @Override
                 public char[] reqPassword(Resource<?> resource) {
                     return keyPassphrase.toCharArray();
@@ -116,7 +116,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
         try {
             for(PemToKeyPairConverter converter : converters) {
-                KeyPair keyPair = converter.convert(new String(mPemFile));
+                KeyPair keyPair = converter.convert(new String(pemFile));
                 if(keyPair != null) {
                     retval = new AsyncTaskResult<KeyPair>(keyPair);
                     break;
@@ -146,7 +146,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
             builder.customView(textfield, false).title(R.string.ssh_key_prompt_passphrase)
                     .positiveText(R.string.ok)
                     .onPositive(((dialog, which) -> {
-                        new PemToKeyPairTask(mPemFile, mCallback, textfield.getText().toString()).execute();
+                        new PemToKeyPairTask(pemFile, callback, textfield.getText().toString()).execute();
                         dialog.dismiss();
                 })).negativeText(R.string.cancel)
                     .onNegative(((dialog, which) -> {
@@ -156,8 +156,8 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
             builder.show();
         }
-        if(mCallback != null) {
-            mCallback.onResult(result);
+        if(callback != null) {
+            callback.onResult(result);
         }
     }
 
@@ -189,7 +189,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             OpenSSHKeyFile converter = new OpenSSHKeyFile();
-            converter.init(new StringReader(source), mPasswordFinder);
+            converter.init(new StringReader(source), passwordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
@@ -202,7 +202,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             OpenSSHKeyV1KeyFile converter = new OpenSSHKeyV1KeyFile();
-            converter.init(new StringReader(source), mPasswordFinder);
+            converter.init(new StringReader(source), passwordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {
@@ -215,7 +215,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         @Override
         public KeyPair convert(String source) {
             PuTTYKeyFile converter = new PuTTYKeyFile();
-            converter.init(new StringReader(source), mPasswordFinder);
+            converter.init(new StringReader(source), passwordFinder);
             try {
                 return new KeyPair(converter.getPublic(), converter.getPrivate());
             } catch (Exception ignored) {

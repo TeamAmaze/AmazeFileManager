@@ -61,13 +61,13 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT
  */
 public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>
 {
-    private final String mHostname;
-    private final int mPort;
-    private final String mHostKey;
+    private final String hostname;
+    private final int port;
+    private final String hostKey;
 
-    private final String mUsername;
-    private final String mPassword;
-    private final KeyPair mPrivateKey;
+    private final String username;
+    private final String password;
+    private final KeyPair privateKey;
 
     /**
      * Constructor.
@@ -86,38 +86,38 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                                  String password,
                                  KeyPair privateKey)
     {
-        this.mHostname = hostname;
-        this.mPort = port;
-        this.mHostKey = hostKey;
-        this.mUsername = username;
-        this.mPassword = password;
-        this.mPrivateKey = privateKey;
+        this.hostname = hostname;
+        this.port = port;
+        this.hostKey = hostKey;
+        this.username = username;
+        this.password = password;
+        this.privateKey = privateKey;
     }
 
     @Override
     protected AsyncTaskResult<SSHClient> doInBackground(Void... voids) {
 
         final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
-        sshClient.addHostKeyVerifier(mHostKey);
+        sshClient.addHostKeyVerifier(hostKey);
         sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
 
         try {
-            sshClient.connect(mHostname, mPort);
-            if(mPassword != null && !"".equals(mPassword)) {
-                sshClient.authPassword(mUsername, mPassword);
+            sshClient.connect(hostname, port);
+            if(password != null && !"".equals(password)) {
+                sshClient.authPassword(username, password);
                 return new AsyncTaskResult<SSHClient>(sshClient);
             }
             else
             {
-                sshClient.authPublickey(mUsername, new KeyProvider() {
+                sshClient.authPublickey(username, new KeyProvider() {
                     @Override
                     public PrivateKey getPrivate() throws IOException {
-                        return mPrivateKey.getPrivate();
+                        return privateKey.getPrivate();
                     }
 
                     @Override
                     public PublicKey getPublic() throws IOException {
-                        return mPrivateKey.getPublic();
+                        return privateKey.getPublic();
                     }
 
                     @Override
@@ -149,7 +149,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                     || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, result.exception.getLocalizedMessage()),
+                                hostname, port, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
                 return;
             }
@@ -169,11 +169,11 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                 }
                 return;
             }
-            else if(mPassword != null) {
+            else if(password != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
                 return;
             }
-            else if(mPrivateKey != null) {
+            else if(privateKey != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
                 return;
             }

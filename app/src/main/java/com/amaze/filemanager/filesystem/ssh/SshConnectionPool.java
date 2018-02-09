@@ -35,7 +35,6 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import net.schmizz.sshj.SSHClient;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.security.KeyPair;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,13 +58,13 @@ public class SshConnectionPool
 
     private static final String TAG = "SshConnectionPool";
 
-    private static SshConnectionPool sInstance = null;
+    private static SshConnectionPool instance = null;
 
-    private final Map<String, SSHClient> mConnections;
+    private final Map<String, SSHClient> connections;
 
     private SshConnectionPool()
     {
-        mConnections = new ConcurrentHashMap<String, SSHClient>();
+        connections = new ConcurrentHashMap<String, SSHClient>();
     }
 
     /**
@@ -74,10 +73,10 @@ public class SshConnectionPool
      * @return {@link SshConnectionPool} instance
      */
     public static final SshConnectionPool getInstance() {
-        if(sInstance == null)
-            sInstance = new SshConnectionPool();
+        if(instance == null)
+            instance = new SshConnectionPool();
 
-        return sInstance;
+        return instance;
     }
 
     /**
@@ -93,19 +92,19 @@ public class SshConnectionPool
     public SSHClient getConnection(@NonNull String url) throws IOException {
         url = SshClientUtils.extractBaseUriFrom(url);
 
-        SSHClient client = mConnections.get(url);
+        SSHClient client = connections.get(url);
         if(client == null) {
             client = create(url);
             if(client != null)
-                mConnections.put(url, client);
+                connections.put(url, client);
         } else {
             if(!validate(client)) {
                 Log.d(TAG, "Connection no longer usable. Reconnecting...");
                 expire(client);
-                mConnections.remove(url);
+                connections.remove(url);
                 client = create(url);
                 if(client != null)
-                    mConnections.put(url, client);
+                    connections.put(url, client);
             }
         }
         return client;
@@ -119,11 +118,11 @@ public class SshConnectionPool
      */
     public void expungeAllConnections() {
         AppConfig.runInBackground(() -> {
-            if(!mConnections.isEmpty()) {
-                for (SSHClient connection : mConnections.values()) {
+            if(!connections.isEmpty()) {
+                for (SSHClient connection : connections.values()) {
                     SshClientUtils.tryDisconnect(connection);
                 }
-                mConnections.clear();
+                connections.clear();
             }
         });
     }
