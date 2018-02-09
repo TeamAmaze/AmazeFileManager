@@ -11,12 +11,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,6 +33,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.util.DialogUtils;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -48,6 +55,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -596,10 +604,61 @@ public class GeneralDialogCreation {
 
         View rootView = View.inflate(c, R.layout.dialog_encrypt_authenticate, null);
 
-        final AppCompatEditText passwordEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
-        final AppCompatEditText passwordConfirmEditText = (AppCompatEditText)
-                rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
+        final AppCompatEditText passwordEditText = rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
+        final AppCompatEditText passwordConfirmEditText = rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
+        
+        passwordEditText.post(() -> {
+            InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(passwordEditText, InputMethodManager.SHOW_IMPLICIT);
+        });
+
+        TextInputLayout textInputLayoutPassword = rootView.findViewById(R.id.til_encrypt_password);
+        TextInputLayout textInputLayoutPasswordConfirm = rootView.findViewById(R.id.til_encrypt_password_confirm);
+
+        passwordEditText.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+
+                if (!TextUtils.isEmpty(s.toString())) {
+
+                    textInputLayoutPassword.setError("");
+                }
+            }
+        });
+
+        passwordConfirmEditText.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+
+                if (s.toString().equals(passwordEditText.getText().toString())) {
+                    textInputLayoutPasswordConfirm.setError("");
+                }
+            }
+        });
+
+        passwordConfirmEditText.setOnFocusChangeListener((v, hasFocus) -> {
+
+            if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+
+                textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
+                        + String.format(c.getResources().getString(R.string.cantbeempty),
+                        c.getResources().getString(R.string.password)));
+            } else {
+
+                textInputLayoutPassword.setError("");
+            }
+        });
+
+        passwordEditText.setOnFocusChangeListener((v, hasFocus) -> {
+
+            boolean isPasswordSame = passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString());
+            if (!isPasswordSame && !TextUtils.isEmpty(passwordConfirmEditText.getText().toString())) {
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.error) + ": "
+                        + c.getResources().getString(R.string.password_no_match));
+            }
+        });
 
         builder.customView(rootView, true);
 
@@ -611,18 +670,27 @@ public class GeneralDialogCreation {
 
         builder.onNegative((dialog, which) -> dialog.cancel());
 
-        builder.onPositive((dialog, which) -> {
-            if (TextUtils.isEmpty(passwordEditText.getText()) ||
-                    TextUtils.isEmpty(passwordConfirmEditText.getText())) {
-                dialog.cancel();
-                return;
-            }
+        builder.autoDismiss(false);
 
-            try {
-                encryptButtonCallbackInterface.onButtonPressed(intent, passwordEditText.getText().toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
+        builder.onPositive((dialog, which) -> {
+
+            if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+                textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
+                        + String.format(c.getResources().getString(R.string.cantbeempty),
+                        c.getResources().getString(R.string.password)));
+            } else if (!passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString())) {
+                textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.error) + ": "
+                        + c.getResources().getString(R.string.password_no_match));
+            } else {
+
+                try {
+                    encryptButtonCallbackInterface.onButtonPressed(intent, passwordEditText.getText().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
+                } finally {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -668,6 +736,7 @@ public class GeneralDialogCreation {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
         builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {});
+        builder.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         builder.theme(appTheme.getMaterialDialogTheme());
         builder.positiveText(c.getString(R.string.ok));
         builder.negativeText(c.getString(R.string.cancel));

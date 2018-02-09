@@ -606,10 +606,11 @@
     <string name="orange">Orange</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="password_no_match">Password doesn\'t match</string>
     <string name="deselect_all">Deselect All</string>
-
     <string name="about_amaze">Material design file manager for Android</string>
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
+    <string name="password_repeat">Repeat password</string>
 </resources>
 
