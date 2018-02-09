@@ -567,4 +567,8 @@
         可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n
         請聯絡你的系統管理員，或重新設定連線。
     </string>
+  <string name="deselect_all">取消全選</string>
+  <string name="about_amaze">Material設計風格的 Android檔案管理員</string>
+  <string name="license">版權宣告</string>
+  <string name="libraries">第三方程式庫</string>
 </resources>
