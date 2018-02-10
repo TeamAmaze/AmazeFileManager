@@ -421,7 +421,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if(vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
             final boolean isBackButton = mainFrag.GO_BACK_ITEM && p == 0;
-
+            if(isBackButton){
+                holder.about.setVisibility(View.GONE);
+            }
             if (mainFrag.IS_LIST) {
                 if (p == getItemCount() - 1) {
                     holder.rl.setMinimumHeight((int) minRowHeight);
