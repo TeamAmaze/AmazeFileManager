@@ -46,7 +46,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
@@ -56,14 +56,14 @@ public class DrawerAdapter extends ArrayAdapter<DrawerItem> {
     public static final int SELECTED_NONE = -1;
 
     private final Context context;
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private final ArrayList<DrawerItem> values;
     private MainActivity m;
     private int selectedItem = SELECTED_NONE;
     private DataUtils dataUtils = DataUtils.getInstance();
     private LayoutInflater inflater;
 
-    public DrawerAdapter(Context context, UtilitiesProviderInterface utilsProvider,
+    public DrawerAdapter(Context context, UtilitiesProvider utilsProvider,
                          ArrayList<DrawerItem> values, MainActivity m) {
         super(context, R.layout.drawerrow, values);
         this.utilsProvider = utilsProvider;

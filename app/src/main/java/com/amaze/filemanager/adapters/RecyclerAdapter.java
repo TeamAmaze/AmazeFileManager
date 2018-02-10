@@ -35,7 +35,7 @@ import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 
@@ -61,7 +61,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean stoppedAnimation = false;
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
     private RecyclerViewPreloader<IconDataParcelable> preloader;
@@ -76,7 +76,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
 
-    public RecyclerAdapter(MainFragment m, UtilitiesProviderInterface utilsProvider, SharedPreferences sharedPrefs,
+    public RecyclerAdapter(MainFragment m, UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
                            RecyclerView recyclerView,  ArrayList<LayoutElementParcelable> itemsRaw,
                            Context context, boolean showHeaders) {
         setHasStableIds(true);

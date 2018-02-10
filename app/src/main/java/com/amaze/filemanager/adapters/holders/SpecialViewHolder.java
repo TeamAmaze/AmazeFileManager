@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -23,7 +23,7 @@ public class SpecialViewHolder extends RecyclerView.ViewHolder {
     public final TextView txtTitle;
     public final int type;
 
-    public SpecialViewHolder(Context c, View view, UtilitiesProviderInterface utilsProvider,
+    public SpecialViewHolder(Context c, View view, UtilitiesProvider utilsProvider,
                              int type) {
         super(view);
 

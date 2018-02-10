@@ -44,10 +44,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.IOException;
@@ -65,13 +66,13 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             PreferencesConstants.FRAGMENT_FOLDERS, PreferencesConstants.FRAGMENT_QUICKACCESSES,
             PreferencesConstants.FRAGMENT_ADVANCED_SEARCH};
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private SharedPreferences sharedPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);

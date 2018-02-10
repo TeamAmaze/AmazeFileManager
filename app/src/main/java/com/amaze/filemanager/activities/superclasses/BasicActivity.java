@@ -4,16 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorPreference;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.amaze.filemanager.utils.theme.AppThemeManager;
 
 /**
  * Created by rpiotaix on 17/10/16.
  */
-public class BasicActivity extends AppCompatActivity implements UtilitiesProviderInterface {
+public class BasicActivity extends AppCompatActivity {
     private boolean initialized = false;
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
 
     private void initialize() {
         utilsProvider = getAppConfig().getUtilsProvider();
@@ -32,7 +31,6 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         return utilsProvider.getColorPreference();
     }
 
-    @Override
     public AppTheme getAppTheme() {
         if (!initialized)
             initialize();
@@ -40,11 +38,7 @@ public class BasicActivity extends AppCompatActivity implements UtilitiesProvide
         return utilsProvider.getAppTheme();
     }
 
-    @Override
-    public AppThemeManager getThemeManager() {
-        if (!initialized)
-            initialize();
-
-        return utilsProvider.getThemeManager();
+    public UtilitiesProvider getUtilsProvider() {
+        return utilsProvider;
     }
 }

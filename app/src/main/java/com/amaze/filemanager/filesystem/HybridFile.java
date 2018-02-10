@@ -17,7 +17,6 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
-import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -29,14 +28,12 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
-import net.schmizz.sshj.common.IOUtils;
-import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -1286,7 +1283,7 @@ public class HybridFile {
      * @param utilitiesProvider
      * @return
      */
-    public LayoutElementParcelable generateLayoutElement(MainFragment mainFragment, UtilitiesProviderInterface utilitiesProvider) {
+    public LayoutElementParcelable generateLayoutElement(MainFragment mainFragment, UtilitiesProvider utilitiesProvider) {
         switch (mode) {
             case FILE:
             case ROOT:

@@ -23,7 +23,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,13 +39,13 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
 
     private Context context;
     private MainActivity mainActivity;
-    private UtilitiesProviderInterface utilitiesProvider;
+    private UtilitiesProvider utilitiesProvider;
     private MainFragment mainFragment;
     private SharedPreferences sharedPrefs;
     private LayoutElementParcelable rowItem;
     private int accentColor;
 
-    public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProviderInterface up, MainFragment mainFragment,
+    public ItemPopupMenu(Context c, MainActivity ma, UtilitiesProvider up, MainFragment mainFragment,
                          LayoutElementParcelable ri, View anchor, SharedPreferences sharedPreferences) {
         super(c, anchor);
 

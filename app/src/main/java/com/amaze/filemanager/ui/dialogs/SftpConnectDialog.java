@@ -42,6 +42,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -55,7 +56,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SecurityUtils;
@@ -68,7 +69,6 @@ import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 /**
  * SSH/SFTP connection setup dialog.
@@ -80,7 +80,7 @@ public class SftpConnectDialog extends DialogFragment {
     //FIXME: agree code on
     private static final int SELECT_PEM_INTENT = 0x01010101;
 
-    private UtilitiesProviderInterface mUtilsProvider;
+    private UtilitiesProvider mUtilsProvider;
 
     private UtilsHandler nUtilsHandler;
 
@@ -95,7 +95,7 @@ public class SftpConnectDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUtilsProvider = (UtilitiesProviderInterface) getActivity();
+        mUtilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
         nUtilsHandler = AppConfig.getInstance().getUtilsHandler();
     }
 

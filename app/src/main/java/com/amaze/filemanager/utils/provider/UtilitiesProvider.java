@@ -12,7 +12,7 @@ import com.amaze.filemanager.utils.theme.AppThemeManager;
  * Created by piotaixr on 16/01/17.
  */
 
-public class UtilitiesProvider implements UtilitiesProviderInterface {
+public class UtilitiesProvider {
     private ColorPreference colorPreference;
     private AppThemeManager appThemeManager;
 
@@ -23,17 +23,14 @@ public class UtilitiesProvider implements UtilitiesProviderInterface {
         appThemeManager = new AppThemeManager(sharedPreferences);
     }
 
-    @Override
     public ColorPreference getColorPreference() {
         return colorPreference;
     }
 
-    @Override
     public AppTheme getAppTheme() {
         return appThemeManager.getAppTheme();
     }
 
-    @Override
     public AppThemeManager getThemeManager() {
         return appThemeManager;
     }
