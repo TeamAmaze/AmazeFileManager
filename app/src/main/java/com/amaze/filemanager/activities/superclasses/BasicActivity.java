@@ -11,34 +11,20 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  * Created by rpiotaix on 17/10/16.
  */
 public class BasicActivity extends AppCompatActivity {
-    private boolean initialized = false;
-    private UtilitiesProvider utilsProvider;
-
-    private void initialize() {
-        utilsProvider = getAppConfig().getUtilsProvider();
-
-        initialized = true;
-    }
 
     protected AppConfig getAppConfig() {
         return (AppConfig) getApplication();
     }
 
     public ColorPreference getColorPreference() {
-        if (!initialized)
-            initialize();
-
-        return utilsProvider.getColorPreference();
+        return getAppConfig().getUtilsProvider().getColorPreference();
     }
 
     public AppTheme getAppTheme() {
-        if (!initialized)
-            initialize();
-
-        return utilsProvider.getAppTheme();
+        return getAppConfig().getUtilsProvider().getAppTheme();
     }
 
     public UtilitiesProvider getUtilsProvider() {
-        return utilsProvider;
+        return getAppConfig().getUtilsProvider();
     }
 }
