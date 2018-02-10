@@ -29,7 +29,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     public boolean stoppedAnimation = false;
 
     private Context context;
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private Drawable folder;
     private ArrayList<CompressedObjectParcelable> items;
     private CompressedExplorerFragment compressedExplorerFragment;
@@ -53,7 +53,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     private boolean[] itemsChecked;
     private int offset = 0;
 
-    public CompressedExplorerAdapter(Context c, UtilitiesProviderInterface utilsProvider,
+    public CompressedExplorerAdapter(Context c, UtilitiesProvider utilsProvider,
                                      ArrayList<CompressedObjectParcelable> items,
                                      CompressedExplorerFragment compressedExplorerFragment,
                                      Decompressor decompressor) {

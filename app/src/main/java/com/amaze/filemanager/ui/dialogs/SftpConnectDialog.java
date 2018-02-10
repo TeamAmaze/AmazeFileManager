@@ -56,7 +56,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SecurityUtils;
@@ -80,7 +80,7 @@ public class SftpConnectDialog extends DialogFragment {
     //FIXME: agree code on
     private static final int SELECT_PEM_INTENT = 0x01010101;
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
 
     private UtilsHandler utilsHandler;
 
@@ -95,7 +95,7 @@ public class SftpConnectDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = AppConfig.getInstance().getUtilsProvider();
         utilsHandler = AppConfig.getInstance().getUtilsHandler();
     }
 

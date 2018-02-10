@@ -103,7 +103,7 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.io.File;
@@ -157,7 +157,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private SwipeRefreshLayout nofilesview;
 
     private android.support.v7.widget.RecyclerView listView;
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private HashMap<String, Bundle> scrolls = new HashMap<>();
     private MainFragment ma = this;
     private View rootView;
@@ -194,7 +194,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         setRetainInstance(true);
 
-        utilsProvider = getMainActivity();
+        utilsProvider = getMainActivity().getUtilsProvider();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         res = getResources();
 

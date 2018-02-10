@@ -34,20 +34,21 @@ import android.widget.Toast;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 public class AppsListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
-    UtilitiesProviderInterface utilsProvider;
+    UtilitiesProvider utilsProvider;
     AppsListFragment app = this;
     AppsAdapter adapter;
 
@@ -67,7 +68,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
         setHasOptionsMenu(false);
     }

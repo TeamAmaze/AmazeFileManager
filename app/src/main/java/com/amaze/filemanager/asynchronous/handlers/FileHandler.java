@@ -10,7 +10,7 @@ import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -21,10 +21,10 @@ import java.lang.ref.WeakReference;
  */
 public class FileHandler extends Handler {
     private WeakReference<MainFragment> mainFragment;
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private RecyclerView listView;
 
-    public FileHandler(MainFragment mainFragment, UtilitiesProviderInterface utilsProvider,
+    public FileHandler(MainFragment mainFragment, UtilitiesProvider utilsProvider,
                         RecyclerView listView) {
         super(Looper.getMainLooper());
         this.mainFragment = new WeakReference<>(mainFragment);

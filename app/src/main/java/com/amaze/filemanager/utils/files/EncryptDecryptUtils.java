@@ -19,7 +19,7 @@ import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -55,7 +55,7 @@ public class EncryptDecryptUtils {
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
                                    HybridFileParcelable sourceFile, String decryptPath,
-                                   UtilitiesProviderInterface utilsProvider,
+                                   UtilitiesProvider utilsProvider,
                                    boolean broadcastResult) {
 
         Intent decryptIntent = new Intent(main.getContext(), DecryptService.class);

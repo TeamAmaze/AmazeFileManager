@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -64,7 +65,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
 
@@ -104,7 +105,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public SwipeRefreshLayout swipeRefreshLayout;
     public boolean isOpen = false;  // flag states whether to open file after service extracts it
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private Decompressor decompressor;
     private View rootView;
     private boolean addheader = true;
@@ -118,7 +119,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
     }
 
     @Override

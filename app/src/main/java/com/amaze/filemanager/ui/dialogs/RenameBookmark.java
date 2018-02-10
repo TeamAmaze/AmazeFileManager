@@ -14,9 +14,9 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -73,7 +73,7 @@ public class RenameBookmark extends DialogFragment {
             builder.positiveText(R.string.save);
             builder.neutralText(R.string.cancel);
             builder.negativeText(R.string.delete);
-            builder.theme(((UtilitiesProviderInterface) getActivity()).getAppTheme().getMaterialDialogTheme());
+            builder.theme(((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme());
             builder.autoDismiss(false);
             View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
             builder.customView(v2, true);
