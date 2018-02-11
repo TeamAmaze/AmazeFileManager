@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -44,6 +45,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -149,6 +151,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -235,7 +238,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private ActionBarDrawerToggle mDrawerToggle;
     private Intent intent;
     private View drawerHeaderLayout;
-    private View drawerHeaderView, indicator_layout;
+    private ImageView drawerHeaderView;
+    private View indicator_layout;
     private ImageLoader mImageLoader;
 
     private TabHandler tabHandler;
@@ -1687,7 +1691,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerList = findViewById(R.id.menu_drawer);
-        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
+        drawerHeaderView.setImageResource(R.drawable.amaze_header);
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1924,20 +1928,16 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     void setDrawerHeaderBackground() {
         String path = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
-        if (path == null) return;
+        if (path == null) {
+            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+            return;
+        }
         
         try {
-            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(path));
-            Drawable drawable = Drawable.createFromStream(inputStream, path);
-
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                drawerHeaderView.setBackgroundDrawable(drawable);
-            } else {
-                drawerHeaderView.setBackground(drawable);
-            }
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(path));
+            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
+        } catch (IOException e) {
             drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-        } catch (FileNotFoundException e) {
-            //don't do anything, normal image is loaded
         }
     }
 
