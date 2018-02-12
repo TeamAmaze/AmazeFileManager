@@ -27,6 +27,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
@@ -34,9 +36,12 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -50,17 +55,23 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.R.string.feedback;
 
 public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
+    private static final int START_PREFERENCE_CHANGE_DRAWER_BACKGROUND = 1;
+
     private static final String[] PREFERENCE_KEYS = {PreferencesConstants.PREFERENCE_GRID_COLUMNS,
             PreferencesConstants.FRAGMENT_THEME, PreferencesConstants.PREFERENCE_ROOTMODE,
-            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, PreferencesConstants.FRAGMENT_FEEDBACK,
+            PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES,
+            PreferencesConstants.PREFERENCE_CHANGE_DRAWER_BACKGROUND, PreferencesConstants.FRAGMENT_FEEDBACK,
             PreferencesConstants.FRAGMENT_ABOUT, PreferencesConstants.FRAGMENT_COLORS,
             PreferencesConstants.FRAGMENT_FOLDERS, PreferencesConstants.FRAGMENT_QUICKACCESSES,
             PreferencesConstants.FRAGMENT_ADVANCED_SEARCH};
@@ -187,6 +198,14 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 });
                 builder.title(R.string.theme);
                 builder.build().show();
+            case PreferencesConstants.PREFERENCE_CHANGE_DRAWER_BACKGROUND:
+                String path = sharedPref.getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
+
+                if(path == null) {
+                    createDrawerBackground(null);
+                } else {
+                    createDrawerBackground(Uri.parse(path));
+                }
                 return true;
             case PreferencesConstants.FRAGMENT_FEEDBACK:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -296,6 +315,26 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         return false;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case START_PREFERENCE_CHANGE_DRAWER_BACKGROUND:
+                if(resultCode == Activity.RESULT_OK) {
+                    if (sharedPref != null && data != null && data.getData() != null) {
+                        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            getActivity().getContentResolver().takePersistableUriPermission(data.getData(),
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        }
+                        createDrawerBackground(data.getData());
+                    }
+                } else {
+                    createDrawerBackground(null);
+                }
+                break;
+        }
+    }
+
     public static void restartPC(final Activity activity) {
         if (activity == null) return;
 
@@ -305,6 +344,40 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.startActivity(activity.getIntent());
+    }
+
+    private void createDrawerBackground(@Nullable Uri newUri) {
+        MaterialDialog d = new MaterialDialog.Builder(getActivity())
+                .title(R.string.changeDrawerBackground_title)
+                .customView(R.layout.dialog_changedrawerheader, false)
+                .negativeText(R.string.cancel)
+                .positiveText(R.string.set)
+                .neutralText(R.string.change)
+                .onPositive((dialog, button) -> {
+                    if(newUri != null) {
+                        sharedPref.edit()
+                                .putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, newUri.toString())
+                                .apply();
+                    }
+                })
+                .onNeutral((dialog, button) -> {
+                    String action = SDK_INT < Build.VERSION_CODES.KITKAT? Intent.ACTION_GET_CONTENT:Intent.ACTION_OPEN_DOCUMENT;
+                    Intent intent = new Intent(action);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, START_PREFERENCE_CHANGE_DRAWER_BACKGROUND);
+                }).show();
+
+        ImageView imageView = d.getCustomView().findViewById(R.id.imageView);
+
+        if(newUri != null) {
+            try {
+                Bitmap drawable = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), newUri);
+                imageView.setImageBitmap(drawable);
+            } catch (IOException e) {
+                Toast.makeText(getActivity(), R.string.error_io, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }

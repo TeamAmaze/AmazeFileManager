@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -44,6 +45,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -133,7 +135,6 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.CloudRail;
 import com.cloudrail.si.exceptions.AuthenticationException;
@@ -149,6 +150,9 @@ import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -218,8 +222,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
     private static final String KEY_OPERATION = "operation";
 
-    private static final int image_selector_request_code = 31;
-
     private AppBar appbar;
     //private HistoryManager history, grid;
     private MainActivity mainActivity = this;
@@ -236,7 +238,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private ActionBarDrawerToggle mDrawerToggle;
     private Intent intent;
     private View drawerHeaderLayout;
-    private View drawerHeaderView, indicator_layout;
+    private ImageView drawerHeaderView;
+    private View indicator_layout;
     private ImageLoader mImageLoader;
 
     private TabHandler tabHandler;
@@ -1567,16 +1570,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == image_selector_request_code) {
-            if (getPrefs() != null && intent != null && intent.getData() != null) {
-                if (SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    getContentResolver().takePersistableUriPermission(intent.getData(),
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                        intent.getData().toString()).commit();
-                setDrawerHeaderBackground();
-            }
-        } else if (requestCode == 3) {
+        if (requestCode == 3) {
             Uri treeUri;
             if (responseCode == Activity.RESULT_OK) {
                 // Get Uri from Storage Access Framework.
@@ -1685,22 +1679,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
         drawerHeaderLayout = getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderLayout.setOnClickListener(null);
+        drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
-        drawerHeaderView.setOnLongClickListener(v -> {
-            Intent intent1;
-            if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent1 = new Intent();
-                intent1.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            }
-            intent1.addCategory(Intent.CATEGORY_OPENABLE);
-            intent1.setType("image/*");
-            startActivityForResult(intent1, image_selector_request_code);
-            return false;
-        });
         setSupportActionBar(getAppbar().getToolbar());
         frameLayout = findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
@@ -1709,11 +1690,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         else if (getAppTheme().equals(AppTheme.BLACK)) mDrawerLinear.setBackgroundColor(Utils.getColor(this, android.R.color.black));
         else mDrawerLinear.setBackgroundColor(Color.WHITE);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         mDrawerList = findViewById(R.id.menu_drawer);
-        drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-        //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-
+        drawerHeaderView.setImageResource(R.drawable.amaze_header);
         if (findViewById(R.id.tab_frame) != null) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, mDrawerLinear);
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -1744,7 +1722,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             //tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
+            FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mDrawerLayout.getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             if (!isDrawerLocked) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1949,24 +1927,17 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void setDrawerHeaderBackground() {
-        String path1 = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
-                null);
-        if (path1 == null) return;
+        String path = getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
+        if (path == null) {
+            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
+            return;
+        }
+        
         try {
-            final ImageView headerImageView = new ImageView(MainActivity.this);
-            headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-            mImageLoader.get(path1, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    headerImageView.setImageBitmap(response.getBitmap());
-                    drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {}
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(path));
+            drawerHeaderView.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
+        } catch (IOException e) {
+            drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
         }
     }
 
