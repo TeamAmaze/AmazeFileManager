@@ -42,6 +42,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
