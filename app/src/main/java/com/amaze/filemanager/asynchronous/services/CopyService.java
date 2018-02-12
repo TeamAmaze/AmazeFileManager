@@ -112,7 +112,7 @@ public class CopyService extends ProgressiveService {
                 .setContentTitle(getResources().getString(R.string.copying))
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
 
-        NotificationConstants.setMetadata(c, mBuilder);
+        NotificationConstants.setMetadata(c, mBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.COPY_ID, mBuilder.build());
 

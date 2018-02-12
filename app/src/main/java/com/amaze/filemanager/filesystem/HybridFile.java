@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
@@ -32,6 +34,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileMode;
@@ -558,14 +561,7 @@ public class HybridFile {
 
         switch (mode) {
             case SFTP:
-                return SshClientUtils.execute(new SFtpClientTemplate(path, false) {
-                    @Override
-                    public Long execute(SFTPClient client) throws IOException {
-                        Long retval = client.size(SshClientUtils.extractRemotePathFrom(path));
-                        client.close();
-                        return retval;
-                    }
-                });
+                return folderSize(AppConfig.getInstance());
             case SMB:
                 try {
                     size = FileUtils.folderSize(new SmbFile(path));
@@ -599,21 +595,10 @@ public class HybridFile {
 
         switch (mode){
             case SFTP:
-                return SshClientUtils.execute(new SshClientSessionTemplate(path) {
+                return SshClientUtils.execute(new SFtpClientTemplate(path) {
                     @Override
-                    public Long execute(Session session) throws IOException {
-                        Session.Command cmd = session.exec(String.format("du -b -s \"%s\"",
-                                SshClientUtils.extractRemotePathFrom(path)));
-
-                        String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
-                        cmd.close();
-                        if(cmd.getExitStatus() == 0) {
-                            result = result.substring(0, result.indexOf('/') - 1).trim();
-                            return Long.parseLong(result);
-                        }
-                        else {
-                            return 0L;
-                        }
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(SshClientUtils.extractRemotePathFrom(path));
                     }
                 });
             case SMB:
@@ -678,20 +663,23 @@ public class HybridFile {
                 size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
                 break;
             case SFTP:
-                return SshClientUtils.execute(new SshClientSessionTemplate(path) {
+                size = SshClientUtils.execute(new SFtpClientTemplate(path) {
                     @Override
-                    public Long execute(final Session session) throws IOException {
-                        Long retval = 0L;
-                        Session.Command cmd = session.exec(String.format("df \"%s\" --output=avail | grep -v Avail", SshClientUtils.extractRemotePathFrom(path)));
-                        String result = IOUtils.readFully(cmd.getInputStream()).toString();
-                        cmd.close();
-
-                        if (cmd.getExitStatus() == 0) {
-                            retval = Long.parseLong(result.trim());
+                    public Long execute(@NonNull SFTPClient client) throws IOException {
+                        try {
+                            Statvfs.Response response = new Statvfs.Response(path,
+                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                            return response.diskFreeSpace();
+                        } catch (SFTPException e) {
+                            Log.e(TAG, "Error querying server", e);
+                            return 0L;
+                        } catch (Buffer.BufferException e) {
+                            Log.e(TAG, "Error parsing reply", e);
+                            return 0L;
                         }
-                        return retval;
                     }
                 });
+                break;
             case OTG:
                 // TODO: Get free space from OTG when {@link DocumentFile} API adds support
                 break;
@@ -730,18 +718,20 @@ public class HybridFile {
                 size = spaceAllocation.getTotal();
                 break;
             case SFTP:
-                size = SshClientUtils.execute(new SshClientSessionTemplate(path) {
+                size = SshClientUtils.execute(new SFtpClientTemplate(path) {
                     @Override
-                    public Long execute(Session session) throws IOException {
-                        Long retval = 0L;
-                        Session.Command cmd = session.exec(String.format("df \"%s\" --output=size -B1 | grep -v 1B-blocks", SshClientUtils.extractRemotePathFrom(path)));
-                        String result = IOUtils.readFully(cmd.getInputStream()).toString();
-                        cmd.close();
-
-                        if (cmd.getExitStatus() == 0) {
-                            retval = Long.parseLong(result.trim());
+                    public Long execute(@NonNull SFTPClient client) throws IOException {
+                        try {
+                            Statvfs.Response response = new Statvfs.Response(path,
+                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                            return response.diskSize();
+                        } catch (SFTPException e) {
+                            Log.e(TAG, "Error querying server", e);
+                            return 0L;
+                        } catch (Buffer.BufferException e) {
+                            Log.e(TAG, "Error parsing reply", e);
+                            return 0L;
                         }
-                        return retval;
                     }
                 });
                 break;
@@ -1085,7 +1075,7 @@ public class HybridFile {
                 break;
             default:
                 try {
-                    outputStream = FileUtil.getOutputStream(new File(path), context, length());
+                    outputStream = FileUtil.getOutputStream(new File(path), context);
                 } catch (Exception e) {
                     outputStream=null;
                     e.printStackTrace();

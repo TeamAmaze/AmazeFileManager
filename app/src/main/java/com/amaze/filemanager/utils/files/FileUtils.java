@@ -52,6 +52,8 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -68,6 +70,10 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPException;
 
 import java.io.File;
 import java.text.ParsePosition;
@@ -125,6 +131,34 @@ public class FileUtils {
         }
         return length;
     }
+
+    /**
+     * Use recursive <code>ls</code> to get folder size.
+     *
+     * It is slow, it is stupid, and may be inaccurate (because of permission problems).
+     * Only for fallback use when <code>du</code> is not available.
+     *
+     * @see HybridFile#folderSize(Context)
+     * @param remotePath
+     * @return Folder size in bytes
+     */
+    public static Long folderSizeSftp(SFTPClient client, String remotePath) {
+        Long retval = 0L;
+        try {
+            for (RemoteResourceInfo info : client.ls(remotePath)) {
+                if (info.isDirectory())
+                    retval += folderSizeSftp(client, info.getPath());
+                else
+                    retval += info.getAttributes().getSize();
+            }
+        } catch (SFTPException e) {
+            //Usually happens when permission denied listing files in directory
+            Log.e("folderSizeSftp", "Problem accessing " + remotePath, e);
+        } finally {
+            return retval;
+        }
+    }
+
 
     public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
 
@@ -661,14 +695,10 @@ public class FileUtils {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(m);
         final Toast[] studioCount = {null};
 
-        if (defaultHandler && f.getName().toLowerCase().endsWith(".zip") ||
-                f.getName().toLowerCase().endsWith(".jar") ||
-                f.getName().toLowerCase().endsWith(".rar")||
-                f.getName().toLowerCase().endsWith(".tar") ||
-                f.getName().toLowerCase().endsWith(".tar.gz")) {
-            GeneralDialogCreation.showArchiveDialog(f, m);
-        } else if(f.getName().toLowerCase().endsWith(".apk")) {
+        if(f.getName().toLowerCase().endsWith(".apk")) {
             GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
+        } else if (defaultHandler && CompressedHelper.isFileExtractable(f.getPath())) {
+            GeneralDialogCreation.showArchiveDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
             Intent intent = new Intent(m, DatabaseViewerActivity.class);
             intent.putExtra("path", f.getPath());
@@ -917,6 +947,17 @@ public class FileUtils {
 
     public static boolean isRoot(String dir) {// TODO: 5/5/2017 hardcoding root might lead to problems down the line
         return !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");
+    }
+
+    /**
+     * Converts ArrayList of HybridFileParcelable to ArrayList of File
+     */
+    public static ArrayList<File> hybridListToFileArrayList(ArrayList<HybridFileParcelable> a) {
+        ArrayList<File> b = new ArrayList<>();
+        for (int i = 0; i < a.size(); i++) {
+            b.add(new File(a.get(i).getPath()));
+        }
+        return b;
     }
 
 }

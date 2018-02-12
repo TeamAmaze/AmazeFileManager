@@ -97,6 +97,9 @@ dependencies {
 
     implementation ('com.github.junrar:junrar:0.7') {
         exclude module: 'commons-logging'
+        exclude module: 'commons-logging-api'
+        exclude module: 'maven-scm-api'
+        exclude module: 'maven-scm-provider-svnexe'
     }
 
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
@@ -152,7 +155,7 @@ dependencies {
     implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.1'//Floating Action Buttons Menu (aka expandable FAB)
 
     //Simple library show
-    implementation('com.mikepenz:aboutlibraries:6.0.2@aar') {
+    implementation('com.mikepenz:aboutlibraries:6.0.3@aar') {
         transitive = true
     }
 

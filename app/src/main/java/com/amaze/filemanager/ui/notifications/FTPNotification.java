@@ -34,7 +34,6 @@ public class FTPNotification extends BroadcastReceiver {
         }
     }
 
-    @SuppressWarnings("NewApi")
     private void createNotification(Context context, boolean noStopButton) {
 
         String notificationService = Context.NOTIFICATION_SERVICE;
@@ -62,7 +61,7 @@ public class FTPNotification extends BroadcastReceiver {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
@@ -71,14 +70,9 @@ public class FTPNotification extends BroadcastReceiver {
                 .setWhen(when)
                 .setOngoing(true);
 
-        NotificationConstants.setMetadata(context, notificationBuilder);
+        NotificationConstants.setMetadata(context, notificationBuilder, NotificationConstants.TYPE_FTP);
 
         Notification notification;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationBuilder.setCategory(Notification.CATEGORY_SERVICE);
-            notificationBuilder.setPriority(Notification.PRIORITY_MAX);
-        }
         if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
             CharSequence stopText = context.getResources().getString(R.string.ftp_notif_stop_server);

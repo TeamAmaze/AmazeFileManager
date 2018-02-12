@@ -521,6 +521,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
+            menu.findItem(R.id.all).setTitle(positions.size() == folder_count + file_count ?
+                    R.string.deselect_all : R.string.selectall);
 
             if (openMode != OpenMode.FILE) {
                 hideOption(R.id.addshortcut, menu);
@@ -967,8 +969,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void updateTabWithDb(Tab tab) {
-        CURRENT_PATH = tab.getPath();
-        home = tab.getHome();
+        CURRENT_PATH = tab.path;
+        home = tab.home;
         loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
     }
 

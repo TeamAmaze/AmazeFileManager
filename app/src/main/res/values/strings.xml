@@ -574,6 +574,8 @@
     <string name="nobitcoinapp">Please install a bitcoin wallet</string>
     <string name="channelname_normal">Amaze Notifications</string>
     <string name="channeldescription_normal">Amaze File Manager\'s Notifications</string>
+    <string name="channelname_ftp">Amaze FTP Server</string>
+    <string name="channeldescription_ftp">Amaze File Manager FTP Server\'s Notifications</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>
@@ -606,12 +608,13 @@
     <string name="orange">Orange</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="password_no_match">Password doesn\'t match</string>
     <string name="deselect_all">Deselect All</string>
-
     <string name="filename">Filename</string>
     <string name="compress_file_suggest_zip_extension">It\'s recommended to use \".zip\" as the file extension.</string>
     <string name="about_amaze">Material design file manager for Android</string>
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
+    <string name="password_repeat">Repeat password</string>
 </resources>
 

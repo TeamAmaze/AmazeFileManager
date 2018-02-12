@@ -22,6 +22,7 @@ package com.amaze.filemanager.ui.icons;
 import android.support.annotation.DrawableRes;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class Icons {
                 "application/x-tar",
                 "application/x-webarchive",
                 "application/x-webarchive-xml",
-                "application/gzip",
+                "application/x-gzip",
                 "application/x-7z-compressed",
                 "application/x-deb",
                 "application/x-rar-compressed"
@@ -198,6 +199,7 @@ public class Icons {
 
     public static @DrawableRes int loadMimeIcon(String path, boolean isDirectory) {
         if(path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
+        if(CompressedHelper.isFileExtractable(path)) return R.drawable.ic_compressed_white_24dp;
 
         int type = getTypeOfFile(path, isDirectory);
 

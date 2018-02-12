@@ -77,7 +77,7 @@ public class EncryptService extends ProgressiveService {
         notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_encrypting));
         notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
 
-        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder);
+        NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
 
@@ -191,7 +191,7 @@ public class EncryptService extends ProgressiveService {
                     context.getString(R.string.crypt_encrypted).toLowerCase())))
             .setAutoCancel(true);
 
-        NotificationConstants.setMetadata(context, mBuilder);
+        NotificationConstants.setMetadata(context, mBuilder, NotificationConstants.TYPE_NORMAL);
 
         progressHandler.setCancelled(true);
 
