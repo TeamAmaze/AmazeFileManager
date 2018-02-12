@@ -614,5 +614,6 @@
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
     <string name="password_repeat">Repeat password</string>
+    <string name="ssh_select_pem">Select private key for authentication</string>
 </resources>
 
