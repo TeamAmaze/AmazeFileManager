@@ -51,6 +51,8 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
@@ -79,6 +81,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -824,32 +827,61 @@ public class GeneralDialogCreation {
         b.show();
     }
 
+    private static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
+
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, (materialDialog, charSequence) -> {});
-        a.widgetColor(accentColor);
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(m.getResources().getString(R.string.enterzipname));
-        a.positiveText(R.string.create);
-        a.positiveColor(accentColor);
-        a.onPositive((materialDialog, dialogAction) -> {
-            if (materialDialog.getInputEditText().getText().toString().equals(".zip"))
-                Toast.makeText(m, m.getResources().getString(R.string.no_name), Toast.LENGTH_SHORT).show();
-            else {
-                String name = current + "/" + materialDialog.getInputEditText().getText().toString();
+
+        View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
+        EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
+        etFilename.setHint(R.string.enterzipname);
+        etFilename.setText(".zip");
+        etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
+        WarnableTextInputLayout tilFilename = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+        a.customView(dialogView, false)
+            .widgetColor(accentColor)
+            .theme(m.getAppTheme().getMaterialDialogTheme())
+            .title(m.getResources().getString(R.string.enterzipname))
+            .positiveText(R.string.create)
+            .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
+                String name = current + "/" + etFilename.getText().toString();
                 m.mainActivityHelper.compressFiles(new File(name), b);
-            }
-        });
-        a.negativeText(m.getResources().getString(R.string.cancel));
-        a.negativeColor(accentColor);
+            }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
+
         final MaterialDialog materialDialog = a.build();
+
+        new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
+                        materialDialog.getActionButton(DialogAction.POSITIVE),
+                        (text) -> {
+                    //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
+                    //So we simply use equality to check them
+                    boolean isValidFilename = (!ZIP_FILE_REGEX.matcher(text).find())
+                            && !".".equals(text) && !"..".equals(text);
+
+                    if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.compress_file_suggest_zip_extension);
+                    } else {
+                        if (!isValidFilename) {
+                            return new WarnableTextInputValidator.ReturnState(
+                                    WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                        } else if (text.length() < 1) {
+                            return new WarnableTextInputValidator.ReturnState(
+                                    WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                        }
+                    }
+
+                    return new WarnableTextInputValidator.ReturnState();
+                });
+
         materialDialog.show();
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll
         // reset calls to selection if not posted in message queue
-        materialDialog.getInputEditText().post(() -> materialDialog.getInputEditText().setSelection(0));
+        etFilename.post(() -> etFilename.setSelection(0));
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
