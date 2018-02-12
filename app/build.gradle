@@ -160,6 +160,8 @@ dependencies {
     }
 
     compile 'com.android.support:multidex:1.0.2'//Multiple dex files
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 configurations.all {
