@@ -24,9 +24,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.ContentProviderClient;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,7 +32,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -62,34 +59,21 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -209,11 +193,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 mFile = new EditableFileAbstraction(this, uri);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
                 finish();
             }
         } else {
-            Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -384,7 +368,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile.hybridFileParcelable,
                             this, getAppTheme());
                 } else {
-                    Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.openwith:
@@ -397,7 +381,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                         Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.find:
