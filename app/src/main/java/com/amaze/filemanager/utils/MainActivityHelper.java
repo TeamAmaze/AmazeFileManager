@@ -135,13 +135,13 @@ public class MainActivityHelper {
     }
 
     private void mk(@StringRes int newText, final OnClickMaterialListener l) {
-        final MaterialDialog materialDialog = GeneralDialogCreation.showNameDialog(mainActivity,
-                new String[]{mainActivity.getResources().getString(R.string.entername),
-                        "",
-                        mainActivity.getResources().getString(newText),
-                        mainActivity.getResources().getString(R.string.create),
-                        mainActivity.getResources().getString(R.string.cancel),
-                        null});
+        final MaterialDialog materialDialog = GeneralDialogCreation.createNameDialog(mainActivity,
+                mainActivity.getResources().getString(R.string.entername),
+                "",
+                mainActivity.getResources().getString(newText),
+                mainActivity.getResources().getString(R.string.create),
+                mainActivity.getResources().getString(R.string.cancel),
+                null);
 
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
         materialDialog.show();
