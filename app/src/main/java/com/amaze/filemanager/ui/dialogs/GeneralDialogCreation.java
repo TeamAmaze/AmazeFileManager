@@ -78,7 +78,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -109,29 +108,43 @@ public class GeneralDialogCreation {
         return a.build();
     }
 
-    public static MaterialDialog.Builder createNameDialog(final MainActivity m, String hint, String prefill,
+    public static MaterialDialog showNameDialog(final MainActivity m, String hint, String prefill,
                                                           String title, String positiveButtonText,
-                                                          String neutralButtonText, String negativeButtonText) {
+                                                          String neutralButtonText, String negativeButtonText,
+                                                          MaterialDialog.SingleButtonCallback positiveButtonAction,
+                                                          WarnableTextInputValidator.OnTextValidate validator) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(hint, prefill, false,
-                (materialDialog, charSequence) -> {});
-        a.widgetColor(accentColor);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(title);
+        View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
+        EditText textfield = dialogView.findViewById(R.id.singleedittext_input);
+        textfield.setHint(hint);
+        textfield.setText(prefill);
 
-        a.positiveText(positiveButtonText);
+        WarnableTextInputLayout tilTextfield = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+        builder.customView(dialogView, false)
+                .widgetColor(accentColor)
+                .theme(m.getAppTheme().getMaterialDialogTheme())
+                .title(title)
+                .positiveText(positiveButtonText)
+                .onPositive(positiveButtonAction);
 
         if(neutralButtonText != null) {
-            a.neutralText(neutralButtonText);
+            builder.neutralText(neutralButtonText);
         }
 
         if (negativeButtonText != null) {
-            a.negativeText(negativeButtonText);
-            a.negativeColor(accentColor);
+            builder.negativeText(negativeButtonText);
+            builder.negativeColor(accentColor);
         }
-        return a;
+
+        MaterialDialog dialog = builder.show();
+
+        new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
+                dialog.getActionButton(DialogAction.POSITIVE), validator);
+
+        return dialog;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -826,8 +839,6 @@ public class GeneralDialogCreation {
         b.show();
     }
 
-    private static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
-
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
@@ -854,10 +865,7 @@ public class GeneralDialogCreation {
         new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
                         materialDialog.getActionButton(DialogAction.POSITIVE),
                         (text) -> {
-                    //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
-                    //So we simply use equality to check them
-                    boolean isValidFilename = (!ZIP_FILE_REGEX.matcher(text).find())
-                            && !".".equals(text) && !"..".equals(text);
+                    boolean isValidFilename = Utils.isValidFilename(text);
 
                     if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
                         return new WarnableTextInputValidator.ReturnState(
