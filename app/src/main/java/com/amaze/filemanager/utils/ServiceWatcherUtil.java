@@ -9,6 +9,7 @@ package com.amaze.filemanager.utils;
  */
 
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.services.DecryptService;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.ArrayList;
@@ -27,13 +30,16 @@ public class ServiceWatcherUtil {
     private ProgressHandler progressHandler;
     long totalSize;
     private Runnable runnable;
+    private int STATE;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
     // position of byte in total byte size to be copied
-    public static long POSITION = 0L;
+    public static volatile long POSITION = 0L;
 
-    private static int HAULT_COUNTER = -1;
+    private static int HALT_COUNTER = -1;
+
+    public static final int ID_NOTIFICATION_WAIT =  9248;
 
     /**
      *
@@ -44,7 +50,7 @@ public class ServiceWatcherUtil {
         this.progressHandler = progressHandler;
         this.totalSize = totalSize;
         POSITION = 0L;
-        HAULT_COUNTER = -1;
+        HALT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -55,7 +61,7 @@ public class ServiceWatcherUtil {
      * Watches over the service progress without interrupting the worker thread in respective services
      * Method frees up all the resources and handlers after operation completes.
      */
-    public void watch() {
+    public void watch(ServiceWatcherInteractionInterface interactionInterface) {
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -73,21 +79,38 @@ public class ServiceWatcherUtil {
                     return;
                 }
 
-                if (POSITION == progressHandler.getWrittenSize()) {
-                    HAULT_COUNTER++;
+                if (POSITION == progressHandler.getWrittenSize() &&
+                        (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
+                                && ++HALT_COUNTER>5)) {
 
-                    if (HAULT_COUNTER>10) {
-                        // we suspect the progress has been haulted for some reason, stop the watcher
+                    if (interactionInterface.getServiceType() instanceof DecryptService) {
 
-                        // workaround for decryption when we have a length retreived by
-                        // CipherInputStream less than the orginal stream, and hence the total size
+                        // workaround for decryption when we have a length retrieved by
+                        // CipherInputStream less than the original stream, and hence the total size
                         // we passed at the beginning is never reached
                         progressHandler.addWrittenLength(totalSize);
                         handler.removeCallbacks(this);
                         handlerThread.quit();
-                        return;
+                    }
+
+                    HALT_COUNTER = 0;
+                    STATE = ServiceWatcherInteractionInterface.STATE_HALTED;
+                    interactionInterface.progressHalted();
+                } else if (POSITION != progressHandler.getWrittenSize()) {
+
+                    if (STATE == ServiceWatcherInteractionInterface.STATE_HALTED) {
+
+                        STATE = ServiceWatcherInteractionInterface.STATE_RESUMED;
+                        interactionInterface.progressResumed();
+                    } else {
+
+                        // reset the halt counter everytime there is a progress
+                        // so that it increments only when
+                        // progress was halted for consecutive time period
+                        HALT_COUNTER = 0;
                     }
                 }
+
                 handler.postDelayed(this, 1000);
             }
         };
@@ -120,26 +143,26 @@ public class ServiceWatcherUtil {
         /*if (handlerThread==null || !handlerThread.isAlive()) {
             // we're not bound, no need to proceed further and waste up resources
             // start the service directly
-
             *//**
-             * We can actually end up racing at this point with the {@link HandlerThread} started
-             * in {@link #init(Context)}. If older service has returned, we already have the runnable
-             * waiting to execute in #init, and user is in app, and starts another service, and
-             * as this block executes the {@link android.app.Service#onStartCommand(Intent, int, int)}
-             * we end up with a context switch to 'service_startup_watcher' in #init, it also starts
-             * a new service (as {@link #progressHandler} is not alive yet).
-             * Though chances are very slim, but even if this condition occurs, only the progress will
-             * be flawed, but the actual operation will go fine, due to android's native serial service
-             * execution. #nough' said!
-             *//*
+         * We can actually end up racing at this point with the {@link HandlerThread} started
+         * in {@link #init(Context)}. If older service has returned, we already have the runnable
+         * waiting to execute in #init, and user is in app, and starts another service, and
+         * as this block executes the {@link android.app.Service#onStartCommand(Intent, int, int)}
+         * we end up with a context switch to 'service_startup_watcher' in #init, it also starts
+         * a new service (as {@link #progressHandler} is not alive yet).
+         * Though chances are very slim, but even if this condition occurs, only the progress will
+         * be flawed, but the actual operation will go fine, due to android's native serial service
+         * execution. #nough' said!
+         *//*
             context.startService(intent);
             return;
         }*/
 
         if (pendingIntents.size()==0) {
+
+            pendingIntents.add(intent);
             init(context);
         }
-        pendingIntents.add(intent);
 
     }
 
@@ -175,13 +198,13 @@ public class ServiceWatcherUtil {
 
                     if (pendingIntents.size()==0) {
                         // we've done all the work, free up resources (if not already killed by system)
-                        notificationManager.cancel(NotificationConstants.WAIT_ID);
+                        notificationManager.cancel(ID_NOTIFICATION_WAIT);
                         handler.removeCallbacks(this);
                         waitingThread.quit();
                         return;
                     } else {
 
-                        notificationManager.notify(NotificationConstants.WAIT_ID, mBuilder.build());
+                        notificationManager.notify(ID_NOTIFICATION_WAIT, mBuilder.build());
                     }
                 }
                 handler.postDelayed(this, 5000);
@@ -189,5 +212,23 @@ public class ServiceWatcherUtil {
         };
 
         handler.postDelayed(runnable, 0);
+    }
+
+    public interface ServiceWatcherInteractionInterface {
+
+        int STATE_HALTED = 0;
+        int STATE_RESUMED = 1;
+
+        /**
+         * Progress has been halted for some reason
+         */
+        void progressHalted();
+
+        /**
+         * Future extension for possible implementation of pause/resume of services
+         */
+        void progressResumed();
+
+        <T extends Service> T getServiceType();
     }
 }

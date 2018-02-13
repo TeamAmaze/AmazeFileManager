@@ -47,7 +47,7 @@ import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
-import com.amaze.filemanager.asynchronous.services.ProgressiveService;
+import com.amaze.filemanager.asynchronous.services.ProgressiveServiceAbstract;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
@@ -400,9 +400,9 @@ public class ProcessViewerFragment extends Fragment {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            ObtainableServiceBinder<? extends ProgressiveService> binder =
-                    (ObtainableServiceBinder<? extends ProgressiveService>) service;
-            ProgressiveService specificService = binder.getService();
+            ObtainableServiceBinder<? extends ProgressiveServiceAbstract> binder =
+                    (ObtainableServiceBinder<? extends ProgressiveServiceAbstract>) service;
+            ProgressiveServiceAbstract specificService = binder.getService();
 
             for (int i = 0; i < specificService.getDataPackageSize(); i++) {
                 DatapointParcelable dataPackage = specificService.getDataPackage(i);

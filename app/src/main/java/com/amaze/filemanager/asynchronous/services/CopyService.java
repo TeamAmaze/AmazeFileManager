@@ -30,8 +30,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -40,28 +40,26 @@ import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
-import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends ProgressiveService {
+public class CopyService extends ProgressiveServiceAbstract {
 
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -76,8 +74,12 @@ public class CopyService extends ProgressiveService {
     private Context c;
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
-    private ProgressHandler progressHandler;
     private ServiceWatcherUtil watcherUtil;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
@@ -92,6 +94,7 @@ public class CopyService extends ProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
+
         Bundle b = new Bundle();
         ArrayList<HybridFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
@@ -121,11 +124,30 @@ public class CopyService extends ProgressiveService {
         b.putInt(TAG_COPY_OPEN_MODE, mode);
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
 
+        super.onStartCommand(intent, flags, startId);
+
         //going async
         new DoInBackground().execute(b);
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
+    }
+
+    @Override
+    public CopyService getServiceType() {
+        return this;
+    }
+
+    @Override
+    public void initVariables() {
+
+        super.mNotifyManager = mNotifyManager;
+        super.mBuilder = mBuilder;
+        super.notificationID = NotificationConstants.COPY_ID;
+        super.progressPercent = progressPercent;
+        super.progressListener = progressListener;
+        super.dataPackages = dataPackages;
+        super.progressHandler = progressHandler;
     }
 
     public void onDestroy() {
@@ -147,7 +169,9 @@ public class CopyService extends ProgressiveService {
             // finding total size on background thread (this is necessary condition for SMB!)
             totalSize = FileUtils.getTotalBytes(sourceFiles, c);
             totalSourceFiles = sourceFiles.size();
-            progressHandler = new ProgressHandler(totalSourceFiles, totalSize);
+
+            progressHandler.setSourceSize(totalSourceFiles);
+            progressHandler.setTotalSize(totalSize);
 
             progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
                 publishResults(fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
@@ -167,7 +191,12 @@ public class CopyService extends ProgressiveService {
 
                 // adding/updating new encrypted db entry if any encrypted file was copied/moved
                 for (HybridFileParcelable sourceFile : sourceFiles) {
-                    findAndReplaceEncryptedEntry(sourceFile);
+                    try {
+                        findAndReplaceEncryptedEntry(sourceFile);
+                    } catch (Exception e) {
+                        // unable to modify encrypted entry in database
+                        Toast.makeText(c, getResources().getString(R.string.encryption_fail_copy), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             return null;
@@ -197,14 +226,11 @@ public class CopyService extends ProgressiveService {
 
             // even directories can end with CRYPT_EXTENSION
             if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                sourceFile.forEachChildrenFile(getApplicationContext(), ThemedActivity.rootMode, new OnFileFound() {
-                    @Override
-                    public void onFileFound(HybridFileParcelable file) {
-                        // iterating each file inside source files which were copied to find instance of
-                        // any copied / moved encrypted file
+                sourceFile.forEachChildrenFile(getApplicationContext(), ThemedActivity.rootMode, file -> {
+                    // iterating each file inside source files which were copied to find instance of
+                    // any copied / moved encrypted file
 
-                        findAndReplaceEncryptedEntry(file);
-                    }
+                    findAndReplaceEncryptedEntry(file);
                 });
             } else {
 
@@ -257,7 +283,7 @@ public class CopyService extends ProgressiveService {
                                 final boolean move, OpenMode mode) {
 
                 // initial start of copy, initiate the watcher
-                watcherUtil.watch();
+                watcherUtil.watch(CopyService.this);
 
                 if (FileUtil.checkFolder((targetPath), c) == 1) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
@@ -371,16 +397,13 @@ public class CopyService extends ProgressiveService {
                     targetFile.setLastModified(sourceFile.lastModified());
 
                     if(progressHandler.getCancelled()) return;
-                    sourceFile.forEachChildrenFile(c, false, new OnFileFound() {
-                        @Override
-                        public void onFileFound(HybridFileParcelable file) {
-                            HybridFile destFile = new HybridFile(targetFile.getMode(), targetFile.getPath(),
-                                    file.getName(), file.isDirectory());
-                            try {
-                                copyFiles(file, destFile, progressHandler);
-                            } catch (IOException e) {
-                                throw new IllegalStateException(e);//throw unchecked exception, no throws needed
-                            }
+                    sourceFile.forEachChildrenFile(c, false, file -> {
+                        HybridFile destFile = new HybridFile(targetFile.getMode(), targetFile.getPath(),
+                                file.getName(), file.isDirectory());
+                        try {
+                            copyFiles(file, destFile, progressHandler);
+                        } catch (IOException e) {
+                            throw new IllegalStateException(e);//throw unchecked exception, no throws needed
                         }
                     });
                 } else {
@@ -397,99 +420,6 @@ public class CopyService extends ProgressiveService {
                 }
             }
         }
-    }
-
-    /**
-     * Displays a notification, sends intent and cancels progress if there were some failures
-     * in copy progress
-     *
-     * @param failedOps
-     * @param move
-     */
-    void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
-
-        mNotifyManager.cancelAll();
-
-        if(failedOps.size()==0) return;
-
-        String error = move? c.getString(R.string.moved):c.getString(R.string.copied);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
-            .setContentTitle(c.getString(R.string.operationunsuccesful))
-            .setContentText(c.getString(R.string.copy_error, error))
-            .setAutoCancel(true);
-
-        progressHandler.setCancelled(true);
-
-        Intent intent= new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
-        intent.putExtra("move", move);
-
-        PendingIntent pIntent = PendingIntent.getActivity(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mBuilder.setContentIntent(pIntent);
-        mBuilder.setSmallIcon(R.drawable.ic_content_copy_white_36dp);
-
-        mNotifyManager.notify(NotificationConstants.FAILED_ID, mBuilder.build());
-
-        intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
-        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
-        intent.putExtra(TAG_COPY_MOVE, move);
-
-        sendBroadcast(intent);
-    }
-
-    /**
-     * Publish the results of the progress to notification and {@link DatapointParcelable}
-     * and eventually to {@link ProcessViewerFragment}
-     *
-     * @param fileName       file name of current file being copied
-     * @param sourceFiles    total number of files selected by user for copy
-     * @param sourceProgress files been copied out of them
-     * @param totalSize      total size of selected items to copy
-     * @param writtenSize    bytes successfully copied
-     * @param speed          number of bytes being copied per sec
-     * @param isComplete     whether operation completed or ongoing (not supported at the moment)
-     * @param move           if the files are to be moved
-     */
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long totalSize, long writtenSize, int speed, boolean isComplete,
-                                boolean move) {
-        if (!progressHandler.getCancelled()) {
-
-            //notification
-            float progressPercent = ((float) writtenSize / totalSize) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            int title = R.string.copying;
-            if (move) title = R.string.moving;
-            mBuilder.setContentTitle(c.getResources().getString(title));
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(c, writtenSize) + "/" +
-                    Formatter.formatFileSize(c, totalSize));
-            mNotifyManager.notify(NotificationConstants.COPY_ID, mBuilder.build());
-            if (writtenSize == totalSize || totalSize == 0) {
-                if (move) {
-
-                    //mBuilder.setContentTitle(getString(R.string.move_complete));
-                    // set progress to indeterminate as deletion might still be going on from source
-                    mBuilder.setProgress(0, 0, true);
-                } else {
-
-                    mBuilder.setContentTitle(getString(R.string.copy_complete));
-                    mBuilder.setProgress(0, 0, false);
-                }
-                mBuilder.setContentText("");
-                mBuilder.setOngoing(false);
-                mBuilder.setAutoCancel(true);
-                mNotifyManager.notify(NotificationConstants.COPY_ID, mBuilder.build());
-                mNotifyManager.cancel(NotificationConstants.COPY_ID);
-            }
-
-            //for processviewer
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, move, isComplete);
-            addDatapoint(intent);
-        } else mNotifyManager.cancel(NotificationConstants.COPY_ID);
     }
 
     //check if copy is successful
