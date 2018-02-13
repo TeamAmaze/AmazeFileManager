@@ -21,8 +21,8 @@ package com.amaze.filemanager.activities;
 
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
@@ -31,7 +31,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -72,8 +71,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -85,12 +82,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private EditableFileAbstraction mFile;
     private String mOriginal;
     private Timer mTimer;
-    private boolean mModified, isEditAllowed = true;
+    private boolean mModified;
     private Typeface mInputTypefaceDefault, mInputTypefaceMono;
     private android.support.v7.widget.Toolbar toolbar;
-    //ArrayList<StringBuilder> texts;
-    //static final int maxlength = 200;
-    //int index = 0;
     ScrollView scrollView;
 
     /*
@@ -117,12 +111,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private static final String KEY_MONOFONT = "monofont";
 
     private RelativeLayout searchViewLayout;
-
-    Uri uri = null;
     public ImageButton upButton, downButton, closeButton;
-    // input stream associated with the file
-    private InputStream inputStream;
-    private ParcelFileDescriptor parcelFileDescriptor;
     private File cacheFile;     // represents a file saved in cache
 
     @Override
@@ -138,20 +127,20 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         searchViewLayout = findViewById(R.id.searchview);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
+
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            ((Activity) this).setTaskDescription(taskDescription);
+            setTaskDescription(taskDescription);
         }
 
-        searchEditText = (EditText) searchViewLayout.findViewById(R.id.search_box);
-        upButton = (ImageButton) searchViewLayout.findViewById(R.id.prev);
-        downButton = (ImageButton) searchViewLayout.findViewById(R.id.next);
-        closeButton = (ImageButton) searchViewLayout.findViewById(R.id.close);
+        searchEditText = searchViewLayout.findViewById(R.id.search_box);
+        upButton = searchViewLayout.findViewById(R.id.prev);
+        downButton = searchViewLayout.findViewById(R.id.next);
+        closeButton = searchViewLayout.findViewById(R.id.close);
 
         searchEditText.addTextChangedListener(this);
 
@@ -291,17 +280,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         }).execute();
     }
 
-    private void setProgress(boolean show) {
-        //mInput.setVisibility(show ? View.GONE : View.VISIBLE);
-        //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
     /**
      * Initiates loading of file/uri by getting an input stream associated with it
      * on a worker thread
      */
     private void load() {
-        setProgress(true);
         mInput.setHint(R.string.loading);
 
         new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
@@ -320,7 +303,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     } catch (OutOfMemoryError e) {
                         mInput.setHint(R.string.error);
                     }
-                    setProgress(false);
                     break;
                 case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
                     mInput.setHint(R.string.error_file_not_found);
@@ -363,8 +345,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             case R.id.details:
                 if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE
                         && mFile.hybridFileParcelable.getFile().exists()) {
-                    //HybridFile hFile = new HybridFile(OpenMode.FILE, mFile.getPath());
-                    //hFile.generateMode(this);
                     GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile.hybridFileParcelable,
                             this, getAppTheme());
                 } else {
@@ -401,16 +381,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        // closing parcel file descriptor if associated any
-        if (parcelFileDescriptor != null) {
-            try {
-                parcelFileDescriptor.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, getString(R.string.error_io), Toast.LENGTH_LONG).show();
-            }
-        }
 
         if (cacheFile != null && cacheFile.exists()) cacheFile.delete();
     }
@@ -455,10 +425,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     public void afterTextChanged(Editable editable) {
         // searchBox callback block
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
-
             searchTextTask = new SearchTextTask(this);
             searchTextTask.execute(editable);
-
         }
     }
 
@@ -489,28 +457,12 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         searchViewLayout.setVisibility(View.VISIBLE);
         searchEditText.setText("");
         animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-
                 searchEditText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
 
@@ -542,28 +494,13 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 searchViewLayout.setVisibility(View.GONE);
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(),
                         InputMethodManager.HIDE_IMPLICIT_ONLY);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
@@ -646,11 +583,4 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         }
     }
 
-    public int getLineNumber() {
-        return this.mLine;
-    }
-
-    public void setLineNumber(int lineNumber) {
-        this.mLine = lineNumber;
-    }
 }
