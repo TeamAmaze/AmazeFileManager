@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1209,26 +1210,30 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param f the file to rename
      */
     public void rename(final HybridFileParcelable f) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        String name = f.getName();
-        builder.input("", name, false, (materialDialog, charSequence) -> {});
-        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        builder.title(getResources().getString(R.string.rename));
+        MaterialDialog.Builder builder = GeneralDialogCreation.createNameDialog(getMainActivity(),
+            "",
+            f.getName(),
+            getResources().getString(R.string.rename),
+            getResources().getString(R.string.save),
+            null,
+            getResources().getString(R.string.cancel));
 
-        builder.onNegative((dialog, which) -> dialog.cancel());
 
         builder.onPositive((dialog, which) -> {
-            String name1 = dialog.getInputEditText().getText().toString();
+            EditText textfield = dialog.getInputEditText();
+            String name1 = textfield.getText().toString();
+
+            if (f.isSmb()){
+                if (f.isDirectory() && !name1.endsWith("/"))
+                    name1 = name1 + "/";
+            }
+
             getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
                     CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
         });
 
-        builder.positiveText(R.string.save);
-        builder.negativeText(R.string.cancel);
-        builder.positiveColor(accentColor).negativeColor(accentColor).widgetColor(accentColor);
-        final MaterialDialog materialDialog = builder.build();
+        MaterialDialog materialDialog = builder.build();
         materialDialog.show();
-        Log.d(getClass().getSimpleName(), f.getNameString(getContext()));
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll
