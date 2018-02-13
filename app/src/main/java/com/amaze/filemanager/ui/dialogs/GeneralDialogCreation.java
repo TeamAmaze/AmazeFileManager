@@ -109,27 +109,29 @@ public class GeneralDialogCreation {
         return a.build();
     }
 
-    public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
+    public static MaterialDialog.Builder createNameDialog(final MainActivity m, String hint, String prefill,
+                                                          String title, String positiveButtonText,
+                                                          String neutralButtonText, String negativeButtonText) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false,
+        a.input(hint, prefill, false,
                 (materialDialog, charSequence) -> {});
         a.widgetColor(accentColor);
 
         a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(texts[2]);
+        a.title(title);
 
-        a.positiveText(texts[3]);
+        a.positiveText(positiveButtonText);
 
-        if(texts[4] != null) {
-            a.neutralText(texts[4]);
+        if(neutralButtonText != null) {
+            a.neutralText(neutralButtonText);
         }
 
-        if (texts[5] != null) {
-            a.negativeText(texts[5]);
+        if (negativeButtonText != null) {
+            a.negativeText(negativeButtonText);
             a.negativeColor(accentColor);
         }
-        return a.build();
+        return a;
     }
 
     @SuppressWarnings("ConstantConditions")
