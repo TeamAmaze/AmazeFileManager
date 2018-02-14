@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -114,12 +113,12 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfolder, (dialog, which) -> {
+        mk(R.string.newfolder, "", (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
             mkDir(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
             dialog.dismiss();
         }, (text) -> {
-            boolean isValidFilename = Utils.isValidFilename(text);
+            boolean isValidFilename = FileUtil.isValidFilename(text);
 
             if (!isValidFilename) {
                 return new WarnableTextInputValidator.ReturnState(
@@ -141,12 +140,12 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, (dialog, which) -> {
+        mk(R.string.newfile, ".txt", (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
             mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
             dialog.dismiss();
         }, (text) -> {
-            boolean isValidFilename = Utils.isValidFilename(text);
+            boolean isValidFilename = FileUtil.isValidFilename(text);
 
             if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".txt")) {
                 return new WarnableTextInputValidator.ReturnState(
@@ -165,11 +164,11 @@ public class MainActivityHelper {
         });
     }
 
-    private void mk(@StringRes int newText, final MaterialDialog.SingleButtonCallback onPositiveAction,
+    private void mk(@StringRes int newText, String prefill, final MaterialDialog.SingleButtonCallback onPositiveAction,
                     final WarnableTextInputValidator.OnTextValidate validator) {
         GeneralDialogCreation.showNameDialog(mainActivity,
             mainActivity.getResources().getString(R.string.entername),
-            "",
+            prefill,
             mainActivity.getResources().getString(newText),
             mainActivity.getResources().getString(R.string.create),
             mainActivity.getResources().getString(R.string.cancel),

@@ -41,6 +41,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -865,7 +866,7 @@ public class GeneralDialogCreation {
         new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
                         materialDialog.getActionButton(DialogAction.POSITIVE),
                         (text) -> {
-                    boolean isValidFilename = Utils.isValidFilename(text);
+                    boolean isValidFilename = FileUtil.isValidFilename(text);
 
                     if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
                         return new WarnableTextInputValidator.ReturnState(
