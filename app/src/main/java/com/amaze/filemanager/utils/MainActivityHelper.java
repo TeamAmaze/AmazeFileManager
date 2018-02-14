@@ -14,11 +14,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -39,6 +39,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
@@ -112,10 +113,22 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfolder, materialDialog -> {
-            String a = materialDialog.getInputEditText().getText().toString();
-            mkDir(new HybridFile(openMode, path + "/" + a), ma);
-            materialDialog.dismiss();
+        mk(R.string.newfolder, "", (dialog, which) -> {
+            EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+            mkDir(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
+            dialog.dismiss();
+        }, (text) -> {
+            boolean isValidFilename = FileUtil.isValidFilename(text);
+
+            if (!isValidFilename) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+            } else if (text.length() < 1) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+            }
+
+            return new WarnableTextInputValidator.ReturnState();
         });
     }
 
@@ -127,28 +140,40 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, materialDialog -> {
-            String a = materialDialog.getInputEditText().getText().toString();
-            mkFile(new HybridFile(openMode, path + "/" + a), ma);
-            materialDialog.dismiss();
+        mk(R.string.newfile, ".txt", (dialog, which) -> {
+            EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+            mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
+            dialog.dismiss();
+        }, (text) -> {
+            boolean isValidFilename = FileUtil.isValidFilename(text);
+
+            if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".txt")) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_file_suggest_txt_extension);
+            } else {
+                if (!isValidFilename) {
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                } else if (text.length() < 1) {
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                }
+            }
+
+            return new WarnableTextInputValidator.ReturnState();
         });
     }
 
-    private void mk(@StringRes int newText, final OnClickMaterialListener l) {
-        final MaterialDialog materialDialog = GeneralDialogCreation.showNameDialog(mainActivity,
-                new String[]{mainActivity.getResources().getString(R.string.entername),
-                        "",
-                        mainActivity.getResources().getString(newText),
-                        mainActivity.getResources().getString(R.string.create),
-                        mainActivity.getResources().getString(R.string.cancel),
-                        null});
-
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
-        materialDialog.show();
-    }
-
-    private interface OnClickMaterialListener {
-        void onClick(MaterialDialog materialDialog);
+    private void mk(@StringRes int newText, String prefill, final MaterialDialog.SingleButtonCallback onPositiveAction,
+                    final WarnableTextInputValidator.OnTextValidate validator) {
+        GeneralDialogCreation.showNameDialog(mainActivity,
+            mainActivity.getResources().getString(R.string.entername),
+            prefill,
+            mainActivity.getResources().getString(newText),
+            mainActivity.getResources().getString(R.string.create),
+            mainActivity.getResources().getString(R.string.cancel),
+            null, onPositiveAction, validator)
+            .show();
     }
 
     public void add(int pos) {

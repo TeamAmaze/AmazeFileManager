@@ -39,7 +39,6 @@ public class Utils {
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
     private static final String INPUT_INTENT_BLACKLIST_DOTS = "\\.\\.\\.";
 
-
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
         float minimum = Math.max(min, value);
@@ -230,5 +229,4 @@ public class Utils {
         }
         return -1;
     }
-
 }

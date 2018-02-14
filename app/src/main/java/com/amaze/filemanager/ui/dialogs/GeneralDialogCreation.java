@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -21,7 +20,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,7 +31,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.afollestad.materialdialogs.util.DialogUtils;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -44,6 +41,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -81,7 +79,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
@@ -112,27 +109,43 @@ public class GeneralDialogCreation {
         return a.build();
     }
 
-    public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
+    public static MaterialDialog showNameDialog(final MainActivity m, String hint, String prefill,
+                                                          String title, String positiveButtonText,
+                                                          String neutralButtonText, String negativeButtonText,
+                                                          MaterialDialog.SingleButtonCallback positiveButtonAction,
+                                                          WarnableTextInputValidator.OnTextValidate validator) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m);
-        a.input(texts[0], texts[1], false,
-                (materialDialog, charSequence) -> {});
-        a.widgetColor(accentColor);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
-        a.theme(m.getAppTheme().getMaterialDialogTheme());
-        a.title(texts[2]);
+        View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
+        EditText textfield = dialogView.findViewById(R.id.singleedittext_input);
+        textfield.setHint(hint);
+        textfield.setText(prefill);
 
-        a.positiveText(texts[3]);
+        WarnableTextInputLayout tilTextfield = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
-        if(texts[4] != null) {
-            a.neutralText(texts[4]);
+        builder.customView(dialogView, false)
+                .widgetColor(accentColor)
+                .theme(m.getAppTheme().getMaterialDialogTheme())
+                .title(title)
+                .positiveText(positiveButtonText)
+                .onPositive(positiveButtonAction);
+
+        if(neutralButtonText != null) {
+            builder.neutralText(neutralButtonText);
         }
 
-        if (texts[5] != null) {
-            a.negativeText(texts[5]);
-            a.negativeColor(accentColor);
+        if (negativeButtonText != null) {
+            builder.negativeText(negativeButtonText);
+            builder.negativeColor(accentColor);
         }
-        return a.build();
+
+        MaterialDialog dialog = builder.show();
+
+        new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
+                dialog.getActionButton(DialogAction.POSITIVE), validator);
+
+        return dialog;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -827,8 +840,6 @@ public class GeneralDialogCreation {
         b.show();
     }
 
-    private static final Pattern ZIP_FILE_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
-
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
         int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
@@ -855,10 +866,7 @@ public class GeneralDialogCreation {
         new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
                         materialDialog.getActionButton(DialogAction.POSITIVE),
                         (text) -> {
-                    //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
-                    //So we simply use equality to check them
-                    boolean isValidFilename = (!ZIP_FILE_REGEX.matcher(text).find())
-                            && !".".equals(text) && !"..".equals(text);
+                    boolean isValidFilename = FileUtil.isValidFilename(text);
 
                     if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
                         return new WarnableTextInputValidator.ReturnState(
