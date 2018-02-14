@@ -23,7 +23,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -41,8 +40,6 @@ public class Utils {
     private static final String INPUT_INTENT_BLACKLIST_PIPE = "\\|";
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
     private static final String INPUT_INTENT_BLACKLIST_DOTS = "\\.\\.\\.";
-    private static final Pattern FILENAME_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
-
 
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
@@ -233,18 +230,5 @@ public class Utils {
             }
         }
         return -1;
-    }
-
-    /**
-     * Validate given text is a valid filename.
-     *
-     * @param text
-     * @return true if given text is a valid filename
-     */
-    public static boolean isValidFilename(String text) {
-        //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
-        //So we simply use equality to check them
-        return (!FILENAME_REGEX.matcher(text).find())
-                && !".".equals(text) && !"..".equals(text);
     }
 }

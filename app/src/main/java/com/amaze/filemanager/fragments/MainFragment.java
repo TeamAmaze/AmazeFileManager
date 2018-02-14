@@ -81,6 +81,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
@@ -1229,7 +1230,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
                         CURRENT_PATH + "/" + name1, getActivity(), ThemedActivity.rootMode);
             }, (text)-> {
-                    boolean isValidFilename = Utils.isValidFilename(text);
+                    boolean isValidFilename = FileUtil.isValidFilename(text);
 
                     if (!isValidFilename) {
                         return new WarnableTextInputValidator.ReturnState(
