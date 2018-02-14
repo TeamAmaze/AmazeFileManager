@@ -1228,7 +1228,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         name1 = name1 + "/";
                 }
                 getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                        CURRENT_PATH + "/" + name1, getActivity(), ThemedActivity.rootMode);
+                        CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
             }, (text)-> {
                     boolean isValidFilename = FileUtil.isValidFilename(text);
 
@@ -1239,21 +1239,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         return new WarnableTextInputValidator.ReturnState(
                                 WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
                     }
-
-<<<<<<< 721ff39828d4b467379cce8da9a45a6d2bc28133
-            if (f.isSmb()){
-                if (f.isDirectory() && !name1.endsWith("/"))
-                    name1 = name1 + "/";
-            }
-
-            getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                    CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
-        });
-=======
                     return new WarnableTextInputValidator.ReturnState();
             });
->>>>>>> Refactor: use generic dialog layout for mkdir, mkfile and rename (#1020)
-
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll

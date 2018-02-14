@@ -26,12 +26,16 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
 
@@ -142,20 +146,33 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
     protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
         if(result.exception != null) {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-            EditText textfield = new EditText(builder.getContext());
+            View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
             textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            builder.customView(textfield, false).title(R.string.ssh_key_prompt_passphrase)
-                    .positiveText(R.string.ok)
-                    .onPositive(((dialog, which) -> {
-                        new PemToKeyPairTask(pemFile, callback, textfield.getText().toString()).execute();
-                        dialog.dismiss();
+
+            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+            builder.customView(dialogLayout, false)
+                .title(R.string.ssh_key_prompt_passphrase)
+                .positiveText(R.string.ok)
+                .onPositive(((dialog, which) -> {
+                    new PemToKeyPairTask(pemFile, callback, textfield.getText().toString()).execute();
+                    dialog.dismiss();
                 })).negativeText(R.string.cancel)
                     .onNegative(((dialog, which) -> {
                         dialog.dismiss();
                         toastOnParseError(result);
             }));
 
-            builder.show();
+            MaterialDialog dialog = builder.show();
+
+            new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+                if (text.length() < 1) {
+                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                }
+                return new WarnableTextInputValidator.ReturnState();
+            });
         }
         if(callback != null) {
             callback.onResult(result);
