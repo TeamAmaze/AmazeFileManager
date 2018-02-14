@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -27,7 +26,7 @@ public class AppConfig extends GlideApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private UtilsHandler mUtilsHandler;
@@ -39,7 +38,7 @@ public class AppConfig extends GlideApplication {
 
     private static AppConfig mInstance;
 
-    public UtilitiesProviderInterface getUtilsProvider() {
+    public UtilitiesProvider getUtilsProvider() {
         return utilsProvider;
     }
 

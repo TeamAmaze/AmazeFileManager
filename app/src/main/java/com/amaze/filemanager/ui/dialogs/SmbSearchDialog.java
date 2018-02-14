@@ -17,11 +17,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.utils.ComputerParcelable;
 import com.amaze.filemanager.utils.SubnetScanner;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import java.util.List;
  * Created by arpitkh996 on 16-01-2016 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 public class SmbSearchDialog extends DialogFragment {
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
 
     private ListViewAdapter listViewAdapter;
     private ArrayList<ComputerParcelable> computers = new ArrayList<>();
@@ -41,7 +42,7 @@ public class SmbSearchDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
         accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
     }

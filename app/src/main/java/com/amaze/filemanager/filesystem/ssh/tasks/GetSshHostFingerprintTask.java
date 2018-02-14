@@ -63,16 +63,16 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT
 
 public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>>
 {
-    private final String mHostname;
-    private final int mPort;
-    private final AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> mCallback;
+    private final String hostname;
+    private final int port;
+    private final AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> callback;
 
-    private ProgressDialog mProgressDialog;
+    private ProgressDialog progressDialog;
 
     public GetSshHostFingerprintTask(@NonNull String hostname, int port, AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> callback) {
-        this.mHostname = hostname;
-        this.mPort = port;
-        this.mCallback = callback;
+        this.hostname = hostname;
+        this.port = port;
+        this.callback = callback;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
         });
 
         try {
-            sshClient.connect(mHostname, mPort);
+            sshClient.connect(hostname, port);
             latch.await();
         } catch(IOException e) {
             e.printStackTrace();
@@ -108,24 +108,24 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
 
     @Override
     protected void onPreExecute() {
-        mProgressDialog = ProgressDialog.show(AppConfig.getInstance().getActivityContext(),
+        progressDialog = ProgressDialog.show(AppConfig.getInstance().getActivityContext(),
                 "", AppConfig.getInstance().getResources().getString(R.string.processing));
     }
 
     @Override
     protected void onPostExecute(AsyncTaskResult<PublicKey> result) {
-        mProgressDialog.dismiss();
+        progressDialog.dismiss();
 
         if(result.exception != null) {
             if(SocketException.class.isAssignableFrom(result.exception.getClass())
                     || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
                         String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
-                                mHostname, mPort, result.exception.getLocalizedMessage()),
+                                hostname, port, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
             }
         } else {
-            mCallback.onResult(result);
+            callback.onResult(result);
         }
     }
 }
