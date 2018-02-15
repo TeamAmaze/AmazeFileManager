@@ -111,8 +111,8 @@ public class TabFragment extends android.support.v4.app.Fragment
                 if (mainActivity.getDrawer().getStorageCount() > 1)
                     addTab(new Tab(1, mainActivity.getDrawer().getSecondPath(), "/"), 1, "");
                 else
-                    addTab(new Tab(1,  "/", "/"), 1, "");
-                if (!dataUtils.getDrawerItems().get(0).isSection()) {
+                    addTab(new Tab(1, "/", "/"), 1, "");
+                if (mainActivity.getDrawer().getFirstPath() != null) {
                     String pa = mainActivity.getDrawer().getFirstPath();
                     addTab(new Tab(2,  pa, pa), 2, "");
                 } else

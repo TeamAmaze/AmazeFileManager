@@ -68,48 +68,12 @@
 
         <include layout="@layout/layout_fab"/>
 
-    </android.support.design.widget.CoordinatorLayout>    <!--
-         android:layout_gravity="start" tells DrawerLayout to treat
-         this as a sliding drawer on the left side for left-to-right
-         languages and on the right side for right-to-left languages.
-         The drawer is given a fixed width in dp and extends the full height of
-         the container. A solid background is used for contrast
-         with the content view.
-    -->
-    <com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="@dimen/drawer_width"
-        android:layout_height="match_parent"
-        android:id="@+id/left_drawer"
-        android:elevation="16dp"
-        android:layout_gravity="start|left"
-        android:fitsSystemWindows="true"
-        >
+    </android.support.design.widget.CoordinatorLayout>
 
-        <ListView
-            android:id="@+id/menu_drawer"
-            style="@android:style/Theme.Holo.Light"
-            android:layout_width="@dimen/drawer_width"
-            android:layout_alignParentTop="true"
-            android:layout_above="@+id/divider1"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:scrollbars="none"
-            android:dividerHeight="0dip" />
-    </com.amaze.filemanager.ui.views.ScrimInsetsRelativeLayout>
-    <!--
-    <ListView
-        android:id="@+id/right_drawer"
-        android:layout_width="240dp"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:choiceMode="singleChoice"
-		android:background="@drawable/drawer_bg"
-        android:dividerHeight="0dip"
-
-		style="@android:style/Theme.Holo.Light"
-	/>
-    -->
+        android:layout_gravity="start"/>
 
 </android.support.v4.widget.DrawerLayout>

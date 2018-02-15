@@ -49,20 +49,23 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.share.ShareTask;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -958,6 +961,45 @@ public class FileUtils {
             b.add(new File(a.get(i).getPath()));
         }
         return b;
+    }
+
+    /**
+     * Checks whether path for bookmark exists
+     * If path is not found, empty directory is created
+     */
+    public static void checkForPath(Context context, String path) {
+        // TODO: Add support for SMB and OTG in this function
+        if (!new File(path).exists()) {
+            Toast.makeText(context, context.getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
+            Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), context,
+                    ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+                        //TODO empty
+                        @Override
+                        public void exists(HybridFile file) {
+
+                        }
+
+                        @Override
+                        public void launchSAF(HybridFile file) {
+
+                        }
+
+                        @Override
+                        public void launchSAF(HybridFile file, HybridFile file1) {
+
+                        }
+
+                        @Override
+                        public void done(HybridFile hFile, boolean b) {
+
+                        }
+
+                        @Override
+                        public void invalidName(HybridFile file) {
+
+                        }
+                    });
+        }
     }
 
 }

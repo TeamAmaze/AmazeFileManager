@@ -319,7 +319,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         checkForExternalIntent(intent);
 
         if (savedInstanceState != null) {
-            drawer.setSelectedStorage(savedInstanceState.getInt(KEY_DRAWER_SELECTED, Drawer.SELECTED_DEFAULT));
+            drawer.setSomethingSelected(savedInstanceState.getBoolean(KEY_DRAWER_SELECTED));
         }
 
         // setting window background color instead of each item, in order to reduce pixel overdraw
@@ -389,7 +389,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
                         //transaction.addToBackStack(null);
-                       drawer.setSelectedStorage(Drawer.SELECTED_PROCESSVIEWER);
+                        drawer.setSomethingSelected(true);
                         openProcesses = false;
                         //title.setText(utils.getString(con, R.string.process_viewer));
                         //Commit the transaction
@@ -403,7 +403,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         transaction2.replace(R.id.content_frame, new FTPServerFragment());
                         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
-                        drawer.setSelectedStorage(Drawer.SELECTED_LASTSECTION);
+                        drawer.setSomethingSelected(true);
                         drawer.deselectEverything();
                         transaction2.commit();
                     } else {
@@ -427,9 +427,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
                     oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
                     operation = savedInstanceState.getInt(KEY_OPERATION);
-                    drawer.setSelectedStorage(savedInstanceState.getInt(KEY_DRAWER_SELECTED, Drawer.SELECTED_DEFAULT));
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
-                    drawer.toggleCheckedSelectedStorage();
                 }
                 return null;
             }
@@ -764,7 +762,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
         transaction.replace(R.id.content_frame, tabFragment);
         // Commit the transaction
-        drawer.setSelectedStorage(Drawer.SELECTED_DEFAULT);
+        drawer.setSomethingSelected(true);
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         appbar.setTitle(null);
@@ -1060,8 +1058,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (drawer.getSelectedStorage() != Drawer.SELECTED_NONE)
-            outState.putInt(KEY_DRAWER_SELECTED, drawer.getSelectedStorage());
+        outState.putBoolean(KEY_DRAWER_SELECTED, drawer.isSomethingSelected());
         if(pasteHelper != null) {
             outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
         }
@@ -1551,7 +1548,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
             //   transaction.addToBackStack(null);
-            drawer.setSelectedStorage(Drawer.SELECTED_PROCESSVIEWER);
+            drawer.setSomethingSelected(true);
             openProcesses = false;
             //title.setText(utils.getString(con, R.string.process_viewer));
             //Commit the transaction
@@ -1605,7 +1602,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     } else {
                         tabHandler.addTab(new Tab(1, "/", "/"));
                     }
-                    if (!dataUtils.getDrawerItems().get(0).isSection()) {
+
+                    if (drawer.getFirstPath() != null) {
                         String pa = drawer.getFirstPath();
                         tabHandler.addTab(new Tab(2, pa, pa));
                     } else {
