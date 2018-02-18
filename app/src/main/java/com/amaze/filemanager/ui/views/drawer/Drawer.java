@@ -476,66 +476,42 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         actionViewStateManager.deselectCurrentActionView();
         actionViewStateManager.selectActionView(item);
+        isSomethingSelected = true;
 
         String title = item.getTitle().toString();
         MenuMetadata meta = dataUtils.getDrawerMetadata(item);
 
-        if(meta.type == MenuMetadata.ITEM_INTENT) {
-            meta.onClickListener.onClick();
-        } else {
-            if (dataUtils.containsBooks(new String[]{title, meta.path}) != -1) {
-                FileUtils.checkForPath(mainActivity, meta.path);
-            }
-
-            if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-                    meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-                    meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                    meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
-                // we have cloud accounts, try see if token is expired or not
-                CloudUtil.checkToken(meta.path, mainActivity);
-            }
-        }
-
         switch (meta.type) {
             case MenuMetadata.ITEM_ENTRY:
-                if (!isSomethingSelected) {
-                    TabFragment tabFragment = new TabFragment();
-                    Bundle a = new Bundle();
-                    a.putString("path", meta.path);
+                if (dataUtils.containsBooks(new String[]{title, meta.path}) != -1) {
+                    FileUtils.checkForPath(mainActivity, meta.path);
+                }
 
-                    tabFragment.setArguments(a);
+                if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                    // we have cloud accounts, try see if token is expired or not
+                    CloudUtil.checkToken(meta.path, mainActivity);
+                }
 
-                    android.support.v4.app.FragmentTransaction transaction = mainActivity.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.content_frame, tabFragment);
+                pendingPath = meta.path;
 
-                    transaction.addToBackStack("tabt1" + 1);
-                    pending_fragmentTransaction = transaction;
-                    isSomethingSelected = true;
+                if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
+                        mainActivity.getPrefs().getString(MainActivity.KEY_PREF_OTG, null).equals(MainActivity.VALUE_PREF_OTG_NULL)) {
+                    // we've not gotten otg path yet
+                    // start system request for storage access framework
+                    Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
+                } else {
                     closeIfNotLocked();
                     if(isLocked()) onDrawerClosed();
-                    mainActivity.getFAB().setVisibility(View.VISIBLE);
-                    mainActivity.getFAB().getMenuButton().show();
-                } else {
-                    pendingPath = meta.path;
-                    isSomethingSelected = true;
-
-                    if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
-                            mainActivity.getPrefs().getString(MainActivity.KEY_PREF_OTG, null).equals(MainActivity.VALUE_PREF_OTG_NULL)) {
-                        // we've not gotten otg path yet
-                        // start system request for storage access framework
-                        Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                        mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
-                    } else {
-                        closeIfNotLocked();
-                        if(isLocked()) onDrawerClosed();
-                    }
                 }
 
                 break;
             case MenuMetadata.ITEM_INTENT:
                 meta.onClickListener.onClick();
-                isSomethingSelected = true;
                 break;
         }
 
