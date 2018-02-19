@@ -44,7 +44,7 @@ public class ZipExtractor extends Extractor {
         for (ZipEntry entry : entry1) {
             if (!listener.isCancelled()) {
                 listener.onUpdate(entry.getName());
-                unzipEntry(context, zipfile, entry, outputPath);
+                extractEntry(context, zipfile, entry, outputPath);
             }
         }
         listener.onFinish();
@@ -57,8 +57,8 @@ public class ZipExtractor extends Extractor {
      * @param entry     zip entry that is to be extracted
      * @param outputDir output directory
      */
-    private void unzipEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry,
-                            String outputDir) throws IOException {
+    private void extractEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry,
+                              String outputDir) throws IOException {
         if (entry.isDirectory()) {
             // zip entry is a directory, return after creating new directory
             FileUtil.mkdir(new File(outputDir, entry.getName()), context);

@@ -48,7 +48,7 @@ public class TarExtractor extends Extractor {
                 listener.onUpdate(entry.getName());
                 //TAR is sequential, you need to walk all the way to the file you want
                 while (entry.hashCode() != inputStream.getNextTarEntry().hashCode());
-                unzipTAREntry(context, inputStream, entry, outputPath);
+                extractEntry(context, inputStream, entry, outputPath);
             }
         }
         inputStream.close();
@@ -56,8 +56,8 @@ public class TarExtractor extends Extractor {
         listener.onFinish();
     }
 
-    private void unzipTAREntry(@NonNull final Context context, TarArchiveInputStream inputStream,
-                               TarArchiveEntry entry, String outputDir) throws IOException {
+    private void extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream,
+                              TarArchiveEntry entry, String outputDir) throws IOException {
         if (entry.isDirectory()) {
             FileUtil.mkdir(new File(outputDir, entry.getName()), context);
             return;

@@ -45,7 +45,7 @@ public class RarExtractor extends Extractor {
             for (FileHeader entry : arrayList) {
                 if (!listener.isCancelled()) {
                     listener.onUpdate(entry.getFileNameString());
-                    unzipRAREntry(context, rarFile, entry, outputPath);
+                    extractEntry(context, rarFile, entry, outputPath);
                 }
             }
             listener.onFinish();
@@ -54,7 +54,7 @@ public class RarExtractor extends Extractor {
         }
     }
 
-    private void unzipRAREntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
+    private void extractEntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
             throws RarException, IOException {
         String name = entry.getFileNameString();
         name = name.replaceAll("\\\\", CompressedHelper.SEPARATOR);
