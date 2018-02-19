@@ -19,9 +19,10 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import java.util.List;
 
 public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
+
+    private LayoutInflater inflater;
     private ColorUsage usage;
-    @ColorInt
-    private int selectedColor;
+    private @ColorInt int selectedColor;
     private OnColorSelected onColorSelected;
 
     /**
@@ -39,11 +40,8 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
         this.usage = usage;
         this.selectedColor = selectedColor;
         this.onColorSelected = l;
-    }
 
-    @ColorInt
-    private int getColor(@ColorRes int colorRes) {
-        return Utils.getColor(getContext(), colorRes);
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @ColorRes
@@ -60,18 +58,20 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
     @NonNull
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //TODO solve unconditional layout inflation
-        View rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
+        View rowView;
+        if(convertView != null) {
+            rowView = convertView;
+        } else {
+            rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
+        }
 
-        int color = getColor(getColorResAt(position));
+        @ColorInt int color = Utils.getColor(getContext(), getColorResAt(position));
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        if (color == selectedColor)
+        ImageView imageView = rowView.findViewById(R.id.icon);
+        if (color == selectedColor) {
             imageView.setImageResource(R.drawable.ic_checkmark_selected);
-        GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
-
-        gradientDrawable.setColor(color);
+        }
+        ((GradientDrawable) imageView.getBackground()).setColor(color);
 
         return rowView;
     }
