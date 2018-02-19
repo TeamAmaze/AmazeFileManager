@@ -202,9 +202,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            GlideApp.with(compressedExplorerFragment)
-                    .load(Icons.loadMimeIcon(rowItem.name, rowItem.directory))
-                    .into(holder.genericIcon);
+            GlideApp.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
             if (compressedExplorerFragment.showLastModified)
@@ -225,8 +223,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
                 holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
-                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.name, rowItem.directory),
-                            gradientDrawable, Color.parseColor(compressedExplorerFragment.iconskin));
+                    ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable,
+                            Color.parseColor(compressedExplorerFragment.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
             }
         }
