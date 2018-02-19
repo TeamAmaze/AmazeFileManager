@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Checkable;
 import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.views.CheckableCircleView;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 
@@ -58,22 +60,20 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
     @NonNull
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        View rowView;
-        if(convertView != null) {
-            rowView = convertView;
+        CheckableCircleView colorView;
+        if(convertView != null && convertView instanceof CheckableCircleView) {
+            colorView = (CheckableCircleView) convertView;
         } else {
-            rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
+            colorView = (CheckableCircleView) inflater.inflate(R.layout.dialog_grid_item, parent,
+                    false);
         }
 
         @ColorInt int color = Utils.getColor(getContext(), getColorResAt(position));
 
-        ImageView imageView = rowView.findViewById(R.id.icon);
-        if (color == selectedColor) {
-            imageView.setImageResource(R.drawable.ic_checkmark_selected);
-        }
-        ((GradientDrawable) imageView.getBackground()).setColor(color);
+        colorView.setChecked(color == selectedColor);
+        colorView.setColor(color);
 
-        return rowView;
+        return colorView;
     }
 
     @Override
