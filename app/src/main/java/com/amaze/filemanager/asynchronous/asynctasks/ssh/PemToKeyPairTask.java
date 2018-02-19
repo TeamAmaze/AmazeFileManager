@@ -19,7 +19,7 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh.tasks;
+package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
 import android.net.Uri;
 import android.os.AsyncTask;
