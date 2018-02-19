@@ -22,6 +22,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -270,10 +271,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
                                 compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
                         String archiveCacheDirPath = compressedExplorerFragment.getActivity().getExternalCacheDir().getPath() +
-                                "/" + fileName;
+                                CompressedHelper.SEPARATOR + fileName;
 
-                        HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
-                                + rowItem.name.replaceAll("\\\\", "/"));
+                        HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath
+                                + CompressedHelper.SEPARATOR
+                                + rowItem.name.replaceAll("\\\\", CompressedHelper.SEPARATOR));
                         file.setMode(OpenMode.FILE);
                         // this file will be opened once service finishes up it's extraction
                         compressedExplorerFragment.files.add(file);
