@@ -1,5 +1,6 @@
 package com.amaze.filemanager.adapters.glide;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,20 +42,18 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
 
     @Override
     @Nullable
-    public RequestBuilder getPreloadRequestBuilder(IconDataParcelable iconData) {
-        GlideRequest request;
-
+    public RequestBuilder<Drawable> getPreloadRequestBuilder(IconDataParcelable iconData) {
         if(!showThumbs) {
-            request = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
+            return GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
+            GlideRequest<Drawable> request = GlideApp.with(fragment).asDrawable().centerCrop();
+
             if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-                request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.path).fallback(iconData.image);
+                return request.load(iconData.path);
             } else {
-                request = GlideApp.with(fragment).asDrawable().centerCrop().load(iconData.image);
+                return request.load(iconData.image);
             }
         }
-
-        return request;
     }
-
+    
 }
