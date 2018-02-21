@@ -171,7 +171,7 @@ public class HybridFile {
         return mode == OpenMode.GDRIVE;
     }
 
-    File getFile() {
+    public File getFile() {
         return new File(path);
     }
 
