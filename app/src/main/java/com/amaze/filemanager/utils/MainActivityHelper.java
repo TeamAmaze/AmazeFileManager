@@ -92,13 +92,13 @@ public class MainActivityHelper {
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
                         dataUtils.getStorages().add(a);
-                        mainActivity.refreshDrawer();
+                        mainActivity.getDrawer().refreshDrawer();
                     } else {
-                        mainActivity.refreshDrawer();
+                        mainActivity.getDrawer().refreshDrawer();
                     }
                 } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 
-                    mainActivity.refreshDrawer();
+                    mainActivity.getDrawer().refreshDrawer();
                 }
             }
         }

@@ -111,7 +111,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.book:
                 DataUtils dataUtils = DataUtils.getInstance();
                 dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
-                mainFragment.getMainActivity().refreshDrawer();
+                mainFragment.getMainActivity().getDrawer().refreshDrawer();
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
