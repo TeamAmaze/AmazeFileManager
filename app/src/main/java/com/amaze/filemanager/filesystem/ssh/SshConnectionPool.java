@@ -27,7 +27,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.AsyncTaskResult;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
 import com.amaze.filemanager.utils.application.AppConfig;
