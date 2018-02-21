@@ -40,11 +40,12 @@ public class GzipHelperTask extends CompressedHelperTask {
 
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);
                 boolean isInRelativeDir = name.contains(SEPARATOR)
-                        && name.substring(0, name.lastIndexOf(SEPARATOR)).equals(relativePath);
+                        && name.substring(0, name.lastIndexOf(SEPARATOR)+1).equals(relativePath);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(entry.getName(),
-                            entry.getLastModifiedDate().getTime(), entry.getSize(), entry.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(getName(entry.getName(), SEPARATOR),
+                            entry.getName(), entry.getLastModifiedDate().getTime(), entry.getSize(),
+                            entry.isDirectory()));
                 }
             }
         } catch (IOException e) {

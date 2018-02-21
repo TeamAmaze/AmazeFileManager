@@ -17,6 +17,8 @@ import java.util.ArrayList;
  */
 public class RarHelperTask extends CompressedHelperTask {
 
+    private static final String ZIP_INTERNAL_SEPARATOR = "\\";
+
     private String fileLocation;
     private String relativeDirectory;
 
@@ -36,16 +38,18 @@ public class RarHelperTask extends CompressedHelperTask {
     void addElements(ArrayList<CompressedObjectParcelable> elements) {
         try {
             Archive zipfile = new Archive(new File(fileLocation));
-            String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
+            String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, ZIP_INTERNAL_SEPARATOR);
 
             for (FileHeader header : zipfile.getFileHeaders()) {
                 String name = header.getFileNameString();//This uses \ as separator, not /
-                boolean isInBaseDir = (relativeDirDiffSeparator == null || relativeDirDiffSeparator.equals("")) && !name.contains("\\");
-                boolean isInRelativeDir = relativeDirDiffSeparator != null && name.contains("\\")
-                        && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
+                boolean isInBaseDir = relativeDirDiffSeparator.equals("") && !name.contains(ZIP_INTERNAL_SEPARATOR);
+                boolean isInRelativeDir = name.contains(ZIP_INTERNAL_SEPARATOR)
+                        && name.substring(0, name.lastIndexOf(ZIP_INTERNAL_SEPARATOR)+1).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(header), 0, header.getDataSize(), header.isDirectory()));
+                    String convertedName = RarDecompressor.convertName(header);
+                    elements.add(new CompressedObjectParcelable(getName(convertedName, "/"),
+                            convertedName, 0, header.getDataSize(), header.isDirectory()));
                 }
             }
         } catch (RarException | IOException e) {

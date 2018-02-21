@@ -315,7 +315,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {
-                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).path;
                     }
 
                     decompressor.decompress(null, dirs);
