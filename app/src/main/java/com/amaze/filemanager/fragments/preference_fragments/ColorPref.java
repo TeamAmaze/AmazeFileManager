@@ -123,6 +123,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                             (selectedColorRes) -> {
                         activity.getColorPreference().setRes(usage, selectedColorRes).saveToPreferences(sharedPref);
                         if (dialog != null) dialog.dismiss();
+                        invalidateEverything();
                     });
 
                     GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
@@ -202,6 +203,8 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
             }
         });
+
+        ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getColorPreference());
 
         checkCustomization();
     }
