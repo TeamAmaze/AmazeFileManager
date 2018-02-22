@@ -19,7 +19,7 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh.tasks;
+package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
 

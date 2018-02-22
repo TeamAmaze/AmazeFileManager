@@ -3,6 +3,8 @@ package com.amaze.filemanager.adapters.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amaze.filemanager.ui.icons.Icons;
+
 import java.util.Comparator;
 
 /**
@@ -16,6 +18,8 @@ public class CompressedObjectParcelable implements Parcelable {
     public final int type;
     public final String name;
     public final long date, size;
+    public final int filetype;
+    public final IconDataParcelable iconData;
 
     public CompressedObjectParcelable(String name, long date, long size, boolean directory) {
         this.directory = directory;
@@ -23,6 +27,9 @@ public class CompressedObjectParcelable implements Parcelable {
         this.name = name;
         this.date = date;
         this.size = size;
+        this.filetype = Icons.getTypeOfFile(name, directory);
+        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES,
+                Icons.loadMimeIcon(name, directory));
     }
 
     /**
@@ -34,6 +41,8 @@ public class CompressedObjectParcelable implements Parcelable {
         this.name = null;
         this.date = 0;
         this.size = 0;
+        this.filetype = -1;
+        this.iconData = null;
     }
 
     @Override
@@ -48,6 +57,8 @@ public class CompressedObjectParcelable implements Parcelable {
             p1.writeString(name);
             p1.writeLong(size);
             p1.writeLong(date);
+            p1.writeInt(filetype);
+            p1.writeParcelable(iconData, 0);
         }
     }
 
@@ -69,11 +80,15 @@ public class CompressedObjectParcelable implements Parcelable {
             name = null;
             date = 0;
             size = 0;
+            filetype = -1;
+            iconData = null;
         } else {
             directory = im.readInt() == 1;
             name = im.readString();
             size = im.readLong();
             date = im.readLong();
+            filetype = im.readInt();
+            iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
         }
     }
 

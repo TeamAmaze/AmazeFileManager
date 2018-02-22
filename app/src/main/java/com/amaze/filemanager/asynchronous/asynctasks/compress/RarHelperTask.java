@@ -1,6 +1,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
@@ -35,7 +36,7 @@ public class RarHelperTask extends CompressedHelperTask {
     void addElements(ArrayList<CompressedObjectParcelable> elements) {
         try {
             Archive zipfile = new Archive(new File(fileLocation));
-            String relativeDirDiffSeparator = relativeDirectory.replace("/", "\\");
+            String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
             for (FileHeader header : zipfile.getFileHeaders()) {
                 String name = header.getFileNameString();//This uses \ as separator, not /

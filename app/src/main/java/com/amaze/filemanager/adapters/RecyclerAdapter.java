@@ -579,7 +579,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             if (rowItem.isDirectory) {
                                 gradientDrawable.setColor(iconSkinColor);
                             } else {
-                                ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.desc, rowItem.isDirectory),
+                                ColorUtils.colorizeIcons(context, rowItem.filetype,
                                         gradientDrawable, iconSkinColor);
                             }
                         } else gradientDrawable.setColor(iconSkinColor);

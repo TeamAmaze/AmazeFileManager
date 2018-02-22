@@ -20,7 +20,7 @@
  */
 
 
-package com.amaze.filemanager.filesystem.ssh.tasks;
+package com.amaze.filemanager.asynchronous.asynctasks;
 
 /**
  * Container for AsyncTask results. Allow either result object or exception to be contained.

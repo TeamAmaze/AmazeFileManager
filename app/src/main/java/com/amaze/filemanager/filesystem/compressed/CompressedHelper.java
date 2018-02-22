@@ -23,6 +23,12 @@ import java.io.File;
 
 public class CompressedHelper {
 
+    /**
+     * Path separator used by all Decompressors and Extractors.
+     * e.g. rar internally uses '\' but is converted to "/" for the app.
+     */
+    public static final String SEPARATOR = "/";
+
     public static final String fileExtensionZip = "zip", fileExtensinJar = "jar", fileExtensionApk = "apk";
     public static final String fileExtensionTar = "tar";
     public static final String fileExtensionGzipTar = "tar.gz";

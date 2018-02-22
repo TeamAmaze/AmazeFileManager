@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.asynchronous.ftpservice.FTPService;
+import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;

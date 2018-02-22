@@ -19,7 +19,7 @@
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh.tasks;
+package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.utils.application.AppConfig;
 

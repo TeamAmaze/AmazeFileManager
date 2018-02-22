@@ -73,6 +73,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
     public static final String KEY_PATH = "path";
 
@@ -200,7 +202,8 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
-            files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
+            String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
+            files.add(new HybridFileParcelable(path));
             decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
 
             changePath("");
@@ -408,7 +411,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     @Override
     public String getPath() {
-        if(!isRootRelativePath()) return "/" + relativeDirectory;
+        if(!isRootRelativePath()) return SEPARATOR + relativeDirectory;
         else return "";
     }
 
@@ -422,7 +425,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     }
 
     private void updateBottomBar() {
-        String path = !isRootRelativePath()? compressedFile.getName() + "/" + relativeDirectory : compressedFile.getName();
+        String path = !isRootRelativePath()? compressedFile.getName() + SEPARATOR + relativeDirectory : compressedFile.getName();
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
