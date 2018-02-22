@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
-public class GzipHelperTask extends CompressedHelperTask {
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 
-    private static final String SEPARATOR = "/";
+public class GzipHelperTask extends CompressedHelperTask {
 
     private String filePath, relativePath;
 

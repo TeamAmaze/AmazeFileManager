@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -44,7 +45,7 @@ public class RarExtractor extends Extractor {
             for (FileHeader entry : arrayList) {
                 if (!listener.isCancelled()) {
                     listener.onUpdate(entry.getFileNameString());
-                    unzipRAREntry(context, rarFile, entry, outputPath);
+                    extractEntry(context, rarFile, entry, outputPath);
                 }
             }
             listener.onFinish();
@@ -53,10 +54,10 @@ public class RarExtractor extends Extractor {
         }
     }
 
-    private void unzipRAREntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
+    private void extractEntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
             throws RarException, IOException {
         String name = entry.getFileNameString();
-        name = name.replaceAll("\\\\", "/");
+        name = name.replaceAll("\\\\", CompressedHelper.SEPARATOR);
         if (entry.isDirectory()) {
             FileUtil.mkdir(new File(outputDir, name), context);
             return;

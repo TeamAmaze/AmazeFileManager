@@ -4,11 +4,14 @@ import android.content.Context;
 
 import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperTask;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.rarfile.FileHeader;
 
 import java.util.ArrayList;
+
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 
 /**
  * @author Emmanuel
@@ -30,14 +33,14 @@ public class RarDecompressor extends Decompressor {
     public static String convertName(FileHeader file) {
         String name = file.getFileNameString().replace('\\', '/');
 
-        if(file.isDirectory()) return name + "/";
+        if(file.isDirectory()) return name + SEPARATOR;
         else return name;
     }
 
     @Override
     protected String realRelativeDirectory(String dir) {
-        if(dir.endsWith("/")) dir = dir.substring(0, dir.length()-1);
-        return dir.replace('/', '\\');
+        if(dir.endsWith(SEPARATOR)) dir = dir.substring(0, dir.length()-1);
+        return dir.replace(SEPARATOR.toCharArray()[0], '\\');
     }
 
 }

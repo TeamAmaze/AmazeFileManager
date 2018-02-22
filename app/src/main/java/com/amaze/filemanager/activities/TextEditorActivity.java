@@ -21,20 +21,16 @@ package com.amaze.filemanager.activities;
 
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.ContentProviderClient;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -59,34 +55,22 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.exceptions.StreamNotFoundException;
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
-import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
+import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -95,15 +79,12 @@ import java.util.TimerTask;
 public class TextEditorActivity extends ThemedActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
-    private HybridFileParcelable mFile;
+    private EditableFileAbstraction mFile;
     private String mOriginal;
     private Timer mTimer;
-    private boolean mModified, isEditAllowed = true;
+    private boolean mModified;
     private Typeface mInputTypefaceDefault, mInputTypefaceMono;
     private android.support.v7.widget.Toolbar toolbar;
-    //ArrayList<StringBuilder> texts;
-    //static final int maxlength = 200;
-    //int index = 0;
     ScrollView scrollView;
 
     /*
@@ -130,12 +111,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private static final String KEY_MONOFONT = "monofont";
 
     private RelativeLayout searchViewLayout;
-
-    Uri uri = null;
     public ImageButton upButton, downButton, closeButton;
-    // input stream associated with the file
-    private InputStream inputStream;
-    private ParcelFileDescriptor parcelFileDescriptor;
     private File cacheFile;     // represents a file saved in cache
 
     @Override
@@ -151,20 +127,20 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         searchViewLayout = findViewById(R.id.searchview);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //findViewById(R.id.lin).setBackgroundColor(Color.parseColor(skin));
+
         toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
                     getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-            ((Activity) this).setTaskDescription(taskDescription);
+            setTaskDescription(taskDescription);
         }
 
-        searchEditText = (EditText) searchViewLayout.findViewById(R.id.search_box);
-        upButton = (ImageButton) searchViewLayout.findViewById(R.id.prev);
-        downButton = (ImageButton) searchViewLayout.findViewById(R.id.next);
-        closeButton = (ImageButton) searchViewLayout.findViewById(R.id.close);
+        searchEditText = searchViewLayout.findViewById(R.id.search_box);
+        upButton = searchViewLayout.findViewById(R.id.prev);
+        downButton = searchViewLayout.findViewById(R.id.next);
+        closeButton = searchViewLayout.findViewById(R.id.close);
 
         searchEditText.addTextChangedListener(this);
 
@@ -200,55 +176,21 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         mInput = findViewById(R.id.fname);
         scrollView = findViewById(R.id.editscroll);
 
-        if (getIntent().getData() != null) {
-            // getting uri from external source
-            uri = getIntent().getData();
-
-
-            mFile = new HybridFileParcelable(Utils.sanitizeInput(getIntent().getData().getPath()));
-        }
-
-        String fileName;
-
-        // try getting filename from file system
-        fileName = mFile.getName();
-
-        try {
-            // try to get file name from content providers row
-            if (fileName == null && uri != null) {
-                if (uri.getScheme().equals("file")) {
-                    fileName = uri.getLastPathSegment();
-                }
-
-                ContentProviderClient client = null;
-                Cursor cursor = null;
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        client = getContentResolver().acquireUnstableContentProviderClient(uri);
-                    } else {
-                        throw new Exception();
-                    }
-
-                    cursor = client.query(uri, new String[]{
-                            MediaStore.Images.ImageColumns.DISPLAY_NAME
-                    }, null, null, null);
-
-                    if (cursor != null && cursor.moveToFirst()) {
-                        fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-                    }
-                } finally {
-
-                    if (cursor != null) {
-                        cursor.close();
-                    }
-                }
+        final Uri uri = getIntent().getData();
+        if (uri != null) {
+            try {
+                mFile = new EditableFileAbstraction(this, uri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
+                finish();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fileName = getString(R.string.error);
+        } else {
+            Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
+            finish();
         }
 
-        getSupportActionBar().setTitle(fileName);
+        getSupportActionBar().setTitle(mFile.name);
 
         mInput.addTextChangedListener(this);
         if (getAppTheme().equals(AppTheme.DARK))
@@ -260,15 +202,13 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         mInputTypefaceMono = Typeface.MONOSPACE;
 
         if (savedInstanceState != null) {
-
             mOriginal = savedInstanceState.getString(KEY_ORIGINAL_TEXT);
             int index = savedInstanceState.getInt(KEY_INDEX);
             mInput.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
             mInput.setScrollY(index);
             if (savedInstanceState.getBoolean(KEY_MONOFONT)) mInput.setTypeface(mInputTypefaceMono);
         } else {
-
-            load(uri, mFile);
+            load();
         }
     }
 
@@ -294,7 +234,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                         @Override
                         public void onPositive(MaterialDialog dialog) {
 
-                            saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
+                            saveFile(mInput.getText().toString());
                             finish();
                         }
 
@@ -313,177 +253,65 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * Method initiates a worker thread which writes the {@link #mInput} bytes to the defined
      * file/uri 's output stream
      *
-     * @param uri            the uri associated with this text (if any)
-     * @param file           the file associated with this text (if any)
      * @param editTextString the edit text string
      */
-    private void saveFile(final Uri uri, final File file, final String editTextString) {
+    private void saveFile(final String editTextString) {
         Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
-        new Thread(() -> {
-            try {
-                writeTextFile(uri, file, editTextString);
-            } catch (StreamNotFoundException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(), R.string.error_file_not_found,
-                            Toast.LENGTH_SHORT).show();
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(), R.string.error_io,
-                            Toast.LENGTH_SHORT).show();
-                });
-            } catch (ShellNotRunningException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    Toast.makeText(getApplicationContext(), R.string.rootfailure,
-                            Toast.LENGTH_SHORT).show();
-                });
-            }
-        }).start();
-    }
 
-    /**
-     * Helper method for {@link #saveFile(Uri, File, String)}
-     * Works on a background thread to save data to output stream associated with this reader
-     *
-     * @param uri
-     * @param file
-     * @param inputText
-     * @throws StreamNotFoundException
-     * @throws IOException
-     * @throws ShellNotRunningException
-     * @see #saveFile(Uri, File, String)
-     */
-    private void writeTextFile(final Uri uri, final File file, String inputText)
-            throws StreamNotFoundException, IOException, ShellNotRunningException {
-        OutputStream outputStream = null;
-
-        if (uri.toString().contains("file://")) {
-            // dealing with files
-            try {
-                outputStream = FileUtil.getOutputStream(file, this);
-            } catch (Exception e) {
-                outputStream = null;
-            }
-
-            if (ThemedActivity.rootMode && outputStream == null) {
-                // try loading stream associated using root
-                try {
-
-                    if (cacheFile != null && cacheFile.exists())
-                        outputStream = new FileOutputStream(cacheFile);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    outputStream = null;
-                }
-            }
-        } else if (uri.toString().contains("content://")) {
-
-            if (parcelFileDescriptor != null) {
-                File descriptorFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-                try {
-                    outputStream = new FileOutputStream(descriptorFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    outputStream = null;
-                }
-            }
-
-            if (outputStream == null) {
-                try {
-                    outputStream = getContentResolver().openOutputStream(uri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    outputStream = null;
-                }
-            }
-        }
-
-        if (outputStream == null) throw new StreamNotFoundException();
-
-        // saving data to file
-        outputStream.write(inputText.getBytes());
-        outputStream.close();
-
-        mOriginal = inputText;
-        mModified = false;
-        invalidateOptionsMenu();
-
-        if (cacheFile != null && cacheFile.exists()) {
-            // cat cache content to original file and delete cache file
-            RootUtils.cat(cacheFile.getPath(), mFile.getPath());
-
-            cacheFile.delete();
-        }
-
-        runOnUiThread(() -> {
-            Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setProgress(boolean show) {
-        //mInput.setVisibility(show ? View.GONE : View.VISIBLE);
-        //   findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
+        new WriteFileAbstraction(this, getContentResolver(), mFile, editTextString, cacheFile,
+                (errorCode) -> {
+                    switch (errorCode) {
+                        case WriteFileAbstraction.NORMAL:
+                            mOriginal = editTextString;
+                            mModified = false;
+                            invalidateOptionsMenu();
+                            Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
+                            break;
+                        case WriteFileAbstraction.EXCEPTION_STREAM_NOT_FOUND:
+                            Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
+                            break;
+                        case WriteFileAbstraction.EXCEPTION_IO:
+                            Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+                            break;
+                        case WriteFileAbstraction.EXCEPTION_SHELL_NOT_RUNNING:
+                            Toast.makeText(getApplicationContext(), R.string.rootfailure, Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+        }).execute();
     }
 
     /**
      * Initiates loading of file/uri by getting an input stream associated with it
      * on a worker thread
-     *
-     * @param uri
-     * @param mFile
      */
-    private void load(final Uri uri, final HybridFileParcelable mFile) {
-        setProgress(true);
-        this.mFile = mFile;
+    private void load() {
         mInput.setHint(R.string.loading);
-        new Thread(() -> {
-            try {
-                inputStream = getInputStream(uri, mFile);
 
-                String str;
+        new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
+            switch (data.error) {
+                case ReadFileTask.NORMAL:
+                    cacheFile = data.cachedFile;
+                    mOriginal = data.fileContents;
 
-                StringBuilder stringBuilder = new StringBuilder();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                if (bufferedReader != null) {
-                    while ((str = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(str).append("\n");
-                    }
-                }
-                mOriginal = stringBuilder.toString();
-                inputStream.close();
-
-                runOnUiThread(() -> {
                     try {
-                        mInput.setText(mOriginal);
-                        if (mOriginal.isEmpty()) {
-
+                        mInput.setText(data.fileContents);
+                        if (data.fileContents.isEmpty()) {
                             mInput.setHint(R.string.file_empty);
-                        } else
+                        } else {
                             mInput.setHint(null);
+                        }
                     } catch (OutOfMemoryError e) {
                         mInput.setHint(R.string.error);
                     }
-                    setProgress(false);
-                });
-
-            } catch (StreamNotFoundException e) {
-
-                e.printStackTrace();
-                runOnUiThread(() -> {
+                    break;
+                case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
                     mInput.setHint(R.string.error_file_not_found);
-                });
-            } catch (IOException e) {
-
-                e.printStackTrace();
-                runOnUiThread(() -> {
+                    break;
+                case ReadFileTask.EXCEPTION_IO:
                     mInput.setHint(R.string.error_io);
-                });
+                    break;
             }
-        }).start();
+        }).execute();
     }
 
     @Override
@@ -512,20 +340,29 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 break;
             case R.id.save:
                 // Make sure EditText is visible before saving!
-                saveFile(uri, new File(mFile.getPath()), mInput.getText().toString());
+                saveFile(mInput.getText().toString());
                 break;
             case R.id.details:
-                if (mFile.exists()) {
-                    //HybridFile hFile = new HybridFile(OpenMode.FILE, mFile.getPath());
-                    //hFile.generateMode(this);
-                    GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile, this, getAppTheme());
-                } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE
+                        && mFile.hybridFileParcelable.getFile().exists()) {
+                    GeneralDialogCreation.showPropertiesDialogWithoutPermissions(mFile.hybridFileParcelable,
+                            this, getAppTheme());
+                } else {
+                    Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.openwith:
-                if (mFile.exists()) {
-                    boolean useNewStack = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(new File(mFile.getPath()), this, false, useNewStack);
-                } else Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                if(mFile.scheme == EditableFileAbstraction.SCHEME_FILE) {
+                    File currentFile = mFile.hybridFileParcelable.getFile();
+                    if (currentFile.exists()) {
+                        boolean useNewStack = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                        FileUtils.openunknown(currentFile, this, false, useNewStack);
+                    } else {
+                        Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.find:
                 if (searchViewLayout.isShown()) hideSearchView();
@@ -544,16 +381,6 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        // closing parcel file descriptor if associated any
-        if (parcelFileDescriptor != null) {
-            try {
-                parcelFileDescriptor.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, getString(R.string.error_io), Toast.LENGTH_LONG).show();
-            }
-        }
 
         if (cacheFile != null && cacheFile.exists()) cacheFile.delete();
     }
@@ -598,96 +425,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     public void afterTextChanged(Editable editable) {
         // searchBox callback block
         if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
-
             searchTextTask = new SearchTextTask(this);
             searchTextTask.execute(editable);
-
         }
-    }
-
-    /**
-     * Helper method to {@link #load(Uri, HybridFileParcelable)}
-     * Tries to find an input stream associated with file/uri
-     *
-     * @param uri
-     * @param baseFile
-     * @return
-     * @throws StreamNotFoundException exception thrown when we couldn't find a stream
-     *                                 after all the attempts
-     */
-    private InputStream getInputStream(Uri uri, HybridFileParcelable baseFile) throws StreamNotFoundException {
-        InputStream stream = null;
-
-        File file = new File(baseFile.getPath());
-
-        if (uri.toString().contains("file://")) {
-            // dealing with files
-            if (!file.canWrite() && ThemedActivity.rootMode) {
-                // try loading stream associated using root
-
-                try {
-
-                    File cacheDir = getExternalCacheDir();
-
-                    cacheFile = new File(cacheDir, mFile.getName());
-                    // creating a cache file
-                    RootUtils.copy(mFile.getPath(), cacheFile.getPath());
-                    try {
-                        stream = new FileInputStream(cacheFile);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        stream = null;
-                    }
-                } catch (ShellNotRunningException e) {
-                    e.printStackTrace();
-                    stream = null;
-                }
-            } else if (file.canRead()) {
-
-                // readable file in filesystem
-                try {
-                    stream = new FileInputStream(file.getPath());
-                } catch (FileNotFoundException e) {
-                    stream = null;
-                }
-            }
-        } else if (uri.toString().contains("content://")) {
-            // dealing with content provider trying to get URI from intent action
-            try {
-                // getting a writable file descriptor
-                parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
-                File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-
-                stream = new FileInputStream(parcelFile);
-            } catch (FileNotFoundException e) {
-                // falling back to readable file descriptor
-                try {
-                    parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-                    File parcelFile = new File(GenericCopyUtil.PATH_FILE_DESCRIPTOR + parcelFileDescriptor.getFd());
-
-                    stream = new FileInputStream(parcelFile);
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                    stream = null;
-                }
-            }
-
-            if (stream == null) {
-                // couldn't get a file descriptor based on path, let's try opening stream directly
-                try {
-                    stream = getContentResolver().openInputStream(uri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    stream = null;
-
-                }
-            }
-        }
-
-        // throwing exception if stream not found after all the attempts above
-        if (stream == null) throw new StreamNotFoundException();
-
-        return stream;
     }
 
     /**
@@ -717,28 +457,12 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         searchViewLayout.setVisibility(View.VISIBLE);
         searchEditText.setText("");
         animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-
                 searchEditText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
 
@@ -770,28 +494,13 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 searchViewLayout.setVisibility(View.GONE);
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchEditText.getWindowToken(),
                         InputMethodManager.HIDE_IMPLICIT_ONLY);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
@@ -874,11 +583,4 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         }
     }
 
-    public int getLineNumber() {
-        return this.mLine;
-    }
-
-    public void setLineNumber(int lineNumber) {
-        this.mLine = lineNumber;
-    }
 }

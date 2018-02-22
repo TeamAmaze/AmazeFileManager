@@ -500,10 +500,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
 
             // do not allow drawer to open when item gets selected
-            if (!getMainActivity().isDrawerLocked) {
-
-                getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED,
-                        getMainActivity().mDrawerLinear);
+            if (!getMainActivity().getDrawer().isLocked()) {
+                getMainActivity().getDrawer().lock(DrawerLayout.LOCK_MODE_UNDEFINED);
             }
             return true;
         }
@@ -765,9 +763,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
                     primaryTwoColor : primaryColor));
 
-            if (!getMainActivity().isDrawerLocked) {
-                getMainActivity().mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
-                        getMainActivity().mDrawerLinear);
+            if (!getMainActivity().getDrawer().isLocked()) {
+                getMainActivity().getDrawer().unlock();
             }
         }
     };
@@ -1449,6 +1446,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void onResume() {
         super.onResume();
         (getActivity()).registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
+
+        getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getPath());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
