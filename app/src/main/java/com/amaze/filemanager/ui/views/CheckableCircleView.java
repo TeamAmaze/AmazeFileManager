@@ -16,7 +16,7 @@ import com.amaze.filemanager.R;
  */
 public class CheckableCircleView extends View {
 
-    private static final int CHECK_MARGIN = 15;
+    private static final float CHECK_MARGIN_PERCENTUAL = 0.15f;
 
     private Drawable check;
     private Paint paint = new Paint();
@@ -42,11 +42,14 @@ public class CheckableCircleView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(getWidth()/2f, getHeight()/2f, getHeight()/2f, paint);
+        float min = Math.min(getHeight(), getWidth());
+
+        canvas.drawCircle(getWidth()/2f, getHeight()/2f, min/2f, paint);
 
         if(checked) {
-            check.setBounds(CHECK_MARGIN, CHECK_MARGIN, getWidth() - CHECK_MARGIN,
-                    getHeight() - CHECK_MARGIN);
+            float checkMargin = min*CHECK_MARGIN_PERCENTUAL;
+            check.setBounds((int) checkMargin, (int) checkMargin, (int) (getWidth() - checkMargin),
+                    (int) (getHeight() - checkMargin));
             check.draw(canvas);
         }
     }
