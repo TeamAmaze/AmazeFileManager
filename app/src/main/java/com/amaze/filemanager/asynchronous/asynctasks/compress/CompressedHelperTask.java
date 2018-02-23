@@ -20,9 +20,18 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
 
     private boolean createBackItem;
     private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
+    protected String relativePath;
 
-    CompressedHelperTask(boolean goBack,
+    CompressedHelperTask(String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+        if(relativePath == null || relativePath.isEmpty() || relativePath.equals("/")) {
+            this.relativePath = "";
+        } else if(!relativePath.endsWith("/")) {
+            this.relativePath = relativePath + "/";
+        } else {
+            this.relativePath = relativePath;
+        }
+
         createBackItem = goBack;
         onFinish = l;
     }

@@ -24,7 +24,6 @@ public class ZipHelperTask extends CompressedHelperTask {
 
     private WeakReference<Context> context;
     private Uri fileLocation;
-    private String relativePath;
 
     /**
      * AsyncTask to load ZIP file items.
@@ -33,10 +32,9 @@ public class ZipHelperTask extends CompressedHelperTask {
      */
     public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
-        super(goback, l);
+        super(dir, goback, l);
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
-        relativePath = dir;
     }
 
     @Override

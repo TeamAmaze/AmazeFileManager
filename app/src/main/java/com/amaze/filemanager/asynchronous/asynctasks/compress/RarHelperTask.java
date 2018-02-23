@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  */
@@ -20,7 +22,6 @@ public class RarHelperTask extends CompressedHelperTask {
     private static final String ZIP_INTERNAL_SEPARATOR = "\\";
 
     private String fileLocation;
-    private String relativeDirectory;
 
     /**
      * AsyncTask to load RAR file items.
@@ -29,27 +30,26 @@ public class RarHelperTask extends CompressedHelperTask {
      */
     public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
-        super(goBack, l);
+        super(dir.replace(SEPARATOR, ZIP_INTERNAL_SEPARATOR), goBack, l);
         fileLocation = realFileDirectory;
-        relativeDirectory = dir;
     }
 
     @Override
     void addElements(ArrayList<CompressedObjectParcelable> elements) {
         try {
             Archive zipfile = new Archive(new File(fileLocation));
-            String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, ZIP_INTERNAL_SEPARATOR);
 
             for (FileHeader header : zipfile.getFileHeaders()) {
                 String name = header.getFileNameString();//This uses \ as separator, not /
-                boolean isInBaseDir = relativeDirDiffSeparator.equals("") && !name.contains(ZIP_INTERNAL_SEPARATOR);
-                boolean isInRelativeDir = name.contains(ZIP_INTERNAL_SEPARATOR)
-                        && name.substring(0, name.lastIndexOf(ZIP_INTERNAL_SEPARATOR)+1).equals(relativeDirDiffSeparator);
+                name = name.replace(ZIP_INTERNAL_SEPARATOR, SEPARATOR);
+
+                boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);
+                boolean isInRelativeDir = name.contains(SEPARATOR)
+                        && name.substring(0, name.lastIndexOf(SEPARATOR)+1).equals(relativePath);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    String convertedName = RarDecompressor.convertName(header);
-                    elements.add(new CompressedObjectParcelable(getName(convertedName, "/"),
-                            convertedName, 0, header.getDataSize(), header.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(getName(name, "/"),
+                            name, 0, header.getDataSize(), header.isDirectory()));
                 }
             }
         } catch (RarException | IOException e) {

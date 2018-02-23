@@ -31,7 +31,6 @@ public abstract class Decompressor {
 
     /**
      * Separator must be "/"
-     * @param path end with "/" if it is a directory, does not if it's a file
      */
     public abstract CompressedHelperTask changePath(String path, boolean addGoBackItem,
                                                     OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish);

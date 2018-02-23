@@ -17,13 +17,12 @@ import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPAR
 
 public class GzipHelperTask extends CompressedHelperTask {
 
-    private String filePath, relativePath;
+    private String filePath;
 
     public GzipHelperTask(String filePath, String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
-        super(goBack, l);
+        super(relativePath, goBack, l);
         this.filePath = filePath;
-        this.relativePath = relativePath;
     }
 
     @Override
