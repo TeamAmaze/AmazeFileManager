@@ -139,7 +139,9 @@ public class DecryptService extends ProgressiveServiceAbstract {
             generateNotification(failedOps, false);
 
             Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
             sendBroadcast(intent);
+            stopSelf();
         }
     }
 

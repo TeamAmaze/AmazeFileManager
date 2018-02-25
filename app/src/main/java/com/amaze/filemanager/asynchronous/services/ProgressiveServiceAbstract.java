@@ -215,7 +215,7 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
 
         if(failedOps.size()==0)return;
 
-        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context);
+        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
 
         String titleResource;
