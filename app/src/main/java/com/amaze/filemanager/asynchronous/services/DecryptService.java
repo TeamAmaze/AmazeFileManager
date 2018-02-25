@@ -77,7 +77,7 @@ public class DecryptService extends ProgressiveServiceAbstract {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         notificationBuilder.setContentIntent(pendingIntent);
 
         decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);

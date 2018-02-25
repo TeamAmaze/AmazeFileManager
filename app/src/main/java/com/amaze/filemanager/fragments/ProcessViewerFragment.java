@@ -412,7 +412,7 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             lineChart.animateXY(500, 500);
 
-            specificService.setProgressListener(new EncryptService.ProgressListener() {
+            specificService.setProgressListener(new ProgressiveServiceAbstract.ProgressListener() {
                 @Override
                 public void onUpdate(final DatapointParcelable dataPackage) {
                     if (fragment.getActivity() == null) {

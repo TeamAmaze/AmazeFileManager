@@ -137,7 +137,7 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
             //for processviewer
             DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
                     totalSize, writtenSize, speed, move, isComplete);
-            putDataPackage(intent);
+            //putDataPackage(intent);
             addDatapoint(intent);
         } else publishCompletedResult(notificationID);
     }
