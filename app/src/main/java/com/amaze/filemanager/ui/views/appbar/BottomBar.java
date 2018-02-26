@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
@@ -293,6 +294,14 @@ public class BottomBar implements View.OnTouchListener{
         lastUsedFolderButton++;
 
         return button;
+    }
+
+    public void setBackgroundColor(@ColorInt int color) {
+        frame.setBackgroundColor(color);
+    }
+
+    public void setVisibility(int visibility) {
+        frame.setVisibility(visibility);
     }
 
     public void updatePath(@NonNull final String news, boolean results, String query, OpenMode openmode,

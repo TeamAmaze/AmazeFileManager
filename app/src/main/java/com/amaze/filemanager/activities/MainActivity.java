@@ -129,9 +129,6 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
-import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
-import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -167,7 +164,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public FABsMenu floatingActionButton;
     public LinearLayout pathbar;
-    public FrameLayout buttonBarFrame;
 
     public MainActivityHelper mainActivityHelper;
 
@@ -1110,10 +1106,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
             registerReceiver(mOtgReceiver, otgFilter);
         }
-
-        // TODO: 24/12/2017 this is a hack to fix a glitch when rotating the screen 
-        updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
-                getColorPreference().getColor(ColorUsage.PRIMARY):getColorPreference().getColor(ColorUsage.PRIMARY_TWO)));
     }
 
     /**
@@ -1370,7 +1362,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         appBarLayout = getAppbar().getAppbarLayout();
 
         mScreenLayout = findViewById(R.id.main_frame);
-        buttonBarFrame = findViewById(R.id.buttonbarframe);
 
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
 
@@ -1421,7 +1412,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      */
     public void updateViews(ColorDrawable colorDrawable) {
         // appbar view color
-        mainActivity.buttonBarFrame.setBackgroundColor(colorDrawable.getColor());
+        appbar.getBottomBar().setBackgroundColor(colorDrawable.getColor());
         // action bar color
         mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
 
@@ -1711,7 +1702,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 MainFragment ma = getCurrentMainFragment();
                 if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
             } else {
-                Snackbar.make(frameLayout, getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.navigation), getString(R.string.connection_exists),
+                        Snackbar.LENGTH_SHORT).show();
             }
         } else {
             int i = dataUtils.containsServer(new String[]{oldname, oldPath});
