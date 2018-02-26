@@ -155,15 +155,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private DataUtils dataUtils = DataUtils.getInstance();
 
-    public String path = "", launchPath;
-    public FrameLayout frameLayout;
+    public String path = "";
     public boolean mReturnIntent = false;
     public boolean useGridView, openzip = false;
     public boolean mRingtonePickerIntent = false, colourednavigation = false;
     public int skinStatusBar;
 
     public FABsMenu floatingActionButton;
-    public LinearLayout pathbar;
 
     public MainActivityHelper mainActivityHelper;
 
@@ -192,8 +190,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
     private static final String KEY_OPERATION = "operation";
 
-    private static final int image_selector_request_code = 31;
-
     private AppBar appbar;
     private Drawer drawer;
     //private HistoryManager history, grid;
@@ -201,9 +197,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private Context con = this;
     private String zippath;
     private boolean openProcesses = false;
-    private int hidemode;
     private MaterialDialog materialDialog;
-    private String newPath = null;
     private boolean backPressedToExitOnce = false;
     private Toast toast = null;
     private Intent intent;
@@ -218,7 +212,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private AppBarLayout appBarLayout;
 
-    private CoordinatorLayout mScreenLayout;
     private View fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
@@ -351,8 +344,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             setTaskDescription(taskDescription);
         }
 
-
-
         if (!getPrefs().getBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, false)) {
             utilsHandler.addCommonBookmarks();
             getPrefs().edit().putBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, true).commit();
@@ -450,13 +441,11 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * @param intent
      */
     private void checkForExternalIntent(Intent intent) {
-
         String actionIntent = intent.getAction();
         String type = intent.getType();
 
         if (actionIntent != null) {
             if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
-
                 // file picker intent
                 mReturnIntent = true;
                 Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
@@ -474,7 +463,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 // TODO: Support screen rotation when picking file
                 Utils.disableScreenRotation(this);
             } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
-
                 // zip viewer intent
                 Uri uri = intent.getData();
 
@@ -497,7 +485,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
             } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
                 // save a single file to filesystem
-
                 Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                 ArrayList<Uri> uris = new ArrayList<>();
                 uris.add(uri);
@@ -817,7 +804,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 s.setTitle(getResources().getString(R.string.listview));
             }
             try {
-                TabFragment tabFragment = (TabFragment) fragment;
                 MainFragment ma = getCurrentMainFragment();
                 if (ma.IS_LIST) s.setTitle(R.string.gridview);
                 else s.setTitle(R.string.listview);
@@ -1350,7 +1336,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialisePreferences() {
-        hidemode = getPrefs().getInt(PreferencesConstants.PREFERENCE_HIDEMODE, 0);
         showHidden = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
         useGridView = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_VIEW, true);
         currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
@@ -1361,15 +1346,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     void initialiseViews() {
         appBarLayout = getAppbar().getAppbarLayout();
 
-        mScreenLayout = findViewById(R.id.main_frame);
-
         //buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
 
         setSupportActionBar(getAppbar().getToolbar());
 
         drawer = new Drawer(this);
 
-        frameLayout = findViewById(R.id.content_frame);
         indicator_layout = findViewById(R.id.indicator_layout);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -1533,10 +1515,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 mainActivityHelper.showFailedOperationDialog(failedOps, this);
             }
         } else if (i.getCategories() != null && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
-
             // we used an external authenticator instead of APIs. Probably for Google Drive
             CloudRail.setAuthenticationResponse(intent);
-
         } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
@@ -1548,7 +1528,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             transaction.commitAllowingStateLoss();
             supportInvalidateOptionsMenu();
         } else if (intent.getAction() != null) {
-
             checkForExternalIntent(intent);
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -1580,7 +1559,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-
         if (requestCode == 77) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 drawer.refreshDrawer();
@@ -1688,7 +1666,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     @Override
     public void addConnection(boolean edit, final String name, final String path, final String encryptedPath,
                               final String oldname, final String oldPath) {
-
         String[] s = new String[]{name, path};
         if (!edit) {
             if ((dataUtils.containsServer(path)) == -1) {
@@ -1740,38 +1717,32 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-
         utilsHandler.addHidden(path);
     }
 
     @Override
     public void onHiddenFileRemoved(String path) {
-
         utilsHandler.removeHiddenPath(path);
     }
 
     @Override
     public void onHistoryAdded(String path) {
-
         utilsHandler.addHistory(path);
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-
         utilsHandler.addBookmark(path[0], path[1]);
         if (refreshdrawer) drawer.refreshDrawer();
     }
 
     @Override
     public void onHistoryCleared() {
-
         utilsHandler.clearHistoryTable();
     }
 
     @Override
     public void delete(String title, String path) {
-
         utilsHandler.removeBookmarksPath(title, path);
         drawer.refreshDrawer();
 
@@ -1779,7 +1750,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void modify(String oldpath, String oldname, String newPath, String newname) {
-
         utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
         drawer.refreshDrawer();
     }
@@ -1809,7 +1779,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void addConnection(OpenMode service) {
-
         try {
             if (cloudHandler.findEntry(service) != null) {
                 // cloud entry already exists
@@ -1839,7 +1808,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void deleteConnection(OpenMode service) {
-
         cloudHandler.clear(service);
         dataUtils.removeAccount(service);
 
@@ -1848,7 +1816,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             cloudSyncTask.cancel(true);
 
@@ -1931,7 +1898,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         }
 
         cloudSyncTask = new AsyncTask<Void, Void, Boolean>() {
-
             @Override
             protected Boolean doInBackground(Void... params) {
                 boolean hasUpdatedDrawer = false;

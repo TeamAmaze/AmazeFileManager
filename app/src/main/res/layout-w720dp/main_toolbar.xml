@@ -27,7 +27,6 @@
     android:id="@+id/tab_frame">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_frame"
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/drawer_width"
         android:layout_height="match_parent">
