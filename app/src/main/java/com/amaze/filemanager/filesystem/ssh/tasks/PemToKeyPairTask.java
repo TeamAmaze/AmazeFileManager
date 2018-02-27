@@ -84,18 +84,24 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final PasswordFinder passwordFinder;
 
+    private final String errorMessage;
+
+    private final MaterialDialog dialog;
+
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
-        this(IOUtils.readFully(pemFile).toByteArray(), callback, null);
+        this(IOUtils.readFully(pemFile).toByteArray(), callback, null, null, null);
     }
 
     public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(pemContent.getBytes(), callback, null);
+        this(pemContent.getBytes(), callback, null, null, null);
     }
 
     public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
-                            String keyPassphrase) {
+                            String keyPassphrase, MaterialDialog dialog, String errorMessage) {
         this.pemFile = pemContent;
         this.callback = callback;
+        this.dialog = dialog;
+        this.errorMessage = errorMessage;
         if(keyPassphrase == null)
             passwordFinder = null;
         else
@@ -144,35 +150,50 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
     @Override
     protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
         if(result.exception != null) {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-            View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
-            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
-            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            if(dialog == null) {
 
-            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
+                View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+                WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+                EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+                textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-            builder.customView(dialogLayout, false)
-                .title(R.string.ssh_key_prompt_passphrase)
-                .positiveText(R.string.ok)
-                .onPositive(((dialog, which) -> {
-                    new PemToKeyPairTask(pemFile, callback, textfield.getText().toString()).execute();
-                    dialog.dismiss();
-                })).negativeText(R.string.cancel)
-                    .onNegative(((dialog, which) -> {
-                        dialog.dismiss();
-                        toastOnParseError(result);
-            }));
+                builder.customView(dialogLayout, false)
+                        .autoDismiss(false)
+                        .title(R.string.ssh_key_prompt_passphrase)
+                        .positiveText(R.string.ok)
+                        .onPositive(((dialog, which) -> {
+                            new PemToKeyPairTask(pemFile, callback, textfield.getText().toString(), dialog,
+                                    AppConfig.getInstance().getString(R.string.crypt_decryption_fail_password)).execute();
+                        })).negativeText(R.string.cancel)
+                        .onNegative(((dialog, which) -> {
+                            dialog.dismiss();
+                            toastOnParseError(result);
+                        }));
 
-            MaterialDialog dialog = builder.show();
+                MaterialDialog dialog = builder.show();
 
-            new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
-                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
-                if (text.length() < 1) {
-                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+                        wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+                    if (text.length() < 1) {
+                        return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                    }
+                    return new WarnableTextInputValidator.ReturnState();
+                });
+            } else {
+                if(errorMessage != null) {
+                    WarnableTextInputLayout wilTextfield = (WarnableTextInputLayout)dialog.findViewById(R.id.singleedittext_warnabletextinputlayout);
+                    EditText textfield = (EditText)dialog.findViewById(R.id.singleedittext_input);
+                    wilTextfield.setError(errorMessage);
+                    textfield.selectAll();
                 }
-                return new WarnableTextInputValidator.ReturnState();
-            });
+            }
+
+        } else {
+            if(dialog != null)
+                dialog.dismiss();
         }
+
         if(callback != null) {
             callback.onResult(result);
         }
