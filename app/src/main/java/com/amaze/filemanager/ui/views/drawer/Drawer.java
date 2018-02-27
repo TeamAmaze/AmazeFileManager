@@ -222,11 +222,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 icon1 = R.drawable.ic_usb_white_24dp;
             } else name = f.getName();
             if (!f.isDirectory() || f.canExecute()) {
-                storage_count++;
                 addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
                         R.drawable.ic_show_chart_black_24dp);
-                if(order == 0) firstPath = file;
-                else if(order == 1) secondPath = file;
+                if(storage_count == 0) firstPath = file;
+                else if(storage_count == 1) secondPath = file;
+
+                storage_count++;
             }
         }
         dataUtils.setStorages(storageDirectories);
