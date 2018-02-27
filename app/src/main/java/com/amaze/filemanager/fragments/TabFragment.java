@@ -108,34 +108,37 @@ public class TabFragment extends Fragment
             MainActivity.currentTab = l;
             List<Tab> tabs1 = tabHandler.getAllTabs();
             int i = tabs1.size();
-            if (i == 0) {
-                // creating tabs in db for the first time, probably the first launch of app
-                if (mainActivity.getDrawer().getStorageCount() > 1) {
-                    addTab(new Tab(1, mainActivity.getDrawer().getSecondPath(), "/"), 1, "");
+            if (i == 0) {// creating tabs in db for the first time, probably the first launch of app
+                if (mainActivity.getDrawer().getFirstPath() != null) {
+                    addNewTab(1, mainActivity.getDrawer().getFirstPath());
                 } else {
-                    addTab(new Tab(1, "/", "/"), 1, "");
+                    if (mainActivity.getDrawer().getSecondPath() != null) {
+                        addNewTab(1, mainActivity.getDrawer().getSecondPath());
+                    } else {
+                        sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();
+                        addNewTab(1,  "/");
+                    }
                 }
 
-                if (mainActivity.getDrawer().getFirstPath() != null) {
-                    String pa = mainActivity.getDrawer().getFirstPath();
-                    addTab(new Tab(2,  pa, pa), 2, "");
+                if (mainActivity.getDrawer().getSecondPath() != null) {
+                    addNewTab(2, mainActivity.getDrawer().getSecondPath());
                 } else {
-                    addTab(new Tab(2, mainActivity.getDrawer().getSecondPath(), "/"), 2, "");
+                    addNewTab(2, mainActivity.getDrawer().getFirstPath());
                 }
             } else {
                 if (path != null && path.length() != 0) {
                     if (l == 1) {
-                        addTab(tabHandler.findTab(1), 1, "");
+                        addTab(tabHandler.findTab(1), "");
                     }
 
-                    addTab(tabHandler.findTab(l + 1), l + 1, path);
+                    addTab(tabHandler.findTab(l + 1), path);
 
                     if (l == 0) {
-                        addTab(tabHandler.findTab(2), 2, "");
+                        addTab(tabHandler.findTab(2), "");
                     }
                 } else {
-                    addTab(tabHandler.findTab(1), 1, "");
-                    addTab(tabHandler.findTab(2), 2, "");
+                    addTab(tabHandler.findTab(1), "");
+                    addTab(tabHandler.findTab(2), "");
                 }
             }
 
@@ -336,7 +339,11 @@ public class TabFragment extends Fragment
         }
     }
 
-    public void addTab(@NonNull Tab tab, int pos, String path) {
+    private void addNewTab(int num, String path) {
+        addTab(new Tab(num, path, path), "");
+    }
+
+    public void addTab(@NonNull Tab tab, String path) {
         Fragment main = new MainFragment();
         Bundle b = new Bundle();
 
@@ -347,7 +354,7 @@ public class TabFragment extends Fragment
         }
 
         b.putString("home", tab.home);
-        b.putInt("no", pos);
+        b.putInt("no", tab.tabNumber);
         main.setArguments(b);
         fragments.add(main);
         mSectionsPagerAdapter.notifyDataSetChanged();
