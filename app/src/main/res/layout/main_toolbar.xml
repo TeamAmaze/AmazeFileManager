@@ -73,7 +73,7 @@
         
         <include layout="@layout/layout_fab"/>
     </android.support.design.widget.CoordinatorLayout>
-    <android.support.design.widget.NavigationView
+    <com.amaze.filemanager.ui.views.drawer.CustomNavigationView
         android:id="@+id/navigation"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
