@@ -164,7 +164,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                         .positiveText(R.string.ok)
                         .onPositive(((dialog, which) -> {
                             new PemToKeyPairTask(pemFile, callback, textfield.getText().toString(), dialog,
-                                    AppConfig.getInstance().getString(R.string.crypt_decryption_fail_password)).execute();
+                                    AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase)).execute();
                         })).negativeText(R.string.cancel)
                         .onNegative(((dialog, which) -> {
                             dialog.dismiss();
