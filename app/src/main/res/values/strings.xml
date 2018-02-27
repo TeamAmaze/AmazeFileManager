@@ -623,5 +623,6 @@
     <string name="filename">Filename</string>
     <string name="compress_file_suggest_zip_extension">It\'s recommended to use \".zip\" as the file extension.</string>
     <string name="create_file_suggest_txt_extension">It\'s recommended to use \".txt\" as the file extension.</string>
+    <string name="ssh_key_invalid_passphrase">Invalid key passphrase.</string>
 </resources>
 
