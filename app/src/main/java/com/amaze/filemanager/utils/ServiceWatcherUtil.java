@@ -30,7 +30,7 @@ public class ServiceWatcherUtil {
     private ProgressHandler progressHandler;
     long totalSize;
     private Runnable runnable;
-    private int STATE;
+    private int STATE = -1;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
@@ -69,19 +69,11 @@ public class ServiceWatcherUtil {
                 // we don't have a file name yet, wait for service to set
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
-                progressHandler.addWrittenLength(POSITION);
-
-                if (POSITION == totalSize || progressHandler.getCancelled()) {
-                    // process complete, free up resources
-                    // we've finished the work or process cancelled
-                    handler.removeCallbacks(this);
-                    handlerThread.quit();
-                    return;
-                }
-
                 if (POSITION == progressHandler.getWrittenSize() &&
                         (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
-                                && ++HALT_COUNTER>5)) {
+                                && ++HALT_COUNTER>3)) {
+
+                    // new position is same as the last second position, and halt counter is past threshold
 
                     if (interactionInterface.getServiceType() instanceof DecryptService) {
 
@@ -101,14 +93,26 @@ public class ServiceWatcherUtil {
                     if (STATE == ServiceWatcherInteractionInterface.STATE_HALTED) {
 
                         STATE = ServiceWatcherInteractionInterface.STATE_RESUMED;
+                        HALT_COUNTER = 0;
                         interactionInterface.progressResumed();
                     } else {
 
                         // reset the halt counter everytime there is a progress
                         // so that it increments only when
                         // progress was halted for consecutive time period
+                        STATE = -1;
                         HALT_COUNTER = 0;
                     }
+                }
+
+                progressHandler.addWrittenLength(POSITION);
+
+                if (POSITION == totalSize || progressHandler.getCancelled()) {
+                    // process complete, free up resources
+                    // we've finished the work or process cancelled
+                    handler.removeCallbacks(this);
+                    handlerThread.quit();
+                    return;
                 }
 
                 handler.postDelayed(this, 1000);
