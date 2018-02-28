@@ -163,17 +163,21 @@ public class ColorPickerDialog extends SelectedColorsPreference {
     }
 
     private View inflateItem(LinearLayout container, final int index, int accentColor) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.item_colorpicker, container, false);
-        child.setOnClickListener(v -> {
+        View.OnClickListener clickListener = v -> {
             if(!v.isSelected()) {
                 select(selectedItem, false);
                 select(v, true);
                 selectedItem = v;
                 selectedIndex = index;
             }
-        });
-        RadioButton radio = (RadioButton) child.findViewById(R.id.select);
+        };
+
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View child = inflater.inflate(R.layout.item_colorpicker, container, false);
+        child.setOnClickListener(clickListener);
+
+        RadioButton radio = child.findViewById(R.id.select);
+        radio.setOnClickListener(clickListener);
         if(Build.VERSION.SDK_INT >= 21) {
             ColorStateList colorStateList = new ColorStateList(
                     new int[][]{

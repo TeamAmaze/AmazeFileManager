@@ -39,7 +39,7 @@
             android:background="?selectableItemBackground"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_remote_grey600_24dp"
+                app:srcCompat="@drawable/ic_remote_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -63,7 +63,7 @@
             android:background="?selectableItemBackground"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_linux_grey600_24dp"
+                app:srcCompat="@drawable/ic_linux_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -88,7 +88,7 @@
             android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_dropbox_grey600_24dp"
+                app:srcCompat="@drawable/ic_dropbox_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -112,7 +112,7 @@
             android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_box_grey600_24dp"
+                app:srcCompat="@drawable/ic_box_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -136,7 +136,7 @@
             android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_google_drive_grey600_24dp"
+                app:srcCompat="@drawable/ic_google_drive_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -160,7 +160,7 @@
             android:visibility="gone"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_onedrive_grey600_24dp"
+                app:srcCompat="@drawable/ic_onedrive_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"
@@ -184,7 +184,7 @@
             android:visibility="visible"
             >
             <com.amaze.filemanager.ui.views.ThemedImageView
-                android:src="@drawable/ic_onedrive_grey600_24dp"
+                app:srcCompat="@drawable/ic_onedrive_grey_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/material_generic_medium"

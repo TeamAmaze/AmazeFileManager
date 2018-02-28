@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -68,10 +69,12 @@ public class TabFragment extends android.support.v4.app.Fragment
     private ColorDrawable colorDrawable = new ColorDrawable();
 
     // colors relative to current visible tab
-    private String startColor, endColor;
+    private @ColorInt int startColor, endColor;
 
     private TabHandler tabHandler;
     private DataUtils dataUtils = DataUtils.getInstance();
+
+    private ArgbEvaluator evaluator = new ArgbEvaluator();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -165,9 +168,9 @@ public class TabFragment extends android.support.v4.app.Fragment
         if (indicator != null) indicator.setViewPager(mViewPager);
 
         // color of viewpager when current tab is 0
-        startColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
+        startColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
         // color of viewpager when current tab is 1
-        endColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY_TWO);
+        endColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
 
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change
@@ -258,16 +261,11 @@ public class TabFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        ArgbEvaluator evaluator = new ArgbEvaluator();
+        MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+        if(mainFragment != null && !mainFragment.selection) {// we do not want to update toolbar colors when ActionMode is activated during the config change
+            @ColorInt int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
 
-        int color = (int) evaluator.evaluate(position + positionOffset, Color.parseColor(startColor),
-                Color.parseColor(endColor));
-
-        colorDrawable.setColor(color);
-
-        if (mainActivity.mainFragment != null & !mainActivity.mainFragment.selection) {
-            // we do not want to update toolbar colors when action mode is activated
-            // during the config change
+            colorDrawable.setColor(color);
             mainActivity.updateViews(colorDrawable);
         }
     }
