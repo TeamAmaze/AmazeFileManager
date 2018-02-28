@@ -83,9 +83,9 @@ public class Statvfs
      */
     public static class Response
     {
-        public final String mRemotePath;
+        public final String remotePath;
 
-        public final net.schmizz.sshj.sftp.Response mResponse;
+        public final net.schmizz.sshj.sftp.Response response;
 
         // f_bsize
         public final int fileSystemBlockSize;
@@ -128,20 +128,20 @@ public class Statvfs
                 throw new SFTPException("Bad response code: " + response.readStatusCode());
             }
 
-            mRemotePath = remotePath;
-            mResponse = response;
+            this.remotePath = remotePath;
+            this.response = response;
 
-            fileSystemBlockSize = (int) mResponse.readUInt32();
-            fundamentalFileSystemBlockSize = (int) mResponse.readUInt64();
-            fileSystemBlocks = mResponse.readUInt64();
-            freeFileSystemBlocks = mResponse.readUInt64();
-            availableFileSystemBlocks = mResponse.readUInt64();
-            totalFileInodes = mResponse.readUInt64();
-            freeFileInodes = mResponse.readUInt64();
-            availableFileInodes = mResponse.readUInt64();
-            fileSystemId = readUInt64FromBuffer(mResponse);
-            fileSystemFlag = (int) mResponse.readUInt64();
-            filenameMaxLength = (int) mResponse.readUInt64();
+            fileSystemBlockSize = (int) this.response.readUInt32();
+            fundamentalFileSystemBlockSize = (int) this.response.readUInt64();
+            fileSystemBlocks = this.response.readUInt64();
+            freeFileSystemBlocks = this.response.readUInt64();
+            availableFileSystemBlocks = this.response.readUInt64();
+            totalFileInodes = this.response.readUInt64();
+            freeFileInodes = this.response.readUInt64();
+            availableFileInodes = this.response.readUInt64();
+            fileSystemId = readUInt64FromBuffer(this.response);
+            fileSystemFlag = (int) this.response.readUInt64();
+            filenameMaxLength = (int) this.response.readUInt64();
         }
 
         /**
@@ -209,7 +209,7 @@ public class Statvfs
         @Override
         public String toString() {
             return new StringBuilder()
-                    .append("Response statvfs@openssh.com query for [").append(mRemotePath).append("], ")
+                    .append("Response statvfs@openssh.com query for [").append(remotePath).append("], ")
                     .append("fileSystemBlockSize=").append(fileSystemBlockSize).append(',')
                     .append("fundamentalFileSystemBlockSize=").append(fundamentalFileSystemBlockSize).append(',')
                     .append("fileSystemBlocks=").append(fileSystemBlocks).append(',')

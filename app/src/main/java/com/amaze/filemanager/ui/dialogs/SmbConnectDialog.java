@@ -20,13 +20,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,7 +44,7 @@ import jcifs.smb.SmbFile;
  */
 public class SmbConnectDialog extends DialogFragment {
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
 
     private static final String TAG = "SmbConnectDialog";
 
@@ -85,7 +86,7 @@ public class SmbConnectDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utilsProvider = (UtilitiesProviderInterface) getActivity();
+        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
     }
 
     @Override

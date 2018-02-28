@@ -86,9 +86,9 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="Select private key for authentication"
+            android:contentDescription="@string/ssh_select_pem"
             android:id="@+id/selectPemBTN"
-            android:text="SSH Private Key..."
+            android:text="@string/ssh_select_pem_button"
             android:ems="10"
             android:layout_gravity="center_horizontal"/>
 

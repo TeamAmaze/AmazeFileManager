@@ -52,7 +52,7 @@ import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProviderInterface;
+import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
@@ -62,7 +62,7 @@ import java.util.List;
 
 public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
-    private UtilitiesProviderInterface utilsProvider;
+    private UtilitiesProvider utilsProvider;
     private Context context;
     private AppsAdapterPreloadModel modelProvider;
     private ViewPreloadSizeProvider<String> sizeProvider;
@@ -71,7 +71,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     private ThemedActivity themedActivity;
 
-    public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProviderInterface utilsProvider,
+    public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProvider utilsProvider,
                        AppsAdapterPreloadModel modelProvider, ViewPreloadSizeProvider<String> sizeProvider,
                        int resourceId, AppsListFragment app) {
         super(context, resourceId);

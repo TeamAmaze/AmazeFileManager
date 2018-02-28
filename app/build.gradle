@@ -55,23 +55,6 @@ android {
         abortOnError false
     }
 
-
-    flavorDimensions 'static'
-
-    productFlavors {
-        fdroid {
-            dimension 'static'
-
-            buildConfigField "boolean", "IS_VERSION_FDROID", "true"
-        }
-        play {
-            dimension 'static'
-
-            buildConfigField "boolean", "IS_VERSION_FDROID", "false"
-            signingConfig signingConfigs.config
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

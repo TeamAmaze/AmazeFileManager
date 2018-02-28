@@ -1558,7 +1558,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         dataUtils.setDrawerItems(sectionDrawerItems);
 
-        adapter = new DrawerAdapter(this, this, sectionDrawerItems, this);
+        adapter = new DrawerAdapter(this, getUtilsProvider(), sectionDrawerItems, this);
         mDrawerList.setAdapter(adapter);
     }
 
