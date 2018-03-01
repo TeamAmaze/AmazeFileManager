@@ -618,8 +618,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     rv.add(s);
             }
         }
-        if (ThemedActivity.rootMode)
+        if (isRootExplorer()){
             rv.add("/");
+        }
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
@@ -1076,6 +1077,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             materialDialog = null;
         }
 
+        drawer.refreshDrawer();
         drawer.deselectEverything();
 
         IntentFilter newFilter = new IntentFilter();
