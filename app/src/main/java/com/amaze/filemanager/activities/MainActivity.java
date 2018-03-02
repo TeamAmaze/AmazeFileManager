@@ -957,26 +957,21 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;
+                int pathLayout = dataUtils.getListOrGridForPath(ma.getCurrentPath(), DataUtils.LIST);
                 if (ma.IS_LIST) {
-                    if (dataUtils.getListfiles().contains(ma.getCurrentPath())) {
-                        dataUtils.getListfiles().remove(ma.getCurrentPath());
-
+                    if (pathLayout == DataUtils.LIST) {
                         AppConfig.runInBackground(() -> {
                             utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
                         });
-                        //grid.removePath(ma.CURRENT_PATH, DataUtils.LIST);
                     }
 
                     AppConfig.runInBackground(() -> {
                         utilsHandler.addGridView(mainFragment.getCurrentPath());
                     });
-                    //grid.addPath(null, ma.CURRENT_PATH, DataUtils.GRID, 0);
-                    dataUtils.getGridFiles().add(ma.getCurrentPath());
-                } else {
-                    if (dataUtils.getGridFiles().contains(ma.getCurrentPath())) {
-                        dataUtils.getGridFiles().remove(ma.getCurrentPath());
-                        //grid.removePath(ma.CURRENT_PATH, DataUtils.GRID);
 
+                    dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
+                } else {
+                    if (pathLayout == DataUtils.GRID) {
                         AppConfig.runInBackground(() -> {
                             utilsHandler.removeGridViewPath(mainFragment.getCurrentPath());
                         });
@@ -985,8 +980,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     AppConfig.runInBackground(() -> {
                         utilsHandler.addListView(mainFragment.getCurrentPath());
                     });
-                    //grid.addPath(null, ma.CURRENT_PATH, DataUtils.LIST, 0);
-                    dataUtils.getListfiles().add(ma.getCurrentPath());
+
+                    dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
                 }
                 ma.switchView();
                 break;
