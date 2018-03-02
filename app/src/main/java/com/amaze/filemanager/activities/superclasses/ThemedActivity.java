@@ -15,6 +15,8 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE;
+
 /**
  * Created by arpitkh996 on 03-03-2016.
  */
@@ -38,7 +40,7 @@ public class ThemedActivity extends PreferenceActivity {
 
         setTheme();
 
-        rootMode = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
+        rootMode = isRootExplorer();
 
         //requesting storage permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage && !checkStoragePermission()) {

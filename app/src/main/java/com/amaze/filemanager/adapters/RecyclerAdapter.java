@@ -19,6 +19,7 @@ import android.widget.PopupMenu;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
@@ -27,6 +28,7 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -48,6 +50,15 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
+
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
  * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
@@ -67,13 +78,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean stoppedAnimation = false;
 
+    private PreferenceActivity preferenceActivity;
     private UtilitiesProvider utilsProvider;
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
     private RecyclerViewPreloader<IconDataParcelable> preloader;
     private RecyclerPreloadSizeProvider sizeProvider;
     private RecyclerPreloadModelProvider modelProvider;
-    private boolean showHeaders;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
     private LayoutInflater mInflater;
@@ -82,16 +93,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
 
-    public RecyclerAdapter(MainFragment m, UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
+    public RecyclerAdapter(PreferenceActivity preferenceActivity, MainFragment m,
+                           UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
                            RecyclerView recyclerView,  ArrayList<LayoutElementParcelable> itemsRaw,
-                           Context context, boolean showHeaders) {
+                           Context context) {
         setHasStableIds(true);
 
+        this.preferenceActivity = preferenceActivity;
         this.mainFrag = m;
         this.utilsProvider = utilsProvider;
         this.context = context;
         this.sharedPrefs = sharedPrefs;
-        this.showHeaders = showHeaders;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
@@ -165,7 +177,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void toggleChecked(boolean b, String path) {
-        int i = path.equals("/") || !mainFrag.GO_BACK_ITEM ? 0 : 1;
+        int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
 
         for (; i < itemsDigested.size(); i++) {
             itemsDigested.get(i).setChecked(b);
@@ -222,7 +234,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean areAllChecked(String path) {
         boolean allChecked = true;
-        int i = (path.equals("/") || !mainFrag.GO_BACK_ITEM)? 0:1;
+        int i = (path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON))? 0:1;
 
         for (; i < itemsDigested.size(); i++) {
             if (itemsDigested.get(i).getChecked() == ListItem.NOT_CHECKED) {
@@ -315,12 +327,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             itemsDigested.get(i).setAnimate(false);
         }
 
-        if (showHeaders) {
+        if (getBoolean(PREFERENCE_SHOW_HEADERS)) {
             createHeaders(invalidate, uris);
         }
 
         sizeProvider = new RecyclerPreloadSizeProvider(this);
-        modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris, mainFrag.SHOW_THUMBS);
+        modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris,
+                getBoolean(PREFERENCE_SHOW_THUMB));
 
         preloader = new RecyclerViewPreloader<>(GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
 
@@ -426,14 +439,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         if (vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
-            final boolean isBackButton = mainFrag.GO_BACK_ITEM && p == 0;
+            final boolean isBackButton = getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) && p == 0;
             if(isBackButton){
                 holder.about.setVisibility(View.GONE);
             }
             if (mainFrag.IS_LIST) {
                 if (p == getItemCount() - 1) {
                     holder.rl.setMinimumHeight((int) minRowHeight);
-                    if (itemsDigested.size() == (mainFrag.GO_BACK_ITEM? 1:0))
+                    if (itemsDigested.size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)? 1:0))
                         holder.txtTitle.setText(R.string.nofiles);
                     else holder.txtTitle.setText("");
                     return;
@@ -509,8 +522,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 switch (rowItem.filetype) {
                     case Icons.IMAGE:
                     case Icons.VIDEO:
-                        if (mainFrag.SHOW_THUMBS) {
-                            if (mainFrag.CIRCULAR_IMAGES) {
+                        if (getBoolean(PREFERENCE_SHOW_THUMB)) {
+                            if (getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)) {
                                 showThumbnailWithBackground(holder, rowItem.iconData, holder.pictureIcon,
                                         rowItem.iconData::setImageBroken);
                             } else {
@@ -520,7 +533,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         break;
                     case Icons.APK:
-                        if (mainFrag.SHOW_THUMBS) {
+                        if (getBoolean(PREFERENCE_SHOW_THUMB)) {
                             showThumbnailWithBackground(holder, rowItem.iconData, holder.apkIcon,
                                     rowItem.iconData::setImageBroken);
                         }
@@ -539,7 +552,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         break;
                     case Icons.ENCRYPTED:
-                        if (mainFrag.SHOW_THUMBS) {
+                        if (getBoolean(PREFERENCE_SHOW_THUMB)) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
                             modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         }
@@ -575,7 +588,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     if(!rowItem.iconData.isImageBroken()) {
                         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
-                        if (mainFrag.COLORISE_ICONS) {
+                        if (getBoolean(PREFERENCE_COLORIZE_ICONS)) {
                             if (rowItem.isDirectory) {
                                 gradientDrawable.setColor(iconSkinColor);
                             } else {
@@ -589,9 +602,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     }
                 }
-                if (mainFrag.SHOW_PERMISSIONS)
+                if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
                     holder.perm.setText(rowItem.permissions);
-                if (mainFrag.SHOW_LAST_MODIFIED) {
+                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
                     holder.date.setText(rowItem.date1);
                 } else {
                     holder.date.setVisibility(View.GONE);
@@ -600,7 +613,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (isBackButton) {
                     holder.date.setText(rowItem.size);
                     holder.txtDesc.setText("");
-                } else if (mainFrag.SHOW_SIZE) {
+                } else if (getBoolean(PREFERENCE_SHOW_FILE_SIZE)) {
                     holder.txtDesc.setText(rowItem.size);
                 }
             } else {
@@ -636,7 +649,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 if(holder.genericIcon.getVisibility() == View.VISIBLE) {
-                    View iconBackground = mainFrag.CIRCULAR_IMAGES? holder.genericIcon:holder.iconLayout;
+                    View iconBackground = getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)? holder.genericIcon:holder.iconLayout;
 
                     if (rowItem.isDirectory) {
                         iconBackground.setBackgroundColor(iconSkinColor);
@@ -682,7 +695,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 if (itemsDigested.get(p).getChecked() == ListItem.CHECKED) {
                     if (holder.genericIcon.getVisibility() == View.VISIBLE) {
-                        View iconBackground = mainFrag.CIRCULAR_IMAGES? holder.genericIcon:holder.iconLayout;
+                        View iconBackground = getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)? holder.genericIcon:holder.iconLayout;
 
                         iconBackground.setBackgroundColor(iconSkinColor);
                         //holder.genericIcon.setImageDrawable(main.getResources().getDrawable(R.drawable.abc_ic_cab_done_holo_dark));
@@ -705,7 +718,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.about.setColorFilter(grey_color);
                     showPopup(holder.about, rowItem, p);
                 }
-                if (mainFrag.SHOW_LAST_MODIFIED)
+                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED))
                     holder.date.setText(rowItem.date1);
                 if (isBackButton) {
                     holder.date.setText(rowItem.size);
@@ -713,7 +726,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }/*else if(main.SHOW_SIZE)
                 holder.txtDesc.setText(rowItem.getSize());
            */
-                if (mainFrag.SHOW_PERMISSIONS)
+                if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
                     holder.perm.setText(rowItem.permissions);
             }
         }
@@ -722,11 +735,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getCorrectView(IconDataParcelable item, int adapterPosition) {
         if (mainFrag.IS_LIST) {
-            if(mainFrag.SHOW_THUMBS) {
+            if(getBoolean(PREFERENCE_SHOW_THUMB)) {
                 int filetype = itemsDigested.get(adapterPosition).elem.filetype;
 
                 if (filetype == Icons.VIDEO || filetype == Icons.IMAGE) {
-                    if (mainFrag.CIRCULAR_IMAGES) {
+                    if (getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)) {
                         return VIEW_PICTURE;
                     } else {
                         return VIEW_APK;
@@ -789,7 +802,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void showRoundedThumbnail(ItemViewHolder viewHolder, IconDataParcelable iconData,
                                       ImageView view, OnImageProcessed errorListener) {
         if(iconData.isImageBroken()) {
-            View iconBackground = mainFrag.CIRCULAR_IMAGES? viewHolder.genericIcon:viewHolder.iconLayout;
+            View iconBackground = getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)? viewHolder.genericIcon:viewHolder.iconLayout;
 
             viewHolder.genericIcon.setVisibility(View.VISIBLE);
             iconBackground.setBackgroundColor(grey_color);
@@ -800,7 +813,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return;
         }
 
-        View iconBackground = mainFrag.CIRCULAR_IMAGES? viewHolder.genericIcon:viewHolder.iconLayout;
+        View iconBackground = getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)? viewHolder.genericIcon:viewHolder.iconLayout;
 
         iconBackground.setBackgroundColor(iconSkinColor);
         viewHolder.genericIcon.setVisibility(View.VISIBLE);
@@ -859,6 +872,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             popupMenu.show();
         });
+    }
+
+    private boolean getBoolean(String key) {
+        return preferenceActivity.getBoolean(key);
     }
 
     private static class ListItem {

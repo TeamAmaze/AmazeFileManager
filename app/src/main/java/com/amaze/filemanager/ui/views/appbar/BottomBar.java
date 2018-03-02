@@ -40,6 +40,8 @@ import com.amaze.filemanager.utils.files.FileUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
+
 /**
  * layout_appbar.xml contains the layout for AppBar and BottomBar
  *
@@ -74,7 +76,6 @@ public class BottomBar implements View.OnTouchListener{
     private Drawable arrow;
 
     private CountDownTimer timer;
-    private boolean allowChangePaths;
     private GestureDetector gestureDetector;
 
     public BottomBar(AppBar appbar, MainActivity a) {
@@ -120,8 +121,6 @@ public class BottomBar implements View.OnTouchListener{
             }
         };
 
-        allowChangePaths = mainActivity.get().getPrefs().getBoolean(PreferencesConstants.PREFERENCE_CHANGEPATHS, false);
-
         gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -150,7 +149,7 @@ public class BottomBar implements View.OnTouchListener{
 
             @Override
             public void onLongPress(MotionEvent e) {
-                if(allowChangePaths &&
+                if(mainActivity.get().getBoolean(PREFERENCE_CHANGEPATHS) &&
                         (!mainActivity.get().getCurrentMainFragment().results || buttons.getVisibility() == View.VISIBLE)) {
                     GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.get().getPrefs());
                 }

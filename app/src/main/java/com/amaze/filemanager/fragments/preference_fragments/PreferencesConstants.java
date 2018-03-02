@@ -26,6 +26,7 @@ public class PreferencesConstants {
     public static final String PREFERENCE_SHOW_SIDEBAR_FOLDERS = "sidebar_folders_enable";
     public static final String PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES = "sidebar_quickaccess_enable";
 
+    public static final String PREFERENCE_BOOKMARKS_ADDED = "books_added";
     public static final String PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack";
     public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
     public static final String PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified";

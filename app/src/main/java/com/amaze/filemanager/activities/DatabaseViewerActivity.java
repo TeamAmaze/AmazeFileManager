@@ -55,6 +55,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 /**
  * Created by Vishal on 02-02-2015.
@@ -113,12 +114,11 @@ public class DatabaseViewerActivity extends ThemedActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= 21) {
-            boolean colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-            if (colourednavigation)
+            if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
                 window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
 
         }
