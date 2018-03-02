@@ -22,10 +22,6 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
  */
 public class ThemedActivity extends PreferenceActivity {
 
-    /**
-     * @deprecated Use PreferenceActivity.isRootExplorer()
-     */
-    public static boolean rootMode;
     public boolean checkStorage = true;
 
     @Override
@@ -39,8 +35,6 @@ public class ThemedActivity extends PreferenceActivity {
         }
 
         setTheme();
-
-        rootMode = isRootExplorer();
 
         //requesting storage permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage && !checkStoragePermission()) {

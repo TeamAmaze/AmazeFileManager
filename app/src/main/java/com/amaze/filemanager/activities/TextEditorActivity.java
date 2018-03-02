@@ -262,7 +262,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
 
         new WriteFileAbstraction(this, getContentResolver(), mFile, editTextString, cacheFile,
-                (errorCode) -> {
+                isRootExplorer(), (errorCode) -> {
                     switch (errorCode) {
                         case WriteFileAbstraction.NORMAL:
                             mOriginal = editTextString;
@@ -290,7 +290,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private void load() {
         mInput.setHint(R.string.loading);
 
-        new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
+        new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), isRootExplorer(), (data) -> {
             switch (data.error) {
                 case ReadFileTask.NORMAL:
                     cacheFile = data.cachedFile;

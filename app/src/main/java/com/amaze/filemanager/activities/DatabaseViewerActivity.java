@@ -157,7 +157,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
             // if the db can't be read, and we have root enabled, try reading it by
             // first copying it in cache dir
-            if (!file.canRead() && ThemedActivity.rootMode) {
+            if (!file.canRead() && isRootExplorer()) {
 
                 try {
                     RootUtils.copy(pathFile.getPath(),

@@ -196,7 +196,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 list = new ArrayList<>();
-                RootHelper.getFiles(path, ThemedActivity.rootMode, showHiddenFiles,
+                RootHelper.getFiles(path, ma.getMainActivity().isRootExplorer(), showHiddenFiles,
                         new RootHelper.GetModeCallBack() {
                             @Override
                             public void getMode(OpenMode mode) {

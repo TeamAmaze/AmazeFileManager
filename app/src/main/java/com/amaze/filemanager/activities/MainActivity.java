@@ -531,7 +531,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private void initializeInteractiveShell() {
         // only one looper can be associated to a thread. So we are making sure not to create new
         // handler threads every time the code relaunch.
-        if (rootMode) {
+        if (isRootExplorer()) {
             handlerThread = new HandlerThread("handler");
             handlerThread.start();
             handler = new Handler(handlerThread.getLooper());
@@ -723,7 +723,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (backPressedToExitOnce) {
             SshConnectionPool.getInstance().expungeAllConnections();
             finish();
-            if (ThemedActivity.rootMode) {
+            if (isRootExplorer()) {
                 // TODO close all shells
             }
         } else {
@@ -989,7 +989,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 String path = ma.getCurrentPath();
                 ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(pasteHelper.paths));
                 boolean move = pasteHelper.operation == PasteHelper.OPERATION_CUT;
-                new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
+                new PrepareCopyTask(ma, path, move, mainActivity, isRootExplorer())
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 pasteHelper = null;
                 invalidatePasteButton(item);
@@ -1151,7 +1151,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * Closes the interactive shell and threads associated
      */
     private void closeInteractiveShell() {
-        if (rootMode) {
+        if (isRootExplorer()) {
             // close interactive shell and handler thread associated with it
             if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 // let it finish up first with what it's doing
@@ -1306,7 +1306,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 case DataUtils.RENAME:
                     MainFragment ma = getCurrentMainFragment();
                     mainActivityHelper.rename(ma.openMode, (oppathe),
-                            (oppathe1), mainActivity, ThemedActivity.rootMode);
+                            (oppathe1), mainActivity, isRootExplorer());
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:

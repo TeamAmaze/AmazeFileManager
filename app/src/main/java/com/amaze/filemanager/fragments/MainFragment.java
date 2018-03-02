@@ -645,7 +645,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.about:
                     LayoutElementParcelable x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
-                            x.permissions, (ThemedActivity) getActivity(), ThemedActivity.rootMode,
+                            x.permissions, (ThemedActivity) getActivity(), getMainActivity().isRootExplorer(),
                             utilsProvider.getAppTheme());
                     mode.finish();
                     return true;
@@ -1224,7 +1224,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     name1 = name1 + "/";
             }
             getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                    CURRENT_PATH + "/" + name1, getActivity(), ThemedActivity.rootMode);
+                    CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
         });
 
         builder.positiveText(R.string.save);
@@ -1315,7 +1315,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     CURRENT_PATH = parentPath;
 
                     MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
-                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ThemedActivity.rootMode,
+                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, getMainActivity().isRootExplorer(),
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);

@@ -486,7 +486,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         switch (meta.type) {
             case MenuMetadata.ITEM_ENTRY:
                 if (dataUtils.containsBooks(new String[]{title, meta.path}) != -1) {
-                    FileUtils.checkForPath(mainActivity, meta.path);
+                    FileUtils.checkForPath(mainActivity, meta.path, mainActivity.isRootExplorer());
                 }
 
                 if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
