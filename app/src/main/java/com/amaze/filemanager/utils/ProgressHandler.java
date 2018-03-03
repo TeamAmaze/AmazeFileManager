@@ -47,6 +47,15 @@ public class ProgressHandler {
     }
 
     /**
+     * Constructor to start an instance when we don't know of total files or size
+     */
+    public ProgressHandler() {
+
+        this.sourceFiles = 0;
+        this.totalSize = 0;
+    }
+
+    /**
      * publish progress after calculating the write length
      *
      * @param newPosition the position of byte for file being processed
@@ -70,6 +79,10 @@ public class ProgressHandler {
 
     public synchronized void setSourceFilesProcessed(int sourceFilesProcessed) {
         this.sourceFilesProcessed = sourceFilesProcessed;
+    }
+
+    public void setSourceSize(int sourceFiles) {
+        this.sourceFiles = sourceFiles;
     }
 
     // dynamically setting total size, useful in case files are compressed
