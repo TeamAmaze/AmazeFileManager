@@ -20,6 +20,9 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  */
 public class ThemedActivity extends PreferenceActivity {
 
+    /**
+     * @deprecated Use PreferenceActivity.isRootExplorer()
+     */
     public static boolean rootMode;
     public boolean checkStorage = true;
 

@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -19,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -35,7 +33,6 @@ import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -61,8 +58,6 @@ import com.cloudrail.si.services.OneDrive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import eu.chainfire.libsuperuser.Debug;
 
 import static android.os.Build.VERSION.SDK_INT;
 
@@ -96,7 +91,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private NavigationView navView;
+    private CustomNavigationView navView;
     private RelativeLayout drawerHeaderParent;
     private View drawerHeaderLayout, drawerHeaderView;
 
@@ -373,6 +368,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         for (int group : GROUPS) {
             menu.setGroupCheckable(group, true, true);
         }
+
+        MenuItem item = navView.getSelected();
+        if(item != null) {
+            item.setChecked(true);
+            actionViewStateManager.selectActionView(item);
+            isSomethingSelected = true;
+        }
     }
 
     private void addNewItem(Menu menu, int group, int order, @StringRes int text, MenuMetadata meta,
@@ -591,8 +593,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         if(id == null) deselectEverything();
         else {
-            navView.getMenu().findItem(id).setChecked(true);
-            actionViewStateManager.selectActionView(navView.getMenu().findItem(id));
+            MenuItem item = navView.getMenu().findItem(id);
+            navView.setCheckedItem(item);
+            actionViewStateManager.selectActionView(item);
         }
     }
 
@@ -627,6 +630,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     public void deselectEverything() {
         actionViewStateManager.deselectCurrentActionView();//If you set the item as checked the listener doesn't trigger
         if(!isSomethingSelected) return;
+
+        navView.deselectItems();
 
         for(int i = 0; i < navView.getMenu().size(); i++) {
             navView.getMenu().getItem(i).setChecked(false);
