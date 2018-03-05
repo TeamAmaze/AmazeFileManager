@@ -45,7 +45,6 @@ import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -64,11 +63,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -148,7 +147,7 @@ import static android.os.Build.VERSION.SDK_INT;
 public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, FolderChooserDialog.FolderCallback {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -2124,5 +2123,61 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    /**
+     * Invoke {@link FTPServerFragment#changeFTPServerPath(String)} to change FTP server share path.
+     *
+     * @see FTPServerFragment#changeFTPServerPath(String)
+     * @see FolderChooserDialog
+     * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+     * @param dialog
+     * @param folder selected folder
+     */
+    @Override
+    public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
+        switch(dialog.getTag()){
+            case FTPServerFragment.TAG:
+                FTPServerFragment ftpServerFragment = (FTPServerFragment)getFragmentAtFrame();
+                if (folder.exists() && folder.isDirectory()) {
+                    ftpServerFragment.changeFTPServerPath(folder.getPath());
+                    Toast.makeText(this, R.string.ftp_path_change_success,
+                            Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    // try to get parent
+                    File pathParentFile = new File(folder.getParent());
+                    if (pathParentFile.exists() && pathParentFile.isDirectory()) {
+
+                        ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
+                        Toast.makeText(this, R.string.ftp_path_change_success,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        // don't have access, print error
+                        Toast.makeText(this, R.string.ftp_path_change_error_invalid,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+                dialog.dismiss();
+                break;
+            default:
+                dialog.dismiss();
+                break;
+        }
+
+    }
+
+    /**
+     * Do nothing other than dismissing the folder selection dialog.
+     *
+     * @see FolderChooserDialog
+     * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+     * @param dialog
+     */
+    @Override
+    public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
+        dialog.dismiss();
     }
 }

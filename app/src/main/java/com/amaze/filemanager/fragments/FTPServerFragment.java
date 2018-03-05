@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
@@ -38,7 +39,6 @@ import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -49,6 +49,8 @@ import java.security.GeneralSecurityException;
  * Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed FTP Server while using Eth connection)
  */
 public class FTPServerFragment extends Fragment {
+
+    public static final String TAG = "FTPServerFragment";
 
     private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
@@ -171,48 +173,12 @@ public class FTPServerFragment extends Fragment {
                         .show();
                 return true;
             case R.id.ftp_path:
-                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getActivity());
-                dialogBuilder.title(getString(R.string.ftp_path));
-                dialogBuilder.input(getString(R.string.ftp_path_hint),
-                        getDefaultPathFromPreferences(),
-                        false, (dialog, input) -> {});
-                dialogBuilder.onPositive((dialog, which) -> {
-                    EditText editText = dialog.getInputEditText();
-                    if (editText != null) {
-                        String path = editText.getText().toString();
-
-                        File pathFile = new File(path);
-                        if (pathFile.exists() && pathFile.isDirectory()) {
-
-                            changeFTPServerPath(pathFile.getPath());
-
-                            Toast.makeText(getActivity(), R.string.ftp_path_change_success,
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        } else {
-                            // try to get parent
-                            File pathParentFile = new File(pathFile.getParent());
-                            if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
-                                changeFTPServerPath(pathParentFile.getPath());
-                                Toast.makeText(getActivity(), R.string.ftp_path_change_success,
-                                        Toast.LENGTH_SHORT)
-                                        .show();
-                            } else {
-                                // don't have access, print error
-
-                                Toast.makeText(getActivity(), R.string.ftp_path_change_error_invalid,
-                                        Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        }
-                    }
-                });
-
-                dialogBuilder.positiveText(getResources().getString(R.string.change).toUpperCase())
-                        .negativeText(R.string.cancel)
-                        .build()
-                        .show();
+                FolderChooserDialog.Builder dialogBuilder = new FolderChooserDialog.Builder(getActivity());
+                dialogBuilder.chooseButton(R.string.change)
+                        .initialPath(getDefaultPathFromPreferences())
+                        .cancelButton(R.string.cancel)
+                        .tag(TAG)
+                        .build().show(getActivity());
                 return true;
             case R.id.ftp_login:
                 MaterialDialog.Builder loginDialogBuilder = new MaterialDialog.Builder(getActivity());
@@ -576,7 +542,7 @@ public class FTPServerFragment extends Fragment {
         updateStatus();
     }
 
-    private void changeFTPServerPath(String path) {
+    public void changeFTPServerPath(String path) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.edit().putString(FTPService.KEY_PREFERENCE_PATH, path).apply();
 
