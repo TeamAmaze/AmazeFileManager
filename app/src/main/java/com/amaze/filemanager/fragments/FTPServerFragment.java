@@ -174,7 +174,7 @@ public class FTPServerFragment extends Fragment {
                 return true;
             case R.id.ftp_path:
                 FolderChooserDialog.Builder dialogBuilder = new FolderChooserDialog.Builder(getActivity());
-                dialogBuilder.chooseButton(R.string.change)
+                dialogBuilder.chooseButton(R.string.choose_folder)
                         .initialPath(getDefaultPathFromPreferences())
                         .cancelButton(R.string.cancel)
                         .tag(TAG)

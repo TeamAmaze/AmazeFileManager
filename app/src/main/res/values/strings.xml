@@ -618,5 +618,6 @@
     <string name="no_obtainable_info">There\'s no info about this file</string>
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
+    <string name="choose_folder">Choose This Folder</string>
 </resources>
 

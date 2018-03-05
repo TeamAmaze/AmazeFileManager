@@ -572,4 +572,5 @@
   <string name="license">版權宣告</string>
   <string name="libraries">第三方程式庫</string>
   <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
+  <string name="choose_folder">選擇此檔案夾</string>
 </resources>
