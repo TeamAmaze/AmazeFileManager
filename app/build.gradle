@@ -40,7 +40,7 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
-
+            testProguardFile 'tests-proguard.cfg'
         }
 
         release {
