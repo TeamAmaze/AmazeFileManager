@@ -318,7 +318,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                         dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
                     }
 
-                    decompressor.decompress(null, dirs);
+                    decompressor.decompress(compressedFile.getPath(), dirs);
 
                     mode.finish();
                     return true;
