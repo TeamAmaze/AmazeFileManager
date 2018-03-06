@@ -176,6 +176,7 @@ public class FTPServerFragment extends Fragment {
                 FolderChooserDialog.Builder dialogBuilder = new FolderChooserDialog.Builder(getActivity());
                 dialogBuilder.chooseButton(R.string.choose_folder)
                         .initialPath(getDefaultPathFromPreferences())
+                        .goUpLabel(getString(R.string.folder_go_up_one_level))
                         .cancelButton(R.string.cancel)
                         .tag(TAG)
                         .build().show(getActivity());

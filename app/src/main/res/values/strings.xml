@@ -619,5 +619,6 @@
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
     <string name="choose_folder">Choose This Folder</string>
+    <string name="folder_go_up_one_level" translatable="false">..</string>
 </resources>
 
