@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -295,6 +296,15 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
                     try {
                         mInput.setText(data.fileContents);
+
+                        if (mFile.hybridFileParcelable.getPath().contains(getExternalCacheDir().getPath())
+                                && cacheFile == null) {
+                            // file in cache, and not a root temporary file
+                            mInput.setInputType(EditorInfo.TYPE_NULL);
+                            mInput.setSingleLine(false);
+                            mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+                        }
+
                         if (data.fileContents.isEmpty()) {
                             mInput.setHint(R.string.file_empty);
                         } else {
