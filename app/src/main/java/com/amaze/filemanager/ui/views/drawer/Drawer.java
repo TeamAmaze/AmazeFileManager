@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
@@ -282,7 +284,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             Collections.sort(accountAuthenticationList, new BookSorter());
         }
 
-        if (mainActivity.getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS, true)) {
+        if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS)) {
             if (dataUtils.getBooks().size() > 0) {
 
                 Collections.sort(dataUtils.getBooks(), new BookSorter());
@@ -300,7 +302,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         Boolean[] quickAccessPref = TinyDB.getBooleanArray(mainActivity.getPrefs(), QuickAccessPref.KEY,
                 QuickAccessPref.DEFAULT);
 
-        if (mainActivity.getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES, true)) {
+        if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES)) {
             if (quickAccessPref[0]) {
                 addNewItem(menu, QUICKACCESSES_GROUP, order++, R.string.quick,
                         new MenuMetadata("5"), R.drawable.ic_star_white_24dp, null);
@@ -486,7 +488,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         switch (meta.type) {
             case MenuMetadata.ITEM_ENTRY:
                 if (dataUtils.containsBooks(new String[]{title, meta.path}) != -1) {
-                    FileUtils.checkForPath(mainActivity, meta.path);
+                    FileUtils.checkForPath(mainActivity, meta.path, mainActivity.isRootExplorer());
                 }
 
                 if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||

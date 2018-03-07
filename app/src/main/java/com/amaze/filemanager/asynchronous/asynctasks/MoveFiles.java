@@ -100,7 +100,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                         if (!source.renameTo(dest)) {
 
                             // check if we have root
-                            if (ThemedActivity.rootMode) {
+                            if (mainFrag.getMainActivity().isRootExplorer()) {
                                 try {
                                     if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName()))
                                         return false;

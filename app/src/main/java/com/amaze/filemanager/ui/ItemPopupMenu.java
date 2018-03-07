@@ -67,7 +67,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.about:
                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                         rowItem.permissions, (ThemedActivity) mainFragment.getActivity(),
-                        ThemedActivity.rootMode, utilitiesProvider.getAppTheme());
+                        mainActivity.isRootExplorer(), utilitiesProvider.getAppTheme());
                                 /*
                                 PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
