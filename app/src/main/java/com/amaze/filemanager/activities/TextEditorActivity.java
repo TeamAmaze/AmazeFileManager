@@ -285,7 +285,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * on a worker thread
      */
     private void load() {
-        mInput.setHint(R.string.loading);
+        Toast.makeText(getApplicationContext(), R.string.loading, Toast.LENGTH_SHORT).show();
+        //mInput.setHint();
 
         new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
             switch (data.error) {
@@ -296,19 +297,22 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     try {
                         mInput.setText(data.fileContents);
                         if (data.fileContents.isEmpty()) {
-                            mInput.setHint(R.string.file_empty);
+                            Toast.makeText(getApplicationContext(), R.string.file_empty, Toast.LENGTH_SHORT).show();
                         } else {
                             mInput.setHint(null);
                         }
                     } catch (OutOfMemoryError e) {
-                        mInput.setHint(R.string.error);
+                        Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     break;
                 case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
-                    mInput.setHint(R.string.error_file_not_found);
+                    Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
                 case ReadFileTask.EXCEPTION_IO:
-                    mInput.setHint(R.string.error_io);
+                    Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
             }
         }).execute();
