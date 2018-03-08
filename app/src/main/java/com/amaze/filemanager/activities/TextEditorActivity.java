@@ -31,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -285,8 +286,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * on a worker thread
      */
     private void load() {
-        Toast.makeText(getApplicationContext(), R.string.loading, Toast.LENGTH_SHORT).show();
-        //mInput.setHint();
+        Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
 
         new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
             switch (data.error) {
@@ -297,7 +297,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     try {
                         mInput.setText(data.fileContents);
                         if (data.fileContents.isEmpty()) {
-                            Toast.makeText(getApplicationContext(), R.string.file_empty, Toast.LENGTH_SHORT).show();
+                            mInput.setHint(R.string.file_empty);
                         } else {
                             mInput.setHint(null);
                         }
