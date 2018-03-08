@@ -30,8 +30,8 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 public class CloudSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private View rootView;
-    private LinearLayout mSmbLayout, mScpLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout
-            , mGetCloudLayout;
+    private LinearLayout mSmbLayout, mScpLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout,
+            mOnedriveLayout, mPCloudLayout, mGetCloudLayout;
 
     public static final String TAG_FRAGMENT = "cloud_fragment";
 
@@ -54,13 +54,14 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
         }
 
-        mSmbLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_smb);
-        mScpLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_scp);
-        mBoxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_box);
-        mDropboxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_dropbox);
-        mGoogleDriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_google_drive);
-        mOnedriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_onedrive);
-        mGetCloudLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_get_cloud);
+        mSmbLayout = rootView.findViewById(R.id.linear_layout_smb);
+        mScpLayout = rootView.findViewById(R.id.linear_layout_scp);
+        mBoxLayout = rootView.findViewById(R.id.linear_layout_box);
+        mDropboxLayout = rootView.findViewById(R.id.linear_layout_dropbox);
+        mGoogleDriveLayout = rootView.findViewById(R.id.linear_layout_google_drive);
+        mOnedriveLayout = rootView.findViewById(R.id.linear_layout_onedrive);
+        mPCloudLayout = rootView.findViewById(R.id.linear_layout_pcloud);
+        mGetCloudLayout = rootView.findViewById(R.id.linear_layout_get_cloud);
 
         if (isCloudProviderAvailable(getContext())) {
 
@@ -68,6 +69,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             mDropboxLayout.setVisibility(View.VISIBLE);
             mGoogleDriveLayout.setVisibility(View.VISIBLE);
             mOnedriveLayout.setVisibility(View.VISIBLE);
+            mPCloudLayout.setVisibility(View.VISIBLE);
             mGetCloudLayout.setVisibility(View.GONE);
         }
 
@@ -77,6 +79,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         mDropboxLayout.setOnClickListener(this);
         mGoogleDriveLayout.setOnClickListener(this);
         mOnedriveLayout.setOnClickListener(this);
+        mPCloudLayout.setOnClickListener(this);
         mGetCloudLayout.setOnClickListener(this);
 
         dialog.setContentView(rootView);
@@ -129,6 +132,9 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
                 break;
             case R.id.linear_layout_onedrive:
                 ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
+                break;
+            case R.id.linear_layout_pcloud:
+                ((MainActivity) getActivity()).addConnection(OpenMode.PCLOUD);
                 break;
             case R.id.linear_layout_get_cloud:
                 Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);

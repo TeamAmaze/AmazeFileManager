@@ -101,6 +101,8 @@ public class HybridFile {
             mode = OpenMode.GDRIVE;
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
             mode = OpenMode.DROPBOX;
+        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_PCLOUD)) {
+            mode = OpenMode.PCLOUD;
         } else if(context == null) {
             mode = OpenMode.FILE;
         } else {
@@ -169,6 +171,10 @@ public class HybridFile {
 
     public boolean isGoogleDriveFile() {
         return mode == OpenMode.GDRIVE;
+    }
+
+    public boolean isPCloudFile() {
+        return mode == OpenMode.PCLOUD;
     }
 
     public File getFile() {
@@ -287,6 +293,10 @@ public class HybridFile {
             case GDRIVE:
                 s = dataUtils.getAccount(OpenMode.GDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
+                break;
+            case PCLOUD:
+                s = dataUtils.getAccount(OpenMode.PCLOUD)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.PCLOUD, path)).getSize();
                 break;
             default:
                 break;
@@ -541,6 +551,10 @@ public class HybridFile {
                 isDirectory = dataUtils.getAccount(OpenMode.ONEDRIVE)
                         .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getFolder();
                 break;
+            case PCLOUD:
+                isDirectory = dataUtils.getAccount(OpenMode.PCLOUD)
+                        .getMetadata(CloudUtil.stripPath(OpenMode.PCLOUD, path)).getFolder();
+                break;
             default:
                 isDirectory = new File(path).isDirectory();
                 break;
@@ -620,6 +634,7 @@ public class HybridFile {
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case PCLOUD:
                 size = FileUtils.folderSizeCloud(mode,
                         dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
                 break;
@@ -656,6 +671,7 @@ public class HybridFile {
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case PCLOUD:
                 SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
                 size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
                 break;
@@ -711,6 +727,7 @@ public class HybridFile {
             case BOX:
             case ONEDRIVE:
             case GDRIVE:
+            case PCLOUD:
                 SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
                 size = spaceAllocation.getTotal();
                 break;
@@ -795,6 +812,7 @@ public class HybridFile {
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case PCLOUD:
                 try {
                     CloudUtil.getCloudFiles(path, dataUtils.getAccount(mode), mode, onFileFound);
                 } catch (CloudPluginException e) {
@@ -869,6 +887,7 @@ public class HybridFile {
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case PCLOUD:
                 try {
                     arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(mode), mode);
                 } catch (CloudPluginException e) {
@@ -1012,6 +1031,10 @@ public class HybridFile {
                 CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
                 inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
                 break;
+            case PCLOUD:
+                CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+                inputStream = cloudStoragePCloud.download(CloudUtil.stripPath(OpenMode.PCLOUD, path));
+                break;
             default:
                 try {
                     inputStream = new FileInputStream(path);
@@ -1114,6 +1137,9 @@ public class HybridFile {
         } else if (isOneDriveFile()) {
             CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
             exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
+        } else if (isPCloudFile()) {
+            CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+            exists = cloudStoragePCloud.exists(CloudUtil.stripPath(OpenMode.PCLOUD, path));
         } else if (isLocal()) {
             exists = new File(path).exists();
         } else if (isRoot()) {
@@ -1150,7 +1176,7 @@ public class HybridFile {
         return !isSmb() && !isOtgFile() && !isCustomPath()
                 && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
                 !new File(path).isDirectory() && !isOneDriveFile() && !isGoogleDriveFile()
-                && !isDropBoxFile() && !isBoxFile() && !isSftp();
+                && !isDropBoxFile() && !isBoxFile() && !isPCloudFile() && !isSftp();
     }
 
     public boolean setLastModified(final long date) {
@@ -1223,6 +1249,14 @@ public class HybridFile {
             CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
             try {
                 cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        } else if (isPCloudFile()) {
+            CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+            try {
+                cloudStoragePCloud.createFolder(CloudUtil.stripPath(OpenMode.PCLOUD, path));
             } catch (Exception e) {
                 e.printStackTrace();
                 return;

@@ -11,6 +11,7 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
+import com.cloudrail.si.services.PCloud;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -116,6 +117,10 @@ public class DataUtils {
                     if (storage instanceof OneDrive)
                         return i;
                     break;
+                case PCLOUD:
+                    if (storage instanceof PCloud)
+                        return i;
+                    break;
                 default:
                     return -1;
             }
@@ -198,6 +203,11 @@ public class DataUtils {
                         return;
                     }
                     break;
+                case PCLOUD:
+                    if (storage instanceof PCloud) {
+                        accounts.remove(storage);
+                        return;
+                    }
                 default:
                     return;
             }
@@ -324,6 +334,11 @@ public class DataUtils {
                 case ONEDRIVE:
                     if (storage instanceof OneDrive)
                         return storage;
+                    break;
+                case PCLOUD:
+                    if (storage instanceof PCloud) {
+                        return storage;
+                    }
                     break;
                 default:
                     return null;

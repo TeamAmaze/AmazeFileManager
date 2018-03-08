@@ -549,6 +549,11 @@ public class MainActivityHelper {
                 else
                     return CloudHandler.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1,
                             path.length());
+            case PCLOUD:
+                if (path.contains(CloudHandler.CLOUD_PREFIX_PCLOUD)) return path;
+                else
+                    return CloudHandler.CLOUD_PREFIX_PCLOUD + path.substring(path.indexOf(":") + 1,
+                            path.length());
             default:
                 return path;
         }

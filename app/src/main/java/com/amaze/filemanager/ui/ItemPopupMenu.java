@@ -84,6 +84,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     case BOX:
                     case GDRIVE:
                     case ONEDRIVE:
+                    case PCLOUD:
                         FileUtils.shareCloudFile(rowItem.desc, rowItem.getMode(), context);
                         break;
                     default:

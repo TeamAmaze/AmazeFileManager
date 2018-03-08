@@ -175,6 +175,30 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear_layout_pcloud"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_sheet_row_height_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?selectableItemBackground"
+            android:visibility="gone"
+            >
+            <com.amaze.filemanager.ui.views.ThemedImageView
+                app:srcCompat="@drawable/ic_pcloud_white_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/material_generic_medium"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:text="@string/cloud_pcloud"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/material_generic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linear_layout_get_cloud"
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_sheet_row_height_content"

@@ -668,6 +668,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
+                            case PCLOUD:
                                 FileUtils.shareCloudFile(LIST_ELEMENTS.get(0).desc,
                                         LIST_ELEMENTS.get(0).getMode(), getContext());
                                 break;
@@ -925,6 +926,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             case BOX:
                             case GDRIVE:
                             case ONEDRIVE:
+                            case PCLOUD:
                                 Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
                                 CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
                                 break;
@@ -1082,7 +1084,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     isOnTheCloud = CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_PCLOUD + "/");
 
             if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) && !CURRENT_PATH.equals("/")
                     && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT) && !isOtg && !isOnTheCloud
@@ -1292,6 +1295,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_PCLOUD + "/")
                             )
                         getMainActivity().exit();
                     else if (FileUtils.canGoBack(getContext(), currentFile)) {
@@ -1374,7 +1378,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
                         || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
+                        || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_PCLOUD + "/")) {
                     getMainActivity().exit();
                 } else if (FileUtils.canGoBack(getContext(), currentFile)) {
                     loadlist(currentFile.getParent(getContext()), true, openMode);

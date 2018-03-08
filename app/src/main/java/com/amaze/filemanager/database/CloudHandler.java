@@ -31,11 +31,13 @@ public class CloudHandler extends SQLiteOpenHelper {
     public static final String CLOUD_PREFIX_DROPBOX = "dropbox:/";
     public static final String CLOUD_PREFIX_GOOGLE_DRIVE = "gdrive:/";
     public static final String CLOUD_PREFIX_ONE_DRIVE = "onedrive:/";
+    public static final String CLOUD_PREFIX_PCLOUD = "pcloud:/";
 
     public static final String CLOUD_NAME_GOOGLE_DRIVE = "Google Drive";
     public static final String CLOUD_NAME_DROPBOX = "Dropbox";
     public static final String CLOUD_NAME_ONE_DRIVE = "One Drive";
     public static final String CLOUD_NAME_BOX = "Box";
+    public static final String CLOUD_NAME_PCLOUD = "pCloud";
 
 
     private Context context;

@@ -170,6 +170,15 @@ public class Operations {
                         e.printStackTrace();
                         errorCallBack.done(file, false);
                     }
+                } else if (file.isPCloudFile()) {
+                    CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+                    try {
+                        cloudStoragePCloud.createFolder(CloudUtil.stripPath(OpenMode.PCLOUD, file.getPath()));
+                        errorCallBack.done(file, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorCallBack.done(file, false);
+                    }
                 } else {
                     if (file.isLocal() || file.isRoot()) {
                         int mode = checkFolder(new File(file.getParent()), context);
@@ -285,6 +294,18 @@ public class Operations {
                         byte[] tempBytes = new byte[0];
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
                         cloudStorageGdrive.upload(CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()),
+                                byteArrayInputStream, 0l, true);
+                        errorCallBack.done(file, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorCallBack.done(file, false);
+                    }
+                } else if (file.isPCloudFile()) {
+                    CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+                    try {
+                        byte[] tempBytes = new byte[0];
+                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
+                        cloudStoragePCloud.upload(CloudUtil.stripPath(OpenMode.PCLOUD, file.getPath()),
                                 byteArrayInputStream, 0l, true);
                         errorCallBack.done(file, true);
                     } catch (Exception e) {
@@ -428,6 +449,16 @@ public class Operations {
                     try {
                         cloudStorageGdrive.move(CloudUtil.stripPath(OpenMode.GDRIVE, oldFile.getPath()),
                                 CloudUtil.stripPath(OpenMode.GDRIVE, newFile.getPath()));
+                        errorCallBack.done(newFile, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        errorCallBack.done(newFile, false);
+                    }
+                } else if (oldFile.isPCloudFile()) {
+                    CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+                    try {
+                        cloudStoragePCloud.move(CloudUtil.stripPath(OpenMode.PCLOUD, oldFile.getPath()),
+                                CloudUtil.stripPath(OpenMode.PCLOUD, newFile.getPath()));
                         errorCallBack.done(newFile, true);
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -23,7 +23,8 @@ public enum OpenMode {
     GDRIVE,
     DROPBOX,
     BOX,
-    ONEDRIVE;
+    ONEDRIVE,
+    PCLOUD;
 
     /**
      * Get open mode based on the id assigned.

@@ -115,6 +115,15 @@ public class CloudUtil {
                     strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/", "");
                 }
                 break;
+            case PCLOUD:
+                if (path.equals(CloudHandler.CLOUD_PREFIX_PCLOUD + "/")) {
+                    // we're at root, just replace the prefix
+                    strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_PCLOUD, "");
+                } else {
+                    // we're not at root, replace prefix + /
+                    strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_PCLOUD + "/", "");
+                }
+                break;
             default:
                 break;
         }
@@ -214,6 +223,18 @@ public class CloudUtil {
 
                     try {
                         cloudStorageGDrive.getUserLogin();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        isTokenValid = false;
+                    }
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_PCLOUD)) {
+
+                    serviceType = OpenMode.PCLOUD;
+                    CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+
+                    try {
+                        cloudStoragePCloud.getUserLogin();
                     } catch (Exception e) {
                         e.printStackTrace();
 

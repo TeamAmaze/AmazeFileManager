@@ -54,6 +54,7 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
+import com.cloudrail.si.services.PCloud;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -280,6 +281,16 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
                     });
+                } else if (cloudStorage instanceof PCloud) {
+
+                    addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_PCLOUD,
+                            new MenuMetadata(CloudHandler.CLOUD_PREFIX_PCLOUD + "/"),
+                            R.drawable.ic_pcloud_white_24dp, R.drawable.ic_edit_24dp);
+
+                    accountAuthenticationList.add(new String[] {
+                            CloudHandler.CLOUD_NAME_PCLOUD,
+                            CloudHandler.CLOUD_PREFIX_PCLOUD + "/",
+                    });
                 }
             }
             Collections.sort(accountAuthenticationList, new BookSorter());
@@ -495,7 +506,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
                         meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
                         meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
-                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) ||
+                        meta.path.startsWith(CloudHandler.CLOUD_PREFIX_PCLOUD)) {
                     // we have cloud accounts, try see if token is expired or not
                     CloudUtil.checkToken(meta.path, mainActivity);
                 }
@@ -554,6 +566,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     GeneralDialogCreation.showCloudDialog(mainActivity, mainActivity.getAppTheme(), OpenMode.BOX);
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
                     GeneralDialogCreation.showCloudDialog(mainActivity, mainActivity.getAppTheme(), OpenMode.ONEDRIVE);
+                } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_PCLOUD)) {
+                    GeneralDialogCreation.showCloudDialog(mainActivity, mainActivity.getAppTheme(), OpenMode.PCLOUD);
                 }
         }
     }

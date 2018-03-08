@@ -176,6 +176,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             case BOX:
             case GDRIVE:
             case ONEDRIVE:
+            case PCLOUD:
                 CloudStorage cloudStorage = dataUtils.getAccount(openmode);
                 list = new ArrayList<>();
 
