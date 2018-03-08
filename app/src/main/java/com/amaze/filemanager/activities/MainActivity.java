@@ -144,6 +144,11 @@ import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
 import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
@@ -157,8 +162,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public String path = "";
     public boolean mReturnIntent = false;
-    public boolean useGridView, openzip = false;
-    public boolean mRingtonePickerIntent = false, colourednavigation = false;
+    public boolean openzip = false;
+    public boolean mRingtonePickerIntent = false;
     public int skinStatusBar;
 
     public FABsMenu floatingActionButton;
@@ -204,10 +209,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private View indicator_layout;
 
     private TabHandler tabHandler;
-    /* A flag indicating that a PendingIntent is in progress and prevents
-   * us from starting further intents.
-   */
-    private boolean showHidden = false;
+
     private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
     private AppBarLayout appBarLayout;
@@ -256,8 +258,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
-
-    private static final String KEY_PREFERENCE_BOOKMARKS_ADDED = "books_added";
 
     private PasteHelper pasteHelper;
 
@@ -344,9 +344,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             setTaskDescription(taskDescription);
         }
 
-        if (!getPrefs().getBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, false)) {
+        if (!getBoolean(PREFERENCE_BOOKMARKS_ADDED)) {
             utilsHandler.addCommonBookmarks();
-            getPrefs().edit().putBoolean(KEY_PREFERENCE_BOOKMARKS_ADDED, true).commit();
+            getPrefs().edit().putBoolean(PREFERENCE_BOOKMARKS_ADDED, true).commit();
         }
 
         AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
@@ -531,7 +531,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private void initializeInteractiveShell() {
         // only one looper can be associated to a thread. So we are making sure not to create new
         // handler threads every time the code relaunch.
-        if (rootMode) {
+        if (isRootExplorer()) {
             handlerThread = new HandlerThread("handler");
             handlerThread.start();
             handler = new Handler(handlerThread.getLooper());
@@ -723,7 +723,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (backPressedToExitOnce) {
             SshConnectionPool.getInstance().expungeAllConnections();
             finish();
-            if (ThemedActivity.rootMode) {
+            if (isRootExplorer()) {
                 // TODO close all shells
             }
         } else {
@@ -799,7 +799,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         Fragment fragment = getFragmentAtFrame();
         if (fragment instanceof TabFragment) {
             appbar.setTitle(R.string.appbar_name);
-            if (useGridView) {
+            if (getBoolean(PREFERENCE_VIEW)) {
                 s.setTitle(getResources().getString(R.string.gridview));
             } else {
                 s.setTitle(getResources().getString(R.string.listview));
@@ -822,7 +822,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.sethome).setVisible(true);
             menu.findItem(R.id.sort).setVisible(true);
-            if (showHidden) menu.findItem(R.id.hiddenitems).setVisible(true);
+            if (getBoolean(PREFERENCE_SHOW_HIDDENFILES)) menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
@@ -989,7 +989,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 String path = ma.getCurrentPath();
                 ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(pasteHelper.paths));
                 boolean move = pasteHelper.operation == PasteHelper.OPERATION_CUT;
-                new PrepareCopyTask(ma, path, move, mainActivity, ThemedActivity.rootMode)
+                new PrepareCopyTask(ma, path, move, mainActivity, isRootExplorer())
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                 pasteHelper = null;
                 invalidatePasteButton(item);
@@ -1151,7 +1151,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * Closes the interactive shell and threads associated
      */
     private void closeInteractiveShell() {
-        if (rootMode) {
+        if (isRootExplorer()) {
             // close interactive shell and handler thread associated with it
             if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 // let it finish up first with what it's doing
@@ -1306,7 +1306,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 case DataUtils.RENAME:
                     MainFragment ma = getCurrentMainFragment();
                     mainActivityHelper.rename(ma.openMode, (oppathe),
-                            (oppathe1), mainActivity, ThemedActivity.rootMode);
+                            (oppathe1), mainActivity, isRootExplorer());
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
@@ -1333,11 +1333,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialisePreferences() {
-        showHidden = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
-        useGridView = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_VIEW, true);
         currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
         skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
-        colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, false);
     }
 
     void initialiseViews() {
@@ -1379,7 +1376,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (drawer.isLocked()) {
                 window.setStatusBarColor((skinStatusBar));
             } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if (colourednavigation)
+            if ( getBoolean(PREFERENCE_COLORED_NAVIGATION))
                 window.setNavigationBarColor(skinStatusBar);
         }
     }
@@ -1400,7 +1397,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // for lollipop devices, the status bar color
             mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
-            if (colourednavigation)
+            if ( getBoolean(PREFERENCE_COLORED_NAVIGATION))
                 mainActivity.getWindow().setNavigationBarColor(PreferenceUtils
                         .getStatusColor(colorDrawable.getColor()));
         } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
@@ -1560,7 +1557,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 drawer.refreshDrawer();
                 TabFragment tabFragment = getTabFragment();
-                boolean b = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, true);
+                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
                 //reset home and current paths according to new storages
                 if (b) {
                     tabHandler.clear();
@@ -1585,7 +1582,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         if (main1 != null)
                             ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
                     }
-                    getPrefs().edit().putBoolean(PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME, false).commit();
+                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
                 } else {
                     //just refresh list
                     if (tabFragment != null) {

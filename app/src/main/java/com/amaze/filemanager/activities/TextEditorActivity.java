@@ -77,6 +77,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
+
 public class TextEditorActivity extends ThemedActivity implements TextWatcher, View.OnClickListener {
 
     public EditText mInput, searchEditText;
@@ -153,7 +156,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
         getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
 
-        boolean useNewStack = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+        boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
@@ -165,7 +168,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boolean colourednavigation = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
+            boolean colourednavigation = getBoolean(PREFERENCE_COLORED_NAVIGATION);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -260,7 +263,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
 
         new WriteFileAbstraction(this, getContentResolver(), mFile, editTextString, cacheFile,
-                (errorCode) -> {
+                isRootExplorer(), (errorCode) -> {
                     switch (errorCode) {
                         case WriteFileAbstraction.NORMAL:
                             mOriginal = editTextString;
@@ -288,7 +291,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private void load() {
         mInput.setHint(R.string.loading);
 
-        new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), (data) -> {
+        new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), isRootExplorer(), (data) -> {
             switch (data.error) {
                 case ReadFileTask.NORMAL:
                     cacheFile = data.cachedFile;
@@ -367,7 +370,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 if(mFile.scheme == EditableFileAbstraction.SCHEME_FILE) {
                     File currentFile = mFile.hybridFileParcelable.getFile();
                     if (currentFile.exists()) {
-                        boolean useNewStack = getPrefs().getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                        boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
                         FileUtils.openunknown(currentFile, this, false, useNewStack);
                     } else {
                         Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();

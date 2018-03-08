@@ -33,15 +33,18 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
     private ContentResolver contentResolver;
     private EditableFileAbstraction fileAbstraction;
     private File externalCacheDir;
+    private boolean isRootExplorer;
     private OnAsyncTaskFinished<ReturnedValues> onAsyncTaskFinished;
 
     private File cachedFile = null;
 
     public ReadFileTask(ContentResolver contentResolver, EditableFileAbstraction file,
-                        File cacheDir, OnAsyncTaskFinished<ReturnedValues> onAsyncTaskFinished) {
+                        File cacheDir, boolean isRootExplorer,
+                        OnAsyncTaskFinished<ReturnedValues> onAsyncTaskFinished) {
         this.contentResolver = contentResolver;
         this.fileAbstraction = file;
         this.externalCacheDir = cacheDir;
+        this.isRootExplorer = isRootExplorer;
         this.onAsyncTaskFinished = onAsyncTaskFinished;
     }
 
@@ -64,7 +67,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
 
                     File file = hybridFileParcelable.getFile();
 
-                    if (!file.canWrite() && ThemedActivity.rootMode) {
+                    if (!file.canWrite() && isRootExplorer) {
                         // try loading stream associated using root
                         try {
                             cachedFile = new File(externalCacheDir, hybridFileParcelable.getName());

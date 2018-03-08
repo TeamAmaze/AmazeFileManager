@@ -50,6 +50,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -74,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
     public static final String KEY_PATH = "path";
@@ -272,7 +274,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                if (mainActivity.colourednavigation)
+                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
                     window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
             }
             if (Build.VERSION.SDK_INT < 19) {
@@ -334,7 +336,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                if (mainActivity.colourednavigation)
+                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
                     window.setNavigationBarColor(mainActivity.skinStatusBar);
             }
             mActionMode = null;

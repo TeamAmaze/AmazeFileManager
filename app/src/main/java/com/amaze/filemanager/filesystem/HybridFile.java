@@ -1279,11 +1279,8 @@ public class HybridFile {
     /**
      * Generates a {@link LayoutElementParcelable} adapted compatible element.
      * Currently supports only local filesystem
-     * @param mainFragment
-     * @param utilitiesProvider
-     * @return
      */
-    public LayoutElementParcelable generateLayoutElement(MainFragment mainFragment, UtilitiesProvider utilitiesProvider) {
+    public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
         switch (mode) {
             case FILE:
             case ROOT:
@@ -1293,12 +1290,12 @@ public class HybridFile {
 
                     layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
                             "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", showThumbs);
                 } else {
                     layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", showThumbs);
                 }
                 layoutElement.setMode(mode);
                 return layoutElement;
