@@ -303,6 +303,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             mInput.setInputType(EditorInfo.TYPE_NULL);
                             mInput.setSingleLine(false);
                             mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+
+                            getSupportActionBar().setTitle(mFile.name + " (r/o)");
                         }
 
                         if (data.fileContents.isEmpty()) {
