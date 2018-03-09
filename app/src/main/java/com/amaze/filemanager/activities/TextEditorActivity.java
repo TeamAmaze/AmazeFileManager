@@ -31,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -288,7 +289,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * on a worker thread
      */
     private void load() {
-        mInput.setHint(R.string.loading);
+        Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
 
         new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), isRootExplorer(), (data) -> {
             switch (data.error) {
@@ -304,14 +305,17 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             mInput.setHint(null);
                         }
                     } catch (OutOfMemoryError e) {
-                        mInput.setHint(R.string.error);
+                        Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     break;
                 case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
-                    mInput.setHint(R.string.error_file_not_found);
+                    Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
                 case ReadFileTask.EXCEPTION_IO:
-                    mInput.setHint(R.string.error_io);
+                    Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
             }
         }).execute();
