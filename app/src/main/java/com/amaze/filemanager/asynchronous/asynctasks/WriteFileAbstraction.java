@@ -36,18 +36,21 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
     private ContentResolver contentResolver;
     private EditableFileAbstraction fileAbstraction;
     private File cachedFile;
+    private boolean isRootExplorer;
     private OnAsyncTaskFinished<Integer> onAsyncTaskFinished;
 
     private String dataToSave;
 
     public WriteFileAbstraction(Context context, ContentResolver contentResolver,
                                 EditableFileAbstraction file, String dataToSave, File cachedFile,
+                                boolean isRootExplorer,
                                 OnAsyncTaskFinished<Integer> onAsyncTaskFinished) {
         this.context = new WeakReference<>(context);
         this.contentResolver = contentResolver;
         this.fileAbstraction = file;
         this.cachedFile = cachedFile;
         this.dataToSave = dataToSave;
+        this.isRootExplorer = isRootExplorer;
         this.onAsyncTaskFinished = onAsyncTaskFinished;
     }
 
@@ -75,7 +78,7 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
                     if(context == null) { cancel(true); return null; }
                     outputStream = FileUtil.getOutputStream(hybridFileParcelable.getFile(), context);
 
-                    if (ThemedActivity.rootMode && outputStream == null) {
+                    if (isRootExplorer && outputStream == null) {
                         // try loading stream associated using root
                         try {
                             if (cachedFile != null && cachedFile.exists()){

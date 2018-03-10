@@ -367,7 +367,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkfile(path, ma.getActivity(), mainActivity.isRootExplorer(), new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(() -> {
@@ -426,7 +426,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkdir(path, ma.getActivity(), mainActivity.isRootExplorer(), new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(() -> {
@@ -581,7 +581,7 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, ThemedActivity.rootMode,
+        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, mainActivity.isRootExplorer(),
                 sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                 sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }

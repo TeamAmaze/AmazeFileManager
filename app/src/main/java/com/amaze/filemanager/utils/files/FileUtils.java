@@ -967,12 +967,12 @@ public class FileUtils {
      * Checks whether path for bookmark exists
      * If path is not found, empty directory is created
      */
-    public static void checkForPath(Context context, String path) {
+    public static void checkForPath(Context context, String path, boolean isRootExplorer) {
         // TODO: Add support for SMB and OTG in this function
         if (!new File(path).exists()) {
             Toast.makeText(context, context.getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
             Operations.mkdir(RootHelper.generateBaseFile(new File(path), true), context,
-                    ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+                    isRootExplorer, new Operations.ErrorCallBack() {
                         //TODO empty
                         @Override
                         public void exists(HybridFile file) {

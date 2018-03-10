@@ -40,6 +40,8 @@ import com.amaze.filemanager.utils.files.FileUtils;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
+
 /**
  * layout_appbar.xml contains the layout for AppBar and BottomBar
  *
@@ -54,7 +56,7 @@ public class BottomBar implements View.OnTouchListener{
     private static final int PATH_ANIM_START_DELAY = 0;
     private static final int PATH_ANIM_END_DELAY = 0;
 
-    private WeakReference<MainActivity> mainActivity;
+    private MainActivity mainActivity;
     private AppBar appbar;
     private String newPath;
 
@@ -74,11 +76,10 @@ public class BottomBar implements View.OnTouchListener{
     private Drawable arrow;
 
     private CountDownTimer timer;
-    private boolean allowChangePaths;
     private GestureDetector gestureDetector;
 
     public BottomBar(AppBar appbar, MainActivity a) {
-        mainActivity = new WeakReference<>(a);
+        mainActivity = a;
         this.appbar = appbar;
 
         frame = a.findViewById(R.id.buttonbarframe);
@@ -108,7 +109,7 @@ public class BottomBar implements View.OnTouchListener{
         buttonStorage.setBackgroundColor(Color.TRANSPARENT);
         buttonStorage.setLayoutParams(buttonParams);
 
-        arrow = mainActivity.get().getResources().getDrawable(R.drawable.ic_keyboard_arrow_right_white_24dp);
+        arrow = mainActivity.getResources().getDrawable(R.drawable.ic_keyboard_arrow_right_white_24dp);
 
         timer = new CountDownTimer(5000, 1000) {
             @Override
@@ -120,8 +121,6 @@ public class BottomBar implements View.OnTouchListener{
             }
         };
 
-        allowChangePaths = mainActivity.get().getPrefs().getBoolean(PreferencesConstants.PREFERENCE_CHANGEPATHS, false);
-
         gestureDetector = new GestureDetector(a.getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -130,9 +129,9 @@ public class BottomBar implements View.OnTouchListener{
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                Fragment fragmentAtFrame = mainActivity.get().getFragmentAtFrame();
+                Fragment fragmentAtFrame = mainActivity.getFragmentAtFrame();
                 if(fragmentAtFrame instanceof TabFragment) {
-                    MainFragment m = mainActivity.get().getCurrentMainFragment();
+                    MainFragment m = mainActivity.getCurrentMainFragment();
                     if (m.openMode == OpenMode.FILE) {
                         FileUtils.crossfade(buttons, pathLayout);
                         timer.cancel();
@@ -150,9 +149,9 @@ public class BottomBar implements View.OnTouchListener{
 
             @Override
             public void onLongPress(MotionEvent e) {
-                if(allowChangePaths &&
-                        (!mainActivity.get().getCurrentMainFragment().results || buttons.getVisibility() == View.VISIBLE)) {
-                    GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.get().getPrefs());
+                if(mainActivity.getBoolean(PREFERENCE_CHANGEPATHS) &&
+                        (!mainActivity.getCurrentMainFragment().results || buttons.getVisibility() == View.VISIBLE)) {
+                    GeneralDialogCreation.showChangePathsDialog(mainActivity, mainActivity.getPrefs());
                 }
             }
         });
@@ -195,7 +194,7 @@ public class BottomBar implements View.OnTouchListener{
             buttons.removeAllViews();
             buttons.setMinimumHeight(pathLayout.getHeight());
 
-            buttonRoot.setImageDrawable(mainActivity.get().getResources().getDrawable(buttonPathInterface.getRootDrawable()));
+            buttonRoot.setImageDrawable(mainActivity.getResources().getDrawable(buttonPathInterface.getRootDrawable()));
             buttonRoot.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View p1) {
                     buttonPathInterface.changePath("/");
@@ -207,7 +206,7 @@ public class BottomBar implements View.OnTouchListener{
             String[] names = FileUtils.getFolderNamesInPath(path);
             final String[] paths = FileUtils.getPathsInPath(path);
 
-            View view = new View(mainActivity.get());
+            View view = new View(mainActivity);
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
                     appbar.getToolbar().getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params1);
@@ -262,7 +261,7 @@ public class BottomBar implements View.OnTouchListener{
         ImageView buttonArrow;
 
         if(lastUsedArrowButton >= arrowButtons.size()) {
-            buttonArrow = new ImageView(mainActivity.get());
+            buttonArrow = new ImageView(mainActivity);
             buttonArrow.setImageDrawable(arrow);
             buttonArrow.setLayoutParams(buttonParams);
             arrowButtons.add(buttonArrow);
@@ -279,8 +278,8 @@ public class BottomBar implements View.OnTouchListener{
         Button button;
 
         if(lastUsedFolderButton >= folderButtons.size()) {
-            button = new Button(mainActivity.get());
-            button.setTextColor(Utils.getColor(mainActivity.get(), android.R.color.white));
+            button = new Button(mainActivity);
+            button.setTextColor(Utils.getColor(mainActivity, android.R.color.white));
             button.setTextSize(13);
             button.setLayoutParams(buttonParams);
             button.setBackgroundResource(0);
@@ -309,7 +308,7 @@ public class BottomBar implements View.OnTouchListener{
 
         if (news.length() == 0) return;
 
-        MainActivityHelper mainActivityHelper = mainActivity.get().mainActivityHelper;
+        MainActivityHelper mainActivityHelper = mainActivity.mainActivityHelper;
 
         switch (openmode) {
             case SFTP:
@@ -335,9 +334,9 @@ public class BottomBar implements View.OnTouchListener{
         }
 
         if (!results) {
-            pathText.setText(mainActivity.get().getString(R.string.folderfilecount, folderCount, fileCount));
+            pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
         } else {
-            fullPathText.setText(mainActivity.get().getString(R.string.searchresults, query));
+            fullPathText.setText(mainActivity.getString(R.string.searchresults, query));
             pathText.setText("");
             return;
         }
@@ -346,8 +345,8 @@ public class BottomBar implements View.OnTouchListener{
         if (oldPath.equals(newPath)) return;
 
         if (!areButtonsShowing()) {
-            final Animation slideIn = AnimationUtils.loadAnimation(mainActivity.get(), R.anim.slide_in);
-            Animation slideOut = AnimationUtils.loadAnimation(mainActivity.get(), R.anim.slide_out);
+            final Animation slideIn = AnimationUtils.loadAnimation(mainActivity, R.anim.slide_in);
+            Animation slideOut = AnimationUtils.loadAnimation(mainActivity, R.anim.slide_out);
 
             if (newPath.length() > oldPath.length() && newPath.contains(oldPath) && oldPath.length() != 0) {
                 // navigate forward

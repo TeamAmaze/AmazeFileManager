@@ -65,15 +65,19 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private MainFragment ma;
     private Context c;
     private OpenMode openmode;
+    private boolean showHiddenFiles, showThumbs;
     private DataUtils dataUtils = DataUtils.getInstance();
     private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
 
     public LoadFilesListTask(Context c, String path, MainFragment ma, OpenMode openmode,
+                             boolean showThumbs, boolean showHiddenFiles,
                              OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
         this.path = path;
         this.ma = ma;
         this.openmode = openmode;
         this.c = c;
+        this.showThumbs = showThumbs;
+        this.showHiddenFiles = showHiddenFiles;
         this.listener = l;
     }
 
@@ -192,7 +196,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             default:
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 list = new ArrayList<>();
-                RootHelper.getFiles(path, ThemedActivity.rootMode, ma.SHOW_HIDDEN,
+                RootHelper.getFiles(path, ma.getMainActivity().isRootExplorer(), showHiddenFiles,
                         new RootHelper.GetModeCallBack() {
                             @Override
                             public void getMode(OpenMode mode) {
@@ -243,7 +247,8 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
             LayoutElementParcelable layoutElement = new LayoutElementParcelable(
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
-                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "", ma.SHOW_THUMBS);
+                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "",
+                    showThumbs);
             layoutElement.setMode(baseFile.getMode());
             return layoutElement;
         }
@@ -260,7 +265,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                 if (strings != null) {
                     LayoutElementParcelable parcelable = createListParcelables(strings);
                     if(parcelable != null) songs.add(parcelable);
@@ -280,7 +285,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                 if (strings != null) {
                     LayoutElementParcelable parcelable = createListParcelables(strings);
                     if(parcelable != null) songs.add(parcelable);
@@ -309,7 +314,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
             do {
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
-                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                 if (strings != null) {
                     LayoutElementParcelable parcelable = createListParcelables(strings);
                     if(parcelable != null) songs.add(parcelable);
@@ -333,7 +338,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if (path != null && Arrays.asList(types).contains(path)) {
-                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                     if (strings != null) {
                         LayoutElementParcelable parcelable = createListParcelables(strings);
                         if(parcelable != null) songs.add(parcelable);
@@ -361,7 +366,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 String path = cursor.getString(cursor.getColumnIndex
                         (MediaStore.Files.FileColumns.DATA));
                 if (path != null && path.endsWith(".apk")) {
-                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                     if (strings != null) {
                         LayoutElementParcelable parcelable = createListParcelables(strings);
                         if(parcelable != null) songs.add(parcelable);
@@ -379,7 +384,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
         for (String f : paths) {
             if (!f.equals("/")) {
-                HybridFileParcelable hybridFileParcelable = RootHelper.generateBaseFile(new File(f), ma.SHOW_HIDDEN);
+                HybridFileParcelable hybridFileParcelable = RootHelper.generateBaseFile(new File(f), showHiddenFiles);
                 if (hybridFileParcelable != null) {
                     hybridFileParcelable.generateMode(ma.getActivity());
                     if (!hybridFileParcelable.isSmb() && !hybridFileParcelable.isDirectory() && hybridFileParcelable.exists()) {
@@ -409,7 +414,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                         (MediaStore.Files.FileColumns.DATA));
                 File f = new File(path);
                 if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
-                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), ma.SHOW_HIDDEN);
+                    HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
                     if (strings != null) {
                         LayoutElementParcelable parcelable = createListParcelables(strings);
                         if(parcelable != null) songs.add(parcelable);
