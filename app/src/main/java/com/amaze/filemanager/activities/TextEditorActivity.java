@@ -234,19 +234,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     .negativeText(R.string.no)
                     .positiveColor(getColorPreference().getColor(ColorUsage.ACCENT))
                     .negativeColor(getColorPreference().getColor(ColorUsage.ACCENT))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-
-                            saveFile(mInput.getText().toString());
-                            finish();
-                        }
-
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            finish();
-                        }
+                    .onPositive((dialog, which) -> {
+                        saveFile(mInput.getText().toString());
+                        finish();
                     })
+                    .onNegative((dialog, which) -> finish())
                     .build().show();
         } else {
             finish();
