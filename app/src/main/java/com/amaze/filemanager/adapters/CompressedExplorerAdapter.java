@@ -239,6 +239,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         holder.genericIcon.setOnClickListener(view -> {
             if (rowItem.type != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
+            } else {
+                compressedExplorerFragment.goBack();
             }
         });
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {

@@ -68,6 +68,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -116,16 +117,22 @@ import java.util.List;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.*;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
+
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
     public ActionMode mActionMode;
     public int sortby, dsort, asc;
     public String home;
-    public boolean selection, results = false, SHOW_HIDDEN, CIRCULAR_IMAGES, SHOW_PERMISSIONS,
-            SHOW_SIZE, SHOW_LAST_MODIFIED;
+    public boolean selection, results = false;
     public OpenMode openMode = OpenMode.FILE;
-
-    public boolean GO_BACK_ITEM, SHOW_THUMBS, COLORISE_ICONS, SHOW_DIVIDERS, SHOW_HEADERS;
 
     /**
      * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
@@ -207,14 +214,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
         primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
         primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
-
-        SHOW_PERMISSIONS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS, false);
-        SHOW_SIZE = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, true);
-        SHOW_DIVIDERS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
-        SHOW_HEADERS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HEADERS, true);
-        GO_BACK_ITEM = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
-        CIRCULAR_IMAGES = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES, true);
-        SHOW_LAST_MODIFIED = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
     }
 
     public void stopAnimation() {
@@ -254,7 +253,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
 
-        SHOW_THUMBS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_THUMB, true);
         //String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
         mToolbarContainer.setBackgroundColor(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
 
@@ -269,8 +267,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         setHasOptionsMenu(false);
         //getMainActivity() = (MainActivity) getActivity();
         initNoFileLayout();
-        SHOW_HIDDEN = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false);
-        COLORISE_ICONS = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
         getSortModes();
         this.setRetainInstance(false);
         HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
@@ -284,7 +280,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
 
         listView.setHasFixedSize(true);
-        columns = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
+        columns = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
         if (IS_LIST) {
             mLayoutManager = new LinearLayoutManager(getContext());
             listView.setLayoutManager(mLayoutManager);
@@ -298,7 +294,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
         // use a linear layout manager
         //View footerView = getActivity().getLayoutInflater().inflate(R.layout.divider, null);// TODO: 23/5/2017 use or delete
-        dividerItemDecoration = new DividerItemDecoration(getActivity(), false, SHOW_DIVIDERS);
+        dividerItemDecoration = new DividerItemDecoration(getActivity(), false,
+                getBoolean(PREFERENCE_SHOW_DIVIDERS));
         listView.addItemDecoration(dividerItemDecoration);
         mSwipeRefreshLayout.setColorSchemeColors(accentColor);
         DefaultItemAnimator animator = new DefaultItemAnimator();
@@ -648,7 +645,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.about:
                     LayoutElementParcelable x = checkedItems.get(0);
                     GeneralDialogCreation.showPropertiesDialogWithPermissions((x).generateBaseFile(),
-                            x.permissions, (ThemedActivity) getActivity(), ThemedActivity.rootMode,
+                            x.permissions, (ThemedActivity) getActivity(), getMainActivity().isRootExplorer(),
                             utilsProvider.getAppTheme());
                     mode.finish();
                     return true;
@@ -736,7 +733,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    boolean useNewStack = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    boolean useNewStack = sharedPref.getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK, false);
                     FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
                     return true;
                 case R.id.addshortcut:
@@ -1025,7 +1022,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             loadFilesListTask.cancel(true);
         }
 
-        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode, (data) -> {
+        loadFilesListTask = new LoadFilesListTask(ma.getActivity(), path, ma, openMode,
+                getBoolean(PREFERENCE_SHOW_THUMB), getBoolean(PREFERENCE_SHOW_HIDDENFILES), (data) -> {
             if (data != null && data.second != null) {
                 boolean isPathLayoutGrid = dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
@@ -1086,7 +1084,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
                             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
-            if (GO_BACK_ITEM && !CURRENT_PATH.equals("/")
+            if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) && !CURRENT_PATH.equals("/")
                     && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT) && !isOtg && !isOnTheCloud
                     && (LIST_ELEMENTS.size() == 0 || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))) {
                 LIST_ELEMENTS.add(0, getBackElement());
@@ -1106,7 +1104,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             else if (!grid && !IS_LIST) switchToList();
 
             if (adapter == null) {
-                adapter = new RecyclerAdapter(ma, utilsProvider, sharedPref, listView, LIST_ELEMENTS, ma.getActivity(), SHOW_HEADERS);
+                adapter = new RecyclerAdapter(getMainActivity(), ma, utilsProvider, sharedPref,
+                        listView, LIST_ELEMENTS, ma.getActivity());
             } else {
                 adapter.setItems(listView, new ArrayList<>(LIST_ELEMENTS));
             }
@@ -1125,7 +1124,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             }
 
             if (addheader && IS_LIST) {
-                dividerItemDecoration = new DividerItemDecoration(getActivity(), true, SHOW_DIVIDERS);
+                dividerItemDecoration = new DividerItemDecoration(getActivity(),
+                        true,
+                        getBoolean(PREFERENCE_SHOW_DIVIDERS));
                 listView.addItemDecoration(dividerItemDecoration);
                 addheader = false;
             }
@@ -1169,7 +1170,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         if (back == null) {
             back = new LayoutElementParcelable("..", "", "",
                     getString(R.string.goback), 0, false, true,
-                    "", SHOW_THUMBS);
+                    "", getBoolean(PREFERENCE_SHOW_THUMB));
         }
 
         return back;
@@ -1193,7 +1194,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     }
 
                     customFileObserver = new CustomFileObserver(CURRENT_PATH,
-                            new FileHandler(this, utilsProvider, listView));
+                            new FileHandler(this, listView, getBoolean(PREFERENCE_SHOW_THUMB)));
                     customFileObserver.startWatching();
                 }
                 break;
@@ -1223,7 +1224,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     name1 = name1 + "/";
             }
             getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                    CURRENT_PATH + "/" + name1, getActivity(), ThemedActivity.rootMode);
+                    CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
         });
 
         builder.positiveText(R.string.save);
@@ -1314,7 +1315,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     CURRENT_PATH = parentPath;
 
                     MainActivityHelper.addSearchFragment(fm, new SearchWorkerFragment(),
-                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, ThemedActivity.rootMode,
+                            parentPath, MainActivityHelper.SEARCH_TEXT, openMode, getMainActivity().isRootExplorer(),
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                             sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
                 } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
@@ -1406,7 +1407,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             sortby = t - 4;
         }
 
-        dsort = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
+        dsort = Integer.parseInt(sharedPref.getString(PREFERENCE_DIRECTORY_SORT_MODE, "0"));
     }
 
     @Override
@@ -1468,7 +1469,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(name, aMFile.getPath(),
                         "", "", "", 0, false,
-                        aMFile.lastModified() + "", true, SHOW_THUMBS);
+                        aMFile.lastModified() + "", true,
+                        getBoolean(PREFERENCE_SHOW_THUMB));
 
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
@@ -1479,7 +1481,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
                             aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
                             aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
-                            false, SHOW_THUMBS);
+                            false, getBoolean(PREFERENCE_SHOW_THUMB));
                     layoutElement.setMode(OpenMode.SMB);
                     searchHelper.add(layoutElement.generateBaseFile());
                     a.add(layoutElement);
@@ -1500,7 +1502,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true, false,
-                        mFile.getDate() + "", SHOW_THUMBS);
+                        mFile.getDate() + "",
+                        getBoolean(PREFERENCE_SHOW_THUMB));
 
                 layoutElement.setMode(mFile.getMode());
                 LIST_ELEMENTS.add(layoutElement);
@@ -1522,7 +1525,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 try {
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(),
                             mFile.getPermission(), mFile.getLink(), size, longSize, false,
-                            false, mFile.getDate() + "", SHOW_THUMBS);
+                            false, mFile.getDate() + "",
+                            getBoolean(PREFERENCE_SHOW_THUMB));
                     layoutElement.setMode(mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);
                     file_count++;
@@ -1715,6 +1719,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     @Override
     public int getRootDrawable() {
         return R.drawable.ic_root_white_24px;
+    }
+
+    private boolean getBoolean(String key) {
+        return getMainActivity().getBoolean(key);
     }
 
 }

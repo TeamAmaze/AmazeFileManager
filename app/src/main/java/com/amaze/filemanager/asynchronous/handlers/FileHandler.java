@@ -21,15 +21,14 @@ import java.lang.ref.WeakReference;
  */
 public class FileHandler extends Handler {
     private WeakReference<MainFragment> mainFragment;
-    private UtilitiesProvider utilsProvider;
     private RecyclerView listView;
+    private boolean useThumbs;
 
-    public FileHandler(MainFragment mainFragment, UtilitiesProvider utilsProvider,
-                        RecyclerView listView) {
+    public FileHandler(MainFragment mainFragment, RecyclerView listView, boolean useThumbs) {
         super(Looper.getMainLooper());
         this.mainFragment = new WeakReference<>(mainFragment);
-        this.utilsProvider = utilsProvider;
         this.listView = listView;
+        this.useThumbs = useThumbs;
     }
 
     @Override
@@ -46,8 +45,7 @@ public class FileHandler extends Handler {
             case CustomFileObserver.NEW_ITEM:
                 HybridFile fileCreated = new HybridFile(main.openMode,
                         main.getCurrentPath() + "/" + path);
-                main.getElementsList().add(fileCreated.generateLayoutElement(main,
-                        utilsProvider));
+                main.getElementsList().add(fileCreated.generateLayoutElement(useThumbs));
                 break;
             case CustomFileObserver.DELETED_ITEM:
                 for (int i = 0; i < main.getElementsList().size(); i++) {

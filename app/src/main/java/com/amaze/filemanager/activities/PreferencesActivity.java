@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.StringRes;
@@ -69,6 +70,9 @@ public class PreferencesActivity extends ThemedActivity {
     private PreferenceFragment currentFragment;
 
     private static final String KEY_CURRENT_FRAG_OPEN = "current_frag_open";
+    private static final int NUMBER_OF_PREFERENCES = 5;
+
+    private Parcelable[] fragmentsListViewParcelables = new Parcelable[NUMBER_OF_PREFERENCES];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,6 +146,29 @@ public class PreferencesActivity extends ThemedActivity {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * This is a hack, each PreferenceFragment has a ListView that loses it's state (specifically
+     * the scrolled position) when the user accesses another PreferenceFragment. To prevent this, the
+     * Activity saves the ListView's state, so that it can be restored when the user returns to the
+     * PreferenceFragment.
+     *
+     * We cannot use the normal save/restore state functions because they only get called when the
+     * OS kills the fragment, not the user. See https://stackoverflow.com/a/12793395/3124150 for a
+     * better explanation.
+     *
+     * We cannot save the Parcelable in the fragment because the fragment is destroyed.
+     */
+    public void saveListViewState(int prefFragment, Parcelable listViewState) {
+        fragmentsListViewParcelables[prefFragment] = listViewState;
+    }
+
+    /**
+     * This is a hack see {@link PreferencesActivity#saveListViewState(int, Parcelable)}
+     */
+    public Parcelable restoreListViewState(int prefFragment) {
+        return fragmentsListViewParcelables[prefFragment];
     }
 
     public void setRestartActivity() {
