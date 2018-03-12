@@ -31,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -304,7 +305,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             mInput.setSingleLine(false);
                             mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-                            getSupportActionBar().setTitle(mFile.name + " (r/o)");
+                            Snackbar snackbar = Snackbar.make(mInput,
+                                    getResources().getString(R.string.file_read_only), Snackbar.LENGTH_INDEFINITE);
+                            snackbar.setAction(getResources().getString(R.string.got_it).toUpperCase(),
+                                    v -> snackbar.dismiss());
+                            snackbar.show();
                         }
 
                         if (data.fileContents.isEmpty()) {
