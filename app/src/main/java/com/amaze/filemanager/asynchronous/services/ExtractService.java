@@ -105,8 +105,8 @@ public class ExtractService extends ProgressiveServiceAbstract {
         startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
 
         super.onStartCommand(intent, flags, startId);
+        super.progressHalted();
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
-
 
         return START_STICKY;
     }
@@ -188,7 +188,7 @@ public class ExtractService extends ProgressiveServiceAbstract {
                                         extractService.addFirstDatapoint(firstEntryName,
                                                 1, totalBytes, false);
 
-                                        watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
+                                        watcherUtil = new ServiceWatcherUtil(progressHandler);
                                         watcherUtil.watch(ExtractService.this);
                                     }
 

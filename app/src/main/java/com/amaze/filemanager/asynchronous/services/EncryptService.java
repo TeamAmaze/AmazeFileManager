@@ -86,7 +86,7 @@ public class EncryptService extends ProgressiveServiceAbstract {
         startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
 
         super.onStartCommand(intent, flags, startId);
-
+        super.progressHalted();
         new BackgroundTask().execute();
 
         return START_STICKY;
@@ -123,7 +123,7 @@ public class EncryptService extends ProgressiveServiceAbstract {
                 publishResults(fileName, sourceFiles, sourceProgress, totalSize,
                         writtenSize, speed, false, false);
             });
-            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
             addFirstDatapoint(baseFile.getName(), 1, totalSize, true);// we're using encrypt as move flag false
 

@@ -128,7 +128,7 @@ public class CopyService extends ProgressiveServiceAbstract {
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
 
         super.onStartCommand(intent, flags, startId);
-
+        super.progressHalted();
         //going async
         new DoInBackground(isRootExplorer).execute(b);
 
@@ -185,7 +185,7 @@ public class CopyService extends ProgressiveServiceAbstract {
                 publishResults(fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
             });
 
-            watcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            watcherUtil = new ServiceWatcherUtil(progressHandler);
 
             addFirstDatapoint(sourceFiles.get(0).getName(), sourceFiles.size(), totalSize, move);
 

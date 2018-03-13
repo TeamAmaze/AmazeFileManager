@@ -83,11 +83,13 @@ public class DecryptService extends ProgressiveServiceAbstract {
         decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
         notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
         notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
-
+        NotificationConstants.setMetadata(context, mBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
 
         super.onStartCommand(intent, flags, startId);
+
+        super.progressHalted();
         new DecryptService.BackgroundTask().execute();
 
         return START_STICKY;
@@ -110,7 +112,7 @@ public class DecryptService extends ProgressiveServiceAbstract {
                 publishResults(fileName, sourceFiles, sourceProgress, totalSize,
                         writtenSize, speed, false, false);
             });
-            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
             addFirstDatapoint(baseFile.getName(), 1, totalSize, false);// we're using encrypt as move flag false
 

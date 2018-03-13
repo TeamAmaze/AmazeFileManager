@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Formatter;
+import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
@@ -28,9 +30,9 @@ public class ServiceWatcherUtil {
     private Handler handler;
     private static HandlerThread handlerThread;
     private ProgressHandler progressHandler;
-    long totalSize;
     private Runnable runnable;
-    private int STATE = -1;
+
+    public static int STATE = -1;
 
     private static ArrayList<Intent> pendingIntents = new ArrayList<>();
 
@@ -44,11 +46,9 @@ public class ServiceWatcherUtil {
     /**
      *
      * @param progressHandler to publish progress after certain delay
-     * @param totalSize total size of files to be performed, so we know when to halt the watcher
      */
-    public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
+    public ServiceWatcherUtil(ProgressHandler progressHandler) {
         this.progressHandler = progressHandler;
-        this.totalSize = totalSize;
         POSITION = 0L;
         HALT_COUNTER = -1;
 
@@ -71,18 +71,26 @@ public class ServiceWatcherUtil {
 
                 if (POSITION == progressHandler.getWrittenSize() &&
                         (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
-                                && ++HALT_COUNTER>3)) {
+                                && ++HALT_COUNTER>5)) {
 
                     // new position is same as the last second position, and halt counter is past threshold
 
-                    if (interactionInterface.getServiceType() instanceof DecryptService) {
+                    String writtenSize = Formatter.formatShortFileSize(interactionInterface.getServiceType().getApplicationContext(),
+                            progressHandler.getWrittenSize());
+                    String totalSize = Formatter.formatShortFileSize(interactionInterface.getServiceType().getApplicationContext(),
+                            progressHandler.getTotalSize());
+
+                    if (interactionInterface.getServiceType() instanceof DecryptService
+                            && writtenSize.equals(totalSize)) {
 
                         // workaround for decryption when we have a length retrieved by
                         // CipherInputStream less than the original stream, and hence the total size
                         // we passed at the beginning is never reached
-                        progressHandler.addWrittenLength(totalSize);
+                        // we try to get a less precise size and make our decision based on that
+                        progressHandler.addWrittenLength(progressHandler.getTotalSize());
                         handler.removeCallbacks(this);
                         handlerThread.quit();
+                        return;
                     }
 
                     HALT_COUNTER = 0;
@@ -107,7 +115,7 @@ public class ServiceWatcherUtil {
 
                 progressHandler.addWrittenLength(POSITION);
 
-                if (POSITION == totalSize || progressHandler.getCancelled()) {
+                if (POSITION == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
                     handler.removeCallbacks(this);

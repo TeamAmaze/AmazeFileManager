@@ -109,7 +109,7 @@ public class ZipService extends ProgressiveServiceAbstract {
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
         super.onStartCommand(intent, flags, startId);
-
+        super.progressHalted();
         asyncTask = new CompressAsyncTask(this, baseFiles, mZipPath);
         asyncTask.execute();
         // If we get killed, after returning from here, restart
@@ -188,7 +188,7 @@ public class ZipService extends ProgressiveServiceAbstract {
         public void execute(final @NonNull Context context, ArrayList<File> baseFiles, String zipPath) {
             OutputStream out;
             File zipDirectory = new File(zipPath);
-            watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
+            watcherUtil = new ServiceWatcherUtil(progressHandler);
             watcherUtil.watch(ZipService.this);
 
             try {

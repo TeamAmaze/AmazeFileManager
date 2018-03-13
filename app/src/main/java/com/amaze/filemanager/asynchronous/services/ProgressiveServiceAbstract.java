@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
+import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -36,6 +37,8 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
     // list of data packages, to initiate chart in process viewer fragment
     public ArrayList<DatapointParcelable> dataPackages;
     public ProgressListener progressListener;
+
+    private boolean isNotificationTitleSet = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -86,36 +89,44 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
 
             //notification
             progressPercent = ((float) writtenSize / totalSize) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
 
-            int titleResource;
+            if (!isNotificationTitleSet) {
+                int titleResource;
 
-            switch (notificationID) {
-                case NotificationConstants.COPY_ID:
-                    titleResource = move ? R.string.moving : R.string.copying;
-                    break;
-                case NotificationConstants.ENCRYPT_ID:
-                    titleResource = move ? R.string.crypt_decrypting : R.string.crypt_encrypting;
-                    break;
-                case NotificationConstants.EXTRACT_ID:
-                    titleResource = R.string.extracting;
-                    break;
-                case NotificationConstants.ZIP_ID:
-                    titleResource = R.string.compressing;
-                    break;
-                case NotificationConstants.DECRYPT_ID:
-                    titleResource = R.string.crypt_decrypting;
-                    break;
-                default:
-                    titleResource = R.string.processing;
-                    break;
+                switch (notificationID) {
+                    case NotificationConstants.COPY_ID:
+                        titleResource = move ? R.string.moving : R.string.copying;
+                        break;
+                    case NotificationConstants.ENCRYPT_ID:
+                        titleResource = move ? R.string.crypt_decrypting : R.string.crypt_encrypting;
+                        break;
+                    case NotificationConstants.EXTRACT_ID:
+                        titleResource = R.string.extracting;
+                        break;
+                    case NotificationConstants.ZIP_ID:
+                        titleResource = R.string.compressing;
+                        break;
+                    case NotificationConstants.DECRYPT_ID:
+                        titleResource = R.string.crypt_decrypting;
+                        break;
+                    default:
+                        titleResource = R.string.processing;
+                        break;
+                }
+
+                mBuilder.setContentTitle(context.getResources().getString(titleResource));
+
+                isNotificationTitleSet = true;
             }
 
-            mBuilder.setContentTitle(context.getResources().getString(titleResource));
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
-                    Formatter.formatFileSize(context, totalSize));
-            mNotifyManager.notify(notificationID, mBuilder.build());
+            if (ServiceWatcherUtil.STATE != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
+
+                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
+                        Formatter.formatFileSize(context, totalSize));
+                mBuilder.setProgress(100, Math.round(progressPercent), false);
+                mBuilder.setOngoing(true);
+                mNotifyManager.notify(notificationID, mBuilder.build());
+            }
 
             if (writtenSize == totalSize || totalSize == 0) {
                 if (move && notificationID == NotificationConstants.COPY_ID) {

@@ -90,6 +90,10 @@ public class ProgressHandler {
         this.totalSize = totalSize;
     }
 
+    public synchronized long getTotalSize() {
+        return this.totalSize;
+    }
+
     public synchronized void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
