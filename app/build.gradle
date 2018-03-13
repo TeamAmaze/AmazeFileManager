@@ -40,13 +40,13 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
-
+            testProguardFile 'tests-proguard.cfg'
         }
 
         release {
             signingConfig signingConfigs.release
 
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
         }
     }
