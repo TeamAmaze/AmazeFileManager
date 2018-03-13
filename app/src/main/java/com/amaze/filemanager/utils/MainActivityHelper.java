@@ -502,7 +502,7 @@ public class MainActivityHelper {
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
             Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
-            decompressor.decompress(null);
+            decompressor.decompress(file.getPath());
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

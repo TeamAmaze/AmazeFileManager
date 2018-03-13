@@ -618,5 +618,7 @@
     <string name="no_obtainable_info">There\'s no info about this file</string>
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
+    <string name="file_read_only">The file opened is a read-only.</string>
+    <string name="got_it">Got it!</string>
 </resources>
 
