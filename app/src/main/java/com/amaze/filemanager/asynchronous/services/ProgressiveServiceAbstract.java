@@ -42,7 +42,6 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         initVariables();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -51,7 +50,6 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
 
     @Override
     public void progressHalted() {
-
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(0, 0, true);
         mNotifyManager.notify(notificationID, mBuilder.build());
@@ -59,7 +57,6 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
 
     @Override
     public void progressResumed() {
-
         // set notification to indeterminate unless progress resumes
         mBuilder.setProgress(100, Math.round(progressPercent), false);
         mNotifyManager.notify(notificationID, mBuilder.build());
@@ -82,7 +79,6 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
     public final void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                      long totalSize, long writtenSize, int speed, boolean isComplete,
                                      boolean move) {
-
         if (!progressHandler.getCancelled()) {
 
             context = getApplicationContext();
