@@ -218,7 +218,7 @@ public abstract class ProgressiveServiceAbstract extends Service implements Serv
      * @param failedOps
      */
     void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
-        mNotifyManager.cancelAll();
+        if (!move) mNotifyManager.cancelAll();
 
         if(failedOps.size()==0)return;
 
