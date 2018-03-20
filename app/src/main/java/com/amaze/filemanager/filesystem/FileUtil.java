@@ -310,7 +310,7 @@ public abstract class FileUtil {
     static boolean deleteFile(@NonNull final File file, Context context) {
         // First try the normal deletion.
         if (file == null) return true;
-        boolean fileDelete = deleteFilesInFolder(file, context);
+        boolean fileDelete = rmdir(file, context);
         if (file.delete() || fileDelete)
             return true;
 
@@ -529,39 +529,19 @@ public abstract class FileUtil {
      * @param file The folder name.
      * @return true if successful.
      */
-    private static boolean rmdir1(final File file, Context context) {
-        if (file == null)
-            return false;
-        boolean b = true;
-        for (File file1 : file.listFiles()) {
-            if (file1.isDirectory()) {
-                if (!rmdir1(file1, context)) b = false;
-            } else {
-                if (!deleteFile(file1, context)) b = false;
-            }
-        }
-        return b;
-    }
-
     private static boolean rmdir(final File file, Context context) {
+
         if (file == null)
             return false;
-        if (!file.exists()) {
+        if (!file.exists())
             return true;
+
+        File[] files = file.listFiles();
+        if (files != null && files.length > 0) {
+            for(File _file : files)
+                rmdir(_file, context);
         }
-        if (!file.isDirectory()) {
-            return false;
-        }
-        String[] fileList = file.list();
-        if (fileList != null && fileList.length > 0) {
-            //  empty the folder.
-            rmdir1(file, context);
-        }
-        String[] fileList1 = file.list();
-        if (fileList1 != null && fileList1.length > 0) {
-            // Delete only empty folder.
-            return false;
-        }
+
         // Try the normal way
         if (file.delete()) {
             return true;
@@ -570,7 +550,7 @@ public abstract class FileUtil {
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             DocumentFile document = getDocumentFile(file, true, context);
-            return document.delete();
+            return (document != null) ? document.delete() : false;
         }
 
         // Try the Kitkat workaround.
@@ -586,31 +566,6 @@ public abstract class FileUtil {
         }
 
         return !file.exists();
-    }
-
-    /**
-     * Delete all files in a folder.
-     *
-     * @param folder the folder
-     * @return true if successful.
-     */
-    private static final boolean deleteFilesInFolder(final File folder, Context context) {
-        boolean totalSuccess = true;
-        if (folder == null)
-            return false;
-        if (folder.isDirectory()) {
-            for (File child : folder.listFiles()) {
-                deleteFilesInFolder(child, context);
-            }
-
-            if (!folder.delete())
-                totalSuccess = false;
-        } else {
-
-            if (!folder.delete())
-                totalSuccess = false;
-        }
-        return totalSuccess;
     }
 
     /**

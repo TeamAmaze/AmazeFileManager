@@ -127,14 +127,20 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                 }
             }
         } else {
-
-            for(HybridFileParcelable a : files)
+            for(HybridFileParcelable a : files) {
                 try {
-                    (a).delete(cd, rootMode);
+                    boolean result = (a).delete(cd, rootMode);
+                    if (!result && b) {
+                        b = false;
+                        return b;
+                    }
+                    else
+                        b = true;
                 } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                     b = false;
                 }
+            }
         }
 
         // delete file from media database
