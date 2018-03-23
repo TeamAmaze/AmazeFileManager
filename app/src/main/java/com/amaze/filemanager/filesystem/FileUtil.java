@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -530,16 +531,13 @@ public abstract class FileUtil {
      * @return true if successful.
      */
     private static boolean rmdir(final File file, Context context) {
-
-        if (file == null)
-            return false;
-        if (!file.exists())
-            return true;
+        if (!file.exists()) return true;
 
         File[] files = file.listFiles();
         if (files != null && files.length > 0) {
-            for(File _file : files)
-                rmdir(_file, context);
+            for(File child : files) {
+                rmdir(child, context);
+            }
         }
 
         // Try the normal way
@@ -550,7 +548,9 @@ public abstract class FileUtil {
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             DocumentFile document = getDocumentFile(file, true, context);
-            return (document != null) ? document.delete() : false;
+            if(document != null && document.delete()) {
+                return true;
+            }
         }
 
         // Try the Kitkat workaround.
