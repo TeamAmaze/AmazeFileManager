@@ -530,7 +530,7 @@ public abstract class FileUtil {
      * @param file The folder name.
      * @return true if successful.
      */
-    private static boolean rmdir(final File file, Context context) {
+    private static boolean rmdir(@NonNull final File file, Context context) {
         if (!file.exists()) return true;
 
         File[] files = file.listFiles();
