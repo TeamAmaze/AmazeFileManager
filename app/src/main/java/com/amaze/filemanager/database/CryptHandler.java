@@ -92,11 +92,9 @@ public class CryptHandler extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         EncryptedEntry encryptedEntry = new EncryptedEntry();
         if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
             encryptedEntry.setId((cursor.getInt(0)));
             encryptedEntry.setPath(cursor.getString(1));
             encryptedEntry.setPassword(CryptUtil.decryptPassword(context, cursor.getString(2)));
-
             cursor.close();
         } else {
             encryptedEntry = null;
@@ -114,16 +112,17 @@ public class CryptHandler extends SQLiteOpenHelper {
         try {
             cursor = sqLiteDatabase.rawQuery(query, null);
             // Looping through all rows and adding them to list
-            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-                do {
-                    EncryptedEntry encryptedEntry = new EncryptedEntry();
-                    encryptedEntry.setId((cursor.getInt(0)));
-                    encryptedEntry.setPath(cursor.getString(1));
-                    encryptedEntry.setPassword(CryptUtil.decryptPassword(context,
-                            cursor.getString(2)));
+            boolean hasNext = cursor.moveToFirst();
+            while(hasNext) {
+                EncryptedEntry encryptedEntry = new EncryptedEntry();
+                encryptedEntry.setId((cursor.getInt(0)));
+                encryptedEntry.setPath(cursor.getString(1));
+                encryptedEntry.setPassword(CryptUtil.decryptPassword(context,
+                        cursor.getString(2)));
 
-                    entryList.add(encryptedEntry);
-                } while (cursor.moveToNext());
+                entryList.add(encryptedEntry);
+
+                hasNext = cursor.moveToNext();
             }
         } finally {
             if (cursor != null) {
