@@ -46,6 +46,12 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * Initialize all necessary variables before starting a progressive service
+     * Required variables to be initialized before starting:
+     * {@link #mNotifyManager}, {@link #mBuilder}, {@link #notificationID}, {@link #progressPercent},
+     * {@link #progressListener}, {@link #dataPackages}, {@link #progressHandler}
+     */
     public abstract void initVariables();
 
     @Override
