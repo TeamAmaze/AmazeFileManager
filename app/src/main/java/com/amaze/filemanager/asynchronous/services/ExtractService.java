@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
@@ -48,7 +47,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class ExtractService extends ProgressiveServiceAbstract {
+public class ExtractService extends AbstractProgressiveService {
 
     Context context;
 

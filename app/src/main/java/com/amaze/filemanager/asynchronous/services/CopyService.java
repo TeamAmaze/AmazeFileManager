@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
@@ -59,7 +58,7 @@ import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CopyService extends ProgressiveServiceAbstract {
+public class CopyService extends AbstractProgressiveService {
 
     public static final String TAG_IS_ROOT_EXPLORER = "is root";
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";

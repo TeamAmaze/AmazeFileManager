@@ -31,7 +31,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -55,7 +54,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends ProgressiveServiceAbstract {
+public class ZipService extends AbstractProgressiveService {
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";

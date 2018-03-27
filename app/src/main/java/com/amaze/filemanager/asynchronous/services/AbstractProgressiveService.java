@@ -25,7 +25,7 @@ import java.util.ArrayList;
  *         on 28/11/2017, at 19:32.
  */
 
-public abstract class ProgressiveServiceAbstract extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
     // list of data packages which contains progress
     public NotificationManager mNotifyManager;

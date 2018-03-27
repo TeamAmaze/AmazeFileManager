@@ -2,7 +2,6 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  *         on 28/11/2017, at 20:59.
  */
 
-public class DecryptService extends ProgressiveServiceAbstract {
+public class DecryptService extends AbstractProgressiveService {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";

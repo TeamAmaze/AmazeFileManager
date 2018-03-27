@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 
-public class EncryptService extends ProgressiveServiceAbstract {
+public class EncryptService extends AbstractProgressiveService {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
