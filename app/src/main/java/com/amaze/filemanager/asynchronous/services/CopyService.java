@@ -63,6 +63,7 @@ import java.util.ArrayList;
 
 public class CopyService extends ProgressiveService {
 
+    public static final String TAG_IS_ROOT_EXPLORER = "is root";
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
     public static final String TAG_COPY_OPEN_MODE = "MODE"; // target open mode
@@ -79,6 +80,7 @@ public class CopyService extends ProgressiveService {
     private ProgressHandler progressHandler;
     private ServiceWatcherUtil watcherUtil;
 
+    private boolean isRootExplorer;
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
     private int sourceProgress = 0;
@@ -93,6 +95,7 @@ public class CopyService extends ProgressiveService {
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
         Bundle b = new Bundle();
+        isRootExplorer = intent.getBooleanExtra(TAG_IS_ROOT_EXPLORER ,false);
         ArrayList<HybridFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, OpenMode.UNKNOWN.ordinal());
@@ -122,7 +125,7 @@ public class CopyService extends ProgressiveService {
         b.putParcelableArrayList(TAG_COPY_SOURCES, files);
 
         //going async
-        new DoInBackground().execute(b);
+        new DoInBackground(isRootExplorer).execute(b);
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
@@ -138,6 +141,11 @@ public class CopyService extends ProgressiveService {
         Copy copy;
         private String targetPath;
         private OpenMode openMode;
+        private boolean isRootExplorer;
+
+        private DoInBackground(boolean isRootExplorer) {
+            this.isRootExplorer = isRootExplorer;
+        }
 
         protected Void doInBackground(Bundle... p1) {
 
@@ -197,7 +205,7 @@ public class CopyService extends ProgressiveService {
 
             // even directories can end with CRYPT_EXTENSION
             if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                sourceFile.forEachChildrenFile(getApplicationContext(), ThemedActivity.rootMode, new OnFileFound() {
+                sourceFile.forEachChildrenFile(getApplicationContext(), isRootExplorer, new OnFileFound() {
                     @Override
                     public void onFileFound(HybridFileParcelable file) {
                         // iterating each file inside source files which were copied to find instance of
@@ -283,7 +291,7 @@ public class CopyService extends ProgressiveService {
 
                                 if (!f1.isSmb()
                                         && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
-                                        && ThemedActivity.rootMode) {
+                                        && isRootExplorer) {
                                     // either source or target are in root
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
@@ -305,7 +313,7 @@ public class CopyService extends ProgressiveService {
                         }
                     }
 
-                } else if (ThemedActivity.rootMode) {
+                } else if (isRootExplorer) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         if (!progressHandler.getCancelled()) {
 
@@ -496,7 +504,7 @@ public class CopyService extends ProgressiveService {
     // avoid using the method as there is no way to know when we would be returning from command callbacks
     // rather confirm from the command result itself, inside it's callback
     boolean checkFiles(HybridFile hFile1, HybridFile hFile2) throws ShellNotRunningException {
-        if (RootHelper.isDirectory(hFile1.getPath(), ThemedActivity.rootMode, 5)) {
+        if (RootHelper.isDirectory(hFile1.getPath(), isRootExplorer, 5)) {
             if (RootHelper.fileExists(hFile2.getPath())) return false;
             ArrayList<HybridFileParcelable> baseFiles = RootHelper.getFilesList(hFile1.getPath(), true, true, null);
             if (baseFiles.size() > 0) {

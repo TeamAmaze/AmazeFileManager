@@ -67,7 +67,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.about:
                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                         rowItem.permissions, (ThemedActivity) mainFragment.getActivity(),
-                        ThemedActivity.rootMode, utilitiesProvider.getAppTheme());
+                        mainActivity.isRootExplorer(), utilitiesProvider.getAppTheme());
                                 /*
                                 PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
@@ -111,7 +111,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.book:
                 DataUtils dataUtils = DataUtils.getInstance();
                 dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
-                mainFragment.getMainActivity().refreshDrawer();
+                mainFragment.getMainActivity().getDrawer().refreshDrawer();
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
@@ -141,7 +141,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
 
                             @Override
                             public void onButtonPressed(Intent intent, String password) throws Exception {
-                                EncryptDecryptUtils.startEncryption(context,
+                                EncryptDecryptUtils.startEncryption(context, mainActivity,
                                         rowItem.generateBaseFile().getPath(), password, intent);
                             }
                         };
@@ -155,13 +155,13 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                                 if (!preferences.getString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                         PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
 
-                                    EncryptDecryptUtils.startEncryption(context,
+                                    EncryptDecryptUtils.startEncryption(context, mainActivity,
                                             rowItem.generateBaseFile().getPath(),
                                             PreferencesConstants.ENCRYPT_PASSWORD_MASTER, encryptIntent);
                                 } else if (preferences.getBoolean(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
                                         PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
 
-                                    EncryptDecryptUtils.startEncryption(context,
+                                    EncryptDecryptUtils.startEncryption(context, mainActivity,
                                             rowItem.generateBaseFile().getPath(),
                                             PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                 } else {

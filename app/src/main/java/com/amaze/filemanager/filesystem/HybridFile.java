@@ -13,7 +13,6 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -28,7 +27,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
@@ -171,7 +169,7 @@ public class HybridFile {
         return mode == OpenMode.GDRIVE;
     }
 
-    File getFile() {
+    public File getFile() {
         return new File(path);
     }
 
@@ -1253,10 +1251,8 @@ public class HybridFile {
         } else {
             if (isRoot() && rootmode) {
                 setMode(OpenMode.ROOT);
-
                 RootUtils.delete(getPath());
             } else {
-
                 FileUtil.deleteFile(new File(path), context);
             }
         }
@@ -1279,11 +1275,8 @@ public class HybridFile {
     /**
      * Generates a {@link LayoutElementParcelable} adapted compatible element.
      * Currently supports only local filesystem
-     * @param mainFragment
-     * @param utilitiesProvider
-     * @return
      */
-    public LayoutElementParcelable generateLayoutElement(MainFragment mainFragment, UtilitiesProvider utilitiesProvider) {
+    public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
         switch (mode) {
             case FILE:
             case ROOT:
@@ -1293,12 +1286,12 @@ public class HybridFile {
 
                     layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
                             "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", showThumbs);
                 } else {
                     layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", mainFragment.SHOW_THUMBS);
+                            false, file.lastModified() + "", showThumbs);
                 }
                 layoutElement.setMode(mode);
                 return layoutElement;

@@ -618,6 +618,12 @@
     <string name="password_repeat">Repeat password</string>
     <string name="create_file_suggest_txt_extension">It\'s recommended to use \".txt\" as the file extension.</string>
     <string name="ssh_select_pem">Select private key for authentication</string>
-    <string name="ssh_key_invalid_passphrase">Invalid key passphrase.</string>
+    <string name="no_obtainable_info">There\'s no info about this file</string>
+    <string name="reopen_from_source">Can\'t, please reopen from last app</string>
+    <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
+    <string name="file_read_only">The file opened is a read-only.</string>
+    <string name="got_it">Got it!</string>
+    <string name="save_file_as_title">Save File As&#8230;</string>
+    <string name="encrypt_file_hint">Enter name of the encrypted file</string>
 </resources>
 

@@ -93,13 +93,13 @@ public class MainActivityHelper {
                     String a = intent.getData().getPath();
                     if (a != null && a.trim().length() != 0 && new File(a).exists() && new File(a).canExecute()) {
                         dataUtils.getStorages().add(a);
-                        mainActivity.refreshDrawer();
+                        mainActivity.getDrawer().refreshDrawer();
                     } else {
-                        mainActivity.refreshDrawer();
+                        mainActivity.getDrawer().refreshDrawer();
                     }
                 } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 
-                    mainActivity.refreshDrawer();
+                    mainActivity.getDrawer().refreshDrawer();
                 }
             }
         }
@@ -392,7 +392,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkfile(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkfile(path, ma.getActivity(), mainActivity.isRootExplorer(), new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(() -> {
@@ -451,7 +451,7 @@ public class MainActivityHelper {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder),
                 Toast.LENGTH_SHORT);
         toast.show();
-        Operations.mkdir(path, ma.getActivity(), ThemedActivity.rootMode, new Operations.ErrorCallBack() {
+        Operations.mkdir(path, ma.getActivity(), mainActivity.isRootExplorer(), new Operations.ErrorCallBack() {
             @Override
             public void exists(final HybridFile file) {
                 ma.getActivity().runOnUiThread(() -> {
@@ -527,7 +527,7 @@ public class MainActivityHelper {
             mainActivity.operation = DataUtils.EXTRACT;
         } else if (mode == 1) {
             Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
-            decompressor.decompress(null);
+            decompressor.decompress(file.getPath());
         } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 
@@ -606,7 +606,7 @@ public class MainActivityHelper {
             fm.beginTransaction().remove(fragment).commit();
         }
 
-        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, ThemedActivity.rootMode,
+        addSearchFragment(fm, new SearchWorkerFragment(), fpath, query, ma.openMode, mainActivity.isRootExplorer(),
                 sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
                 sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
     }

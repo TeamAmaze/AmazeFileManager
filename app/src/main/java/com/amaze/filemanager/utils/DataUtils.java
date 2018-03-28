@@ -2,7 +2,9 @@ package com.amaze.filemanager.utils;
 
 import android.support.annotation.Nullable;
 
-import com.amaze.filemanager.adapters.data.DrawerItem;
+import android.view.MenuItem;
+
+import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -17,6 +19,7 @@ import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,13 +37,15 @@ public class DataUtils {
 
     private ConcurrentRadixTree<VoidValue> hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 
-    private ArrayList<String> gridfiles = new ArrayList<>();
-    private ArrayList<String> listfiles = new ArrayList<>();
+    public static final int LIST = 0, GRID = 1;
+
+    private InvertedRadixTree<Integer> filesGridOrList = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+
     private LinkedList<String> history = new LinkedList<>();
     private ArrayList<String> storages = new ArrayList<>();
 
-    private ArrayList<DrawerItem> drawerItems = new ArrayList<>();
-    private InvertedRadixTree<Integer> tree;
+    private InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+    private HashMap<MenuItem, MenuMetadata> menuMetadataMap = new HashMap<>();//Faster HashMap<Integer, V>
 
     private ArrayList<String[]> servers = new ArrayList<>();
     private ArrayList<String[]> books = new ArrayList<>();
@@ -121,10 +126,11 @@ public class DataUtils {
 
     public void clear() {
         hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
-        gridfiles = new ArrayList<>();
-        listfiles = new ArrayList<>();
+        filesGridOrList = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
         history.clear();
         storages = new ArrayList<>();
+        tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
+        menuMetadataMap.clear();
         servers = new ArrayList<>();
         books = new ArrayList<>();
         accounts = new ArrayList<>();
@@ -338,22 +344,29 @@ public class DataUtils {
         if (hiddenfiles != null) this.hiddenfiles = hiddenfiles;
     }
 
-    public ArrayList<String> getGridFiles() {
-        return gridfiles;
-    }
-
     public synchronized void setGridfiles(ArrayList<String> gridfiles) {
-        if (gridfiles != null)
-            this.gridfiles = gridfiles;
-    }
-
-    public ArrayList<String> getListfiles() {
-        return listfiles;
+        if (gridfiles != null) {
+            for (String gridfile : gridfiles) {
+                setPathAsGridOrList(gridfile, GRID);
+            }
+        }
     }
 
     public synchronized void setListfiles(ArrayList<String> listfiles) {
-        if (listfiles != null)
-            this.listfiles = listfiles;
+        if (listfiles != null) {
+            for (String gridfile : listfiles) {
+                setPathAsGridOrList(gridfile, LIST);
+            }
+        }
+    }
+
+    public void setPathAsGridOrList(String path, int value) {
+        filesGridOrList.put(path, value);
+    }
+
+    public int getListOrGridForPath(String path, int defaultValue) {
+        Integer value = filesGridOrList.getValueForLongestKeyPrefixing(path);
+        return value != null? value:defaultValue;
     }
 
     public void clearHistory() {
@@ -376,22 +389,18 @@ public class DataUtils {
         this.storages = storages;
     }
 
-    public ArrayList<DrawerItem> getDrawerItems() {
-        return drawerItems;
+    public MenuMetadata getDrawerMetadata(MenuItem item) {
+        return menuMetadataMap.get(item);
     }
 
-    public synchronized void setDrawerItems(ArrayList<DrawerItem> drawerItems) {
-        tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-        for (int i = 0; i < drawerItems.size(); i++) {
-            String path = drawerItems.get(i).path;
-            if(path != null) tree.put(path, i);
-        }
-        this.drawerItems = drawerItems;
+    public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
+        menuMetadataMap.put(item, metadata);
+        if(metadata.path != null) tree.put(metadata.path, item.getItemId());
     }
 
     /**
      * @param path the path to find
-     * @return the index of the longest containing DrawerItem in getDrawerItems() or null
+     * @return the id of the longest containing MenuMetadata.path in getDrawerMetadata() or null
      */
     public @Nullable Integer findLongestContainingDrawerItem(CharSequence path) {
         return tree.getValueForLongestKeyPrefixing(path);
