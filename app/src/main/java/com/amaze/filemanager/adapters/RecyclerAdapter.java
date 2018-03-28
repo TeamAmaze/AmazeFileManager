@@ -552,28 +552,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-
-                            AppConfig.runInBackground(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        requestBuilder = modelProvider.getPreloadRequestBuilder(rowItem.iconData);
-                                        Drawable drawable = requestBuilder.submit().get();
-
-                                        mainFrag.getMainActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                                holder.genericIcon.setImageDrawable(drawable);
-                                            }
-                                        });
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } catch (ExecutionException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:

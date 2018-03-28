@@ -29,7 +29,6 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     private Fragment fragment;
     private List<IconDataParcelable> urisToLoad;
     private boolean showThumbs;
-    private RequestBuilder<Drawable> requestBuilder;
 
     public RecyclerPreloadModelProvider(@NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris,
                                         boolean showThumbs) {

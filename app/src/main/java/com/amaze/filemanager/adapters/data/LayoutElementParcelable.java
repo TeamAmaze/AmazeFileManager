@@ -73,14 +73,22 @@ public class LayoutElementParcelable implements Parcelable {
             switch (mode) {
                 case SMB:
                 case SFTP:
+                    if (!isDirectory) {
+                        HybridFileParcelable hybridFileParcelable = new HybridFileParcelable(path,
+                                permissions, Long.valueOf(date), longSize, isDirectory);
+                        hybridFileParcelable.setMode(mode);
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, hybridFileParcelable);
+
+                    } else {
+
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+                    }
+                    break;
                 case DROPBOX:
                 case GDRIVE:
                 case ONEDRIVE:
                 case BOX:
-                    HybridFileParcelable hybridFileParcelable = new HybridFileParcelable(path,
-                            permissions, Long.valueOf(date), longSize, isDirectory);
-                    hybridFileParcelable.setMode(mode);
-                    this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, hybridFileParcelable);
+                    this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
                     break;
                 default:
                     if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
