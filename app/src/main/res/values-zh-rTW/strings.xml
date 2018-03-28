@@ -571,8 +571,8 @@
   <string name="about_amaze">Material設計風格的 Android檔案管理員</string>
   <string name="license">版權宣告</string>
   <string name="libraries">第三方程式庫</string>
-  <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
   <string name="create_file_suggest_txt_extension">建議以 \".txt\"作為檔案擴展名稱。</string>
   <string name="compress_file_suggest_zip_extension">建議以 \".zip\"作為檔案擴展名稱。</string>
+  <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
   <string name="ssh_key_invalid_passphrase">私鑰密碼錯誤。</string>
 </resources>
