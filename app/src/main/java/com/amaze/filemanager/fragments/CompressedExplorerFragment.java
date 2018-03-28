@@ -50,6 +50,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -72,6 +73,9 @@ import com.github.junrar.Archive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
     public static final String KEY_PATH = "path";
@@ -200,7 +204,8 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             files = new ArrayList<>();
             // adding a cache file to delete where any user interaction elements will be cached
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
-            files.add(new HybridFileParcelable(getActivity().getExternalCacheDir().getPath() + "/" + fileName));
+            String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
+            files.add(new HybridFileParcelable(path));
             decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
 
             changePath("");
@@ -269,7 +274,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                if (mainActivity.colourednavigation)
+                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
                     window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
             }
             if (Build.VERSION.SDK_INT < 19) {
@@ -315,7 +320,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                         dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
                     }
 
-                    decompressor.decompress(null, dirs);
+                    decompressor.decompress(compressedFile.getPath(), dirs);
 
                     mode.finish();
                     return true;
@@ -331,7 +336,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
-                if (mainActivity.colourednavigation)
+                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
                     window.setNavigationBarColor(mainActivity.skinStatusBar);
             }
             mActionMode = null;
@@ -408,7 +413,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     @Override
     public String getPath() {
-        if(!isRootRelativePath()) return "/" + relativeDirectory;
+        if(!isRootRelativePath()) return SEPARATOR + relativeDirectory;
         else return "";
     }
 
@@ -422,7 +427,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     }
 
     private void updateBottomBar() {
-        String path = !isRootRelativePath()? compressedFile.getName() + "/" + relativeDirectory : compressedFile.getName();
+        String path = !isRootRelativePath()? compressedFile.getName() + SEPARATOR + relativeDirectory : compressedFile.getName();
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 

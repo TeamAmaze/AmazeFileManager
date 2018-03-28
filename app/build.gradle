@@ -40,13 +40,13 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
-
+            testProguardFile 'tests-proguard.cfg'
         }
 
         release {
             signingConfig signingConfigs.release
 
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
         }
     }
@@ -58,6 +58,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -71,6 +77,10 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:palette-v7:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
+
+    //For tests
+    androidTestImplementation 'junit:junit:4.12'//tests the app logic
+    testImplementation "org.robolectric:robolectric:3.6.1"//tests android interaction
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'

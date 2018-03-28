@@ -26,6 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
+import com.amaze.filemanager.adapters.ColorAdapter;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.views.preference.InvalidablePreferenceCategory;
 import com.amaze.filemanager.utils.Utils;
@@ -116,7 +117,14 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             case PreferencesConstants.PREFERENCE_ICON_SKIN:
                 final ColorUsage usage = ColorUsage.fromString(preference.getKey());
                 if (usage != null) {
-                    ColorAdapter adapter = new ColorAdapter(getActivity(), ColorPreference.getUniqueAvailableColors(getActivity()), usage);
+                    ColorAdapter adapter = new ColorAdapter(getActivity(),
+                            ColorPreference.getUniqueAvailableColors(getActivity()), usage,
+                            activity.getColorPreference().getColor(usage),
+                            (selectedColorRes) -> {
+                        activity.getColorPreference().setRes(usage, selectedColorRes).saveToPreferences(sharedPref);
+                        if (dialog != null) dialog.dismiss();
+                        invalidateEverything();
+                    });
 
                     GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
                     v.setAdapter(adapter);
@@ -143,10 +151,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                                 }
                             })
                             .customView(v, false)
-                            .build();
-
-                    adapter.setDialog(dialog);
-                    dialog.show();
+                            .show();
                 }
                 return false;
             case "selectcolorconfig":
@@ -198,6 +203,8 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
             }
         });
+
+        ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getColorPreference());
 
         checkCustomization();
     }
@@ -276,71 +283,4 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         }
     }
 
-    private class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
-        private ColorUsage usage;
-        @ColorInt
-        private int selectedColor;
-        private MaterialDialog dialog;
-
-        public void setDialog(MaterialDialog b) {
-            this.dialog = b;
-        }
-
-        /**
-         * Constructor for adapter that handles the view creation of color chooser dialog in preferences
-         *
-         * @param context the context
-         * @param colors  array list of color hex values in form of string; for the views
-         * @param usage   the preference usage for setting new selected color preference value
-         */
-        ColorAdapter(Context context, List<Integer> colors, ColorUsage usage) {
-            super(context, R.layout.rowlayout, colors);
-            this.usage = usage;
-            this.selectedColor = activity.getColorPreference().getColor(usage);
-        }
-
-        @ColorInt
-        private int getColor(@ColorRes int colorRes) {
-            return Utils.getColor(getContext(), colorRes);
-        }
-
-        @ColorRes
-        private int getColorResAt(int position) {
-            Integer item = getItem(position);
-
-            if (item == null) {
-                return usage.getDefaultColor();
-            } else {
-                return item;
-            }
-        }
-
-        @NonNull
-        @Override
-        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //TODO solve unconditional layout inflation
-            View rowView = inflater.inflate(R.layout.dialog_grid_item, parent, false);
-
-            int color = getColor(getColorResAt(position));
-
-            ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-            if (color == selectedColor)
-                imageView.setImageResource(R.drawable.ic_checkmark_selected);
-            GradientDrawable gradientDrawable = (GradientDrawable) imageView.getBackground();
-
-            gradientDrawable.setColor(color);
-
-            return rowView;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            int selectedColorRes = getColorResAt(position);
-
-            activity.getColorPreference().setRes(usage, selectedColorRes).saveToPreferences(sharedPref);
-
-            if (dialog != null) dialog.dismiss();
-        }
-    }
 }

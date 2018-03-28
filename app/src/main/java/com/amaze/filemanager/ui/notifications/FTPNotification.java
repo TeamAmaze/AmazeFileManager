@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.asynchronous.ftpservice.FTPService;
+import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
 
 import java.net.InetAddress;
 

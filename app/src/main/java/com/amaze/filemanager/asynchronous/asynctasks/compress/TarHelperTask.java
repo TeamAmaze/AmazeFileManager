@@ -1,6 +1,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -11,14 +12,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *         on 2/12/2017, at 00:40.
  */
 
 public class TarHelperTask extends CompressedHelperTask {
-
-    private static final String SEPARATOR = "/";
 
     private String filePath, relativePath;
 

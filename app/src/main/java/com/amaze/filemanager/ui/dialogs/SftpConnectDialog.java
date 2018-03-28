@@ -42,20 +42,20 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
-import com.amaze.filemanager.filesystem.ssh.tasks.AsyncTaskResult;
-import com.amaze.filemanager.filesystem.ssh.tasks.PemToKeyPairTask;
-import com.amaze.filemanager.filesystem.ssh.tasks.SshAuthenticationTask;
-import com.amaze.filemanager.filesystem.ssh.tasks.GetSshHostFingerprintTask;
+import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
@@ -225,7 +225,7 @@ public class SftpConnectDialog extends DialogFragment {
                 AppConfig.runInBackground(() -> {
                     utilsHandler.removeSftpPath(connectionName, path);
                 });
-                ((MainActivity) getActivity()).refreshDrawer();
+                ((MainActivity) getActivity()).getDrawer().refreshDrawer();
             }
             dialog.dismiss();
             }).neutralText(R.string.cancel).onNeutral((dialog, which) -> dialog.dismiss());
@@ -320,7 +320,7 @@ public class SftpConnectDialog extends DialogFragment {
 
                     if(DataUtils.getInstance().containsServer(path) == -1) {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
-                        ((MainActivity) getActivity()).refreshDrawer();
+                        ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
                         utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
                                 selectedParsedKeyPairName, getPemContents());
@@ -346,7 +346,7 @@ public class SftpConnectDialog extends DialogFragment {
             DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(path));
             DataUtils.getInstance().addServer(new String[]{connectionName, path});
             Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
-            ((MainActivity) getActivity()).refreshDrawer();
+            ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
             AppConfig.runInBackground(() -> {
                 utilsHandler.updateSsh(connectionName,

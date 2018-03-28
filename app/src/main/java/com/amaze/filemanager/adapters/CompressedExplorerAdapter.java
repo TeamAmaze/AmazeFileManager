@@ -22,6 +22,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -202,9 +203,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             holder.txtDesc.setText("");
             holder.date.setText(R.string.goback);
         } else {
-            GlideApp.with(compressedExplorerFragment)
-                    .load(Icons.loadMimeIcon(rowItem.name, rowItem.directory))
-                    .into(holder.genericIcon);
+            GlideApp.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
             if (compressedExplorerFragment.showLastModified)
@@ -225,8 +224,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
                 holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
-                    ColorUtils.colorizeIcons(context, Icons.getTypeOfFile(rowItem.name, rowItem.directory),
-                            gradientDrawable, Color.parseColor(compressedExplorerFragment.iconskin));
+                    ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable,
+                            Color.parseColor(compressedExplorerFragment.iconskin));
                 } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
             }
         }
@@ -240,6 +239,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         holder.genericIcon.setOnClickListener(view -> {
             if (rowItem.type != CompressedObjectParcelable.TYPE_GOBACK) {
                 toggleChecked(position, holder.checkImageView);
+            } else {
+                compressedExplorerFragment.goBack();
             }
         });
         if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
@@ -272,10 +273,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
                                 compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
                         String archiveCacheDirPath = compressedExplorerFragment.getActivity().getExternalCacheDir().getPath() +
-                                "/" + fileName;
+                                CompressedHelper.SEPARATOR + fileName;
 
-                        HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath + "/"
-                                + rowItem.name.replaceAll("\\\\", "/"));
+                        HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath
+                                + CompressedHelper.SEPARATOR
+                                + rowItem.name.replaceAll("\\\\", CompressedHelper.SEPARATOR));
                         file.setMode(OpenMode.FILE);
                         // this file will be opened once service finishes up it's extraction
                         compressedExplorerFragment.files.add(file);
