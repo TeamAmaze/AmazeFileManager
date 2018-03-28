@@ -42,6 +42,7 @@ import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -208,9 +209,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     private void setNavViewDimension(CustomNavigationView navView) {
         int screenWidth = AppConfig.getInstance().getScreenUtils().getScreenWidthInDp();
-        int toolbarHeight = AppConfig.getInstance().getScreenUtils().getToolbarHeightInDb();
-
-        int desiredWidthInDp = screenWidth - toolbarHeight;
+        int desiredWidthInDp = screenWidth - ScreenUtils.TOOLBAR_HEIGHT_IN_DP;
         int desiredWidthInPx = AppConfig.getInstance().getScreenUtils().convertDbToPx(desiredWidthInDp);
 
         navView.setLayoutParams(

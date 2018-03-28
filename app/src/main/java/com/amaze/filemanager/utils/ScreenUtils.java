@@ -6,14 +6,10 @@ import android.util.DisplayMetrics;
 
 public class ScreenUtils {
 
-    private static final int TOOLBAR_HEIGHT_IN_DP_MDPI = 40;  //160 dpi
-    private static final int TOOLBAR_HEIGHT_IN_DP_HDPI = 48;  //240 dpi
-    private static final int TOOLBAR_HEIGHT_IN_DP_XHDPI = 56;   //320 dpi
-    private static final int TOOLBAR_HEIGHT_IN_DP_XXHDPI = 64;   //480 dpi
-    private static final int TOOLBAR_HEIGHT_IN_DP_XXXHDPI = 72;   //640 dpi
+    public static final int TOOLBAR_HEIGHT_IN_DP = 56;  //160 dpi
 
 
-    Activity activity;
+    private Activity activity;
 
 
     public ScreenUtils(Activity activity) {
@@ -50,21 +46,5 @@ public class ScreenUtils {
     }
 
 
-    public int getToolbarHeightInDb() {
-        float density = activity.getResources().getDisplayMetrics().density;
-        int toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_MDPI;
 
-        if (density == 1.0f) {
-            toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_MDPI;
-        } else if (density == 1.5f) {
-            toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_HDPI;
-        } else if (density == 2.0f) {
-            toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_XHDPI;
-        } else if (density == 3.0f) {
-            toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_XXHDPI;
-        } else if (density == 4.0f) {
-            toolbarHeightInDp = TOOLBAR_HEIGHT_IN_DP_XXXHDPI;
-        }
-        return toolbarHeightInDp;
-    }
 }
