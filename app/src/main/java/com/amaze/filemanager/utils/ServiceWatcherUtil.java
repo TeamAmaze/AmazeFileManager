@@ -168,7 +168,7 @@ public class ServiceWatcherUtil {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (handlerThread==null || !handlerThread.isAlive()) {
+                if (handlerThread==null || !handlerThread.isAlive() && pendingIntents.size() > 0) {
                     // service is been finished, let's start this one
                     // pop recent intent from pendingIntents
                     context.startService(pendingIntents.remove(pendingIntents.size()-1));
