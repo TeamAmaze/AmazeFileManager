@@ -124,7 +124,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         mImageLoader = AppConfig.getInstance().getImageLoader();
 
         navView = mainActivity.findViewById(R.id.navigation);
-        setNavViewDimension(navView);
+
+        //set width of drawer in portrait to follow material guidelines
+        if(!Utils.isDeviceInLandScape(mainActivity)){
+            setNavViewDimension(navView);
+        }
+
         navView.setNavigationItemSelectedListener(this);
 
 
