@@ -9,6 +9,8 @@ import android.support.design.widget.NavigationView;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 
+import com.amaze.filemanager.utils.application.AppConfig;
+
 /**
  * This class if for intercepting item selections so that they can be saved and restored.
  */
@@ -23,6 +25,8 @@ public class CustomNavigationView extends NavigationView
 
         super.setNavigationItemSelectedListener(this);
     }
+
+
 
     @Override
     public void setNavigationItemSelectedListener(@Nullable OnNavigationItemSelectedListener listener) {
