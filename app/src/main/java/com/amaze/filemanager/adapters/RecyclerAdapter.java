@@ -36,11 +36,13 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -49,6 +51,7 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
@@ -92,6 +95,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
+    private RequestBuilder<Drawable> requestBuilder;
 
     public RecyclerAdapter(PreferenceActivity preferenceActivity, MainFragment m,
                            UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
@@ -344,7 +348,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         boolean[] headers = new boolean[]{false, false};
 
         for (int i = 0; i < itemsDigested.size(); i++) {
-            
+
                 if (itemsDigested.get(i).elem != null) {
                     LayoutElementParcelable nextItem = itemsDigested.get(i).elem;
 
@@ -548,7 +552,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+
+                            AppConfig.runInBackground(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        requestBuilder = modelProvider.getPreloadRequestBuilder(rowItem.iconData);
+                                        Drawable drawable = requestBuilder.submit().get();
+
+                                        mainFrag.getMainActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                holder.genericIcon.setImageDrawable(drawable);
+                                            }
+                                        });
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                         }
                         break;
                     case Icons.ENCRYPTED:

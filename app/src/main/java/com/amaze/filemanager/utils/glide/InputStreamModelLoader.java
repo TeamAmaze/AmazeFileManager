@@ -17,7 +17,7 @@ public class InputStreamModelLoader implements ModelLoader<InputStream, InputStr
     @Nullable
     @Override
     public LoadData<InputStream> buildLoadData(InputStream inputStream, int width, int height, Options options) {
-        return new LoadData<InputStream>(new ObjectKey(System.currentTimeMillis()), new InputStreamDataFetcher(inputStream));
+        return new LoadData<>(new ObjectKey(System.currentTimeMillis()), new InputStreamDataFetcher(inputStream));
     }
 
     @Override

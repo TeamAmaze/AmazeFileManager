@@ -23,7 +23,7 @@ public class IconDataParcelable implements Parcelable {
     public final @DrawableRes int image;
     public final @DrawableRes int loadingImage;
     private boolean isImageBroken = false;
-    private HybridFileParcelable hybridFileParcelable;
+    public HybridFileParcelable hybridFileParcelable;
 
     public IconDataParcelable(int type, @DrawableRes int img) {
         if(type == IMAGE_FROMFILE) throw new IllegalArgumentException();

@@ -51,56 +51,11 @@ public class LayoutElementParcelable implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    /**
-     * @deprecated
-     * @param title
-     * @param path
-     * @param permissions
-     * @param symlink
-     * @param size
-     * @param longSize
-     * @param header
-     * @param date
-     * @param isDirectory
-     * @param useThumbs
-     */
-    public LayoutElementParcelable(String title, String path, String permissions,
-                                   String symlink, String size, long longSize, boolean header,
-                                   String date, boolean isDirectory, boolean useThumbs) {
-        filetype = Icons.getTypeOfFile(path, isDirectory);
-        @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
-
-        if(useThumbs) {
-            if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
-            } else {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
-            }
-        } else {
-            this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
-        }
-
-        this.title = title;
-        this.desc = path;
-        this.permissions = permissions.trim();
-        this.symlink = symlink.trim();
-        this.size = size;
-        this.header = header;
-        this.longSize=longSize;
-        this.isDirectory = isDirectory;
-        if (!date.trim().equals("")) {
-            this.date = Long.parseLong(date);
-            this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
-        } else {
-            this.date = 0;
-            this.date1 = "";
-        }
-    }
-
     public LayoutElementParcelable(String path, String permissions, String symlink,
-                                   String size, long longSize, boolean isDirectory, boolean header,
-                                   String date, boolean useThumbs) {
-        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs);
+                                   String size, long longSize,boolean header, String date,
+                                   boolean isDirectory, boolean useThumbs, OpenMode openMode) {
+        this(new File(path).getName(), path, permissions, symlink, size, longSize, header,
+                date, isDirectory, useThumbs, openMode);
 
     }
 
@@ -123,7 +78,7 @@ public class LayoutElementParcelable implements Parcelable {
                 case ONEDRIVE:
                 case BOX:
                     HybridFileParcelable hybridFileParcelable = new HybridFileParcelable(path,
-                            permissions, Long.valueOf(date), Long.valueOf(size), isDirectory);
+                            permissions, Long.valueOf(date), longSize, isDirectory);
                     hybridFileParcelable.setMode(mode);
                     this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, hybridFileParcelable);
                     break;
