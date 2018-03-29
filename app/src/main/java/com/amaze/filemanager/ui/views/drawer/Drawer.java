@@ -14,11 +14,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -122,6 +125,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         mImageLoader = AppConfig.getInstance().getImageLoader();
 
         navView = mainActivity.findViewById(R.id.navigation);
+
+        //set width of drawer in portrait to follow material guidelines
+        if(!Utils.isDeviceInLandScape(mainActivity)){
+            setNavViewDimension(navView);
+        }
+
         navView.setNavigationItemSelectedListener(this);
 
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT),
@@ -192,6 +201,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             mDrawerToggle.syncState();
         }
 
+    }
+
+    private void setNavViewDimension(CustomNavigationView navView) {
+        int screenWidth = AppConfig.getInstance().getScreenUtils().getScreenWidthInDp();
+        int desiredWidthInDp = screenWidth - ScreenUtils.TOOLBAR_HEIGHT_IN_DP;
+        int desiredWidthInPx = AppConfig.getInstance().getScreenUtils().convertDbToPx(desiredWidthInDp);
+
+        navView.setLayoutParams(
+                new DrawerLayout.LayoutParams(desiredWidthInPx, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.START));
     }
 
 

@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.LruBitmapCache;
+import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +37,7 @@ public class AppConfig extends GlideApplication {
     private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
     private static Handler sBackgroundHandler;
     private static Context sActivityContext;
+    private static ScreenUtils screenUtils;
 
     private static AppConfig mInstance;
 
@@ -191,6 +194,11 @@ public class AppConfig extends GlideApplication {
 
     public static void setActivityContext(Context context) {
         sActivityContext = context;
+        screenUtils = new ScreenUtils((Activity)context);
+    }
+
+    public ScreenUtils getScreenUtils(){
+        return screenUtils;
     }
 
     public Context getActivityContext() {
