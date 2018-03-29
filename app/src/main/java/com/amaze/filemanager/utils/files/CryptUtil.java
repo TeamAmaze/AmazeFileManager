@@ -101,14 +101,14 @@ public class CryptUtil {
      * @param sourceFile the file to encrypt
      */
     public CryptUtil(Context context, HybridFileParcelable sourceFile, ProgressHandler progressHandler,
-                     ArrayList<HybridFile> failedOps) throws GeneralSecurityException, IOException {
+                     ArrayList<HybridFile> failedOps, String targetFilename) throws GeneralSecurityException, IOException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
         // target encrypted file
         HybridFile hFile = new HybridFile(sourceFile.getMode(), sourceFile.getParent(context));
-        encrypt(context, sourceFile, hFile);
+        encrypt(context, sourceFile, hFile, targetFilename);
     }
 
     /**
@@ -197,20 +197,20 @@ public class CryptUtil {
      * @param sourceFile        the source file to encrypt
      * @param targetDirectory   the target directory in which we're going to encrypt
      */
-    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
+    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory, String targetFilename)
             throws GeneralSecurityException, IOException {
 
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
             final HybridFile hFile = new HybridFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
+                    targetDirectory.getPath(), targetFilename,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
                 try {
-                    encrypt(context, file, hFile);
+                    encrypt(context, file, hFile, file.getName().concat(CRYPT_EXTENSION));
                 } catch (IOException | GeneralSecurityException e) {
                     throw new IllegalStateException(e);//throw unchecked exception, no throws needed
                 }
@@ -227,7 +227,7 @@ public class CryptUtil {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
             HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
+                    targetDirectory.getPath(), targetFilename,
                     sourceFile.isDirectory());
 
             progressHandler.setFileName(sourceFile.getName());

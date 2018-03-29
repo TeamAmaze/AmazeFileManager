@@ -44,8 +44,12 @@ public class EncryptDecryptUtils {
     public static void startEncryption(Context c, final String path, final String password,
                                        Intent intent) throws Exception {
         CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
+        String destPath = path.substring(0, path.lastIndexOf('/')+1)
+                .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
+
+        //EncryptService.TAG_ENCRYPT_TARGET already has the .aze extension, no need to append again
+
+        EncryptedEntry encryptedEntry = new EncryptedEntry(destPath, password);
         cryptHandler.addEntry(encryptedEntry);
 
         // start the encryption process

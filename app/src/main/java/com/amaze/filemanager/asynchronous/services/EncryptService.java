@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class EncryptService extends ProgressiveService {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
+    public static final String TAG_ENCRYPT_TARGET = "crypt_target"; //name of encrypted file
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
     public static final String TAG_OPEN_MODE = "open_mode";
 
@@ -48,6 +49,7 @@ public class EncryptService extends ProgressiveService {
     private OpenMode openMode;
     private HybridFileParcelable baseFile;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
+    private String targetFilename;
 
     @Override
     public void onCreate() {
@@ -61,6 +63,7 @@ public class EncryptService extends ProgressiveService {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         baseFile = intent.getParcelableExtra(TAG_SOURCE);
+        targetFilename = intent.getStringExtra(TAG_ENCRYPT_TARGET);
 
         openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -106,7 +109,7 @@ public class EncryptService extends ProgressiveService {
 
                 // we're here to encrypt
                 try {
-                    new CryptUtil(context, baseFile, progressHandler, failedOps);
+                    new CryptUtil(context, baseFile, progressHandler, failedOps, targetFilename);
                 } catch (Exception e) {
                     e.printStackTrace();
                     failedOps.add(baseFile);
