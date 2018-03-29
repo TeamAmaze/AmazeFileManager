@@ -16,10 +16,8 @@ import android.view.View;
 
 public class CircularColorsView extends View {
 
-    private static final int DISTANCE_EDGE = 10;
-    private static final int DISTANCE = 10;
-    private static final int DIAMETER = 25;
-    private static final int RADIUS = DIAMETER/2;
+    private static final float DISTANCE_PERCENTUAL = 0.08f;
+    private static final float DIAMETER_PERCENTUAL = 0.65f;
     private static final int SEMICIRCLE_LINE_WIDTH = 0;
 
     private boolean paintInitialized = false;
@@ -58,11 +56,19 @@ public class CircularColorsView extends View {
         if(isInEditMode()) setColors(Color.CYAN, Color.RED, Color.GREEN, Color.BLUE);
         if(!paintInitialized) throw new IllegalStateException("Paint has not actual color!");
 
+        float distance = getWidth() * DISTANCE_PERCENTUAL;
+
+        float diameterByHeight = getHeight()* DIAMETER_PERCENTUAL;
+        float diameterByWidth = (getWidth() - distance*2)/3f* DIAMETER_PERCENTUAL;
+        float diameter = Math.min(diameterByHeight, diameterByWidth);
+
+        float radius = diameter/2f;
+
         int centerY = canvas.getHeight()/2;
-        int[] positionX = {canvas.getWidth() - DISTANCE_EDGE - DIAMETER - DISTANCE - DIAMETER - DISTANCE - RADIUS,
-                canvas.getWidth() - DISTANCE_EDGE - DIAMETER - DISTANCE - RADIUS,
-                canvas.getWidth() - DISTANCE_EDGE - RADIUS};
-        semicicleRect.set(positionX[0]- RADIUS, centerY- RADIUS, positionX[0]+ RADIUS, centerY+ RADIUS);
+        float[] positionX = {canvas.getWidth()- diameter - distance - diameter - distance - radius,
+                canvas.getWidth() - diameter - distance - radius,
+                canvas.getWidth() - radius};
+        semicicleRect.set(positionX[0]- radius, centerY- radius, positionX[0]+ radius, centerY+ radius);
 
         canvas.drawArc(semicicleRect, 90, 180, true, colors[0]);
         canvas.drawArc(semicicleRect, 270, 180, true, colors[1]);
@@ -70,8 +76,8 @@ public class CircularColorsView extends View {
         canvas.drawLine(semicicleRect.centerX(), semicicleRect.top, semicicleRect.centerX(),
                 semicicleRect.bottom, dividerPaint);
 
-        canvas.drawCircle(positionX[1], centerY, RADIUS, colors[2]);
-        canvas.drawCircle(positionX[2], centerY, RADIUS, colors[3]);
+        canvas.drawCircle(positionX[1], centerY, radius, colors[2]);
+        canvas.drawCircle(positionX[2], centerY, radius, colors[3]);
     }
 
 }

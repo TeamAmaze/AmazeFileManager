@@ -205,14 +205,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 null, null, null, null, null);
 
         LinkedList<String> paths = new LinkedList<>();
-        cursor.moveToFirst();
-        try {
-            while (cursor.moveToNext()) {
-                paths.push(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
-            }
-        } finally {
-            cursor.close();
+        boolean hasNext = cursor.moveToFirst();
+        while (hasNext) {
+            paths.push(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+            hasNext = cursor.moveToNext();
         }
+        cursor.close();
+
         return paths;
     }
 
@@ -221,9 +220,10 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         Cursor cursor = getReadableDatabase().query(getTableForOperation(Operation.HIDDEN), null,
                 null, null, null, null, null);
-        cursor.moveToFirst();
-        while (cursor.moveToNext()) {
+        boolean hasNext = cursor.moveToFirst();
+        while (hasNext) {
             paths.put(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)), VoidValue.SINGLETON);
+            hasNext = cursor.moveToNext();
         }
         cursor.close();
 
@@ -244,20 +244,17 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.BOOKMARKS), null,
                 null, null, null, null, null);
-        cursor.moveToFirst();
 
+        boolean hasNext = cursor.moveToFirst();
         ArrayList<String[]> row = new ArrayList<>();
-        try {
-
-            while (cursor.moveToNext()) {
-                row.add(new String[] {
-                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(COLUMN_PATH))
-                });
-            }
-        } finally {
-            cursor.close();
+        while (hasNext) {
+            row.add(new String[] {
+                    cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                    cursor.getString(cursor.getColumnIndex(COLUMN_PATH))
+            });
+            hasNext = cursor.moveToNext();
         }
+        cursor.close();
         return row;
     }
 
@@ -266,31 +263,26 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SMB), null,
                 null, null, null, null, null);
-        cursor.moveToFirst();
+        boolean hasNext = cursor.moveToFirst();
         ArrayList<String[]> row = new ArrayList<>();
-        try {
+        while (hasNext) {
+            try {
+                row.add(new String[] {
+                        cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                        SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
+                });
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
 
-            while (cursor.moveToNext()) {
-                try {
-                    row.add(new String[] {
-                            cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                            SmbUtil.getSmbDecryptedPath(context, cursor.getString(cursor.getColumnIndex(COLUMN_PATH)))
-                    });
-                } catch (GeneralSecurityException | IOException e) {
-                    e.printStackTrace();
-
-                    // failing to decrypt the path, removing entry from database
-                    Toast.makeText(context,
-                            context.getResources().getString(R.string.failed_smb_decrypt_path),
-                            Toast.LENGTH_LONG).show();
-                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
-                            "");
-                    continue;
-                }
+                // failing to decrypt the path, removing entry from database
+                Toast.makeText(context, context.getResources().getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
+                removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                        "");
+                continue;
             }
-        } finally {
-            cursor.close();
+            hasNext = cursor.moveToNext();
         }
+        cursor.close();
         return row;
     }
 
@@ -526,14 +518,12 @@ public class UtilsHandler extends SQLiteOpenHelper {
         switch (operation) {
             case LIST:
             case GRID:
-                cursor.moveToFirst();
-                try {
-                    while (cursor.moveToNext()) {
-                        paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
-                    }
-                } finally {
-                    cursor.close();
+                boolean hasNext = cursor.moveToFirst();
+                while (hasNext) {
+                    paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
+                    hasNext = cursor.moveToNext();
                 }
+                cursor.close();
                 return paths;
             default:
                 return null;

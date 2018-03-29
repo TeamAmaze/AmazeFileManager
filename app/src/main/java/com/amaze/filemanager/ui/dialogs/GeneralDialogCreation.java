@@ -1048,9 +1048,9 @@ public class GeneralDialogCreation {
         });
     }
 
-    public static void showChangePathsDialog(final WeakReference<MainActivity> m, final SharedPreferences prefs) {
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.get());
-        a.input(null, m.get().getCurrentMainFragment().getCurrentPath(), false,
+    public static void showChangePathsDialog(final MainActivity mainActivity, final SharedPreferences prefs) {
+        final MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
+        a.input(null, mainActivity.getCurrentMainFragment().getCurrentPath(), false,
                 (dialog, charSequence) -> {
                     boolean isAccessible = FileUtils.isPathAccesible(charSequence.toString(), prefs);
                     dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccessible);
@@ -1058,13 +1058,11 @@ public class GeneralDialogCreation {
 
         a.alwaysCallInputCallback();
 
-        MainActivity mainActivity = m.get();
-
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         a.widgetColor(accentColor);
 
-        a.theme(m.get().getAppTheme().getMaterialDialogTheme());
+        a.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         a.title(R.string.enterpath);
 
         a.positiveText(R.string.go);
@@ -1074,7 +1072,7 @@ public class GeneralDialogCreation {
         a.negativeColor(accentColor);
 
         a.onPositive((dialog, which) -> {
-            m.get().getCurrentMainFragment().loadlist(dialog.getInputEditText().getText().toString(),
+            mainActivity.getCurrentMainFragment().loadlist(dialog.getInputEditText().getText().toString(),
                     false, OpenMode.UNKNOWN);
         });
 

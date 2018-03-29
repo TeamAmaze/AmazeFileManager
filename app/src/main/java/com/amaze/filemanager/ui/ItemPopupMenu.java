@@ -67,7 +67,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.about:
                 GeneralDialogCreation.showPropertiesDialogWithPermissions((rowItem).generateBaseFile(),
                         rowItem.permissions, (ThemedActivity) mainFragment.getActivity(),
-                        ThemedActivity.rootMode, utilitiesProvider.getAppTheme());
+                        mainActivity.isRootExplorer(), utilitiesProvider.getAppTheme());
                                 /*
                                 PropertiesSheet propertiesSheet = new PropertiesSheet();
                                 Bundle arguments = new Bundle();
@@ -111,7 +111,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             case R.id.book:
                 DataUtils dataUtils = DataUtils.getInstance();
                 dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
-                mainFragment.getMainActivity().refreshDrawer();
+                mainFragment.getMainActivity().getDrawer().refreshDrawer();
                 Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:

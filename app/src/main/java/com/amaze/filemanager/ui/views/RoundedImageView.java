@@ -25,7 +25,7 @@ import com.amaze.filemanager.utils.Utils;
  */
 public class RoundedImageView extends ImageView {
 
-    private static final int BACKGROUND_CIRCLE_MARGIN = 4;
+    private static final float BACKGROUND_CIRCLE_MARGIN_PERCENTUAL = 0.015f;
 
     private float[] relativeSize = null;
     private Paint background = new Paint();
@@ -51,7 +51,9 @@ public class RoundedImageView extends ImageView {
             Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w);
             canvas.drawBitmap(roundBitmap, 0, 0, null);
         } else {
-            float radius = (w<h? w/2f:h/2f) - BACKGROUND_CIRCLE_MARGIN*2;
+            float min = Math.min(w, h);
+            float backgroundCircleMargin = min * BACKGROUND_CIRCLE_MARGIN_PERCENTUAL;
+            float radius = min/2f - backgroundCircleMargin*2;
             Bitmap bitmap = drawableToBitmapRelative(drawable, radius);
 
             canvas.drawCircle(w/2, h/2, radius, background);

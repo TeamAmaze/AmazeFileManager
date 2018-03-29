@@ -560,7 +560,15 @@
   <string name="custom">自定义</string>
   <string name="preselectedconfigs_title">上次选择的颜色配置</string>
   <string name="deselect_all">取消全选</string>
-  <string name="about_amaze">Android 文件管理器</string>
+  <string name="about_amaze">Material设计风格的Android文件管理器</string>
   <string name="license">软件协议</string>
   <string name="libraries">第三方依赖库</string>
+  <string name="channelname_ftp">Amaze FTP 服务器</string>
+  <string name="channeldescription_ftp">Amaze FTP 服务器通知</string>
+  <string name="password_no_match">密码不一致</string>
+  <string name="password_repeat">再次输入密码</string>
+  <string name="ssh_select_pem">选择适当的私钥用以验证身份</string>
+  <string name="no_obtainable_info">没有该文件相关的信息</string>
+  <string name="reopen_from_source">无法打开，请使用上次的应用打开该类型的文件</string>
+  <string name="no_file_error">打开文件出错，无法找到该文件</string>
 </resources>

@@ -31,12 +31,18 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -56,6 +62,7 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 import static com.amaze.filemanager.R.string.feedback;
+import static com.amaze.filemanager.activities.PreferencesActivity.START_PREFERENCE;
 
 public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
 
@@ -68,6 +75,8 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
 
     private UtilitiesProvider utilsProvider;
     private SharedPreferences sharedPref;
+    /**This is a hack see {@link PreferencesActivity#saveListViewState(int, Parcelable)}*/
+    private ListView listView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -306,6 +315,40 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         activity.finish();
         activity.overridePendingTransition(enter_anim, exit_anim);
         activity.startActivity(activity.getIntent());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v =  super.onCreateView(inflater, container, savedInstanceState);
+        /**This is a hack see {@link PreferencesActivity#saveListViewState(int, Parcelable)}*/
+        listView = v.findViewById(android.R.id.list);
+        return v;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+
+        if(listView != null) {
+            /**This is a hack see {@link PreferencesActivity#saveListViewState(int, Parcelable)}*/
+            ((PreferencesActivity) getActivity())
+                    .saveListViewState(START_PREFERENCE, listView.onSaveInstanceState());
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(listView != null) {
+            /**This is a hack see {@link PreferencesActivity#saveListViewState(int, Parcelable)}*/
+            Parcelable restored = ((PreferencesActivity) getActivity()).restoreListViewState(START_PREFERENCE);
+            if(restored != null) {
+                listView.onRestoreInstanceState(restored);
+            }
+        }
     }
 
 }
