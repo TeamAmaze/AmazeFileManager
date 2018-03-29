@@ -81,7 +81,7 @@ public class DecryptService extends AbstractProgressiveService {
         decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
         notificationBuilder.setContentTitle(getResources().getString(R.string.crypt_decrypting));
         notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
-        NotificationConstants.setMetadata(context, mBuilder, NotificationConstants.TYPE_NORMAL);
+        NotificationConstants.setMetadata(context, notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
 
@@ -151,15 +151,47 @@ public class DecryptService extends AbstractProgressiveService {
     }
 
     @Override
-    public void initVariables() {
+    protected NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
 
-        super.mNotifyManager = notificationManager;
-        super.mBuilder = notificationBuilder;
-        super.notificationID = NotificationConstants.DECRYPT_ID;
-        super.progressPercent = progressPercent;
-        super.progressListener = progressListener;
-        super.dataPackages = dataPackages;
-        super.progressHandler = progressHandler;
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return notificationBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.DECRYPT_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
     }
 
     @Override

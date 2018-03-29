@@ -27,45 +27,48 @@ import java.util.ArrayList;
 
 public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
-    // list of data packages which contains progress
-    public NotificationManager mNotifyManager;
-    public NotificationCompat.Builder mBuilder;
-    public int notificationID;
-    public volatile float progressPercent = 0f;
-    public ProgressHandler progressHandler;
     public Context context;
-    // list of data packages, to initiate chart in process viewer fragment
-    public ArrayList<DatapointParcelable> dataPackages;
-    public ProgressListener progressListener;
 
     private boolean isNotificationTitleSet = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        initVariables();
         return super.onStartCommand(intent, flags, startId);
     }
 
+    protected abstract NotificationManager getNotificationManager();
+
+    protected abstract NotificationCompat.Builder getNotificationBuilder();
+
+    protected abstract int getNotificationId();
+
+    protected abstract float getPercentProgress();
+
+    protected abstract void setPercentProgress(float progress);
+
+    public abstract ProgressListener getProgressListener();
+
+    public abstract void setProgressListener(ProgressListener progressListener);
+
     /**
-     * Initialize all necessary variables before starting a progressive service
-     * Required variables to be initialized before starting:
-     * {@link #mNotifyManager}, {@link #mBuilder}, {@link #notificationID}, {@link #progressPercent},
-     * {@link #progressListener}, {@link #dataPackages}, {@link #progressHandler}
+     * @return list of data packages, to initiate chart in process viewer fragment
      */
-    public abstract void initVariables();
+    protected abstract ArrayList<DatapointParcelable> getDataPackages();
+
+    protected abstract ProgressHandler getProgressHandler();
 
     @Override
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(0, 0, true);
-        mNotifyManager.notify(notificationID, mBuilder.build());
+        getNotificationBuilder().setProgress(0, 0, true);
+        getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
     @Override
     public void progressResumed() {
         // set notification to indeterminate unless progress resumes
-        mBuilder.setProgress(100, Math.round(progressPercent), false);
-        mNotifyManager.notify(notificationID, mBuilder.build());
+        getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+        getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
     /**
@@ -85,17 +88,17 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     public final void publishResults(String fileName, int sourceFiles, int sourceProgress,
                                      long totalSize, long writtenSize, int speed, boolean isComplete,
                                      boolean move) {
-        if (!progressHandler.getCancelled()) {
+        if (!getProgressHandler().getCancelled()) {
 
             context = getApplicationContext();
 
             //notification
-            progressPercent = ((float) writtenSize / totalSize) * 100;
+            setPercentProgress(((float) writtenSize / totalSize) * 100);
 
             if (!isNotificationTitleSet) {
                 int titleResource;
 
-                switch (notificationID) {
+                switch (getNotificationId()) {
                     case NotificationConstants.COPY_ID:
                         titleResource = move ? R.string.moving : R.string.copying;
                         break;
@@ -116,34 +119,34 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                         break;
                 }
 
-                mBuilder.setContentTitle(context.getResources().getString(titleResource));
+                getNotificationBuilder().setContentTitle(context.getResources().getString(titleResource));
 
                 isNotificationTitleSet = true;
             }
 
             if (ServiceWatcherUtil.STATE != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
+                getNotificationBuilder().setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
                         Formatter.formatFileSize(context, totalSize));
-                mBuilder.setProgress(100, Math.round(progressPercent), false);
-                mBuilder.setOngoing(true);
-                mNotifyManager.notify(notificationID, mBuilder.build());
+                getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+                getNotificationBuilder().setOngoing(true);
+                getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
             }
 
             if (writtenSize == totalSize || totalSize == 0) {
-                if (move && notificationID == NotificationConstants.COPY_ID) {
+                if (move && getNotificationId() == NotificationConstants.COPY_ID) {
 
                     //mBuilder.setContentTitle(getString(R.string.move_complete));
                     // set progress to indeterminate as deletion might still be going on from source
                     // while moving the file
-                    mBuilder.setProgress(0, 0, true);
+                    getNotificationBuilder().setProgress(0, 0, true);
 
-                    mBuilder.setContentText(context.getResources().getString(R.string.processing));
-                    mBuilder.setOngoing(false);
-                    mBuilder.setAutoCancel(true);
-                    mNotifyManager.notify(notificationID, mBuilder.build());
+                    getNotificationBuilder().setContentText(context.getResources().getString(R.string.processing));
+                    getNotificationBuilder().setOngoing(false);
+                    getNotificationBuilder().setAutoCancel(true);
+                    getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
                 } else {
-                    publishCompletedResult(notificationID);
+                    publishCompletedResult(getNotificationId());
                 }
             }
 
@@ -152,34 +155,26 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                     totalSize, writtenSize, speed, move, isComplete);
             //putDataPackage(intent);
             addDatapoint(intent);
-        } else publishCompletedResult(notificationID);
+        } else publishCompletedResult(getNotificationId());
     }
 
     private void publishCompletedResult(int id1) {
         try {
-            mNotifyManager.cancel(id1);
+            getNotificationManager().cancel(id1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public final void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    public final ProgressListener getProgressListener() {
-        return progressListener;
-    }
-
     protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
-        if(!dataPackages.isEmpty()) throw new IllegalStateException("This is not the first datapoint!");
+        if(!getDataPackages().isEmpty()) throw new IllegalStateException("This is not the first datapoint!");
 
         DatapointParcelable intent1 = new DatapointParcelable(name, amountOfFiles, totalBytes, move);
         putDataPackage(intent1);
     }
 
     protected void addDatapoint(DatapointParcelable datapoint) {
-        if(dataPackages.isEmpty()) throw new IllegalStateException("This is the first datapoint!");
+        if(getDataPackages().isEmpty()) throw new IllegalStateException("This is the first datapoint!");
 
         putDataPackage(datapoint);
         if (getProgressListener() != null) {
@@ -189,18 +184,18 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     }
 
     /**
-     * Returns the {@link #dataPackages} list which contains
+     * Returns the {@link #getDataPackages()} list which contains
      * data to be transferred to {@link ProcessViewerFragment}
      * Method call is synchronized so as to avoid modifying the list
      * by {@link ServiceWatcherUtil#handlerThread} while {@link MainActivity#runOnUiThread(Runnable)}
      * is executing the callbacks in {@link ProcessViewerFragment}
      */
     public final synchronized DatapointParcelable getDataPackage(int index) {
-        return this.dataPackages.get(index);
+        return getDataPackages().get(index);
     }
 
     public final synchronized int getDataPackageSize() {
-        return this.dataPackages.size();
+        return getDataPackages().size();
     }
 
     /**
@@ -210,7 +205,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * is executing the callbacks in {@link ProcessViewerFragment}
      */
     private synchronized void putDataPackage(DatapointParcelable dataPackage) {
-        this.dataPackages.add(dataPackage);
+        getDataPackages().add(dataPackage);
     }
 
     public interface ProgressListener {
@@ -224,7 +219,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * @param failedOps
      */
     void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
-        if (!move) mNotifyManager.cancelAll();
+        if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
 
@@ -233,7 +228,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
         String titleResource;
 
-        switch (notificationID) {
+        switch (getNotificationId()) {
             case NotificationConstants.COPY_ID:
                 titleResource = move ? context.getString(R.string.moved) : context.getString(R.string.copied);
                 break;
@@ -258,7 +253,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 titleResource.toLowerCase()));
         mBuilder.setAutoCancel(true);
 
-        progressHandler.setCancelled(true);
+        getProgressHandler().setCancelled(true);
 
         Intent intent= new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
@@ -269,7 +264,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         mBuilder.setContentIntent(pIntent);
         mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
-        mNotifyManager.notify(NotificationConstants.FAILED_ID,mBuilder.build());
+        getNotificationManager().notify(NotificationConstants.FAILED_ID,mBuilder.build());
 
         intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);

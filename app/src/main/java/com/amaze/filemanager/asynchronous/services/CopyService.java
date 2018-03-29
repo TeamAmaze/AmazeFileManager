@@ -141,15 +141,47 @@ public class CopyService extends AbstractProgressiveService {
     }
 
     @Override
-    public void initVariables() {
+    protected NotificationManager getNotificationManager() {
+        return mNotifyManager;
+    }
 
-        super.mNotifyManager = mNotifyManager;
-        super.mBuilder = mBuilder;
-        super.notificationID = NotificationConstants.COPY_ID;
-        super.progressPercent = progressPercent;
-        super.progressListener = progressListener;
-        super.dataPackages = dataPackages;
-        super.progressHandler = progressHandler;
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return mBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.COPY_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
     }
 
     public void onDestroy() {

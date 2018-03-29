@@ -97,15 +97,47 @@ public class EncryptService extends AbstractProgressiveService {
     }
 
     @Override
-    public void initVariables() {
+    protected NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
 
-        super.mNotifyManager = notificationManager;
-        super.mBuilder = notificationBuilder;
-        super.notificationID = NotificationConstants.ENCRYPT_ID;
-        super.progressPercent = progressPercent;
-        super.progressListener = progressListener;
-        super.dataPackages = dataPackages;
-        super.progressHandler = progressHandler;
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return notificationBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.ENCRYPT_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        this.progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
