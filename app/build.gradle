@@ -152,7 +152,7 @@ dependencies {
         transitive = true
     }
 
-    compile 'com.android.support:multidex:1.0.2'//Multiple dex files
+    implementation 'com.android.support:multidex:1.0.2'//Multiple dex files
 }
 
 configurations.all {
