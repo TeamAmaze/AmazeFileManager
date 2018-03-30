@@ -14,11 +14,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -71,12 +74,12 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final int image_selector_request_code = 31;
-    
+
     public static final int STORAGES_GROUP = 0, SERVERS_GROUP = 1, CLOUDS_GROUP = 2, FOLDERS_GROUP = 3,
-                                QUICKACCESSES_GROUP = 4, LASTGROUP = 5;
+            QUICKACCESSES_GROUP = 4, LASTGROUP = 5;
     public static final int[] GROUPS = {STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP,
             QUICKACCESSES_GROUP, LASTGROUP};
-    
+
 
     private MainActivity mainActivity;
     private Resources resources;
@@ -122,6 +125,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         mImageLoader = AppConfig.getInstance().getImageLoader();
 
         navView = mainActivity.findViewById(R.id.navigation);
+
+        //set width of drawer in portrait to follow material guidelines
+        if(!Utils.isDeviceInLandScape(mainActivity)){
+            setNavViewDimension(navView);
+        }
+
         navView.setNavigationItemSelectedListener(this);
 
         int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT),
@@ -136,12 +145,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         actionViewStateManager = new ActionViewStateManager(navView, idleColor, accentColor);
 
         ColorStateList drawerColors = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_checked},
-                        new int[]{android.R.attr.state_enabled},
-                        new int[]{android.R.attr.state_pressed},
-                        new int[]{android.R.attr.state_focused},
-                        new int[]{android.R.attr.state_pressed}
+                new int[][] {
+                        new int[] {android.R.attr.state_checked},
+                        new int[] {android.R.attr.state_enabled},
+                        new int[] {android.R.attr.state_pressed},
+                        new int[] {android.R.attr.state_focused},
+                        new int[] {android.R.attr.state_pressed}
                 },
                 new int[] {accentColor, idleColor, idleColor, idleColor, idleColor}
         );
@@ -149,9 +158,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         navView.setItemTextColor(drawerColors);
         navView.setItemIconTintList(drawerColors);
 
-        if (mainActivity.getAppTheme().equals(AppTheme.DARK)) navView.setBackgroundColor(Utils.getColor(mainActivity, R.color.holo_dark_background));
-        else if (mainActivity.getAppTheme().equals(AppTheme.BLACK)) navView.setBackgroundColor(Utils.getColor(mainActivity, android.R.color.black));
-        else navView.setBackgroundColor(Color.WHITE);
+        if (mainActivity.getAppTheme().equals(AppTheme.DARK)) {
+            navView.setBackgroundColor(Utils.getColor(mainActivity, R.color.holo_dark_background));
+        } else if (mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
+            navView.setBackgroundColor(Utils.getColor(mainActivity, android.R.color.black));
+        } else {
+            navView.setBackgroundColor(Color.WHITE);
+        }
+
         mDrawerLayout = mainActivity.findViewById(R.id.drawer_layout);
         //mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
@@ -192,6 +206,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             mDrawerToggle.syncState();
         }
 
+    }
+
+    private void setNavViewDimension(CustomNavigationView navView) {
+        int screenWidth = AppConfig.getInstance().getScreenUtils().getScreenWidthInDp();
+        int desiredWidthInDp = screenWidth - ScreenUtils.TOOLBAR_HEIGHT_IN_DP;
+        int desiredWidthInPx = AppConfig.getInstance().getScreenUtils().convertDbToPx(desiredWidthInDp);
+
+        navView.setLayoutParams(
+                new DrawerLayout.LayoutParams(desiredWidthInPx, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.START));
     }
 
 
@@ -338,7 +361,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 new MenuMetadata(() -> {
                     FragmentTransaction transaction2 = mainActivity.getSupportFragmentManager().beginTransaction();
                     transaction2.replace(R.id.content_frame, new FTPServerFragment());
-                    mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    mainActivity.getAppbar()
+                            .getAppbarLayout()
+                            .animate()
+                            .translationY(0)
+                            .setInterpolator(new DecelerateInterpolator(2))
+                            .start();
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) close();
                     else onDrawerClosed();
@@ -349,7 +377,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 new MenuMetadata(() -> {
                     FragmentTransaction transaction2 = mainActivity.getSupportFragmentManager().beginTransaction();
                     transaction2.replace(R.id.content_frame, new AppsListFragment());
-                    mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                    mainActivity.getAppbar()
+                            .getAppbarLayout()
+                            .animate()
+                            .translationY(0)
+                            .setInterpolator(new DecelerateInterpolator(2))
+                            .start();
                     pending_fragmentTransaction = transaction2;
                     if (!isDrawerLocked) close();
                     else onDrawerClosed();
@@ -364,7 +397,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 }),
                 R.drawable.ic_settings_white_24dp, null);
 
-        for(int i = 0; i < navView.getMenu().size(); i++) {
+        for (int i = 0; i < navView.getMenu().size(); i++) {
             navView.getMenu().getItem(i).setEnabled(true);
         }
 
@@ -373,7 +406,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         }
 
         MenuItem item = navView.getSelected();
-        if(item != null) {
+        if (item != null) {
             item.setChecked(true);
             actionViewStateManager.selectActionView(item);
             isSomethingSelected = true;
@@ -386,7 +419,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         MenuItem item = menu.add(group, order, order, text).setIcon(icon);
         dataUtils.putDrawerMetadata(item, meta);
-        if(actionViewIcon != null) {
+        if (actionViewIcon != null) {
             item.setActionView(R.layout.layout_draweractionview);
 
             ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
@@ -406,7 +439,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         MenuItem item = menu.add(group, order, order, text).setIcon(icon);
         dataUtils.putDrawerMetadata(item, meta);
 
-        if(actionViewIcon != null) {
+        if (actionViewIcon != null) {
             item.setActionView(R.layout.layout_draweractionview);
 
             ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
@@ -421,9 +454,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     public void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (mainActivity.getPrefs() != null && intent != null && intent.getData() != null) {
-            if (SDK_INT >= Build.VERSION_CODES.KITKAT)
+            if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 mainActivity.getContentResolver().takePersistableUriPermission(intent.getData(),
                         Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
             mainActivity.getPrefs().edit().putString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH,
                     intent.getData().toString()).commit();
             setDrawerHeaderBackground();
@@ -431,7 +465,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     public void closeIfNotLocked() {
-        if(!isLocked()) close();
+        if (!isLocked()) { close(); }
     }
 
     public boolean isLocked() {
@@ -488,7 +522,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         switch (meta.type) {
             case MenuMetadata.ITEM_ENTRY:
-                if (dataUtils.containsBooks(new String[]{title, meta.path}) != -1) {
+                if (dataUtils.containsBooks(new String[] {title, meta.path}) != -1) {
                     FileUtils.checkForPath(mainActivity, meta.path, mainActivity.isRootExplorer());
                 }
 
@@ -503,7 +537,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 pendingPath = meta.path;
 
                 if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
-                        mainActivity.getPrefs().getString(MainActivity.KEY_PREF_OTG, null).equals(MainActivity.VALUE_PREF_OTG_NULL)) {
+                        mainActivity.getPrefs()
+                                .getString(MainActivity.KEY_PREF_OTG, null)
+                                .equals(MainActivity.VALUE_PREF_OTG_NULL)) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
@@ -511,7 +547,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
                 } else {
                     closeIfNotLocked();
-                    if(isLocked()) onDrawerClosed();
+                    if (isLocked()) { onDrawerClosed(); }
                 }
 
                 break;
@@ -540,7 +576,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             case SERVERS_GROUP:
             case CLOUDS_GROUP:
             case FOLDERS_GROUP:
-                if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
+                if (dataUtils.containsBooks(new String[] {title, path}) != -1) {
                     mainActivity.renameBookmark(title, path);
                 } else if (path.startsWith("smb:/")) {
                     mainActivity.showSMBDialog(title, path, true);
@@ -572,7 +608,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     public void setDrawerHeaderBackground() {
         String path1 = mainActivity.getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
-        if (path1 == null) return;
+        if (path1 == null) { return; }
         try {
             final ImageView headerImageView = new ImageView(mainActivity);
             headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
@@ -612,7 +648,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     public void syncState() {
-        if (mDrawerToggle != null) mDrawerToggle.syncState();
+        if (mDrawerToggle != null) { mDrawerToggle.syncState(); }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
@@ -632,11 +668,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     public void deselectEverything() {
         actionViewStateManager.deselectCurrentActionView();//If you set the item as checked the listener doesn't trigger
-        if(!isSomethingSelected) return;
+        if (!isSomethingSelected) { return; }
 
         navView.deselectItems();
 
-        for(int i = 0; i < navView.getMenu().size(); i++) {
+        for (int i = 0; i < navView.getMenu().size(); i++) {
             navView.getMenu().getItem(i).setChecked(false);
         }
 
