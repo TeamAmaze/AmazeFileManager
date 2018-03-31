@@ -48,7 +48,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/encrypt_file_save_as"
             android:id="@+id/edit_text_encrypt_save_as"
             android:layout_gravity="center_vertical" />
 

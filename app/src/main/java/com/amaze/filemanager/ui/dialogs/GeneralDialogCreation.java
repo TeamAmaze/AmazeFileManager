@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
@@ -73,7 +74,6 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -610,6 +610,39 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
+    public static void showEncryptWithPresetPasswordSaveAsDialog(@NonNull final Context c, @NonNull final MainActivity main, @NonNull String password, @NonNull final Intent intent) {
+
+        HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
+        MaterialDialog saveAsDialog = showNameDialog(main,
+                "",
+                intentParcelable.getName().concat(CryptUtil.CRYPT_EXTENSION),
+                c.getString(intentParcelable.isDirectory() ? R.string.encrypt_folder_save_as : R.string.encrypt_file_save_as),
+                c.getString(R.string.ok),
+                null,
+                c.getString(R.string.cancel),
+                (dialog, which) -> {
+                    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+                    intent.putExtra(EncryptService.TAG_ENCRYPT_TARGET, textfield.getText().toString());
+                    try {
+                        EncryptDecryptUtils.startEncryption(c, intentParcelable.getPath(), password, intent);
+                    } catch (GeneralSecurityException | IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
+                    } finally {
+                        dialog.dismiss();
+                    }
+                }, (text) -> {
+                    if (text.length() < 1) {
+                        return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                    }
+                    if (!text.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                        return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.encrypt_file_must_end_with_aze);
+                    }
+                    return new WarnableTextInputValidator.ReturnState();
+                });
+        saveAsDialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
+    }
+
     public static void showEncryptAuthenticateDialog(final Context c, final Intent intent,
                                                      final MainActivity main, AppTheme appTheme,
                                                      final EncryptDecryptUtils.EncryptButtonCallbackInterface
@@ -631,6 +664,9 @@ public class GeneralDialogCreation {
 
         HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
         encryptSaveAsEditText.setText(intentParcelable.getName().concat(CryptUtil.CRYPT_EXTENSION));
+        textInputLayoutEncryptSaveAs.setHint(intentParcelable.isDirectory() ?
+                c.getString(R.string.encrypt_folder_save_as) :
+                c.getString(R.string.encrypt_file_save_as));
         
         passwordEditText.post(() -> {
             InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -651,7 +687,7 @@ public class GeneralDialogCreation {
 
                     try {
                         encryptButtonCallbackInterface.onButtonPressed(intent, passwordEditText.getText().toString());
-                    } catch (Exception e) {
+                    } catch (GeneralSecurityException | IOException e) {
                         e.printStackTrace();
                         Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG).show();
                     } finally {

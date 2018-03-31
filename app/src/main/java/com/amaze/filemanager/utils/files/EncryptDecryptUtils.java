@@ -40,9 +40,11 @@ public class EncryptDecryptUtils {
      *
      * @param path     the path of file to encrypt
      * @param password the password in plaintext
+     * @throws GeneralSecurityException Errors on encrypting file/folder
+     * @throws IOException I/O errors on encrypting file/folder
      */
     public static void startEncryption(Context c, final String path, final String password,
-                                       Intent intent) throws Exception {
+                                       Intent intent) throws GeneralSecurityException, IOException {
         CryptHandler cryptHandler = new CryptHandler(c);
         String destPath = path.substring(0, path.lastIndexOf('/')+1)
                 .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
@@ -163,7 +165,7 @@ public class EncryptDecryptUtils {
          * @param intent
          * @throws Exception
          */
-        void onButtonPressed(Intent intent) throws Exception;
+        void onButtonPressed(Intent intent) throws GeneralSecurityException, IOException;
 
         /**
          * Callback fired when user has entered a password for encryption
@@ -173,7 +175,7 @@ public class EncryptDecryptUtils {
          * @param password the password entered by user
          * @throws Exception
          */
-        void onButtonPressed(Intent intent, String password) throws Exception;
+        void onButtonPressed(Intent intent, String password) throws GeneralSecurityException, IOException;
     }
 
     public interface DecryptButtonCallbackInterface {

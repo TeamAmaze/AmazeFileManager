@@ -625,6 +625,7 @@
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
     <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
+    <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
 </resources>
 
