@@ -10,8 +10,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.models.BookmarksOperationData;
+import com.amaze.filemanager.database.models.GridOperationData;
+import com.amaze.filemanager.database.models.HiddenOperationData;
+import com.amaze.filemanager.database.models.HistoryOperationData;
+import com.amaze.filemanager.database.models.ListOperationData;
+import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.database.models.SMPOperationData;
+import com.amaze.filemanager.database.models.SSHOperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -20,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Vishal on 29-05-2017.
@@ -126,6 +135,36 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SFTP
     }
 
+
+    public void saveToDb(OperationData operationData) {
+        AppConfig.runInBackground(() -> {
+            if (operationData instanceof HistoryOperationData) {
+                setPath(Operation.HISTORY, ((HistoryOperationData) operationData).getPath());
+            } else if (operationData instanceof HiddenOperationData) {
+                setPath(Operation.HIDDEN, ((HiddenOperationData) operationData).getPath());
+            } else if (operationData instanceof ListOperationData) {
+                setPath(Operation.LIST, ((ListOperationData) operationData).getPath());
+            } else if (operationData instanceof GridOperationData) {
+                setPath(Operation.GRID, ((GridOperationData) operationData).getPath());
+            } else if (operationData instanceof BookmarksOperationData) {
+                setPath(Operation.BOOKMARKS, ((BookmarksOperationData) operationData).getName(),
+                        ((BookmarksOperationData)
+                                operationData).getPath());
+            } else if (operationData instanceof SMPOperationData) {
+                setPath(Operation.SMB, ((SMPOperationData) operationData).getName(), ((SMPOperationData)
+                        operationData).getPath());
+            } else if (operationData instanceof SSHOperationData) {
+                String name = ((SSHOperationData) operationData).getName();
+                String path = ((SSHOperationData) operationData).getPath();
+                String hostKey = ((SSHOperationData) operationData).getHostKey();
+                String sshKeyName = ((SSHOperationData) operationData).getSshKeyName();
+                String sshKey = ((SSHOperationData) operationData).getSshKey();
+                addSsh(name, path, hostKey, sshKeyName, sshKey);
+            }
+        });
+
+    }
+
     public void addCommonBookmarks() {
         String sd = Environment.getExternalStorageDirectory() + "/";
 
@@ -143,29 +182,11 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void addHistory(String path) {
-        setPath(Operation.HISTORY, path);
-    }
 
-    public void addHidden(String path) {
-        setPath(Operation.HIDDEN, path);
-    }
-
-    public void addListView(String path) {
-        setPath(Operation.LIST, path);
-    }
-
-    public void addGridView(String path) {
-        setPath(Operation.GRID, path);
-    }
-
-    public void addBookmark(String name, String path) {
+    private void addBookmark(String name, String path) {
         setPath(Operation.BOOKMARKS, name, path);
     }
 
-    public void addSmb(String name, String path) {
-        setPath(Operation.SMB, name, path);
-    }
 
     public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
         SQLiteDatabase database = getWritableDatabase();
@@ -531,15 +552,19 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     private void removePath(Operation operation, String path) {
+        AppConfig.runInBackground(() -> {
+            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
+                    new String[] {path});
+        });
 
-        sqLiteDatabase.delete(getTableForOperation(operation), COLUMN_PATH + "=?",
-                new String[] {path});
     }
 
     private void clearTable(Operation table) {
-        getWritableDatabase().delete(getTableForOperation(table), null, null);
+        AppConfig.runInBackground(()
+                -> getWritableDatabase().delete(getTableForOperation(table), null, null));
+
     }
 
     private void renamePath(Operation operation, String name, String path) {
