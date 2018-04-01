@@ -29,6 +29,8 @@ android {
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true;
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     signingConfigs {
@@ -79,80 +81,90 @@ dependencies {
     implementation 'com.android.support:cardview-v7:26.1.0'
 
     //For tests
-    androidTestImplementation 'junit:junit:4.12'//tests the app logic
-    testImplementation "org.robolectric:robolectric:3.6.1"//tests android interaction
+    androidTestImplementation 'junit:junit:4.12'
+
+    //tests the app logic
+    testImplementation 'org.robolectric:robolectric:3.6.1'
+
+    //tests android interaction
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3'
-
     implementation 'org.apache.commons:commons-compress:1.12'
-
-    implementation ('com.github.junrar:junrar:0.7') {
+    implementation('com.github.junrar:junrar:0.7') {
         exclude module: 'commons-logging'
         exclude module: 'commons-logging-api'
         exclude module: 'maven-scm-api'
         exclude module: 'maven-scm-provider-svnexe'
     }
-
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     //FTP Server
+
     /*
-    implementation 'org.apache.mina:mina-core:2.0.13'
-    implementation 'org.apache.ftpserver:ftpserver-core:1.0.6'
-    implementation 'org.apache.ftpserver:ftplet-api:1.0.6'
-    */
+        implementation 'org.apache.mina:mina-core:2.0.13'
+        implementation 'org.apache.ftpserver:ftpserver-core:1.0.6'
+        implementation 'org.apache.ftpserver:ftplet-api:1.0.6'
+        */
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
+    implementation 'org.apache.mina:mina-core:2.0.16'
 
-    implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    implementation 'org.slf4j:slf4j-simple:1.7.21'
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
+
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
+    implementation 'org.apache.ftpserver:ftplet-api:1.1.0'
 
     //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
+
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
+    implementation 'org.apache.ftpserver:ftpserver-core:1.1.0'
 
     //implementation 'com.jcraft:jsch:0.1.53'
     implementation 'com.android.volley:volley:1.0.0'
-
     implementation 'eu.chainfire:libsuperuser:1.0.0.+'
-
     implementation 'com.cloudrail:cloudrail-si-android:2.17.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
+    //Nice charts and graphs
+    implementation 'com.github.npgall:concurrent-trees:2.6.1'
 
-    implementation 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
+    //Concurrent tries
 
     //SFTP
     implementation 'com.hierynomus:sshj:0.23.0'
-
     implementation 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
     implementation 'com.madgag.spongycastle:prov:1.58.0.0'
 
     //Glide: loads icons seemlessly
     implementation 'com.github.bumptech.glide:glide:4.4.0'
-    implementation ("com.github.bumptech.glide:recyclerview-integration:4.3.1") {
+    implementation('com.github.bumptech.glide:recyclerview-integration:4.3.1') {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+    implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.1'
 
-    implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.1'//Floating Action Buttons Menu (aka expandable FAB)
+    //Floating Action Buttons Menu (aka expandable FAB)
 
     //Simple library show
     implementation('com.mikepenz:aboutlibraries:6.0.3@aar') {
         transitive = true
     }
+    compile 'com.android.support:multidex:1.0.2'
 
-    compile 'com.android.support:multidex:1.0.2'//Multiple dex files
+    //Multiple dex files
+    implementation 'com.android.support.test:runner:1.0.1'
+
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
 }
 
 configurations.all {
