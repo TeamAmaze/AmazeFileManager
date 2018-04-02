@@ -146,11 +146,6 @@ public class DecryptService extends AbstractProgressiveService {
     }
 
     @Override
-    public DecryptService getServiceType() {
-        return this;
-    }
-
-    @Override
     protected NotificationManager getNotificationManager() {
         return notificationManager;
     }
@@ -192,6 +187,11 @@ public class DecryptService extends AbstractProgressiveService {
     @Override
     protected ProgressHandler getProgressHandler() {
         return progressHandler;
+    }
+
+    @Override
+    public boolean isDecryptService() {
+        return true;
     }
 
     @Override

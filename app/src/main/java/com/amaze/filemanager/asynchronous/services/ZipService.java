@@ -116,11 +116,6 @@ public class ZipService extends AbstractProgressiveService {
     }
 
     @Override
-    public ZipService getServiceType() {
-        return this;
-    }
-
-    @Override
     protected NotificationManager getNotificationManager() {
         return mNotifyManager;
     }

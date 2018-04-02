@@ -213,6 +213,16 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         void refresh();
     }
 
+    @Override
+    public Context getApplicationContext() {
+        return super.getApplicationContext();
+    }
+
+    @Override
+    public boolean isDecryptService() {
+        return false;
+    }
+
     /**
      * Displays a notification, sends intent and cancels progress if there were some failures
      *

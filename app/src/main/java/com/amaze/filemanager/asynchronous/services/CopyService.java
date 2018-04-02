@@ -136,11 +136,6 @@ public class CopyService extends AbstractProgressiveService {
     }
 
     @Override
-    public CopyService getServiceType() {
-        return this;
-    }
-
-    @Override
     protected NotificationManager getNotificationManager() {
         return mNotifyManager;
     }
