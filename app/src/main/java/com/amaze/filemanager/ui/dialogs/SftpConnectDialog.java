@@ -44,6 +44,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -321,8 +322,9 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
-                        utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
-                                selectedParsedKeyPairName, getPemContents());
+                        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SFTP,
+                                connectionName,encryptedPath, hostKeyFingerprint,
+                                selectedParsedKeyPairName, getPemContents()));
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
                         ma.loadlist(path, false, OpenMode.UNKNOWN);

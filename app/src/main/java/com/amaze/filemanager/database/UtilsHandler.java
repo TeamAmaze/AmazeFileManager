@@ -10,8 +10,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -116,7 +118,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    private enum Operation {
+    public enum Operation {
         HISTORY,
         HIDDEN,
         LIST,
@@ -124,6 +126,29 @@ public class UtilsHandler extends SQLiteOpenHelper {
         BOOKMARKS,
         SMB,
         SFTP
+    }
+
+    public void saveToDatabase(OperationData operationData) {
+        AppConfig.runInBackground(() -> {
+            switch (operationData.type) {
+                case HIDDEN:
+                case HISTORY:
+                case LIST:
+                case GRID:
+                    setPath(operationData.type, operationData.path);
+                    break;
+                case BOOKMARKS:
+                case SMB:
+                    setPath(operationData.type, operationData.name, operationData.path);
+                    break;
+                case SFTP:
+                    addSsh(operationData.name, operationData.path, operationData.hostKey,
+                            operationData.sshKeyName, operationData.sshKey);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
+            }
+        });
     }
 
     public void addCommonBookmarks() {
@@ -138,7 +163,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         };
 
         for (String dir : dirs) {
-
             addBookmark(new File(dir).getName(), dir);
         }
     }
