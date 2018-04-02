@@ -10,11 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.database.models.BookmarksOperationData;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.database.models.PathOperationData;
-import com.amaze.filemanager.database.models.SMPOperationData;
-import com.amaze.filemanager.database.models.SSHOperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -39,6 +35,9 @@ import java.util.List;
 
 public class UtilsHandler extends SQLiteOpenHelper {
 
+    public static final int OPERATION_HISTORY = 0, OPERATION_HIDDEN = 1, OPERATION_LIST = 2,
+            OPERATION_GRID = 3, OPERATION_BOOKMARKS  = 4, OPERATION_SMB = 5, OPERATION_SFTP = 6;
+
     private Context context;
 
     private static final String DATABASE_NAME = "utilities.db";
@@ -58,13 +57,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOST_PUBKEY = "pub_key";
     private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
-
-
-    public static final int OPERATION_TYPE_HIDDEN = 1;
-    public static final int OPERATION_TYPE_HISTORY = 2;
-    public static final int OPERATION_TYPE_LIST = 3;
-    public static final int OPERATION_TYPE_GRID = 4;
-
 
     private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
@@ -129,51 +121,27 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public enum Operation {
-        HISTORY,
-        HIDDEN,
-        LIST,
-        GRID,
-        BOOKMARKS,
-        SMB,
-        SFTP
-    }
-
-
     public void saveToDb(OperationData operationData) {
         AppConfig.runInBackground(() -> {
-            if (operationData instanceof PathOperationData) {
-                switch (((PathOperationData) operationData).operationType) {
-                    case OPERATION_TYPE_HIDDEN:
-                        setPath(Operation.HIDDEN, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_HISTORY:
-                        setPath(Operation.HISTORY, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_LIST:
-                        setPath(Operation.LIST, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_GRID:
-                        setPath(Operation.GRID, ((PathOperationData) operationData).path);
-                        break;
-                }
-
-            } else if (operationData instanceof BookmarksOperationData) {
-                setPath(Operation.BOOKMARKS, ((BookmarksOperationData) operationData).name,
-                        ((BookmarksOperationData) operationData).path);
-            } else if (operationData instanceof SMPOperationData) {
-                setPath(Operation.SMB, ((SMPOperationData) operationData).name,
-                        ((SMPOperationData) operationData).name);
-            } else if (operationData instanceof SSHOperationData) {
-                String path = ((SSHOperationData) operationData).path;
-                String name = ((SSHOperationData) operationData).name;
-                String hostKey = ((SSHOperationData) operationData).hostKey;
-                String sshKeyName = ((SSHOperationData) operationData).sshKeyName;
-                String sshKey = ((SSHOperationData) operationData).sshKey;
-                addSsh(name, path, hostKey, sshKeyName, sshKey);
+            switch (operationData.type) {
+                case OPERATION_HISTORY:
+                case OPERATION_HIDDEN:
+                case OPERATION_LIST:
+                case OPERATION_GRID:
+                    setPath(operationData.type, operationData.path);
+                    break;
+                case OPERATION_BOOKMARKS:
+                case OPERATION_SMB:
+                    setPath(operationData.type, operationData.name, operationData.path);
+                    break;
+                case OPERATION_SFTP:
+                    addSsh(operationData.name, operationData.path, operationData.hostKey,
+                            operationData.sshKeyName, operationData.sshKey);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
             }
         });
-
     }
 
     public void addCommonBookmarks() {
@@ -195,7 +163,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
 
     private void addBookmark(String name, String path) {
-        setPath(Operation.BOOKMARKS, name, path);
+        setPath(OPERATION_BOOKMARKS, name, path);
     }
 
 
@@ -210,7 +178,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
             values.put(COLUMN_PRIVATE_KEY, sshKey);
         }
 
-        database.insert(getTableForOperation(Operation.SFTP), null, values);
+        database.insert(getTableForOperation(OPERATION_SFTP), null, values);
     }
 
     public void updateSsh(
@@ -227,13 +195,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
             values.put(COLUMN_PRIVATE_KEY, sshKey);
         }
 
-        database.update(getTableForOperation(Operation.SFTP), values, String.format("%s=?", COLUMN_NAME),
+        database.update(getTableForOperation(OPERATION_SFTP), values, String.format("%s=?", COLUMN_NAME),
                 new String[] {oldConnectionName});
     }
 
     public LinkedList<String> getHistoryLinkedList() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.HISTORY), null,
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(OPERATION_HISTORY), null,
                 null, null, null, null, null);
 
         LinkedList<String> paths = new LinkedList<>();
@@ -250,7 +218,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     public ConcurrentRadixTree<VoidValue> getHiddenFilesConcurrentRadixTree() {
         ConcurrentRadixTree<VoidValue> paths = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 
-        Cursor cursor = getReadableDatabase().query(getTableForOperation(Operation.HIDDEN), null,
+        Cursor cursor = getReadableDatabase().query(getTableForOperation(OPERATION_HIDDEN), null,
                 null, null, null, null, null);
         boolean hasNext = cursor.moveToFirst();
         while (hasNext) {
@@ -263,18 +231,18 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public ArrayList<String> getListViewList() {
-        return getPath(Operation.LIST);
+        return getPath(OPERATION_LIST);
     }
 
     public ArrayList<String> getGridViewList() {
-        return getPath(Operation.GRID);
+        return getPath(OPERATION_GRID);
     }
 
     public ArrayList<String[]> getBookmarksList() {
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.BOOKMARKS), null,
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(OPERATION_BOOKMARKS), null,
                 null, null, null, null, null);
 
         boolean hasNext = cursor.moveToFirst();
@@ -293,7 +261,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     public ArrayList<String[]> getSmbList() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SMB), null,
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(OPERATION_SMB), null,
                 null, null, null, null, null);
         boolean hasNext = cursor.moveToFirst();
         ArrayList<String[]> row = new ArrayList<>();
@@ -322,7 +290,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     public List<String[]> getSftpList() {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
-        Cursor cursor = sqLiteDatabase.query(getTableForOperation(Operation.SFTP),
+        Cursor cursor = sqLiteDatabase.query(getTableForOperation(OPERATION_SFTP),
                 new String[] {COLUMN_NAME, COLUMN_PATH},
                 null, null, null, null, COLUMN_ID);
 
@@ -402,19 +370,19 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public void removeHistoryPath(String path) {
-        removePath(Operation.HISTORY, path);
+        removePath(OPERATION_HISTORY, path);
     }
 
     public void removeHiddenPath(String path) {
-        removePath(Operation.HIDDEN, path);
+        removePath(OPERATION_HIDDEN, path);
     }
 
     public void removeListViewPath(String path) {
-        removePath(Operation.LIST, path);
+        removePath(OPERATION_LIST, path);
     }
 
     public void removeGridViewPath(String path) {
-        removePath(Operation.GRID, path);
+        removePath(OPERATION_GRID, path);
     }
 
     public void removeBookmarksPath(String name, String path) {
@@ -475,40 +443,40 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     public void clearHistoryTable() {
-        clearTable(Operation.HISTORY);
+        clearTable(OPERATION_HISTORY);
     }
 
     public void clearHiddenTable() {
-        clearTable(Operation.HIDDEN);
+        clearTable(OPERATION_HIDDEN);
     }
 
     public void clearListViewTable() {
-        clearTable(Operation.LIST);
+        clearTable(OPERATION_LIST);
     }
 
     public void clearGridViewTable() {
-        clearTable(Operation.GRID);
+        clearTable(OPERATION_GRID);
     }
 
     public void clearBookmarksTable() {
-        clearTable(Operation.BOOKMARKS);
+        clearTable(OPERATION_BOOKMARKS);
     }
 
     public void clearSmbTable() {
-        clearTable(Operation.SMB);
+        clearTable(OPERATION_SMB);
     }
 
-    public void clearSshTable() { clearTable(Operation.SFTP); }
+    public void clearSshTable() { clearTable(OPERATION_SFTP); }
 
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
-        renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
+        renamePath(OPERATION_BOOKMARKS, oldName, oldPath, newName, newPath);
     }
 
     public void renameSMB(String oldName, String oldPath, String newName, String newPath) {
-        renamePath(Operation.SMB, oldName, oldPath, newName, newPath);
+        renamePath(OPERATION_SMB, oldName, oldPath, newName, newPath);
     }
 
-    private void setPath(Operation operation, String path) {
+    private void setPath(int operation, String path) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_PATH, path);
@@ -516,7 +484,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
     }
 
-    private void setPath(Operation operation, String name, String path) {
+    private void setPath(int operation, String name, String path) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, name);
@@ -525,7 +493,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
     }
 
-    private ArrayList<String> getPath(Operation operation) {
+    private ArrayList<String> getPath(int operation) {
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(getTableForOperation(operation), null,
@@ -534,8 +502,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         ArrayList<String> paths = new ArrayList<>();
 
         switch (operation) {
-            case LIST:
-            case GRID:
+            case OPERATION_LIST:
+            case OPERATION_GRID:
                 boolean hasNext = cursor.moveToFirst();
                 while (hasNext) {
                     paths.add(cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
@@ -548,7 +516,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    private void removePath(Operation operation, String path) {
+    private void removePath(int operation, String path) {
         AppConfig.runInBackground(() -> {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -558,13 +526,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     }
 
-    private void clearTable(Operation table) {
+    private void clearTable(int table) {
         AppConfig.runInBackground(()
                 -> getWritableDatabase().delete(getTableForOperation(table), null, null));
 
     }
 
-    private void renamePath(Operation operation, String name, String path) {
+    private void renamePath(int operation, String name, String path) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, name);
@@ -575,7 +543,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     private void renamePath(
-            Operation operation, String oldName, String oldPath,
+            int operation, String oldName, String oldPath,
             String newName, String newPath) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -588,27 +556,24 @@ public class UtilsHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Return table string for corresponding {@link Operation}
-     *
-     * @param operation
-     * @return
+     * Return table string for corresponding OPERATION_*.
      */
-    private String getTableForOperation(Operation operation) {
+    private String getTableForOperation(int operation) {
 
         switch (operation) {
-            case HISTORY:
+            case OPERATION_HISTORY:
                 return TABLE_HISTORY;
-            case HIDDEN:
+            case OPERATION_HIDDEN:
                 return TABLE_HIDDEN;
-            case LIST:
+            case OPERATION_LIST:
                 return TABLE_LIST;
-            case GRID:
+            case OPERATION_GRID:
                 return TABLE_GRID;
-            case BOOKMARKS:
+            case OPERATION_BOOKMARKS:
                 return TABLE_BOOKMARKS;
-            case SMB:
+            case OPERATION_SMB:
                 return TABLE_SMB;
-            case SFTP:
+            case OPERATION_SFTP:
                 return TABLE_SFTP;
             default:
                 return null;
