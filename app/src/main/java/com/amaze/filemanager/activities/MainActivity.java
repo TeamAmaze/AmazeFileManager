@@ -963,7 +963,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
                         });
                     }
-                    utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.GRID,
+                    utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_GRID,
                             mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
@@ -974,7 +974,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         });
                     }
 
-                    utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.LIST,
+                    utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_LIST,
                             mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
@@ -1662,7 +1662,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
+                utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_SMB, name, encryptedPath));
 
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
@@ -1706,7 +1706,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.HIDDEN, path));
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_HIDDEN, path));
     }
 
     @Override
@@ -1716,12 +1716,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.HISTORY, path));
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_HISTORY, path));
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.BOOKMARKS, path[0], path[1]));
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_BOOKMARKS, path[0], path[1]));
         if (refreshdrawer) drawer.refreshDrawer();
     }
 

@@ -322,7 +322,7 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
-                        utilsHandler.saveToDb(new OperationData(UtilsHandler.Operation.SFTP,
+                        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_SFTP,
                                 connectionName,encryptedPath, hostKeyFingerprint,
                                 selectedParsedKeyPairName, getPemContents()));
 
