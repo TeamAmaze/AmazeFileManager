@@ -45,7 +45,6 @@ import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -64,7 +63,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -82,10 +80,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.BookmarksOperationData;
 import com.amaze.filemanager.database.models.CloudEntry;
-import com.amaze.filemanager.database.models.GridOperationData;
-import com.amaze.filemanager.database.models.HiddenOperationData;
-import com.amaze.filemanager.database.models.HistoryOperationData;
-import com.amaze.filemanager.database.models.ListOperationData;
+import com.amaze.filemanager.database.models.PathOperationData;
 import com.amaze.filemanager.database.models.SMPOperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
@@ -970,7 +965,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
                         });
                     }
-                    utilsHandler.saveToDb(new GridOperationData(mainFragment.getCurrentPath()));
+                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.OPERATION_TYPE_GRID));
 
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
@@ -981,7 +976,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         });
                     }
 
-                    utilsHandler.saveToDb(new ListOperationData(mainFragment.getCurrentPath()));
+                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.OPERATION_TYPE_LIST));
 
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
@@ -1713,7 +1708,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.saveToDb(new HiddenOperationData(path));
+        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.OPERATION_TYPE_HIDDEN));
     }
 
     @Override
@@ -1723,7 +1718,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.saveToDb(new HistoryOperationData(path));
+        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.OPERATION_TYPE_HISTORY));
     }
 
     @Override
