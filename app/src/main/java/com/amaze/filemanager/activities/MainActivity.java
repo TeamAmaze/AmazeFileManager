@@ -965,8 +965,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
                         });
                     }
-                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.Operation
-                            .GRID));
+                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.OPERATION_TYPE_GRID));
 
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
@@ -977,8 +976,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         });
                     }
 
-                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.Operation
-                            .LIST));
+                    utilsHandler.saveToDb(new PathOperationData(mainFragment.getCurrentPath(),UtilsHandler.OPERATION_TYPE_LIST));
 
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
@@ -1710,7 +1708,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.Operation.HIDDEN));
+        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.OPERATION_TYPE_HIDDEN));
     }
 
     @Override
@@ -1720,7 +1718,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.Operation.HISTORY));
+        utilsHandler.saveToDb(new PathOperationData(path,UtilsHandler.OPERATION_TYPE_HISTORY));
     }
 
     @Override

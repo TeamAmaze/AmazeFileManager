@@ -323,12 +323,8 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
-                        SSHOperationData sshOperationData = new SSHOperationData();
-                        sshOperationData.setName(connectionName);
-                        sshOperationData.setPath(encryptedPath);
-                        sshOperationData.setHostKey(hostKeyFingerprint);
-                        sshOperationData.setSshKeyName(selectedParsedKeyPairName);
-                        sshOperationData.setSshKey(getPemContents());
+                        SSHOperationData sshOperationData = new SSHOperationData(connectionName,encryptedPath,
+                                hostKeyFingerprint,selectedParsedKeyPairName,getPemContents());
                         utilsHandler.saveToDb(sshOperationData);
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();

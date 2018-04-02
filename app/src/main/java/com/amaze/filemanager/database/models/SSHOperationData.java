@@ -9,8 +9,7 @@ public class SSHOperationData implements OperationData{
     private String sshKey;
 
 
-    public SSHOperationData() {
-    }
+
 
     public SSHOperationData(String name, String path, String hostKey, String sshKeyName, String sshKey) {
         this.name = name;
@@ -24,39 +23,21 @@ public class SSHOperationData implements OperationData{
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPath() {
         return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getHostKey() {
         return hostKey;
     }
 
-    public void setHostKey(String hostKey) {
-        this.hostKey = hostKey;
-    }
-
     public String getSshKeyName() {
         return sshKeyName;
-    }
-
-    public void setSshKeyName(String sshKeyName) {
-        this.sshKeyName = sshKeyName;
     }
 
     public String getSshKey() {
         return sshKey;
     }
 
-    public void setSshKey(String sshKey) {
-        this.sshKey = sshKey;
-    }
+
 }

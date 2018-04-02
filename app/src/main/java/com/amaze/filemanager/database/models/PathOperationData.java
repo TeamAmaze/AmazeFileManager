@@ -1,14 +1,12 @@
 package com.amaze.filemanager.database.models;
 
 
-import com.amaze.filemanager.database.UtilsHandler;
-
 public class PathOperationData implements OperationData {
     private String path;
-    UtilsHandler.Operation operationType;
+    private int operationType;
 
 
-    public PathOperationData(String path, UtilsHandler.Operation operationType) {
+    public PathOperationData(String path, int operationType) {
         this.path = path;
         this.operationType = operationType;
     }
@@ -17,15 +15,8 @@ public class PathOperationData implements OperationData {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public UtilsHandler.Operation getOperationType() {
+    public int getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(UtilsHandler.Operation operationType) {
-        this.operationType = operationType;
-    }
 }

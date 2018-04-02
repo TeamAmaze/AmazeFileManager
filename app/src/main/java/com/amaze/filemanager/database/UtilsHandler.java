@@ -60,6 +60,13 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
 
 
+
+    public static final int OPERATION_TYPE_HIDDEN = 1;
+    public static final int OPERATION_TYPE_HISTORY = 2;
+    public static final int OPERATION_TYPE_LIST = 3;
+    public static final int OPERATION_TYPE_GRID = 4;
+
+
     private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
             + COLUMN_NAME + " TEXT,"
@@ -138,30 +145,28 @@ public class UtilsHandler extends SQLiteOpenHelper {
         AppConfig.runInBackground(() -> {
             if (operationData instanceof PathOperationData) {
                 switch (((PathOperationData)operationData).getOperationType()){
-                    case HIDDEN:
-                        setPath(Operation.HIDDEN, ((PathOperationData) operationData).getPath());
+                    case OPERATION_TYPE_HIDDEN:
+                        setPath(Operation.HIDDEN, operationData.getPath());
                         break;
-                    case HISTORY:
-                        setPath(Operation.HISTORY, ((PathOperationData) operationData).getPath());
+                    case OPERATION_TYPE_HISTORY:
+                        setPath(Operation.HISTORY, operationData.getPath());
                         break;
-                    case LIST:
-                        setPath(Operation.LIST, ((PathOperationData) operationData).getPath());
+                    case OPERATION_TYPE_LIST:
+                        setPath(Operation.LIST, operationData.getPath());
                         break;
-                    case GRID:
-                        setPath(Operation.GRID, ((PathOperationData) operationData).getPath());
+                    case OPERATION_TYPE_GRID:
+                        setPath(Operation.GRID, operationData.getPath());
                         break;
                 }
 
             }  else if (operationData instanceof BookmarksOperationData) {
                 setPath(Operation.BOOKMARKS, ((BookmarksOperationData) operationData).getName(),
-                        ((BookmarksOperationData)
-                                operationData).getPath());
+                        operationData.getPath());
             } else if (operationData instanceof SMPOperationData) {
-                setPath(Operation.SMB, ((SMPOperationData) operationData).getName(), ((SMPOperationData)
-                        operationData).getPath());
+                setPath(Operation.SMB, ((SMPOperationData) operationData).getName(), operationData.getPath());
             } else if (operationData instanceof SSHOperationData) {
+                String path = operationData.getPath();
                 String name = ((SSHOperationData) operationData).getName();
-                String path = ((SSHOperationData) operationData).getPath();
                 String hostKey = ((SSHOperationData) operationData).getHostKey();
                 String sshKeyName = ((SSHOperationData) operationData).getSshKeyName();
                 String sshKey = ((SSHOperationData) operationData).getSshKey();
