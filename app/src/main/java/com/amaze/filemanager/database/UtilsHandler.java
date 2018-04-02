@@ -10,11 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.database.models.BookmarksOperationData;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.database.models.PathOperationData;
-import com.amaze.filemanager.database.models.SMPOperationData;
-import com.amaze.filemanager.database.models.SSHOperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -58,13 +54,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOST_PUBKEY = "pub_key";
     private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
-
-
-    public static final int OPERATION_TYPE_HIDDEN = 1;
-    public static final int OPERATION_TYPE_HISTORY = 2;
-    public static final int OPERATION_TYPE_LIST = 3;
-    public static final int OPERATION_TYPE_GRID = 4;
-
 
     private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
@@ -139,41 +128,27 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SFTP
     }
 
-
     public void saveToDb(OperationData operationData) {
         AppConfig.runInBackground(() -> {
-            if (operationData instanceof PathOperationData) {
-                switch (((PathOperationData) operationData).operationType) {
-                    case OPERATION_TYPE_HIDDEN:
-                        setPath(Operation.HIDDEN, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_HISTORY:
-                        setPath(Operation.HISTORY, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_LIST:
-                        setPath(Operation.LIST, ((PathOperationData) operationData).path);
-                        break;
-                    case OPERATION_TYPE_GRID:
-                        setPath(Operation.GRID, ((PathOperationData) operationData).path);
-                        break;
-                }
-
-            } else if (operationData instanceof BookmarksOperationData) {
-                setPath(Operation.BOOKMARKS, ((BookmarksOperationData) operationData).name,
-                        ((BookmarksOperationData) operationData).path);
-            } else if (operationData instanceof SMPOperationData) {
-                setPath(Operation.SMB, ((SMPOperationData) operationData).name,
-                        ((SMPOperationData) operationData).name);
-            } else if (operationData instanceof SSHOperationData) {
-                String path = ((SSHOperationData) operationData).path;
-                String name = ((SSHOperationData) operationData).name;
-                String hostKey = ((SSHOperationData) operationData).hostKey;
-                String sshKeyName = ((SSHOperationData) operationData).sshKeyName;
-                String sshKey = ((SSHOperationData) operationData).sshKey;
-                addSsh(name, path, hostKey, sshKeyName, sshKey);
+            switch (operationData.type) {
+                case HIDDEN:
+                case HISTORY:
+                case LIST:
+                case GRID:
+                    setPath(operationData.type, operationData.path);
+                    break;
+                case BOOKMARKS:
+                case SMB:
+                    setPath(operationData.type, operationData.name, operationData.path);
+                    break;
+                case SFTP:
+                    addSsh(operationData.name, operationData.path, operationData.hostKey,
+                            operationData.sshKeyName, operationData.sshKey);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
             }
         });
-
     }
 
     public void addCommonBookmarks() {
