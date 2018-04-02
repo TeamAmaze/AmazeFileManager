@@ -11,11 +11,8 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.models.BookmarksOperationData;
-import com.amaze.filemanager.database.models.GridOperationData;
-import com.amaze.filemanager.database.models.HiddenOperationData;
-import com.amaze.filemanager.database.models.HistoryOperationData;
-import com.amaze.filemanager.database.models.ListOperationData;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.database.models.PathOperationData;
 import com.amaze.filemanager.database.models.SMPOperationData;
 import com.amaze.filemanager.database.models.SSHOperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -61,6 +58,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOST_PUBKEY = "pub_key";
     private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
+
 
     private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
@@ -125,7 +123,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    private enum Operation {
+    public enum Operation {
         HISTORY,
         HIDDEN,
         LIST,
@@ -138,15 +136,23 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     public void saveToDb(OperationData operationData) {
         AppConfig.runInBackground(() -> {
-            if (operationData instanceof HistoryOperationData) {
-                setPath(Operation.HISTORY, ((HistoryOperationData) operationData).getPath());
-            } else if (operationData instanceof HiddenOperationData) {
-                setPath(Operation.HIDDEN, ((HiddenOperationData) operationData).getPath());
-            } else if (operationData instanceof ListOperationData) {
-                setPath(Operation.LIST, ((ListOperationData) operationData).getPath());
-            } else if (operationData instanceof GridOperationData) {
-                setPath(Operation.GRID, ((GridOperationData) operationData).getPath());
-            } else if (operationData instanceof BookmarksOperationData) {
+            if (operationData instanceof PathOperationData) {
+                switch (((PathOperationData)operationData).getOperationType()){
+                    case HIDDEN:
+                        setPath(Operation.HIDDEN, ((PathOperationData) operationData).getPath());
+                        break;
+                    case HISTORY:
+                        setPath(Operation.HISTORY, ((PathOperationData) operationData).getPath());
+                        break;
+                    case LIST:
+                        setPath(Operation.LIST, ((PathOperationData) operationData).getPath());
+                        break;
+                    case GRID:
+                        setPath(Operation.GRID, ((PathOperationData) operationData).getPath());
+                        break;
+                }
+
+            }  else if (operationData instanceof BookmarksOperationData) {
                 setPath(Operation.BOOKMARKS, ((BookmarksOperationData) operationData).getName(),
                         ((BookmarksOperationData)
                                 operationData).getPath());
