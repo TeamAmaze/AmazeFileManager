@@ -1350,8 +1350,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         fabBgView = findViewById(R.id.fab_bg);
-        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
-            fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
+
+        switch (getAppTheme().getSimpleTheme()) {
+            case DARK:
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
+                break;
+            case BLACK:
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_black);
+                break;
         }
 
         fabBgView.setOnClickListener(view -> {
