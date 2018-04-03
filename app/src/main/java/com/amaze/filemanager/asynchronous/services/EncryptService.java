@@ -92,11 +92,6 @@ public class EncryptService extends AbstractProgressiveService {
     }
 
     @Override
-    public EncryptService getServiceType() {
-        return this;
-    }
-
-    @Override
     protected NotificationManager getNotificationManager() {
         return notificationManager;
     }

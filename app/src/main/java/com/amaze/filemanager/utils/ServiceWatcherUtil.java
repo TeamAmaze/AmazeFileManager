@@ -79,14 +79,12 @@ public class ServiceWatcherUtil {
 
                     // new position is same as the last second position, and halt counter is past threshold
 
-                    String writtenSize = Formatter.formatShortFileSize(interactionInterface.getServiceType().getApplicationContext(),
+                    String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
                             progressHandler.getWrittenSize());
-                    String totalSize = Formatter.formatShortFileSize(interactionInterface.getServiceType().getApplicationContext(),
+                    String totalSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
                             progressHandler.getTotalSize());
 
-                    if (interactionInterface.getServiceType() instanceof DecryptService
-                            && writtenSize.equals(totalSize)) {
-
+                    if (interactionInterface.isDecryptService() && writtenSize.equals(totalSize)) {
                         // workaround for decryption when we have a length retrieved by
                         // CipherInputStream less than the original stream, and hence the total size
                         // we passed at the beginning is never reached
@@ -231,6 +229,11 @@ public class ServiceWatcherUtil {
          */
         void progressResumed();
 
-        <T extends Service> T getServiceType();
+        Context getApplicationContext();
+
+        /**
+         * This is for a hack, read about it where it's used
+         */
+        boolean isDecryptService();
     }
 }

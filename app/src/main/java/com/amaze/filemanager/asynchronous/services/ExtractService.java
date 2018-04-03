@@ -111,11 +111,6 @@ public class ExtractService extends AbstractProgressiveService {
     }
 
     @Override
-    public ExtractService getServiceType() {
-        return this;
-    }
-
-    @Override
     protected NotificationManager getNotificationManager() {
         return mNotifyManager;
     }
