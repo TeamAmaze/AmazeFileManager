@@ -22,9 +22,12 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.*;
+import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_UNSET;
+
 public class ServiceWatcherUtil {
 
-    public static int state = -1;
+    public static int state = STATE_UNSET;
 
     // position of byte in total byte size to be copied
     public static volatile long position = 0L;
@@ -70,7 +73,7 @@ public class ServiceWatcherUtil {
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
                 if (position == progressHandler.getWrittenSize() &&
-                        (state != ServiceWatcherInteractionInterface.STATE_HALTED
+                        (state != STATE_HALTED
                                 && ++haltCounter >5)) {
 
                     // new position is same as the last second position, and halt counter is past threshold
@@ -93,13 +96,13 @@ public class ServiceWatcherUtil {
                     }
 
                     haltCounter = 0;
-                    state = ServiceWatcherInteractionInterface.STATE_HALTED;
+                    state = STATE_HALTED;
                     interactionInterface.progressHalted();
                 } else if (position != progressHandler.getWrittenSize()) {
 
-                    if (state == ServiceWatcherInteractionInterface.STATE_HALTED) {
+                    if (state == STATE_HALTED) {
 
-                        state = ServiceWatcherInteractionInterface.STATE_RESUMED;
+                        state = STATE_RESUMED;
                         haltCounter = 0;
                         interactionInterface.progressResumed();
                     } else {
@@ -107,7 +110,7 @@ public class ServiceWatcherUtil {
                         // reset the halt counter everytime there is a progress
                         // so that it increments only when
                         // progress was halted for consecutive time period
-                        state = -1;
+                        state = STATE_UNSET;
                         haltCounter = 0;
                     }
                 }
@@ -212,6 +215,7 @@ public class ServiceWatcherUtil {
 
     public interface ServiceWatcherInteractionInterface {
 
+        int STATE_UNSET = -1;
         int STATE_HALTED = 0;
         int STATE_RESUMED = 1;
 
