@@ -615,6 +615,10 @@
     <string name="libraries">Libraries</string>
     <string name="password_repeat">Repeat password</string>
     <string name="ssh_select_pem">Select private key for authentication</string>
+    <string name="encryption_fail_copy">Failed to update encryption entry in database</string>
+    <string name="extracted">Extracted</string>
+    <string name="compressed">Compressed</string>
+    <string name="processed">Processed</string>
     <string name="no_obtainable_info">There\'s no info about this file</string>
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>

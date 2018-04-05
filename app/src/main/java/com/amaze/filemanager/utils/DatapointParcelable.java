@@ -3,14 +3,14 @@ package com.amaze.filemanager.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.amaze.filemanager.asynchronous.services.ProgressiveService;
+import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 
 /**
  * Created by Arpit on 01-08-2015
  *      edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  *
- * Class stores the {@link ProgressiveService} progress variables.
+ * Class stores the {@link AbstractProgressiveService} progress variables.
  * This class also acts as data carrier to communicate with {@link ProcessViewerFragment}
  */
 public class DatapointParcelable implements Parcelable {
