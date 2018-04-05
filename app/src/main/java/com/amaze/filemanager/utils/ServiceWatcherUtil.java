@@ -9,7 +9,6 @@ package com.amaze.filemanager.utils;
  */
 
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -19,14 +18,16 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.services.DecryptService;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServiceWatcherUtil {
+
+    public static int state = -1;
+
+    // position of byte in total byte size to be copied
+    public static volatile long position = 0L;
 
     private Handler handler;
     private static HandlerThread handlerThread;
@@ -38,14 +39,9 @@ public class ServiceWatcherUtil {
     private static NotificationManager notificationManager;
     private static NotificationCompat.Builder builder;
 
-    public static int STATE = -1;
-
     private static ConcurrentLinkedQueue<Intent> pendingIntents = new ConcurrentLinkedQueue<>();
 
-    // position of byte in total byte size to be copied
-    public static volatile long POSITION = 0L;
-
-    private static int HALT_COUNTER = -1;
+    private static int haltCounter = -1;
 
     /**
      *
@@ -53,8 +49,8 @@ public class ServiceWatcherUtil {
      */
     public ServiceWatcherUtil(ProgressHandler progressHandler) {
         this.progressHandler = progressHandler;
-        POSITION = 0L;
-        HALT_COUNTER = -1;
+        position = 0L;
+        haltCounter = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -73,9 +69,9 @@ public class ServiceWatcherUtil {
                 // we don't have a file name yet, wait for service to set
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
-                if (POSITION == progressHandler.getWrittenSize() &&
-                        (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
-                                && ++HALT_COUNTER>5)) {
+                if (position == progressHandler.getWrittenSize() &&
+                        (state != ServiceWatcherInteractionInterface.STATE_HALTED
+                                && ++haltCounter >5)) {
 
                     // new position is same as the last second position, and halt counter is past threshold
 
@@ -96,29 +92,29 @@ public class ServiceWatcherUtil {
                         return;
                     }
 
-                    HALT_COUNTER = 0;
-                    STATE = ServiceWatcherInteractionInterface.STATE_HALTED;
+                    haltCounter = 0;
+                    state = ServiceWatcherInteractionInterface.STATE_HALTED;
                     interactionInterface.progressHalted();
-                } else if (POSITION != progressHandler.getWrittenSize()) {
+                } else if (position != progressHandler.getWrittenSize()) {
 
-                    if (STATE == ServiceWatcherInteractionInterface.STATE_HALTED) {
+                    if (state == ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                        STATE = ServiceWatcherInteractionInterface.STATE_RESUMED;
-                        HALT_COUNTER = 0;
+                        state = ServiceWatcherInteractionInterface.STATE_RESUMED;
+                        haltCounter = 0;
                         interactionInterface.progressResumed();
                     } else {
 
                         // reset the halt counter everytime there is a progress
                         // so that it increments only when
                         // progress was halted for consecutive time period
-                        STATE = -1;
-                        HALT_COUNTER = 0;
+                        state = -1;
+                        haltCounter = 0;
                     }
                 }
 
-                progressHandler.addWrittenLength(POSITION);
+                progressHandler.addWrittenLength(position);
 
-                if (POSITION == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
+                if (position == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
                     pendingIntents.remove();

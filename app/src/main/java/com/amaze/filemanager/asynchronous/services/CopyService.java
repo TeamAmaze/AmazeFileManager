@@ -403,7 +403,7 @@ public class CopyService extends AbstractProgressiveService {
                 try {
                     if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
-                    ServiceWatcherUtil.POSITION += sourceFile.getSize();
+                    ServiceWatcherUtil.position += sourceFile.getSize();
                 } catch (ShellNotRunningException e) {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();

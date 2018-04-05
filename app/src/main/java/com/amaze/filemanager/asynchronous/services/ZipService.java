@@ -251,7 +251,7 @@ public class ZipService extends AbstractProgressiveService {
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
                 while ((len = in.read(buf)) > 0) {
                     zos.write(buf, 0, len);
-                    ServiceWatcherUtil.POSITION += len;
+                    ServiceWatcherUtil.position += len;
                 }
                 in.close();
                 return;
