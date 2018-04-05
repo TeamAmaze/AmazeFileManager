@@ -20,6 +20,7 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -183,31 +184,22 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                                         .positiveColor(colorAccent)
                                         .negativeText(app.getResources().getString(R.string.no))
                                         .positiveText(app.getResources().getString(R.string.yes))
-                                        .callback(new MaterialDialog.ButtonCallback() {
-                                            @Override
-                                            public void onNegative(MaterialDialog materialDialog) {
-
-                                                materialDialog.cancel();
-                                            }
-
-                                            @Override
-                                            public void onPositive(MaterialDialog materialDialog) {
-
-                                                ArrayList<HybridFileParcelable> files = new ArrayList<>();
-                                                if (Build.VERSION.SDK_INT >= 21) {
-                                                    String parent = f1.getParent();
-                                                    if (!parent.equals("app") && !parent.equals("priv-app")) {
-                                                        HybridFileParcelable baseFile=new HybridFileParcelable(f1.getParent());
-                                                        baseFile.setMode(OpenMode.ROOT);
-                                                        files.add(baseFile);
-                                                    }
-                                                    else files.add(f1);
-                                                } else {
-                                                    files.add(f1);
+                                        .onNegative(((dialog, which) -> dialog.cancel()))
+                                        .onPositive(((dialog, which) -> {
+                                            ArrayList<HybridFileParcelable> files = new ArrayList<>();
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                                String parent = f1.getParent(context);
+                                                if (!parent.equals("app") && !parent.equals("priv-app")) {
+                                                    HybridFileParcelable baseFile=new HybridFileParcelable(f1.getParent(context));
+                                                    baseFile.setMode(OpenMode.ROOT);
+                                                    files.add(baseFile);
                                                 }
-                                                new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
+                                                else files.add(f1);
+                                            } else {
+                                                files.add(f1);
                                             }
-                                        }).build().show();
+                                            new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
+                                        })).build().show();
                             } else {
                                 Toast.makeText(app.getActivity(),app.getResources().getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();
                             }
@@ -217,14 +209,18 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         return true;
                     case R.id.play:
                         Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                        intent1.setData(Uri.parse("market://details?id=" + rowItem.packageName));
-                        app.startActivity(intent1);
+                        try {
+                            intent1.setData(Uri.parse(String.format("market://details?id=%s", rowItem.packageName)));
+                            app.startActivity(intent1);
+                        } catch (ActivityNotFoundException ifPlayStoreNotInstalled) {
+                            intent1.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", rowItem.packageName)));
+                            app.startActivity(intent1);
+                        }
                         return true;
                     case R.id.properties:
-
                         app.startActivity(new Intent(
                                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.parse("package:" + rowItem.packageName)));
+                                Uri.parse(String.format("package:%s", rowItem.packageName))));
                         return true;
                     case R.id.backup:
                         Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
