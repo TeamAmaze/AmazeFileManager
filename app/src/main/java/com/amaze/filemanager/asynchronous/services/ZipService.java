@@ -31,7 +31,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -55,7 +54,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipService extends ProgressiveService {
+public class ZipService extends AbstractProgressiveService {
 
     public static final String KEY_COMPRESS_PATH = "zip_path";
     public static final String KEY_COMPRESS_FILES = "zip_files";
@@ -63,9 +62,16 @@ public class ZipService extends ProgressiveService {
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
+    private CompressAsyncTask asyncTask;
+
+
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
-    private CompressAsyncTask asyncTask;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -101,20 +107,65 @@ public class ZipService extends ProgressiveService {
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
 
+        super.onStartCommand(intent, flags, startId);
+        super.progressHalted();
         asyncTask = new CompressAsyncTask(this, baseFiles, mZipPath);
         asyncTask.execute();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
-    public static class CompressAsyncTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    protected NotificationManager getNotificationManager() {
+        return mNotifyManager;
+    }
+
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return mBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.ZIP_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
+    }
+
+    public class CompressAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @SuppressLint("StaticFieldLeak")
         private ZipService zipService;
         private ZipOutputStream zos;
         private String zipPath;
         private ServiceWatcherUtil watcherUtil;
-        private ProgressHandler progressHandler;
         private long totalBytes = 0L;
         private ArrayList<HybridFileParcelable> baseFiles;
 
@@ -128,8 +179,14 @@ public class ZipService extends ProgressiveService {
             // setting up service watchers and initial data packages
             // finding total size on background thread (this is necessary condition for SMB!)
             totalBytes = FileUtils.getTotalBytes(baseFiles, zipService.getApplicationContext());
-            progressHandler = new ProgressHandler(baseFiles.size(), totalBytes);
-            progressHandler.setProgressListener(zipService::publishResults);
+
+            progressHandler.setSourceSize(baseFiles.size());
+            progressHandler.setTotalSize(totalBytes);
+            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
+                publishResults(fileName, sourceFiles, sourceProgress, totalSize,
+                        writtenSize, speed, false, false);
+            });
+
 
             zipService.addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
 
@@ -157,8 +214,8 @@ public class ZipService extends ProgressiveService {
         public void execute(final @NonNull Context context, ArrayList<File> baseFiles, String zipPath) {
             OutputStream out;
             File zipDirectory = new File(zipPath);
-            watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-            watcherUtil.watch();
+            watcherUtil = new ServiceWatcherUtil(progressHandler);
+            watcherUtil.watch(ZipService.this);
 
             try {
                 out = FileUtil.getOutputStream(zipDirectory, context);
@@ -205,38 +262,6 @@ public class ZipService extends ProgressiveService {
             for (File currentFile : file.listFiles()) {
                 compressFile(currentFile, path + File.separator + file.getName());
             }
-        }
-    }
-
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long total, long done, int speed) {
-        boolean isCompleted = false;
-
-        if (!asyncTask.isCancelled()) {
-            float progressPercent = ((float) done / total) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            int title = R.string.compressing;
-            mBuilder.setContentTitle(getResources().getString(title));
-            mBuilder.setContentText(new File(fileName).getName() + " " +
-                    Formatter.formatFileSize(this, done) + "/" + Formatter.formatFileSize(this, total));
-            mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
-            if (done == total || total == 0) {
-                mBuilder.setContentTitle(getString(R.string.compression_complete));
-                mBuilder.setContentText("");
-                mBuilder.setProgress(100, 100, false);
-                mBuilder.setOngoing(false);
-                mNotifyManager.notify(NotificationConstants.ZIP_ID, mBuilder.build());
-                mNotifyManager.cancel(NotificationConstants.ZIP_ID);
-                isCompleted = true;
-            }
-
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, isCompleted);
-
-            addDatapoint(intent);
-        } else {
-            mNotifyManager.cancel(NotificationConstants.ZIP_ID);
         }
     }
 

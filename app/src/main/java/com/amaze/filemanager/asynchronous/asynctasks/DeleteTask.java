@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -176,13 +178,17 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
 
         if (!wasDeleted) {
             Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-        } else if (compressedExplorerFragment ==null) {
+        } else if (compressedExplorerFragment == null) {
             Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
 
-        if (compressedExplorerFragment !=null) {
+        if (compressedExplorerFragment!=null) {
             compressedExplorerFragment.files.clear();
         }
+
+        // cancel any processing notification because of cut/paste operation
+        NotificationManager notificationManager = (NotificationManager) cd.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NotificationConstants.COPY_ID);
     }
 
     private void delete(final Context context, final String file) {
