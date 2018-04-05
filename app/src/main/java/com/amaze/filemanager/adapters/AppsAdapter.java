@@ -20,10 +20,10 @@
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
+
+    private static final String COM_ANDROID_VENDING = "com.android.vending";
 
     private UtilitiesProvider utilsProvider;
     private Context context;
@@ -209,13 +211,8 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         return true;
                     case R.id.play:
                         Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                        try {
-                            intent1.setData(Uri.parse(String.format("market://details?id=%s", rowItem.packageName)));
-                            app.startActivity(intent1);
-                        } catch (ActivityNotFoundException ifPlayStoreNotInstalled) {
-                            intent1.setData(Uri.parse(String.format("https://play.google.com/store/apps/details?id=%s", rowItem.packageName)));
-                            app.startActivity(intent1);
-                        }
+                        intent1.setData(Uri.parse(String.format("market://details?id=%s", rowItem.packageName)));
+                        app.startActivity(intent1);
                         return true;
                     case R.id.properties:
                         app.startActivity(new Intent(
@@ -245,9 +242,23 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
             });
 
             popupMenu.inflate(R.menu.app_options);
+            if(!isGooglePlayStoreAvailable()) {
+                popupMenu.getMenu().findItem(R.id.play).setVisible(false);
+            }
             popupMenu.show();
         });
 
+    }
+
+    private final boolean isGooglePlayStoreAvailable() {
+        PackageManager pm = context.getPackageManager();
+        try {
+            pm.getPackageInfo(COM_ANDROID_VENDING, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException ifNotInstalled) {
+            ifNotInstalled.printStackTrace();
+            return false;
+        }
     }
 
 }
