@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 
 public class ScreenUtils {
 
-    public static final int TOOLBAR_HEIGHT_IN_DP = 56;  //160 dpi
+    public static final int TOOLBAR_HEIGHT_IN_DP = 128;  //160 dpi
 
     private Activity activity;
 
