@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
@@ -138,13 +139,10 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                                 editText2.getText().toString()};
 
                         dataUtils.addBook(values);
-                        AppConfig.runInBackground(new Runnable() {
-                            @Override
-                            public void run() {
 
-                                utilsHandler.addBookmark(editText1.getText().toString(), editText2.getText().toString());
-                            }
-                        });
+                        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_BOOKMARKS,
+                                 editText2.getText().toString(),editText1.getText().toString()));
+
 
                         dialog.dismiss();
                     }
@@ -240,13 +238,10 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
                         dataUtils.removeBook(position.get(p));
 
-                        AppConfig.runInBackground(new Runnable() {
-                            @Override
-                            public void run() {
-                                utilsHandler.removeBookmarksPath(p.getTitle().toString(),
-                                        p.getSummary().toString());
-                            }
-                        });
+
+                        utilsHandler.removeBookmarksPath(p.getTitle().toString(),
+                                p.getSummary().toString());
+
 
                         getPreferenceScreen().removePreference(p);
                         position.remove(p);

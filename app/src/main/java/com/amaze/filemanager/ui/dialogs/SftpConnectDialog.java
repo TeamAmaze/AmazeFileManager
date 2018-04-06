@@ -43,6 +43,7 @@ import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.MainFragment;
@@ -55,7 +56,6 @@ import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
@@ -322,8 +322,9 @@ public class SftpConnectDialog extends DialogFragment {
                         DataUtils.getInstance().addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
-                        utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
-                                selectedParsedKeyPairName, getPemContents());
+                        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_SFTP,
+                                encryptedPath,connectionName, hostKeyFingerprint,
+                                selectedParsedKeyPairName, getPemContents()));
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
                         ma.loadlist(path, false, OpenMode.UNKNOWN);

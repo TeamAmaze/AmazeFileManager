@@ -46,7 +46,6 @@ import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -65,7 +64,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -82,6 +80,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -965,10 +964,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                             utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
                         });
                     }
-
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addGridView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_GRID,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
                 } else {
@@ -978,9 +975,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                         });
                     }
 
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addListView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_LIST,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
                 }
@@ -1679,9 +1675,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                AppConfig.runInBackground(() -> {
-                    utilsHandler.addSmb(name, encryptedPath);
-                });
+                utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_SMB, encryptedPath,name));
+
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
                 if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
@@ -1724,7 +1719,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.addHidden(path);
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_HIDDEN, path));
     }
 
     @Override
@@ -1734,12 +1729,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.addHistory(path);
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_HISTORY, path));
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        utilsHandler.addBookmark(path[0], path[1]);
+        utilsHandler.saveToDb(new OperationData(UtilsHandler.OPERATION_BOOKMARKS, path[0], path[1]));
         if (refreshdrawer) drawer.refreshDrawer();
     }
 

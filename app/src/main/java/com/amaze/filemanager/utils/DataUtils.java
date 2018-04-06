@@ -1,11 +1,9 @@
 package com.amaze.filemanager.utils;
 
 import android.support.annotation.Nullable;
-
 import android.view.MenuItem;
 
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -225,7 +223,7 @@ public class DataUtils {
             books.add(i);
         }
         if (refreshdrawer && dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onBookAdded(i, true));
+            dataChangeListener.onBookAdded(i, true);
         }
     }
 
@@ -244,7 +242,7 @@ public class DataUtils {
             hiddenfiles.put(i, VoidValue.SINGLETON);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileAdded(i));
+            dataChangeListener.onHiddenFileAdded(i);
         }
     }
 
@@ -255,7 +253,7 @@ public class DataUtils {
             hiddenfiles.remove(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileRemoved(i));
+            dataChangeListener.onHiddenFileRemoved(i);
         }
     }
 
@@ -271,7 +269,7 @@ public class DataUtils {
     public void addHistoryFile(final String i) {
         history.push(i);
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHistoryAdded(i));
+            dataChangeListener.onHistoryAdded(i);
         }
     }
 
@@ -372,12 +370,7 @@ public class DataUtils {
     public void clearHistory() {
         history.clear();
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-                    dataChangeListener.onHistoryCleared();
-                }
-            });
+            dataChangeListener.onHistoryCleared();
         }
     }
 
