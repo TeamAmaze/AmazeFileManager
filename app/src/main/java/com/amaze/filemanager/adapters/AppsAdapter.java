@@ -255,7 +255,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         PackageManager pm = context.getPackageManager();
         try {
             PackageInfo appInfo = pm.getPackageInfo(COM_ANDROID_VENDING, PackageManager.GET_ACTIVITIES);
-            return appInfo != null || appInfo.activities != null;
+            return appInfo != null && appInfo.activities != null;
         } catch (PackageManager.NameNotFoundException ifNotInstalled) {
             return false;
         }
