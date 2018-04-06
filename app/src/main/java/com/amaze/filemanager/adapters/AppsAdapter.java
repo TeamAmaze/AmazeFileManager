@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -253,10 +254,9 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
     private final boolean isGooglePlayStoreAvailable() {
         PackageManager pm = context.getPackageManager();
         try {
-            pm.getPackageInfo(COM_ANDROID_VENDING, PackageManager.GET_ACTIVITIES);
-            return true;
+            PackageInfo appInfo = pm.getPackageInfo(COM_ANDROID_VENDING, PackageManager.GET_ACTIVITIES);
+            return appInfo != null || appInfo.activities != null;
         } catch (PackageManager.NameNotFoundException ifNotInstalled) {
-            ifNotInstalled.printStackTrace();
             return false;
         }
     }
