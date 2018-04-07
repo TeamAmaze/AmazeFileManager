@@ -394,6 +394,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 new MenuMetadata(() -> {
                     Intent in = new Intent(mainActivity, PreferencesActivity.class);
                     mainActivity.startActivity(in);
+                    mainActivity.finish();
                 }),
                 R.drawable.ic_settings_white_24dp, null);
 
