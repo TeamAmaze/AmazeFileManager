@@ -109,6 +109,12 @@ public class GenericCopyUtil {
                 bufferedInputStream = new BufferedInputStream(cloudStorageOnedrive
                         .download(CloudUtil.stripPath(OpenMode.ONEDRIVE,
                                 mSourceFile.getPath())));
+            } else if (mSourceFile.isPCloudFile()) {
+
+                CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+                bufferedInputStream = new BufferedInputStream(cloudStoragePCloud
+                        .download(CloudUtil.stripPath(OpenMode.PCLOUD,
+                                mSourceFile.getPath())));
             } else {
 
                 // source file is neither smb nor otg; getting a channel from direct file instead of stream
@@ -208,6 +214,21 @@ public class GenericCopyUtil {
                     return;
                 } else {
                     cloudStorageOnedrive.upload(CloudUtil.stripPath(OpenMode.ONEDRIVE, mTargetFile.getPath()),
+                            bufferedInputStream, mSourceFile.getSize(), true);
+                    bufferedInputStream.close();
+                    return;
+                }
+            } else if (mTargetFile.isPCloudFile()) {
+                // API doesn't support output stream, we'll upload the file directly
+                CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
+
+                if (mSourceFile.isOneDriveFile()) {
+                    // we're in the same provider, use api method
+                    cloudStoragePCloud.copy(CloudUtil.stripPath(OpenMode.PCLOUD, mSourceFile.getPath()),
+                            CloudUtil.stripPath(OpenMode.PCLOUD, mTargetFile.getPath()));
+                    return;
+                } else {
+                    cloudStoragePCloud.upload(CloudUtil.stripPath(OpenMode.PCLOUD, mTargetFile.getPath()),
                             bufferedInputStream, mSourceFile.getSize(), true);
                     bufferedInputStream.close();
                     return;

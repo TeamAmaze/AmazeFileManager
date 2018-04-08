@@ -125,7 +125,7 @@ dependencies {
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.+'
 
-    implementation 'com.cloudrail:cloudrail-si-android:2.21.7'
+    implementation 'com.cloudrail:cloudrail-si-android:2.21.9'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 
