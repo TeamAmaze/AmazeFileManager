@@ -35,6 +35,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.GlideConstants;
+import com.amaze.filemanager.utils.IconLoaderUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -95,7 +96,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
-    private RequestBuilder<Drawable> requestBuilder;
+    private IconLoaderUtil iconLoaderUtil;
 
     public RecyclerAdapter(PreferenceActivity preferenceActivity, MainFragment m,
                            UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
@@ -338,7 +339,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         sizeProvider = new RecyclerPreloadSizeProvider(this);
         modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris,
                 getBoolean(PREFERENCE_SHOW_THUMB));
-
+        iconLoaderUtil = IconLoaderUtil.getInstance(context, modelProvider);
         preloader = new RecyclerViewPreloader<>(GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
 
         recyclerView.addOnScrollListener(preloader);
@@ -552,18 +553,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                            //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                            iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:
                         if (getBoolean(PREFERENCE_SHOW_THUMB)) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                            //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                            iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
                         }
                         break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
-                        modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                        //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+                        iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
                         break;
                 }
 
@@ -780,7 +784,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
         gradientDrawable.setColor(iconSkinColor);
 
-        modelProvider.getPreloadRequestBuilder(iconData).listener(new RequestListener<Drawable>() {
+        RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
                 GlideApp.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
@@ -800,7 +804,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 errorListener.onImageProcessed(false);
                 return false;
             }
-        }).into(view);
+        };
+        //modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
+        iconLoaderUtil.loadDrawable(view, iconData, errorListener, requestListener);
     }
 
     private void showRoundedThumbnail(ItemViewHolder viewHolder, IconDataParcelable iconData,
@@ -824,7 +830,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         GlideApp.with(mainFrag).load(iconData.loadingImage).into(viewHolder.genericIcon);
         view.setVisibility(View.INVISIBLE);
 
-        modelProvider.getPreloadRequestBuilder(iconData).listener(new RequestListener<Drawable>() {
+        RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
                 iconBackground.setBackgroundColor(grey_color);
@@ -842,7 +848,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 errorListener.onImageProcessed(false);
                 return false;
             }
-        }).into(view);
+        };
+        // modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
+        iconLoaderUtil.loadDrawable(view, iconData, errorListener, requestListener);
     }
 
     private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {
@@ -918,7 +926,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private interface OnImageProcessed {
+    public interface OnImageProcessed {
         void onImageProcessed(boolean isImageBroken);
     }
 
