@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -124,7 +123,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 isNotificationTitleSet = true;
             }
 
-            if (ServiceWatcherUtil.STATE != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
+            if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
 
                 getNotificationBuilder().setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
                         Formatter.formatFileSize(context, totalSize));
