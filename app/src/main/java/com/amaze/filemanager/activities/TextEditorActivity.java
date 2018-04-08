@@ -31,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -234,19 +235,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     .negativeText(R.string.no)
                     .positiveColor(getColorPreference().getColor(ColorUsage.ACCENT))
                     .negativeColor(getColorPreference().getColor(ColorUsage.ACCENT))
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-
-                            saveFile(mInput.getText().toString());
-                            finish();
-                        }
-
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            finish();
-                        }
+                    .onPositive((dialog, which) -> {
+                        saveFile(mInput.getText().toString());
+                        finish();
                     })
+                    .onNegative((dialog, which) -> finish())
                     .build().show();
         } else {
             finish();
@@ -289,7 +282,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
      * on a worker thread
      */
     private void load() {
-        mInput.setHint(R.string.loading);
+        Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
 
         new ReadFileTask(getContentResolver(), mFile, getExternalCacheDir(), isRootExplorer(), (data) -> {
             switch (data.error) {
@@ -307,7 +300,11 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             mInput.setSingleLine(false);
                             mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-                            getSupportActionBar().setTitle(mFile.name + " (r/o)");
+                            Snackbar snackbar = Snackbar.make(mInput,
+                                    getResources().getString(R.string.file_read_only), Snackbar.LENGTH_INDEFINITE);
+                            snackbar.setAction(getResources().getString(R.string.got_it).toUpperCase(),
+                                    v -> snackbar.dismiss());
+                            snackbar.show();
                         }
 
                         if (data.fileContents.isEmpty()) {
@@ -316,14 +313,17 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             mInput.setHint(null);
                         }
                     } catch (OutOfMemoryError e) {
-                        mInput.setHint(R.string.error);
+                        Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     break;
                 case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
-                    mInput.setHint(R.string.error_file_not_found);
+                    Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
                 case ReadFileTask.EXCEPTION_IO:
-                    mInput.setHint(R.string.error_io);
+                    Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+                    finish();
                     break;
             }
         }).execute();

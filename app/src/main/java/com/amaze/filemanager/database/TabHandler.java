@@ -135,22 +135,17 @@ public class TabHandler extends SQLiteOpenHelper {
         // Select all query
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(TABLE_TAB, null, null, null, null, null, null);
-       // cursor.moveToFirst();
-        try {
+        boolean hasNext = cursor.moveToFirst();
 
-            // Looping through all rows and adding them to list
-            if (cursor.moveToFirst() && cursor.getCount() > 0) {
-
-                while (cursor.moveToNext()) {
-                    Tab tab = new Tab(cursor.getInt(0), cursor.getString(1),
-                            cursor.getString(2));
-                    //Adding them to list
-                    tabList.add(tab);
-                }
-            }
-        } finally {
-            cursor.close();
+        // Looping through all rows and adding them to list
+        while (hasNext) {
+            Tab tab = new Tab(cursor.getInt(0), cursor.getString(1),
+                    cursor.getString(2));
+            //Adding them to list
+            tabList.add(tab);
+            hasNext = cursor.moveToNext();
         }
+        cursor.close();
 
         return tabList;
     }

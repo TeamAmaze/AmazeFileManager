@@ -19,6 +19,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -73,14 +75,13 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
 
     protected Boolean doInBackground(ArrayList<HybridFileParcelable>... p1) {
         files = p1[0];
-        boolean b = true;
+        boolean wasDeleted = true;
         if(files.size()==0)return true;
 
         if (files.get(0).isOtgFile()) {
-            for (HybridFileParcelable a : files) {
-
-                DocumentFile documentFile = OTGUtil.getDocumentFile(a.getPath(), cd, false);
-                 b = documentFile.delete();
+            for (HybridFileParcelable file : files) {
+                DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
+                wasDeleted = documentFile.delete();
             }
         } else if (files.get(0).isDropBoxFile()) {
             CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -89,7 +90,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                     cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    b = false;
+                    wasDeleted = false;
                     break;
                 }
             }
@@ -100,7 +101,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                     cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    b = false;
+                    wasDeleted = false;
                     break;
                 }
             }
@@ -111,7 +112,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                     cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    b = false;
+                    wasDeleted = false;
                     break;
                 }
             }
@@ -122,19 +123,25 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                     cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    b = false;
+                    wasDeleted = false;
                     break;
                 }
             }
         } else {
-
-            for(HybridFileParcelable a : files)
+            for(HybridFileParcelable file : files) {
                 try {
-                    (a).delete(cd, rootMode);
+                    if (file.delete(cd, rootMode)) {
+                        wasDeleted = true;
+                    } else {
+                        wasDeleted = false;
+                        break;
+                    }
                 } catch (ShellNotRunningException e) {
                     e.printStackTrace();
-                    b = false;
+                    wasDeleted = false;
+                    break;
                 }
+            }
         }
 
         // delete file from media database
@@ -158,26 +165,30 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
             }
         }
 
-        return b;
+        return wasDeleted;
     }
 
     @Override
-    public void onPostExecute(Boolean b) {
+    public void onPostExecute(Boolean wasDeleted) {
 
         Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
         String path = files.get(0).getParent(cd);
         intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
         cd.sendBroadcast(intent);
 
-        if (!b) {
+        if (!wasDeleted) {
             Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-        } else if (compressedExplorerFragment ==null) {
+        } else if (compressedExplorerFragment == null) {
             Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
 
-        if (compressedExplorerFragment !=null) {
+        if (compressedExplorerFragment!=null) {
             compressedExplorerFragment.files.clear();
         }
+
+        // cancel any processing notification because of cut/paste operation
+        NotificationManager notificationManager = (NotificationManager) cd.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NotificationConstants.COPY_ID);
     }
 
     private void delete(final Context context, final String file) {

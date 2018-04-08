@@ -29,6 +29,8 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
         this.webView = webView;
         this.dbViewerFragment = dbViewerFragment;
         stringBuilder = new StringBuilder();
+
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
     }
 
     @Override
@@ -91,7 +93,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
             stringBuilder.append("</tr>");
         }
         stringBuilder.append("</table></body></html>");
-        webView.loadData(stringBuilder.toString(), "text/html", null);
+        webView.loadData(stringBuilder.toString(), "text/html;charset=utf-8", "utf-8");
         webView.setVisibility(View.VISIBLE);
     }
 

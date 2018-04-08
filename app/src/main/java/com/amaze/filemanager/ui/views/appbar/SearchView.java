@@ -31,7 +31,7 @@ import static android.os.Build.VERSION.SDK_INT;
 
 public class SearchView {
 
-    private WeakReference<MainActivity> mainActivity;
+    private MainActivity mainActivity;
     private AppBar appbar;
 
     private RelativeLayout searchViewLayout;
@@ -42,7 +42,7 @@ public class SearchView {
     private boolean enabled = false;
 
     public SearchView(final AppBar appbar, final MainActivity a, final SearchListener searchListener) {
-        mainActivity = new WeakReference<>(a);
+        mainActivity = a;
         this.appbar = appbar;
 
         searchViewLayout = (RelativeLayout) a.findViewById(R.id.search_view);
@@ -100,7 +100,7 @@ public class SearchView {
             animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
         }
 
-        mainActivity.get().showSmokeScreen();
+        mainActivity.showSmokeScreen();
 
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
@@ -113,7 +113,7 @@ public class SearchView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 searchViewEditText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) mainActivity.get().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
                 enabled = true;
             }
@@ -146,7 +146,7 @@ public class SearchView {
         }
 
         // removing background fade view
-        mainActivity.get().hideSmokeScreen();
+        mainActivity.hideSmokeScreen();
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(600);
         animator.start();
@@ -158,7 +158,7 @@ public class SearchView {
             public void onAnimationEnd(Animator animation) {
                 searchViewLayout.setVisibility(View.GONE);
                 enabled = false;
-                InputMethodManager inputMethodManager = (InputMethodManager) mainActivity.get().getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) mainActivity.getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
 

@@ -9,42 +9,52 @@ package com.amaze.filemanager.utils;
  */
 
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Formatter;
+import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.services.DecryptService;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServiceWatcherUtil {
 
     private Handler handler;
     private static HandlerThread handlerThread;
     private ProgressHandler progressHandler;
-    long totalSize;
     private Runnable runnable;
 
-    private static ArrayList<Intent> pendingIntents = new ArrayList<>();
+    private static Handler waitingHandler;
+    private static HandlerThread waitingHandlerThread;
+    private static NotificationManager notificationManager;
+    private static NotificationCompat.Builder builder;
+
+    public static int STATE = -1;
+
+    private static ConcurrentLinkedQueue<Intent> pendingIntents = new ConcurrentLinkedQueue<>();
 
     // position of byte in total byte size to be copied
-    public static long POSITION = 0L;
+    public static volatile long POSITION = 0L;
 
-    private static int HAULT_COUNTER = -1;
+    private static int HALT_COUNTER = -1;
 
     /**
      *
      * @param progressHandler to publish progress after certain delay
-     * @param totalSize total size of files to be performed, so we know when to halt the watcher
      */
-    public ServiceWatcherUtil(ProgressHandler progressHandler, long totalSize) {
+    public ServiceWatcherUtil(ProgressHandler progressHandler) {
         this.progressHandler = progressHandler;
-        this.totalSize = totalSize;
         POSITION = 0L;
-        HAULT_COUNTER = -1;
+        HALT_COUNTER = -1;
 
         handlerThread = new HandlerThread("service_progress_watcher");
         handlerThread.start();
@@ -55,7 +65,7 @@ public class ServiceWatcherUtil {
      * Watches over the service progress without interrupting the worker thread in respective services
      * Method frees up all the resources and handlers after operation completes.
      */
-    public void watch() {
+    public void watch(ServiceWatcherInteractionInterface interactionInterface) {
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -63,31 +73,60 @@ public class ServiceWatcherUtil {
                 // we don't have a file name yet, wait for service to set
                 if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
 
+                if (POSITION == progressHandler.getWrittenSize() &&
+                        (STATE != ServiceWatcherInteractionInterface.STATE_HALTED
+                                && ++HALT_COUNTER>5)) {
+
+                    // new position is same as the last second position, and halt counter is past threshold
+
+                    String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                            progressHandler.getWrittenSize());
+                    String totalSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                            progressHandler.getTotalSize());
+
+                    if (interactionInterface.isDecryptService() && writtenSize.equals(totalSize)) {
+                        // workaround for decryption when we have a length retrieved by
+                        // CipherInputStream less than the original stream, and hence the total size
+                        // we passed at the beginning is never reached
+                        // we try to get a less precise size and make our decision based on that
+                        progressHandler.addWrittenLength(progressHandler.getTotalSize());
+                        pendingIntents.remove();
+                        handler.removeCallbacks(this);
+                        handlerThread.quit();
+                        return;
+                    }
+
+                    HALT_COUNTER = 0;
+                    STATE = ServiceWatcherInteractionInterface.STATE_HALTED;
+                    interactionInterface.progressHalted();
+                } else if (POSITION != progressHandler.getWrittenSize()) {
+
+                    if (STATE == ServiceWatcherInteractionInterface.STATE_HALTED) {
+
+                        STATE = ServiceWatcherInteractionInterface.STATE_RESUMED;
+                        HALT_COUNTER = 0;
+                        interactionInterface.progressResumed();
+                    } else {
+
+                        // reset the halt counter everytime there is a progress
+                        // so that it increments only when
+                        // progress was halted for consecutive time period
+                        STATE = -1;
+                        HALT_COUNTER = 0;
+                    }
+                }
+
                 progressHandler.addWrittenLength(POSITION);
 
-                if (POSITION == totalSize || progressHandler.getCancelled()) {
+                if (POSITION == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
+                    pendingIntents.remove();
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;
                 }
 
-                if (POSITION == progressHandler.getWrittenSize()) {
-                    HAULT_COUNTER++;
-
-                    if (HAULT_COUNTER>10) {
-                        // we suspect the progress has been haulted for some reason, stop the watcher
-
-                        // workaround for decryption when we have a length retreived by
-                        // CipherInputStream less than the orginal stream, and hence the total size
-                        // we passed at the beginning is never reached
-                        progressHandler.addWrittenLength(totalSize);
-                        handler.removeCallbacks(this);
-                        handlerThread.quit();
-                        return;
-                    }
-                }
                 handler.postDelayed(this, 1000);
             }
         };
@@ -116,31 +155,16 @@ public class ServiceWatcherUtil {
      * @param intent
      */
     public static synchronized void runService(final Context context, final Intent intent) {
-
-        /*if (handlerThread==null || !handlerThread.isAlive()) {
-            // we're not bound, no need to proceed further and waste up resources
-            // start the service directly
-
-            *//**
-             * We can actually end up racing at this point with the {@link HandlerThread} started
-             * in {@link #init(Context)}. If older service has returned, we already have the runnable
-             * waiting to execute in #init, and user is in app, and starts another service, and
-             * as this block executes the {@link android.app.Service#onStartCommand(Intent, int, int)}
-             * we end up with a context switch to 'service_startup_watcher' in #init, it also starts
-             * a new service (as {@link #progressHandler} is not alive yet).
-             * Though chances are very slim, but even if this condition occurs, only the progress will
-             * be flawed, but the actual operation will go fine, due to android's native serial service
-             * execution. #nough' said!
-             *//*
-            context.startService(intent);
-            return;
-        }*/
-
-        if (pendingIntents.size()==0) {
-            init(context);
-        }
         pendingIntents.add(intent);
-
+        switch (pendingIntents.size()) {
+            case 1:
+                // initialize waiting handlers
+                postWaiting(context);
+                break;
+            case 2:
+                // to avoid notifying repeatedly
+                notificationManager.notify(NotificationConstants.WAIT_ID, builder.build());
+        }
     }
 
     /**
@@ -149,45 +173,67 @@ public class ServiceWatcherUtil {
      * Halting condition depends on the state of {@link #handlerThread}
      * @param context
      */
-    private static synchronized void init(final Context context) {
-
-        final HandlerThread waitingThread = new HandlerThread("service_startup_watcher");
-        waitingThread.start();
-        final Handler handler = new Handler(waitingThread.getLooper());
-        final NotificationManager notificationManager = (NotificationManager)
+    private static synchronized void postWaiting(final Context context) {
+        waitingHandlerThread = new HandlerThread("service_startup_watcher");
+        waitingHandlerThread.start();
+        waitingHandler = new Handler(waitingHandlerThread.getLooper());
+        notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        final NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
+        builder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentTitle(context.getString(R.string.waiting_title))
                 .setContentText(context.getString(R.string.waiting_content))
                 .setAutoCancel(false)
                 .setSmallIcon(R.drawable.ic_all_inclusive_white_36dp)
                 .setProgress(0, 0, true);
 
-        NotificationConstants.setMetadata(context, mBuilder, NotificationConstants.TYPE_NORMAL);
+        NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_NORMAL);
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if (handlerThread==null || !handlerThread.isAlive()) {
-                    // service is been finished, let's start this one
-                    // pop recent intent from pendingIntents
-                    context.startService(pendingIntents.remove(pendingIntents.size()-1));
 
                     if (pendingIntents.size()==0) {
                         // we've done all the work, free up resources (if not already killed by system)
-                        notificationManager.cancel(NotificationConstants.WAIT_ID);
-                        handler.removeCallbacks(this);
-                        waitingThread.quit();
+                        waitingHandler.removeCallbacks(this);
+                        waitingHandlerThread.quit();
                         return;
                     } else {
-
-                        notificationManager.notify(NotificationConstants.WAIT_ID, mBuilder.build());
+                        if (pendingIntents.size()==1) {
+                            notificationManager.cancel(NotificationConstants.WAIT_ID);
+                        }
+                        context.startService(pendingIntents.element());
                     }
                 }
-                handler.postDelayed(this, 5000);
+
+                Log.d(getClass().getSimpleName(), "Processes in progress, delay the check");
+                waitingHandler.postDelayed(this, 1000);
             }
         };
 
-        handler.postDelayed(runnable, 0);
+        waitingHandler.postDelayed(runnable, 0);
+    }
+
+    public interface ServiceWatcherInteractionInterface {
+
+        int STATE_HALTED = 0;
+        int STATE_RESUMED = 1;
+
+        /**
+         * Progress has been halted for some reason
+         */
+        void progressHalted();
+
+        /**
+         * Future extension for possible implementation of pause/resume of services
+         */
+        void progressResumed();
+
+        Context getApplicationContext();
+
+        /**
+         * This is for a hack, read about it where it's used
+         */
+        boolean isDecryptService();
     }
 }

@@ -1222,10 +1222,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         builder.onPositive((dialog, which) -> {
             String name1 = dialog.getInputEditText().getText().toString();
-            if (f.isSmb()){
-                if (f.isDirectory() && !name1.endsWith("/"))
-                    name1 = name1 + "/";
-            }
             getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
                     CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
         });
