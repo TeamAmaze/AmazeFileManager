@@ -35,6 +35,7 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -272,25 +273,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if (holder instanceof ItemViewHolder) {
-            new CountDownTimer(2000, 2000) {
-
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    // leave
-                }
-
-                @Override
-                public void onFinish() {
-                    // marquee works only when text view has focus
-                    ((ItemViewHolder) holder).txtTitle.setSelected(true);
-                }
-            }.start();
+            AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
         }
     }
 
     @Override
     public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
         ((ItemViewHolder) holder).rl.clearAnimation();
+        ((ItemViewHolder) holder).txtTitle.setSelected(false);
         return super.onFailedToRecycleView(holder);
     }
 

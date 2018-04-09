@@ -44,12 +44,14 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.adapters.holders.AppHolder;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -128,6 +130,8 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
             showPopup(holder.about, rowItem);
         }
         holder.txtTitle.setText(rowItem.label);
+        AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
+
         //	File f = new File(rowItem.getDesc());
         holder.txtDesc.setText(rowItem.fileSize);
         holder.rl.setClickable(true);
@@ -152,6 +156,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         }
         return view;
     }
+
     private void showPopup(View v, final AppDataParcelable rowItem){
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
