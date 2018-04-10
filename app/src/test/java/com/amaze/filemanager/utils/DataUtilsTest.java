@@ -398,7 +398,7 @@ public class DataUtilsTest {
     @Test
     public void testContainsAccountsForWrongAccount() {
         CloudStorage testStorage = new GoogleDrive(context, "testID", "testSecret") ;
-        dataUtils.addAccount(testStorage); // Microsoft account is not supported
+        dataUtils.addAccount(testStorage);
 
         assertEquals(-1, dataUtils.containsAccounts(OpenMode.DROPBOX)); // Wrong Account
         assertEquals(-1, dataUtils.containsAccounts(OpenMode.UNKNOWN)); // check default
