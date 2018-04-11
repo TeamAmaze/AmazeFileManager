@@ -636,8 +636,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * @return true if device is connected
      */
     private boolean isUsbDeviceConnected() {
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-        if (usbManager.getDeviceList().size()!=0) {
+        if (OTGUtil.isMassStorageDeviceConnected(this)) {
             // we need to set this every time as there is no way to know that whether USB device was
             // disconnected after closing the app and another one was connected
             // in that case the URI will obviously change
