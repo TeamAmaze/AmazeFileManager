@@ -230,7 +230,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             File f = new File(file);
             String name;
             @DrawableRes int icon1 = R.drawable.ic_sd_storage_white_24dp;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file)) {
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
                 name = resources.getString(R.string.storage);
             } else if ("/storage/sdcard1".equals(file)) {
                 name = resources.getString(R.string.extstorage);
@@ -241,7 +241,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 name = "OTG";
                 icon1 = R.drawable.ic_usb_white_24dp;
             } else name = f.getName();
-            if (!f.isDirectory() || f.canExecute()) {
+            if (f.isDirectory() || f.canExecute()) {
                 addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
                         R.drawable.ic_show_chart_black_24dp);
                 if(storage_count == 0) firstPath = file;
