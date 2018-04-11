@@ -177,7 +177,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setEnabled(FileUtils.isPathAccesible(editText2.getText().toString(), sharedPrefs));
+                .setEnabled(FileUtils.isPathAccessible(editText2.getText().toString(), sharedPrefs));
 
         disableButtonIfTitleEmpty(editText1, dialog);
         disableButtonIfNotPath(editText2, dialog);
@@ -262,7 +262,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(FileUtils.isPathAccesible(s.toString(), sharedPrefs));
+                        .setEnabled(FileUtils.isPathAccessible(s.toString(), sharedPrefs));
             }
         });
     }
