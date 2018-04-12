@@ -35,9 +35,11 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecom
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.Utils;
 
@@ -87,6 +89,8 @@ public class CompressedHelper {
             extractor = new XzExtractor(context, file.getPath(), outputPath, listener);
         } else if(isLzippedTar(type)) {
             extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener);
+        } else if(is7zip(type)) {
+            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener);
         } else {
             return null;
         }
@@ -115,6 +119,8 @@ public class CompressedHelper {
             decompressor = new XzDecompressor(context);
         } else if(isLzippedTar(type)) {
             decompressor = new LzmaDecompressor(context);
+        } else if(is7zip(type)) {
+            decompressor = new SevenZipDecompressor(context);
         } else {
             return null;
         }
@@ -126,7 +132,7 @@ public class CompressedHelper {
     public static boolean isFileExtractable(String path) {
         String type = getExtension(path);
 
-        return isZip(type) || isTar(type) || isRar(type) || isGzippedTar(type) || isBzippedTar(type) || isXzippedTar(type) || isLzippedTar(type);
+        return isZip(type) || isTar(type) || isRar(type) || isGzippedTar(type) || is7zip(type) || isBzippedTar(type) || isXzippedTar(type) || isLzippedTar(type);
     }
 
     /**
@@ -137,7 +143,7 @@ public class CompressedHelper {
      */
     public static String getFileName(String compressedName) {
         compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName)) {
+        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
         } else if (isGzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName)) {
             return compressedName.substring(0,
@@ -166,6 +172,10 @@ public class CompressedHelper {
 
     private static boolean isRar(String type) {
         return type.endsWith(fileExtensionRar);
+    }
+    
+    private static boolean is7zip(String type) {
+        return type.endsWith(fileExtension7zip);
     }
 
     private static boolean isXzippedTar(String type) {

@@ -907,7 +907,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     || description.endsWith(".tar.bz2")
                     || description.endsWith(".tar.xz")
                     || description.endsWith(".tar.lzma"))
-
                 popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
