@@ -58,6 +58,7 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
+import com.squareup.haha.perflib.Main;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -542,13 +543,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
                 pendingPath = meta.path;
 
-                if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
-                        UsbOtgSingleton.getInstance().getUsbOtgRoot() == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                        && meta.path.contains(OTGUtil.PREFIX_OTG)
+                        && UsbOtgSingleton.getInstance().getUsbOtgRoot() == null) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
+
+                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
                     closeIfNotLocked();
                     if (isLocked()) { onDrawerClosed(); }

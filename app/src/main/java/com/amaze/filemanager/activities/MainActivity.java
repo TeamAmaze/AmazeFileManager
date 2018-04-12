@@ -1316,16 +1316,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
             }
             operation = -1;
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
-            // otg access
-            String usbOtgRoot = intent.getData() != null? intent.getData().toString():null;
-            UsbOtgSingleton.getInstance().setUsbOtgRoot(usbOtgRoot);
+        } else if (requestCode == REQUEST_CODE_SAF) {
+            if (responseCode == Activity.RESULT_OK) {
+                // otg access
+                String usbOtgRoot = intent.getData() != null ? intent.getData().toString() : null;
+                UsbOtgSingleton.getInstance().setUsbOtgRoot(usbOtgRoot);
 
-            drawer.closeIfNotLocked();
-            if(drawer.isLocked()) drawer.onDrawerClosed();
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
-            // otg access not provided
-            drawer.resetPendingPath();
+                drawer.closeIfNotLocked();
+                if (drawer.isLocked()) drawer.onDrawerClosed();
+            } else {
+                // otg access not provided
+                drawer.resetPendingPath();
+            }
         }
     }
 
