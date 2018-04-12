@@ -541,8 +541,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     CloudUtil.checkToken(meta.path, mainActivity);
                 }
 
-                pendingPath = meta.path;
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                         && meta.path.contains(OTGUtil.PREFIX_OTG)
                         && UsbOtgSingleton.getInstance().getUsbOtgRoot() == null) {
@@ -553,6 +551,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
+                    pendingPath = meta.path;
                     closeIfNotLocked();
                     if (isLocked()) { onDrawerClosed(); }
                 }
