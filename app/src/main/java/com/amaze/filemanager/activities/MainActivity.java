@@ -1317,14 +1317,15 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             }
             operation = -1;
         } else if (requestCode == REQUEST_CODE_SAF) {
-            if (responseCode == Activity.RESULT_OK) {
+            if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
                 // otg access
-                String usbOtgRoot = intent.getData() != null ? intent.getData().toString() : null;
+                String usbOtgRoot = intent.getData().toString();
                 UsbOtgSingleton.getInstance().setUsbOtgRoot(usbOtgRoot);
 
                 drawer.closeIfNotLocked();
                 if (drawer.isLocked()) drawer.onDrawerClosed();
             } else {
+                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
                 // otg access not provided
                 drawer.resetPendingPath();
             }
