@@ -10,6 +10,7 @@ import android.util.Log;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.UsbOtgSingleton;
 
 import java.util.ArrayList;
 
@@ -45,8 +46,9 @@ public class OTGUtil {
      * @return an array of list of files at the path
      */
     public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
-        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
-        String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
+        String rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
+
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
 
         String[] parts = path.split("/");
@@ -81,8 +83,8 @@ public class OTGUtil {
      *                        in case path is not present. Notably useful in opening an output stream.
      */
     public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
-        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
-        String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
+        String rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
         // start with root of SD card and then parse through document tree.
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));

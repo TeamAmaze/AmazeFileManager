@@ -31,6 +31,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.UsbOtgSingleton;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
@@ -538,9 +539,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 pendingPath = meta.path;
 
                 if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
-                        mainActivity.getPrefs()
-                                .getString(MainActivity.KEY_PREF_OTG, null)
-                                .equals(MainActivity.VALUE_PREF_OTG_NULL)) {
+                        UsbOtgSingleton.getInstance().getUsbOtgRoot() == null) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
