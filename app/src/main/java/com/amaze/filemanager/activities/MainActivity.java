@@ -46,7 +46,6 @@ import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -65,7 +64,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -1568,7 +1566,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (b) {
                     tabHandler.clear();
 
-                    if (drawer.getStorageCount() > 1) {
+                    if (drawer.getPhoneStorageCount() > 1) {
                         tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
                     } else {
                         tabHandler.addTab(new Tab(1, "/", "/"));
