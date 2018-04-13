@@ -547,8 +547,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
+                    UsbOtgSingleton.getInstance().setHasRootBeenRequested(true);
+                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
                     pendingPath = meta.path;

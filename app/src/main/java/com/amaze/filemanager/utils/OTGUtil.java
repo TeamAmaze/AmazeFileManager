@@ -56,10 +56,10 @@ public class OTGUtil {
      * @return an array of list of files at the path
      */
     public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
-        String rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        Uri rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
         if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
+        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
 
         String[] parts = path.split("/");
         for (String part : parts) {
@@ -93,11 +93,11 @@ public class OTGUtil {
      *                        in case path is not present. Notably useful in opening an output stream.
      */
     public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
-        String rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        Uri rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
         if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
         // start with root of SD card and then parse through document tree.
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
+        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
 
         String[] parts = path.split("/");
         for (String part : parts) {

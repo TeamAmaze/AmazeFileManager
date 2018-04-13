@@ -633,12 +633,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      */
     private boolean isUsbDeviceConnected() {
         if (OTGUtil.isMassStorageDeviceConnected(this)) {
-            // we need to set this every time as there is no way to know that whether USB device was
-            // disconnected after closing the app and another one was connected
-            // in that case the URI will obviously change
-            // other wise we could persist the URI even after reopening the app by not writing
-            // this preference when it's not null
-            UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+            if(!UsbOtgSingleton.getInstance().hasRootBeenRequested()) {
+                UsbOtgSingleton.getInstance().setHasRootBeenRequested(false);
+                // we need to set this every time as there is no way to know that whether USB device was
+                // disconnected after closing the app and another one was connected in that case
+                // the URI will obviously change otherwise we could persist the URI even after
+                // reopening the app by not writing this preference when it's not null
+                UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+            }
             return true;
         } else {
             UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
@@ -1319,7 +1321,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         } else if (requestCode == REQUEST_CODE_SAF) {
             if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
                 // otg access
-                String usbOtgRoot = intent.getData().toString();
+                Uri usbOtgRoot = Uri.parse(intent.getData().toString());
                 UsbOtgSingleton.getInstance().setUsbOtgRoot(usbOtgRoot);
 
                 drawer.closeIfNotLocked();
