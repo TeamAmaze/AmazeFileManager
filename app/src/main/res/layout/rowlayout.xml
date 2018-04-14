@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true">
 
-        <com.amaze.filemanager.ui.views.ThemedTextView
+        <com.amaze.filemanager.ui.views.MarqueeThemedTextView
             android:id="@+id/firstline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,6 +121,7 @@
             android:fadingEdge="horizontal"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
+            android:longClickable="false"
             android:clickable="false"
             android:textSize="17sp" />
 
@@ -129,7 +130,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/firstline"
             android:layout_marginTop="5dp">
-
 
             <TextView
                 android:id="@+id/date"

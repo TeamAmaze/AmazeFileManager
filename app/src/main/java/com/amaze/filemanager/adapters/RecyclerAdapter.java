@@ -170,7 +170,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //notifyItemChanged(position);
         if (mainFrag.mActionMode != null && mainFrag.selection) {
             // we have the actionmode visible, invalidate it's views
-            mainFrag.mActionMode.invalidate();
+            //mainFrag.mActionMode.invalidate();
         }
         if (getCheckedItems().size() == 0) {
             mainFrag.selection = false;
@@ -265,7 +265,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewAttachedToWindow(holder);
         if(holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).rl.clearAnimation();
-            ((ItemViewHolder) holder).txtTitle.setSelected(false);
+            //((ItemViewHolder) holder).txtTitle.setSelected(false);
         }
     }
 
@@ -488,6 +488,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     // check if the item on which action is performed is not the first {goback} item
                     if (!isBackButton) {
                         toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                        holder.txtTitle.setSoftSelection(true);
                     }
 
                     return true;

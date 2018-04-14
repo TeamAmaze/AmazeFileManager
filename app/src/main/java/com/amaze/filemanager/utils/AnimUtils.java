@@ -27,6 +27,7 @@ import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
+import com.amaze.filemanager.ui.views.MarqueeThemedTextView;
 
 import java.util.ArrayList;
 
@@ -290,7 +291,7 @@ public class AnimUtils {
      * @param delayInMillis
      * @param marqueeView
      */
-    public static void marqueeAfterDelay(int delayInMillis, TextView marqueeView) {
+    public static void marqueeAfterDelay(int delayInMillis, MarqueeThemedTextView marqueeView) {
         new CountDownTimer(delayInMillis, delayInMillis) {
 
             @Override
@@ -301,7 +302,11 @@ public class AnimUtils {
             @Override
             public void onFinish() {
                 // marquee works only when text view has focus
+                // setting flag to false for it to be selected
+                marqueeView.setSoftSelection(false);
                 marqueeView.setSelected(true);
+                // resetting selection flag so selection can't be triggered on long press
+                //marqueeView.setSoftSelection(true);
             }
         }.start();
     }
