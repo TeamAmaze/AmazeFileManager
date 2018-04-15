@@ -189,4 +189,60 @@
     <style name="pref_accent_dark_super_su" parent="appCompatDark">
         <item name="colorAccent">@color/accent_super_su</item>
     </style>
+
+    <!-- black -->
+    <style name="pref_accent_black_red" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_red</item>
+    </style>
+    <style name="pref_accent_black_pink" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_pink</item>
+    </style>
+    <style name="pref_accent_black_purple" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_purple</item>
+    </style>
+    <style name="pref_accent_black_deep_purple" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_deep_purple</item>
+    </style>
+    <style name="pref_accent_black_indigo" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_indigo</item>
+    </style>
+    <style name="pref_accent_black_blue" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_blue</item>
+    </style>
+    <style name="pref_accent_black_light_blue" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_light_blue</item>
+    </style>
+    <style name="pref_accent_black_cyan" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_cyan</item>
+    </style>
+    <style name="pref_accent_black_teal" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_teal</item>
+    </style>
+    <style name="pref_accent_black_green" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_green</item>
+    </style>
+    <style name="pref_accent_black_light_green" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_light_green</item>
+    </style>
+    <style name="pref_accent_black_amber" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_amber</item>
+    </style>
+    <style name="pref_accent_black_orange" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_orange</item>
+    </style>
+    <style name="pref_accent_black_deep_orange" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_deep_orange</item>
+    </style>
+    <style name="pref_accent_black_brown" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_brown</item>
+    </style>
+    <style name="pref_accent_black_black" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_black</item>
+    </style>
+    <style name="pref_accent_black_blue_grey" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_blue_grey</item>
+    </style>
+    <style name="pref_accent_black_super_su" parent="appCompatBlack">
+        <item name="colorAccent">@color/accent_super_su</item>
+    </style>
 </resources>

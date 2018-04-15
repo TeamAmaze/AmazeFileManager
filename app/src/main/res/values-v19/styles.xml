@@ -52,7 +52,6 @@
     </style>
 
     <style name="overflow_dark" parent="Theme.AppCompat">
-
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
         <item name="android:textColorHint">#ffffff</item>
