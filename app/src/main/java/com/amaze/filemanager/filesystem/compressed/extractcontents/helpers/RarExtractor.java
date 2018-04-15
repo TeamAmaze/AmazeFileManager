@@ -77,7 +77,7 @@ public class RarExtractor extends Extractor {
             while ((len = inputStream.read(buf)) != -1) {
 
                 outputStream.write(buf, 0, len);
-                ServiceWatcherUtil.POSITION += len;
+                ServiceWatcherUtil.position += len;
             }
         } finally {
             outputStream.close();
