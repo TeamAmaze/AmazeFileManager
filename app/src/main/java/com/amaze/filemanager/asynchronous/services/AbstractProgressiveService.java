@@ -231,7 +231,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
-
+        context = getApplicationContext();
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
 
