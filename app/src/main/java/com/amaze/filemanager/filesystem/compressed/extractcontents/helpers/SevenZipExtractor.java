@@ -11,10 +11,7 @@ import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-import org.apache.commons.compress.archivers.sevenz.SevenZMethodConfiguration;
-import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +32,7 @@ public class SevenZipExtractor extends Extractor {
         // iterating archive elements to find file names that are to be extracted
         for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
             if (filter.shouldExtract(entry.getName(), entry.isDirectory())) {
-                // Entry to be extracted is atleast the entry path (may be more, when it is a directory)
+                // Entry to be extracted is at least the entry path (may be more, when it is a directory)
                 arrayList.add(entry);
                 totalBytes += entry.getSize();
             }
@@ -45,11 +42,15 @@ public class SevenZipExtractor extends Extractor {
 
         SevenZArchiveEntry entry;
         while ((entry = sevenzFile.getNextEntry()) != null) {
+            if (!arrayList.contains(entry)) {
+                continue;
+            }
             if (!listener.isCancelled()) {
                 listener.onUpdate(entry.getName());
                 extractEntry(context, sevenzFile, entry, outputPath);
             }
         }
+        sevenzFile.close();
         listener.onFinish(); 
     }
 
@@ -72,8 +73,11 @@ public class SevenZipExtractor extends Extractor {
         try {
             // No specific File Streams, only for the Full Archive, therefore no buffering...
             byte content[] = new byte[(int)entry.getSize()];
-            ServiceWatcherUtil.position += sevenzFile.read(content, 0, content.length);
+            int len;
+            len = sevenzFile.read(content, 0, content.length);
+            ServiceWatcherUtil.position += len;
             outputStream.write(content, 0, content.length);
+
         } finally {
             outputStream.close();
         }
