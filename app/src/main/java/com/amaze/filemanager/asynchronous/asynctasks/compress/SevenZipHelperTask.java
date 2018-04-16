@@ -31,8 +31,7 @@ public class SevenZipHelperTask extends CompressedHelperTask {
         try {
             sevenzFile = new SevenZFile(new File(filePath));
 
-            SevenZArchiveEntry entry;
-            while ((entry = sevenzFile.getNextEntry()) != null) {
+            for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
                 String name = entry.getName();
                 if (name.endsWith(SEPARATOR)) name = name.substring(0, name.length() - 1);
 
