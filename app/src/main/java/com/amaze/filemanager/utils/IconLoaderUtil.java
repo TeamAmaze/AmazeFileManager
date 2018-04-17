@@ -66,6 +66,7 @@ public class IconLoaderUtil {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
+                    Log.d(getClass().getSimpleName(), "ICON LOAD SUCCESS");
                     publishResult((Result) msg.obj);
                     sendEmptyMessageDelayed(DESTROY, 1000);
                     break;
@@ -79,6 +80,7 @@ public class IconLoaderUtil {
             // find the request in the queue
             for (Map.Entry<ImageView, IconDataParcelable> map : requests.entrySet()) {
                 if (map.getValue().equals(result.iconDataParcelable)) {
+                    Log.d(getClass().getSimpleName(), "setting drawable to " + result.iconDataParcelable.path);
                     map.getKey().setImageDrawable(result.drawable);
                     requests.remove(map);
                     break;
@@ -127,13 +129,18 @@ public class IconLoaderUtil {
 
     public void loadDrawable(IconDataParcelable iconDataParcelable, ImageView imageView) {
 
-
-        if (workerHandler == null || workerHandlerThread == null) {
-            workerHandlerThread = new HandlerThread(WORKER_THREAD_ICON);
-            workerHandlerThread.start();
-            workerHandler = new Handler(workerHandlerThread.getLooper());
-        }
-        requests.put(imageView, iconDataParcelable);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (workerHandler == null || workerHandlerThread == null) {
+                    workerHandlerThread = new HandlerThread(WORKER_THREAD_ICON);
+                    workerHandlerThread.start();
+                    workerHandler = new Handler(workerHandlerThread.getLooper());
+                }
+                requests.put(imageView, iconDataParcelable);
+                workerHandler.obtainMessage(LOAD, iconDataParcelable).sendToTarget();
+            }
+        }).start();
     }
 
     private Drawable load(IconDataParcelable iconDataParcelable) {
