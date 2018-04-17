@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
  * Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
  */
 
-public class EncryptService extends ProgressiveService {
+public class EncryptService extends AbstractProgressiveService {
 
     public static final String TAG_SOURCE = "crypt_source";     // source file to encrypt or decrypt
     public static final String TAG_DECRYPT_PATH = "decrypt_path";
@@ -42,7 +41,11 @@ public class EncryptService extends ProgressiveService {
     private NotificationCompat.Builder notificationBuilder;
     private Context context;
     private IBinder mBinder = new ObtainableServiceBinder<>(this);
-    private ProgressHandler progressHandler;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
+    // list of data packages, to initiate chart in process viewer fragment
+    private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
     private OpenMode openMode;
@@ -81,10 +84,55 @@ public class EncryptService extends ProgressiveService {
 
         startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
 
+        super.onStartCommand(intent, flags, startId);
+        super.progressHalted();
         new BackgroundTask().execute();
 
-
         return START_STICKY;
+    }
+
+    @Override
+    protected NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
+
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return notificationBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.ENCRYPT_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        this.progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
@@ -95,14 +143,18 @@ public class EncryptService extends ProgressiveService {
             if (baseFile.isDirectory())  totalSize = baseFile.folderSize(context);
             else totalSize = baseFile.length(context);
 
-            progressHandler = new ProgressHandler(1, totalSize);
-            progressHandler.setProgressListener(EncryptService.this::publishResults);
-            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler, totalSize);
+            progressHandler.setSourceSize(1);
+            progressHandler.setTotalSize(totalSize);
+            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
+                publishResults(fileName, sourceFiles, sourceProgress, totalSize,
+                        writtenSize, speed, false, false);
+            });
+            serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
             addFirstDatapoint(baseFile.getName(), 1, totalSize, true);// we're using encrypt as move flag false
 
             if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
-                serviceWatcherUtil.watch();
+                serviceWatcherUtil.watch(EncryptService.this);
 
                 // we're here to encrypt
                 try {
@@ -121,7 +173,7 @@ public class EncryptService extends ProgressiveService {
             super.onPostExecute(aVoid);
 
             serviceWatcherUtil.stopWatch();
-            generateNotification(failedOps);
+            generateNotification(failedOps, false);
 
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
             intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
@@ -129,38 +181,6 @@ public class EncryptService extends ProgressiveService {
 
             stopSelf();
         }
-    }
-
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long totalSize, long writtenSize, int speed) {
-
-        if (!progressHandler.getCancelled()) {
-
-            //notification
-            float progressPercent = ((float) writtenSize/totalSize)*100;
-            notificationBuilder.setProgress(100, Math.round(progressPercent), false);
-            notificationBuilder.setOngoing(true);
-            int title = R.string.crypt_encrypting;
-            notificationBuilder.setContentTitle(context.getResources().getString(title));
-            notificationBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context,
-                    writtenSize) + "/" +
-                    Formatter.formatFileSize(context, totalSize));
-
-            notificationManager.notify(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
-            if (writtenSize == totalSize || totalSize == 0) {
-
-                notificationBuilder.setContentText("");
-                notificationBuilder.setOngoing(false);
-                notificationBuilder.setAutoCancel(true);
-                notificationManager.notify(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
-                notificationManager.cancel(NotificationConstants.ENCRYPT_ID);
-            }
-
-            //for processviewer
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    totalSize, writtenSize, speed, false);
-            addDatapoint(intent);
-        } else notificationManager.cancel(NotificationConstants.ENCRYPT_ID);
     }
 
     @Override
@@ -172,44 +192,6 @@ public class EncryptService extends ProgressiveService {
     public void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(cancelReceiver);
-    }
-
-    /**
-     * Displays a notification, sends intent and cancels progress if there were some failures
-     * in copy progress
-     * @param failedOps
-     *
-     */
-    void generateNotification(ArrayList<HybridFile> failedOps) {
-        notificationManager.cancelAll();
-
-        if(failedOps.size()==0)return;
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
-            .setContentTitle(context.getString(R.string.operationunsuccesful))
-            .setContentText(context.getString(R.string.copy_error, context.getString(R.string.copy_error).replace("%s",
-                    context.getString(R.string.crypt_encrypted).toLowerCase())))
-            .setAutoCancel(true);
-
-        NotificationConstants.setMetadata(context, mBuilder, NotificationConstants.TYPE_NORMAL);
-
-        progressHandler.setCancelled(true);
-
-        Intent intent= new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
-        intent.putExtra("move", true);
-
-        PendingIntent pIntent = PendingIntent.getActivity(this, 101, intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mBuilder.setContentIntent(pIntent);
-        mBuilder.setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
-
-        notificationManager.notify(NotificationConstants.FAILED_ID, mBuilder.build());
-
-        intent=new Intent(MainActivity.TAG_INTENT_FILTER_GENERAL);
-        intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
-
-        sendBroadcast(intent);
     }
 
     private BroadcastReceiver cancelReceiver = new BroadcastReceiver() {
