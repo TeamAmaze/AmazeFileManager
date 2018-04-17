@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.MarqueeThemedTextView;
+import com.amaze.filemanager.ui.views.ThemedTextView;
 
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com>
@@ -18,7 +19,7 @@ import com.amaze.filemanager.ui.views.MarqueeThemedTextView;
 public class AppHolder extends RecyclerView.ViewHolder {
 
     public final ImageView apkIcon;
-    public final MarqueeThemedTextView txtTitle;
+    public final ThemedTextView txtTitle;
     public final RelativeLayout rl;
     public final TextView txtDesc;
     public final ImageButton about;

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,8 +167,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
 
-        notifyDataSetChanged();
-        //notifyItemChanged(position);
+        notifyItemChanged(position);
         if (mainFrag.mActionMode != null && mainFrag.selection) {
             // we have the actionmode visible, invalidate it's views
             //mainFrag.mActionMode.invalidate();
@@ -183,8 +183,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
 
         for (; i < itemsDigested.size(); i++) {
-            itemsDigested.get(i).setChecked(b);
-            notifyItemChanged(i);
+            ListItem item = itemsDigested.get(i);
+            if (b && item.getChecked() != ListItem.CHECKED) {
+                item.setChecked(true);
+                notifyItemChanged(i);
+            } else if (!b && item.getChecked() == ListItem.CHECKED){
+                item.setChecked(false);
+                notifyItemChanged(i);
+            }
         }
 
         if (mainFrag.mActionMode != null) {
@@ -207,8 +213,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     public void toggleChecked(boolean b) {
         for (int i = 0; i < itemsDigested.size(); i++) {
-            itemsDigested.get(i).setChecked(b);
-            notifyItemChanged(i);
+            ListItem item = itemsDigested.get(i);
+            if (b && item.getChecked() != ListItem.CHECKED) {
+                item.setChecked(true);
+                notifyItemChanged(i);
+            } else if (!b && item.getChecked() == ListItem.CHECKED){
+                item.setChecked(false);
+                notifyItemChanged(i);
+            }
         }
 
         if (mainFrag.mActionMode != null) {
@@ -265,7 +277,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewAttachedToWindow(holder);
         if(holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).rl.clearAnimation();
-            //((ItemViewHolder) holder).txtTitle.setSelected(false);
+            ((ItemViewHolder) holder).txtTitle.setSelected(false);
         }
     }
 
@@ -461,7 +473,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.rl.setMinimumHeight((int) minRowHeight);
                     if (itemsDigested.size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)? 1:0))
                         holder.txtTitle.setText(R.string.nofiles);
-                    else holder.txtTitle.setText("");
+                    else {
+                        holder.txtTitle.setText("");
+                    }
                     return;
                 }
             }
@@ -488,12 +502,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     // check if the item on which action is performed is not the first {goback} item
                     if (!isBackButton) {
                         toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
-                        holder.txtTitle.setSoftSelection(true);
                     }
 
                     return true;
                 });
-
                 holder.txtTitle.setText(rowItem.title);
                 holder.genericText.setText("");
 
@@ -931,5 +943,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private interface OnImageProcessed {
         void onImageProcessed(boolean isImageBroken);
     }
-
 }

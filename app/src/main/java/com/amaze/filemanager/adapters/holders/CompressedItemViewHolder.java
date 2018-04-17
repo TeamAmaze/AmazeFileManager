@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.MarqueeThemedTextView;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.views.ThemedTextView;
 
 /**
  * @author Emmanuel Messulam<emmanuelbendavid@gmail.com>
@@ -18,7 +19,7 @@ public class CompressedItemViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public final RoundedImageView pictureIcon;
     public final ImageView genericIcon, apkIcon;
-    public final MarqueeThemedTextView txtTitle;
+    public final ThemedTextView txtTitle;
     public final TextView txtDesc;
     public final TextView date;
     public final TextView perm;
