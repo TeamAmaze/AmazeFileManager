@@ -26,8 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
-import com.amaze.filemanager.ui.views.MarqueeThemedTextView;
 import com.amaze.filemanager.ui.views.ThemedTextView;
 
 import java.util.ArrayList;

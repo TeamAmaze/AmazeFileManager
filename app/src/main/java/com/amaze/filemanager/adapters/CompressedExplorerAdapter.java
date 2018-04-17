@@ -306,7 +306,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     public void onViewDetachedFromWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         holder.rl.clearAnimation();
-        //holder.txtTitle.setSelected(false);
+        holder.txtTitle.setSelected(false);
     }
 
     @Override

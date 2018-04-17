@@ -170,7 +170,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
         if (mainFrag.mActionMode != null && mainFrag.selection) {
             // we have the actionmode visible, invalidate it's views
-            //mainFrag.mActionMode.invalidate();
+            mainFrag.mActionMode.invalidate();
         }
         if (getCheckedItems().size() == 0) {
             mainFrag.selection = false;
@@ -187,7 +187,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (b && item.getChecked() != ListItem.CHECKED) {
                 item.setChecked(true);
                 notifyItemChanged(i);
-            } else if (!b && item.getChecked() == ListItem.CHECKED){
+            } else if (!b && item.getChecked() == ListItem.CHECKED) {
                 item.setChecked(false);
                 notifyItemChanged(i);
             }
@@ -217,7 +217,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (b && item.getChecked() != ListItem.CHECKED) {
                 item.setChecked(true);
                 notifyItemChanged(i);
-            } else if (!b && item.getChecked() == ListItem.CHECKED){
+            } else if (!b && item.getChecked() == ListItem.CHECKED) {
                 item.setChecked(false);
                 notifyItemChanged(i);
             }
