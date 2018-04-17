@@ -66,18 +66,23 @@ public class SevenZipExtractor extends Extractor {
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }
-        //	Log.i("Amaze", "Extracting: " + entry);
+        // Log.i("Amaze", "Extracting: " + entry);
 
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
+ 
+        byte[] content = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+        long progress=0;
         try {
-            // No specific File Streams, only for the Full Archive, therefore no buffering...
-            byte content[] = new byte[(int)entry.getSize()];
-            int len;
-            len = sevenzFile.read(content, 0, content.length);
-            ServiceWatcherUtil.position += len;
-            outputStream.write(content, 0, content.length);
-
+            while (progress<entry.getSize()) {
+                int length;
+                int bytesLeft = new Long(entry.getSize()-progress).intValue();
+                length = sevenzFile.read(content, 0,
+                        bytesLeft>GenericCopyUtil.DEFAULT_BUFFER_SIZE ? GenericCopyUtil.DEFAULT_BUFFER_SIZE : bytesLeft);
+                outputStream.write(content, 0, length);
+                ServiceWatcherUtil.position+=length;
+                progress+=length;
+            }
         } finally {
             outputStream.close();
         }
