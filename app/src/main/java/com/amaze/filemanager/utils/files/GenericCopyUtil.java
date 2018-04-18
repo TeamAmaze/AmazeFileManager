@@ -1,7 +1,29 @@
+/*
+ * GenericCopyUtil.java
+ *
+ * Copyright © 2016 Vishal Nehra (vishalmeham2 at gmail.com)
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils.files;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -265,6 +287,22 @@ public class GenericCopyUtil {
             } catch (IOException e) {
                 e.printStackTrace();
                 // failure in closing stream
+            }
+
+            //If target file is copied onto the device and copy was successful, trigger media store
+            //rescan
+
+            if((mTargetFile.isLocal() || mTargetFile.isOtgFile()) && mTargetFile.exists(mContext)) {
+
+                DocumentFile documentFile = FileUtil.getDocumentFile(mTargetFile.getFile(), false, mContext);
+                //If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
+                if(documentFile == null)
+                    documentFile = DocumentFile.fromFile(mTargetFile.getFile());
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                intent.setData(documentFile.getUri());
+                mContext.sendBroadcast(intent);
             }
         }
     }
