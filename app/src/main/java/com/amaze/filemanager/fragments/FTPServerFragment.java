@@ -73,15 +73,15 @@ public class FTPServerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
-        statusText =(TextView) rootView.findViewById(R.id.text_view_ftp_status);
-        username = (TextView) rootView.findViewById(R.id.text_view_ftp_username);
-        password = (TextView) rootView.findViewById(R.id.text_view_ftp_password);
-        port = (TextView) rootView.findViewById(R.id.text_view_ftp_port);
-        sharedPath = (TextView) rootView.findViewById(R.id.text_view_ftp_path);
-        ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
+        statusText = rootView.findViewById(R.id.text_view_ftp_status);
+        username = rootView.findViewById(R.id.text_view_ftp_username);
+        password = rootView.findViewById(R.id.text_view_ftp_password);
+        port = rootView.findViewById(R.id.text_view_ftp_port);
+        sharedPath = rootView.findViewById(R.id.text_view_ftp_path);
+        ftpBtn = rootView.findViewById(R.id.startStopButton);
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
-        ftpPasswordVisibleButton = (ImageButton) rootView.findViewById(R.id.ftp_password_visible);
+        ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
 
         skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
         skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
@@ -475,12 +475,12 @@ public class FTPServerFragment extends Fragment {
 
     private void initLoginDialogViews(View loginDialogView) {
 
-        usernameEditText = (AppCompatEditText) loginDialogView.findViewById(R.id.edit_text_dialog_ftp_username);
-        passwordEditText = (AppCompatEditText) loginDialogView.findViewById(R.id.edit_text_dialog_ftp_password);
-        usernameTextInput = (TextInputLayout) loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
-        passwordTextInput = (TextInputLayout) loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
-        mAnonymousCheckBox = (AppCompatCheckBox) loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
-        mSecureCheckBox = (AppCompatCheckBox) loginDialogView.findViewById(R.id.checkbox_ftp_secure);
+        usernameEditText = loginDialogView.findViewById(R.id.edit_text_dialog_ftp_username);
+        passwordEditText = loginDialogView.findViewById(R.id.edit_text_dialog_ftp_password);
+        usernameTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
+        passwordTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
+        mAnonymousCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
+        mSecureCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_secure);
 
         mAnonymousCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
