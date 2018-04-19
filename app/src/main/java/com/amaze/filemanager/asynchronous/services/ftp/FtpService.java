@@ -44,6 +44,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory;
+import com.amaze.filemanager.filesystem.ftpserver.AndroidFtplet;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import org.apache.ftpserver.ConnectionConfigFactory;
@@ -146,7 +148,8 @@ public class FtpService extends Service implements Runnable {
         FtpServerFactory serverFactory = new FtpServerFactory();
         ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
         connectionConfigFactory.setAnonymousLoginEnabled(true);
-
+        serverFactory.setFileSystem(new AndroidFileSystemFactory(getApplicationContext(), preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH)));
+        serverFactory.setFtplets(Collections.singletonMap("default", new AndroidFtplet(getApplicationContext())));
         serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 
         String usernamePreference = preferences.getString(KEY_PREFERENCE_USERNAME, DEFAULT_USERNAME);
