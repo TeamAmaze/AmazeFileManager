@@ -133,12 +133,6 @@ public class FTPServerFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
