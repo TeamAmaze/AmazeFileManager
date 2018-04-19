@@ -504,14 +504,6 @@ public class FTPServerFragment extends Fragment {
         if (getSecurePreference()) {
             mSecureCheckBox.setChecked(true);
         } else mSecureCheckBox.setChecked(false);
-
-        // check if we have a keystore
-        InputStream stream = getResources().openRawResource(R.raw.key);
-        if (stream == null) {
-            mSecureCheckBox.setEnabled(false);
-            mSecureCheckBox.setChecked(false);
-            setSecurePreference(false);
-        }
     }
 
     /**
