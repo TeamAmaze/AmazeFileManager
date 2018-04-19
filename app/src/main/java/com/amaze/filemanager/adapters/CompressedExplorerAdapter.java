@@ -212,7 +212,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
                 if (stringBuilder.toString().length() > 0) {
-                    if (rowItem.name.endsWith(CompressedHelper.SEPARATOR)) stringBuilder.deleteCharAt(rowItem.name.length() - 1);
+                    stringBuilder.deleteCharAt(rowItem.name.length() - 1);
                     try {
                         holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
                     } catch (Exception e) {
@@ -264,7 +264,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
-                    if (rowItem.name.endsWith(CompressedHelper.SEPARATOR))
+                    if (rowItem.directory)
                         stringBuilder.deleteCharAt(rowItem.name.length() - 1);
 
                     if (rowItem.directory) {
