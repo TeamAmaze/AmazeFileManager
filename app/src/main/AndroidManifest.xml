@@ -75,6 +75,7 @@
                 <data android:mimeType="application/zip" />
                 <data android:mimeType="application/rar" />
                 <data android:mimeType="application/x-rar-compressed"/><!--<category android:name="android.intent.category.OPENABLE" />-->
+                <data android:mimeType="application/x-7z-compressed" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 

@@ -8,9 +8,11 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDeco
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.Utils;
 
@@ -33,6 +35,7 @@ public class CompressedHelper {
     public static final String fileExtensionTar = "tar";
     public static final String fileExtensionGzipTar = "tar.gz";
     public static final String fileExtensionRar = "rar";
+    public static final String fileExtension7zip = "7z";
 
     /**
      * To add compatibility with other compressed file types edit this method
@@ -50,6 +53,8 @@ public class CompressedHelper {
             extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
         } else if(isGzippedTar(type)) {
             extractor = new GzipExtractor(context, file.getPath(), outputPath, listener);
+        } else if(is7zip(type)) {
+            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener);
         } else {
             return null;
         }
@@ -72,6 +77,8 @@ public class CompressedHelper {
             decompressor = new TarDecompressor(context);
         } else if(isGzippedTar(type)) {
             decompressor = new GzipDecompressor(context);
+        } else if(is7zip(type)) {
+            decompressor = new SevenZipDecompressor(context);
         } else {
             return null;
         }
@@ -83,7 +90,7 @@ public class CompressedHelper {
     public static boolean isFileExtractable(String path) {
         String type = getExtension(path);
 
-        return isZip(type) || isTar(type) || isRar(type) || isGzippedTar(type);
+        return isZip(type) || isTar(type) || isRar(type) || isGzippedTar(type) || is7zip(type);
     }
 
     /**
@@ -94,7 +101,7 @@ public class CompressedHelper {
      */
     public static String getFileName(String compressedName) {
         compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName)) {
+        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
         } else if (isGzippedTar(compressedName)) {
             return compressedName.substring(0,
@@ -119,6 +126,10 @@ public class CompressedHelper {
 
     private static boolean isRar(String type) {
         return type.endsWith(fileExtensionRar);
+    }
+    
+    private static boolean is7zip(String type) {
+        return type.endsWith(fileExtension7zip);
     }
 
     private static String getExtension(String path) {
