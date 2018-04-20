@@ -1,7 +1,8 @@
 /*
  * GenericCopyUtil.java
  *
- * Copyright © 2016 Vishal Nehra (vishalmeham2 at gmail.com)
+ * Copyright © 2016-2018 Vishal Nehra (vishalmeham2 at gmail.com),
+ * Raymond Lai (airwave209gt at gmail.com)
  *
  * This file is part of AmazeFileManager.
  *
@@ -53,8 +54,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
 /**
- * Created by vishal on 26/10/16.
- *
+ * 
  * Base class to handle file copy.
  */
 
