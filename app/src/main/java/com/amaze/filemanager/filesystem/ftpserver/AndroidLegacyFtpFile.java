@@ -1,5 +1,5 @@
 /*
- * AndroidFtpFile.java
+ * AndroidLegacyFtpFile.java
  *
  * Copyright © 2018 Raymond Lai <airwave209gt at gmail.com>.
  *
@@ -28,39 +28,52 @@ import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FtpFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AndroidFtpFile implements FtpFile {
+public class AndroidLegacyFtpFile implements FtpFile {
 
     private final Context context;
 
-    private final DocumentFile backingDocumentFile;
+    private final File backingFile;
 
-    public AndroidFtpFile(@NonNull Context context, @NonNull DocumentFile backingDocumentFile) {
+    public AndroidLegacyFtpFile(@NonNull Context context, @NonNull File backingFile) {
         this.context = context;
-        this.backingDocumentFile = backingDocumentFile;
-        System.err.println(backingDocumentFile);
-        System.err.println(this.backingDocumentFile);
+        this.backingFile = backingFile;
     }
 
+    /**
+     * Not wrapped with {@link java.io.BufferedInputStream} since callers should have done this already.
+     *
+     * @param offset ignored
+     * @return {@link FileInputStream}
+     * @throws IOException
+     */
     @Override
-    public InputStream createInputStream(long offset) throws FileNotFoundException {
-        return context.getContentResolver().openInputStream(backingDocumentFile.getUri());
+    public InputStream createInputStream(long offset) throws IOException {
+        return new FileInputStream(backingFile);
     }
 
+    /**
+     * Not wrapped with {@link java.io.BufferedOutputStream} since callers should have done this already.
+     *
+     * @param offset ignored
+     * @return {@link FileOutputStream}
+     * @throws IOException
+     */
     @Override
-    public OutputStream createOutputStream(long offset) throws FileNotFoundException {
-        return context.getContentResolver().openOutputStream(backingDocumentFile.getUri());
+    public OutputStream createOutputStream(long offset) throws IOException {
+        return new FileOutputStream(backingFile);
     }
 
     @Override
     public boolean doesExist() {
-        return backingDocumentFile != null && backingDocumentFile.exists();
+        return backingFile.exists();
     }
 
     /**
@@ -77,19 +90,17 @@ public class AndroidFtpFile implements FtpFile {
      */
     @Override
     public Object getPhysicalFile() {
-        return backingDocumentFile.getUri();
+        return backingFile;
     }
 
     @Override
     public String getAbsolutePath() {
-        System.err.println(backingDocumentFile);
-        System.err.println(backingDocumentFile.getUri());
-        return backingDocumentFile.getUri().getPath();
+        return backingFile.getAbsolutePath();
     }
 
     @Override
     public String getName() {
-        return backingDocumentFile.getName();
+        return backingFile.getName();
     }
 
     /**
@@ -112,38 +123,37 @@ public class AndroidFtpFile implements FtpFile {
 
     @Override
     public long getLastModified() {
-        return backingDocumentFile.lastModified();
+        return backingFile.lastModified();
     }
 
     @Override
     public long getSize() {
-        return backingDocumentFile.length();
+        return backingFile.length();
     }
 
     @Override
     public boolean isDirectory() {
-        return backingDocumentFile.isDirectory();
+        return backingFile.isDirectory();
     }
 
     @Override
     public boolean isFile() {
-        return backingDocumentFile.isFile();
+        return backingFile.isFile();
     }
 
     @Override
     public boolean isReadable() {
-        return backingDocumentFile.canRead();
+        return backingFile.canRead();
     }
 
     @Override
     public boolean isWritable() {
-        return backingDocumentFile.canWrite();
+        return backingFile.canWrite();
     }
 
-    //FIXME: dot sign
     @Override
     public boolean isHidden() {
-        return false;
+        return backingFile.isHidden();
     }
 
     /**
@@ -152,12 +162,12 @@ public class AndroidFtpFile implements FtpFile {
      */
     @Override
     public boolean isRemovable() {
-        return backingDocumentFile.canWrite();
+        return backingFile.canWrite();
     }
 
     @Override
     public boolean mkdir() {
-        return backingDocumentFile.getParentFile().createDirectory(getName()) != null;
+        return backingFile.mkdir();
     }
 
     /**
@@ -177,15 +187,15 @@ public class AndroidFtpFile implements FtpFile {
 
     @Override
     public boolean delete() {
-        return backingDocumentFile.delete();
+        return backingFile.delete();
     }
 
     @Override
-    public List<AndroidFtpFile> listFiles() {
+    public List<AndroidLegacyFtpFile> listFiles() {
         if(isDirectory()) {
-            List<AndroidFtpFile> retval = new ArrayList<>();
-            for (DocumentFile documentFile : backingDocumentFile.listFiles()) {
-                retval.add(new AndroidFtpFile(context, documentFile));
+            List<AndroidLegacyFtpFile> retval = new ArrayList<>();
+            for (File file : backingFile.listFiles()) {
+                retval.add(new AndroidLegacyFtpFile(context, file));
             }
             return retval;
         } else {

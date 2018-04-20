@@ -21,11 +21,16 @@
 package com.amaze.filemanager.filesystem.ftpserver;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.provider.DocumentFile;
 
+import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpFile;
+
+import java.io.File;
 
 public class AndroidFileSystemView implements FileSystemView {
 
@@ -52,7 +57,13 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public FtpFile getFile(String file) {
-        return null;
+
+        File fileObj = new File(file);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            return new AndroidSafFtpFile(context, DocumentFile.fromFile(fileObj));
+        else
+            return new AndroidLegacyFtpFile(context, fileObj);
     }
 
     @Override

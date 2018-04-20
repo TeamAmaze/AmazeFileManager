@@ -545,6 +545,9 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
      * Initializes the floating action button to act as to save data from an external intent
      */
     private void initFabToSave(final ArrayList<Uri> uris) {
+        Log.d("DEBUG", "Found? " + (findViewById(R.id.menu_new_folder) != null));
+        Log.d("DEBUG", "Found? " + (findViewById(R.id.menu_new_file) != null));
+        Log.d("DEBUG", "Found? " + (findViewById(R.id.menu_new_cloud) != null));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
