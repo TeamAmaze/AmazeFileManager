@@ -861,8 +861,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             if (description.endsWith(".zip") || description.endsWith(".jar")
                     || description.endsWith(".apk") || description.endsWith(".rar")
-                    || description.endsWith(".tar") || description.endsWith(".tar.gz")
-                    || description.endsWith(".7z"))
+                    || description.endsWith(".tar") || description.endsWith(".tar.gz"))
                 popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
