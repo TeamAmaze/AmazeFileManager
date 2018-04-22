@@ -18,6 +18,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,7 +30,14 @@ public class ServiceWatcherUtil {
 
     public static int state = STATE_UNSET;
 
-    // position of byte in total byte size to be copied
+    /**
+     * Position of byte in total byte size to be copied.
+     * This variable CANNOT be updated from more than one thread simultaneously.
+     * This variable should only be updated from an {@link AbstractProgressiveService}'s background
+     * thread.
+     *
+     * @see #postWaiting(Context)
+     */
     public static volatile long position = 0L;
 
     private Handler handler;
@@ -47,7 +55,6 @@ public class ServiceWatcherUtil {
     private static int haltCounter = -1;
 
     /**
-     *
      * @param progressHandler to publish progress after certain delay
      */
     public ServiceWatcherUtil(ProgressHandler progressHandler) {
@@ -149,9 +156,6 @@ public class ServiceWatcherUtil {
      *
      * Be advised - this method is not sure to start a new service, especially when app has been closed
      * as there are higher chances for android system to GC the thread when it is running low on memory
-     *
-     * @param context
-     * @param intent
      */
     public static synchronized void runService(final Context context, final Intent intent) {
         pendingIntents.add(intent);
@@ -170,7 +174,6 @@ public class ServiceWatcherUtil {
      * Helper method to {@link #runService(Context, Intent)}
      * Starts the wait watcher thread if not already started.
      * Halting condition depends on the state of {@link #handlerThread}
-     * @param context
      */
     private static synchronized void postWaiting(final Context context) {
         waitingHandlerThread = new HandlerThread("service_startup_watcher");
