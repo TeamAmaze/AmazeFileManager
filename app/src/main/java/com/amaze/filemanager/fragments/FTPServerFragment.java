@@ -33,6 +33,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
+import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -49,14 +50,15 @@ import java.security.GeneralSecurityException;
  */
 public class FTPServerFragment extends Fragment {
 
+    private MainActivity mainActivity;
+
     private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
     private Button ftpBtn;
-    private MainActivity mainActivity;
     private View rootView, startDividerView, statusDividerView;
-    private int skin_color, skinTwoColor, accentColor;
+    private int accentColor;
     private Spanned spannedStatusNoConnection, spannedStatusConnected;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
     private ImageButton ftpPasswordVisibleButton;
@@ -82,11 +84,7 @@ public class FTPServerFragment extends Fragment {
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
-
-        skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
-        skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
-        accentColor = mainActivity.getAccent();
-
+        
         updateSpans();
         updateStatus();
 
@@ -127,6 +125,10 @@ public class FTPServerFragment extends Fragment {
         mainActivity.floatingActionButton.getMenuButton().hide();
         mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
+
+        int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
+        int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+        accentColor = mainActivity.getAccent();
 
         mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
                 skinTwoColor : skin_color));
@@ -400,7 +402,7 @@ public class FTPServerFragment extends Fragment {
         }
 
         final String passwordDecrypted = getPasswordFromPreferences();
-        final String passwordBulleted = passwordDecrypted.replaceAll(".", "\u25CF");
+        final CharSequence passwordBulleted = new OneCharacterCharSequence('\u25CF', passwordDecrypted.length());
 
         username.setText(getResources().getString(R.string.username) + ": " +
                 getUsernameFromPreferences());
@@ -570,9 +572,7 @@ public class FTPServerFragment extends Fragment {
     }
 
     private void setFTPUsername(String username) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        preferences.edit().putString(FTPService.KEY_PREFERENCE_USERNAME, username).apply();
+        mainActivity.getPrefs().edit().putString(FTPService.KEY_PREFERENCE_USERNAME, username).apply();
         updateStatus();
     }
 
@@ -593,22 +593,18 @@ public class FTPServerFragment extends Fragment {
      * @return timeout in seconds
      */
     private int getFTPTimeout() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getInt(FTPService.KEY_PREFERENCE_TIMEOUT, FTPService.DEFAULT_TIMEOUT);
+        return mainActivity.getPrefs().getInt(FTPService.KEY_PREFERENCE_TIMEOUT, FTPService.DEFAULT_TIMEOUT);
     }
 
     private void setFTPTimeout(int seconds) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferences.edit().putInt(FTPService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
+        mainActivity.getPrefs().edit().putInt(FTPService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
     }
 
     private boolean getSecurePreference() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
+        return mainActivity.getPrefs().getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
     }
 
     private void setSecurePreference(boolean isSecureEnabled) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferences.edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, isSecureEnabled).apply();
+        mainActivity.getPrefs().edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, isSecureEnabled).apply();
     }
 }
