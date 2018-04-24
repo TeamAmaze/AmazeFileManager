@@ -1,5 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * TextEditorActivity.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -61,7 +64,6 @@ import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -293,7 +295,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     try {
                         mInput.setText(data.fileContents);
 
-                        if (mFile.hybridFileParcelable.getPath().contains(getExternalCacheDir().getPath())
+                        if (mFile.hybridFileParcelable != null && mFile.hybridFileParcelable.getPath().contains(getExternalCacheDir().getPath())
                                 && cacheFile == null) {
                             // file in cache, and not a root temporary file
                             mInput.setInputType(EditorInfo.TYPE_NULL);
