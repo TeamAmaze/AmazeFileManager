@@ -65,30 +65,20 @@ public class LayoutElementParcelable implements Parcelable {
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         filetype = Icons.getTypeOfFile(path, isDirectory);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
-
         this.mode = openMode;
-
         if(useThumbs) {
-
             switch (mode) {
                 case SMB:
                 case SFTP:
-                    if (!isDirectory) {
-                        HybridFileParcelable hybridFileParcelable = new HybridFileParcelable(path,
-                                permissions, Long.valueOf(date), longSize, isDirectory);
-                        hybridFileParcelable.setMode(mode);
-                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, hybridFileParcelable);
-
-                    } else {
-
-                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
-                    }
-                    break;
                 case DROPBOX:
                 case GDRIVE:
                 case ONEDRIVE:
                 case BOX:
-                    this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+                    if (!isDirectory) {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+                    } else {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+                    }
                     break;
                 default:
                     if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {

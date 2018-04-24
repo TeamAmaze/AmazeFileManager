@@ -10,6 +10,7 @@ import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
+import com.amaze.filemanager.utils.IconLoaderUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
@@ -48,18 +49,16 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     @Override
     @Nullable
     public RequestBuilder<Drawable> getPreloadRequestBuilder(IconDataParcelable iconData) {
-
         RequestBuilder<Drawable> requestBuilder;
-
         if(!showThumbs) {
             requestBuilder = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
             GlideRequest<Drawable> request = GlideApp.with(fragment).asDrawable().centerCrop();
-
             if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-                requestBuilder = request.load(iconData.path);
+                requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
             } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
-                requestBuilder = request.load(iconData.hybridFileParcelable.getInputStream(fragment.getContext())).diskCacheStrategy(DiskCacheStrategy.NONE);
+                requestBuilder = request.load(IconLoaderUtil.getThumbnailInputStreamForCloud(fragment.getContext(),
+                        iconData)).diskCacheStrategy(DiskCacheStrategy.NONE);
             } else {
                 requestBuilder = request.load(iconData.image);
             }
