@@ -96,7 +96,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
-    private IconLoaderUtil iconLoaderUtil;
+    public IconLoaderUtil iconLoaderUtil;
 
     public RecyclerAdapter(PreferenceActivity preferenceActivity, MainFragment m,
                            UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
@@ -462,6 +462,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 itemsDigested.get(p).setAnimate(true);
             }
             final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
+            // clear previously cached icon
+            holder.genericIcon.setImageDrawable(null);
             if (mainFrag.IS_LIST) {
                 holder.rl.setOnClickListener(v -> {
                     mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
@@ -553,21 +555,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-                            //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
-                            iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
+                            GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:
                         if (getBoolean(PREFERENCE_SHOW_THUMB)) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
-                            iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
+                            //iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
+                            GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
                         }
                         break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
-                        //modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
-                        iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
+                        GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
                         break;
                 }
 

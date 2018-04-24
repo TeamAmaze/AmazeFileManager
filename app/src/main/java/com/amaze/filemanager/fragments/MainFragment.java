@@ -149,7 +149,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * This is not an exact copy of the elements in the adapter
      */
     private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
-    private RecyclerAdapter adapter;
+    public RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
     private Resources res;
 

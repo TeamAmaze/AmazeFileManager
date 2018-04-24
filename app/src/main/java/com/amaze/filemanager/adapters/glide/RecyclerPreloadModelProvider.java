@@ -49,18 +49,15 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     @Override
     @Nullable
     public RequestBuilder<Drawable> getPreloadRequestBuilder(IconDataParcelable iconData) {
-
         RequestBuilder<Drawable> requestBuilder;
-
         if(!showThumbs) {
             requestBuilder = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
             GlideRequest<Drawable> request = GlideApp.with(fragment).asDrawable().centerCrop();
-
             if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-                requestBuilder = request.load(iconData.path);
+                requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
             } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
-                requestBuilder = request.load(IconLoaderUtil.getInputStreamForCloud(fragment.getContext(),
+                requestBuilder = request.load(IconLoaderUtil.getThumbnailInputStreamForCloud(fragment.getContext(),
                         iconData)).diskCacheStrategy(DiskCacheStrategy.NONE);
             } else {
                 requestBuilder = request.load(iconData.image);

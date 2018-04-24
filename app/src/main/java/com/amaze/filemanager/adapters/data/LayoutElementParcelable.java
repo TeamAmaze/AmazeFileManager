@@ -65,11 +65,8 @@ public class LayoutElementParcelable implements Parcelable {
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         filetype = Icons.getTypeOfFile(path, isDirectory);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
-
         this.mode = openMode;
-
         if(useThumbs) {
-
             switch (mode) {
                 case SMB:
                 case SFTP:
@@ -78,7 +75,7 @@ public class LayoutElementParcelable implements Parcelable {
                 case ONEDRIVE:
                 case BOX:
                     if (!isDirectory) {
-                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD);
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
                     } else {
                         this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
                     }

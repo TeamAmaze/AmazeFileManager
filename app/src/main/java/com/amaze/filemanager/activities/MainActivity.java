@@ -1143,9 +1143,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         cryptHandler.close();
         
         SshConnectionPool.getInstance().expungeAllConnections();
-
-        /*if (mainFragment!=null)
-            mainFragment = null;*/
     }
 
     /**

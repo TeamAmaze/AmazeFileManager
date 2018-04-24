@@ -40,14 +40,6 @@ public class IconDataParcelable implements Parcelable {
         this.image = -1;
     }
 
-    public IconDataParcelable(int type) {
-        if(type == IMAGE_FROMFILE || type ==  IMAGE_RES) throw new IllegalArgumentException();
-        this.type = type;
-        this.loadingImage = -1;
-        this.path = null;
-        this.image = -1;
-    }
-
     public boolean isImageBroken() {
         return isImageBroken;
     }

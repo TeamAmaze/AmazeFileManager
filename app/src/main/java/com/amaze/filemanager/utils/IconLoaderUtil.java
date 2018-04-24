@@ -38,13 +38,14 @@ import jcifs.smb.SmbFile;
 
 public class IconLoaderUtil {
 
-    private static HandlerThread workerHandlerThread, iconLoaderHandlerThread;
+    private static HandlerThread workerHandlerThread;
     private static ConcurrentHashMap<ImageView, IconDataParcelable> requests = new ConcurrentHashMap<>();
     private Context context;
     private static IconLoaderUtil iconLoaderUtil;
     private RecyclerAdapter.OnImageProcessed onImageProcessed;
     private RequestListener<Drawable> requestListener;
     private RecyclerPreloadModelProvider recyclerPreloadModelProvider;
+    private Handler workerHandler;
 
     private static final int SUCCESS = 1, DESTROY = 2, LOAD = 3;
     private static final String WORKER_THREAD_ICON = "icon_worker_thread";
@@ -64,34 +65,26 @@ public class IconLoaderUtil {
     private Handler loaderHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SUCCESS:
-                    Log.d(getClass().getSimpleName(), "ICON LOAD SUCCESS");
-                    publishResult((Result) msg.obj);
-                    sendEmptyMessageDelayed(DESTROY, 1000);
-                    break;
-                case DESTROY:
-                    cleanThreads();
-                    break;
-            }
+            publishResult((Result) msg.obj, msg.what);
         }
 
-        private void publishResult(Result result) {
-            // find the request in the queue
-            for (Map.Entry<ImageView, IconDataParcelable> map : requests.entrySet()) {
-                if (map.getValue().equals(result.iconDataParcelable)) {
-                    Log.d(getClass().getSimpleName(), "setting drawable to " + result.iconDataParcelable.path);
-                    map.getKey().setImageDrawable(result.drawable);
-                    requests.remove(map);
-                    break;
+        private void publishResult(Result result, int what) {
+            synchronized (requests) {
+                // find the request in the queue
+                for (Map.Entry<ImageView, IconDataParcelable> map : requests.entrySet()) {
+                    if (map.getValue().equals(result.iconDataParcelable)) {
+                        if (what == SUCCESS) map.getKey().setImageDrawable(result.drawable);
+                        requests.remove(map);
+                        break;
+                    }
                 }
             }
         }
     };
 
-    private Handler workerHandler = new Handler() {
+    private Handler.Callback workerHandlerCallback = new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             IconDataParcelable iconDataParcelable = (IconDataParcelable) msg.obj;
             Drawable drawable = load(iconDataParcelable);
 
@@ -99,10 +92,11 @@ public class IconLoaderUtil {
             result.drawable = drawable;
             result.iconDataParcelable = iconDataParcelable;
             if (drawable == null) {
-                loaderHandler.obtainMessage(DESTROY).sendToTarget();
+                loaderHandler.obtainMessage(DESTROY, result).sendToTarget();
             } else {
                 loaderHandler.obtainMessage(SUCCESS, result).sendToTarget();
             }
+            return false;
         }
     };
 
@@ -115,27 +109,10 @@ public class IconLoaderUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 if (workerHandler == null || workerHandlerThread == null) {
                     workerHandlerThread = new HandlerThread(WORKER_THREAD_ICON);
                     workerHandlerThread.start();
-                    workerHandler = new Handler(workerHandlerThread.getLooper());
-                }
-                requests.put(imageView, iconDataParcelable);
-                workerHandler.obtainMessage(LOAD, iconDataParcelable).sendToTarget();
-            }
-        }).start();
-    }
-
-    public void loadDrawable(IconDataParcelable iconDataParcelable, ImageView imageView) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (workerHandler == null || workerHandlerThread == null) {
-                    workerHandlerThread = new HandlerThread(WORKER_THREAD_ICON);
-                    workerHandlerThread.start();
-                    workerHandler = new Handler(workerHandlerThread.getLooper());
+                    workerHandler = new Handler(workerHandlerThread.getLooper(), workerHandlerCallback);
                 }
                 requests.put(imageView, iconDataParcelable);
                 workerHandler.obtainMessage(LOAD, iconDataParcelable).sendToTarget();
@@ -163,9 +140,10 @@ public class IconLoaderUtil {
         return null;
     }
 
-    private void cleanThreads() {
+    public void cleanThreads() {
         if (workerHandlerThread != null) {
-
+            requests.clear();
+            requests = null;
             workerHandlerThread.getLooper().quit();
             workerHandlerThread = null;
             workerHandler = null;
@@ -177,7 +155,7 @@ public class IconLoaderUtil {
         IconDataParcelable iconDataParcelable;
     }
 
-    public static InputStream getInputStreamForCloud(Context context, IconDataParcelable iconDataParcelable) {
+    public static InputStream getThumbnailInputStreamForCloud(Context context, IconDataParcelable iconDataParcelable) {
         InputStream inputStream;
         HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, iconDataParcelable.path);
         hybridFile.generateMode(context);
@@ -227,19 +205,19 @@ public class IconLoaderUtil {
                 break;
             case DROPBOX:
                 CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-                inputStream = cloudStorageDropbox.download(CloudUtil.stripPath(OpenMode.DROPBOX, hybridFile.getPath()));
+                inputStream = cloudStorageDropbox.getThumbnail(CloudUtil.stripPath(OpenMode.DROPBOX, hybridFile.getPath()));
                 break;
             case BOX:
                 CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-                inputStream = cloudStorageBox.download(CloudUtil.stripPath(OpenMode.BOX, hybridFile.getPath()));
+                inputStream = cloudStorageBox.getThumbnail(CloudUtil.stripPath(OpenMode.BOX, hybridFile.getPath()));
                 break;
             case GDRIVE:
                 CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-                inputStream = cloudStorageGDrive.download(CloudUtil.stripPath(OpenMode.GDRIVE, hybridFile.getPath()));
+                inputStream = cloudStorageGDrive.getThumbnail(CloudUtil.stripPath(OpenMode.GDRIVE, hybridFile.getPath()));
                 break;
             case ONEDRIVE:
                 CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-                inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, hybridFile.getPath()));
+                inputStream = cloudStorageOneDrive.getThumbnail(CloudUtil.stripPath(OpenMode.ONEDRIVE, hybridFile.getPath()));
                 break;
             default:
                 try {
