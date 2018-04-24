@@ -22,6 +22,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowEnvironment;
+import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class TextEditorActivityTest {
 
     private final String fileContents = "fsdfsdfs";
