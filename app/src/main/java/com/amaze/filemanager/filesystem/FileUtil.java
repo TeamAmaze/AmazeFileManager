@@ -50,6 +50,8 @@ import java.util.regex.Pattern;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 /**
  * Utility class for helping parsing file systems.
  * <p>
@@ -201,17 +203,25 @@ public abstract class FileUtil {
                             case FILE:
                             case ROOT:
                                 File targetFile = new File(finalFilePath);
-                                if (!FileUtil.isWritable(targetFile)) {
-                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
+                                if (!FileUtil.isWritableNormalOrSaf(new File(finalFilePath).getParentFile(), mainActivity.getApplicationContext())) {
+                                    AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
+
+                                DocumentFile targetDocumentFile = getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
+
+                                //Fallback, in case getDocumentFile() didn't properly return a DocumentFile instance
+                                if(targetDocumentFile == null)
+                                    targetDocumentFile = DocumentFile.fromFile(targetFile);
+
                                 //Lazy check... and in fact, different apps may pass in URI in different formats, so we could only check filename matches
                                 //FIXME?: Prompt overwrite instead of simply blocking
-                                if (DocumentFile.fromFile(targetFile).exists()) {
+                                if (targetDocumentFile.exists()) {
                                     AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
                                     return null;
                                 }
-                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(targetFile));
+
+                                bufferedOutputStream = new BufferedOutputStream(contentResolver.openOutputStream(targetDocumentFile.getUri()));
                                 break;
                             case SMB:
                                 SmbFile targetSmbFile = new SmbFile(finalFilePath);
@@ -268,7 +278,6 @@ public abstract class FileUtil {
                         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
 
                         while (count != -1) {
-
                             count = bufferedInputStream.read(buffer);
                             if (count != -1) {
 
