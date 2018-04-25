@@ -295,7 +295,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     try {
                         mInput.setText(data.fileContents);
 
-                        if (mFile.hybridFileParcelable != null && mFile.hybridFileParcelable.getPath().contains(getExternalCacheDir().getPath())
+                        if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE
+                                && getExternalCacheDir() != null
+                                && mFile.hybridFileParcelable.getPath().contains(getExternalCacheDir().getPath())
                                 && cacheFile == null) {
                             // file in cache, and not a root temporary file
                             mInput.setInputType(EditorInfo.TYPE_NULL);
