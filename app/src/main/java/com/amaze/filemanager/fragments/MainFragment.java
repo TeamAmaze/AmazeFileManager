@@ -761,7 +761,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
                     primaryTwoColor : primaryColor));
 
-            if (!getMainActivity().getDrawer().isLocked()) {
+            if (getMainActivity().getDrawer().isLocked()) {
                 getMainActivity().getDrawer().unlock();
             }
         }
