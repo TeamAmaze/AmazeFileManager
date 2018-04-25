@@ -25,7 +25,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="toolbar_theme">@style/overflow_white1</item>
+        <item name="toolbar_theme">@style/overflow_light</item>
 
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -33,7 +33,7 @@
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
-    <style name="overflow_white1" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="overflow_light" parent="Theme.AppCompat.Light.DarkActionBar">
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
@@ -55,7 +55,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_white_36dp</item>
         <item name="popup">@style/Theme.AppCompat</item>
-        <item name="toolbar_theme">@style/overflow_white2</item>
+        <item name="toolbar_theme">@style/overflow_dark</item>
 
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -63,7 +63,7 @@
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
-    <style name="overflow_white2" parent="Theme.AppCompat">
+    <style name="overflow_dark" parent="Theme.AppCompat">
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
