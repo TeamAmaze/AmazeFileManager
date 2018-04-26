@@ -54,6 +54,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -513,9 +514,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
         floatingActionButton.getMenuButton().setOnClickListener(v -> {
-            FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
-            finish();
+            if(uris != null && uris.size() > 0) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    File folder = new File(getCurrentMainFragment().getCurrentPath());
+                    if(mainActivityHelper.checkFolder(folder, MainActivity.this) != MainActivityHelper.CAN_CREATE_FILES){
+                        Toast.makeText(MainActivity.this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }
+                FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
+                finish();
+            }
         });
         //Ensure the FAB menu is visible
         floatingActionButton.setVisibility(View.VISIBLE);

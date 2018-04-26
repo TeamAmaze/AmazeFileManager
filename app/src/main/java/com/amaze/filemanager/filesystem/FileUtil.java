@@ -660,6 +660,7 @@ public abstract class FileUtil {
      * @return true if it is possible to write in this directory.
      */
     public static boolean isWritableNormalOrSaf(final File folder, Context c) {
+        Log.d("DEBUG.isWritableNormal", folder.getAbsolutePath());
         // Verify that this is a directory.
         if (folder == null)
             return false;
