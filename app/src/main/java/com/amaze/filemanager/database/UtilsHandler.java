@@ -404,7 +404,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
             return null;
         }
     }
-    
+
     private void removeBookmarksPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -463,32 +463,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void clearHistoryTable() {
-        clearTable(Operation.HISTORY);
-    }
-
-    public void clearHiddenTable() {
-        clearTable(Operation.HIDDEN);
-    }
-
-    public void clearListViewTable() {
-        clearTable(Operation.LIST);
-    }
-
-    public void clearGridViewTable() {
-        clearTable(Operation.GRID);
-    }
-
-    public void clearBookmarksTable() {
-        clearTable(Operation.BOOKMARKS);
-    }
-
-    public void clearSmbTable() {
-        clearTable(Operation.SMB);
-    }
-
-    public void clearSshTable() { clearTable(Operation.SFTP); }
-
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
     }
@@ -545,7 +519,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 new String[] {path});
     }
 
-    private void clearTable(Operation table) {
+    public void clearTable(Operation table) {
         getWritableDatabase().delete(getTableForOperation(table), null, null);
     }
 

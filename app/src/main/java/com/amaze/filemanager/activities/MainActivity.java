@@ -1747,7 +1747,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHistoryCleared() {
-        utilsHandler.clearHistoryTable();
+        utilsHandler.clearTable(UtilsHandler.Operation.HISTORY);
     }
 
     @Override
