@@ -107,11 +107,11 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.title((R.string.smb_con));
         ba3.autoDismiss(false);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
-        final TextInputLayout connectionTIL = (TextInputLayout)v2.findViewById(R.id.connectionTIL);
-        final TextInputLayout ipTIL = (TextInputLayout)v2.findViewById(R.id.ipTIL);
-        final TextInputLayout domainTIL = (TextInputLayout)v2.findViewById(R.id.domainTIL);
-        final TextInputLayout usernameTIL = (TextInputLayout)v2.findViewById(R.id.usernameTIL);
-        final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.connectionET);
+        final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
+        final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
+        final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
+        final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
+        final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
 
         conName.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -121,7 +121,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else connectionTIL.setError("");
             }
         });
-        final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.ipET);
+        final AppCompatEditText ip = v2.findViewById(R.id.ipET);
         ip.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -130,7 +130,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else ipTIL.setError("");
             }
         });
-        final AppCompatEditText domain = (AppCompatEditText) v2.findViewById(R.id.domainET);
+        final AppCompatEditText domain = v2.findViewById(R.id.domainET);
         domain.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -139,7 +139,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else domainTIL.setError("");
             }
         });
-        final AppCompatEditText user = (AppCompatEditText) v2.findViewById(R.id.usernameET);
+        final AppCompatEditText user = v2.findViewById(R.id.usernameET);
         user.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -148,10 +148,11 @@ public class SmbConnectDialog extends DialogFragment {
                 else usernameTIL.setError("");
             }
         });
+
         int accentColor = ((ThemedActivity) getActivity()).getAccent();
-        final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
-        final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
-        TextView help = (TextView) v2.findViewById(R.id.wanthelp);
+        final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
+        final AppCompatCheckBox ch = v2.findViewById(R.id.checkBox2);
+        TextView help = v2.findViewById(R.id.wanthelp);
 
         EditTextColorStateUtil.setTint(context, conName, accentColor);
         EditTextColorStateUtil.setTint(context, user, accentColor);

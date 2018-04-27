@@ -103,8 +103,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final AppCompatEditText editText1 = ((AppCompatEditText) v.findViewById(R.id.text1)),
-                editText2 = ((AppCompatEditText) v.findViewById(R.id.text2));
+        final AppCompatEditText editText1 = v.findViewById(R.id.text1),
+                editText2 = v.findViewById(R.id.text2);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.create_shortcut)
@@ -160,8 +160,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final EditText editText1 = ((EditText) v.findViewById(R.id.text1)),
-                editText2 = ((EditText) v.findViewById(R.id.text2));
+        final EditText editText1 = v.findViewById(R.id.text1),
+                editText2 = v.findViewById(R.id.text2);
         editText1.setText(p.getTitle());
         editText2.setText(p.getSummary());
 

@@ -32,11 +32,11 @@ public class AppBar {
     private AppBarLayout appbarLayout;
 
     public AppBar(MainActivity a, SharedPreferences sharedPref, SearchView.SearchListener searchListener) {
-        toolbar = (Toolbar) a.findViewById(R.id.action_bar);
+        toolbar = a.findViewById(R.id.action_bar);
         searchView = new SearchView(this, a, searchListener);
         bottomBar = new BottomBar(this, a);
 
-        appbarLayout = (AppBarLayout) a.findViewById(R.id.lin);
+        appbarLayout = a.findViewById(R.id.lin);
 
         if (SDK_INT >= 21) toolbar.setElevation(0);
         /* For SearchView, see onCreateOptionsMenu(Menu menu)*/

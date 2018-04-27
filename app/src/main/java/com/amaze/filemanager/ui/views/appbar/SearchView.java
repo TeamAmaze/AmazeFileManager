@@ -45,10 +45,10 @@ public class SearchView {
         mainActivity = a;
         this.appbar = appbar;
 
-        searchViewLayout = (RelativeLayout) a.findViewById(R.id.search_view);
-        searchViewEditText = (AppCompatEditText) a.findViewById(R.id.search_edit_text);
-        clearImageView = (ImageView) a.findViewById(R.id.search_close_btn);
-        backImageView = (ImageView) a.findViewById(R.id.img_view_back);
+        searchViewLayout = a.findViewById(R.id.search_view);
+        searchViewEditText = a.findViewById(R.id.search_edit_text);
+        clearImageView = a.findViewById(R.id.search_close_btn);
+        backImageView = a.findViewById(R.id.img_view_back);
 
         clearImageView.setOnClickListener(new View.OnClickListener() {
             @Override

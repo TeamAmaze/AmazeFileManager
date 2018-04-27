@@ -331,25 +331,25 @@ public class GeneralDialogCreation {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        TextView itemsText = (TextView) v.findViewById(R.id.t7);
+        TextView itemsText = v.findViewById(R.id.t7);
 
         /*View setup*/ {
-            TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
+            TextView mNameTitle = v.findViewById(R.id.title_name);
             mNameTitle.setTextColor(accentColor);
 
-            TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
+            TextView mDateTitle = v.findViewById(R.id.title_date);
             mDateTitle.setTextColor(accentColor);
 
-            TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
+            TextView mSizeTitle = v.findViewById(R.id.title_size);
             mSizeTitle.setTextColor(accentColor);
 
-            TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
+            TextView mLocationTitle = v.findViewById(R.id.title_location);
             mLocationTitle.setTextColor(accentColor);
 
-            TextView md5Title = (TextView) v.findViewById(R.id.title_md5);
+            TextView md5Title = v.findViewById(R.id.title_md5);
             md5Title.setTextColor(accentColor);
 
-            TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
+            TextView sha256Title = v.findViewById(R.id.title_sha256);
             sha256Title.setTextColor(accentColor);
 
             ((TextView) v.findViewById(R.id.t5)).setText(name);
@@ -357,10 +357,10 @@ public class GeneralDialogCreation {
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
 
-            LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
-            LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
-            LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
-            LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+            LinearLayout mNameLinearLayout = v.findViewById(R.id.properties_dialog_name);
+            LinearLayout mLocationLinearLayout = v.findViewById(R.id.properties_dialog_location);
+            LinearLayout mSizeLinearLayout = v.findViewById(R.id.properties_dialog_size);
+            LinearLayout mDateLinearLayout = v.findViewById(R.id.properties_dialog_date);
 
             // setting click listeners for long press
             mNameLinearLayout.setOnLongClickListener(v1 -> {
@@ -399,7 +399,7 @@ public class GeneralDialogCreation {
         /*Chart creation and data loading*/ {
             boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
             boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
-            PieChart chart = (PieChart) v.findViewById(R.id.chart);
+            PieChart chart = v.findViewById(R.id.chart);
 
             chart.setTouchEnabled(false);
             chart.setDrawEntryLabels(false);
@@ -456,7 +456,7 @@ public class GeneralDialogCreation {
 
         if(!forStorage && showPermissions) {
             final MainFragment main = ((MainActivity) base).mainFragment;
-            AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
+            AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
             appCompatButton.setAllCaps(true);
 
             final View permissionsTable = v.findViewById(R.id.permtable);
@@ -945,15 +945,15 @@ public class GeneralDialogCreation {
 
     public static void setPermissionsDialog(final View v, View but, final HybridFile file,
                                      final String f, final Context context, final MainFragment mainFrag) {
-        final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown = (CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup = (CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother = (CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown = (CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup = (CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother = (CheckBox) v.findViewById(R.id.cexeother);
+        final CheckBox readown = v.findViewById(R.id.creadown);
+        final CheckBox readgroup = v.findViewById(R.id.creadgroup);
+        final CheckBox readother = v.findViewById(R.id.creadother);
+        final CheckBox writeown = v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup = v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother = v.findViewById(R.id.cwriteother);
+        final CheckBox exeown = v.findViewById(R.id.cexeown);
+        final CheckBox exegroup = v.findViewById(R.id.cexegroup);
+        final CheckBox exeother = v.findViewById(R.id.cexeother);
         String perm = f;
         if (perm.length() < 6) {
             v.setVisibility(View.GONE);

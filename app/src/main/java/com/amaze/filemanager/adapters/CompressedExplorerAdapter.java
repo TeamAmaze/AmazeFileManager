@@ -174,7 +174,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         } else if(viewType == TYPE_ITEM) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             CompressedItemViewHolder vh = new CompressedItemViewHolder(v);
-            ImageButton about = (ImageButton) v.findViewById(R.id.properties);
+            ImageButton about = v.findViewById(R.id.properties);
             about.setVisibility(View.INVISIBLE);
             return vh;
         } else {
