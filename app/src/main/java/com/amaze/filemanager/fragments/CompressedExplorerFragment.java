@@ -270,7 +270,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
             showOption(R.id.ex, menu);
-            mode.setTitle(getResources().getString(R.string.select));
+            mode.setTitle(getString(R.string.select));
             mainActivity.updateViews(new ColorDrawable(Utils.getColor(getContext(), R.color.holo_dark_action_mode)));
             if (Build.VERSION.SDK_INT >= 21) {
 
@@ -314,7 +314,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                     }
                     return true;
                 case R.id.ex:
-                    Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.extracting), Toast.LENGTH_SHORT).show();
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {

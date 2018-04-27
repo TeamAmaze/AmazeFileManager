@@ -268,7 +268,7 @@ public class SmbConnectDialog extends DialogFragment {
                             smbFile.getPath())};
             } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
                 return;
             }
 

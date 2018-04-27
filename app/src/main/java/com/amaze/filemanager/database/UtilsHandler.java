@@ -275,7 +275,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 e.printStackTrace();
 
                 // failing to decrypt the path, removing entry from database
-                Toast.makeText(context, context.getResources().getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
                 removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                         "");
                 continue;
@@ -305,7 +305,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
                 // failing to decrypt the path, removing entry from database
                 Toast.makeText(context,
-                        context.getResources().getString(R.string.failed_smb_decrypt_path),
+                        context.getString(R.string.failed_smb_decrypt_path),
                         Toast.LENGTH_LONG).show();
 //                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
 //                            "");

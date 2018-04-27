@@ -71,7 +71,7 @@ public class MainActivityHelper {
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(accentColor);
         mat.positiveText(R.string.cancel);
-        String content = contextc.getResources().getString(R.string.operation_fail_following);
+        String content = contextc.getString(R.string.operation_fail_following);
         int k=1;
         for(HybridFileParcelable s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
@@ -134,11 +134,11 @@ public class MainActivityHelper {
 
     private void mk(@StringRes int newText, final OnClickMaterialListener l) {
         final MaterialDialog materialDialog = GeneralDialogCreation.showNameDialog(mainActivity,
-                new String[]{mainActivity.getResources().getString(R.string.entername),
+                new String[]{mainActivity.getString(R.string.entername),
                         "",
-                        mainActivity.getResources().getString(newText),
-                        mainActivity.getResources().getString(R.string.create),
-                        mainActivity.getResources().getString(R.string.cancel),
+                        mainActivity.getString(newText),
+                        mainActivity.getString(R.string.create),
+                        mainActivity.getString(R.string.cancel),
                         null});
 
         materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
@@ -172,25 +172,25 @@ public class MainActivityHelper {
         String newPath = "";
         switch (Integer.parseInt(path)) {
             case 0:
-                newPath = mainActivity.getResources().getString(R.string.images);
+                newPath = mainActivity.getString(R.string.images);
                 break;
             case 1:
-                newPath = mainActivity.getResources().getString(R.string.videos);
+                newPath = mainActivity.getString(R.string.videos);
                 break;
             case 2:
-                newPath = mainActivity.getResources().getString(R.string.audio);
+                newPath = mainActivity.getString(R.string.audio);
                 break;
             case 3:
-                newPath = mainActivity.getResources().getString(R.string.documents);
+                newPath = mainActivity.getString(R.string.documents);
                 break;
             case 4:
-                newPath = mainActivity.getResources().getString(R.string.apks);
+                newPath = mainActivity.getString(R.string.apks);
                 break;
             case 5:
-                newPath = mainActivity.getResources().getString(R.string.quick);
+                newPath = mainActivity.getString(R.string.quick);
                 break;
             case 6:
-                newPath = mainActivity.getResources().getString(R.string.recent);
+                newPath = mainActivity.getString(R.string.recent);
                 break;
         }
         return newPath;
@@ -205,7 +205,7 @@ public class MainActivityHelper {
         x.customView(view, true);
         // textView
         TextView textView = (TextView) view.findViewById(R.id.description);
-        textView.setText(mainActivity.getResources().getString(R.string.needsaccesssummary) + path + mainActivity.getResources().getString(R.string.needsaccesssummary1));
+        textView.setText(mainActivity.getString(R.string.needsaccesssummary) + path + mainActivity.getString(R.string.needsaccesssummary1));
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);

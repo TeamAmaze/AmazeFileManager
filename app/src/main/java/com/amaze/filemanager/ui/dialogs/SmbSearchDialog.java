@@ -95,7 +95,7 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(() -> {
                         if (computers.size() == 1) {
                             dismiss();
-                            Toast.makeText(getActivity(), getResources().getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
                             MainActivity mainActivity = (MainActivity) getActivity();
                             mainActivity.showSMBDialog("", "", false);
                             return;

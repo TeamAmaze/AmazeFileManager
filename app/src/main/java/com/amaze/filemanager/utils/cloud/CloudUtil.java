@@ -139,7 +139,7 @@ public class CloudUtil {
                             activity.startActivity(i);
                         else
                             Toast.makeText(activity,
-                                    activity.getResources().getString(R.string.smb_launch_error),
+                                    activity.getString(R.string.smb_launch_error),
                                     Toast.LENGTH_SHORT).show();
                     } catch (ActivityNotFoundException e) {
                         e.printStackTrace();

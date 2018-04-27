@@ -287,7 +287,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         compressedExplorerFragment.isOpen = true;
 
                         Toast.makeText(compressedExplorerFragment.getContext(),
-                                compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
+                                compressedExplorerFragment.getContext().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         decompressor.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
                                 new String[]{rowItem.name});

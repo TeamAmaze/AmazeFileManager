@@ -251,7 +251,7 @@ public class GenericCopyUtil {
             e.printStackTrace();
 
             // we ran out of memory to map the whole channel, let's switch to streams
-            AppConfig.toast(mContext, mContext.getResources().getString(R.string.copy_low_memory));
+            AppConfig.toast(mContext, mContext.getString(R.string.copy_low_memory));
 
             startCopy(true);
         } finally {
