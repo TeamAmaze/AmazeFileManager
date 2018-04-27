@@ -1199,7 +1199,6 @@ public class HybridFile {
                 cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isBoxFile()) {
             CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
@@ -1207,7 +1206,6 @@ public class HybridFile {
                 cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isOneDriveFile()) {
             CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
@@ -1215,7 +1213,6 @@ public class HybridFile {
                 cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isGoogleDriveFile()) {
             CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
@@ -1223,7 +1220,6 @@ public class HybridFile {
                 cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else
             FileUtil.mkdir(new File(path), context);

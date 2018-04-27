@@ -561,7 +561,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.update(getTableForOperation(operation), contentValues, COLUMN_NAME
                 + "=? AND " + COLUMN_PATH + "=?", new String[] {oldName, oldPath});
-        return;
     }
 
     /**

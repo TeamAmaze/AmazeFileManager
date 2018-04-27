@@ -152,7 +152,6 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                         AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed,
                                 hostname, port, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
-                return;
             }
             else if(TransportException.class.isAssignableFrom(result.exception.getClass()))
             {
@@ -163,15 +162,12 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                             .setMessage(R.string.ssh_connect_failed_host_key_changed_message)
                             .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss()).show();
                 }
-                return;
             }
             else if(password != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_password, Toast.LENGTH_LONG).show();
-                return;
             }
             else if(privateKey != null) {
                 Toast.makeText(AppConfig.getInstance(), R.string.ssh_authentication_failure_key, Toast.LENGTH_LONG).show();
-                return;
             }
         }
     }
