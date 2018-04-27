@@ -137,7 +137,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
                     dataUtils.addBook(values);
                     utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
-                            editText1.getText().toString(), editText2.getText().toString()));
+                            editText2.getText().toString(), editText1.getText().toString()));
 
                     dialog.dismiss();
                 });

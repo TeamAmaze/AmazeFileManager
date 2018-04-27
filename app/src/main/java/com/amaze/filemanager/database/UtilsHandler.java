@@ -163,7 +163,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         };
 
         for (String dir : dirs) {
-            saveToDatabase(new OperationData(Operation.BOOKMARKS, dir, new File(dir).getName()));
+            saveToDatabase(new OperationData(Operation.BOOKMARKS, new File(dir).getName(), dir));
         }
     }
 

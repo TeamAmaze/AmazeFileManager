@@ -39,7 +39,7 @@ public class OperationData {
     /**
      * Constructor for types {@link Operation#BOOKMARKS} or {@link Operation#SMB}
      */
-    public OperationData(Operation type, String path, String name) {
+    public OperationData(Operation type, String name, String path) {
         if(type != BOOKMARKS && type != SMB) throw new IllegalArgumentException("Wrong constructor for object type");
 
         this.type = type;

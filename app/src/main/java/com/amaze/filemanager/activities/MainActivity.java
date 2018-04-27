@@ -1679,7 +1679,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
+                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, encryptedPath, name));
 
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
