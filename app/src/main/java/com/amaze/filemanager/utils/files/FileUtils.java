@@ -185,12 +185,7 @@ public class FileUtils {
      */
     public static long otgFolderSize(String path, final Context context) {
         final AtomicLong totalBytes = new AtomicLong(0);
-        OTGUtil.getDocumentFiles(path, context, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                totalBytes.addAndGet(getBaseFileSize(file, context));
-            }
-        });
+        OTGUtil.getDocumentFiles(path, context, file -> totalBytes.addAndGet(getBaseFileSize(file, context)));
         return totalBytes.longValue();
     }
 

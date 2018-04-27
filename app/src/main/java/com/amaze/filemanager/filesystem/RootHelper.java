@@ -282,12 +282,7 @@ public class RootHelper {
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
                                                                GetModeCallBack getModeCallBack) {
         final ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        getFiles(path, root, showHidden, getModeCallBack, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                files.add(file);
-            }
-        });
+        getFiles(path, root, showHidden, getModeCallBack, files::add);
         return files;
     }
 

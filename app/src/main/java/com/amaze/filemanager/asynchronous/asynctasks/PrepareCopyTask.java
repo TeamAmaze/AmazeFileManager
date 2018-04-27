@@ -119,13 +119,10 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
     private ArrayList<HybridFileParcelable> checkConflicts(final ArrayList<HybridFileParcelable> filesToCopy, HybridFile destination) {
         final ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
-        destination.forEachChildrenFile(context, rootMode, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                for (HybridFileParcelable j : filesToCopy) {
-                    if (file.getName().equals((j).getName())) {
-                        conflictingFiles.add(j);
-                    }
+        destination.forEachChildrenFile(context, rootMode, file -> {
+            for (HybridFileParcelable j : filesToCopy) {
+                if (file.getName().equals((j).getName())) {
+                    conflictingFiles.add(j);
                 }
             }
         });

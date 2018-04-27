@@ -161,12 +161,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                     new AlertDialog.Builder(AppConfig.getInstance().getActivityContext())
                             .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
                             .setMessage(R.string.ssh_connect_failed_host_key_changed_message)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
+                            .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss()).show();
                 }
                 return;
             }

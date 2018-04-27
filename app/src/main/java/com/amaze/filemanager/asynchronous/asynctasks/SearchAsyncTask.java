@@ -102,16 +102,13 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      */
     private void search(HybridFile directory, final SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
-            directory.forEachChildrenFile(activity.get(), mRootMode, new OnFileFound() {
-                @Override
-                public void onFileFound(HybridFileParcelable file) {
-                    if (!isCancelled()) {
-                        if (filter.searchFilter(file.getName())) {
-                            publishProgress(file);
-                        }
-                        if (file.isDirectory() && !isCancelled()) {
-                            search(file, filter);
-                        }
+            directory.forEachChildrenFile(activity.get(), mRootMode, file -> {
+                if (!isCancelled()) {
+                    if (filter.searchFilter(file.getName())) {
+                        publishProgress(file);
+                    }
+                    if (file.isDirectory() && !isCancelled()) {
+                        search(file, filter);
                     }
                 }
             });
@@ -138,12 +135,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param pattern the compiled java regex
      */
     private void searchRegExFind(HybridFile file, final Pattern pattern) {
-        search(file, new SearchFilter() {
-            @Override
-            public boolean searchFilter(String fileName) {
-                return pattern.matcher(fileName).find();
-            }
-        });
+        search(file, fileName -> pattern.matcher(fileName).find());
     }
 
     /**
