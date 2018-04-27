@@ -163,32 +163,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         };
 
         for (String dir : dirs) {
-            addBookmark(new File(dir).getName(), dir);
+            saveToDatabase(new OperationData(Operation.BOOKMARKS, dir, new File(dir).getName()));
         }
-    }
-
-    public void addHistory(String path) {
-        setPath(Operation.HISTORY, path);
-    }
-
-    public void addHidden(String path) {
-        setPath(Operation.HIDDEN, path);
-    }
-
-    public void addListView(String path) {
-        setPath(Operation.LIST, path);
-    }
-
-    public void addGridView(String path) {
-        setPath(Operation.GRID, path);
-    }
-
-    public void addBookmark(String name, String path) {
-        setPath(Operation.BOOKMARKS, name, path);
-    }
-
-    public void addSmb(String name, String path) {
-        setPath(Operation.SMB, name, path);
     }
 
     public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
