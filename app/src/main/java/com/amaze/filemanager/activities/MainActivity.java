@@ -964,7 +964,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (ma.IS_LIST) {
                     if (pathLayout == DataUtils.LIST) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.LIST,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
                     utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.GRID,
@@ -974,7 +975,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 } else {
                     if (pathLayout == DataUtils.GRID) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeGridViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.GRID,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
 
@@ -1713,7 +1715,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             dataUtils.removeServer(i);
 
             AppConfig.runInBackground(() -> {
-                utilsHandler.removeSmbPath(name, path);
+                utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.SMB, name,
+                        path));
             });
             //grid.removePath(name, path, DataUtils.SMB);
             drawer.refreshDrawer();
@@ -1728,7 +1731,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileRemoved(String path) {
-        utilsHandler.removeHiddenPath(path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
     }
 
     @Override
@@ -1749,7 +1752,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void delete(String title, String path) {
-        utilsHandler.removeBookmarksPath(title, path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS, title,
+                path));
         drawer.refreshDrawer();
 
     }

@@ -221,8 +221,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
                     dataUtils.removeBook(position.get(p));
 
-                    AppConfig.runInBackground(() -> utilsHandler.removeBookmarksPath(p.getTitle().toString(),
-                            p.getSummary().toString()));
+                    utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
+                            p.getTitle().toString(), p.getSummary().toString()));
 
                     getPreferenceScreen().removePreference(p);
                     position.remove(p);

@@ -1,5 +1,6 @@
 package com.amaze.filemanager.database.models;
 
+import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.UtilsHandler.Operation;
 
 import static com.amaze.filemanager.database.UtilsHandler.Operation.BOOKMARKS;
@@ -53,6 +54,8 @@ public class OperationData {
 
     /**
      * Constructor for {@link Operation#SFTP}
+     * {@param hostKey}, {@param sshKeyName} and {@param sshKey} may be null for when
+     * {@link OperationData} is used for {@link UtilsHandler#removeFromDatabase(OperationData)}
      */
     public OperationData(Operation type, String path, String name, String hostKey, String sshKeyName,
                          String sshKey) {

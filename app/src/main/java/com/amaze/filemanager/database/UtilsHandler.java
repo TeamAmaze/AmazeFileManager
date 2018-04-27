@@ -151,6 +151,30 @@ public class UtilsHandler extends SQLiteOpenHelper {
         });
     }
 
+    public void removeFromDatabase(OperationData operationData) {
+        AppConfig.runInBackground(() -> {
+            switch (operationData.type) {
+                case HIDDEN:
+                case HISTORY:
+                case LIST:
+                case GRID:
+                    removePath(operationData.type, operationData.path);
+                    break;
+                case BOOKMARKS:
+                    removeBookmarksPath(operationData.name, operationData.path);
+                    break;
+                case SMB:
+                    removeSmbPath(operationData.name, operationData.path);
+                    break;
+                case SFTP:
+                    removeSftpPath(operationData.name, operationData.path);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
+            }
+        });
+    }
+
     public void addCommonBookmarks() {
         String sd = Environment.getExternalStorageDirectory() + "/";
 
@@ -380,24 +404,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
             return null;
         }
     }
-
-    public void removeHistoryPath(String path) {
-        removePath(Operation.HISTORY, path);
-    }
-
-    public void removeHiddenPath(String path) {
-        removePath(Operation.HIDDEN, path);
-    }
-
-    public void removeListViewPath(String path) {
-        removePath(Operation.LIST, path);
-    }
-
-    public void removeGridViewPath(String path) {
-        removePath(Operation.GRID, path);
-    }
-
-    public void removeBookmarksPath(String name, String path) {
+    
+    private void removeBookmarksPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -410,7 +418,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
      * @param path the path we get from saved runtime variables is a decrypted, to remove entry,
      *             we must encrypt it's password fiend first first
      */
-    public void removeSmbPath(String name, String path) {
+    private void removeSmbPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -431,7 +439,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void removeSftpPath(String name, String path) {
+    private void removeSftpPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
