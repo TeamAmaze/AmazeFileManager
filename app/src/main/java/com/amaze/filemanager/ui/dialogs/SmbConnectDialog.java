@@ -95,10 +95,10 @@ public class SmbConnectDialog extends DialogFragment {
         final String path=getArguments().getString("path");
         final String name=getArguments().getString("name");
         context=getActivity();
-        emptyAddress = String.format(getString(R.string.cantbeempty),getString(R.string.ip) );
-        emptyName = String.format(getString(R.string.cantbeempty),getString(R.string.connectionname) );
-        invalidDomain = String.format(getString(R.string.invalid),getString(R.string.domain));
-        invalidUsername = String.format(getString(R.string.invalid),getString(R.string.username).toLowerCase());
+        emptyAddress = getString(R.string.cantbeempty,getString(R.string.ip) );
+        emptyName = getString(R.string.cantbeempty,getString(R.string.connectionname) );
+        invalidDomain = getString(R.string.invalid,getString(R.string.domain));
+        invalidUsername = getString(R.string.invalid,getString(R.string.username).toLowerCase());
         if(getActivity() instanceof SmbConnectionListener){
             smbConnectionListener=(SmbConnectionListener)getActivity();
         }

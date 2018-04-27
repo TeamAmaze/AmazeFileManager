@@ -185,7 +185,7 @@ public class SftpConnectDialog extends DialogFragment {
                         final String hostAndPort = sb.toString();
 
                         new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                                .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt),
+                                .setMessage(getResources().getString(R.string.ssh_host_key_verification_prompt,
                                         hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
                                 .setCancelable(true)
                                 .setPositiveButton(R.string.yes, (dialog1, which1) -> {

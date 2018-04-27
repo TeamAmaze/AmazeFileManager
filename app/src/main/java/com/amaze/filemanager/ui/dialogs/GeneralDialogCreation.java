@@ -637,7 +637,7 @@ public class GeneralDialogCreation {
             if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
 
                 textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
-                        + String.format(c.getResources().getString(R.string.cantbeempty),
+                        + c.getResources().getString(R.string.cantbeempty,
                         c.getResources().getString(R.string.password)));
             } else {
 
@@ -670,7 +670,7 @@ public class GeneralDialogCreation {
 
             if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
                 textInputLayoutPassword.setError(c.getResources().getString(R.string.error) + ": "
-                        + String.format(c.getResources().getString(R.string.cantbeempty),
+                        + c.getResources().getString(R.string.cantbeempty,
                         c.getResources().getString(R.string.password)));
             } else if (!passwordConfirmEditText.getText().toString().equals(passwordEditText.getText().toString())) {
                 textInputLayoutPasswordConfirm.setError(c.getResources().getString(R.string.error) + ": "
