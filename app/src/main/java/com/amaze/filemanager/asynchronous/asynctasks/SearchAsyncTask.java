@@ -151,7 +151,6 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
     /**
      * method converts bash style regular expression to java. See {@link Pattern}
      *
-     * @param originalString
      * @return converted string
      */
     private String bashRegexToJava(String originalString) {

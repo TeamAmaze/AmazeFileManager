@@ -42,7 +42,6 @@ public class OTGUtil {
      * @param path    the path to the directory tree, starts with prefix 'otg:/'
      *                Independent of URI (or mount point) for the OTG
      * @param context context for loading
-     * @return an array of list of files at the path
      */
     public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
         SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);

@@ -92,7 +92,6 @@ public class AppConfig extends GlideApplication {
      * Post a runnable to handler. Use this in case we don't have any restriction to execute after
      * this runnable is executed, and {@link #runInBackground(CustomAsyncCallbacks)} in case we need
      * to execute something after execution in background
-     * @param runnable
      */
     public static void runInBackground(Runnable runnable) {
         synchronized (sBackgroundHandler) {
@@ -103,7 +102,6 @@ public class AppConfig extends GlideApplication {
     /**
      * A compact AsyncTask which runs which executes whatever is passed by callbacks.
      * Supports any class that extends an object as param array, and result too.
-     * @param customAsyncCallbacks
      */
     public static void runInBackground(final CustomAsyncCallbacks customAsyncCallbacks) {
 

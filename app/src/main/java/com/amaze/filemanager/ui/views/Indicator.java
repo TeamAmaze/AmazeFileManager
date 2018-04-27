@@ -364,9 +364,6 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
      *
      * This function returns a path for the given dot **and any action to it's right** e.g. joining
      * or retreating from it's neighbour
-     *
-     * @param page
-     * @return
      */
     private Path getUnselectedPath(int page,
                                    float centerX,

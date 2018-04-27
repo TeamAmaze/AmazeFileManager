@@ -142,7 +142,6 @@ public class FileUtils {
      * Only for fallback use when <code>du</code> is not available.
      *
      * @see HybridFile#folderSize(Context)
-     * @param remotePath
      * @return Folder size in bytes
      */
     public static Long folderSizeSftp(SFTPClient client, String remotePath) {
@@ -362,8 +361,8 @@ public class FileUtils {
 
     /**
      * Open a file not supported by Amaze
+     *
      * @param f the file
-     * @param c
      * @param forcechooser force the chooser to show up even when set default by user
      */
     public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {

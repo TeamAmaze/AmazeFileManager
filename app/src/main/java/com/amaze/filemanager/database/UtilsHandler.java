@@ -407,7 +407,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     /**
      * Remove SMB entry
-     * @param name
      * @param path the path we get from saved runtime variables is a decrypted, to remove entry,
      *             we must encrypt it's password fiend first first
      */
@@ -565,8 +564,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     /**
      * Return table string for corresponding {@link Operation}
-     * @param operation
-     * @return
      */
     private String getTableForOperation(Operation operation) {
 

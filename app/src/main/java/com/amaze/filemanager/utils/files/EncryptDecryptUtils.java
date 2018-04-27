@@ -155,9 +155,6 @@ public class EncryptDecryptUtils {
 
         /**
          * Callback fired when we've just gone through warning dialog before encryption
-         *
-         * @param intent
-         * @throws Exception
          */
         void onButtonPressed(Intent intent) throws Exception;
 
@@ -165,9 +162,7 @@ public class EncryptDecryptUtils {
          * Callback fired when user has entered a password for encryption
          * Not called when we've a master password set or enable fingerprint authentication
          *
-         * @param intent
          * @param password the password entered by user
-         * @throws Exception
          */
         void onButtonPressed(Intent intent, String password) throws Exception;
     }
@@ -175,8 +170,6 @@ public class EncryptDecryptUtils {
     public interface DecryptButtonCallbackInterface {
         /**
          * Callback fired when we've confirmed the password matches the database
-         *
-         * @param intent
          */
         void confirm(Intent intent);
 

@@ -210,7 +210,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #length(Context)} to handle content resolvers
-     * @return
      */
     public long length() {
         long s = 0L;
@@ -243,8 +242,6 @@ public class HybridFile {
 
     /**
      * Helper method to find length
-     * @param context
-     * @return
      */
     public long length(Context context) {
 
@@ -298,7 +295,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #getName(Context)}
-     * @return
      */
     public String getName() {
         String name = null;
@@ -370,8 +366,6 @@ public class HybridFile {
     /**
      * Returns a path to parent for various {@link #mode}
      * @deprecated use {@link #getParent(Context)} to handle content resolvers
-     *
-     * @return
      */
     public String getParent() {
         String parentPath = "";
@@ -397,9 +391,6 @@ public class HybridFile {
 
     /**
      * Helper method to get parent path
-     *
-     * @param context
-     * @return
      */
     public String getParent(Context context) {
 
@@ -439,8 +430,6 @@ public class HybridFile {
     /**
      * Whether this object refers to a directory or file, handles all types of files
      * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
-     *
-     * @return
      */
     public boolean isDirectory() {
         boolean isDirectory;
@@ -549,7 +538,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #folderSize(Context)}
-     * @return
      */
     public long folderSize() {
         long size = 0L;
@@ -580,9 +568,6 @@ public class HybridFile {
 
     /**
      * Helper method to get length of folder in an otg
-     *
-     * @param context
-     * @return
      */
     public long folderSize(Context context) {
 
@@ -630,7 +615,6 @@ public class HybridFile {
 
     /**
      * Gets usable i.e. free space of a device
-     * @return
      */
     public long getUsableSpace() {
         long size = 0L;
@@ -685,8 +669,6 @@ public class HybridFile {
 
     /**
      * Gets total size of the disk
-     * @param context
-     * @return
      */
     public long getTotal(Context context) {
         long size = 0l;
@@ -905,7 +887,6 @@ public class HybridFile {
     /**
      * Handles getting input stream for various {@link OpenMode}
      * @deprecated use {@link #getInputStream(Context)} which allows handling content resolver
-     * @return
      */
     public InputStream getInputStream() {
         InputStream inputStream;
@@ -1128,9 +1109,6 @@ public class HybridFile {
 
     /**
      * Helper method to check file existence in otg
-     *
-     * @param context
-     * @return
      */
     public boolean exists(Context context) {
         if (isOtgFile()) {
@@ -1258,8 +1236,6 @@ public class HybridFile {
     /**
      * Returns the name of file excluding it's extension
      * If no extension is found then whole file name is returned
-     * @param context
-     * @return
      */
     public String getNameString(Context context) {
         String fileName = getName(context);

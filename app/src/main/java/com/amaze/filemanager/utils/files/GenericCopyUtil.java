@@ -57,7 +57,6 @@ public class GenericCopyUtil {
      *                    using streams instead of channel which maps the who buffer in memory.
      *                    TODO: Use buffers even on low memory but don't map the whole file to memory but
      *                          parts of it, and transfer each part instead.
-     * @throws IOException
      */
     private void startCopy(boolean lowOnMemory) throws IOException {
 

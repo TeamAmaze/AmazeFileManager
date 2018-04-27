@@ -84,8 +84,6 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
     /**
      * Determines whether cloud provider is installed or not
-     * @param context
-     * @return
      */
     public static final boolean isCloudProviderAvailable(Context context) {
 

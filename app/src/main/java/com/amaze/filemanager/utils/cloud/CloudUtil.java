@@ -68,8 +68,6 @@ public class CloudUtil {
 
     /**
      * Strips down the cloud path to remove any prefix
-     * @param openMode
-     * @return
      */
     public static String stripPath(OpenMode openMode, String path) {
         String strippedPath = path;

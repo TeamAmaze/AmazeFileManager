@@ -127,7 +127,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public OpenMode openMode = OpenMode.FILE;
 
     /**
-     * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
+     * boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -958,7 +958,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     /**
      * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to external app
-     * @param baseFile
      */
     public void returnIntentResults(HybridFileParcelable baseFile) {
 

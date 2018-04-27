@@ -196,9 +196,7 @@ public class Statvfs
          *
          * Many thanks to Alexander--@github for the comments.
          *
-         * @see {@link Buffer#readUInt64()}
-         * @param buffer
-         * @return
+         * @see Buffer#readUInt64()
          */
         private long readUInt64FromBuffer(Buffer buffer) throws Buffer.BufferException
         {

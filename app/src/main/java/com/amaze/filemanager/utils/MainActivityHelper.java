@@ -105,7 +105,6 @@ public class MainActivityHelper {
     /**
      * Prompt a dialog to user to input directory name
      *
-     * @param openMode
      * @param path     current path at which directory to create
      * @param ma       {@link MainFragment} current fragment
      */
@@ -120,7 +119,6 @@ public class MainActivityHelper {
     /**
      * Prompt a dialog to user to input file name
      *
-     * @param openMode
      * @param path     current path at which file to create
      * @param ma       {@link MainFragment} current fragment
      */
@@ -518,8 +516,7 @@ public class MainActivityHelper {
 
     /**
      * Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix
-     * @param path
-     * @return
+
      */
     public String parseOTGPath(String path) {
         if (path.contains(OTGUtil.PREFIX_OTG))
@@ -615,9 +612,6 @@ public class MainActivityHelper {
      * Check whether creation of new directory is inside the same directory with the same name or not
      * Directory inside the same directory with similar filename shall not be allowed
      * Doesn't work at an OTG path
-     *
-     * @param file
-     * @return
      */
     public static boolean isNewDirectoryRecursive(HybridFile file) {
         return file.getName().equals(file.getParentName());

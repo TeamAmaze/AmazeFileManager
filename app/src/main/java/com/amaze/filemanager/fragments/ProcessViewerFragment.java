@@ -220,8 +220,6 @@ public class ProcessViewerFragment extends Fragment {
 
     /**
      * Formats input to plain mm:ss format
-     * @param timer
-     * @return
      */
     private String formatTimer(long timer) {
         final long min = TimeUnit.SECONDS.toMinutes(timer);
@@ -300,7 +298,6 @@ public class ProcessViewerFragment extends Fragment {
 
     /**
      * Setup click listener to cancel button click for various intent types
-     * @param intent
      */
     private void cancelBroadcast(final Intent intent) {
 
@@ -340,7 +337,6 @@ public class ProcessViewerFragment extends Fragment {
 
     /**
      * Creates an instance for {@link LineDataSet} which will store the entries
-     * @return
      */
     private LineDataSet createDataSet() {
         LineDataSet lineDataset = new LineDataSet(new ArrayList<Entry>(), null);
