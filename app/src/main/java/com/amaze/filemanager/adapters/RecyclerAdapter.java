@@ -43,12 +43,14 @@ import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +89,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
     private RecyclerViewPreloader<IconDataParcelable> preloader;
-    private RecyclerPreloadSizeProvider sizeProvider;
+    private ListPreloader.PreloadSizeProvider sizeProvider;
     private RecyclerPreloadModelProvider modelProvider;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -264,15 +266,32 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
         if(holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).rl.clearAnimation();
+            RoundedImageView roundedPictureIcon = ((ItemViewHolder) holder).pictureIcon;
+            ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
+            //iconLoaderUtil.pauseLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
         }
+        super.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if(holder instanceof ItemViewHolder) {
+            ((ItemViewHolder) holder).rl.clearAnimation();
+            RoundedImageView roundedPictureIcon = ((ItemViewHolder) holder).pictureIcon;
+            ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
+            //iconLoaderUtil.resumeLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
+        }
+        super.onViewAttachedToWindow(holder);
     }
 
     @Override
     public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
         ((ItemViewHolder) holder).rl.clearAnimation();
+        RoundedImageView roundedPictureIcon = ((ItemViewHolder) holder).pictureIcon;
+        ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
+        //iconLoaderUtil.pauseLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
         return super.onFailedToRecycleView(holder);
     }
 
@@ -336,7 +355,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             createHeaders(invalidate, uris);
         }
 
-        sizeProvider = new RecyclerPreloadSizeProvider(this);
+
+        int imageWidthPixels, imageHeightPixels;
+        imageHeightPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
+        imageWidthPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
+
+        sizeProvider = new FixedPreloadSizeProvider(imageWidthPixels, imageHeightPixels);
         modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris,
                 getBoolean(PREFERENCE_SHOW_THUMB));
         iconLoaderUtil = IconLoaderUtil.getInstance(context, modelProvider);
@@ -350,24 +374,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         for (int i = 0; i < itemsDigested.size(); i++) {
 
-                if (itemsDigested.get(i).elem != null) {
-                    LayoutElementParcelable nextItem = itemsDigested.get(i).elem;
+            if (itemsDigested.get(i).elem != null) {
+                LayoutElementParcelable nextItem = itemsDigested.get(i).elem;
 
-                    if (!headers[0] && nextItem.isDirectory) {
-                        headers[0] = true;
-                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
-                        uris.add(i, null);
-                        continue;
-                    }
-
-                    if (!headers[1] && !nextItem.isDirectory
-                            && !nextItem.title.equals(".") && !nextItem.title.equals("..")) {
-                        headers[1] = true;
-                        itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
-                        uris.add(i, null);
-                        continue;//leave this continue for symmetry
-                    }
+                if (!headers[0] && nextItem.isDirectory) {
+                    headers[0] = true;
+                    itemsDigested.add(i, new ListItem(TYPE_HEADER_FOLDERS));
+                    uris.add(i, null);
+                    continue;
                 }
+
+                if (!headers[1] && !nextItem.isDirectory
+                        && !nextItem.title.equals(".") && !nextItem.title.equals("..")) {
+                    headers[1] = true;
+                    itemsDigested.add(i, new ListItem(TYPE_HEADER_FILES));
+                    uris.add(i, null);
+                    continue;//leave this continue for symmetry
+                }
+            }
 
         }
 
@@ -416,17 +440,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
                 if (mainFrag.IS_LIST) {
-                    view = mInflater.inflate(R.layout.rowlayout, parent, false);
+                    view = mInflater.inflate(R.layout.rowlayout, parent, false);/*
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
                     sizeProvider.addView(VIEW_PICTURE, view.findViewById(R.id.picture_icon));
-                    sizeProvider.addView(VIEW_APK, view.findViewById(R.id.apk_icon));
+                    sizeProvider.addView(VIEW_APK, view.findViewById(R.id.apk_icon));*/
                 } else {
-                    view = mInflater.inflate(R.layout.griditem, parent, false);
+                    view = mInflater.inflate(R.layout.griditem, parent, false);/*
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
-                    sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));
+                    sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));*/
                 }
 
-                sizeProvider.closeOffAddition();
+                //sizeProvider.closeOffAddition();
 
                 return new ItemViewHolder(view);
             case EMPTY_LAST_ITEM:
@@ -806,7 +830,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         };
         //modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
-        iconLoaderUtil.loadDrawable(view, iconData, errorListener, requestListener);
+        iconLoaderUtil.loadDrawable(new IconLoaderUtil.IconLoader(view, iconData), errorListener, requestListener);
     }
 
     private void showRoundedThumbnail(ItemViewHolder viewHolder, IconDataParcelable iconData,
@@ -850,7 +874,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         };
         // modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
-        iconLoaderUtil.loadDrawable(view, iconData, errorListener, requestListener);
+        iconLoaderUtil.loadDrawable(new IconLoaderUtil.IconLoader(view, iconData), errorListener, requestListener);
     }
 
     private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {

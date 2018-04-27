@@ -15,6 +15,7 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.Collections;
@@ -30,12 +31,17 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     private Fragment fragment;
     private List<IconDataParcelable> urisToLoad;
     private boolean showThumbs;
+    private GlideRequest<Drawable> request;
+    private int imageWidthPixels, imageHeightPixels;
 
     public RecyclerPreloadModelProvider(@NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris,
                                         boolean showThumbs) {
         this.fragment = fragment;
         urisToLoad = uris;
         this.showThumbs = showThumbs;
+        request = GlideApp.with(fragment).asDrawable().centerCrop();
+        imageHeightPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
+        imageWidthPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
     }
 
     @Override
@@ -53,12 +59,13 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
         if(!showThumbs) {
             requestBuilder = GlideApp.with(fragment).asDrawable().fitCenter().load(iconData.image);
         } else {
-            GlideRequest<Drawable> request = GlideApp.with(fragment).asDrawable().centerCrop();
             if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-                requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
+                requestBuilder = request.load(iconData.path)
+                        .override(imageWidthPixels, imageHeightPixels);
             } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
                 requestBuilder = request.load(IconLoaderUtil.getThumbnailInputStreamForCloud(fragment.getContext(),
-                        iconData)).diskCacheStrategy(DiskCacheStrategy.NONE);
+                        iconData)).thumbnail(0.25f)
+                        .override(imageWidthPixels, imageHeightPixels).diskCacheStrategy(DiskCacheStrategy.NONE);
             } else {
                 requestBuilder = request.load(iconData.image);
             }

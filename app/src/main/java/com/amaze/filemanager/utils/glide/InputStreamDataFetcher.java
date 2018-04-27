@@ -37,7 +37,11 @@ public class InputStreamDataFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void cancel() {
-
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
