@@ -202,7 +202,7 @@ public class MainActivityHelper {
         View view = layoutInflater.inflate(R.layout.lexadrawer, null);
         x.customView(view, true);
         // textView
-        TextView textView = (TextView) view.findViewById(R.id.description);
+        TextView textView = view.findViewById(R.id.description);
         textView.setText(mainActivity.getString(R.string.needsaccesssummary) + path + mainActivity.getString(R.string.needsaccesssummary1));
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);

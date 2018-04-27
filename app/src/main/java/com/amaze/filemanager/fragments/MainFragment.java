@@ -222,9 +222,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         setRetainInstance(true);
-        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-        fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        fastScroller = rootView.findViewById(R.id.fastscroll);
         fastScroller.setPressedHandleColor(accentColor);
         listView.setOnTouchListener((view, motionEvent) -> {
             if (adapter != null && stopAnims) {
@@ -241,7 +241,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             return false;
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
 
@@ -504,7 +504,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<LayoutElementParcelable> positions = adapter.getCheckedItems();
-            TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
+            TextView textView1 = actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
@@ -1021,7 +1021,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     void initNoFileLayout() {
-        nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview = rootView.findViewById(R.id.nofilelayout);
         nofilesview.setColorSchemeColors(accentColor);
         nofilesview.setOnRefreshListener(() -> {
             loadlist((CURRENT_PATH), false, openMode);

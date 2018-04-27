@@ -503,7 +503,7 @@ public abstract class FileUtil {
         return isSuccessful;
     }
 
-    public static boolean mkfile(final File file,Context context) throws IOException {
+    public static boolean mkfile(final File file,Context context) {
         if(file==null)
             return false;
         if (file.exists()) {
@@ -974,8 +974,7 @@ public abstract class FileUtil {
          * Deletes the file. Returns true if the file has been successfully deleted or otherwise does not exist. This operation is not
          * recursive.
          */
-        public boolean delete()
-                throws IOException {
+        public boolean delete() {
 
             if (!file.exists()) {
                 return true;

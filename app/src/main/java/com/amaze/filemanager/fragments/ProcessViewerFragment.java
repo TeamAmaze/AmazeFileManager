@@ -109,17 +109,17 @@ public class ProcessViewerFragment extends Fragment {
         
         mainActivity.supportInvalidateOptionsMenu();
 
-        mCardView = (CardView) rootView.findViewById(R.id.card_view);
+        mCardView = rootView.findViewById(R.id.card_view);
 
-        mLineChart = (LineChart) rootView.findViewById(R.id.progress_chart);
-        mProgressImage = (ImageView) rootView.findViewById(R.id.progress_image);
-        mCancelButton = (ImageButton) rootView.findViewById(R.id.delete_button);
-        mProgressTypeText = (TextView) rootView.findViewById(R.id.text_view_progress_type);
-        mProgressFileNameText = (TextView) rootView.findViewById(R.id.text_view_progress_file_name);
-        mProgressBytesText = (TextView) rootView.findViewById(R.id.text_view_progress_bytes);
-        mProgressFileText = (TextView) rootView.findViewById(R.id.text_view_progress_file);
-        mProgressSpeedText = (TextView) rootView.findViewById(R.id.text_view_progress_speed);
-        mProgressTimer = (TextView) rootView.findViewById(R.id.text_view_progress_timer);
+        mLineChart = rootView.findViewById(R.id.progress_chart);
+        mProgressImage = rootView.findViewById(R.id.progress_image);
+        mCancelButton = rootView.findViewById(R.id.delete_button);
+        mProgressTypeText = rootView.findViewById(R.id.text_view_progress_type);
+        mProgressFileNameText = rootView.findViewById(R.id.text_view_progress_file_name);
+        mProgressBytesText = rootView.findViewById(R.id.text_view_progress_bytes);
+        mProgressFileText = rootView.findViewById(R.id.text_view_progress_file);
+        mProgressSpeedText = rootView.findViewById(R.id.text_view_progress_speed);
+        mProgressTimer = rootView.findViewById(R.id.text_view_progress_timer);
 
         if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 

@@ -318,7 +318,7 @@ public class TabFragment extends Fragment
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         @Override
         public int getItemPosition(Object object) {
-            int index = fragments.indexOf((Fragment) object);
+            int index = fragments.indexOf(object);
             if (index == -1)
                 return POSITION_NONE;
             else

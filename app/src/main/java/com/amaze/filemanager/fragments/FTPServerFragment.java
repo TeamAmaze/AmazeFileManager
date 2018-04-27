@@ -84,7 +84,7 @@ public class FTPServerFragment extends Fragment {
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
-        
+
         updateSpans();
         updateStatus();
 

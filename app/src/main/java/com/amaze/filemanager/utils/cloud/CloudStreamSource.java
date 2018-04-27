@@ -67,7 +67,7 @@ public class CloudStreamSource extends StreamSource {
         fp += read;
         return read;
     }
-    public long moveTo(long position) throws IOException {
+    public long moveTo(long position) {
         fp = position;
         return fp;
     }

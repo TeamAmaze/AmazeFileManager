@@ -301,10 +301,7 @@ public class Operations {
                             return null;
                         }
                         if (mode == 1 || mode == 0)
-                            try {
-                                FileUtil.mkfile(file.getFile(), context);
-                            } catch (IOException e) {
-                            }
+                            FileUtil.mkfile(file.getFile(), context);
                         if (!file.exists() && rootMode) {
                             file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
@@ -370,7 +367,7 @@ public class Operations {
                 } else if (oldFile.isSftp()) {
                     SshClientUtils.execute(new SFtpClientTemplate(oldFile.getPath()) {
                         @Override
-                        public <Void> Void execute(@NonNull SFTPClient client) throws IOException {
+                        public <Void> Void execute(@NonNull SFTPClient client) {
                             try {
                                 client.rename(SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
                                         SshClientUtils.extractRemotePathFrom(newFile.getPath()));

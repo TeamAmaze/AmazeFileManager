@@ -182,7 +182,7 @@ public class HybridFile {
         return null;
     }
 
-    public long lastModified() throws MalformedURLException, SmbException {
+    public long lastModified() throws SmbException {
         switch (mode) {
             case SFTP:
                 SshClientUtils.execute(new SFtpClientTemplate(path) {
@@ -730,7 +730,7 @@ public class HybridFile {
                 try {
                     SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public Void execute(SFTPClient client) throws IOException {
+                        public Void execute(SFTPClient client) {
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
@@ -798,7 +798,7 @@ public class HybridFile {
                 try {
                     arrayList = SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) throws IOException {
+                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) {
                             ArrayList<HybridFileParcelable> retval = new ArrayList<HybridFileParcelable>();
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
@@ -1096,12 +1096,7 @@ public class HybridFile {
         } else if (isLocal()) {
             exists = new File(path).exists();
         } else if (isRoot()) {
-            try {
-                return RootHelper.fileExists(path);
-            } catch (ShellNotRunningException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return RootHelper.fileExists(path);
         }
 
         return exists;
@@ -1149,7 +1144,7 @@ public class HybridFile {
         if(isSftp()) {
             SshClientUtils.execute(new SFtpClientTemplate(path) {
                 @Override
-                public Void execute(SFTPClient client) throws IOException {
+                public Void execute(SFTPClient client) {
                     try {
                         client.mkdir(SshClientUtils.extractRemotePathFrom(path));
                     } catch(IOException e) {

@@ -23,7 +23,7 @@ public class StreamSource {
 
     public StreamSource() {}
 
-    public StreamSource(SmbFile file,long l) throws SmbException {
+    public StreamSource(SmbFile file,long l) {
 
         fp = 0;
         len = l;

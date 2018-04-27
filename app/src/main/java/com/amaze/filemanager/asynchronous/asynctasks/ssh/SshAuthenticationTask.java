@@ -112,12 +112,12 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
             {
                 sshClient.authPublickey(username, new KeyProvider() {
                     @Override
-                    public PrivateKey getPrivate() throws IOException {
+                    public PrivateKey getPrivate() {
                         return privateKey.getPrivate();
                     }
 
                     @Override
-                    public PublicKey getPublic() throws IOException {
+                    public PublicKey getPublic() {
                         return privateKey.getPublic();
                     }
 

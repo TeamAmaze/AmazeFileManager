@@ -57,23 +57,23 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mPermission = mBundle.getString(KEY_PERMISSION);
         mIsRoot = mBundle.getBoolean(KEY_ROOT);
 
-        mToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar_layout);
-        mAppBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBarLayout);
+        mToolbar = rootView.findViewById(R.id.collapsing_toolbar_layout);
+        mAppBarLayout = rootView.findViewById(R.id.appBarLayout);
         mToolbar.setTitle(getString(R.string.properties));
         mToolbar.setCollapsedTitleTextAppearance(R.style.collapsed_appbar);
         mToolbar.setExpandedTitleTextAppearance(R.style.expanded_appbar);
 
-        mFileNameTextView = (TextView) rootView.findViewById(R.id.text_view_file_name);
+        mFileNameTextView = rootView.findViewById(R.id.text_view_file_name);
         mFileNameTextView.setText(mFile.getName());
-        mFileTypeTextView = (TextView) rootView.findViewById(R.id.text_view_file_type);
+        mFileTypeTextView = rootView.findViewById(R.id.text_view_file_type);
         mFileTypeTextView.setText(mFile.isDirectory() ? getString(R.string.folder) : mFile.getName().substring(mFile.getName().lastIndexOf(".")));
-        mFileSizeTextView = (TextView) rootView.findViewById(R.id.text_view_file_size);
+        mFileSizeTextView = rootView.findViewById(R.id.text_view_file_size);
         mFileSizeTextView.setText(Formatter.formatFileSize(dialog.getContext(), mFile.isDirectory() ? FileUtils.folderSize(new File(mFile.getPath()), null) : mFile.getSize()));
-        mFileLocationTextView = (TextView) rootView.findViewById(R.id.text_view_file_location);
+        mFileLocationTextView = rootView.findViewById(R.id.text_view_file_location);
         mFileLocationTextView.setText(mFile.getPath());
-        mFileAccessedTextView = (TextView) rootView.findViewById(R.id.text_view_file_accessed);
+        mFileAccessedTextView = rootView.findViewById(R.id.text_view_file_accessed);
         mFileAccessedTextView.setText(Utils.getDate(mFile.getDate()));
-        mFileModifiedTextView = (TextView) rootView.findViewById(R.id.text_view_file_modified);
+        mFileModifiedTextView = rootView.findViewById(R.id.text_view_file_modified);
         mFileModifiedTextView.setText(Utils.getDate(mFile.getDate()));
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) ((View) rootView.getParent()).getLayoutParams();
@@ -81,7 +81,7 @@ public class PropertiesSheet extends BottomSheetDialogFragment {
         mBottomSheetBehavior = (BottomSheetBehavior) layoutParams.getBehavior();
         mBottomSheetBehavior.setBottomSheetCallback(mCallback);
 
-        mNestedScrollView = (NestedScrollView) rootView.findViewById(R.id.nested_view);
+        mNestedScrollView = rootView.findViewById(R.id.nested_view);
 
         mNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override

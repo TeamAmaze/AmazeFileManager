@@ -150,11 +150,11 @@ public class GeneralDialogCreation {
                 .build();
 
         // Get views from custom layout to set text values.
-        final TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
-        final TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
-        final TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
-        final TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
-        final TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+        final TextView categoryDirectories = dialog.getCustomView().findViewById(R.id.category_directories);
+        final TextView categoryFiles = dialog.getCustomView().findViewById(R.id.category_files);
+        final TextView listDirectories = dialog.getCustomView().findViewById(R.id.list_directories);
+        final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
+        final TextView total = dialog.getCustomView().findViewById(R.id.total);
 
         // Parse items to delete.
 
@@ -704,7 +704,7 @@ public class GeneralDialogCreation {
 
         View rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null);
 
-        Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
+        Button cancelButton = rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
         cancelButton.setTextColor(accentColor);
         builder.customView(rootView, true);
         builder.canceledOnTouchOutside(false);

@@ -202,9 +202,9 @@ public class SmbSearchDialog extends DialogFragment {
 
             rootView = view;
 
-            txtTitle = (TextView) view.findViewById(R.id.firstline);
-            image = (ImageView) view.findViewById(R.id.icon);
-            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            txtTitle = view.findViewById(R.id.firstline);
+            image = view.findViewById(R.id.icon);
+            txtDesc = view.findViewById(R.id.secondLine);
         }
 
     }

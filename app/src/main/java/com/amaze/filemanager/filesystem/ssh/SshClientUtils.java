@@ -93,7 +93,7 @@ public abstract class SshClientUtils
     public static final <T> T execute(@NonNull final SshClientSessionTemplate template) {
         return execute(new SshClientTemplate(template.url, false) {
             @Override
-            public T execute(SSHClient client) throws IOException {
+            public T execute(SSHClient client) {
                 Session session = null;
                 T retval = null;
                 try {
@@ -125,7 +125,7 @@ public abstract class SshClientUtils
     public static final <T> T execute(@NonNull final SFtpClientTemplate template) {
         return execute(new SshClientTemplate(template.url, false) {
             @Override
-            public T execute(SSHClient client) throws IOException {
+            public T execute(SSHClient client) {
                 SFTPClient sftpClient = null;
                 T retval = null;
                 try {

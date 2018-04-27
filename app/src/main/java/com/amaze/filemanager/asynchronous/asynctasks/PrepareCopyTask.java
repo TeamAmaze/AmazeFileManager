@@ -169,12 +169,13 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                 (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.copy_dialog, null);
         dialogBuilder.customView(view, true);
+
         // textView
-        TextView textView = (TextView) view.findViewById(R.id.fileNameText);
+        TextView textView = view.findViewById(R.id.fileNameText);
         textView.setText(conflictingFiles.get(counter).getName());
 
         // checkBox
-        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        final CheckBox checkBox = view.findViewById(R.id.checkBox);
         Utils.setTint(context, checkBox, accentColor);
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));

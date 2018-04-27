@@ -224,7 +224,7 @@ public class FileUtils {
 
         AppConfig.runInBackground(() -> {
                 mediaScannerConnection.connect();
-                mediaScannerConnection.scanFile(context, paths, null, null);
+                MediaScannerConnection.scanFile(context, paths, null, null);
         });
     }
 
@@ -651,7 +651,7 @@ public class FileUtils {
     public static boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                    .getSystemService(context.CLIPBOARD_SERVICE);
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
             android.content.ClipData clip = android.content.ClipData
                     .newPlainText(context.getString(R.string.clipboard_path_copy), text);
             clipboard.setPrimaryClip(clip);

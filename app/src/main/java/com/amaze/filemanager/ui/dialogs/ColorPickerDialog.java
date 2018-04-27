@@ -117,7 +117,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
             selectedIndex = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, CUSTOM_INDEX);
         }
 
-        LinearLayout container = (LinearLayout) view.findViewById(R.id.container);
+        LinearLayout container = view.findViewById(R.id.container);
         for(int i = 0; i < COLORS.length; i++) {
             View child = inflateItem(container, i, accentColor);
 
@@ -161,7 +161,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
     }
 
     private void select(View listChild, boolean checked) {
-        RadioButton button = (RadioButton) listChild.findViewById(R.id.select);
+        RadioButton button = listChild.findViewById(R.id.select);
         button.setChecked(checked);
     }
 

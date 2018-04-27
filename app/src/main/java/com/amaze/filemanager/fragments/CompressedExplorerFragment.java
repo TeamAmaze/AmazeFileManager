@@ -131,7 +131,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         mainActivity = (MainActivity) getActivity();
-        listView = (RecyclerView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         listView.setOnTouchListener((view, motionEvent) -> {
             if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
                 stopAnim();
@@ -141,7 +141,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             stopAnims = false;
             return false;
         });
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         return rootView;
@@ -462,7 +462,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             //listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        final FastScroller fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(listView, 1);
         fastScroller.setPressedHandleColor(mainActivity.getAccent());
         ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
