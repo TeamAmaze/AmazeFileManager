@@ -112,4 +112,8 @@
 
     <!--Used for white vectors -->
     <color name="vectors_white">#FFFFFFFF</color>
+
+    <!-- Warning error for InputTextLayout -->
+    <color name="warningColor">#ffe082</color>
+
 </resources>

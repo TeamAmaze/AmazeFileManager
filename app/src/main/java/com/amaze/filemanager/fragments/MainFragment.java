@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +81,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
@@ -91,6 +93,7 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -1204,33 +1207,44 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param f the file to rename
      */
     public void rename(final HybridFileParcelable f) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        String name = f.getName();
-        builder.input("", name, false, (materialDialog, charSequence) -> {});
-        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        builder.title(getResources().getString(R.string.rename));
+        MaterialDialog renameDialog = GeneralDialogCreation.showNameDialog(getMainActivity(),
+            "",
+            f.getName(),
+            getResources().getString(R.string.rename),
+            getResources().getString(R.string.save),
+            null,
+            getResources().getString(R.string.cancel),
+            (dialog, which) -> {
+                EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+                String name1 = textfield.getText().toString();
 
-        builder.onNegative((dialog, which) -> dialog.cancel());
+                if (f.isSmb()){
+                    if (f.isDirectory() && !name1.endsWith("/"))
+                        name1 = name1 + "/";
+                }
+                getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
+                        CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
+            }, (text)-> {
+                    boolean isValidFilename = FileUtil.isValidFilename(text);
 
-        builder.onPositive((dialog, which) -> {
-            String name1 = dialog.getInputEditText().getText().toString();
-            getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                    CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
-        });
+                    if (!isValidFilename) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                    } else if (text.length() < 1) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                    }
 
-        builder.positiveText(R.string.save);
-        builder.negativeText(R.string.cancel);
-        builder.positiveColor(accentColor).negativeColor(accentColor).widgetColor(accentColor);
-        final MaterialDialog materialDialog = builder.build();
-        materialDialog.show();
-        Log.d(getClass().getSimpleName(), f.getNameString(getContext()));
+                    return new WarnableTextInputValidator.ReturnState();
+            });
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll
         // reset calls to selection if not posted in message queue
-        materialDialog.getInputEditText().post(() -> {
+        EditText textfield = renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
+        textfield.post(() -> {
             if (!f.isDirectory()) {
-                materialDialog.getInputEditText().setSelection(f.getNameString(getContext()).length());
+                textfield.setSelection(f.getNameString(getContext()).length());
             }
         });
     }

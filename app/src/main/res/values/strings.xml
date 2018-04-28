@@ -610,11 +610,15 @@
     <string name="green">Green</string>
     <string name="password_no_match">Password doesn\'t match</string>
     <string name="deselect_all">Deselect All</string>
+    <string name="filename">Filename</string>
+    <string name="compress_file_suggest_zip_extension">It\'s recommended to use \".zip\" as the file extension.</string>
     <string name="about_amaze">Material design file manager for Android</string>
     <string name="license">License</string>
     <string name="libraries">Libraries</string>
     <string name="password_repeat">Repeat password</string>
+    <string name="create_file_suggest_txt_extension">It\'s recommended to use \".txt\" as the file extension.</string>
     <string name="ssh_select_pem">Select private key for authentication</string>
+    <string name="ssh_key_invalid_passphrase">Invalid key passphrase.</string>
     <string name="encryption_fail_copy">Failed to update encryption entry in database</string>
     <string name="extracted">Extracted</string>
     <string name="compressed">Compressed</string>
@@ -624,5 +628,8 @@
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
+    <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
+    <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
 </resources>
 
