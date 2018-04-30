@@ -15,7 +15,7 @@ public enum ColorUsage {
     PRIMARY_TWO(PreferencesConstants.PREFERENCE_SKIN_TWO, R.color.primary_indigo),
     ACCENT(PreferencesConstants.PREFERENCE_ACCENT, R.color.primary_pink),
     ICON_SKIN(PreferencesConstants.PREFERENCE_ICON_SKIN, R.color.primary_pink),
-    CURRENT_TAB("current_tab", R.color.primary_pink);
+    CURRENT_TAB(PreferencesConstants.PREFERENCE_CURRENT_TAB, R.color.primary_pink);
 
     /**
      * The String representation of the ColorUsage

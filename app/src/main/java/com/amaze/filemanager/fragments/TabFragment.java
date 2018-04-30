@@ -104,7 +104,7 @@ public class TabFragment extends Fragment
 
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
-            int l = sharedPrefs.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+            int l = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
             MainActivity.currentTab = l;
             List<Tab> tabs1 = tabHandler.getAllTabs();
             int i = tabs1.size();
@@ -195,7 +195,7 @@ public class TabFragment extends Fragment
 
     @Override
     public void onDestroyView() {
-        sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).apply();
+        sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
         super.onDestroyView();
         try {
             if (tabHandler != null)
@@ -258,8 +258,8 @@ public class TabFragment extends Fragment
         super.onSaveInstanceState(outState);
         int i = 0;
 
-        if (sharedPrefs != null){
-            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
+        if (sharedPrefs != null) {
+            sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).commit();
         }
 
         if (fragments != null && fragments.size() != 0) {
@@ -288,9 +288,11 @@ public class TabFragment extends Fragment
         mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
         MainActivity.currentTab = p1;
+
         if (sharedPrefs != null) {
-            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).apply();
+            sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).commit();
         }
+
         Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
 
         Fragment fragment = fragments.get(p1);
