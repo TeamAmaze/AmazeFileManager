@@ -33,7 +33,7 @@ import java.util.List;
 public class DataUtils {
 
     public static final int DELETE = 0, COPY = 1, MOVE = 2, NEW_FOLDER = 3,
-            RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7;
+            RENAME = 4, NEW_FILE = 5, EXTRACT = 6, COMPRESS = 7, SAVE_FILE = 8;
 
     private ConcurrentRadixTree<VoidValue> hiddenfiles = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 

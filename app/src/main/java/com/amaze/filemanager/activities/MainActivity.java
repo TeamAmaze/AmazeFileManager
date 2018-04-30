@@ -56,6 +56,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,6 +182,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
     public ArrayList<String> oppatheList;
+
+    // This holds the Uris to be written at initFabToSave()
+    private List<Uri> urisToBeSaved;
 
     /**
      * @deprecated use getCurrentMainFragment()
@@ -484,7 +488,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
                 // save a single file to filesystem
                 Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                ArrayList<Uri> uris = new ArrayList<>();
+                List<Uri> uris = new ArrayList<>();
                 uris.add(uri);
                 initFabToSave(uris);
 
@@ -494,7 +498,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
                 // save multiple files to filesystem
 
-                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                List<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
                 initFabToSave(arrayList);
 
                 // disable screen rotation just for convenience purpose
@@ -507,7 +511,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     /**
      * Initializes the floating action button to act as to save data from an external intent
      */
-    private void initFabToSave(final ArrayList<Uri> uris) {
+    private void initFabToSave(final List<Uri> uris) {
         floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
@@ -517,14 +521,19 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if(uris != null && uris.size() > 0) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     File folder = new File(getCurrentMainFragment().getCurrentPath());
-                    if(mainActivityHelper.checkFolder(folder, MainActivity.this) != MainActivityHelper.CAN_CREATE_FILES){
-                        Toast.makeText(MainActivity.this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                    if(mainActivityHelper.checkFolder(folder, MainActivity.this) == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
+                        FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
                         finish();
+                    } else {
+                        operation = DataUtils.SAVE_FILE;
+                        urisToBeSaved = uris;
+                        mainActivityHelper.checkFolder(folder, MainActivity.this);
                     }
+                } else {
+                    FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
+                    finish();
                 }
-                FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
-                finish();
             }
         });
         //Ensure the FAB menu is visible
@@ -1322,13 +1331,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     break;
                 case DataUtils.NEW_FILE:
                     mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
-
                     break;
                 case DataUtils.EXTRACT:
                     mainActivityHelper.extractFile(new File(oppathe));
                     break;
                 case DataUtils.COMPRESS:
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
+                    break;
+                case DataUtils.SAVE_FILE:
+                    FileUtil.writeUriToStorage(this, urisToBeSaved, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    urisToBeSaved = null;
+                    finish();
+                    break;
             }
             operation = -1;
         } else if (requestCode == REQUEST_CODE_SAF) {

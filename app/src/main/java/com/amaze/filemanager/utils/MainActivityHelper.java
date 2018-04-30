@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
@@ -332,6 +335,7 @@ public class MainActivityHelper {
 
                 // On Android 5, trigger storage access framework.
                 if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+                    android.util.Log.d(getClass().getSimpleName(), "Trigger LEXA for " + folder.getAbsolutePath());
                     guideDialogForLEXA(folder.getPath());
                     return CAN_CREATE_FILES;
                 }
