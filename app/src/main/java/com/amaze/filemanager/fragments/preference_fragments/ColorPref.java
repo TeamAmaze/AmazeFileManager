@@ -134,7 +134,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             }
 
             ColorAdapter adapter = new ColorAdapter(getActivity(),
-                    ColorPreference.getUniqueAvailableColors(getActivity()), currentColor,
+                    ColorPreference.availableColors, currentColor,
                     (selectedColor) -> {
                         @ColorInt int primaryFirst = userColorPreferences.primaryFirstTab,
                                 primarySecond = userColorPreferences.primarySecondTab,

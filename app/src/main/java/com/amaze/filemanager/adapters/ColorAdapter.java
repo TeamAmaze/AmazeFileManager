@@ -30,7 +30,7 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
      * @param selectedColor currently selected color
      * @param l OnColorSelected listener for when a color is selected
      */
-    public ColorAdapter(Context context, List<Integer> colors, @ColorInt int selectedColor, OnColorSelected l) {
+    public ColorAdapter(Context context, Integer[] colors, @ColorInt int selectedColor, OnColorSelected l) {
         super(context, R.layout.rowlayout, colors);
         this.selectedColor = selectedColor;
         this.onColorSelected = l;
