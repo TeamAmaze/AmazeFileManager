@@ -21,7 +21,7 @@ import com.amaze.filemanager.adapters.ColorAdapter;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.views.preference.InvalidablePreferenceCategory;
-import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.ui.colors.ColorPreference;
 
 /**
  * This class uses two sections, so that there doesn't need to be two different Fragments.

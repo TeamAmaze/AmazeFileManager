@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.ui.colors.ColorPreference;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
