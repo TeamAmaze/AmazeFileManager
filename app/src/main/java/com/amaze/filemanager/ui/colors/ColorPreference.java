@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils.color;
+package com.amaze.filemanager.ui.colors;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,13 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * The ColorPreference class stores the user's preference for each {@link ColorUsage} and provides tools to:
- * - Access these colors as recource id, interer representation or String representation
- * - Load and save the preferences in a {@link SharedPreferences} object
- */
 public class ColorPreference {
-    public static final List<Integer> availableColors = Arrays.asList(
+    private static final List<Integer> availableColors = Arrays.asList(
             R.color.primary_red,
             R.color.primary_pink,
             R.color.primary_purple,
