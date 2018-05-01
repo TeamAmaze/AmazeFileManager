@@ -22,7 +22,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
@@ -39,7 +38,6 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
@@ -64,7 +62,7 @@ public class MainActivityHelper {
 
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = mainActivity.getAccent();
     }
 
     public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, Context contextc) {

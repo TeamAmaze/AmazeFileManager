@@ -22,10 +22,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
+import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.views.CircularColorsView;
 import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference;
-import com.amaze.filemanager.utils.color.ColorPreference;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 /**
@@ -57,7 +57,8 @@ public class ColorPickerDialog extends SelectedColorsPreference {
                     new int[]{R.color.primary_green, R.color.primary_green, R.color.primary_teal_900, R.color.accent_light_green})};
 
     private SharedPreferences sharedPrefs;
-    private ColorPreference colorPref;
+    private ColorPreferenceHelper colorPreferenceHelper;
+    private UserColorPreferences colorPref;
     private AppTheme appTheme;
     private OnAcceptedConfig listener;
     private View selectedItem = null;
@@ -73,7 +74,8 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         setDialogIcon(null);
     }
 
-    public void setColorPreference(ColorPreference color, AppTheme theme) {
+    public void setColorPreference(ColorPreferenceHelper colorPreferenceHelper, UserColorPreferences color, AppTheme theme) {
+        this.colorPreferenceHelper = colorPreferenceHelper;
         colorPref = color;
         appTheme = theme;
     }
@@ -95,7 +97,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
     @Override
     public void onBindDialogView(View view) {
         sharedPrefs = getSharedPreferences();
-        int accentColor = colorPref.getColor(ColorUsage.ACCENT);
+        int accentColor = colorPref.accent;
         if(selectedIndex == NO_DATA) {//if instance was restored the value is already set
             boolean isUsingDefault = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, NO_DATA) == NO_DATA
                     && sharedPrefs.getInt(PreferencesConstants.PREFERENCE_SKIN, R.color.primary_indigo) == R.color.primary_indigo
@@ -195,7 +197,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         super.showDialog(state);
         Resources res = getContext().getResources();
         Window window = getDialog().getWindow();
-        int accentColor = colorPref.getColor(ColorUsage.ACCENT);
+        int accentColor = colorPref.accent;
 
         // Button views
         ((TextView) window.findViewById(res.getIdentifier("button1", "id", "android")))
@@ -212,10 +214,10 @@ public class ColorPickerDialog extends SelectedColorsPreference {
             sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, selectedIndex).apply();
 
             if(selectedIndex != CUSTOM_INDEX && selectedIndex != RANDOM_INDEX) {
-                colorPref.setRes(ColorUsage.PRIMARY, COLORS[selectedIndex].second[0]).saveToPreferences(sharedPrefs);
-                colorPref.setRes(ColorUsage.PRIMARY_TWO, COLORS[selectedIndex].second[1]).saveToPreferences(sharedPrefs);
-                colorPref.setRes(ColorUsage.ACCENT, COLORS[selectedIndex].second[2]).saveToPreferences(sharedPrefs);
-                colorPref.setRes(ColorUsage.ICON_SKIN, COLORS[selectedIndex].second[3]).saveToPreferences(sharedPrefs);
+                colorPreferenceHelper.saveColorPreferences(sharedPrefs,
+                        new UserColorPreferences(COLORS[selectedIndex].second[0],
+                        COLORS[selectedIndex].second[1], COLORS[selectedIndex].second[2],
+                        COLORS[selectedIndex].second[3], colorPref.currentTab));
             }
 
             listener.onAcceptedConfig();
