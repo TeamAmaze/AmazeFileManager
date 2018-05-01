@@ -94,6 +94,11 @@ import jcifs.smb.SmbFile;
  */
 public class FileUtils {
 
+    /**
+     * This file when created in some folder will make it invisible to most media browsers
+     */
+    public static final String NOMEDIA_FILE = ".nomedia";
+
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
         try {
