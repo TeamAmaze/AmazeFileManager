@@ -35,7 +35,6 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -51,8 +50,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -265,8 +264,8 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
                 masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
-                masterPasswordDialogBuilder.positiveColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
-                masterPasswordDialogBuilder.negativeColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
+                masterPasswordDialogBuilder.positiveColor(((ThemedActivity) getActivity()).getAccent());
+                masterPasswordDialogBuilder.negativeColor(((ThemedActivity) getActivity()).getAccent());
 
                 masterPasswordDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

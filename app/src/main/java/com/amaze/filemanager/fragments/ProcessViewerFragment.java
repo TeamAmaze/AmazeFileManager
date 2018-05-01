@@ -49,10 +49,10 @@ import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.LineChart;
@@ -99,8 +99,8 @@ public class ProcessViewerFragment extends Fragment {
 
         mainActivity = (MainActivity) getActivity();
 
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
-        primaryColor = mainActivity.getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab));
+        accentColor = mainActivity.getAccent();
+        primaryColor = ColorPreferenceHelper.getPrimary(mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
         if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK))
             rootView.setBackgroundResource((R.color.cardView_background));
         mainActivity.updateViews(new ColorDrawable(primaryColor));

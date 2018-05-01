@@ -68,7 +68,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -85,7 +84,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
@@ -99,7 +97,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
@@ -119,12 +116,7 @@ import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
@@ -211,9 +203,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
-        accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
-        primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
-        primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+        accentColor = getMainActivity().getAccent();
+        primaryColor = getMainActivity().getCurrentColorPreference().primaryFirstTab;
+        primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
     }
 
     public void stopAnimation() {

@@ -7,10 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +28,6 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -39,7 +36,6 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
@@ -52,7 +48,6 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
@@ -110,8 +105,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.sharedPrefs = sharedPrefs;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
-        iconSkinColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ICON_SKIN);
+        accentColor = m.getMainActivity().getAccent();
+        iconSkinColor = m.getMainActivity().getCurrentColorPreference().iconSkin;
         goBackColor = Utils.getColor(context, R.color.goback_item);
         videoColor = Utils.getColor(context, R.color.video_item);
         audioColor = Utils.getColor(context, R.color.audio_item);

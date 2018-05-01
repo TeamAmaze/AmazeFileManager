@@ -21,7 +21,6 @@ import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.utils.ComputerParcelable;
 import com.amaze.filemanager.utils.SubnetScanner;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -44,7 +43,7 @@ public class SmbSearchDialog extends DialogFragment {
         super.onCreate(bundle);
         utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
-        accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = ((ThemedActivity) getActivity()).getAccent();
     }
 
     @Override

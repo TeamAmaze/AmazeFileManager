@@ -24,8 +24,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -44,7 +42,6 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.adapters.holders.AppHolder;
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -55,7 +52,6 @@ import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -161,7 +157,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
             popupMenu.setOnMenuItemClickListener(item -> {
-                int colorAccent = themedActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+                int colorAccent = themedActivity.getAccent();
 
                 switch (item.getItemId()) {
                     case R.id.open:

@@ -26,7 +26,6 @@ import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.IOException;
@@ -149,7 +148,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else usernameTIL.setError("");
             }
         });
-        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = ((ThemedActivity) getActivity()).getAccent();
         final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
         final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
         TextView help = (TextView) v2.findViewById(R.id.wanthelp);
@@ -160,7 +159,7 @@ public class SmbConnectDialog extends DialogFragment {
 
         Utils.setTint(context, ch, accentColor);
         help.setOnClickListener(v -> {
-            int accentColor1 = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+            int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
             GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
         });
 
