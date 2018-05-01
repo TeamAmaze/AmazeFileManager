@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class ColorPreference {
-    private static final List<Integer> availableColors = Arrays.asList(
+    public static final Integer[] availableColors = {
             R.color.primary_red,
             R.color.primary_pink,
             R.color.primary_purple,
@@ -38,24 +38,6 @@ public class ColorPreference {
             R.color.primary_brown,
             R.color.primary_grey_900,
             R.color.primary_blue_grey,
-            R.color.primary_teal_900,
-            R.color.accent_pink,
-            R.color.accent_amber,
-            R.color.accent_light_blue,
-            R.color.accent_light_green
-    );
-
-    public static List<Integer> getUniqueAvailableColors(Context context) {
-        List<Integer> uniqueAvailableColors = new ArrayList<>();
-        List<Integer> tempColorsHex = new ArrayList<>();
-        for(Integer color : availableColors) {
-            Integer colorHex = ContextCompat.getColor(context, color);
-            if(!(tempColorsHex.contains(colorHex))) {
-                uniqueAvailableColors.add(color);
-            }
-            tempColorsHex.add(colorHex);
-        }
-        return uniqueAvailableColors;
-    }
-
+            R.color.primary_teal_900
+    };
 }

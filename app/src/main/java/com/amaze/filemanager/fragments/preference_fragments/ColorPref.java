@@ -134,7 +134,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             }
 
             ColorAdapter adapter = new ColorAdapter(getActivity(),
-                    ColorPreference.getUniqueAvailableColors(getActivity()), currentColor,
+                    ColorPreference.availableColors, currentColor,
                     (selectedColorRes) -> {
                         activity.getColorPreference().saveColorPreferences(sharedPref, userColorPreferences);
                         if (dialog != null) dialog.dismiss();
