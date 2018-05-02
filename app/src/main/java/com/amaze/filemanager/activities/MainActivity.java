@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                      Emmanuel Messulam<emmanuelbendavid@gmail.com>
+ * MainActivity.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -521,10 +523,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if(uris != null && uris.size() > 0) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     File folder = new File(getCurrentMainFragment().getCurrentPath());
-                    if(mainActivityHelper.checkFolder(folder, MainActivity.this) == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
+                    int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
+                    if(result == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
                         FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
                         finish();
                     } else {
+                        //Trigger SAF intent, keep uri until finish
                         operation = DataUtils.SAVE_FILE;
                         urisToBeSaved = uris;
                         mainActivityHelper.checkFolder(folder, MainActivity.this);

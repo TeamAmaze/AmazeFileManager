@@ -1,3 +1,24 @@
+/*
+ * FileUtil.java
+ *
+ * Copyright (C) 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.filesystem;
 
 import android.annotation.TargetApi;
@@ -54,8 +75,6 @@ import static android.os.Build.VERSION.SDK_INT;
 
 /**
  * Utility class for helping parsing file systems.
- * <p>
- * Created by Arpit on 04-06-2015.
  */
 public abstract class FileUtil {
 
@@ -191,8 +210,8 @@ public abstract class FileUtil {
                     BufferedOutputStream bufferedOutputStream = null;
 
                     try {
-
                         DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+
                         String finalFilePath = currentPath + "/" + documentFile.getName();
                         DataUtils dataUtils = DataUtils.getInstance();
 
@@ -207,7 +226,6 @@ public abstract class FileUtil {
                                     AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
-
                                 DocumentFile targetDocumentFile = getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
 
                                 //Fallback, in case getDocumentFile() didn't properly return a DocumentFile instance
@@ -660,7 +678,7 @@ public abstract class FileUtil {
      * @return true if it is possible to write in this directory.
      */
     public static boolean isWritableNormalOrSaf(final File folder, Context c) {
-        Log.e("DEBUG.isWritableNormal", folder.getAbsolutePath(), new Exception());
+
         // Verify that this is a directory.
         if (folder == null)
             return false;
@@ -789,6 +807,10 @@ public abstract class FileUtil {
      * @return The DocumentFile
      */
     public static DocumentFile getDocumentFile(final File file, final boolean isDirectory, Context context) {
+
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            return DocumentFile.fromFile(file);
+
         String baseFolder = getExtSdCardFolder(file, context);
         boolean originalDirectory = false;
         if (baseFolder == null) {
