@@ -7,14 +7,16 @@ import java.util.Comparator;
  */
 public class BookSorter implements Comparator<String[]> {
 
-    @Override
-    public int compare(String[] lhs, String[] rhs) {
-        int result = lhs[0].compareToIgnoreCase(rhs[0]);
+    // rename parameters : lhsBookNameAndPath, rhsBookNameAndPath, bookCompareResult
 
-        if (result == 0) {
+    @Override
+    public int compare(String[] lhsBookNameAndPath, String[] rhsBookNameAndPath) {
+        int bookCompareResult = lhsBookNameAndPath[0].compareToIgnoreCase(rhsBookNameAndPath[0]);
+
+        if (bookCompareResult == 0) {
             // the title is same, compare their paths
-            result = lhs[1].compareToIgnoreCase(rhs[1]);
+            bookCompareResult = lhsBookNameAndPath[1].compareToIgnoreCase(rhsBookNameAndPath[1]);
         }
-        return result;
+        return bookCompareResult;
     }
 }
