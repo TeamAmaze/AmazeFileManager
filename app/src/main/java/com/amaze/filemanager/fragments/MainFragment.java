@@ -761,7 +761,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
                     primaryTwoColor : primaryColor));
 
-            if (getMainActivity().getDrawer().isLocked()) {
+            if (!getMainActivity().getDrawer().isLocked()) {
                 getMainActivity().getDrawer().unlock();
             }
         }
@@ -906,7 +906,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     } else {
                         switch (e.getMode()) {
                             case SMB:
-                                launchSMB(e.generateBaseFile(), getMainActivity());
+                                try {
+                                    SmbFile smbFile = new SmbFile(e.desc);
+                                    launchSMB(smbFile, e.longSize, getMainActivity());
+                                } catch (MalformedURLException ex) {
+                                    ex.printStackTrace();
+                                }
                                 break;
                             case SFTP:
                                 Toast.makeText(getContext(), getResources().getString(R.string.please_wait), Toast.LENGTH_LONG).show();
@@ -1643,7 +1648,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void launchSMB(final HybridFileParcelable baseFile, final Activity activity) {
+    public static void launchSMB(final SmbFile smbFile, final long si, final Activity activity) {
         final Streamer s = Streamer.getInstance();
         new Thread() {
             public void run() {
@@ -1658,12 +1663,12 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     }
                     */
 
-                    s.setStreamSrc(new SmbFile(baseFile.getPath()), baseFile.getSize());
+                    s.setStreamSrc(smbFile, si);
                     activity.runOnUiThread(() -> {
                         try {
-                            Uri uri = Uri.parse(Streamer.URL + Uri.fromFile(new File(Uri.parse(baseFile.getPath()).getPath())).getEncodedPath());
+                            Uri uri = Uri.parse(Streamer.URL + Uri.fromFile(new File(Uri.parse(smbFile.getPath()).getPath())).getEncodedPath());
                             Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setDataAndType(uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                            i.setDataAndType(uri, MimeTypes.getMimeType(smbFile.getPath(), smbFile.isDirectory()));
                             PackageManager packageManager = activity.getPackageManager();
                             List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                             if (resInfos != null && resInfos.size() > 0)
@@ -1672,7 +1677,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                                 Toast.makeText(activity,
                                         activity.getResources().getString(R.string.smb_launch_error),
                                         Toast.LENGTH_SHORT).show();
-                        } catch (ActivityNotFoundException e) {
+                        } catch (ActivityNotFoundException | SmbException e) {
                             e.printStackTrace();
                         }
                     });

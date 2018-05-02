@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbManager;
@@ -1351,14 +1350,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         fabBgView = findViewById(R.id.fab_bg);
-
-        switch (getAppTheme().getSimpleTheme()) {
-            case DARK:
-                fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
-                break;
-            case BLACK:
-                fabBgView.setBackgroundResource(R.drawable.fab_shadow_black);
-                break;
+        if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
+            fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         }
 
         fabBgView.setOnClickListener(view -> {
@@ -1462,15 +1455,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             floatingActionButton.collapse();
         });
 
-        switch (getAppTheme().getSimpleTheme()) {
-            case DARK:
-                fabTitle.setTitleBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-                fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
-                break;
-            case BLACK:
-                fabTitle.setTitleBackgroundColor(Color.BLACK);
-                fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
-                break;
+        if(getAppTheme().getSimpleTheme() == AppTheme.DARK) {
+            fabTitle.setTitleBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+            fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
         }
     }
 

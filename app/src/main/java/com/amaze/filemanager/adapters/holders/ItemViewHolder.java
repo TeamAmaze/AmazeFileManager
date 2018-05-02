@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.ui.views.ThemedTextView;
 
 /**
  * Check RecyclerAdapter's doc.
@@ -24,7 +23,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
     public final RoundedImageView pictureIcon;
     public final ImageView genericIcon, apkIcon;
     public final ImageView imageView1;
-    public final ThemedTextView txtTitle;
+    public final TextView txtTitle;
     public final TextView txtDesc;
     public final TextView date;
     public final TextView perm;

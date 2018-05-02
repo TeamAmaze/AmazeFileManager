@@ -117,11 +117,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:longClickable="false"
+            android:ellipsize="middle"
             android:clickable="false"
             android:textSize="17sp" />
 
@@ -130,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/firstline"
             android:layout_marginTop="5dp">
+
 
             <TextView
                 android:id="@+id/date"

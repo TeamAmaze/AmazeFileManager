@@ -19,104 +19,60 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="aboutFileManager">Om Amaze File Manager</string>
-  <string name="addtobook">Legg til i bokmerkene</string>
-  <string name="apks">APK-er</string>
-  <string name="apps">App-behandler</string>
-  <string name="ascending">Stigende</string>
-  <string name="audio">Lyd</string>
-  <string name="backup">Sikkerhetskopier</string>
-  <string name="cancel">Avbryt</string>
-  <string name="changelog">Endringslogg</string>
-  <string name="cloud_connection">Skytilkobling</string>
-  <string name="color_title">Farge</string>
-  <string name="compress">Komprimer</string>
-  <string name="copied">ble kopiert</string>
-  <string name="copy">Kopier</string>
-  <string name="crypt_decrypt">Dekrypter</string>
-  <string name="crypt_encrypt">Krypter</string>
-  <string name="cut">Klipp ut</string>
-  <string name="defualt">Standard</string>
-  <string name="descending">Synkende</string>
-  <string name="details">Detaljer</string>
-  <string name="dialog_delete_category_directories">Mapper</string>
-  <string name="dialog_delete_category_files">Filer</string>
-  <string name="dialog_delete_title">Bekreft</string>
-  <string name="directorysort">Mappesorteringsmodus</string>
-  <string name="documents">Dokumenter</string>
-  <string name="donate">Donasjon</string>
-  <string name="done">Ferdig</string>
-  <string name="duration">Varighet</string>
-  <string name="edit">Rediger</string>
-  <string name="entername">Skriv inn dens navn</string>
-  <string name="error_file_not_found">Feil: Filen ble ikke funnet</string>
-  <string name="exit">Avslutt</string>
-  <string name="exposure_time">Eksponeringstid</string>
-  <string name="extract">Utvinn</string>
-  <string name="file">Fil</string>
-  <string name="files">Filer</string>
-  <string name="focal_length">Brennvidde</string>
-  <string name="folder">Mappe</string>
-  <string name="folderfilecount">%1$d mapper og %2$d filer</string>
-  <string name="folders">Mapper</string>
-  <string name="ftp">FTP-tjener</string>
-  <string name="ftp_path">Den delte filbanen</string>
-  <string name="ftp_status_not_running">Kjører ikke</string>
-  <string name="general">Generelt</string>
-  <string name="gridview">Nettingsvisning</string>
-  <string name="height">Høyde</string>
-  <string name="history">Logg</string>
-  <string name="home">Startside</string>
-  <string name="image">Bilde</string>
-  <string name="images">Bilder</string>
-  <string name="information">Informasjon</string>
-  <string name="lastModified">Nyligst endrede</string>
-  <string name="moved">ble flyttet</string>
-  <string name="newfolder">Ny mappe</string>
-  <string name="no">Nei</string>
-  <string name="ok">OK</string>
-  <string name="open">Åpne</string>
-  <string name="openas">Åpne som</string>
-  <string name="openwith">Åpne med</string>
-  <string name="other">Annet</string>
-  <string name="password">Passord</string>
-  <string name="paste">Lim inn</string>
-  <string name="path">Filbane</string>
-  <string name="permission_execute">Kan iverksette</string>
-  <string name="permission_group">Gruppe</string>
-  <string name="permission_other">Annet</string>
-  <string name="permission_owner">Eier</string>
-  <string name="permission_read">Les</string>
-  <string name="permission_write">Skriv</string>
-  <string name="play">Play Store</string>
-  <string name="properties">Egenskaper</string>
-  <string name="quick">Hurtigtilgang</string>
-  <string name="recent">Nylige filer</string>
-  <string name="rename">Gi nytt navn</string>
-  <string name="rootmode">Root-utforsker</string>
-  <string name="rootmodesummary">Kun for rootede enheter. Velg dette kun dersom du er sikker på det.</string>
-  <string name="save">Lagre</string>
-  <string name="search_hint">Skriv for å søke &#8230;</string>
-  <string name="setashome">Gjør til startside</string>
-  <string name="setting">Innstillinger</string>
-  <string name="share">Del</string>
-  <string name="sidebar_preferences">Sidelinjen</string>
-  <string name="size_capitalized">Størrelse</string>
-  <string name="sizePref">Vis størrelser</string>
-  <string name="sort">Sorter</string>
-  <string name="sortby">Sorter etter</string>
-  <string name="sortName">Navn</string>
-  <string name="sortSize">Størrelse</string>
-  <string name="text">Tekst</string>
-  <string name="theme">Tema</string>
-  <string name="ui">Grensesnitt</string>
-  <string name="uninstall">Avinstaller</string>
-  <string name="username">Brukernavn</string>
-  <string name="version">Versjon</string>
-  <string name="video">Video</string>
-  <string name="videos">Videoer</string>
-  <string name="warning">Advarsel</string>
-  <string name="width">Bredde</string>
-  <string name="yes">Ja</string>
   <string name="storage">Lagring</string>
+  <string name="cancel">Avbryt</string>
+  <string name="save">Lagre</string>
+  <string name="size_capitalized">Størrelse</string>
+  <string name="share">Del</string>
+  <string name="yes">Ja</string>
+  <string name="no">Nei</string>
+  <string name="dialog_delete_title">Bekreft</string>
+  <string name="home">Hjem</string>
+    <string name="history">Logg</string>
+    <string name="delete">Slett</string>
+  <!-- New -->
+  <!-- Array -->
+  <!-- UI -->
+  <!-- Theme -->
+  <!--Skin-->
+    <!--DirectorySortMode-->
+  <!--SortBy-->
+  <string name="sortSize">Størrelse</string>
+  <!--ListMode-->
+  <!--Folder-->
+    <string name="skip">Hopp over</string>
+  <string name="done">Ferdig</string>
+  <string name="exit">Lukk</string>
+  <string name="changelog">Endringslogg</string>
+  <string name="ok">OK</string>
+  <string name="version">Versjon</string>
+    <string name="install">Installer</string>
+  <string name="details">Detaljer</string>
+  <string name="warning">Advarsel</string>
+  <string name="donate">Donere</string>
+  <string name="text">Tekst</string>
+  <string name="other">Annet</string>
+  <string name="color_title">Farge</string>
+    <string name="password">Passord</string>
+  <string name="defualt">Standard</string>
+  <string name="path">Bane</string>
+  <string name="information">Informasjon</string>
+  <!-- reference to file accessed date -->
+  <!-- reference to file modified date -->
+  <string name="duration">Varighet</string>
+  <!-- reference to audio/video file -->
+  <string name="width">Bredde</string>
+  <string name="height">Høyde</string>
+  <string name="exposure_time">Eksponeringstid</string>
+  <string name="focal_length">Brennvidde</string>
+    <!-- reference to a document file -->
+  <!-- %s will be replaced with either copied or moved -->
+  <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+  <!-- reference to - 'Processing file # of #' in process viewer -->
+  <string name="permission_other">Annet</string>
+  <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+  <!-- references 'name/size/location/hash' copied to clipboard -->
+  <!-- references to 'Some files weren't successfully %s -->
+  <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+  <!-- end of plurals -->
 </resources>

@@ -21,14 +21,12 @@ import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
-import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUtils;
@@ -306,19 +304,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     public void onViewDetachedFromWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         holder.rl.clearAnimation();
-        holder.txtTitle.setSelected(false);
-    }
-
-    @Override
-    public void onViewAttachedToWindow(CompressedItemViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
     }
 
     @Override
     public boolean onFailedToRecycleView(CompressedItemViewHolder holder) {
         holder.rl.clearAnimation();
-        holder.txtTitle.setSelected(false);
         return super.onFailedToRecycleView(holder);
     }
 

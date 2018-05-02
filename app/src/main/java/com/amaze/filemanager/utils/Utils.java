@@ -163,10 +163,6 @@ public class Utils {
         }
     }
 
-    public static boolean isDeviceInLandScape(Activity activity){
-        return activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
     /**
      * Sanitizes input from external application to avoid any attempt of command injection
      */

@@ -1,7 +1,6 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -66,10 +65,6 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public Parcelable onSaveInstanceState() {
-        if (!doesNavigationViewSavedStateExist()) {
-            return super.onSaveInstanceState();
-        }
-
         //begin boilerplate code that allows parent classes to save state
         Parcelable superState = super.onSaveInstanceState();
 
@@ -83,11 +78,6 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if(!doesNavigationViewSavedStateExist()) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
         //begin boilerplate code so parent classes can restore state
         if(!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
@@ -99,20 +89,6 @@ public class CustomNavigationView extends NavigationView
         //end
 
         this.checkedId = ss.selectedId;
-    }
-
-    /**
-     * This is a hack, when the SavedState class is unmarshalled a "ClassNotFoundException"
-     * will be thrown (the actual class not found is "android.support.design.widget.NavigationView$SavedState")
-     * and I seem to only be able to replicate on Marshmallow.
-     * Trying to find the class and returning false if Class.forName() throws "ClassNotFoundException"
-     * doesn't work because the class seems to have been loaded with the current loader
-     * (not the one the unmarshaller uses); of course I have no idea of what any of this means so
-     * I could be wrong.
-     * For the crash see https://github.com/TeamAmaze/AmazeFileManager/issues/1101.
-     */
-    public boolean doesNavigationViewSavedStateExist() {
-        return Build.VERSION.SDK_INT != Build.VERSION_CODES.M;
     }
 
     static class SavedState extends BaseSavedState {

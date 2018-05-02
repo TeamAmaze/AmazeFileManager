@@ -296,7 +296,7 @@ public class GenericCopyUtil {
             if (count!=-1) {
 
                 byteBuffer.put(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         }
     }
@@ -321,7 +321,7 @@ public class GenericCopyUtil {
             if (count!=-1) {
 
                 bufferedOutputStream.write(buffer, 0 , count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         }
         bufferedOutputStream.flush();
@@ -359,7 +359,7 @@ public class GenericCopyUtil {
             if (count != -1) {
 
                 bufferedOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position = inBuffer.position();
+                ServiceWatcherUtil.POSITION = inBuffer.position();
             }
 
         }
@@ -383,7 +383,7 @@ public class GenericCopyUtil {
             int bytes;
             if (((bytes = byteChannel.read(dst))>0)) {
 
-                ServiceWatcherUtil.position += bytes;
+                ServiceWatcherUtil.POSITION += bytes;
                 return bytes;
 
             }

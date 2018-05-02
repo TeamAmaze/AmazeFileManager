@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -20,6 +21,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.util.DialogUtils;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -70,6 +73,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -1008,7 +1012,7 @@ public class GeneralDialogCreation {
         final MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
         a.input(null, mainActivity.getCurrentMainFragment().getCurrentPath(), false,
                 (dialog, charSequence) -> {
-                    boolean isAccessible = FileUtils.isPathAccessible(charSequence.toString(), prefs);
+                    boolean isAccessible = FileUtils.isPathAccesible(charSequence.toString(), prefs);
                     dialog.getActionButton(DialogAction.POSITIVE).setEnabled(isAccessible);
                 });
 

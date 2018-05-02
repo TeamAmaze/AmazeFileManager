@@ -572,17 +572,4 @@
   <string name="license">版權宣告</string>
   <string name="libraries">第三方程式庫</string>
   <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
-    <string name="got_it">明白！</string>
-  <string name="password_no_match">密碼不符。</string>
-  <string name="password_repeat">重複密碼</string>
-  <string name="no_obtainable_info">沒有關於此檔案的資料</string>
-  <string name="channelname_ftp">Amaze FTP 伺服器</string>
-  <string name="channeldescription_ftp">來自 Amaze FTP 伺服器的通知</string>
-  <string name="extracted">已解壓</string>
-  <string name="compressed">已壓縮</string>
-  <string name="processed">已處理</string>
-  <string name="file_read_only">檔案正以唯讀模式開啟</string>
-  <string name="no_file_error">嗯……出了一些問題。找不到要打開的檔案。</string>
-  <string name="reopen_from_source">請嘗試用原程式開啟此檔案。</string>
-  <string name="encryption_fail_copy">不能更新在資料庫內的加密檔案記錄。</string>
 </resources>

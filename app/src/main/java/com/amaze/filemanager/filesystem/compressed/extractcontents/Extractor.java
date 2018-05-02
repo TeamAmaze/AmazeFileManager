@@ -35,7 +35,7 @@ public abstract class Extractor {
             if(filesToExtract.contains(relativePath)) {
                 if(!isDir) filesToExtract.remove(relativePath);
                 return true;
-            } else {// header to be extracted is at least the entry path (may be more, when it is a directory)
+            } else {// header to be extracted is atleast the entry path (may be more, when it is a directory)
                 for (String path : filesToExtract) {
                     if(relativePath.startsWith(path)) {
                         return true;

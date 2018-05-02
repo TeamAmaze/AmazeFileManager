@@ -7,7 +7,6 @@ package com.amaze.filemanager.utils.SmbStreamer;
 import android.net.Uri;
 import android.util.Log;
 
-import com.amaze.filemanager.utils.cloud.CloudStreamer;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 
 import java.io.BufferedReader;
@@ -20,7 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -172,7 +170,7 @@ public abstract class StreamServer {
     public StreamServer( int port, File wwwroot ) throws IOException {
         myTcpPort = port;
         this.myRootDir = wwwroot;
-        myServerSocket = tryBind(myTcpPort);
+        myServerSocket = new ServerSocket( myTcpPort );
         myThread = new Thread(() -> {
             try {
                 while (true) {
@@ -196,25 +194,6 @@ public abstract class StreamServer {
             myThread.join();
         } catch (IOException | InterruptedException e) {
         }
-    }
-
-    /**
-     * Since CloudStreamServer and Streamer both uses the same port, shutdown the CloudStreamer before
-     * acquiring the port.
-     *
-     * @param port
-     * @return ServerSocket
-     * @throws IOException
-     */
-    private ServerSocket tryBind(int port) throws IOException {
-        ServerSocket socket;
-        try {
-            socket = new ServerSocket(port);
-        } catch (BindException ifPortIsOccupiedByCloudStreamer) {
-            CloudStreamer.getInstance().stop();
-            socket = new ServerSocket(port);
-        }
-        return socket;
     }
 
     /**

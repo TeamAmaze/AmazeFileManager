@@ -44,6 +44,7 @@ public class Operations {
     private static final String LESS_THAN = "<";
 
     private static final String FAT = "FAT";
+    private DataUtils dataUtils = DataUtils.getInstance();
 
     public interface ErrorCallBack {
 

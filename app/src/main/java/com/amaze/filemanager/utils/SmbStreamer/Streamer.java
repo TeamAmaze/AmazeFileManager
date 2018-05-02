@@ -54,12 +54,6 @@ public class Streamer extends StreamServer {
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        instance = null;
-    }
-
-    @Override
     public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
         Response res = null;
         try {

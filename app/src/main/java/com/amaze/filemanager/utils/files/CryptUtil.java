@@ -299,7 +299,7 @@ public class CryptUtil {
             while ((count = inputStream.read(buffer)) != -1) {
 
                 cipherOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } finally {
 
@@ -332,7 +332,7 @@ public class CryptUtil {
             while ((count = cipherInputStream.read(buffer)) != -1) {
 
                 outputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } finally {
 
@@ -395,7 +395,7 @@ public class CryptUtil {
             while ((count = inputStream.read(buffer)) != -1) {
 
                 cipherOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } finally {
 
@@ -424,7 +424,7 @@ public class CryptUtil {
             while ((count = cipherInputStream.read(buffer)) != -1) {
 
                 outputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                ServiceWatcherUtil.POSITION+=count;
             }
         } finally {
 

@@ -7,10 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +34,6 @@ import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
-import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -52,7 +49,6 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
@@ -167,7 +163,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
 
-        notifyItemChanged(position);
+        notifyDataSetChanged();
+        //notifyItemChanged(position);
         if (mainFrag.mActionMode != null && mainFrag.selection) {
             // we have the actionmode visible, invalidate it's views
             mainFrag.mActionMode.invalidate();
@@ -183,14 +180,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
 
         for (; i < itemsDigested.size(); i++) {
-            ListItem item = itemsDigested.get(i);
-            if (b && item.getChecked() != ListItem.CHECKED) {
-                item.setChecked(true);
-                notifyItemChanged(i);
-            } else if (!b && item.getChecked() == ListItem.CHECKED) {
-                item.setChecked(false);
-                notifyItemChanged(i);
-            }
+            itemsDigested.get(i).setChecked(b);
+            notifyItemChanged(i);
         }
 
         if (mainFrag.mActionMode != null) {
@@ -213,14 +204,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     public void toggleChecked(boolean b) {
         for (int i = 0; i < itemsDigested.size(); i++) {
-            ListItem item = itemsDigested.get(i);
-            if (b && item.getChecked() != ListItem.CHECKED) {
-                item.setChecked(true);
-                notifyItemChanged(i);
-            } else if (!b && item.getChecked() == ListItem.CHECKED) {
-                item.setChecked(false);
-                notifyItemChanged(i);
-            }
+            itemsDigested.get(i).setChecked(b);
+            notifyItemChanged(i);
         }
 
         if (mainFrag.mActionMode != null) {
@@ -277,22 +262,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewAttachedToWindow(holder);
         if(holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).rl.clearAnimation();
-            ((ItemViewHolder) holder).txtTitle.setSelected(false);
-        }
-    }
-
-    @Override
-    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        if (holder instanceof ItemViewHolder) {
-            AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
         }
     }
 
     @Override
     public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
         ((ItemViewHolder) holder).rl.clearAnimation();
-        ((ItemViewHolder) holder).txtTitle.setSelected(false);
         return super.onFailedToRecycleView(holder);
     }
 
@@ -473,9 +448,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.rl.setMinimumHeight((int) minRowHeight);
                     if (itemsDigested.size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)? 1:0))
                         holder.txtTitle.setText(R.string.nofiles);
-                    else {
-                        holder.txtTitle.setText("");
-                    }
+                    else holder.txtTitle.setText("");
                     return;
                 }
             }
@@ -506,6 +479,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     return true;
                 });
+
                 holder.txtTitle.setText(rowItem.title);
                 holder.genericText.setText("");
 
@@ -943,4 +917,5 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private interface OnImageProcessed {
         void onImageProcessed(boolean isImageBroken);
     }
+
 }

@@ -52,12 +52,6 @@ public class CloudStreamer extends CloudStreamServer {
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        instance = null;
-    }
-
-    @Override
     public CloudStreamServer.Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
         CloudStreamServer.Response res = null;
         try {
