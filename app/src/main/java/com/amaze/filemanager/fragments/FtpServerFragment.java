@@ -61,6 +61,7 @@ import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
@@ -544,9 +545,8 @@ public class FtpServerFragment extends Fragment {
     public void changeFTPServerPath(String path) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.edit().putString(FtpService.KEY_PREFERENCE_PATH, path).apply();
-
+        int result = mainActivity.mainActivityHelper.checkFolder(new File(path), mainActivity);
         updateStatus();
-
     }
 
     private void setFTPUsername(String username) {

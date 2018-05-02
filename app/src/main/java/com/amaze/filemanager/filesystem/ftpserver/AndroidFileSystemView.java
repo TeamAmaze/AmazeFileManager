@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
 import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FileSystemView;
@@ -43,6 +44,7 @@ public class AndroidFileSystemView implements FileSystemView {
     public AndroidFileSystemView(@NonNull Context context, @NonNull String fileSystemViewRoot){
         this.context = context;
         this.fileSystemViewRoot = fileSystemViewRoot;
+        this.currentDir = "/";
     }
 
     /**
@@ -58,6 +60,8 @@ public class AndroidFileSystemView implements FileSystemView {
     @Override
     public FtpFile getFile(String file) {
 
+        Log.d("DEBUG.getFile()", "File: " + file);
+
         File fileObj = new File(file);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -68,17 +72,20 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public FtpFile getWorkingDirectory() {
+        Log.d("DEBUG", "getWorkingDirectory(): " + fileSystemViewRoot);
+        Log.d("DEBUG", "getWorkingDirectory(): " + currentDir);
         return null;
     }
 
     @Override
     public boolean changeWorkingDirectory(String dir) {
-        return false;
+        currentDir = dir;
+        return true;
     }
 
     @Override
     public FtpFile getHomeDirectory() {
-        return null;
+        return getFile(fileSystemViewRoot);
     }
 
     @Override
