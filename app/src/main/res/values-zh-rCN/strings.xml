@@ -571,4 +571,10 @@
   <string name="no_obtainable_info">没有该文件相关的信息</string>
   <string name="reopen_from_source">无法打开，请使用上次的应用打开该类型的文件</string>
   <string name="no_file_error">打开文件出错，无法找到该文件</string>
+  <string name="file_read_only">此文件为只读文件</string>
+  <string name="got_it">知道了!</string>
+  <string name="encryption_fail_copy">更新加密信息失败</string>
+  <string name="extracted">已解压</string>
+  <string name="compressed">已压缩</string>
+  <string name="processed">已完成</string>
 </resources>

@@ -19,10 +19,15 @@ package com.amaze.filemanager.utils;
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.ArrayMap;
 import android.util.Property;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.TextView;
+
+import com.amaze.filemanager.ui.views.ThemedTextView;
 
 import java.util.ArrayList;
 
@@ -280,4 +285,16 @@ public class AnimUtils {
         }
     }
 
+    /**
+     * Animates filenames textview to marquee after a delay.
+     * Make sure to set {@link TextView#setSelected(boolean)} to false in order to stop the marquee later
+     * @param delayInMillis
+     * @param marqueeView
+     */
+    public static void marqueeAfterDelay(int delayInMillis, ThemedTextView marqueeView) {
+        new Handler().postDelayed(() -> {
+            // marquee works only when text view has focus
+            marqueeView.setSelected(true);
+        }, delayInMillis);
+    }
 }

@@ -29,7 +29,7 @@ public class CompressedHelper {
      */
     public static final String SEPARATOR = "/";
 
-    public static final String fileExtensionZip = "zip", fileExtensinJar = "jar", fileExtensionApk = "apk";
+    public static final String fileExtensionZip = "zip", fileExtensionJar = "jar", fileExtensionApk = "apk";
     public static final String fileExtensionTar = "tar";
     public static final String fileExtensionGzipTar = "tar.gz";
     public static final String fileExtensionRar = "rar";
@@ -105,7 +105,7 @@ public class CompressedHelper {
     }
 
     private static boolean isZip(String type) {
-        return type.endsWith(fileExtensionZip) || type.endsWith(fileExtensinJar)
+        return type.endsWith(fileExtensionZip) || type.endsWith(fileExtensionJar)
                 || type.endsWith(fileExtensionApk);
     }
 
