@@ -8,11 +8,11 @@ import java.util.Comparator;
 public class BookSorter implements Comparator<String[]> {
 
     /* rename parameters - compare method : "lhs->lhsBookNameAndPath", "rhs->rhsBookNameAndPath", "result->bookCompareResult"
-    It does not know what role it plays with existing parameter names. (Improved readability)
+    It does not know what role it plays with existing parameter names. (Improved understandability)
     */
 
     /* extract method - compare method : make isBookNameSame(bookNameCompare) and change "result==0->isBookNameSame(bookNameCompare)"
-    I don't know that the name of the book is the same when you see "result == 0". (Improved readability)
+    I don't know that the name of the book is the same when you see "result == 0". (Improved understandability)
      */
 
     @Override
