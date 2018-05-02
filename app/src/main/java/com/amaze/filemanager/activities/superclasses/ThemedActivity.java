@@ -85,6 +85,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#F44336":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_red);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_red);
                     else
                         setTheme(R.style.pref_accent_dark_red);
                     break;
@@ -92,6 +94,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#E91E63":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_pink);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_pink);
                     else
                         setTheme(R.style.pref_accent_dark_pink);
                     break;
@@ -99,6 +103,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#9C27B0":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_purple);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_purple);
                     else
                         setTheme(R.style.pref_accent_dark_purple);
                     break;
@@ -106,6 +112,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#673AB7":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_deep_purple);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_deep_purple);
                     else
                         setTheme(R.style.pref_accent_dark_deep_purple);
                     break;
@@ -113,6 +121,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#3F51B5":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_indigo);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_indigo);
                     else
                         setTheme(R.style.pref_accent_dark_indigo);
                     break;
@@ -120,6 +130,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#2196F3":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_blue);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_blue);
                     else
                         setTheme(R.style.pref_accent_dark_blue);
                     break;
@@ -127,6 +139,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#03A9F4":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_light_blue);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_light_blue);
                     else
                         setTheme(R.style.pref_accent_dark_light_blue);
                     break;
@@ -134,6 +148,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#00BCD4":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_cyan);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_cyan);
                     else
                         setTheme(R.style.pref_accent_dark_cyan);
                     break;
@@ -141,6 +157,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#009688":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_teal);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_teal);
                     else
                         setTheme(R.style.pref_accent_dark_teal);
                     break;
@@ -148,6 +166,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#4CAF50":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_green);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_green);
                     else
                         setTheme(R.style.pref_accent_dark_green);
                     break;
@@ -155,6 +175,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#8BC34A":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_light_green);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_light_green);
                     else
                         setTheme(R.style.pref_accent_dark_light_green);
                     break;
@@ -162,6 +184,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#FFC107":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_amber);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_amber);
                     else
                         setTheme(R.style.pref_accent_dark_amber);
                     break;
@@ -169,6 +193,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#FF9800":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_orange);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_orange);
                     else
                         setTheme(R.style.pref_accent_dark_orange);
                     break;
@@ -176,6 +202,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#FF5722":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_deep_orange);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_deep_orange);
                     else
                         setTheme(R.style.pref_accent_dark_deep_orange);
                     break;
@@ -183,6 +211,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#795548":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_brown);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_brown);
                     else
                         setTheme(R.style.pref_accent_dark_brown);
                     break;
@@ -190,6 +220,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#212121":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_black);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_black);
                     else
                         setTheme(R.style.pref_accent_dark_black);
                     break;
@@ -197,6 +229,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#607D8B":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_blue_grey);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_blue_grey);
                     else
                         setTheme(R.style.pref_accent_dark_blue_grey);
                     break;
@@ -204,6 +238,8 @@ public class ThemedActivity extends PreferenceActivity {
                 case "#004D40":
                     if (theme.equals(AppTheme.LIGHT))
                         setTheme(R.style.pref_accent_light_super_su);
+                    else if (theme.equals(AppTheme.BLACK))
+                        setTheme(R.style.pref_accent_black_super_su);
                     else
                         setTheme(R.style.pref_accent_dark_super_su);
                     break;

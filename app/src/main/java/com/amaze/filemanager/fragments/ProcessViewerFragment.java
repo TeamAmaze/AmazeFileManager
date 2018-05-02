@@ -47,7 +47,7 @@ import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
-import com.amaze.filemanager.asynchronous.services.ProgressiveService;
+import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
@@ -400,9 +400,9 @@ public class ProcessViewerFragment extends Fragment {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            ObtainableServiceBinder<? extends ProgressiveService> binder =
-                    (ObtainableServiceBinder<? extends ProgressiveService>) service;
-            ProgressiveService specificService = binder.getService();
+            ObtainableServiceBinder<? extends AbstractProgressiveService> binder =
+                    (ObtainableServiceBinder<? extends AbstractProgressiveService>) service;
+            AbstractProgressiveService specificService = binder.getService();
 
             for (int i = 0; i < specificService.getDataPackageSize(); i++) {
                 DatapointParcelable dataPackage = specificService.getDataPackage(i);
@@ -412,7 +412,7 @@ public class ProcessViewerFragment extends Fragment {
             // animate the chart a little after initial values have been applied
             lineChart.animateXY(500, 500);
 
-            specificService.setProgressListener(new EncryptService.ProgressListener() {
+            specificService.setProgressListener(new AbstractProgressiveService.ProgressListener() {
                 @Override
                 public void onUpdate(final DatapointParcelable dataPackage) {
                     if (fragment.getActivity() == null) {
