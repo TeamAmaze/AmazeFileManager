@@ -147,13 +147,14 @@ public class FtpService extends Service implements Runnable {
     @Override
     public void run() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String fileSystemRoot = preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH);
         Map<String, Ftplet> ftplets = new HashMap<>();
-        ftplets.put("default", new AndroidFtplet(getApplicationContext()));
+        ftplets.put("default", new AndroidFtplet(getApplicationContext(), fileSystemRoot));
 
         FtpServerFactory serverFactory = new FtpServerFactory();
         ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
         connectionConfigFactory.setAnonymousLoginEnabled(true);
-        serverFactory.setFileSystem(new AndroidFileSystemFactory(getApplicationContext(), preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH)));
+        serverFactory.setFileSystem(new AndroidFileSystemFactory(getApplicationContext(), fileSystemRoot));
         serverFactory.setFtplets(ftplets);
         serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 

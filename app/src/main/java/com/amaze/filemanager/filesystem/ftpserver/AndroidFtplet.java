@@ -23,32 +23,43 @@ package com.amaze.filemanager.filesystem.ftpserver;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.amaze.filemanager.utils.files.FileUtils;
+
 import org.apache.ftpserver.ftplet.DefaultFtplet;
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.Ftplet;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpletResult;
 
 import java.io.IOException;
 
+/**
+ * {@link Ftplet} implementation based on {@link DefaultFtplet}, overriding <code>onUploadEnd</code>
+ * method to trigger media store refresh.
+ *
+ * {@see {@link DefaultFtplet#onUploadEnd(FtpSession, FtpRequest)}}
+ * {@see {@link FileUtils#scanFile(String, Context)}}
+ */
 public class AndroidFtplet extends DefaultFtplet {
 
     private final Context context;
 
-    public AndroidFtplet(@NonNull Context context) {
+    private final String fileSystemRoot;
+
+    public AndroidFtplet(@NonNull Context context, @NonNull String fileSystemRoot) {
         this.context = context;
+        this.fileSystemRoot = fileSystemRoot;
     }
 
     /**
-     * Trigger MediaStore refresh by broadcast Intent.
-     * @param session
-     * @param request
-     * @return
-     * @throws FtpException
-     * @throws IOException
+     * Overrides parent class with trigger MediaStore refresh by broadcast Intent.
+     *
+     * @return {@link DefaultFtplet#onUploadEnd(FtpSession, FtpRequest)}
      */
     @Override
     public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        FileUtils.scanFile(fileSystemRoot + request.getArgument(), context);
         return super.onUploadEnd(session, request);
     }
 }
