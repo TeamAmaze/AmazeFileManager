@@ -51,7 +51,10 @@ public class AppConfig extends GlideApplication {
     private UtilsHandler mUtilsHandler;
 
     private static Handler mApplicationHandler = new Handler();
-    private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
+    //This caused the IllegalThreadStateException because it is being declared and initialized
+    //at the same time, as @TranceLove said on stack overflow issue 1196
+    //private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
+    private HandlerThread sBackgroundHandlerThread;
     private static Handler sBackgroundHandler;
     private static Context sActivityContext;
     private static ScreenUtils screenUtils;
@@ -66,6 +69,7 @@ public class AppConfig extends GlideApplication {
     public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);//selector in srcCompat isn't supported without this
+        sBackgroundHandlerThread = new HandlerThread("app_background");
         mInstance = this;
 
         utilsProvider = new UtilitiesProvider(this);
