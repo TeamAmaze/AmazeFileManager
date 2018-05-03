@@ -51,9 +51,6 @@ public class AppConfig extends GlideApplication {
     private UtilsHandler mUtilsHandler;
 
     private static Handler mApplicationHandler = new Handler();
-    //This caused the IllegalThreadStateException because it is being declared and initialized
-    //at the same time, as @TranceLove said on stack overflow issue 1196
-    //private static HandlerThread sBackgroundHandlerThread = new HandlerThread("app_background");
     private HandlerThread sBackgroundHandlerThread;
     private static Handler sBackgroundHandler;
     private static Context sActivityContext;
