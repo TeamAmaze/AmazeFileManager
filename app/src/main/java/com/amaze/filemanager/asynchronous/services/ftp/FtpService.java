@@ -53,6 +53,7 @@ import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.Ftplet;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.ssl.ClientAuth;
 import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration;
@@ -71,7 +72,9 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -144,12 +147,14 @@ public class FtpService extends Service implements Runnable {
     @Override
     public void run() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Map<String, Ftplet> ftplets = new HashMap<>();
+        ftplets.put("default", new AndroidFtplet(getApplicationContext()));
 
         FtpServerFactory serverFactory = new FtpServerFactory();
         ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
         connectionConfigFactory.setAnonymousLoginEnabled(true);
         serverFactory.setFileSystem(new AndroidFileSystemFactory(getApplicationContext(), preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH)));
-        serverFactory.setFtplets(Collections.singletonMap("default", new AndroidFtplet(getApplicationContext())));
+        serverFactory.setFtplets(ftplets);
         serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 
         String usernamePreference = preferences.getString(KEY_PREFERENCE_USERNAME, DEFAULT_USERNAME);
