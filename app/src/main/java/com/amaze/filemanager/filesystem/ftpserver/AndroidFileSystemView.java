@@ -26,6 +26,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
+import com.amaze.filemanager.filesystem.FileUtil;
+
 import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -34,6 +36,10 @@ import org.apache.ftpserver.ftplet.FtpFile;
 import java.io.File;
 
 public class AndroidFileSystemView implements FileSystemView {
+
+    private static final String FILESYSTEM_ROOT = "/";
+
+    private static final String CURRENT_DIR = "./";
 
     private final Context context;
 
@@ -44,7 +50,7 @@ public class AndroidFileSystemView implements FileSystemView {
     public AndroidFileSystemView(@NonNull Context context, @NonNull String fileSystemViewRoot){
         this.context = context;
         this.fileSystemViewRoot = fileSystemViewRoot;
-        this.currentDir = "/";
+        this.currentDir = FILESYSTEM_ROOT;
     }
 
     /**
@@ -59,22 +65,19 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public FtpFile getFile(String file) {
-
-        Log.d("DEBUG.getFile()", "File: " + file);
-
-        File fileObj = new File(file);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            return new AndroidSafFtpFile(context, DocumentFile.fromFile(fileObj));
-        else
-            return new AndroidLegacyFtpFile(context, fileObj);
+        switch(file){
+            case FILESYSTEM_ROOT:
+                return createFtpFileFrom(fileSystemViewRoot);
+            case CURRENT_DIR:
+                return createFtpFileFrom(fileSystemViewRoot + currentDir);
+            default:
+                return createFtpFileFrom(fileSystemViewRoot + file);
+        }
     }
 
     @Override
     public FtpFile getWorkingDirectory() {
-        Log.d("DEBUG", "getWorkingDirectory(): " + fileSystemViewRoot);
-        Log.d("DEBUG", "getWorkingDirectory(): " + currentDir);
-        return null;
+        return getFile(currentDir);
     }
 
     @Override
@@ -85,11 +88,15 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public FtpFile getHomeDirectory() {
-        return getFile(fileSystemViewRoot);
+        return createFtpFileFrom(fileSystemViewRoot);
     }
 
     @Override
     public void dispose() {
 
+    }
+
+    private FtpFile createFtpFileFrom(String fullPath){
+        return new AndroidSafFtpFile(context, DocumentFile.fromFile(new File(fullPath)));
     }
 }

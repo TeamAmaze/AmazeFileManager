@@ -23,11 +23,13 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 public class AndroidFileSystemViewTest
 {
+    private static final String SHARED_PATH_ROOT = "/storage/sdcard0";
+
     private FileSystemView fileSystemView;
 
     @Before
     public void setUp() {
-        fileSystemView = new AndroidFileSystemView(RuntimeEnvironment.application, "/mnt/sdcard");
+        fileSystemView = new AndroidFileSystemView(RuntimeEnvironment.application, SHARED_PATH_ROOT);
     }
 
     @After
@@ -35,10 +37,29 @@ public class AndroidFileSystemViewTest
         fileSystemView.dispose();
     }
 
-    @Test
-    public void testGetFtpFile() throws FtpException {
-        FtpFile result = fileSystemView.getFile("/mnt/sdcard/1.txt");
+    //@Test
+    public void testGetFtpFileSimple() throws FtpException {
+        FtpFile result = fileSystemView.getFile("/1.txt");
         assertNotNull(result);
         assertNotNull(result.getPhysicalFile());
+    }
+
+    @Test
+    public void testMultipleGetFtpFile() throws FtpException {
+        assertNotNull(fileSystemView.getHomeDirectory());
+        assertEquals(SHARED_PATH_ROOT, fileSystemView.getHomeDirectory().getAbsolutePath());
+        assertNotNull(fileSystemView.getWorkingDirectory());
+        assertEquals(SHARED_PATH_ROOT, fileSystemView.getWorkingDirectory().getAbsolutePath());
+
+        assertTrue(fileSystemView.changeWorkingDirectory("/DCIM/Android"));
+        assertNotNull(fileSystemView.getWorkingDirectory());
+        assertEquals(SHARED_PATH_ROOT + "/DCIM/Android", fileSystemView.getWorkingDirectory().getAbsolutePath());
+
+        assertNotNull(fileSystemView.getFile("/DCIM/Android/DSC10001.jpg"));
+        assertEquals(SHARED_PATH_ROOT + "/DCIM/Android/DSC10001.jpg", fileSystemView.getFile("/DCIM/Android/DSC10001.jpg").getAbsolutePath());
+
+        assertTrue(fileSystemView.changeWorkingDirectory("/"));
+        assertNotNull(fileSystemView.getWorkingDirectory());
+        assertEquals(SHARED_PATH_ROOT, fileSystemView.getWorkingDirectory().getAbsolutePath());
     }
 }

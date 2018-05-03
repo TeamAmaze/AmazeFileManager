@@ -21,12 +21,14 @@
 package com.amaze.filemanager.filesystem.ftpserver;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 
 import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FtpFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AndroidSafFtpFile implements FtpFile {
+
+    private static final String FILE_URI_PREFIX = "file://";
 
     private final Context context;
 
@@ -56,7 +60,7 @@ public class AndroidSafFtpFile implements FtpFile {
 
     @Override
     public boolean doesExist() {
-        return backingDocumentFile != null && backingDocumentFile.exists();
+        return backingDocumentFile.exists();
     }
 
     /**
@@ -131,7 +135,15 @@ public class AndroidSafFtpFile implements FtpFile {
 
     @Override
     public boolean isWritable() {
-        return backingDocumentFile.canWrite();
+        if(!doesExist()) {
+            //If not exist (new upload), check if the target file's folder is writable
+            Uri uri = backingDocumentFile.getUri();
+            String parent = uri.toString().substring(FILE_URI_PREFIX.length()-1, uri.toString().indexOf(uri.getLastPathSegment())-1);
+            DocumentFile parentFile = DocumentFile.fromFile(new File(parent));
+            return parentFile.canWrite();
+        }
+        else
+            return backingDocumentFile.canWrite();
     }
 
     //FIXME: dot sign

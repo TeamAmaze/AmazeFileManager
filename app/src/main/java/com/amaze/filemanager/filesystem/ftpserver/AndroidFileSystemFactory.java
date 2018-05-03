@@ -27,6 +27,9 @@ import org.apache.ftpserver.ftplet.FileSystemFactory;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.User;
 
+/**
+ * {@link FileSystemFactory} implementation for Android.
+ */
 public class AndroidFileSystemFactory implements FileSystemFactory {
 
     private final Context context;
