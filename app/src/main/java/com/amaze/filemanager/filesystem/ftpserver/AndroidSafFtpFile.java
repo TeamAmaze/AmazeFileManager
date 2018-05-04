@@ -140,7 +140,13 @@ public class AndroidSafFtpFile implements FtpFile {
             Uri uri = backingDocumentFile.getUri();
             String parent = uri.toString().substring(FILE_URI_PREFIX.length()-1, uri.toString().indexOf(uri.getLastPathSegment())-1);
             DocumentFile parentFile = DocumentFile.fromFile(new File(parent));
-            return parentFile.canWrite();
+            DocumentFile result = parentFile.createFile("application/octet-stream", uri.getLastPathSegment());
+            if(result != null){
+                result.delete();
+                return true;
+            } else {
+                return false;
+            }
         }
         else
             return backingDocumentFile.canWrite();

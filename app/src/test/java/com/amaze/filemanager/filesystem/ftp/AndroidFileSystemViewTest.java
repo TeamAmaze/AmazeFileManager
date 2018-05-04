@@ -37,14 +37,16 @@ public class AndroidFileSystemViewTest
         fileSystemView.dispose();
     }
 
-    //@Test
+    @Test
     public void testGetFtpFileSimple() throws FtpException {
         FtpFile result = fileSystemView.getFile("/1.txt");
         assertNotNull(result);
+        assertEquals(SHARED_PATH_ROOT + "/1.txt", result.getAbsolutePath());
         assertNotNull(result.getPhysicalFile());
+        assertTrue(result.isWritable());
     }
 
-    @Test
+    //@Test
     public void testMultipleGetFtpFile() throws FtpException {
         assertNotNull(fileSystemView.getHomeDirectory());
         assertEquals(SHARED_PATH_ROOT, fileSystemView.getHomeDirectory().getAbsolutePath());
