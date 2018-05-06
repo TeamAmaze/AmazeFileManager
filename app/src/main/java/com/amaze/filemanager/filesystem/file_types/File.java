@@ -24,11 +24,15 @@ public class File extends HybridFile {
 
     @Override
     public long length() {
-        return new java.io.File(path).length();
+        return getLength();
     }
 
     @Override
     public long length(Context context) {
+        return getLength();
+    }
+
+    private long getLength() {
         return new java.io.File(path).length();
     }
 }
