@@ -163,11 +163,16 @@ public class DataUtils {
         return -1;
     }
 
-    public void removeBook(int i) {
+    public void removeBook(int i) throws IndexOutOfBoundsException {
         synchronized (books) {
+            final boolean isThisIndexContains = ( books.size() > i ) ;
 
-            if (books.size() > i)
+            if (isThisIndexContains) {
                 books.remove(i);
+            }
+            else {
+                throw new IndexOutOfBoundsException() ;
+            }
         }
     }
 
