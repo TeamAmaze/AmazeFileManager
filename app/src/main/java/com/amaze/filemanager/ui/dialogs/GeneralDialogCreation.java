@@ -33,7 +33,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -54,7 +53,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -88,8 +86,8 @@ import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(BasicActivity m, String[] texts) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+    public static MaterialDialog showBasicDialog(ThemedActivity m, String[] texts) {
+        int accentColor = m.getAccent();
         MaterialDialog.Builder a = new MaterialDialog.Builder(m)
                 .content(texts[0])
                 .widgetColor(accentColor)
@@ -106,7 +104,7 @@ public class GeneralDialogCreation {
     }
 
     public static MaterialDialog showNameDialog(final MainActivity m, String[] texts) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(texts[0], texts[1], false,
                 (materialDialog, charSequence) -> {});
@@ -134,7 +132,7 @@ public class GeneralDialogCreation {
                                          AppTheme appTheme) {
 
         final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         // Build dialog with custom view layout and accent color.
         MaterialDialog dialog = new MaterialDialog.Builder(c)
@@ -321,7 +319,7 @@ public class GeneralDialogCreation {
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
         final Context c = base.getApplicationContext();
-        int accentColor = base.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = base.getAccent();
         long last = baseFile.getDate();
         final String date = Utils.getDate(last),
                 items = c.getString(R.string.calculating),
@@ -515,7 +513,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
 
         switch (openMode) {
@@ -552,7 +550,7 @@ public class GeneralDialogCreation {
                                                 AppTheme appTheme,
                                                 final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                         encryptButtonCallbackInterface) {
-        int accentColor = main.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getMainActivity().getAccent();
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
         builder.title(main.getResources().getString(R.string.warning));
@@ -594,7 +592,7 @@ public class GeneralDialogCreation {
                                                      final MainActivity main, AppTheme appTheme,
                                                      final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                              encryptButtonCallbackInterface) {
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(main.getResources().getString(R.string.crypt_encrypt));
 
@@ -700,7 +698,7 @@ public class GeneralDialogCreation {
                                                             decryptButtonCallbackInterface)
             throws GeneralSecurityException, IOException {
 
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
 
@@ -728,7 +726,7 @@ public class GeneralDialogCreation {
                                          AppTheme appTheme, final String password,
                                          final EncryptDecryptUtils.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
         builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {});
@@ -758,7 +756,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showPackageDialog(final SharedPreferences sharedPrefs, final File f, final MainActivity m) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
                 .positiveText(R.string.install)
@@ -786,7 +784,7 @@ public class GeneralDialogCreation {
 
 
     public static void showArchiveDialog(final File f, final MainActivity m) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.archive)
                 .content(R.string.archtext)
@@ -821,7 +819,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
         a.input(m.getResources().getString(R.string.enterzipname), ".zip", false, (materialDialog, charSequence) -> {});
         a.widgetColor(accentColor);
@@ -849,7 +847,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -876,7 +874,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
-        int accentColor = ((ThemedActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -906,7 +904,7 @@ public class GeneralDialogCreation {
 
     public static void showHistoryDialog(final DataUtils dataUtils, SharedPreferences sharedPrefs,
                                          final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
@@ -928,7 +926,7 @@ public class GeneralDialogCreation {
 
     public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
                                         final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
@@ -1014,7 +1012,7 @@ public class GeneralDialogCreation {
 
         a.alwaysCallInputCallback();
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         a.widgetColor(accentColor);
 

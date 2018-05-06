@@ -20,7 +20,6 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
@@ -55,7 +54,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         this.mainFragment = mainFragment;
         sharedPrefs = sharedPreferences;
         rowItem = ri;
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = mainActivity.getAccent();
 
         setOnMenuItemClickListener(this);
     }

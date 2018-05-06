@@ -27,13 +27,12 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
+import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -177,10 +176,12 @@ public class TabFragment extends Fragment
 
         if (indicator != null) indicator.setViewPager(mViewPager);
 
+        UserColorPreferences userColorPreferences = mainActivity.getCurrentColorPreference();
+
         // color of viewpager when current tab is 0
-        startColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
+        startColor = userColorPreferences.primaryFirstTab;
         // color of viewpager when current tab is 1
-        endColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+        endColor = userColorPreferences.primarySecondTab;
 
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change
@@ -377,7 +378,7 @@ public class TabFragment extends Fragment
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         if (index == 0) {
             circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));

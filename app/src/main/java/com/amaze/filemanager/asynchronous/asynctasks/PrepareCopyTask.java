@@ -24,7 +24,6 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
@@ -167,7 +166,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
     private void showDialog(final String path, final ArrayList<HybridFileParcelable> filesToCopy,
                             final ArrayList<HybridFileParcelable> conflictingFiles) {
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
         LayoutInflater layoutInflater =
                 (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
