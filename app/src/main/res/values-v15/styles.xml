@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <!-- appCompat -->
+        <!-- light -->
+        <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+            <item name="android:windowActionBar">false</item>
+            <item name="windowActionModeOverlay">true</item>
+            <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+            <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
+            <item name="toolbar_theme">@style/overflow_light</item>
+        </style>
+        <style name="overflow_light" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <item name="android:textColorSecondary">#ffffff</item>
+            <item name="android:textColorPrimary">#ffffff</item>
+            <item name="android:textColorHint">#ffffff</item>
+            <item name="actionModeStyle">@style/custom_action_mode_light</item>
+            <item name="android:actionModeStyle">@style/custom_action_mode_light</item>
+        </style>
+
+        <style name="custom_action_mode_light" parent="Widget.AppCompat.ActionMode">
+            <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+            <item name="background">@color/holo_dark_action_mode</item>
+            <item name="android:background">@color/holo_dark_action_mode</item>
+        </style>
+
+        <!-- dark -->
+        <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+            <item name="windowActionBar">false</item>
+            <item name="windowNoTitle">true</item>
+            <item name="windowActionModeOverlay">true</item>
+            <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+            <item name="popup">@style/Theme.AppCompat</item>
+            <item name="toolbar_theme">@style/overflow_dark</item>
+        </style>
+
+        <style name="overflow_dark" parent="Theme.AppCompat">
+            <item name="android:textColorSecondary">#ffffff</item>
+            <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+            <item name="android:textColorHint">#ffffff</item>
+            <item name="actionModeStyle">@style/custom_action_mode_dark</item>
+            <item name="android:actionModeStyle">@style/custom_action_mode_dark</item>
+        </style>
+        <style name="custom_action_mode_dark" parent="Widget.AppCompat.ActionMode">
+            <item name="background">@color/holo_dark_action_mode</item>
+            <item name="android:background">@color/holo_dark_action_mode</item>
+        </style>
+
+        <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+            <item name="spinBars">true</item>
+            <item name="color">@android:color/white</item>
+        </style>
+</resources>
