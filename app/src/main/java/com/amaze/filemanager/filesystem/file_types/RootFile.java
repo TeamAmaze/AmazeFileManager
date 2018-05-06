@@ -1,5 +1,7 @@
 package com.amaze.filemanager.filesystem.file_types;
 
+import android.content.Context;
+
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -28,6 +30,13 @@ public class RootFile extends HybridFile {
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getSize();
         return super.length();
+    }
+
+    @Override
+    public long length(Context context) {
+        HybridFileParcelable baseFile=generateBaseFileFromParent();
+        if(baseFile!=null) return baseFile.getSize();
+        return super.length(context);
     }
 
     HybridFileParcelable generateBaseFileFromParent() {

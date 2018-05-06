@@ -1,5 +1,7 @@
 package com.amaze.filemanager.filesystem.file_types;
 
+import android.content.Context;
+
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -28,5 +30,16 @@ public class SMBFile extends HybridFile {
             } catch (SmbException ignored) {
             }
         return super.length();
+    }
+
+    @Override
+    public long length(Context context) {
+        SmbFile smbFile=getSmbFile();
+        if(smbFile!=null)
+            try {
+                return smbFile.length();
+            } catch (SmbException ignored) {
+            }
+        return super.length(context);
     }
 }

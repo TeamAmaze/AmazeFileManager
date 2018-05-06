@@ -1,5 +1,7 @@
 package com.amaze.filemanager.filesystem.file_types;
 
+import android.content.Context;
+
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -22,6 +24,11 @@ public class File extends HybridFile {
 
     @Override
     public long length() {
+        return new java.io.File(path).length();
+    }
+
+    @Override
+    public long length(Context context) {
         return new java.io.File(path).length();
     }
 }

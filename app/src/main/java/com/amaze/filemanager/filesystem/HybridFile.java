@@ -52,6 +52,8 @@ import java.util.EnumSet;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static com.amaze.filemanager.utils.OpenMode.SFTP;
+
 /**
  * Created by Arpit on 07-07-2015.
  */
@@ -86,7 +88,7 @@ public class HybridFile {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
         } else if (path.startsWith("ssh://")) {
-            mode = OpenMode.SFTP;
+            mode = SFTP;
         } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
@@ -147,7 +149,7 @@ public class HybridFile {
         return mode == OpenMode.SMB;
     }
 
-    public boolean isSftp() { return mode == OpenMode.SFTP; }
+    public boolean isSftp() { return mode == SFTP; }
 
     public boolean isOtgFile() {
         return mode == OpenMode.OTG;
@@ -222,49 +224,7 @@ public class HybridFile {
      * @return
      */
     public long length(Context context) {
-
-        long s = 0l;
-        switch (mode){
-            case SFTP:
-                return ((HybridFileParcelable)this).getSize();
-            case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
-                    try {
-                        s = smbFile.length();
-                    } catch (SmbException e) {
-                    }
-                return s;
-            case FILE:
-                s = new File(path).length();
-                return s;
-            case ROOT:
-                HybridFileParcelable baseFile=generateBaseFileFromParent();
-                if(baseFile!=null) return baseFile.getSize();
-                break;
-            case OTG:
-                s = OTGUtil.getDocumentFile(path, context, false).length();
-                break;
-            case DROPBOX:
-                s = dataUtils.getAccount(OpenMode.DROPBOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getSize();
-                break;
-            case BOX:
-                s = dataUtils.getAccount(OpenMode.BOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getSize();
-                break;
-            case ONEDRIVE:
-                s = dataUtils.getAccount(OpenMode.ONEDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getSize();
-                break;
-            case GDRIVE:
-                s = dataUtils.getAccount(OpenMode.GDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
-                break;
-            default:
-                break;
-        }
-        return s;
+        return 0L;
     }
 
     public String getPath() {
@@ -728,7 +688,7 @@ public class HybridFile {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
                                     f.setName(info.getName());
-                                    f.setMode(OpenMode.SFTP);
+                                    f.setMode(SFTP);
                                     f.setDirectory(info.isDirectory());
                                     f.setDate(info.getAttributes().getMtime() * 1000);
                                     f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
@@ -797,7 +757,7 @@ public class HybridFile {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
                                     f.setName(info.getName());
-                                    f.setMode(OpenMode.SFTP);
+                                    f.setMode(SFTP);
                                     f.setDirectory(info.isDirectory());
                                     f.setDate(info.getAttributes().getMtime() * 1000);
                                     f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());

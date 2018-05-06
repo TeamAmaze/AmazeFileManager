@@ -1,6 +1,9 @@
 package com.amaze.filemanager.filesystem.file_types;
 
+import android.content.Context;
+
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -34,5 +37,10 @@ public class SFTPFile extends HybridFile {
                 return client.size(SshClientUtils.extractRemotePathFrom(path));
             }
         });
+    }
+
+    @Override
+    public long length(Context context) {
+        return ((HybridFileParcelable)((HybridFile)this)).getSize();
     }
 }
