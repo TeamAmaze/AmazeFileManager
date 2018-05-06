@@ -229,10 +229,8 @@ public class DataUtils {
     }
 
     public void addBook(final String[] i, boolean refreshdrawer) {
-        synchronized (books) {
+        addBook(i) ;
 
-            books.add(i);
-        }
         if (refreshdrawer && dataChangeListener != null) {
             AppConfig.runInBackground(() -> dataChangeListener.onBookAdded(i, true));
         }
