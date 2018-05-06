@@ -209,11 +209,15 @@ public class DataUtils {
         }
     }
 
-    public void removeServer(int i) {
+    public void removeServer(int i) throws IndexOutOfBoundsException {
         synchronized (servers) {
-
-            if (servers.size() > i)
+            final boolean isThisIndexContains = ( servers.size() > i ) ;
+            if (isThisIndexContains){
                 servers.remove(i);
+            }
+            else {
+                throw new IndexOutOfBoundsException() ;
+            }
         }
     }
 
