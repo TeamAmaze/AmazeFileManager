@@ -299,10 +299,7 @@ public class GenericCopyUtil {
                 if(documentFile == null)
                     documentFile = DocumentFile.fromFile(mTargetFile.getFile());
 
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                intent.setData(documentFile.getUri());
-                mContext.sendBroadcast(intent);
+                FileUtils.scanFile(documentFile.getUri(), mContext);
             }
         }
     }
