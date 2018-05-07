@@ -213,32 +213,7 @@ public class HybridFile {
      * @return
      */
     public long length() {
-        long s = 0L;
-        switch (mode) {
-            case SFTP:
-                return SshClientUtils.execute(new SFtpClientTemplate(path) {
-                    @Override
-                    public Long execute(SFTPClient client) throws IOException {
-                        return client.size(SshClientUtils.extractRemotePathFrom(path));
-                    }
-                });
-            case SMB:
-                SmbFile smbFile = getSmbFile();
-                if (smbFile != null)
-                    try {
-                        s = smbFile.length();
-                    } catch (SmbException e) {
-                    }
-                return s;
-            case FILE:
-                s = new File(path).length();
-                return s;
-            case ROOT:
-                HybridFileParcelable baseFile = generateBaseFileFromParent();
-                if (baseFile != null) return baseFile.getSize();
-                break;
-        }
-        return s;
+        return 0L;
     }
 
     /**
@@ -247,49 +222,7 @@ public class HybridFile {
      * @return
      */
     public long length(Context context) {
-
-        long s = 0l;
-        switch (mode){
-            case SFTP:
-                return ((HybridFileParcelable)this).getSize();
-            case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
-                    try {
-                        s = smbFile.length();
-                    } catch (SmbException e) {
-                    }
-                return s;
-            case FILE:
-                s = new File(path).length();
-                return s;
-            case ROOT:
-                HybridFileParcelable baseFile=generateBaseFileFromParent();
-                if(baseFile!=null) return baseFile.getSize();
-                break;
-            case OTG:
-                s = OTGUtil.getDocumentFile(path, context, false).length();
-                break;
-            case DROPBOX:
-                s = dataUtils.getAccount(OpenMode.DROPBOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getSize();
-                break;
-            case BOX:
-                s = dataUtils.getAccount(OpenMode.BOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getSize();
-                break;
-            case ONEDRIVE:
-                s = dataUtils.getAccount(OpenMode.ONEDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getSize();
-                break;
-            case GDRIVE:
-                s = dataUtils.getAccount(OpenMode.GDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
-                break;
-            default:
-                break;
-        }
-        return s;
+        return 0L;
     }
 
     public String getPath() {
