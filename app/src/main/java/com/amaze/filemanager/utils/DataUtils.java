@@ -63,27 +63,38 @@ public class DataUtils {
         return sDataUtils;
     }
 
+    public int containsBooks(String[] a) {
+        return contains(a, books);
+    }
+
     public int containsServer(String[] a) {
         return contains(a, servers);
     }
 
     public int containsServer(String path) {
-
         synchronized (servers) {
+            return contains(path, servers);
+        }
+    }
 
-            if (servers == null) return -1;
-            int i = 0;
-            for (String[] x : servers) {
-                if (x[1].equals(path)) return i;
-                i++;
-
-            }
+    int contains(String[] a, ArrayList<String[]> b) {
+        if (b == null) return -1;
+        int i = 0;
+        for (String[] x : b) {
+            if (x[0].equals(a[0]) && x[1].equals(a[1])) return i;
+            i++;
         }
         return -1;
     }
 
-    public int containsBooks(String[] a) {
-        return contains(a, books);
+    int contains(String a, ArrayList<String[]> b) {
+        int i = 0;
+        if (b == null) return -1 ;
+        for (String[] x : b) {
+            if (x[1].equals(a)) return i;
+            i++;
+        }
+        return -1;
     }
 
     /*public int containsAccounts(CloudEntry cloudEntry) {
@@ -142,26 +153,6 @@ public class DataUtils {
         clear();
     }
 
-    int contains(String a, ArrayList<String[]> b) {
-        int i = 0;
-        for (String[] x : b) {
-            if (x[1].equals(a)) return i;
-            i++;
-
-        }
-        return -1;
-    }
-
-    int contains(String[] a, ArrayList<String[]> b) {
-        if (b == null) return -1;
-        int i = 0;
-        for (String[] x : b) {
-            if (x[0].equals(a[0]) && x[1].equals(a[1])) return i;
-            i++;
-
-        }
-        return -1;
-    }
 
     private boolean isThisIndexContains(ArrayList arrayList, int index) {
         return arrayList.size() > index ;
