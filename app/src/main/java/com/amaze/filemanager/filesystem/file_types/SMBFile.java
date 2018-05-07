@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import java.net.MalformedURLException;
 
@@ -38,43 +39,28 @@ public class SMBFile extends HybridFile {
 
     @Override
     public long length() {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length();
-        }
+        return length(AppConfig.getInstance());
     }
 
     @Override
     public long length(Context context) {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length(context);
-        }
-    }
-
-    private long getLength() throws Exception {
         SmbFile smbFile = getSmbFile();
         if (smbFile != null)
             try {
                 return smbFile.length();
             } catch (SmbException ignored) {
             }
-        throw new Exception();
+        return super.length(context);
     }
 
     @Override
     public String getName() {
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null)
-            return smbFile.getName();
-        return super.getName();
+        return  getName(AppConfig.getInstance());
     }
 
     @Override
     public String getName(Context context) {
-        SmbFile smbFile=getSmbFile();
+        SmbFile smbFile = getSmbFile();
         if(smbFile!=null)
             return smbFile.getName();
         return super.getName(context);
@@ -82,12 +68,7 @@ public class SMBFile extends HybridFile {
 
     @Override
     public String getParent() {
-        try {
-            return new SmbFile(path).getParent();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return "";
-        }
+        return getParent(AppConfig.getInstance());
     }
 
     @Override
