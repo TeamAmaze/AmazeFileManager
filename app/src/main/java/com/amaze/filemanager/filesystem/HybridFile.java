@@ -666,7 +666,6 @@ public class HybridFile {
 
     public boolean setLastModified(final long date) {
         return new File(path).setLastModified(date);
-
     }
 
     public void mkdir(Context context) {
@@ -674,31 +673,11 @@ public class HybridFile {
     }
 
     public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
-        if (isSftp()) {
-            SshClientUtils.execute(new SFtpClientTemplate(path) {
-                @Override
-                public Void execute(SFTPClient client) throws IOException {
-                    if(isDirectory(AppConfig.getInstance()))
-                        client.rmdir(SshClientUtils.extractRemotePathFrom(path));
-                    else
-                        client.rm(SshClientUtils.extractRemotePathFrom(path));
-                    return null;
-                }
-            });
-            return true;
-        } else if (isSmb()) {
-            try {
-                new SmbFile(path).delete();
-            } catch (SmbException | MalformedURLException e) {
-                e.printStackTrace();
-            }
+        if (isRoot() && rootmode) {
+            setMode(OpenMode.ROOT);
+            RootUtils.delete(getPath());
         } else {
-            if (isRoot() && rootmode) {
-                setMode(OpenMode.ROOT);
-                RootUtils.delete(getPath());
-            } else {
-                FileUtil.deleteFile(new File(path), context);
-            }
+            FileUtil.deleteFile(new File(path), context);
         }
         return !exists();
     }

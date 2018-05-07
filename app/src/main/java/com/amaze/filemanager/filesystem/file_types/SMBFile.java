@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
 
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -173,6 +174,16 @@ public class SMBFile extends HybridFile {
         } catch (SmbException | MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
+        try {
+            new SmbFile(path).delete();
+        } catch (SmbException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return !exists();
     }
 
     private SmbFile getSmbFile() {
