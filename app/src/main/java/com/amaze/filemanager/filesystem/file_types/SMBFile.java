@@ -58,4 +58,20 @@ public class SMBFile extends HybridFile {
             }
         throw new Exception();
     }
+
+    @Override
+    public String getName() {
+        SmbFile smbFile = getSmbFile();
+        if (smbFile != null)
+            return smbFile.getName();
+        return super.getName();
+    }
+
+    @Override
+    public String getName(Context context) {
+        SmbFile smbFile=getSmbFile();
+        if(smbFile!=null)
+            return smbFile.getName();
+        return super.getName(context);
+    }
 }

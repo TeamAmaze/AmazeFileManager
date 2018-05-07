@@ -5,8 +5,6 @@ import android.content.Context;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
-import jcifs.smb.SmbException;
-
 
 /**
  * Created by Rustam Khadipash on 6/5/2018.
@@ -43,5 +41,15 @@ public class File extends HybridFile {
 
     private long getLength() {
         return new java.io.File(path).length();
+    }
+
+    @Override
+    public String getName() {
+        return new java.io.File(path).getName();
+    }
+
+    @Override
+    public String getName(Context context) {
+        return new java.io.File(path).getName();
     }
 }

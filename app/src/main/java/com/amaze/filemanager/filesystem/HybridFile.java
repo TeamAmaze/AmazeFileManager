@@ -212,43 +212,13 @@ public class HybridFile {
      * @return
      */
     public String getName() {
-        String name = null;
-        switch (mode) {
-            case SMB:
-                SmbFile smbFile = getSmbFile();
-                if (smbFile != null)
-                    return smbFile.getName();
-                break;
-            case FILE:
-                return new File(path).getName();
-            case ROOT:
-                return new File(path).getName();
-            default:
-                StringBuilder builder = new StringBuilder(path);
-                name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
-        }
+        StringBuilder builder = new StringBuilder(path);
+        String name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
         return name;
     }
 
     public String getName(Context context) {
-        String name = null;
-        switch (mode){
-            case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
-                    return smbFile.getName();
-                break;
-            case FILE:
-                return new File(path).getName();
-            case ROOT:
-                return new File(path).getName();
-            case OTG:
-                return OTGUtil.getDocumentFile(path, context, false).getName();
-            default:
-                StringBuilder builder = new StringBuilder(path);
-                name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
-        }
-        return name;
+        return getName();
     }
 
     public SmbFile getSmbFile(int timeout) {

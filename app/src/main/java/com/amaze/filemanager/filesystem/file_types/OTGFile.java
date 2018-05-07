@@ -27,4 +27,9 @@ public class OTGFile extends HybridFile {
     public long length(Context context) {
         return OTGUtil.getDocumentFile(path, context, false).length();
     }
+
+    @Override
+    public String getName(Context context) {
+        return OTGUtil.getDocumentFile(path, context, false).getName();
+    }
 }

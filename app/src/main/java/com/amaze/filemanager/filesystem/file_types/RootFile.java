@@ -7,6 +7,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.OpenMode;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import jcifs.smb.SmbException;
@@ -68,5 +69,15 @@ public class RootFile extends HybridFile {
                 return baseFile;
         }
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return new File(path).getName();
+    }
+
+    @Override
+    public String getName(Context context) {
+        return new File(path).getName();
     }
 }
