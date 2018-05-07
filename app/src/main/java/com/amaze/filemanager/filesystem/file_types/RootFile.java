@@ -27,16 +27,26 @@ public class RootFile extends HybridFile {
 
     @Override
     public long length() {
-        HybridFileParcelable baseFile = generateBaseFileFromParent();
-        if (baseFile != null) return baseFile.getSize();
-        return super.length();
+        try {
+            return getLength();
+        } catch (Exception e) {
+            return super.length();
+        }
     }
 
     @Override
     public long length(Context context) {
+        try {
+            return getLength();
+        } catch (Exception e) {
+            return super.length(context);
+        }
+    }
+
+    private long getLength() throws Exception {
         HybridFileParcelable baseFile=generateBaseFileFromParent();
         if(baseFile!=null) return baseFile.getSize();
-        return super.length(context);
+        throw new Exception();
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
