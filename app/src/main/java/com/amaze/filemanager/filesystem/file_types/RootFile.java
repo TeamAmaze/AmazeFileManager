@@ -98,6 +98,18 @@ public class RootFile extends HybridFile {
     }
 
     @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        HybridFileParcelable baseFile = generateBaseFileFromParent();
+        if (baseFile != null) return baseFile.getSize();
+        return super.folderSize(context);
+    }
+
+    @Override
     public boolean exists() {
         try {
             return RootHelper.fileExists(path);

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 
 /**
@@ -68,6 +69,16 @@ public class File extends HybridFile {
     @Override
     public boolean isDirectory(Context context) {
         return new java.io.File(path).isDirectory();
+    }
+
+    @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        return FileUtils.folderSize(new java.io.File(path), null);
     }
 
     @Override

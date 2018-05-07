@@ -82,6 +82,21 @@ public class SFTPFile extends HybridFile {
     }
 
     @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Long execute(SFTPClient client) throws IOException {
+                return client.size(SshClientUtils.extractRemotePathFrom(path));
+            }
+        });
+    }
+
+    @Override
     public boolean exists() {
         return SshClientUtils.execute(new SFtpClientTemplate(path) {
             @Override

@@ -6,6 +6,7 @@ import android.support.v4.provider.DocumentFile;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 
 /**
@@ -44,6 +45,11 @@ public class OTGFile extends HybridFile {
     @Override
     public boolean isDirectory(Context context) {
         return OTGUtil.getDocumentFile(path, context, false).isDirectory();
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        return FileUtils.otgFolderSize(path, context);
     }
 
     @Override

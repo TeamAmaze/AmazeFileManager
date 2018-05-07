@@ -5,6 +5,7 @@ import android.content.Context;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.net.MalformedURLException;
 
@@ -96,6 +97,21 @@ public class SMBFile extends HybridFile {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        try {
+            return FileUtils.folderSize(new SmbFile(path));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return 0L;
         }
     }
 
