@@ -7,6 +7,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,26 +42,15 @@ public class RootFile extends HybridFile {
 
     @Override
     public long length() {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length();
-        }
+        return length(AppConfig.getInstance());
     }
 
     @Override
     public long length(Context context) {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length(context);
-        }
-    }
-
-    private long getLength() throws Exception {
         HybridFileParcelable baseFile=generateBaseFileFromParent();
-        if(baseFile!=null) return baseFile.getSize();
-        throw new Exception();
+        if(baseFile!=null)
+            return baseFile.getSize();
+        return super.length(context);
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
@@ -74,12 +64,59 @@ public class RootFile extends HybridFile {
 
     @Override
     public String getName() {
-        return new File(path).getName();
+        return getName(AppConfig.getInstance());
     }
 
     @Override
     public String getName(Context context) {
         return new File(path).getName();
+    }
+
+    @Override
+    public String getParent() {
+        return getParent(AppConfig.getInstance());
+    }
+
+    @Override
+    public String getParent(Context context) {
+        return new File(path).getParent();
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        try {
+            return RootHelper.isDirectory(path, true, 5);
+        } catch (ShellNotRunningException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        HybridFileParcelable baseFile = generateBaseFileFromParent();
+        if (baseFile != null) return baseFile.getSize();
+        return super.folderSize(context);
+    }
+
+    @Override
+    public long getUsableSpace() {
+        return new File(path).getUsableSpace();
+    }
+
+    @Override
+    public long getTotal(Context context) {
+        return new File(path).getTotalSpace();
     }
 
     @Override

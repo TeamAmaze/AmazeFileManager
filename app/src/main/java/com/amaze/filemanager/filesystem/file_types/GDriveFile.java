@@ -6,7 +6,9 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.SpaceAllocation;
 
 
 /**
@@ -29,13 +31,36 @@ public class GDriveFile extends HybridFile {
 
     @Override
     public long length(Context context) {
-        return dataUtils.getAccount(OpenMode.GDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
+        return dataUtils.getAccount(mode)
+                .getMetadata(CloudUtil.stripPath(mode, path)).getSize();
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        return dataUtils.getAccount(mode)
+                .getMetadata(CloudUtil.stripPath(mode, path)).getFolder();
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        return FileUtils.folderSizeCloud(mode,
+                dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
+    }
+
+    @Override
+    public long getUsableSpace() {
+        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
+        return spaceAllocation.getTotal() - spaceAllocation.getUsed();
+    }
+
+    @Override
+    public long getTotal(Context context) {
+        return dataUtils.getAccount(mode).getAllocation().getTotal();
     }
 
     @Override
     public boolean exists() {
-        CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-        return cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
+        CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(mode);
+        return cloudStorageGoogleDrive.exists(CloudUtil.stripPath(mode, path));
     }
 }

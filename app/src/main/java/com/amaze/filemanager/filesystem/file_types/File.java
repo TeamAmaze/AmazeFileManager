@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 
 /**
@@ -31,26 +33,62 @@ public class File extends HybridFile {
 
     @Override
     public long length() {
-        return getLength();
+        return length(AppConfig.getInstance());
     }
 
     @Override
     public long length(Context context) {
-        return getLength();
-    }
-
-    private long getLength() {
         return new java.io.File(path).length();
     }
 
     @Override
     public String getName() {
-        return new java.io.File(path).getName();
+        return getName(AppConfig.getInstance());
     }
 
     @Override
     public String getName(Context context) {
         return new java.io.File(path).getName();
+    }
+
+    @Override
+    public String getParent() {
+        return getParent(AppConfig.getInstance());
+    }
+
+    @Override
+    public String getParent(Context context) {
+        return new java.io.File(path).getParent();
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        return new java.io.File(path).isDirectory();
+    }
+
+    @Override
+    public long folderSize() {
+        return folderSize(AppConfig.getInstance());
+    }
+
+    @Override
+    public long folderSize(Context context) {
+        return FileUtils.folderSize(new java.io.File(path), null);
+    }
+
+    @Override
+    public long getUsableSpace() {
+        return new java.io.File(path).getUsableSpace();
+    }
+
+    @Override
+    public long getTotal(Context context) {
+        return new java.io.File(path).getTotalSpace();
     }
 
     @Override
