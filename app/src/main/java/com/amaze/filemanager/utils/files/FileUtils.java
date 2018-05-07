@@ -365,6 +365,11 @@ public class FileUtils {
         return (float) (size / (1024*1024));
     }
 
+    /* extract differences and extract method - openunknown two methods
+    a file not supported by Amaze and a file from OTG's openunkown method codes overlap a lot.
+    So, I extracted the code and made it simple.
+     */
+
     /**
      * Open a file not supported by Amaze
      * @param f the file
@@ -376,19 +381,13 @@ public class FileUtils {
         chooserIntent.setAction(Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f.getPath(), f.isDirectory());
-        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+
+        if (isExtensionValid(type)) {
             Uri uri = fileToContentUri(c, f);
             if (uri == null) uri = Uri.fromFile(f);
-            chooserIntent.setDataAndType(uri, type);
 
-            Intent activityIntent;
-            if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
-            } else {
-                activityIntent = chooserIntent;
-                if(useNewStack) applyNewDocFlag(activityIntent);
-            }
+            chooserIntent.setDataAndType(uri, type);
+            Intent activityIntent = openunknownMiddle(chooserIntent, c, forcechooser, useNewStack);
 
             try {
                 c.startActivity(activityIntent);
@@ -412,16 +411,10 @@ public class FileUtils {
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         String type = f.getType();
-        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+
+        if (isExtensionValid(type)) {
             chooserIntent.setDataAndType(f.getUri(), type);
-            Intent activityIntent;
-            if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
-            } else {
-                activityIntent = chooserIntent;
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-            }
+            Intent activityIntent = openunknownMiddle(chooserIntent, c, forcechooser, useNewStack);
 
             try {
                 c.startActivity(activityIntent);
@@ -433,6 +426,23 @@ public class FileUtils {
         } else {
             openWith(f, c, useNewStack);
         }
+    }
+
+    private static boolean isExtensionValid(String type) {
+        return type != null && type.trim().length() != 0 && !type.equals("*/*");
+    }
+
+    private static Intent openunknownMiddle(Intent chooserIntent, Context c, boolean forcechooser, boolean useNewStack) {
+        Intent activityIntent;
+        if (forcechooser) {
+            if(useNewStack) applyNewDocFlag(chooserIntent);
+            activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+        } else {
+            activityIntent = chooserIntent;
+            if(useNewStack) applyNewDocFlag(chooserIntent);
+        }
+
+        return activityIntent;
     }
 
     private static void applyNewDocFlag(Intent i) {
@@ -483,9 +493,10 @@ public class FileUtils {
 
     private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
         final String where = MediaStore.MediaColumns.DATA + " = ?";
+        int mimeType = Icons.getTypeOfFile(path, isDirectory);
+
         Uri baseUri;
         String[] projection;
-        int mimeType = Icons.getTypeOfFile(path, isDirectory);
 
         switch (mimeType) {
             case Icons.IMAGE:
