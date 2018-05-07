@@ -286,18 +286,22 @@ public class DataUtils {
         Collections.sort(books, new BookSorter());
     }
 
+    private boolean isAllocated(Object object) {
+        return object != null ;
+    }
+
     public synchronized void setServers(ArrayList<String[]> servers) {
-        if (servers != null)
+        if (isAllocated(servers))
             this.servers = servers;
     }
 
     public synchronized void setBooks(ArrayList<String[]> books) {
-        if (books != null)
+        if (isAllocated(books))
             this.books = books;
     }
 
     public synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
-        if (accounts != null)
+        if (isAllocated(accounts))
             this.accounts = accounts;
     }
 
