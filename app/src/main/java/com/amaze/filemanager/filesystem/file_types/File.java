@@ -52,4 +52,9 @@ public class File extends HybridFile {
     public String getName(Context context) {
         return new java.io.File(path).getName();
     }
+
+    @Override
+    public boolean exists() {
+        return new java.io.File(path).exists();
+    }
 }

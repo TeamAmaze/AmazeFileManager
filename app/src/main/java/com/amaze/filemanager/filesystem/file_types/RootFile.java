@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
 
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -79,5 +80,15 @@ public class RootFile extends HybridFile {
     @Override
     public String getName(Context context) {
         return new File(path).getName();
+    }
+
+    @Override
+    public boolean exists() {
+        try {
+            return RootHelper.fileExists(path);
+        } catch (ShellNotRunningException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

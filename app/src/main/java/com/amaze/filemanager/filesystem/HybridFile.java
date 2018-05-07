@@ -945,49 +945,7 @@ public class HybridFile {
     }
 
     public boolean exists() {
-        boolean exists = false;
-        if (isSftp()) {
-            exists = SshClientUtils.execute(new SFtpClientTemplate(path) {
-                @Override
-                public Boolean execute(SFTPClient client) throws IOException {
-                    try {
-                        return client.stat(SshClientUtils.extractRemotePathFrom(path)) != null;
-                    } catch (SFTPException notFound){
-                        return false;
-                    }
-                }
-            });
-        } else if (isSmb()) {
-            try {
-                SmbFile smbFile = getSmbFile(2000);
-                exists = smbFile != null && smbFile.exists();
-            } catch (SmbException e) {
-                exists = false;
-            }
-        } else if (isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-        } else if (isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            exists = cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
-        } else if (isGoogleDriveFile()) {
-            CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-            exists = cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-        } else if (isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-            exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-        } else if (isLocal()) {
-            exists = new File(path).exists();
-        } else if (isRoot()) {
-            try {
-                return RootHelper.fileExists(path);
-            } catch (ShellNotRunningException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        return exists;
+        return false;
     }
 
     /**
@@ -997,10 +955,7 @@ public class HybridFile {
      * @return
      */
     public boolean exists(Context context) {
-        if (isOtgFile()) {
-            DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
-            return fileToCheck != null;
-        } else return (exists());
+        return exists();
     }
 
     /**

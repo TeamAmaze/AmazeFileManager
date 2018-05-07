@@ -80,6 +80,16 @@ public class SMBFile extends HybridFile {
         return super.getName(context);
     }
 
+    @Override
+    public boolean exists() {
+        try {
+            SmbFile smbFile = getSmbFile(2000);
+            return smbFile != null && smbFile.exists();
+        } catch (SmbException e) {
+            return false;
+        }
+    }
+
     private SmbFile getSmbFile() {
         try {
             return new SmbFile(path);

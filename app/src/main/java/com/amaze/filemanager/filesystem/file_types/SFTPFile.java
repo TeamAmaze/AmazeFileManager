@@ -9,6 +9,7 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -56,5 +57,19 @@ public class SFTPFile extends HybridFile {
     @Override
     public long length(Context context) {
         return ((HybridFileParcelable)((HybridFile)this)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Boolean execute(SFTPClient client) throws IOException {
+                try {
+                    return client.stat(SshClientUtils.extractRemotePathFrom(path)) != null;
+                } catch (SFTPException notFound){
+                    return false;
+                }
+            }
+        });
     }
 }

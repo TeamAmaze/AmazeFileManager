@@ -6,6 +6,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 
 /**
@@ -30,5 +31,11 @@ public class GDriveFile extends HybridFile {
     public long length(Context context) {
         return dataUtils.getAccount(OpenMode.GDRIVE)
                 .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+        return cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
     }
 }
