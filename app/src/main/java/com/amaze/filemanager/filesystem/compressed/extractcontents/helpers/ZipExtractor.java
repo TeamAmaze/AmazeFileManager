@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.IOCloseBufferWriter;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -17,6 +18,21 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/*  Rename : extractWithFilter(@NonNull Filter filter)
+        entry and entry1 is not good for understandability.
+        we can not understand meaning of entry1.
+        entry -> entryIndex, entry1 -> entryArray
+*/
+/*  Rename : extractEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry, String outputDirectory)
+        Although there is parameter explanation, outputDir is not good for readability.
+        Dir can be directory, direction and so on.
+        outputDir -> outputDirectory
+
+        len and buf is not good for understandability.
+        I think full word is better.
+        buf -> buffer, len -> length
+*/
+
 public class ZipExtractor extends Extractor {
 
     public ZipExtractor(Context context, String filePath, String outputPath, OnUpdate listener) {
@@ -26,7 +42,7 @@ public class ZipExtractor extends Extractor {
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        ArrayList<ZipEntry> entry1 = new ArrayList<>();
+        ArrayList<ZipEntry> entryArray = new ArrayList<>();
         ZipFile zipfile = new ZipFile(filePath);
 
         // iterating archive elements to find file names that are to be extracted
@@ -34,17 +50,17 @@ public class ZipExtractor extends Extractor {
             ZipEntry zipEntry = e.nextElement();
 
             if(filter.shouldExtract(zipEntry.getName(), zipEntry.isDirectory())) {
-                entry1.add(zipEntry);
+                entryArray.add(zipEntry);
                 totalBytes += zipEntry.getSize();
             }
         }
 
-        listener.onStart(totalBytes, entry1.get(0).getName());
+        listener.onStart(totalBytes, entryArray.get(0).getName());
 
-        for (ZipEntry entry : entry1) {
+        for (ZipEntry entryIndex : entryArray) {
             if (!listener.isCancelled()) {
-                listener.onUpdate(entry.getName());
-                extractEntry(context, zipfile, entry, outputPath);
+                listener.onUpdate(entryIndex.getName());
+                extractEntry(context, zipfile, entryIndex, outputPath);
             }
         }
         listener.onFinish();
@@ -55,37 +71,23 @@ public class ZipExtractor extends Extractor {
      *
      * @param zipFile   zip file from which entriesToExtract are to be extracted
      * @param entry     zip entry that is to be extracted
-     * @param outputDir output directory
+     * @param outputDirectory output directory
      */
     private void extractEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry,
-                              String outputDir) throws IOException {
+                              String outputDirectory) throws IOException {
         if (entry.isDirectory()) {
             // zip entry is a directory, return after creating new directory
-            FileUtil.mkdir(new File(outputDir, entry.getName()), context);
+            FileUtil.mkdir(new File(outputDirectory, entry.getName()), context);
             return;
         }
 
-        final File outputFile = new File(outputDir, entry.getName());
-        if (!outputFile.getParentFile().exists()) {
-            // creating directory if not already exists
-            FileUtil.mkdir(outputFile.getParentFile(), context);
-        }
+        final File outputFile = getOutputFile(context, outputDirectory, entry.getName());
 
         BufferedInputStream inputStream = new BufferedInputStream(
                 zipFile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
-        try {
-            int len;
-            byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-            while ((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
-                ServiceWatcherUtil.POSITION += len;
-            }
-        } finally {
-            outputStream.close();
-            inputStream.close();
-        }
+        IOCloseBufferWriter.writeBuffer(inputStream, outputStream);
     }
 
 }

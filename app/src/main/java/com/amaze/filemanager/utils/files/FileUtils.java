@@ -365,6 +365,11 @@ public class FileUtils {
         return (float) (size / (1024*1024));
     }
 
+    /* extract differences and extract method - openunknown two methods
+    a file not supported by Amaze and a file from OTG's openunkown method codes overlap a lot.
+    So, I extracted the code and made it simple.
+     */
+
     /**
      * Open a file not supported by Amaze
      * @param f the file
@@ -376,19 +381,13 @@ public class FileUtils {
         chooserIntent.setAction(Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f.getPath(), f.isDirectory());
-        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+
+        if (isExtensionValid(type)) {
             Uri uri = fileToContentUri(c, f);
             if (uri == null) uri = Uri.fromFile(f);
-            chooserIntent.setDataAndType(uri, type);
 
-            Intent activityIntent;
-            if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
-            } else {
-                activityIntent = chooserIntent;
-                if(useNewStack) applyNewDocFlag(activityIntent);
-            }
+            chooserIntent.setDataAndType(uri, type);
+            Intent activityIntent = openunknownMiddle(chooserIntent, c, forcechooser, useNewStack);
 
             try {
                 c.startActivity(activityIntent);
@@ -412,16 +411,10 @@ public class FileUtils {
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         String type = f.getType();
-        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+
+        if (isExtensionValid(type)) {
             chooserIntent.setDataAndType(f.getUri(), type);
-            Intent activityIntent;
-            if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
-            } else {
-                activityIntent = chooserIntent;
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-            }
+            Intent activityIntent = openunknownMiddle(chooserIntent, c, forcechooser, useNewStack);
 
             try {
                 c.startActivity(activityIntent);
@@ -433,6 +426,23 @@ public class FileUtils {
         } else {
             openWith(f, c, useNewStack);
         }
+    }
+
+    private static boolean isExtensionValid(String type) {
+        return type != null && type.trim().length() != 0 && !type.equals("*/*");
+    }
+
+    private static Intent openunknownMiddle(Intent chooserIntent, Context c, boolean forcechooser, boolean useNewStack) {
+        Intent activityIntent;
+        if (forcechooser) {
+            if(useNewStack) applyNewDocFlag(chooserIntent);
+            activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+        } else {
+            activityIntent = chooserIntent;
+            if(useNewStack) applyNewDocFlag(chooserIntent);
+        }
+
+        return activityIntent;
     }
 
     private static void applyNewDocFlag(Intent i) {
@@ -481,54 +491,14 @@ public class FileUtils {
         return null;
     }
 
+    /* extract class - fileToContentUri method : extract to IconUtil class
+    The purpose of fileToContentUri method is to look for a uri, not a calculation based on the icon.
+    Therefore, it was extracted by IconUtils class.
+     */
     private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
-        final String where = MediaStore.MediaColumns.DATA + " = ?";
-        Uri baseUri;
-        String[] projection;
-        int mimeType = Icons.getTypeOfFile(path, isDirectory);
 
-        switch (mimeType) {
-            case Icons.IMAGE:
-                baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.VIDEO:
-                baseUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.AUDIO:
-                baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            default:
-                baseUri = MediaStore.Files.getContentUri(volume);
-                projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
-        }
-
-        ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(baseUri, projection, where, new String[]{path}, null);
-        try {
-            if (c != null && c.moveToNext()) {
-                boolean isValid = false;
-                if (mimeType == Icons.IMAGE || mimeType == Icons.VIDEO || mimeType == Icons.AUDIO) {
-                    isValid = true;
-                } else {
-                    int type = c.getInt(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE));
-                    isValid = type != 0;
-                }
-
-                if (isValid) {
-                    // Do not force to use content uri for no media files
-                    long id = c.getLong(c.getColumnIndexOrThrow(BaseColumns._ID));
-                    return Uri.withAppendedPath(baseUri, String.valueOf(id));
-                }
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
-        return null;
+        IconUtil iconUtil = new IconUtil(context, path, isDirectory, volume);
+        return iconUtil.findURIByusingIcon();
     }
 
     /**
@@ -758,9 +728,13 @@ public class FileUtils {
         return s.equals("com.amaze.filemanager") || rii == null;
     }
 
+    /* code comment delete and arrangement - openFile method
+    Comment is not available because it is the previous code. So, Delete it.
+     */
     /**
      * Support file opening for {@link DocumentFile} (eg. OTG)
      */
+    // not supporting inbuilt activities for now
     public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
@@ -769,59 +743,6 @@ public class FileUtils {
             Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
-
-        // not supporting inbuilt activities for now
-        /*if (f.getName().toLowerCase().endsWith(".zip") ||
-                f.getName().toLowerCase().endsWith(".jar") ||
-                f.getName().toLowerCase().endsWith(".rar")||
-                f.getName().toLowerCase().endsWith(".tar") ||
-                f.getName().toLowerCase().endsWith(".tar.gz")) {
-            //showArchiveDialog(f, m);
-        } else if(f.getName().toLowerCase().endsWith(".apk")) {
-            //showPackageDialog(f, m);
-        } else if (f.getName().toLowerCase().endsWith(".db")) {
-            Intent intent = new Intent(m, DatabaseViewerActivity.class);
-            intent.putExtra("path", f.getUri());
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            m.startActivity(intent);
-        }  else if (Icons.isAudio(f.getName())) {
-            final int studio_count = sharedPref.getInt("studio", 0);
-            final Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(f.getUri(), "audio*//*");
-
-            // Behold! It's the  legendary easter egg!
-            if (studio_count!=0) {
-                new CountDownTimer(studio_count, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int sec = (int)millisUntilFinished/1000;
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-                        studioCount.show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
-                        studioCount.show();
-                        m.startActivity(intent);
-                    }
-                }.start();
-            } else
-                m.startActivity(intent);
-        } else {
-            try {
-                openunknown(f, m, false);
-            } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
-                openWith(f, m);
-            }
-        }*/
     }
 
     public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(ConcurrentRadixTree<VoidValue> a) {
@@ -935,7 +856,7 @@ public class FileUtils {
         return false;
     }
 
-    public static boolean isPathAccesible(String dir, SharedPreferences pref) {
+    public static boolean isPathAccessible(String dir, SharedPreferences pref) {
         File f = new File(dir);
         boolean showIfHidden = pref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false),
                 isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),

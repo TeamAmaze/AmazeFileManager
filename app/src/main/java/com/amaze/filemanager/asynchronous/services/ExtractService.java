@@ -28,14 +28,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
@@ -44,29 +41,13 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
-import com.github.junrar.Archive;
-import com.github.junrar.exception.RarException;
-import com.github.junrar.rarfile.FileHeader;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-public class ExtractService extends ProgressiveService {
+public class ExtractService extends AbstractProgressiveService {
 
     Context context;
 
@@ -77,7 +58,9 @@ public class ExtractService extends ProgressiveService {
 
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
-    private ProgressHandler progressHandler;
+    private ProgressHandler progressHandler = new ProgressHandler();
+    private volatile float progressPercent = 0f;
+    private ProgressListener progressListener;
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -99,10 +82,11 @@ public class ExtractService extends ProgressiveService {
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         long totalSize = getTotalSize(file);
-        progressHandler = new ProgressHandler(1, totalSize);
 
+        progressHandler.setSourceSize(1);
+        progressHandler.setTotalSize(totalSize);
         progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
-            publishResults(fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false);
+            publishResults(fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false, false);
         });
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -119,8 +103,55 @@ public class ExtractService extends ProgressiveService {
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
 
+        super.onStartCommand(intent, flags, startId);
+        super.progressHalted();
         new DoWork(this, progressHandler, file, extractPath, entries).execute();
+
         return START_STICKY;
+    }
+
+    @Override
+    protected NotificationManager getNotificationManager() {
+        return mNotifyManager;
+    }
+
+    @Override
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        return mBuilder;
+    }
+
+    @Override
+    protected int getNotificationId() {
+        return NotificationConstants.EXTRACT_ID;
+    }
+
+    @Override
+    protected float getPercentProgress() {
+        return progressPercent;
+    }
+
+    @Override
+    protected void setPercentProgress(float progress) {
+        progressPercent = progress;
+    }
+
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    protected ArrayList<DatapointParcelable> getDataPackages() {
+        return dataPackages;
+    }
+
+    @Override
+    protected ProgressHandler getProgressHandler() {
+        return progressHandler;
     }
 
     @Override
@@ -136,32 +167,7 @@ public class ExtractService extends ProgressiveService {
         return new File(filePath).length();
     }
 
-    private void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                long total, long done, int speed, boolean isCompleted) {
-        if (!progressHandler.getCancelled()) {
-            mBuilder.setContentTitle(getResources().getString(R.string.extracting));
-            float progressPercent = ((float) done / total) * 100;
-            mBuilder.setProgress(100, Math.round(progressPercent), false);
-            mBuilder.setOngoing(true);
-            mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, done) + "/"
-                    + Formatter.formatFileSize(context, total));
-            mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
-            if (progressPercent == 100 || total == 0) {
-                mBuilder.setContentTitle(getString(R.string.extract_complete));
-                mBuilder.setContentText(fileName + " " + Formatter.formatFileSize(context, total));
-                mBuilder.setProgress(100, 100, false);
-                mBuilder.setOngoing(false);
-                mNotifyManager.notify(NotificationConstants.EXTRACT_ID, mBuilder.build());
-                mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
-            }
-
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
-                    total, done, speed, isCompleted);
-            addDatapoint(intent);
-        } else mNotifyManager.cancel(NotificationConstants.EXTRACT_ID);
-    }
-
-    public static class DoWork extends AsyncTask<Void, Void, Void> {
+    public class DoWork extends AsyncTask<Void, Void, Void> {
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
         private String extractionPath, compressedPath;
@@ -213,8 +219,8 @@ public class ExtractService extends ProgressiveService {
                                         extractService.addFirstDatapoint(firstEntryName,
                                                 1, totalBytes, false);
 
-                                        watcherUtil = new ServiceWatcherUtil(progressHandler, totalBytes);
-                                        watcherUtil.watch();
+                                        watcherUtil = new ServiceWatcherUtil(progressHandler);
+                                        watcherUtil.watch(ExtractService.this);
                                     }
 
                                     @Override

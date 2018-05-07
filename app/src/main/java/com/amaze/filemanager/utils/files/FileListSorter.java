@@ -39,6 +39,14 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
         return path.isDirectory;
     }
 
+    /* line arrangement - compare method : delete comments
+    The comment in the method was deleted because it was the code commenting part that was before.
+     */
+
+    /* extract method - equals method : change condition statement
+    I extracted the function for each conditional statement. (Improved understandability)
+     */
+
     /**
      * Compares two elements and return negative, zero and positive integer if first argument is
      * less than, equal to or greater than second
@@ -49,80 +57,120 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     @Override
     public int compare(LayoutElementParcelable file1, LayoutElementParcelable file2) {
 
-        /*File f1;
-
-        if(!file1.hasSymlink()) {
-
-            f1=new File(file1.getDesc());
-        } else {
-            f1=new File(file1.getSymlink());
-        }
-
-        File f2;
-
-        if(!file2.hasSymlink()) {
-
-            f2=new File(file2.getDesc());
-        } else {
-            f2=new File(file1.getSymlink());
-        }*/
-
-        if (directoryOnTop == 0) {
-            if (isDirectory(file1) && !isDirectory(file2)) {
+        if (directoryLocationIsBottom()) {
+            if (onlyFirstFileIsDirectory(file1, file2)) {
                 return -1;
-
-
-            } else if (isDirectory(file2) && !isDirectory(file1)) {
+            } else if (onlySecondFileIsDirectory(file1, file2)) {
                 return 1;
             }
-        } else if (directoryOnTop == 1) {
-            if (isDirectory(file1) && !isDirectory(file2)) {
-
+        } else if (directoryLocationIsTop()) {
+            if (onlyFirstFileIsDirectory(file1, file2)) {
                 return 1;
-            } else if (isDirectory(file2) && !isDirectory(file1)) {
+            } else if (onlySecondFileIsDirectory(file1, file2)) {
                 return -1;
             }
         }
 
-        if (sort == 0) {
-
-            // sort by name
-            return ascending * file1.title.compareToIgnoreCase(file2.title);
-        } else if (sort == 1) {
-
-            // sort by last modified
-            return ascending * Long.valueOf(file1.date).compareTo(file2.date);
-        } else if (sort == 2) {
-
-            // sort by size
-            if (!file1.isDirectory && !file2.isDirectory) {
-
-                return ascending * Long.valueOf(file1.longSize).compareTo(file2.longSize);
-            } else {
-
-                return file1.title.compareToIgnoreCase(file2.title);
-            }
-
-        } else if(sort ==3) {
-
-            // sort by type
-            if(!file1.isDirectory && !file2.isDirectory) {
-
-                final String ext_a = getExtension(file1.title);
-                final String ext_b = getExtension(file2.title);
-
-
-                final int res = ascending*ext_a.compareTo(ext_b);
-                if (res == 0) {
-                    return ascending * file1.title.compareToIgnoreCase(file2.title);
-                }
-                return res;
-            } else {
-                return  file1.title.compareToIgnoreCase(file2.title);
-            }
+        if(sortNumberInSortRange()) {
+            return eachSortNumberReturnValue(file1, file2);
         }
+
         return 0;
 
+    }
+
+    private boolean directoryLocationIsBottom() {
+        return directoryOnTop == 0;
+    }
+
+    private boolean directoryLocationIsTop() {
+        return directoryOnTop == 1;
+    }
+    private boolean onlyFirstFileIsDirectory(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return isDirectory(file1) && !isDirectory(file2);
+    }
+
+    private boolean onlySecondFileIsDirectory(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return isDirectory(file2) && !isDirectory(file1);
+    }
+
+    private boolean twoFilesAreNotDirectory(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return !isDirectory(file1) && !isDirectory(file2);
+    }
+
+    private boolean isSortByFileName() {
+        return sort == 0;
+    }
+
+    private int SortByFileName(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return ascending * compareFileTitle(file1, file2);
+    }
+
+    private int compareFileTitle(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return file1.title.compareToIgnoreCase(file2.title);
+    }
+
+    private boolean isSortByFileLastModifiedDate() {
+        return sort == 1;
+    }
+
+    private int SortByFileLastModifiedDate(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        return ascending * Long.valueOf(file1.date).compareTo(file2.date);
+    }
+
+    private boolean isSortByFileSize() {
+        return sort == 2;
+    }
+
+    private int SortByFileSize(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        if (twoFilesAreNotDirectory(file1, file2)) {
+            return ascending * Long.valueOf(file1.longSize).compareTo(file2.longSize);
+        } else {
+            return compareFileTitle(file1, file2);
+        }
+    }
+
+    private boolean isSortByFileExtensionName() {
+        return sort == 3;
+    }
+
+    private int resIsZeroOrNotEachReturn(final int res, LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        if (res == 0) {
+            return ascending * compareFileTitle(file1, file2);
+        }
+        return res;
+    }
+    private int SortByFileExtensionName(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        if(twoFilesAreNotDirectory(file1, file2)) {
+
+            final String ext_file1 = getExtension(file1.title);
+            final String ext_file2 = getExtension(file2.title);
+
+            final int res = ascending*ext_file1.compareTo(ext_file2);
+
+            return resIsZeroOrNotEachReturn(res, file1, file2);
+        } else {
+            return compareFileTitle(file1, file2);
+        }
+    }
+    private boolean sortNumberInSortRange() {
+        return isSortByFileName() || isSortByFileLastModifiedDate() || isSortByFileSize() || isSortByFileExtensionName();
+    }
+
+    private int eachSortNumberReturnValue(LayoutElementParcelable file1, LayoutElementParcelable file2) {
+        int sortResultNumber = 0;
+
+        if (isSortByFileName()) {
+            sortResultNumber = SortByFileName(file1, file2);
+        } else if (isSortByFileLastModifiedDate()) {
+            sortResultNumber = SortByFileLastModifiedDate(file1, file2);
+        } else if (isSortByFileSize()) {
+            sortResultNumber = SortByFileSize(file1, file2);
+        } else if(isSortByFileExtensionName()) {
+            sortResultNumber = SortByFileExtensionName(file1, file2);
+        }
+
+        return sortResultNumber;
     }
 
     private static String getExtension(String a) {
