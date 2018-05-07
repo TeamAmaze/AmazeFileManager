@@ -238,24 +238,8 @@ public class HybridFile {
      * @return
      */
     public String getParent() {
-        String parentPath = "";
-        switch (mode) {
-            case SMB:
-                try {
-                    parentPath = new SmbFile(path).getParent();
-                } catch (MalformedURLException e) {
-                    parentPath = "";
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-            case ROOT:
-                parentPath = new File(path).getParent();
-                break;
-            default:
-                StringBuilder builder = new StringBuilder(path);
-                return builder.substring(0, builder.length() - (getName().length() + 1));
-        }
+        StringBuilder builder = new StringBuilder(path);
+        String parentPath = builder.substring(0, builder.length() - (getName().length() + 1));
         return parentPath;
     }
 
@@ -266,29 +250,10 @@ public class HybridFile {
      * @return
      */
     public String getParent(Context context) {
-
-        String parentPath = "";
-        switch (mode) {
-            case SMB:
-                try {
-                    parentPath = new SmbFile(path).getParent();
-                } catch (MalformedURLException e) {
-                    parentPath = "";
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-            case ROOT:
-                parentPath = new File(path).getParent();
-                break;
-            case OTG:
-            default:
-                StringBuilder builder = new StringBuilder(path);
-                StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
-                        builder.length()-(getName(context).length()+1)));
-                return parentPathBuilder.toString();
-        }
-        return parentPath;
+        StringBuilder builder = new StringBuilder(path);
+        StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
+                builder.length()-(getName(context).length()+1)));
+        return parentPathBuilder.toString();
     }
 
     public String getParentName() {

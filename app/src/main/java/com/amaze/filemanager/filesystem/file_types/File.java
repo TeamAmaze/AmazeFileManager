@@ -54,6 +54,16 @@ public class File extends HybridFile {
     }
 
     @Override
+    public String getParent() {
+        return new java.io.File(path).getParent();
+    }
+
+    @Override
+    public String getParent(Context context) {
+        return new java.io.File(path).getParent();
+    }
+
+    @Override
     public boolean exists() {
         return new java.io.File(path).exists();
     }

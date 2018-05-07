@@ -83,6 +83,16 @@ public class RootFile extends HybridFile {
     }
 
     @Override
+    public String getParent() {
+        return new File(path).getParent();
+    }
+
+    @Override
+    public String getParent(Context context) {
+        return new File(path).getParent();
+    }
+
+    @Override
     public boolean exists() {
         try {
             return RootHelper.fileExists(path);

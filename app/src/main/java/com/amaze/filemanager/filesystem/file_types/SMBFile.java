@@ -81,6 +81,26 @@ public class SMBFile extends HybridFile {
     }
 
     @Override
+    public String getParent() {
+        try {
+            return new SmbFile(path).getParent();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @Override
+    public String getParent(Context context) {
+        try {
+            return new SmbFile(path).getParent();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @Override
     public boolean exists() {
         try {
             SmbFile smbFile = getSmbFile(2000);
