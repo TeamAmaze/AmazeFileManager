@@ -34,6 +34,12 @@ public class BoxFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory(Context context) {
+        return dataUtils.getAccount(OpenMode.BOX)
+                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getFolder();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
         return cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));

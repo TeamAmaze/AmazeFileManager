@@ -34,6 +34,12 @@ public class GDriveFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory(Context context) {
+        return dataUtils.getAccount(OpenMode.GDRIVE)
+                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getFolder();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
         return cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));

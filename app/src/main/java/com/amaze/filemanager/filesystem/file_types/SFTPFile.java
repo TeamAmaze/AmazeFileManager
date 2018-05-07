@@ -7,7 +7,9 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 
+import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
@@ -57,6 +59,26 @@ public class SFTPFile extends HybridFile {
     @Override
     public long length(Context context) {
         return ((HybridFileParcelable)((HybridFile)this)).getSize();
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Boolean execute(SFTPClient client) throws IOException {
+                try {
+                    return client.stat(SshClientUtils.extractRemotePathFrom(path)).getType()
+                            .equals(FileMode.Type.DIRECTORY);
+                } catch (SFTPException notFound){
+                    return false;
+                }
+            }
+        });
     }
 
     @Override

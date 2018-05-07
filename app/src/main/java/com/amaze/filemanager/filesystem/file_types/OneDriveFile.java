@@ -34,6 +34,12 @@ public class OneDriveFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory(Context context) {
+        return dataUtils.getAccount(OpenMode.ONEDRIVE)
+                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getFolder();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
         return cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));

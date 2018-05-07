@@ -83,6 +83,21 @@ public class RootFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        try {
+            return RootHelper.isDirectory(path, true, 5);
+        } catch (ShellNotRunningException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public boolean exists() {
         try {
             return RootHelper.fileExists(path);

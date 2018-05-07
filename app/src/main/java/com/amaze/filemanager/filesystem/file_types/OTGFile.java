@@ -35,6 +35,18 @@ public class OTGFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory() {
+        // TODO: support for this method in OTG on-the-fly
+        // you need to manually call {@link RootHelper#getDocumentFile() method
+        return false;
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        return OTGUtil.getDocumentFile(path, context, false).isDirectory();
+    }
+
+    @Override
     public boolean exists(Context context) {
         DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
         return fileToCheck != null;

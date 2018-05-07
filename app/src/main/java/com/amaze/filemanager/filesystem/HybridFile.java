@@ -272,108 +272,11 @@ public class HybridFile {
      * @return
      */
     public boolean isDirectory() {
-        boolean isDirectory;
-        switch (mode) {
-            case SFTP:
-                return isDirectory(AppConfig.getInstance());
-            case SMB:
-                try {
-                    isDirectory = new SmbFile(path).isDirectory();
-                } catch (SmbException e) {
-                    isDirectory = false;
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    isDirectory = false;
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-                isDirectory = new File(path).isDirectory();
-                break;
-            case ROOT:
-                try {
-                    isDirectory = RootHelper.isDirectory(path, true, 5);
-                } catch (ShellNotRunningException e) {
-                    e.printStackTrace();
-                    isDirectory = false;
-                }
-                break;
-            case OTG:
-                // TODO: support for this method in OTG on-the-fly
-                // you need to manually call {@link RootHelper#getDocumentFile() method
-                isDirectory = false;
-                break;
-            default:
-                isDirectory = new File(path).isDirectory();
-                break;
-
-        }
-        return isDirectory;
+        return new File(path).isDirectory();
     }
 
     public boolean isDirectory(Context context) {
-
-        boolean isDirectory;
-        switch (mode) {
-            case SFTP:
-                return SshClientUtils.execute(new SFtpClientTemplate(path) {
-                    @Override
-                    public Boolean execute(SFTPClient client) throws IOException {
-                        try {
-                            return client.stat(SshClientUtils.extractRemotePathFrom(path)).getType()
-                                    .equals(FileMode.Type.DIRECTORY);
-                        } catch (SFTPException notFound){
-                            return false;
-                        }
-                    }
-                });
-            case SMB:
-                try {
-                    isDirectory = new SmbFile(path).isDirectory();
-                } catch (SmbException e) {
-                    isDirectory = false;
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    isDirectory = false;
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-                isDirectory = new File(path).isDirectory();
-                break;
-            case ROOT:
-                try {
-                    isDirectory = RootHelper.isDirectory(path,true,5);
-                } catch (ShellNotRunningException e) {
-                    e.printStackTrace();
-                    isDirectory = false;
-                }
-                break;
-            case OTG:
-                isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
-                break;
-            case DROPBOX:
-                isDirectory = dataUtils.getAccount(OpenMode.DROPBOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getFolder();
-                break;
-            case BOX:
-                isDirectory = dataUtils.getAccount(OpenMode.BOX)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getFolder();
-                break;
-            case GDRIVE:
-                isDirectory = dataUtils.getAccount(OpenMode.GDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path)).getFolder();
-                break;
-            case ONEDRIVE:
-                isDirectory = dataUtils.getAccount(OpenMode.ONEDRIVE)
-                        .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getFolder();
-                break;
-            default:
-                isDirectory = new File(path).isDirectory();
-                break;
-
-        }
-        return isDirectory;
+        return new File(path).isDirectory();
     }
 
     /**

@@ -82,6 +82,24 @@ public class SMBFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        try {
+            return new SmbFile(path).isDirectory();
+        } catch (SmbException e) {
+            e.printStackTrace();
+            return false;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public boolean exists() {
         try {
             SmbFile smbFile = getSmbFile(2000);

@@ -61,6 +61,16 @@ public class File extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory() {
+        return isDirectory(AppConfig.getInstance());
+    }
+
+    @Override
+    public boolean isDirectory(Context context) {
+        return new java.io.File(path).isDirectory();
+    }
+
+    @Override
     public boolean exists() {
         return new java.io.File(path).exists();
     }

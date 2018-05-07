@@ -34,6 +34,12 @@ public class DropboxFile extends HybridFile {
     }
 
     @Override
+    public boolean isDirectory(Context context) {
+        return dataUtils.getAccount(OpenMode.DROPBOX)
+                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getFolder();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
         return cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
