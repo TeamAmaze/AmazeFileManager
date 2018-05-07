@@ -1,14 +1,18 @@
 package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -25,6 +29,7 @@ import jcifs.smb.SmbException;
 public class SFTPFile extends HybridFile {
     private String path;
     final private OpenMode mode = OpenMode.SFTP;
+    private static final String TAG = "SFTPFile";
 
     public SFTPFile(OpenMode mode, String path) {
         super(mode, path);
@@ -92,6 +97,26 @@ public class SFTPFile extends HybridFile {
             @Override
             public Long execute(SFTPClient client) throws IOException {
                 return client.size(SshClientUtils.extractRemotePathFrom(path));
+            }
+        });
+    }
+
+    @Override
+    public long getUsableSpace() {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Long execute(@NonNull SFTPClient client) throws IOException {
+                try {
+                    Statvfs.Response response = new Statvfs.Response(path,
+                            client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                    return response.diskFreeSpace();
+                } catch (SFTPException e) {
+                    Log.e(TAG, "Error querying server", e);
+                    return 0L;
+                } catch (Buffer.BufferException e) {
+                    Log.e(TAG, "Error parsing reply", e);
+                    return 0L;
+                }
             }
         });
     }

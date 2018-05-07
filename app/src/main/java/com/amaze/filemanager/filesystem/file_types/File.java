@@ -82,6 +82,11 @@ public class File extends HybridFile {
     }
 
     @Override
+    public long getUsableSpace() {
+        return new java.io.File(path).getUsableSpace();
+    }
+
+    @Override
     public boolean exists() {
         return new java.io.File(path).exists();
     }

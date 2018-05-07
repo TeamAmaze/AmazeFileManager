@@ -116,6 +116,19 @@ public class SMBFile extends HybridFile {
     }
 
     @Override
+    public long getUsableSpace() {
+        try {
+            return (new SmbFile(path).getDiskFreeSpace());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return 0L;
+        } catch (SmbException e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    @Override
     public boolean exists() {
         try {
             SmbFile smbFile = getSmbFile(2000);

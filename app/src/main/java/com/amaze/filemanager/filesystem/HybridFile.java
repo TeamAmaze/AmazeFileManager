@@ -26,13 +26,11 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
-import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -303,54 +301,7 @@ public class HybridFile {
      * @return
      */
     public long getUsableSpace() {
-        long size = 0L;
-        switch (mode) {
-            case SMB:
-                try {
-                    size = (new SmbFile(path).getDiskFreeSpace());
-                } catch (MalformedURLException e) {
-                    size = 0L;
-                    e.printStackTrace();
-                } catch (SmbException e) {
-                    size = 0L;
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-            case ROOT:
-                size = new File(path).getUsableSpace();
-                break;
-            case DROPBOX:
-            case BOX:
-            case GDRIVE:
-            case ONEDRIVE:
-                SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
-                size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
-                break;
-            case SFTP:
-                size = SshClientUtils.execute(new SFtpClientTemplate(path) {
-                    @Override
-                    public Long execute(@NonNull SFTPClient client) throws IOException {
-                        try {
-                            Statvfs.Response response = new Statvfs.Response(path,
-                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
-                            return response.diskFreeSpace();
-                        } catch (SFTPException e) {
-                            Log.e(TAG, "Error querying server", e);
-                            return 0L;
-                        } catch (Buffer.BufferException e) {
-                            Log.e(TAG, "Error parsing reply", e);
-                            return 0L;
-                        }
-                    }
-                });
-                break;
-            case OTG:
-                // TODO: Get free space from OTG when {@link DocumentFile} API adds support
-                break;
-
-        }
-        return size;
+        return 0L;
     }
 
     /**

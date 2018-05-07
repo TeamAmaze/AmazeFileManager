@@ -110,6 +110,11 @@ public class RootFile extends HybridFile {
     }
 
     @Override
+    public long getUsableSpace() {
+        return new File(path).getUsableSpace();
+    }
+
+    @Override
     public boolean exists() {
         try {
             return RootHelper.fileExists(path);

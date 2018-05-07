@@ -53,6 +53,12 @@ public class OTGFile extends HybridFile {
     }
 
     @Override
+    public long getUsableSpace() {
+        // TODO: Get free space from OTG when {@link DocumentFile} API adds support
+        return super.getUsableSpace();
+    }
+
+    @Override
     public boolean exists(Context context) {
         DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
         return fileToCheck != null;
