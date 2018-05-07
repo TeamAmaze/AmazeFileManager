@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.OutputCloseBufferWriter;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -16,6 +17,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+/*  Rename : extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream, TarArchiveEntry entry, String outputDirectory)
+    outputDir, len and buf is not good for understandability.
+    I think full word is better.
+    outputDir -> outputDirectory, buf -> buffer, len -> length
+*/
 
 public class TarExtractor extends Extractor {
 
@@ -57,29 +64,18 @@ public class TarExtractor extends Extractor {
     }
 
     private void extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream,
-                              TarArchiveEntry entry, String outputDir) throws IOException {
+                              TarArchiveEntry entry, String outputDirectory) throws IOException {
         if (entry.isDirectory()) {
-            FileUtil.mkdir(new File(outputDir, entry.getName()), context);
+            FileUtil.mkdir(new File(outputDirectory, entry.getName()), context);
             return;
         }
 
-        File outputFile = new File(outputDir, entry.getName());
-        if (!outputFile.getParentFile().exists()) {
-            FileUtil.mkdir(outputFile.getParentFile(), context);
-        }
+        File outputFile = getOutputFile(context, outputDirectory, entry.getName());
+
 
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
-        try {
-            int len;
-            byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-            while ((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
-                ServiceWatcherUtil.position += len;
-            }
-        } finally {
-            outputStream.close();
-        }
+        OutputCloseBufferWriter.writeBuffer(inputStream,outputStream);
     }
 
 }
