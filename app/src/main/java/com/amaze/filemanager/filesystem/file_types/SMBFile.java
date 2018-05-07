@@ -140,6 +140,13 @@ public class SMBFile extends HybridFile {
     }
 
     @Override
+    public String getReadablePath(String path) {
+        if (path.contains("@"))
+            return "smb://" + path.substring(path.indexOf("@") + 1, path.length());
+        else return path;
+    }
+
+    @Override
     public boolean exists() {
         try {
             SmbFile smbFile = getSmbFile(2000);

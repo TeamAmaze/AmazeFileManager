@@ -457,23 +457,7 @@ public class HybridFile {
     }
 
     public String getReadablePath(String path) {
-        if (isSftp())
-            return parseSftpPath(path);
-        if (isSmb())
-            return parseSmbPath(path);
         return path;
-    }
-
-    String parseSftpPath(String a) {
-        if (a.contains("@"))
-            return "ssh://" + a.substring(a.indexOf("@") + 1, a.length());
-        else return a;
-    }
-
-    String parseSmbPath(String a) {
-        if (a.contains("@"))
-            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-        else return a;
     }
 
     /**

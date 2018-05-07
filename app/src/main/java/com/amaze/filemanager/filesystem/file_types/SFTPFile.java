@@ -140,6 +140,13 @@ public class SFTPFile extends HybridFile {
     }
 
     @Override
+    public String getReadablePath(String path) {
+        if (path.contains("@"))
+            return "ssh://" + path.substring(path.indexOf("@") + 1, path.length());
+        else return path;
+    }
+
+    @Override
     public boolean exists() {
         return SshClientUtils.execute(new SFtpClientTemplate(path) {
             @Override
