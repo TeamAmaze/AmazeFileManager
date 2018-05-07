@@ -147,6 +147,16 @@ public class SMBFile extends HybridFile {
     }
 
     @Override
+    public boolean setLastModified(long date) {
+        try {
+            new SmbFile(path).setLastModified(date);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
     public boolean exists() {
         try {
             SmbFile smbFile = getSmbFile(2000);

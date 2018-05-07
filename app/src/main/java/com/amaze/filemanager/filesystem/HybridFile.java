@@ -665,18 +665,7 @@ public class HybridFile {
     }
 
     public boolean setLastModified(final long date) {
-        if (isSmb()) {
-            try {
-                new SmbFile(path).setLastModified(date);
-                return true;
-            } catch (SmbException e) {
-                return false;
-            } catch (MalformedURLException e) {
-                return false;
-            }
-        }
-        File f = new File(path);
-        return f.setLastModified(date);
+        return new File(path).setLastModified(date);
 
     }
 
