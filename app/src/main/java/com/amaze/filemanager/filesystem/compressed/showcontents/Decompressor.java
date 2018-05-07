@@ -16,6 +16,11 @@ import java.util.ArrayList;
  *         on 20/11/2017, at 17:14.
  */
 
+/*  Rename : String realRelativeDirectory(String directory)
+    dir is not good for understandability
+    dir -> directory
+ */
+
 public abstract class Decompressor {
 
     protected Context context;
@@ -66,8 +71,8 @@ public abstract class Decompressor {
     /**
      * Get the real relative directory path (useful if you converted the separator or something)
      */
-    protected String realRelativeDirectory(String dir) {
-        return dir;
+    protected String realRelativeDirectory(String directory) {
+        return directory;
     }
 
 }

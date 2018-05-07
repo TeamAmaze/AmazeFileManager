@@ -38,9 +38,9 @@ public class RarDecompressor extends Decompressor {
     }
 
     @Override
-    protected String realRelativeDirectory(String dir) {
-        if(dir.endsWith(SEPARATOR)) dir = dir.substring(0, dir.length()-1);
-        return dir.replace(SEPARATOR.toCharArray()[0], '\\');
+    protected String realRelativeDirectory(String directory) {
+        if(directory.endsWith(SEPARATOR)) directory = directory.substring(0, directory.length()-1);
+        return directory.replace(SEPARATOR.toCharArray()[0], '\\');
     }
 
 }

@@ -41,10 +41,29 @@ public class ComputerParcelable implements Parcelable {
         parcel.writeString(this.addr);
     }
 
+    /* Line arrangement - equals method : arrange condition statements
+    I tied the related conditional statements together.(improved readability)
+    */
+
+    /* extract method - equals method : change condition statement
+    I extracted the function for each conditional statement. (Improved understandability)
+     */
     public boolean equals(Object obj) {
         return obj instanceof ComputerParcelable
-                && (this == obj || (this.name.equals(((ComputerParcelable) obj).name)
-                && this.addr.equals(((ComputerParcelable) obj).addr)));
+                && (objectEqual(obj)
+                || (computerNameEqual(obj) && computerAddressEqual(obj)));
+    }
+
+    private boolean objectEqual(Object obj) {
+        return this == obj;
+    }
+
+    private boolean computerNameEqual(Object obj) {
+        return this.name.equals(((ComputerParcelable) obj).name);
+    }
+
+    private boolean computerAddressEqual(Object obj) {
+        return this.addr.equals(((ComputerParcelable) obj).addr);
     }
 
     public int hashCode() {
