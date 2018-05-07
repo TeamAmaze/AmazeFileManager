@@ -115,6 +115,11 @@ public class RootFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return new File(path).getTotalSpace();
+    }
+
+    @Override
     public boolean exists() {
         try {
             return RootHelper.fileExists(path);

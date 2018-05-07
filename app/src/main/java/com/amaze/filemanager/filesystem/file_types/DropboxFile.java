@@ -54,6 +54,11 @@ public class DropboxFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return dataUtils.getAccount(mode).getAllocation().getTotal();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
         return cloudStorageDropbox.exists(CloudUtil.stripPath(mode, path));

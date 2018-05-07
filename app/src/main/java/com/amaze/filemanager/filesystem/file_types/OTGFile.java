@@ -59,6 +59,14 @@ public class OTGFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
+        DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
+        documentFile.length();
+        return super.getTotal(context);
+    }
+
+    @Override
     public boolean exists(Context context) {
         DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
         return fileToCheck != null;

@@ -93,11 +93,10 @@ public class SMBFile extends HybridFile {
             return new SmbFile(path).isDirectory();
         } catch (SmbException e) {
             e.printStackTrace();
-            return false;
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -121,11 +120,23 @@ public class SMBFile extends HybridFile {
             return (new SmbFile(path).getDiskFreeSpace());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return 0L;
         } catch (SmbException e) {
             e.printStackTrace();
-            return 0L;
         }
+        return 0L;
+    }
+
+    @Override
+    public long getTotal(Context context) {
+        // TODO: Find total storage space of SMB when JCIFS adds support
+        try {
+            return new SmbFile(path).getDiskFreeSpace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 
     @Override

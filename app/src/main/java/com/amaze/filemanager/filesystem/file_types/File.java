@@ -87,6 +87,11 @@ public class File extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return new java.io.File(path).getTotalSpace();
+    }
+
+    @Override
     public boolean exists() {
         return new java.io.File(path).exists();
     }

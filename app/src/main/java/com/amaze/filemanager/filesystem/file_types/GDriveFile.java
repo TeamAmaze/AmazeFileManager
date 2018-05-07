@@ -54,6 +54,11 @@ public class GDriveFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return dataUtils.getAccount(mode).getAllocation().getTotal();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(mode);
         return cloudStorageGoogleDrive.exists(CloudUtil.stripPath(mode, path));

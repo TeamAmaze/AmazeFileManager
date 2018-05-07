@@ -54,6 +54,11 @@ public class BoxFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return dataUtils.getAccount(mode).getAllocation().getTotal();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageBox = dataUtils.getAccount(mode);
         return cloudStorageBox.exists(CloudUtil.stripPath(mode, path));

@@ -112,11 +112,29 @@ public class SFTPFile extends HybridFile {
                     return response.diskFreeSpace();
                 } catch (SFTPException e) {
                     Log.e(TAG, "Error querying server", e);
-                    return 0L;
                 } catch (Buffer.BufferException e) {
                     Log.e(TAG, "Error parsing reply", e);
-                    return 0L;
                 }
+                return 0L;
+            }
+        });
+    }
+
+    @Override
+    public long getTotal(Context context) {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Long execute(@NonNull SFTPClient client) throws IOException {
+                try {
+                    Statvfs.Response response = new Statvfs.Response(path,
+                            client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
+                    return response.diskSize();
+                } catch (SFTPException e) {
+                    Log.e(TAG, "Error querying server", e);
+                } catch (Buffer.BufferException e) {
+                    Log.e(TAG, "Error parsing reply", e);
+                }
+                return 0L;
             }
         });
     }

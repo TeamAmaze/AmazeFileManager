@@ -310,54 +310,7 @@ public class HybridFile {
      * @return
      */
     public long getTotal(Context context) {
-        long size = 0l;
-        switch (mode) {
-            case SMB:
-                // TODO: Find total storage space of SMB when JCIFS adds support
-                try {
-                    size = new SmbFile(path).getDiskFreeSpace();
-                } catch (SmbException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case FILE:
-            case ROOT:
-                size = new File(path).getTotalSpace();
-                break;
-            case DROPBOX:
-            case BOX:
-            case ONEDRIVE:
-            case GDRIVE:
-                SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
-                size = spaceAllocation.getTotal();
-                break;
-            case SFTP:
-                size = SshClientUtils.execute(new SFtpClientTemplate(path) {
-                    @Override
-                    public Long execute(@NonNull SFTPClient client) throws IOException {
-                        try {
-                            Statvfs.Response response = new Statvfs.Response(path,
-                                    client.getSFTPEngine().request(Statvfs.request(client, SshClientUtils.extractRemotePathFrom(path))).retrieve());
-                            return response.diskSize();
-                        } catch (SFTPException e) {
-                            Log.e(TAG, "Error querying server", e);
-                            return 0L;
-                        } catch (Buffer.BufferException e) {
-                            Log.e(TAG, "Error parsing reply", e);
-                            return 0L;
-                        }
-                    }
-                });
-                break;
-            case OTG:
-                // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
-                DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
-                documentFile.length();
-                break;
-        }
-        return size;
+        return 0L;
     }
 
     /**

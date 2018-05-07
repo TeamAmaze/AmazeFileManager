@@ -54,6 +54,11 @@ public class OneDriveFile extends HybridFile {
     }
 
     @Override
+    public long getTotal(Context context) {
+        return dataUtils.getAccount(mode).getAllocation().getTotal();
+    }
+
+    @Override
     public boolean exists() {
         CloudStorage cloudStorageOneDrive = dataUtils.getAccount(mode);
         return cloudStorageOneDrive.exists(CloudUtil.stripPath(mode, path));
