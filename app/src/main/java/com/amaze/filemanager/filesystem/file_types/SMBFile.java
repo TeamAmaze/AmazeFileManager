@@ -5,6 +5,8 @@ import android.content.Context;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
+import java.net.MalformedURLException;
+
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -13,14 +15,17 @@ import jcifs.smb.SmbFile;
  * Created by Rustam Khadipash on 6/5/2018.
  */
 public class SMBFile extends HybridFile {
+    private String path;
     final private OpenMode mode = OpenMode.SMB;
 
     public SMBFile(OpenMode mode, String path) {
         super(mode, path);
+        this.path = path;
     }
 
     public SMBFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
+        this.path = path;
     }
 
     @Override
@@ -73,5 +78,23 @@ public class SMBFile extends HybridFile {
         if(smbFile!=null)
             return smbFile.getName();
         return super.getName(context);
+    }
+
+    private SmbFile getSmbFile() {
+        try {
+            return new SmbFile(path);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    private SmbFile getSmbFile(int timeout) {
+        try {
+            SmbFile smbFile = new SmbFile(path);
+            smbFile.setConnectTimeout(timeout);
+            return smbFile;
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 }
