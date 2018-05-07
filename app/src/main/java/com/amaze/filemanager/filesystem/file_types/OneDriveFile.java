@@ -6,6 +6,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 
 /**
@@ -13,6 +14,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class OneDriveFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.ONEDRIVE;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public OneDriveFile(OpenMode mode, String path) {
@@ -29,5 +31,11 @@ public class OneDriveFile extends HybridFile {
     public long length(Context context) {
         return dataUtils.getAccount(OpenMode.ONEDRIVE)
                 .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+        return cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
     }
 }

@@ -2,12 +2,16 @@ package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
 
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.OpenMode;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import jcifs.smb.SmbException;
 
 
 /**
@@ -15,6 +19,8 @@ import java.util.ArrayList;
  */
 public class RootFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.ROOT;
+
     public RootFile(OpenMode mode, String path) {
         super(mode, path);
         this.path = path;
@@ -23,6 +29,14 @@ public class RootFile extends HybridFile {
     public RootFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
         this.path = path;
+    }
+
+    @Override
+    public long lastModified() throws SmbException {
+        HybridFileParcelable baseFile = generateBaseFileFromParent();
+        if (baseFile != null)
+            return baseFile.getDate();
+        return super.lastModified();
     }
 
     @Override
@@ -56,5 +70,25 @@ public class RootFile extends HybridFile {
                 return baseFile;
         }
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return new File(path).getName();
+    }
+
+    @Override
+    public String getName(Context context) {
+        return new File(path).getName();
+    }
+
+    @Override
+    public boolean exists() {
+        try {
+            return RootHelper.fileExists(path);
+        } catch (ShellNotRunningException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

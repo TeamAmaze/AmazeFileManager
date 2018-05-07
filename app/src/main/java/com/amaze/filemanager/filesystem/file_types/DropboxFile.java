@@ -6,6 +6,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 
 /**
@@ -13,6 +14,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class DropboxFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.DROPBOX;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public DropboxFile(OpenMode mode, String path) {
@@ -29,5 +31,11 @@ public class DropboxFile extends HybridFile {
     public long length(Context context) {
         return dataUtils.getAccount(OpenMode.DROPBOX)
                 .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+        return cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
     }
 }

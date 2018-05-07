@@ -1,6 +1,7 @@
 package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
+import android.support.v4.provider.DocumentFile;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -26,5 +27,16 @@ public class OTGFile extends HybridFile {
     @Override
     public long length(Context context) {
         return OTGUtil.getDocumentFile(path, context, false).length();
+    }
+
+    @Override
+    public String getName(Context context) {
+        return OTGUtil.getDocumentFile(path, context, false).getName();
+    }
+
+    @Override
+    public boolean exists(Context context) {
+        DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
+        return fileToCheck != null;
     }
 }

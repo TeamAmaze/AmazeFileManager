@@ -9,8 +9,12 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.OpenMode;
 
 import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+
+import jcifs.smb.SmbException;
 
 
 /**
@@ -18,6 +22,7 @@ import java.io.IOException;
  */
 public class SFTPFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.SFTP;
 
     public SFTPFile(OpenMode mode, String path) {
         super(mode, path);
@@ -27,6 +32,16 @@ public class SFTPFile extends HybridFile {
     public SFTPFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
         this.path = path;
+    }
+
+    @Override
+    public long lastModified() {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Long execute(SFTPClient client) throws IOException {
+                return client.mtime(SshClientUtils.extractRemotePathFrom(path));
+            }
+        });
     }
 
     @Override
@@ -42,5 +57,19 @@ public class SFTPFile extends HybridFile {
     @Override
     public long length(Context context) {
         return ((HybridFileParcelable)((HybridFile)this)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        return SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Boolean execute(SFTPClient client) throws IOException {
+                try {
+                    return client.stat(SshClientUtils.extractRemotePathFrom(path)) != null;
+                } catch (SFTPException notFound){
+                    return false;
+                }
+            }
+        });
     }
 }

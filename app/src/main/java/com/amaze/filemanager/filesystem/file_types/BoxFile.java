@@ -6,6 +6,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.cloudrail.si.interfaces.CloudStorage;
 
 
 /**
@@ -13,6 +14,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class BoxFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.BOX;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public BoxFile(OpenMode mode, String path) {
@@ -29,5 +31,11 @@ public class BoxFile extends HybridFile {
     public long length(Context context) {
         return dataUtils.getAccount(OpenMode.BOX)
                 .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path)).getSize();
+    }
+
+    @Override
+    public boolean exists() {
+        CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+        return cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
     }
 }
