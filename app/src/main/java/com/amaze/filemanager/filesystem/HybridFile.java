@@ -52,8 +52,6 @@ import java.util.EnumSet;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-import static com.amaze.filemanager.utils.OpenMode.SFTP;
-
 /**
  * Created by Arpit on 07-07-2015.
  */
@@ -88,7 +86,7 @@ public class HybridFile {
         if (path.startsWith("smb://")) {
             mode = OpenMode.SMB;
         } else if (path.startsWith("ssh://")) {
-            mode = SFTP;
+            mode = OpenMode.SFTP;
         } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
             mode = OpenMode.OTG;
         } else if (isCustomPath()) {
@@ -149,7 +147,7 @@ public class HybridFile {
         return mode == OpenMode.SMB;
     }
 
-    public boolean isSftp() { return mode == SFTP; }
+    public boolean isSftp() { return mode == OpenMode.SFTP; }
 
     public boolean isOtgFile() {
         return mode == OpenMode.OTG;
@@ -688,7 +686,7 @@ public class HybridFile {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
                                     f.setName(info.getName());
-                                    f.setMode(SFTP);
+                                    f.setMode(OpenMode.SFTP);
                                     f.setDirectory(info.isDirectory());
                                     f.setDate(info.getAttributes().getMtime() * 1000);
                                     f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
@@ -757,7 +755,7 @@ public class HybridFile {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
                                     f.setName(info.getName());
-                                    f.setMode(SFTP);
+                                    f.setMode(OpenMode.SFTP);
                                     f.setDirectory(info.isDirectory());
                                     f.setDate(info.getAttributes().getMtime() * 1000);
                                     f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());

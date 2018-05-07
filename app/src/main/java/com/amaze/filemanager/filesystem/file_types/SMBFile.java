@@ -23,23 +23,29 @@ public class SMBFile extends HybridFile {
 
     @Override
     public long length() {
+        try {
+            return getLength();
+        } catch (Exception e) {
+            return super.length();
+        }
+    }
+
+    @Override
+    public long length(Context context) {
+        try {
+            return getLength();
+        } catch (Exception e) {
+            return super.length(context);
+        }
+    }
+
+    private long getLength() throws Exception {
         SmbFile smbFile = getSmbFile();
         if (smbFile != null)
             try {
                 return smbFile.length();
             } catch (SmbException ignored) {
             }
-        return super.length();
-    }
-
-    @Override
-    public long length(Context context) {
-        SmbFile smbFile=getSmbFile();
-        if(smbFile!=null)
-            try {
-                return smbFile.length();
-            } catch (SmbException ignored) {
-            }
-        return super.length(context);
+        throw new Exception();
     }
 }
