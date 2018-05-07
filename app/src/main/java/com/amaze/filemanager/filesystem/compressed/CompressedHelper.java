@@ -1,9 +1,32 @@
+/*
+ * CompressedHelper.java
+ *
+ * Copyright © 2017-2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.Bzip2Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
@@ -32,6 +55,7 @@ public class CompressedHelper {
     public static final String fileExtensionZip = "zip", fileExtensionJar = "jar", fileExtensionApk = "apk";
     public static final String fileExtensionTar = "tar";
     public static final String fileExtensionGzipTar = "tar.gz";
+    public static final String fileExtensionBzip2Tar = "tar.bz2";
     public static final String fileExtensionRar = "rar";
 
     /**
@@ -50,6 +74,8 @@ public class CompressedHelper {
             extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
         } else if(isGzippedTar(type)) {
             extractor = new GzipExtractor(context, file.getPath(), outputPath, listener);
+        } else if(isBzippedTar(type)) {
+            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener);
         } else {
             return null;
         }
@@ -72,6 +98,8 @@ public class CompressedHelper {
             decompressor = new TarDecompressor(context);
         } else if(isGzippedTar(type)) {
             decompressor = new GzipDecompressor(context);
+        } else if(isBzippedTar(type)) {
+            decompressor = new Bzip2Decompressor(context);
         } else {
             return null;
         }
@@ -115,6 +143,10 @@ public class CompressedHelper {
 
     private static boolean isGzippedTar(String type) {
          return type.endsWith(fileExtensionGzipTar);
+    }
+
+    private static boolean isBzippedTar(String type) {
+        return type.endsWith(fileExtensionBzip2Tar);
     }
 
     private static boolean isRar(String type) {
