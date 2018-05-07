@@ -13,6 +13,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class DropboxFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.DROPBOX;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public DropboxFile(OpenMode mode, String path) {

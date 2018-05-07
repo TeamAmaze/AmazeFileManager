@@ -5,11 +5,15 @@ import android.content.Context;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
+import jcifs.smb.SmbException;
+
 
 /**
  * Created by Rustam Khadipash on 6/5/2018.
  */
 public class File extends HybridFile {
+    final private OpenMode mode = OpenMode.FILE;
+
     private String path;
 
     public File(OpenMode mode, String path) {
@@ -20,6 +24,11 @@ public class File extends HybridFile {
     public File(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
         this.path = path;
+    }
+
+    @Override
+    public long lastModified() {
+        return new java.io.File(path).lastModified();
     }
 
     @Override

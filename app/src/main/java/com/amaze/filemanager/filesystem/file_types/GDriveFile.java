@@ -13,6 +13,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class GDriveFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.GDRIVE;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public GDriveFile(OpenMode mode, String path) {

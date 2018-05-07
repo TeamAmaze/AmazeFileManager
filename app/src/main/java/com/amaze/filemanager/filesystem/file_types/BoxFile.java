@@ -13,6 +13,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class BoxFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.BOX;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public BoxFile(OpenMode mode, String path) {

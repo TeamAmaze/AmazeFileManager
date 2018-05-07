@@ -9,12 +9,16 @@ import com.amaze.filemanager.utils.OpenMode;
 
 import java.util.ArrayList;
 
+import jcifs.smb.SmbException;
+
 
 /**
  * Created by Rustam Khadipash on 6/5/2018.
  */
 public class RootFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.ROOT;
+
     public RootFile(OpenMode mode, String path) {
         super(mode, path);
         this.path = path;
@@ -23,6 +27,14 @@ public class RootFile extends HybridFile {
     public RootFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
         this.path = path;
+    }
+
+    @Override
+    public long lastModified() throws SmbException {
+        HybridFileParcelable baseFile = generateBaseFileFromParent();
+        if (baseFile != null)
+            return baseFile.getDate();
+        return super.lastModified();
     }
 
     @Override

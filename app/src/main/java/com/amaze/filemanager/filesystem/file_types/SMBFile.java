@@ -13,12 +13,22 @@ import jcifs.smb.SmbFile;
  * Created by Rustam Khadipash on 6/5/2018.
  */
 public class SMBFile extends HybridFile {
+    final private OpenMode mode = OpenMode.SMB;
+
     public SMBFile(OpenMode mode, String path) {
         super(mode, path);
     }
 
     public SMBFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
+    }
+
+    @Override
+    public long lastModified() throws SmbException {
+        SmbFile smbFile = getSmbFile();
+        if (smbFile != null)
+            return smbFile.lastModified();
+        return super.lastModified();
     }
 
     @Override

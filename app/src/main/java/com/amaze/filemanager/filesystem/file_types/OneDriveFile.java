@@ -13,6 +13,7 @@ import com.amaze.filemanager.utils.cloud.CloudUtil;
  */
 public class OneDriveFile extends HybridFile {
     private String path;
+    final private OpenMode mode = OpenMode.ONEDRIVE;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public OneDriveFile(OpenMode mode, String path) {
