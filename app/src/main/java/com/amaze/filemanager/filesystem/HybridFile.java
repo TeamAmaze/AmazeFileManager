@@ -700,26 +700,6 @@ public class HybridFile {
      * Currently supports only local filesystem
      */
     public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
-        switch (mode) {
-            case FILE:
-            case ROOT:
-                File file = new File(path);
-                LayoutElementParcelable layoutElement;
-                if (isDirectory()) {
-
-                    layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
-                            "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", showThumbs);
-                } else {
-                    layoutElement = new LayoutElementParcelable(
-                            file.getPath(), RootHelper.parseFilePermission(file),
-                            file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", showThumbs);
-                }
-                layoutElement.setMode(mode);
-                return layoutElement;
-            default:
-                return null;
-        }
+        return null;
     }
 }
