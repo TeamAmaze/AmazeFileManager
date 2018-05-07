@@ -11,13 +11,16 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class EncryptUtil {
-    public static void startEncrpt(Context c, String path, String password, Intent intent) throws GeneralSecurityException, IOException {
-        CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
+    /* rename parameter
+   Renamed for understandability.
+    */
+
+    public static void startEncrpt(Context context, String filePath, String passwordInPlaintext, Intent intent) throws GeneralSecurityException, IOException {
+        CryptHandler cryptHandler = new CryptHandler(context);
+        EncryptedEntry encryptedEntry = new EncryptedEntry(filePath.concat(CryptUtil.CRYPT_EXTENSION), passwordInPlaintext);
         cryptHandler.addEntry(encryptedEntry);
 
         // start the encryption process
-        ServiceWatcherUtil.runService(c, intent);
+        ServiceWatcherUtil.runService(context, intent);
     }
 }

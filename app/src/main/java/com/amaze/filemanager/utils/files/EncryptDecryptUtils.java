@@ -37,6 +37,10 @@ public class EncryptDecryptUtils {
 
     public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
 
+    /* rename parameter
+    Renamed for understandability.
+     */
+
     /* extract class - startEncryption and decryptFile : EncryptUtil and DecryptUtil
     Since the encryption and decryption processes are different, I have re-created the other two classes.
      */
@@ -44,20 +48,20 @@ public class EncryptDecryptUtils {
      * Queries database to map path and password.
      * Starts the encryption process after database query
      *
-     * @param path     the path of file to encrypt
-     * @param password the password in plaintext
+     * @param filePath     the path of file to encrypt
+     * @param passwordInPlaintext the password in plaintext
      */
-    public static void startEncryption(Context c, final String path, final String password,
+    public static void startEncryption(Context context, final String filePath, final String passwordInPlaintext,
                                        Intent intent) throws Exception {
-        EncryptUtil.startEncrpt(c, path, password, intent);
+        EncryptUtil.startEncrpt(context, filePath, passwordInPlaintext, intent);
     }
 
-    public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
+    public static void decryptFile(Context context, final MainActivity mainActivity, final MainFragment mainFragment, OpenMode openMode,
                                    HybridFileParcelable sourceFile, String decryptPath,
                                    UtilitiesProvider utilsProvider,
                                    boolean broadcastResult) {
 
-        DecryptUtil.startDecrypt(c, mainActivity, main, openMode, sourceFile, decryptPath, utilsProvider);
+        DecryptUtil.startDecrypt(context, mainActivity, mainFragment, openMode, sourceFile, decryptPath, utilsProvider);
     }
 
 
