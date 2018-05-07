@@ -358,7 +358,7 @@ public class DataUtils {
     }
 
     public synchronized void setGridfiles(ArrayList<String> gridfiles) {
-        if (gridfiles != null) {
+        if (isAllocated(gridfiles)) {
             for (String gridfile : gridfiles) {
                 setPathAsGridOrList(gridfile, GRID);
             }
@@ -366,7 +366,7 @@ public class DataUtils {
     }
 
     public synchronized void setListfiles(ArrayList<String> listfiles) {
-        if (listfiles != null) {
+        if (isAllocated(listfiles)) {
             for (String gridfile : listfiles) {
                 setPathAsGridOrList(gridfile, LIST);
             }
