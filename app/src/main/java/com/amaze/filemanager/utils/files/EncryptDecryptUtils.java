@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -34,6 +36,10 @@ import java.security.GeneralSecurityException;
 public class EncryptDecryptUtils {
 
     public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
+
+    /* extract class - startEncryption and decryptFile : EncryptUtil and DecryptUtil
+    Since the encryption and decryption processes are different, I have re-created the other two classes.
+     */
     /**
      * Queries database to map path and password.
      * Starts the encryption process after database query
@@ -43,113 +49,17 @@ public class EncryptDecryptUtils {
      */
     public static void startEncryption(Context c, final String path, final String password,
                                        Intent intent) throws Exception {
-        CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
-        cryptHandler.addEntry(encryptedEntry);
-
-        // start the encryption process
-        ServiceWatcherUtil.runService(c, intent);
+        EncryptUtil.startEncrpt(c, path, password, intent);
     }
-
 
     public static void decryptFile(Context c, final MainActivity mainActivity, final MainFragment main, OpenMode openMode,
                                    HybridFileParcelable sourceFile, String decryptPath,
                                    UtilitiesProvider utilsProvider,
                                    boolean broadcastResult) {
 
-        Intent decryptIntent = new Intent(main.getContext(), DecryptService.class);
-        decryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, openMode.ordinal());
-        decryptIntent.putExtra(EncryptService.TAG_SOURCE, sourceFile);
-        decryptIntent.putExtra(EncryptService.TAG_DECRYPT_PATH, decryptPath);
-        SharedPreferences preferences1 = PreferenceManager.getDefaultSharedPreferences(main.getContext());
-
-        EncryptedEntry encryptedEntry;
-
-        try {
-            encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-
-            // we couldn't find any entry in database or lost the key to decipher
-            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        DecryptButtonCallbackInterface decryptButtonCallbackInterface =
-                new DecryptButtonCallbackInterface() {
-                    @Override
-                    public void confirm(Intent intent) {
-                        ServiceWatcherUtil.runService(main.getContext(), intent);
-                    }
-
-                    @Override
-                    public void failed() {
-                        Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail_password), Toast.LENGTH_LONG).show();
-                    }
-                };
-
-        if (encryptedEntry == null) {
-            // couldn't find the matching path in database, we lost the password
-
-            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        switch (encryptedEntry.getPassword()) {
-            case PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT:
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        GeneralDialogCreation.showDecryptFingerprintDialog(c,
-                                mainActivity, decryptIntent, utilsProvider.getAppTheme(), decryptButtonCallbackInterface);
-                    } else throw new IllegalStateException("API < M!");
-                } catch (GeneralSecurityException | IOException | IllegalStateException e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
-                }
-                break;
-            case PreferencesConstants.ENCRYPT_PASSWORD_MASTER:
-                try {
-                    GeneralDialogCreation.showDecryptDialog(c,
-                            mainActivity, decryptIntent, utilsProvider.getAppTheme(),
-                            CryptUtil.decryptPassword(c, preferences1.getString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
-                } catch (GeneralSecurityException | IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
-                }
-                break;
-            default:
-                GeneralDialogCreation.showDecryptDialog(c, mainActivity, decryptIntent,
-                        utilsProvider.getAppTheme(), encryptedEntry.getPassword(),
-                        decryptButtonCallbackInterface);
-                break;
-        }
+        DecryptUtil.startDecrypt(c, mainActivity, main, openMode, sourceFile, decryptPath, utilsProvider);
     }
 
-    /**
-     * Queries database to find entry for the specific path
-     *
-     * @param path the path to match with
-     * @return the entry
-     */
-    private static EncryptedEntry findEncryptedEntry(Context context, String path) throws GeneralSecurityException, IOException {
-
-        CryptHandler handler = new CryptHandler(context);
-
-        EncryptedEntry matchedEntry = null;
-        // find closest path which matches with database entry
-        for (EncryptedEntry encryptedEntry : handler.getAllEntries()) {
-            if (path.contains(encryptedEntry.getPath())) {
-
-                if (matchedEntry == null || matchedEntry.getPath().length() < encryptedEntry.getPath().length()) {
-                    matchedEntry = encryptedEntry;
-                }
-            }
-        }
-        return matchedEntry;
-    }
 
     public interface EncryptButtonCallbackInterface {
 
