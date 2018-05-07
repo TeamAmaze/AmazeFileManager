@@ -63,12 +63,12 @@ public class DataUtils {
         return sDataUtils;
     }
 
-    public int containsBooks(String[] a) {
-        return contains(a, books);
+    public int containsBooks(String[] aBook) {
+        return contains(aBook, books);
     }
 
-    public int containsServer(String[] a) {
-        return contains(a, servers);
+    public int containsServer(String[] aServer) {
+        return contains(aServer, servers);
     }
 
     public int containsServer(String path) {
@@ -77,21 +77,28 @@ public class DataUtils {
         }
     }
 
-    int contains(String[] a, ArrayList<String[]> b) {
-        if (b == null) return -1;
+    private int contains(String[] target, ArrayList<String[]> listOfStrings) {
+        if (listOfStrings == null) return -1;
+
         int i = 0;
-        for (String[] x : b) {
-            if (x[0].equals(a[0]) && x[1].equals(a[1])) return i;
+        for (String[] x : listOfStrings) {
+            final boolean hasNameEqualsTarget = x[0].equals(target[0]) ; // the index '0' means object's name(title)
+            final boolean hasPathEqualsTarget = x[1].equals(target[1]) ; // the index '1' means object's path
+
+            if ( hasNameEqualsTarget && hasPathEqualsTarget ) return i;
             i++;
         }
         return -1;
     }
 
-    int contains(String a, ArrayList<String[]> b) {
+    private int contains(String target, ArrayList<String[]> listOfStrings) {
+        if (listOfStrings == null) return -1 ;
+
         int i = 0;
-        if (b == null) return -1 ;
-        for (String[] x : b) {
-            if (x[1].equals(a)) return i;
+        for (String[] x : listOfStrings) {
+            final boolean hasPathEqualsTarget = x[1].equals(target) ; // the index '1' means object's path
+
+            if ( hasPathEqualsTarget ) return i;
             i++;
         }
         return -1;
