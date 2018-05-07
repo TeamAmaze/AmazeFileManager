@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 
 /**
@@ -31,21 +32,17 @@ public class File extends HybridFile {
 
     @Override
     public long length() {
-        return getLength();
+        return length(AppConfig.getInstance());
     }
 
     @Override
     public long length(Context context) {
-        return getLength();
-    }
-
-    private long getLength() {
         return new java.io.File(path).length();
     }
 
     @Override
     public String getName() {
-        return new java.io.File(path).getName();
+        return getName(AppConfig.getInstance());
     }
 
     @Override
@@ -55,7 +52,7 @@ public class File extends HybridFile {
 
     @Override
     public String getParent() {
-        return new java.io.File(path).getParent();
+        return getParent(AppConfig.getInstance());
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,26 +42,15 @@ public class RootFile extends HybridFile {
 
     @Override
     public long length() {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length();
-        }
+        return length(AppConfig.getInstance());
     }
 
     @Override
     public long length(Context context) {
-        try {
-            return getLength();
-        } catch (Exception e) {
-            return super.length(context);
-        }
-    }
-
-    private long getLength() throws Exception {
         HybridFileParcelable baseFile=generateBaseFileFromParent();
-        if(baseFile!=null) return baseFile.getSize();
-        throw new Exception();
+        if(baseFile!=null)
+            return baseFile.getSize();
+        return super.length(context);
     }
 
     HybridFileParcelable generateBaseFileFromParent() {
@@ -74,7 +64,7 @@ public class RootFile extends HybridFile {
 
     @Override
     public String getName() {
-        return new File(path).getName();
+        return getName(AppConfig.getInstance());
     }
 
     @Override
@@ -84,7 +74,7 @@ public class RootFile extends HybridFile {
 
     @Override
     public String getParent() {
-        return new File(path).getParent();
+        return getParent(AppConfig.getInstance());
     }
 
     @Override
