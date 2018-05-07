@@ -159,4 +159,19 @@ public class SFTPFile extends HybridFile {
             }
         });
     }
+
+    @Override
+    public void mkdir(Context context) {
+        SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Void execute(SFTPClient client) throws IOException {
+                try {
+                    client.mkdir(SshClientUtils.extractRemotePathFrom(path));
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+    }
 }

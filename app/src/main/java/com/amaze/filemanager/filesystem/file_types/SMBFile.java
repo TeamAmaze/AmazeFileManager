@@ -166,6 +166,15 @@ public class SMBFile extends HybridFile {
         }
     }
 
+    @Override
+    public void mkdir(Context context) {
+        try {
+            new SmbFile(path).mkdirs();
+        } catch (SmbException | MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private SmbFile getSmbFile() {
         try {
             return new SmbFile(path);

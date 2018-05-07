@@ -670,65 +670,7 @@ public class HybridFile {
     }
 
     public void mkdir(Context context) {
-        if(isSftp()) {
-            SshClientUtils.execute(new SFtpClientTemplate(path) {
-                @Override
-                public Void execute(SFTPClient client) throws IOException {
-                    try {
-                        client.mkdir(SshClientUtils.extractRemotePathFrom(path));
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            });
-        } else if (isSmb()) {
-            try {
-                new SmbFile(path).mkdirs();
-            } catch (SmbException | MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else if (isOtgFile()) {
-            if (!exists(context)) {
-                DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
-                if (parentDirectory.isDirectory()) {
-                    parentDirectory.createDirectory(getName(context));
-                }
-            }
-        } else if (isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            try {
-                cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            try {
-                cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-            try {
-                cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isGoogleDriveFile()) {
-            CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-            try {
-                cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else
-            FileUtil.mkdir(new File(path), context);
+        FileUtil.mkdir(new File(path), context);
     }
 
     public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
