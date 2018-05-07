@@ -728,9 +728,13 @@ public class FileUtils {
         return s.equals("com.amaze.filemanager") || rii == null;
     }
 
+    /* code comment delete and arrangement - openFile method
+    Comment is not available because it is the previous code. So, Delete it.
+     */
     /**
      * Support file opening for {@link DocumentFile} (eg. OTG)
      */
+    // not supporting inbuilt activities for now
     public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
@@ -739,59 +743,6 @@ public class FileUtils {
             Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
-
-        // not supporting inbuilt activities for now
-        /*if (f.getName().toLowerCase().endsWith(".zip") ||
-                f.getName().toLowerCase().endsWith(".jar") ||
-                f.getName().toLowerCase().endsWith(".rar")||
-                f.getName().toLowerCase().endsWith(".tar") ||
-                f.getName().toLowerCase().endsWith(".tar.gz")) {
-            //showArchiveDialog(f, m);
-        } else if(f.getName().toLowerCase().endsWith(".apk")) {
-            //showPackageDialog(f, m);
-        } else if (f.getName().toLowerCase().endsWith(".db")) {
-            Intent intent = new Intent(m, DatabaseViewerActivity.class);
-            intent.putExtra("path", f.getUri());
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            m.startActivity(intent);
-        }  else if (Icons.isAudio(f.getName())) {
-            final int studio_count = sharedPref.getInt("studio", 0);
-            final Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(f.getUri(), "audio*//*");
-
-            // Behold! It's the  legendary easter egg!
-            if (studio_count!=0) {
-                new CountDownTimer(studio_count, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int sec = (int)millisUntilFinished/1000;
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-                        studioCount.show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
-                        studioCount.show();
-                        m.startActivity(intent);
-                    }
-                }.start();
-            } else
-                m.startActivity(intent);
-        } else {
-            try {
-                openunknown(f, m, false);
-            } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
-                openWith(f, m);
-            }
-        }*/
     }
 
     public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(ConcurrentRadixTree<VoidValue> a) {
