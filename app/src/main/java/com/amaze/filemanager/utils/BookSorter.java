@@ -7,14 +7,27 @@ import java.util.Comparator;
  */
 public class BookSorter implements Comparator<String[]> {
 
-    @Override
-    public int compare(String[] lhs, String[] rhs) {
-        int result = lhs[0].compareToIgnoreCase(rhs[0]);
+    /* rename parameters - compare method : "lhs->lhsBookNameAndPath", "rhs->rhsBookNameAndPath", "result->bookCompareResult"
+    It does not know what role it plays with existing parameter names. (Improved understandability)
+    */
 
-        if (result == 0) {
+    /* extract method - compare method : make isBookNameSame(bookNameCompare) and change "result==0->isBookNameSame(bookNameCompare)"
+    I don't know that the name of the book is the same when you see "result == 0". (Improved understandability)
+     */
+
+    @Override
+    public int compare(String[] lhsBookNameAndPath, String[] rhsBookNameAndPath) {
+        int bookCompareResult = lhsBookNameAndPath[0].compareToIgnoreCase(rhsBookNameAndPath[0]);
+
+        if (isBookNameSame(bookCompareResult)) {
             // the title is same, compare their paths
-            result = lhs[1].compareToIgnoreCase(rhs[1]);
+            bookCompareResult = lhsBookNameAndPath[1].compareToIgnoreCase(rhsBookNameAndPath[1]);
         }
-        return result;
+        return bookCompareResult;
     }
+
+    private boolean isBookNameSame(int bookNameCompare) {
+        return bookNameCompare == 0 ? true : false;
+    }
+
 }
