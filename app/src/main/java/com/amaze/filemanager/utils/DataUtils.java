@@ -163,11 +163,14 @@ public class DataUtils {
         return -1;
     }
 
+    private boolean isThisIndexContains(ArrayList arrayList, int index) {
+        return arrayList.size() > index ;
+    }
+
     public void removeBook(int i) throws IndexOutOfBoundsException {
         synchronized (books) {
-            final boolean isThisIndexContains = ( books.size() > i ) ;
 
-            if (isThisIndexContains) {
+            if (isThisIndexContains(books, i)) {
                 books.remove(i);
             }
             else {
@@ -211,8 +214,7 @@ public class DataUtils {
 
     public void removeServer(int i) throws IndexOutOfBoundsException {
         synchronized (servers) {
-            final boolean isThisIndexContains = ( servers.size() > i ) ;
-            if (isThisIndexContains){
+            if (isThisIndexContains(servers, i)){
                 servers.remove(i);
             }
             else {
