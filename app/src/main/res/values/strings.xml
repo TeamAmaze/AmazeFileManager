@@ -624,5 +624,6 @@
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
+    <string name="cannot_overwrite">Cannot overwrite file.</string>
 </resources>
 
