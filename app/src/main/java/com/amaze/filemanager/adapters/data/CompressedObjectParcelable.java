@@ -17,14 +17,16 @@ public class CompressedObjectParcelable implements Parcelable {
     public final boolean directory;
     public final int type;
     public final String name;
+    public final String path;
     public final long date, size;
     public final int filetype;
     public final IconDataParcelable iconData;
 
-    public CompressedObjectParcelable(String name, long date, long size, boolean directory) {
+    public CompressedObjectParcelable(String name, String path, long date, long size, boolean directory) {
         this.directory = directory;
         this.type = TYPE_NORMAL;
         this.name = name;
+        this.path = path;
         this.date = date;
         this.size = size;
         this.filetype = Icons.getTypeOfFile(name, directory);
@@ -39,6 +41,7 @@ public class CompressedObjectParcelable implements Parcelable {
         this.directory = true;
         this.type = TYPE_GOBACK;
         this.name = null;
+        this.path = null;
         this.date = 0;
         this.size = 0;
         this.filetype = -1;
@@ -55,6 +58,7 @@ public class CompressedObjectParcelable implements Parcelable {
         if(type != TYPE_GOBACK) {
             p1.writeInt(directory? 1:0);
             p1.writeString(name);
+            p1.writeString(path);
             p1.writeLong(size);
             p1.writeLong(date);
             p1.writeInt(filetype);
@@ -78,6 +82,7 @@ public class CompressedObjectParcelable implements Parcelable {
         if(type == TYPE_GOBACK) {
             directory = true;
             name = null;
+            path = null;
             date = 0;
             size = 0;
             filetype = -1;
@@ -85,6 +90,7 @@ public class CompressedObjectParcelable implements Parcelable {
         } else {
             directory = im.readInt() == 1;
             name = im.readString();
+            path = im.readString();
             size = im.readLong();
             date = im.readLong();
             filetype = im.readInt();

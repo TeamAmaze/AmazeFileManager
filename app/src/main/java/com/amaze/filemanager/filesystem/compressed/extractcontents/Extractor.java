@@ -29,7 +29,11 @@ public abstract class Extractor {
 
     public void extractFiles(String[] files) throws IOException {
         HashSet<String> filesToExtract = new HashSet<>(files.length);
-        Collections.addAll(filesToExtract, files);
+        for (String file : files) {
+            if(file.endsWith("/")) file = file.substring(0, file.length()-1);
+
+            filesToExtract.add(file);
+        }
 
         extractWithFilter((relativePath, isDir) -> {
             if(filesToExtract.contains(relativePath)) {

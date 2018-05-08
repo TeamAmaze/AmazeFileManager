@@ -1,6 +1,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -19,9 +20,18 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
 
     private boolean createBackItem;
     private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
+    protected String relativePath;
 
-    CompressedHelperTask(boolean goBack,
+    CompressedHelperTask(String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+        if(relativePath == null || relativePath.isEmpty() || relativePath.equals("/")) {
+            this.relativePath = "";
+        } else if(!relativePath.endsWith("/")) {
+            this.relativePath = relativePath + "/";
+        } else {
+            this.relativePath = relativePath;
+        }
+
         createBackItem = goBack;
         onFinish = l;
     }
@@ -45,5 +55,12 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
     }
 
     abstract void addElements(ArrayList<CompressedObjectParcelable> elements);
+
+    protected String getName(@NonNull String path, @NonNull String divider) {
+        if(path.endsWith(divider)) path = path.substring(0, path.length()-divider.length());
+        int lastInstance = path.lastIndexOf(divider);
+        if(lastInstance == -1) return path;
+        return path.substring(lastInstance+1, path.length());
+    }
 
 }
