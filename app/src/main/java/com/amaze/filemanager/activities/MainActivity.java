@@ -521,6 +521,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
             finish();
         });
+        //Ensure the FAB menu is visible
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.getMenuButton().show();
     }
 
     /**

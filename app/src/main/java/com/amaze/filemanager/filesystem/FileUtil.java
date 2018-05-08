@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -170,8 +169,8 @@ public abstract class FileUtil {
      * @param contentResolver
      * @param currentPath
      */
-    public static final void writeUriToStorage(final MainActivity mainActivity, final ArrayList<Uri> uris,
-                                               final ContentResolver contentResolver, final String currentPath) {
+    public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
+                                               @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
 
         AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
 
@@ -201,16 +200,33 @@ public abstract class FileUtil {
                         switch (hFile.getMode()) {
                             case FILE:
                             case ROOT:
-                                if (!FileUtil.isWritable(new File(finalFilePath))) {
-                                    AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
+                                File targetFile = new File(finalFilePath);
+                                if (!FileUtil.isWritable(targetFile)) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
                                     return null;
                                 }
-                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(finalFilePath));
+                                //Lazy check... and in fact, different apps may pass in URI in different formats, so we could only check filename matches
+                                //FIXME?: Prompt overwrite instead of simply blocking
+                                if (DocumentFile.fromFile(targetFile).exists()) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                }
+                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(targetFile));
                                 break;
                             case SMB:
-                                OutputStream outputStream = new SmbFile(finalFilePath).getOutputStream();
-                                bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                SmbFile targetSmbFile = new SmbFile(finalFilePath);
+                                if (targetSmbFile.exists()) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                } else {
+                                    OutputStream outputStream = targetSmbFile.getOutputStream();
+                                    bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                }
                                 break;
+                            case SFTP:
+                                //FIXME: implement support
+                                AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
+                                return null;
                             case DROPBOX:
                                 CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
                                 cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath),
@@ -234,6 +250,11 @@ public abstract class FileUtil {
                             case OTG:
                                 DocumentFile documentTargetFile = OTGUtil.getDocumentFile(finalFilePath,
                                         mainActivity, true);
+
+                                if(documentTargetFile.exists()) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                }
 
                                 bufferedOutputStream = new BufferedOutputStream(contentResolver
                                         .openOutputStream(documentTargetFile.getUri()),
