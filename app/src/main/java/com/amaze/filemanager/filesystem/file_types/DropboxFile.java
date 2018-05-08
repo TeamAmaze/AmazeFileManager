@@ -63,4 +63,14 @@ public class DropboxFile extends HybridFile {
         CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
         return cloudStorageDropbox.exists(CloudUtil.stripPath(mode, path));
     }
+
+    @Override
+    public void mkdir(Context context) {
+        CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
+        try {
+            cloudStorageDropbox.createFolder(CloudUtil.stripPath(mode, path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

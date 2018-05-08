@@ -71,4 +71,14 @@ public class OTGFile extends HybridFile {
         DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
         return fileToCheck != null;
     }
+
+    @Override
+    public void mkdir(Context context) {
+        if (!exists(context)) {
+            DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
+            if (parentDirectory.isDirectory()) {
+                parentDirectory.createDirectory(getName(context));
+            }
+        }
+    }
 }

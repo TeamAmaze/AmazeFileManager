@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem.file_types;
 
 import android.content.Context;
 
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -127,5 +128,23 @@ public class RootFile extends HybridFile {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
+        File file = new File(path);
+        LayoutElementParcelable layoutElement;
+        if (isDirectory()) {
+            layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
+                    "", folderSize() + "", 0, true,
+                    false, file.lastModified() + "", showThumbs);
+        } else {
+            layoutElement = new LayoutElementParcelable(
+                    file.getPath(), RootHelper.parseFilePermission(file),
+                    file.getPath(), file.length() + "", file.length(), false,
+                    false, file.lastModified() + "", showThumbs);
+        }
+        layoutElement.setMode(mode);
+        return layoutElement;
     }
 }

@@ -665,109 +665,19 @@ public class HybridFile {
     }
 
     public boolean setLastModified(final long date) {
-        if (isSmb()) {
-            try {
-                new SmbFile(path).setLastModified(date);
-                return true;
-            } catch (SmbException e) {
-                return false;
-            } catch (MalformedURLException e) {
-                return false;
-            }
-        }
-        File f = new File(path);
-        return f.setLastModified(date);
-
+        return new File(path).setLastModified(date);
     }
 
     public void mkdir(Context context) {
-        if(isSftp()) {
-            SshClientUtils.execute(new SFtpClientTemplate(path) {
-                @Override
-                public Void execute(SFTPClient client) throws IOException {
-                    try {
-                        client.mkdir(SshClientUtils.extractRemotePathFrom(path));
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            });
-        } else if (isSmb()) {
-            try {
-                new SmbFile(path).mkdirs();
-            } catch (SmbException | MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else if (isOtgFile()) {
-            if (!exists(context)) {
-                DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
-                if (parentDirectory.isDirectory()) {
-                    parentDirectory.createDirectory(getName(context));
-                }
-            }
-        } else if (isDropBoxFile()) {
-            CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-            try {
-                cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isBoxFile()) {
-            CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-            try {
-                cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isOneDriveFile()) {
-            CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-            try {
-                cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else if (isGoogleDriveFile()) {
-            CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-            try {
-                cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        } else
-            FileUtil.mkdir(new File(path), context);
+        FileUtil.mkdir(new File(path), context);
     }
 
     public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
-        if (isSftp()) {
-            SshClientUtils.execute(new SFtpClientTemplate(path) {
-                @Override
-                public Void execute(SFTPClient client) throws IOException {
-                    if(isDirectory(AppConfig.getInstance()))
-                        client.rmdir(SshClientUtils.extractRemotePathFrom(path));
-                    else
-                        client.rm(SshClientUtils.extractRemotePathFrom(path));
-                    return null;
-                }
-            });
-            return true;
-        } else if (isSmb()) {
-            try {
-                new SmbFile(path).delete();
-            } catch (SmbException | MalformedURLException e) {
-                e.printStackTrace();
-            }
+        if (isRoot() && rootmode) {
+            setMode(OpenMode.ROOT);
+            RootUtils.delete(getPath());
         } else {
-            if (isRoot() && rootmode) {
-                setMode(OpenMode.ROOT);
-                RootUtils.delete(getPath());
-            } else {
-                FileUtil.deleteFile(new File(path), context);
-            }
+            FileUtil.deleteFile(new File(path), context);
         }
         return !exists();
     }
@@ -790,26 +700,6 @@ public class HybridFile {
      * Currently supports only local filesystem
      */
     public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
-        switch (mode) {
-            case FILE:
-            case ROOT:
-                File file = new File(path);
-                LayoutElementParcelable layoutElement;
-                if (isDirectory()) {
-
-                    layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
-                            "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", showThumbs);
-                } else {
-                    layoutElement = new LayoutElementParcelable(
-                            file.getPath(), RootHelper.parseFilePermission(file),
-                            file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", showThumbs);
-                }
-                layoutElement.setMode(mode);
-                return layoutElement;
-            default:
-                return null;
-        }
+        return null;
     }
 }

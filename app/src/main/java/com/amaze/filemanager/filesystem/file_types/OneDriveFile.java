@@ -63,4 +63,14 @@ public class OneDriveFile extends HybridFile {
         CloudStorage cloudStorageOneDrive = dataUtils.getAccount(mode);
         return cloudStorageOneDrive.exists(CloudUtil.stripPath(mode, path));
     }
+
+    @Override
+    public void mkdir(Context context) {
+        CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
+        try {
+            cloudStorageDropbox.createFolder(CloudUtil.stripPath(mode, path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

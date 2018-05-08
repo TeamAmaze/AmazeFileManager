@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -158,5 +159,35 @@ public class SFTPFile extends HybridFile {
                 }
             }
         });
+    }
+
+    @Override
+    public void mkdir(Context context) {
+        SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Void execute(SFTPClient client) throws IOException {
+                try {
+                    client.mkdir(SshClientUtils.extractRemotePathFrom(path));
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
+        SshClientUtils.execute(new SFtpClientTemplate(path) {
+            @Override
+            public Void execute(SFTPClient client) throws IOException {
+                if(isDirectory(AppConfig.getInstance()))
+                    client.rmdir(SshClientUtils.extractRemotePathFrom(path));
+                else
+                    client.rm(SshClientUtils.extractRemotePathFrom(path));
+                return null;
+            }
+        });
+        return true;
     }
 }
