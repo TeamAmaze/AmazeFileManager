@@ -49,7 +49,7 @@ public class SubnetScanner extends Thread {
             this.addr = str;
         }
 
-        public ComputerParcelable call() throws Exception {
+        public ComputerParcelable call() {
             try {
                 NbtAddress[] allByAddress = NbtAddress.getAllByAddress(this.addr);
                 if (allByAddress == null || allByAddress.length <= 0) {

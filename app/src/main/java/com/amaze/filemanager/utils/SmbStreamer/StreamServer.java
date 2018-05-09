@@ -202,9 +202,7 @@ public abstract class StreamServer {
      * Since CloudStreamServer and Streamer both uses the same port, shutdown the CloudStreamer before
      * acquiring the port.
      *
-     * @param port
      * @return ServerSocket
-     * @throws IOException
      */
     private ServerSocket tryBind(int port) throws IOException {
         ServerSocket socket;

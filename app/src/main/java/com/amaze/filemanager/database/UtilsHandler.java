@@ -275,7 +275,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 e.printStackTrace();
 
                 // failing to decrypt the path, removing entry from database
-                Toast.makeText(context, context.getResources().getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
                 removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                         "");
                 continue;
@@ -305,7 +305,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
                 // failing to decrypt the path, removing entry from database
                 Toast.makeText(context,
-                        context.getResources().getString(R.string.failed_smb_decrypt_path),
+                        context.getString(R.string.failed_smb_decrypt_path),
                         Toast.LENGTH_LONG).show();
 //                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
 //                            "");
@@ -407,7 +407,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     /**
      * Remove SMB entry
-     * @param name
      * @param path the path we get from saved runtime variables is a decrypted, to remove entry,
      *             we must encrypt it's password fiend first first
      */
@@ -561,13 +560,10 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.update(getTableForOperation(operation), contentValues, COLUMN_NAME
                 + "=? AND " + COLUMN_PATH + "=?", new String[] {oldName, oldPath});
-        return;
     }
 
     /**
      * Return table string for corresponding {@link Operation}
-     * @param operation
-     * @return
      */
     private String getTableForOperation(Operation operation) {
 

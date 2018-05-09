@@ -97,7 +97,6 @@ public class CryptUtil {
      * Be sure to use constructors to encrypt/decrypt files only, and to call service through
      * {@link ServiceWatcherUtil} and to initialize watchers beforehand
      *
-     * @param context
      * @param sourceFile the file to encrypt
      */
     public CryptUtil(Context context, HybridFileParcelable sourceFile, ProgressHandler progressHandler,
@@ -119,7 +118,6 @@ public class CryptUtil {
      * Be sure to use constructors to encrypt/decrypt files only, and to call service through
      * {@link ServiceWatcherUtil} and to initialize watchers beforehand
      *
-     * @param context
      * @param baseFile the encrypted file
      * @param targetPath the directory in which file is to be decrypted
      *                   the source's parent in normal case
@@ -142,7 +140,7 @@ public class CryptUtil {
 
     /**
      * Wrapper around handling decryption for directory tree
-     * @param context
+     *
      * @param sourceFile        the source file to decrypt
      * @param targetDirectory   the target directory inside which we're going to decrypt
      */
@@ -193,7 +191,7 @@ public class CryptUtil {
 
     /**
      * Wrapper around handling encryption in directory tree
-     * @param context
+     *
      * @param sourceFile        the source file to encrypt
      * @param targetDirectory   the target directory in which we're going to encrypt
      */
@@ -345,14 +343,6 @@ public class CryptUtil {
     /**
      * Gets a secret key from Android key store.
      * If no key has been generated with a given alias then generate a new one
-     * @return
-     * @throws KeyStoreException
-     * @throws CertificateException
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws UnrecoverableKeyException
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static Key getSecretKey() throws GeneralSecurityException, IOException {
@@ -460,9 +450,6 @@ public class CryptUtil {
 
     /**
      * Method handles encryption of plain text on various APIs
-     * @param context
-     * @param plainText
-     * @return
      */
     public static String encryptPassword(Context context, String plainText) throws GeneralSecurityException, IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

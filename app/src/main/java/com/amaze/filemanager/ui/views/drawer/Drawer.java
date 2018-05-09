@@ -104,7 +104,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         resources = mainActivity.getResources();
 
         drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         drawerHeaderView.setOnLongClickListener(v -> {
             Intent intent1;
@@ -543,7 +543,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
+                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
                     closeIfNotLocked();
                     if (isLocked()) { onDrawerClosed(); }

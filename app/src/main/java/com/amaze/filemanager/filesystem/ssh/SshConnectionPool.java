@@ -133,7 +133,7 @@ public class SshConnectionPool
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
-    private SSHClient create(@NonNull Uri uri) throws IOException {
+    private SSHClient create(@NonNull Uri uri) {
         String host = uri.getHost();
         int port = uri.getPort();
         //If the uri is fetched from the app's database storage, we assume it will never be empty

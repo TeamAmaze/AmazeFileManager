@@ -224,8 +224,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     /**
      * Displays a notification, sends intent and cancels progress if there were some failures
-     *
-     * @param failedOps
      */
     void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
         if (!move) getNotificationManager().cancelAll();

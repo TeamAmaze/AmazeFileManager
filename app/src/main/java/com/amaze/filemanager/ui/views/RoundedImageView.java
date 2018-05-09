@@ -115,8 +115,6 @@ public class RoundedImageView extends ImageView {
      * Converts a {@link Drawable} to {@link Bitmap}
      * A drawable can be drawn on a {@link Canvas} and a Canvas can be backed by a Bitmap.
      * Hence the conversion
-     * @param drawable
-     * @return
      */
     public Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap;

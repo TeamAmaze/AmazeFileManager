@@ -49,8 +49,6 @@ public class AsyncTaskResult<T> {
 
         /**
          * Implement logic on what to do with the result here.
-         *
-         * @param result
          */
         void onResult(T result);
     }

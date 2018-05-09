@@ -54,13 +54,13 @@ public abstract class Extractor {
     protected abstract void extractWithFilter(@NonNull Filter filter) throws IOException;
 
     protected interface Filter {
-        public boolean shouldExtract(String relativePath, boolean isDirectory);
+        boolean shouldExtract(String relativePath, boolean isDirectory);
     }
 
     public interface OnUpdate {
-        public void onStart(long totalBytes, String firstEntryName);
-        public void onUpdate(String entryPath);
-        public void onFinish();
-        public boolean isCancelled();
+        void onStart(long totalBytes, String firstEntryName);
+        void onUpdate(String entryPath);
+        void onFinish();
+        boolean isCancelled();
     }
 }

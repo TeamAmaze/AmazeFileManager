@@ -121,7 +121,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
             if(SocketException.class.isAssignableFrom(result.exception.getClass())
                     || SocketTimeoutException.class.isAssignableFrom(result.exception.getClass())) {
                 Toast.makeText(AppConfig.getInstance(),
-                        String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed),
+                        AppConfig.getInstance().getResources().getString(R.string.ssh_connect_failed,
                                 hostname, port, result.exception.getLocalizedMessage()),
                         Toast.LENGTH_LONG).show();
             }

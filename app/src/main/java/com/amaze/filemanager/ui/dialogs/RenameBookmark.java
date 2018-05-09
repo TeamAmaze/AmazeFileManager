@@ -81,8 +81,8 @@ public class RenameBookmark extends DialogFragment {
             final TextInputLayout t2 = v2.findViewById(R.id.t2);
             final AppCompatEditText conName = v2.findViewById(R.id.editText4);
             conName.setText(title);
-            final String s1 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.name));
-            final String s2 = String.format(getString(R.string.cantbeempty), c.getResources().getString(R.string.path));
+            final String s1 = getString(R.string.cantbeempty, c.getString(R.string.name));
+            final String s2 = getString(R.string.cantbeempty, c.getString(R.string.path));
             conName.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {

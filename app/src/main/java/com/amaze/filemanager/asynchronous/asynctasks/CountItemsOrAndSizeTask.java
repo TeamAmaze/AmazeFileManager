@@ -40,24 +40,14 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
 
         if (file.isDirectory(context)) {
             final AtomicInteger x = new AtomicInteger(0);
-            file.forEachChildrenFile(context, false, new OnFileFound() {
-                @Override
-                public void onFileFound(HybridFileParcelable file) {
-                    x.incrementAndGet();
-                }
-            });
+            file.forEachChildrenFile(context, false, file -> x.incrementAndGet());
             final int folderLength = x.intValue();
             long folderSize;
 
             if(isStorage) {
                 folderSize = file.getUsableSpace();
             } else {
-                folderSize = FileUtils.folderSize(file, new OnProgressUpdate<Long>() {
-                    @Override
-                    public void onUpdate(Long data) {
-                        publishProgress(new Pair<>(folderLength, data));
-                    }
-                });
+                folderSize = FileUtils.folderSize(file, data -> publishProgress(new Pair<>(folderLength, data)));
             }
 
             items = getText(folderLength, folderSize, false);
