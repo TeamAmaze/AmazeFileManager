@@ -372,12 +372,7 @@ public class DataUtils {
     public void clearHistory() {
         history.clear();
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(new Runnable() {
-                @Override
-                public void run() {
-                    dataChangeListener.onHistoryCleared();
-                }
-            });
+            AppConfig.runInBackground(() -> dataChangeListener.onHistoryCleared());
         }
     }
 

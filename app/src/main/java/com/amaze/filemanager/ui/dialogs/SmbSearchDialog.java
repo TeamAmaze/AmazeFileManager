@@ -95,7 +95,7 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(() -> {
                         if (computers.size() == 1) {
                             dismiss();
-                            Toast.makeText(getActivity(), getResources().getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
                             MainActivity mainActivity = (MainActivity) getActivity();
                             mainActivity.showSMBDialog("", "", false);
                             return;
@@ -202,9 +202,9 @@ public class SmbSearchDialog extends DialogFragment {
 
             rootView = view;
 
-            txtTitle = (TextView) view.findViewById(R.id.firstline);
-            image = (ImageView) view.findViewById(R.id.icon);
-            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            txtTitle = view.findViewById(R.id.firstline);
+            image = view.findViewById(R.id.icon);
+            txtDesc = view.findViewById(R.id.secondLine);
         }
 
     }

@@ -174,7 +174,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         } else if(viewType == TYPE_ITEM) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             CompressedItemViewHolder vh = new CompressedItemViewHolder(v);
-            ImageButton about = (ImageButton) v.findViewById(R.id.properties);
+            ImageButton about = v.findViewById(R.id.properties);
             about.setVisibility(View.INVISIBLE);
             return vh;
         } else {
@@ -287,7 +287,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         compressedExplorerFragment.isOpen = true;
 
                         Toast.makeText(compressedExplorerFragment.getContext(),
-                                compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
+                                compressedExplorerFragment.getContext().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         decompressor.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
                                 new String[]{rowItem.name});

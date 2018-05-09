@@ -84,7 +84,7 @@ public class FTPServerFragment extends Fragment {
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
-        
+
         updateSpans();
         updateStatus();
 
@@ -160,7 +160,7 @@ public class FTPServerFragment extends Fragment {
                                 }
                             }
                         })
-                        .positiveText(getResources().getString(R.string.change).toUpperCase())
+                        .positiveText(getString(R.string.change).toUpperCase())
                         .negativeText(R.string.cancel)
                         .build()
                         .show();
@@ -204,7 +204,7 @@ public class FTPServerFragment extends Fragment {
                     }
                 });
 
-                dialogBuilder.positiveText(getResources().getString(R.string.change).toUpperCase())
+                dialogBuilder.positiveText(getString(R.string.change).toUpperCase())
                         .negativeText(R.string.cancel)
                         .build()
                         .show();
@@ -229,9 +229,9 @@ public class FTPServerFragment extends Fragment {
                     } else {
 
                         if (passwordEditText.getText().toString().equals("")) {
-                            passwordTextInput.setError(getResources().getString(R.string.field_empty));
+                            passwordTextInput.setError(getString(R.string.field_empty));
                         } else if (usernameEditText.getText().toString().equals("")) {
-                            usernameTextInput.setError(getResources().getString(R.string.field_empty));
+                            usernameTextInput.setError(getString(R.string.field_empty));
                         } else {
 
                             // password and username field not empty, let's set them to preferences
@@ -250,8 +250,8 @@ public class FTPServerFragment extends Fragment {
                     // TODO: Fix secure connection certification
                 });
 
-                loginDialogBuilder.positiveText(getResources().getString(R.string.set).toUpperCase())
-                        .negativeText(getResources().getString(R.string.cancel))
+                loginDialogBuilder.positiveText(getString(R.string.set).toUpperCase())
+                        .negativeText(getString(R.string.cancel))
                         .build()
                         .show();
 
@@ -259,7 +259,7 @@ public class FTPServerFragment extends Fragment {
             case R.id.ftp_timeout:
                 MaterialDialog.Builder timeoutBuilder = new MaterialDialog.Builder(getActivity());
 
-                timeoutBuilder.title(getResources().getString(R.string.ftp_timeout) + " (" +
+                timeoutBuilder.title(getString(R.string.ftp_timeout) + " (" +
                         getResources().getString(R.string.ftp_seconds) + ")");
                 timeoutBuilder.input(String.valueOf(FTPService.DEFAULT_TIMEOUT + " " +
                                 getResources().getString(R.string.ftp_seconds)), String.valueOf(getFTPTimeout()),

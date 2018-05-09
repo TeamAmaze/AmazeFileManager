@@ -438,7 +438,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     /**
      * Checks for the action to take when Amaze receives an intent from external source
-     * @param intent
      */
     private void checkForExternalIntent(Intent intent) {
         String actionIntent = intent.getAction();

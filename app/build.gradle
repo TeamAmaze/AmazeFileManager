@@ -28,7 +28,7 @@ android {
         versionName "3.2.1"
         multiDexEnabled true
 
-        vectorDrawables.useSupportLibrary = true;
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -165,7 +165,7 @@ configurations.all {
     }
 }
 
-def Properties props = new Properties()
+Properties props = new Properties()
 def propFile = new File('signing.properties')
 
 if (propFile.canRead()) {

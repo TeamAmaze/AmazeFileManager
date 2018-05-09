@@ -38,7 +38,6 @@ public class CloudEntry {
     /**
      * Set the service type
      * Support values from {@link com.amaze.filemanager.utils.OpenMode}
-     * @param openMode
      */
     public void setServiceType(OpenMode openMode) {
         this.serviceType = openMode;
@@ -46,7 +45,6 @@ public class CloudEntry {
 
     /**
      * Returns ordinal value of service from {@link com.amaze.filemanager.utils.OpenMode}
-     * @return
      */
     public OpenMode getServiceType() {
         return this.serviceType;
