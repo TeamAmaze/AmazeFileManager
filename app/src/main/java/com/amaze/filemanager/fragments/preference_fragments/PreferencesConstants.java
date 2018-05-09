@@ -53,6 +53,7 @@ public class PreferencesConstants {
     public static final String PREFERENCE_SKIN_TWO = "skin_two";
     public static final String PREFERENCE_ACCENT = "accent_skin";
     public static final String PREFERENCE_ICON_SKIN = "icon_skin";
+    public static final String PREFERENCE_CURRENT_TAB = "current_tab";
     public static final String PREFERENCE_COLORIZE_ICONS = "coloriseIcons";
     public static final String PREFERENCE_COLORED_NAVIGATION = "colorednavigation";
     public static final String PREFERENCE_RANDOM_COLOR = "random_checkbox";

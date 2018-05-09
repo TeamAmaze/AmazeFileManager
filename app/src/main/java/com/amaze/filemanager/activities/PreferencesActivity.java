@@ -26,10 +26,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -46,9 +48,9 @@ import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -181,22 +183,28 @@ public class PreferencesActivity extends ThemedActivity {
 
     public void invalidateRecentsColorAndIcon() {
         if (SDK_INT >= 21) {
+            @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
+
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    primaryColor);
             setTaskDescription(taskDescription);
         }
     }
 
     public void invalidateToolbarColor() {
-        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+        @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(),
+                MainActivity.currentTab);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
     }
 
     public void invalidateNavBar() {
+        @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
+
         if (SDK_INT == 20 || SDK_INT == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+            tintManager.setStatusBarTintColor(primaryColor);
 
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.preferences).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
@@ -207,7 +215,7 @@ public class PreferencesActivity extends ThemedActivity {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            int tabStatusColor = PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab)));
+            int tabStatusColor = PreferenceUtils.getStatusColor(primaryColor);
             window.setStatusBarColor(tabStatusColor);
             if (colourednavigation) {
                 window.setNavigationBarColor(tabStatusColor);
