@@ -211,8 +211,16 @@ public abstract class FileUtil {
 
                     try {
                         DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+                        String filename = documentFile.getName();
+                        if(filename == null) {
+                            filename = uri.getLastPathSegment();
 
-                        String finalFilePath = currentPath + "/" + documentFile.getName();
+                            //For cleaning up slashes. Back in #1217 there is a case of Uri.getLastPathSegment() end up with a full file path
+                            if (filename.contains("/"))
+                                filename = filename.substring(filename.lastIndexOf('/') + 1);
+                        }
+
+                        String finalFilePath = currentPath + "/" + filename;
                         DataUtils dataUtils = DataUtils.getInstance();
 
                         HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
