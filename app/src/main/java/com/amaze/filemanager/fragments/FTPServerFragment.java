@@ -34,7 +34,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -84,9 +83,9 @@ public class FTPServerFragment extends Fragment {
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = (ImageButton) rootView.findViewById(R.id.ftp_password_visible);
 
-        skin_color = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
-        skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
+        skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+        accentColor = mainActivity.getAccent();
 
         updateSpans();
         updateStatus();

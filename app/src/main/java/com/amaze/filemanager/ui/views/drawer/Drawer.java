@@ -47,7 +47,6 @@ import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -133,8 +132,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         navView.setNavigationItemSelectedListener(this);
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT),
-                idleColor;
+        int accentColor = mainActivity.getAccent(), idleColor;
 
         if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
             idleColor = mainActivity.getResources().getColor(R.color.item_light_theme);

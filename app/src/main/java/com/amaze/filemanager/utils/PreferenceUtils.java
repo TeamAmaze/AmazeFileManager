@@ -8,8 +8,6 @@ import android.graphics.Color;
  */
 public class PreferenceUtils {
 
-    public static final String KEY_CURRENT_TAB = "current_tab";
-
     public static final int DEFAULT_PRIMARY = 4;
     public static final int DEFAULT_ACCENT = 1;
     public static final int DEFAULT_ICON = -1;

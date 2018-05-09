@@ -21,7 +21,6 @@ import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.util.HashMap;
@@ -97,7 +96,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     }
 
     private void loadCreateDialog() {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         LayoutInflater li = LayoutInflater.from(activity);
         final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
@@ -154,7 +153,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     }
 
     private void loadEditDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         LayoutInflater li = LayoutInflater.from(activity);
         final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
@@ -222,7 +221,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     }
 
     private void loadDeleteDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.questiondelete_shortcut)

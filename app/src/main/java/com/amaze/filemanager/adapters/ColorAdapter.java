@@ -1,7 +1,6 @@
 package com.amaze.filemanager.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -10,20 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Checkable;
-import android.widget.ImageView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.CheckableCircleView;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 
 import java.util.List;
 
 public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
 
     private LayoutInflater inflater;
-    private ColorUsage usage;
     private @ColorInt int selectedColor;
     private OnColorSelected onColorSelected;
 
@@ -32,14 +27,11 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
      *
      * @param context the context
      * @param colors  array list of color hex values in form of string; for the views
-     * @param usage   the preference usage for setting new selected color preference value
      * @param selectedColor currently selected color
      * @param l OnColorSelected listener for when a color is selected
      */
-    public ColorAdapter(Context context, List<Integer> colors, ColorUsage usage,
-                        @ColorInt int selectedColor, OnColorSelected l) {
+    public ColorAdapter(Context context, Integer[] colors, @ColorInt int selectedColor, OnColorSelected l) {
         super(context, R.layout.rowlayout, colors);
-        this.usage = usage;
         this.selectedColor = selectedColor;
         this.onColorSelected = l;
 
@@ -48,13 +40,7 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
 
     @ColorRes
     private int getColorResAt(int position) {
-        Integer item = getItem(position);
-
-        if (item == null) {
-            return usage.getDefaultColor();
-        } else {
-            return item;
-        }
+        return getItem(position);
     }
 
     @NonNull
@@ -78,10 +64,12 @@ public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        onColorSelected.onColorSelected(getColorResAt(position));
+        this.selectedColor = Utils.getColor(getContext(), getColorResAt(position));
+        ((CheckableCircleView) view).setChecked(true);
+        onColorSelected.onColorSelected(this.selectedColor);
     }
 
     public interface OnColorSelected {
-        void onColorSelected(int color);
+        void onColorSelected(@ColorInt int color);
     }
 }
