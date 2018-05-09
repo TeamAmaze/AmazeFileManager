@@ -203,7 +203,7 @@ public class PreferencesActivity extends ThemedActivity {
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= 21) {
             SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean colourednavigation = Sp.getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION, true);
+            boolean colourednavigation = getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
