@@ -230,10 +230,11 @@ public abstract class FileUtil {
                             case FILE:
                             case ROOT:
                                 File targetFile = new File(finalFilePath);
-                                if (!FileUtil.isWritableNormalOrSaf(new File(finalFilePath).getParentFile(), mainActivity.getApplicationContext())) {
+                                if (!FileUtil.isWritableNormalOrSaf(targetFile.getParentFile(), mainActivity.getApplicationContext())) {
                                     AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
+                                
                                 DocumentFile targetDocumentFile = getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
 
                                 //Fallback, in case getDocumentFile() didn't properly return a DocumentFile instance
