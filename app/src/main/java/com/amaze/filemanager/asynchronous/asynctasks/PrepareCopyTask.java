@@ -173,8 +173,8 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         View view = layoutInflater.inflate(R.layout.copy_dialog, null);
         dialogBuilder.customView(view, true);
         // textView
-        TextView textView = (TextView) view.findViewById(R.id.textView);
-        textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
+        TextView textView = (TextView) view.findViewById(R.id.fileNameText);
+        textView.setText(conflictingFiles.get(counter).getName());
 
         // checkBox
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
