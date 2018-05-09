@@ -23,13 +23,17 @@ public abstract class TestArchives {
         }
     }
 
+    public static byte[] readArchive(String type) throws IOException {
+        return IOUtils.toByteArray(classLoader.getResourceAsStream("test-archive." + type));
+    }
+
     private static void readArchive(Context context, String type) {
         try {
             Uri uri = Uri.parse("content://foo.bar.test.streamprovider/temp/test-archive." + type);
 
             ContentResolver contentResolver = context.getContentResolver();
             ShadowContentResolver shadowContentResolver = Shadows.shadowOf(contentResolver);
-            shadowContentResolver.registerInputStream(uri, new ByteArrayInputStream(IOUtils.toByteArray(classLoader.getResourceAsStream("test-archive." + type))));
+            shadowContentResolver.registerInputStream(uri, new ByteArrayInputStream(readArchive(type)));
         } catch(IOException e) {
             e.printStackTrace();
         }
