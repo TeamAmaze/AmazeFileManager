@@ -33,6 +33,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
+import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -49,14 +50,15 @@ import java.security.GeneralSecurityException;
  */
 public class FTPServerFragment extends Fragment {
 
+    private MainActivity mainActivity;
+
     private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
     private Button ftpBtn;
-    private MainActivity mainActivity;
     private View rootView, startDividerView, statusDividerView;
-    private int skin_color, skinTwoColor, accentColor;
+    private int accentColor;
     private Spanned spannedStatusNoConnection, spannedStatusConnected;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
     private ImageButton ftpPasswordVisibleButton;
@@ -73,20 +75,16 @@ public class FTPServerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
-        statusText =(TextView) rootView.findViewById(R.id.text_view_ftp_status);
-        username = (TextView) rootView.findViewById(R.id.text_view_ftp_username);
-        password = (TextView) rootView.findViewById(R.id.text_view_ftp_password);
-        port = (TextView) rootView.findViewById(R.id.text_view_ftp_port);
-        sharedPath = (TextView) rootView.findViewById(R.id.text_view_ftp_path);
-        ftpBtn = (Button) rootView.findViewById(R.id.startStopButton);
+        statusText = rootView.findViewById(R.id.text_view_ftp_status);
+        username = rootView.findViewById(R.id.text_view_ftp_username);
+        password = rootView.findViewById(R.id.text_view_ftp_password);
+        port = rootView.findViewById(R.id.text_view_ftp_port);
+        sharedPath = rootView.findViewById(R.id.text_view_ftp_path);
+        ftpBtn = rootView.findViewById(R.id.startStopButton);
         startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
-        ftpPasswordVisibleButton = (ImageButton) rootView.findViewById(R.id.ftp_password_visible);
-
-        skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
-        skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
-        accentColor = mainActivity.getAccent();
-
+        ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
+        
         updateSpans();
         updateStatus();
 
@@ -128,14 +126,12 @@ public class FTPServerFragment extends Fragment {
         mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
 
+        int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
+        int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+        accentColor = mainActivity.getAccent();
+
         mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
                 skinTwoColor : skin_color));
-    }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
     }
 
     @Override
@@ -406,7 +402,7 @@ public class FTPServerFragment extends Fragment {
         }
 
         final String passwordDecrypted = getPasswordFromPreferences();
-        final String passwordBulleted = passwordDecrypted.replaceAll(".", "\u25CF");
+        final CharSequence passwordBulleted = new OneCharacterCharSequence('\u25CF', passwordDecrypted.length());
 
         username.setText(getResources().getString(R.string.username) + ": " +
                 getUsernameFromPreferences());
@@ -475,12 +471,12 @@ public class FTPServerFragment extends Fragment {
 
     private void initLoginDialogViews(View loginDialogView) {
 
-        usernameEditText = (AppCompatEditText) loginDialogView.findViewById(R.id.edit_text_dialog_ftp_username);
-        passwordEditText = (AppCompatEditText) loginDialogView.findViewById(R.id.edit_text_dialog_ftp_password);
-        usernameTextInput = (TextInputLayout) loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
-        passwordTextInput = (TextInputLayout) loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
-        mAnonymousCheckBox = (AppCompatCheckBox) loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
-        mSecureCheckBox = (AppCompatCheckBox) loginDialogView.findViewById(R.id.checkbox_ftp_secure);
+        usernameEditText = loginDialogView.findViewById(R.id.edit_text_dialog_ftp_username);
+        passwordEditText = loginDialogView.findViewById(R.id.edit_text_dialog_ftp_password);
+        usernameTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
+        passwordTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
+        mAnonymousCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
+        mSecureCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_secure);
 
         mAnonymousCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -504,14 +500,6 @@ public class FTPServerFragment extends Fragment {
         if (getSecurePreference()) {
             mSecureCheckBox.setChecked(true);
         } else mSecureCheckBox.setChecked(false);
-
-        // check if we have a keystore
-        InputStream stream = getResources().openRawResource(R.raw.key);
-        if (stream == null) {
-            mSecureCheckBox.setEnabled(false);
-            mSecureCheckBox.setChecked(false);
-            setSecurePreference(false);
-        }
     }
 
     /**
@@ -584,9 +572,7 @@ public class FTPServerFragment extends Fragment {
     }
 
     private void setFTPUsername(String username) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        preferences.edit().putString(FTPService.KEY_PREFERENCE_USERNAME, username).apply();
+        mainActivity.getPrefs().edit().putString(FTPService.KEY_PREFERENCE_USERNAME, username).apply();
         updateStatus();
     }
 
@@ -607,22 +593,18 @@ public class FTPServerFragment extends Fragment {
      * @return timeout in seconds
      */
     private int getFTPTimeout() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getInt(FTPService.KEY_PREFERENCE_TIMEOUT, FTPService.DEFAULT_TIMEOUT);
+        return mainActivity.getPrefs().getInt(FTPService.KEY_PREFERENCE_TIMEOUT, FTPService.DEFAULT_TIMEOUT);
     }
 
     private void setFTPTimeout(int seconds) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferences.edit().putInt(FTPService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
+        mainActivity.getPrefs().edit().putInt(FTPService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
     }
 
     private boolean getSecurePreference() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
+        return mainActivity.getPrefs().getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
     }
 
     private void setSecurePreference(boolean isSecureEnabled) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferences.edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, isSecureEnabled).apply();
+        mainActivity.getPrefs().edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, isSecureEnabled).apply();
     }
 }
