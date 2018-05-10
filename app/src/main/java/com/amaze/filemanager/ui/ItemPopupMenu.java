@@ -20,7 +20,6 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
@@ -57,7 +56,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         this.mainFragment = mainFragment;
         sharedPrefs = sharedPreferences;
         rowItem = ri;
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = mainActivity.getAccent();
 
         setOnMenuItemClickListener(this);
     }
@@ -114,7 +113,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 DataUtils dataUtils = DataUtils.getInstance();
                 dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
                 mainFragment.getMainActivity().getDrawer().refreshDrawer();
-                Toast.makeText(mainFragment.getActivity(), mainFragment.getResources().getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
                 ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
@@ -183,7 +182,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     } catch (GeneralSecurityException | IOException e) {
                         e.printStackTrace();
                         Toast.makeText(context,
-                                mainFragment.getResources().getString(R.string.crypt_encryption_fail),
+                                mainFragment.getString(R.string.crypt_encryption_fail),
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {

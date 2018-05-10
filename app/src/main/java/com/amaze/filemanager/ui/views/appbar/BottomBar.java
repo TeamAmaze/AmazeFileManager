@@ -195,12 +195,10 @@ public class BottomBar implements View.OnTouchListener{
             buttons.setMinimumHeight(pathLayout.getHeight());
 
             buttonRoot.setImageDrawable(mainActivity.getResources().getDrawable(buttonPathInterface.getRootDrawable()));
-            buttonRoot.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View p1) {
-                    buttonPathInterface.changePath("/");
-                    timer.cancel();
-                    timer.start();
-                }
+            buttonRoot.setOnClickListener(p1 -> {
+                buttonPathInterface.changePath("/");
+                timer.cancel();
+                timer.start();
             });
 
             String[] names = FileUtils.getFolderNamesInPath(path);
@@ -217,22 +215,18 @@ public class BottomBar implements View.OnTouchListener{
                 if (paths[i].equals("/")) {
                     buttons.addView(buttonRoot);
                 } else if (FileUtils.isStorage(paths[i])) {
-                    buttonStorage.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View p1) {
-                            buttonPathInterface.changePath(paths[k]);
-                            timer.cancel();
-                            timer.start();
-                        }
+                    buttonStorage.setOnClickListener(p1 -> {
+                        buttonPathInterface.changePath(paths[k]);
+                        timer.cancel();
+                        timer.start();
                     });
                     buttons.addView(buttonStorage);
                 } else {
                     Button button = createFolderButton(names[i]);
-                    button.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View p1) {
-                            buttonPathInterface.changePath(paths[k]);
-                            timer.cancel();
-                            timer.start();
-                        }
+                    button.setOnClickListener(p1 -> {
+                        buttonPathInterface.changePath(paths[k]);
+                        timer.cancel();
+                        timer.start();
                     });
                     buttons.addView(button);
                 }
@@ -242,12 +236,9 @@ public class BottomBar implements View.OnTouchListener{
                 }
             }
 
-            scroll.post(new Runnable() {
-                @Override
-                public void run() {
-                    sendScroll(scroll);
-                    sendScroll(pathScroll);
-                }
+            scroll.post(() -> {
+                sendScroll(scroll);
+                sendScroll(pathScroll);
             });
 
             if (buttons.getVisibility() == View.VISIBLE) {
@@ -355,12 +346,9 @@ public class BottomBar implements View.OnTouchListener{
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fullPathAnim.setVisibility(View.GONE);
-                                fullPathText.setText(newPath);
-                            }
+                        new Handler().postDelayed(() -> {
+                            fullPathAnim.setVisibility(View.GONE);
+                            fullPathText.setText(newPath);
                         }, PATH_ANIM_END_DELAY);
                     }
 
@@ -371,12 +359,7 @@ public class BottomBar implements View.OnTouchListener{
                         fullPathAnim.setText(Utils.differenceStrings(oldPath, newPath));
                         //fullPathText.setText(oldPath);
 
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                pathScroll.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
+                        scroll.post(() -> pathScroll.fullScroll(View.FOCUS_RIGHT));
                     }
 
                     @Override
@@ -395,12 +378,7 @@ public class BottomBar implements View.OnTouchListener{
                         fullPathAnim.setVisibility(View.GONE);
                         fullPathText.setText(newPath);
 
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                pathScroll.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
+                        scroll.post(() -> pathScroll.fullScroll(View.FOCUS_RIGHT));
                     }
 
                     @Override
@@ -410,12 +388,7 @@ public class BottomBar implements View.OnTouchListener{
                         fullPathAnim.setText(Utils.differenceStrings(newPath, oldPath));
                         fullPathText.setText(newPath);
 
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                pathScroll.fullScroll(View.FOCUS_LEFT);
-                            }
-                        });
+                        scroll.post(() -> pathScroll.fullScroll(View.FOCUS_LEFT));
                     }
                 }).setStartDelay(PATH_ANIM_START_DELAY).start();
             } else if (oldPath.isEmpty()) {
@@ -428,23 +401,15 @@ public class BottomBar implements View.OnTouchListener{
                         super.onAnimationStart(animation);
                         fullPathAnim.setVisibility(View.VISIBLE);
                         fullPathText.setText("");
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                pathScroll.fullScroll(View.FOCUS_RIGHT);
-                            }
-                        });
+                        scroll.post(() -> pathScroll.fullScroll(View.FOCUS_RIGHT));
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fullPathAnim.setVisibility(View.GONE);
-                                fullPathText.setText(newPath);
-                            }
+                        new Handler().postDelayed(() -> {
+                            fullPathAnim.setVisibility(View.GONE);
+                            fullPathText.setText(newPath);
                         }, PATH_ANIM_END_DELAY);
                     }
 
@@ -466,12 +431,7 @@ public class BottomBar implements View.OnTouchListener{
                         fullPathAnim.setText(oldPath);
                         fullPathText.setText("");
 
-                        scroll.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                pathScroll.fullScroll(View.FOCUS_LEFT);
-                            }
-                        });
+                        scroll.post(() -> pathScroll.fullScroll(View.FOCUS_LEFT));
                     }
 
                     @Override
@@ -487,12 +447,9 @@ public class BottomBar implements View.OnTouchListener{
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        fullPathAnim.setVisibility(View.GONE);
-                                        fullPathText.setText(newPath);
-                                    }
+                                new Handler().postDelayed(() -> {
+                                    fullPathAnim.setVisibility(View.GONE);
+                                    fullPathText.setText(newPath);
                                 }, PATH_ANIM_END_DELAY);
                             }
 
@@ -502,12 +459,7 @@ public class BottomBar implements View.OnTouchListener{
                                 // we should not be having anything here in path bar
                                 fullPathAnim.setVisibility(View.VISIBLE);
                                 fullPathText.setText("");
-                                scroll.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        pathScroll.fullScroll(View.FOCUS_RIGHT);
-                                    }
-                                });
+                                scroll.post(() -> pathScroll.fullScroll(View.FOCUS_RIGHT));
                             }
                         }).start();
                     }
@@ -526,12 +478,7 @@ public class BottomBar implements View.OnTouchListener{
     }
 
     private void sendScroll(final HorizontalScrollView scrollView) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(View.FOCUS_RIGHT);
-            }
-        }, 100);
+        new Handler().postDelayed(() -> scrollView.fullScroll(View.FOCUS_RIGHT), 100);
     }
 
     @Override

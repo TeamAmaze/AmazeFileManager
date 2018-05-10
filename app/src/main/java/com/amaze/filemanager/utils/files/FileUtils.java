@@ -142,7 +142,6 @@ public class FileUtils {
      * Only for fallback use when <code>du</code> is not available.
      *
      * @see HybridFile#folderSize(Context)
-     * @param remotePath
      * @return Folder size in bytes
      */
     public static Long folderSizeSftp(SFTPClient client, String remotePath) {
@@ -185,12 +184,7 @@ public class FileUtils {
      */
     public static long otgFolderSize(String path, final Context context) {
         final AtomicLong totalBytes = new AtomicLong(0);
-        OTGUtil.getDocumentFiles(path, context, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                totalBytes.addAndGet(getBaseFileSize(file, context));
-            }
-        });
+        OTGUtil.getDocumentFiles(path, context, file -> totalBytes.addAndGet(getBaseFileSize(file, context)));
         return totalBytes.longValue();
     }
 
@@ -230,7 +224,7 @@ public class FileUtils {
 
         AppConfig.runInBackground(() -> {
                 mediaScannerConnection.connect();
-                mediaScannerConnection.scanFile(context, paths, null, null);
+                MediaScannerConnection.scanFile(context, paths, null, null);
         });
     }
 
@@ -329,7 +323,7 @@ public class FileUtils {
 
                 FileUtils.copyToClipboard(context, s);
                 Toast.makeText(context,
-                        context.getResources().getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
+                        context.getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
             }
         }.execute(path);
     }
@@ -367,8 +361,8 @@ public class FileUtils {
 
     /**
      * Open a file not supported by Amaze
+     *
      * @param f the file
-     * @param c
      * @param forcechooser force the chooser to show up even when set default by user
      */
     public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {
@@ -384,7 +378,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(activityIntent);
@@ -417,7 +411,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(chooserIntent);
@@ -536,8 +530,8 @@ public class FileUtils {
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
-        a.title(c.getResources().getString(R.string.openas));
-        String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
+        a.title(c.getString(R.string.openas));
+        String[] items=new String[]{c.getString(R.string.text),c.getString(R.string.image),c.getString(R.string.video),c.getString(R.string.audio),c.getString(R.string.database),c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
             Uri uri = fileToContentUri(c, f);
@@ -582,8 +576,8 @@ public class FileUtils {
 
     public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(c.getResources().getString(R.string.openas));
-        String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
+        a.title(c.getString(R.string.openas));
+        String[] items = new String[]{c.getString(R.string.text), c.getString(R.string.image), c.getString(R.string.video), c.getString(R.string.audio), c.getString(R.string.database), c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
             Intent intent = new Intent();
@@ -657,7 +651,7 @@ public class FileUtils {
     public static boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                    .getSystemService(context.CLIPBOARD_SERVICE);
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
             android.content.ClipData clip = android.content.ClipData
                     .newPlainText(context.getString(R.string.clipboard_path_copy), text);
             clipboard.setPrimaryClip(clip);
@@ -741,7 +735,7 @@ public class FileUtils {
             try {
                 openunknown(f, m, false, useNewStack);
             } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m, useNewStack);
             }
         }
@@ -766,7 +760,7 @@ public class FileUtils {
         try {
             openunknown(f, m, false, useNewStack);
         } catch (Exception e) {
-            Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+            Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
 
@@ -818,7 +812,7 @@ public class FileUtils {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
             }
         }*/

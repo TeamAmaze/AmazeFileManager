@@ -202,7 +202,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private void toastOnParseError(AsyncTaskResult<KeyPair> result){
         Toast.makeText(AppConfig.getInstance().getActivityContext(),
-                String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error),
+                AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
                         result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 

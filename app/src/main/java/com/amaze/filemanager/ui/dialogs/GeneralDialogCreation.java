@@ -80,7 +80,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -114,8 +113,8 @@ import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(BasicActivity m, String[] texts) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+    public static MaterialDialog showBasicDialog(ThemedActivity m, String[] texts) {
+        int accentColor = m.getAccent();
         MaterialDialog.Builder a = new MaterialDialog.Builder(m)
                 .content(texts[0])
                 .widgetColor(accentColor)
@@ -136,7 +135,7 @@ public class GeneralDialogCreation {
                                                           String neutralButtonText, String negativeButtonText,
                                                           MaterialDialog.SingleButtonCallback positiveButtonAction,
                                                           WarnableTextInputValidator.OnTextValidate validator) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
         View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
@@ -176,7 +175,7 @@ public class GeneralDialogCreation {
                                          AppTheme appTheme) {
 
         final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         // Build dialog with custom view layout and accent color.
         MaterialDialog dialog = new MaterialDialog.Builder(c)
@@ -194,11 +193,11 @@ public class GeneralDialogCreation {
                 .build();
 
         // Get views from custom layout to set text values.
-        final TextView categoryDirectories = (TextView) dialog.getCustomView().findViewById(R.id.category_directories);
-        final TextView categoryFiles = (TextView) dialog.getCustomView().findViewById(R.id.category_files);
-        final TextView listDirectories = (TextView) dialog.getCustomView().findViewById(R.id.list_directories);
-        final TextView listFiles = (TextView) dialog.getCustomView().findViewById(R.id.list_files);
-        final TextView total = (TextView) dialog.getCustomView().findViewById(R.id.total);
+        final TextView categoryDirectories = dialog.getCustomView().findViewById(R.id.category_directories);
+        final TextView categoryFiles = dialog.getCustomView().findViewById(R.id.category_files);
+        final TextView listDirectories = dialog.getCustomView().findViewById(R.id.list_directories);
+        final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
+        final TextView total = dialog.getCustomView().findViewById(R.id.total);
 
         // Parse items to delete.
 
@@ -363,7 +362,7 @@ public class GeneralDialogCreation {
                                              boolean showPermissions, boolean forStorage) {
         final ExecutorService executor = Executors.newFixedThreadPool(3);
         final Context c = base.getApplicationContext();
-        int accentColor = base.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = base.getAccent();
         long last = baseFile.getDate();
         final String date = Utils.getDate(last),
                 items = c.getString(R.string.calculating),
@@ -375,25 +374,25 @@ public class GeneralDialogCreation {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-        TextView itemsText = (TextView) v.findViewById(R.id.t7);
+        TextView itemsText = v.findViewById(R.id.t7);
 
         /*View setup*/ {
-            TextView mNameTitle = (TextView) v.findViewById(R.id.title_name);
+            TextView mNameTitle = v.findViewById(R.id.title_name);
             mNameTitle.setTextColor(accentColor);
 
-            TextView mDateTitle = (TextView) v.findViewById(R.id.title_date);
+            TextView mDateTitle = v.findViewById(R.id.title_date);
             mDateTitle.setTextColor(accentColor);
 
-            TextView mSizeTitle = (TextView) v.findViewById(R.id.title_size);
+            TextView mSizeTitle = v.findViewById(R.id.title_size);
             mSizeTitle.setTextColor(accentColor);
 
-            TextView mLocationTitle = (TextView) v.findViewById(R.id.title_location);
+            TextView mLocationTitle = v.findViewById(R.id.title_location);
             mLocationTitle.setTextColor(accentColor);
 
-            TextView md5Title = (TextView) v.findViewById(R.id.title_md5);
+            TextView md5Title = v.findViewById(R.id.title_md5);
             md5Title.setTextColor(accentColor);
 
-            TextView sha256Title = (TextView) v.findViewById(R.id.title_sha256);
+            TextView sha256Title = v.findViewById(R.id.title_sha256);
             sha256Title.setTextColor(accentColor);
 
             ((TextView) v.findViewById(R.id.t5)).setText(name);
@@ -401,34 +400,34 @@ public class GeneralDialogCreation {
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
 
-            LinearLayout mNameLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_name);
-            LinearLayout mLocationLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_location);
-            LinearLayout mSizeLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_size);
-            LinearLayout mDateLinearLayout = (LinearLayout) v.findViewById(R.id.properties_dialog_date);
+            LinearLayout mNameLinearLayout = v.findViewById(R.id.properties_dialog_name);
+            LinearLayout mLocationLinearLayout = v.findViewById(R.id.properties_dialog_location);
+            LinearLayout mSizeLinearLayout = v.findViewById(R.id.properties_dialog_size);
+            LinearLayout mDateLinearLayout = v.findViewById(R.id.properties_dialog_date);
 
             // setting click listeners for long press
             mNameLinearLayout.setOnLongClickListener(v1 -> {
                 FileUtils.copyToClipboard(c, name);
-                Toast.makeText(c, c.getResources().getString(R.string.name) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, c.getString(R.string.name) + " " +
+                        c.getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                 return false;
             });
             mLocationLinearLayout.setOnLongClickListener(v12 -> {
                 FileUtils.copyToClipboard(c, parent);
-                Toast.makeText(c, c.getResources().getString(R.string.location) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, c.getString(R.string.location) + " " +
+                        c.getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                 return false;
             });
             mSizeLinearLayout.setOnLongClickListener(v13 -> {
                 FileUtils.copyToClipboard(c, items);
-                Toast.makeText(c, c.getResources().getString(R.string.size) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, c.getString(R.string.size) + " " +
+                        c.getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                 return false;
             });
             mDateLinearLayout.setOnLongClickListener(v14 -> {
                 FileUtils.copyToClipboard(c, date);
-                Toast.makeText(c, c.getResources().getString(R.string.date) + " " +
-                        c.getResources().getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, c.getString(R.string.date) + " " +
+                        c.getString(R.string.properties_copied_clipboard), Toast.LENGTH_SHORT).show();
                 return false;
             });
         }
@@ -443,7 +442,7 @@ public class GeneralDialogCreation {
         /*Chart creation and data loading*/ {
             boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
             boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
-            PieChart chart = (PieChart) v.findViewById(R.id.chart);
+            PieChart chart = v.findViewById(R.id.chart);
 
             chart.setTouchEnabled(false);
             chart.setDrawEntryLabels(false);
@@ -500,7 +499,7 @@ public class GeneralDialogCreation {
 
         if(!forStorage && showPermissions) {
             final MainFragment main = ((MainActivity) base).mainFragment;
-            AppCompatButton appCompatButton = (AppCompatButton) v.findViewById(R.id.permissionsButton);
+            AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
             appCompatButton.setAllCaps(true);
 
             final View permissionsTable = v.findViewById(R.id.permtable);
@@ -522,7 +521,7 @@ public class GeneralDialogCreation {
         }
 
         builder.customView(v, true);
-        builder.positiveText(base.getResources().getString(R.string.ok));
+        builder.positiveText(base.getString(R.string.ok));
         builder.positiveColor(accentColor);
         builder.dismissListener(dialog -> executor.shutdown());
 
@@ -557,30 +556,30 @@ public class GeneralDialogCreation {
     }
 
     public static void showCloudDialog(final MainActivity mainActivity, AppTheme appTheme, final OpenMode openMode) {
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
 
         switch (openMode) {
             case DROPBOX:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_dropbox));
+                builder.title(mainActivity.getString(R.string.cloud_dropbox));
                 break;
             case BOX:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_box));
+                builder.title(mainActivity.getString(R.string.cloud_box));
                 break;
             case GDRIVE:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_drive));
+                builder.title(mainActivity.getString(R.string.cloud_drive));
                 break;
             case ONEDRIVE:
-                builder.title(mainActivity.getResources().getString(R.string.cloud_onedrive));
+                builder.title(mainActivity.getString(R.string.cloud_onedrive));
                 break;
         }
 
         builder.theme(appTheme.getMaterialDialogTheme());
-        builder.content(mainActivity.getResources().getString(R.string.cloud_remove));
+        builder.content(mainActivity.getString(R.string.cloud_remove));
 
-        builder.positiveText(mainActivity.getResources().getString(R.string.yes));
+        builder.positiveText(mainActivity.getString(R.string.yes));
         builder.positiveColor(accentColor);
-        builder.negativeText(mainActivity.getResources().getString(R.string.no));
+        builder.negativeText(mainActivity.getString(R.string.no));
         builder.negativeColor(accentColor);
 
         builder.onPositive((dialog, which) -> mainActivity.deleteConnection(openMode));
@@ -594,14 +593,14 @@ public class GeneralDialogCreation {
                                                 AppTheme appTheme,
                                                 final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                         encryptButtonCallbackInterface) {
-        int accentColor = main.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getMainActivity().getAccent();
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(main.getContext());
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-        builder.title(main.getResources().getString(R.string.warning));
-        builder.content(main.getResources().getString(R.string.crypt_warning_key));
+        builder.title(main.getString(R.string.warning));
+        builder.content(main.getString(R.string.crypt_warning_key));
         builder.theme(appTheme.getMaterialDialogTheme());
-        builder.negativeText(main.getResources().getString(R.string.warning_never_show));
-        builder.positiveText(main.getResources().getString(R.string.warning_confirm));
+        builder.negativeText(main.getString(R.string.warning_never_show));
+        builder.positiveText(main.getString(R.string.warning_confirm));
         builder.positiveColor(accentColor);
 
         builder.onPositive((dialog, which) -> {
@@ -611,7 +610,7 @@ public class GeneralDialogCreation {
                 e.printStackTrace();
 
                 Toast.makeText(main.getActivity(),
-                        main.getResources().getString(R.string.crypt_encryption_fail),
+                        main.getString(R.string.crypt_encryption_fail),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -624,7 +623,7 @@ public class GeneralDialogCreation {
                 e.printStackTrace();
 
                 Toast.makeText(main.getActivity(),
-                        main.getResources().getString(R.string.crypt_encryption_fail),
+                        main.getString(R.string.crypt_encryption_fail),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -670,9 +669,9 @@ public class GeneralDialogCreation {
                                                      final EncryptDecryptUtils.EncryptButtonCallbackInterface
                                                              encryptButtonCallbackInterface) {
 
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
-        builder.title(main.getResources().getString(R.string.crypt_encrypt));
+        builder.title(main.getString(R.string.crypt_encrypt));
 
         View rootView = View.inflate(c, R.layout.dialog_encrypt_authenticate, null);
 
@@ -766,13 +765,13 @@ public class GeneralDialogCreation {
                                                             decryptButtonCallbackInterface)
             throws GeneralSecurityException, IOException {
 
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
 
         View rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null);
 
-        Button cancelButton = (Button) rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
+        Button cancelButton = rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
         cancelButton.setTextColor(accentColor);
         builder.customView(rootView, true);
         builder.canceledOnTouchOutside(false);
@@ -794,7 +793,7 @@ public class GeneralDialogCreation {
                                          AppTheme appTheme, final String password,
                                          final EncryptDecryptUtils.DecryptButtonCallbackInterface
                                           decryptButtonCallbackInterface) {
-        int accentColor = main.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
         builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {});
@@ -824,7 +823,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showPackageDialog(final SharedPreferences sharedPrefs, final File f, final MainActivity m) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
                 .positiveText(R.string.install)
@@ -852,7 +851,7 @@ public class GeneralDialogCreation {
 
 
     public static void showArchiveDialog(final File f, final MainActivity m) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.archive)
                 .content(R.string.archtext)
@@ -887,7 +886,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showCompressDialog(final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
-        int accentColor = m.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getAccent();
         MaterialDialog.Builder a = new MaterialDialog.Builder(m);
 
         View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
@@ -939,7 +938,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         String[] sort = m.getResources().getStringArray(R.array.sortby);
         int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -966,7 +965,7 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
-        int accentColor = ((ThemedActivity) m.getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
         String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
         int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
@@ -996,7 +995,7 @@ public class GeneralDialogCreation {
 
     public static void showHistoryDialog(final DataUtils dataUtils, SharedPreferences sharedPrefs,
                                          final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
@@ -1018,7 +1017,7 @@ public class GeneralDialogCreation {
 
     public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
                                         final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = m.getMainActivity().getAccent();
         final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.positiveText(R.string.cancel);
         a.positiveColor(accentColor);
@@ -1037,15 +1036,15 @@ public class GeneralDialogCreation {
 
     public static void setPermissionsDialog(final View v, View but, final HybridFile file,
                                      final String f, final Context context, final MainFragment mainFrag) {
-        final CheckBox readown = (CheckBox) v.findViewById(R.id.creadown);
-        final CheckBox readgroup = (CheckBox) v.findViewById(R.id.creadgroup);
-        final CheckBox readother = (CheckBox) v.findViewById(R.id.creadother);
-        final CheckBox writeown = (CheckBox) v.findViewById(R.id.cwriteown);
-        final CheckBox writegroup = (CheckBox) v.findViewById(R.id.cwritegroup);
-        final CheckBox writeother = (CheckBox) v.findViewById(R.id.cwriteother);
-        final CheckBox exeown = (CheckBox) v.findViewById(R.id.cexeown);
-        final CheckBox exegroup = (CheckBox) v.findViewById(R.id.cexegroup);
-        final CheckBox exeother = (CheckBox) v.findViewById(R.id.cexeother);
+        final CheckBox readown = v.findViewById(R.id.creadown);
+        final CheckBox readgroup = v.findViewById(R.id.creadgroup);
+        final CheckBox readother = v.findViewById(R.id.creadother);
+        final CheckBox writeown = v.findViewById(R.id.cwriteown);
+        final CheckBox writegroup = v.findViewById(R.id.cwritegroup);
+        final CheckBox writeother = v.findViewById(R.id.cwriteother);
+        final CheckBox exeown = v.findViewById(R.id.cexeown);
+        final CheckBox exegroup = v.findViewById(R.id.cexegroup);
+        final CheckBox exeother = v.findViewById(R.id.cexeother);
         String perm = f;
         if (perm.length() < 6) {
             v.setVisibility(View.GONE);
@@ -1081,12 +1080,12 @@ public class GeneralDialogCreation {
                                 Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(context,
-                                mainFrag.getResources().getString(R.string.done), Toast.LENGTH_LONG).show();
+                                mainFrag.getString(R.string.done), Toast.LENGTH_LONG).show();
                     }
                 });
                 mainFrag.updateList();
             } catch (ShellNotRunningException e1) {
-                Toast.makeText(context, mainFrag.getResources().getString(R.string.rootfailure),
+                Toast.makeText(context, mainFrag.getString(R.string.rootfailure),
                         Toast.LENGTH_LONG).show();
                 e1.printStackTrace();
             }
@@ -1104,7 +1103,7 @@ public class GeneralDialogCreation {
 
         a.alwaysCallInputCallback();
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         a.widgetColor(accentColor);
 

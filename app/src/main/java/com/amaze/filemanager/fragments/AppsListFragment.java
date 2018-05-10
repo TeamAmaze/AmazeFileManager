@@ -103,7 +103,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         getListView().setOnScrollListener(preloader);
         setListAdapter(adapter);
         setListShown(false);
-        setEmptyText(getResources().getString(R.string.no_applications));
+        setEmptyText(getString(R.string.no_applications));
         getLoaderManager().initLoader(ID_LOADER_APP_LIST, null, this);
 
         if (savedInstanceState != null) {

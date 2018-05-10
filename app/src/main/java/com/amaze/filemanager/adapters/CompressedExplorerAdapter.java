@@ -31,7 +31,7 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUtils;
+import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -174,7 +174,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         } else if(viewType == TYPE_ITEM) {
             View v = mInflater.inflate(R.layout.rowlayout, parent, false);
             CompressedItemViewHolder vh = new CompressedItemViewHolder(v);
-            ImageButton about = (ImageButton) v.findViewById(R.id.properties);
+            ImageButton about = v.findViewById(R.id.properties);
             about.setVisibility(View.INVISIBLE);
             return vh;
         } else {
@@ -212,7 +212,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                 holder.date.setText(Utils.getDate(rowItem.date, compressedExplorerFragment.year));
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
-                gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
+                gradientDrawable.setColor(compressedExplorerFragment.iconskin);
                 if (stringBuilder.toString().length() > 0) {
                     stringBuilder.deleteCharAt(rowItem.name.length() - 1);
                     try {
@@ -227,8 +227,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                 holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
                     ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable,
-                            Color.parseColor(compressedExplorerFragment.iconskin));
-                } else gradientDrawable.setColor(Color.parseColor(compressedExplorerFragment.iconskin));
+                            compressedExplorerFragment.iconskin);
+                } else gradientDrawable.setColor(compressedExplorerFragment.iconskin);
             }
         }
 
@@ -287,7 +287,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                         compressedExplorerFragment.isOpen = true;
 
                         Toast.makeText(compressedExplorerFragment.getContext(),
-                                compressedExplorerFragment.getContext().getResources().getString(R.string.please_wait),
+                                compressedExplorerFragment.getContext().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         decompressor.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
                                 new String[]{rowItem.name});

@@ -42,6 +42,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
@@ -55,8 +56,6 @@ import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import net.schmizz.sshj.SSHClient;
@@ -136,7 +135,7 @@ public class SftpConnectDialog extends DialogFragment {
             portET.selectAll();
         });
 
-        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = ((ThemedActivity) getActivity()).getAccent();
 
         //Use system provided action to get Uri to PEM.
         //If MaterialDialog.Builder can be upgraded we may use their file selection dialog too
@@ -186,7 +185,7 @@ public class SftpConnectDialog extends DialogFragment {
                         final String hostAndPort = sb.toString();
 
                         new AlertDialog.Builder(context).setTitle(R.string.ssh_host_key_verification_prompt_title)
-                                .setMessage(String.format(getResources().getString(R.string.ssh_host_key_verification_prompt),
+                                .setMessage(getString(R.string.ssh_host_key_verification_prompt,
                                         hostAndPort, hostKey.getAlgorithm(), hostKeyFingerprint))
                                 .setCancelable(true)
                                 .setPositiveButton(R.string.yes, (dialog1, which1) -> {
@@ -331,7 +330,7 @@ public class SftpConnectDialog extends DialogFragment {
 
                     } else {
                         Snackbar.make(getActivity().findViewById(R.id.content_frame),
-                                getResources().getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
+                                getString(R.string.connection_exists), Snackbar.LENGTH_SHORT).show();
                         dismiss();
                     }
                     return true;

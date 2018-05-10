@@ -21,7 +21,6 @@ import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.utils.ComputerParcelable;
 import com.amaze.filemanager.utils.SubnetScanner;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
@@ -44,7 +43,7 @@ public class SmbSearchDialog extends DialogFragment {
         super.onCreate(bundle);
         utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
-        accentColor = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = ((ThemedActivity) getActivity()).getAccent();
     }
 
     @Override
@@ -96,7 +95,7 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(() -> {
                         if (computers.size() == 1) {
                             dismiss();
-                            Toast.makeText(getActivity(), getResources().getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
                             MainActivity mainActivity = (MainActivity) getActivity();
                             mainActivity.showSMBDialog("", "", false);
                             return;
@@ -203,9 +202,9 @@ public class SmbSearchDialog extends DialogFragment {
 
             rootView = view;
 
-            txtTitle = (TextView) view.findViewById(R.id.firstline);
-            image = (ImageView) view.findViewById(R.id.icon);
-            txtDesc = (TextView) view.findViewById(R.id.secondLine);
+            txtTitle = view.findViewById(R.id.firstline);
+            image = view.findViewById(R.id.icon);
+            txtDesc = view.findViewById(R.id.secondLine);
         }
 
     }

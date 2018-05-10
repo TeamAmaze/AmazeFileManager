@@ -163,12 +163,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 break;
             case OTG:
                 list = new ArrayList<>();
-                listOtg(path, new OnFileFound() {
-                    @Override
-                    public void onFileFound(HybridFileParcelable file) {
-                        LayoutElementParcelable elem = createListParcelables(file);
-                        if(elem != null) list.add(elem);
-                    }
+                listOtg(path, file -> {
+                    LayoutElementParcelable elem = createListParcelables(file);
+                    if(elem != null) list.add(elem);
                 });
                 openmode = OpenMode.OTG;
                 break;
@@ -180,12 +177,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 list = new ArrayList<>();
 
                 try {
-                    listCloud(path, cloudStorage, openmode, new OnFileFound() {
-                        @Override
-                        public void onFileFound(HybridFileParcelable file) {
-                            LayoutElementParcelable elem = createListParcelables(file);
-                            if(elem != null) list.add(elem);
-                        }
+                    listCloud(path, cloudStorage, openmode, file -> {
+                        LayoutElementParcelable elem = createListParcelables(file);
+                        if(elem != null) list.add(elem);
                     });
                 } catch (CloudPluginException e) {
                     e.printStackTrace();
@@ -197,17 +191,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 // we're neither in OTG not in SMB, load the list based on root/general filesystem
                 list = new ArrayList<>();
                 RootHelper.getFiles(path, ma.getMainActivity().isRootExplorer(), showHiddenFiles,
-                        new RootHelper.GetModeCallBack() {
-                            @Override
-                            public void getMode(OpenMode mode) {
-                                openmode = mode;
-                            }
-                        }, new OnFileFound() {
-                            @Override
-                            public void onFileFound(HybridFileParcelable file) {
-                                LayoutElementParcelable elem = createListParcelables(file);
-                                if(elem != null) list.add(elem);
-                            }
+                        mode -> openmode = mode, file -> {
+                            LayoutElementParcelable elem = createListParcelables(file);
+                            if(elem != null) list.add(elem);
                         });
                 break;
         }

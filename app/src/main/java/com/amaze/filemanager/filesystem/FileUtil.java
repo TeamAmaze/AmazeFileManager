@@ -168,9 +168,6 @@ public abstract class FileUtil {
 
     /**
      * Writes uri stream from external application to the specified path
-     * @param uris
-     * @param contentResolver
-     * @param currentPath
      */
     public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
                                                @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
@@ -509,7 +506,7 @@ public abstract class FileUtil {
         return isSuccessful;
     }
 
-    public static boolean mkfile(final File file,Context context) throws IOException {
+    public static boolean mkfile(final File file,Context context) {
         if(file==null)
             return false;
         if (file.exists()) {
@@ -839,7 +836,6 @@ public abstract class FileUtil {
      * @param folderName The folder below app folder where the file is copied to.
      * @param targetName The name of the target file.
      * @return the dummy file.
-     * @throws IOException
      */
     private static File copyDummyFile(final int resource, final String folderName, final String targetName, Context context)
             throws IOException {
@@ -883,7 +879,6 @@ public abstract class FileUtil {
     /**
      * Checks whether the target path exists or is writable
      * @param f the target path
-     * @param context
      * @return 1 if exists or writable, 0 if not writable
      */
     public static int checkFolder(final String f,Context context) {
@@ -982,8 +977,7 @@ public abstract class FileUtil {
          * Deletes the file. Returns true if the file has been successfully deleted or otherwise does not exist. This operation is not
          * recursive.
          */
-        public boolean delete()
-                throws IOException {
+        public boolean delete() {
 
             if (!file.exists()) {
                 return true;

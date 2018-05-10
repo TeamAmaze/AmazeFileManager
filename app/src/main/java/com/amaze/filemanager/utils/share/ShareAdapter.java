@@ -62,8 +62,8 @@ class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
 
             rootView = view;
 
-            textView = ((TextView) view.findViewById(R.id.firstline));
-            imageView = (ImageView) view.findViewById(R.id.icon);
+            textView = view.findViewById(R.id.firstline);
+            imageView = view.findViewById(R.id.icon);
         }
 
         void render(final int position) {

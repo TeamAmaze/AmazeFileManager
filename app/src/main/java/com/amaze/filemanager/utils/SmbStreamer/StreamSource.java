@@ -23,7 +23,7 @@ public class StreamSource {
 
     public StreamSource() {}
 
-    public StreamSource(SmbFile file,long l) throws SmbException {
+    public StreamSource(SmbFile file,long l) {
 
         fp = 0;
         len = l;
@@ -57,8 +57,6 @@ public class StreamSource {
      * Setting buffer size by properties didn't work for me so I created this constructor.
      * In the libs folder there is a library modified by me. If you want to use a stock one, you
      * have to set somehow the buffer size to be equal with http server's buffer size which is 8192.
-     *
-     * @throws IOException
      */
     public void open() throws IOException {
         try {

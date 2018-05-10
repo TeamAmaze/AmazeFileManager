@@ -1,25 +1,16 @@
 package com.amaze.filemanager.fragments.preference_fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -27,13 +18,10 @@ import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.adapters.ColorAdapter;
+import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.views.preference.InvalidablePreferenceCategory;
-import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorPreference;
-import com.amaze.filemanager.utils.color.ColorUsage;
-
-import java.util.List;
+import com.amaze.filemanager.ui.colors.ColorPreference;
 
 /**
  * This class uses two sections, so that there doesn't need to be two different Fragments.
@@ -115,44 +103,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             case PreferencesConstants.PREFERENCE_SKIN_TWO:
             case PreferencesConstants.PREFERENCE_ACCENT:
             case PreferencesConstants.PREFERENCE_ICON_SKIN:
-                final ColorUsage usage = ColorUsage.fromString(preference.getKey());
-                if (usage != null) {
-                    ColorAdapter adapter = new ColorAdapter(getActivity(),
-                            ColorPreference.getUniqueAvailableColors(getActivity()), usage,
-                            activity.getColorPreference().getColor(usage),
-                            (selectedColorRes) -> {
-                        activity.getColorPreference().setRes(usage, selectedColorRes).saveToPreferences(sharedPref);
-                        if (dialog != null) dialog.dismiss();
-                        invalidateEverything();
-                    });
-
-                    GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
-                    v.setAdapter(adapter);
-                    v.setOnItemClickListener(adapter);
-
-                    int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
-                    dialog = new MaterialDialog.Builder(getActivity())
-                            .positiveText(R.string.cancel)
-                            .title(R.string.choose_color)
-                            .theme(activity.getAppTheme().getMaterialDialogTheme())
-                            .autoDismiss(true)
-                            .positiveColor(fab_skin)
-                            .neutralColor(fab_skin)
-                            .neutralText(R.string.defualt)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onNeutral(MaterialDialog dialog) {
-                                    super.onNeutral(dialog);
-                                    if (activity != null) activity.setRestartActivity();
-                                    activity.getColorPreference()
-                                            .setRes(usage, usage.getDefaultColor())
-                                            .saveToPreferences(sharedPref);
-                                    invalidateEverything();
-                                }
-                            })
-                            .customView(v, false)
-                            .show();
-                }
+                colorChangeDialog(preference.getKey());
                 return false;
             case "selectcolorconfig":
                 switchSections();
@@ -160,6 +111,83 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
         }
 
         return false;
+    }
+
+    private void colorChangeDialog(String colorPrefKey) {
+        final UserColorPreferences userColorPreferences = activity.getCurrentColorPreference();
+        if (userColorPreferences != null) {
+            @ColorInt int currentColor = 0;
+
+            switch(colorPrefKey) {
+                case PreferencesConstants.PREFERENCE_SKIN:
+                    currentColor = userColorPreferences.primaryFirstTab;
+                    break;
+                case PreferencesConstants.PREFERENCE_SKIN_TWO:
+                    currentColor = userColorPreferences.primarySecondTab;
+                    break;
+                case PreferencesConstants.PREFERENCE_ACCENT:
+                    currentColor = userColorPreferences.accent;
+                    break;
+                case PreferencesConstants.PREFERENCE_ICON_SKIN:
+                    currentColor = userColorPreferences.iconSkin;
+                    break;
+            }
+
+            ColorAdapter adapter = new ColorAdapter(getActivity(),
+                    ColorPreference.availableColors, currentColor,
+                    (selectedColor) -> {
+                        @ColorInt int primaryFirst = userColorPreferences.primaryFirstTab,
+                                primarySecond = userColorPreferences.primarySecondTab,
+                                accent = userColorPreferences.accent,
+                                iconSkin = userColorPreferences.iconSkin;
+
+                        switch(colorPrefKey) {
+                            case PreferencesConstants.PREFERENCE_SKIN:
+                                primaryFirst = selectedColor;
+                                break;
+                            case PreferencesConstants.PREFERENCE_SKIN_TWO:
+                                primarySecond = selectedColor;
+                                break;
+                            case PreferencesConstants.PREFERENCE_ACCENT:
+                                accent = selectedColor;
+                                break;
+                            case PreferencesConstants.PREFERENCE_ICON_SKIN:
+                                iconSkin = selectedColor;
+                                break;
+                        }
+
+                        activity.getColorPreference().saveColorPreferences(sharedPref,
+                                new UserColorPreferences(primaryFirst, primarySecond, accent,
+                                        iconSkin));
+                        if (dialog != null) dialog.dismiss();
+                        invalidateEverything();
+                    });
+
+            GridView v = (GridView) getActivity().getLayoutInflater().inflate(R.layout.dialog_grid, null);
+            v.setAdapter(adapter);
+            v.setOnItemClickListener(adapter);
+
+            int fab_skin = activity.getAccent();
+            dialog = new MaterialDialog.Builder(getActivity())
+                    .positiveText(R.string.cancel)
+                    .title(R.string.choose_color)
+                    .theme(activity.getAppTheme().getMaterialDialogTheme())
+                    .autoDismiss(true)
+                    .positiveColor(fab_skin)
+                    .neutralColor(fab_skin)
+                    .neutralText(R.string.defualt)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onNeutral(MaterialDialog dialog) {
+                            super.onNeutral(dialog);
+                            if (activity != null) activity.setRestartActivity();
+                            activity.getColorPreference().saveColorPreferences(sharedPref, userColorPreferences);
+                            invalidateEverything();
+                        }
+                    })
+                    .customView(v, false)
+                    .show();
+        }
     }
 
     private void switchSections() {
@@ -192,7 +220,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         ColorPickerDialog selectedColors = (ColorPickerDialog) findPreference(KEY_PRESELECTED_CONFIGS);
         invalidateColorPreference(selectedColors);
-        selectedColors.setColorPreference(activity.getColorPreference(), activity.getAppTheme());
+        selectedColors.setColorPreference(activity.getColorPreference(), activity.getCurrentColorPreference(), activity.getAppTheme());
         selectedColors.setListener(() -> {
             if (activity != null) activity.setRestartActivity();
             checkCustomization();
@@ -204,7 +232,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
             }
         });
 
-        ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getColorPreference());
+        ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getAccent());
 
         checkCustomization();
     }
@@ -237,7 +265,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                 selectedColors.invalidateColors();
             }
 
-            ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getColorPreference());
+            ((InvalidablePreferenceCategory) findPreference("category")).invalidate(activity.getAccent());
         }
     }
 
@@ -248,12 +276,11 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
         if(isColor) {
             selectedColors.setColorsVisibility(View.VISIBLE);
+            UserColorPreferences userColorPreferences = activity.getCurrentColorPreference();
 
-            int skin = activity.getColorPreference().getColor(ColorUsage.PRIMARY);
-            int skin_two = activity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
-            int accent_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
-            int icon_skin = activity.getColorPreference().getColor(ColorUsage.ICON_SKIN);
-            selectedColors.setColors(skin, skin_two, accent_skin, icon_skin);
+            selectedColors.setColors(userColorPreferences.primaryFirstTab,
+                    userColorPreferences.primarySecondTab, userColorPreferences.accent,
+                    userColorPreferences.iconSkin);
 
             if(activity.getAppTheme().getMaterialDialogTheme() == Theme.LIGHT) {
                 selectedColors.setDividerColor(Color.WHITE);

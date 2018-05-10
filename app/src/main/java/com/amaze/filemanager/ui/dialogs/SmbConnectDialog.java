@@ -26,7 +26,6 @@ import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.IOException;
@@ -96,10 +95,10 @@ public class SmbConnectDialog extends DialogFragment {
         final String path=getArguments().getString("path");
         final String name=getArguments().getString("name");
         context=getActivity();
-        emptyAddress = String.format(getString(R.string.cantbeempty),getString(R.string.ip) );
-        emptyName = String.format(getString(R.string.cantbeempty),getString(R.string.connectionname) );
-        invalidDomain = String.format(getString(R.string.invalid),getString(R.string.domain));
-        invalidUsername = String.format(getString(R.string.invalid),getString(R.string.username).toLowerCase());
+        emptyAddress = getString(R.string.cantbeempty,getString(R.string.ip) );
+        emptyName = getString(R.string.cantbeempty,getString(R.string.connectionname) );
+        invalidDomain = getString(R.string.invalid,getString(R.string.domain));
+        invalidUsername = getString(R.string.invalid,getString(R.string.username).toLowerCase());
         if(getActivity() instanceof SmbConnectionListener){
             smbConnectionListener=(SmbConnectionListener)getActivity();
         }
@@ -108,11 +107,11 @@ public class SmbConnectDialog extends DialogFragment {
         ba3.title((R.string.smb_con));
         ba3.autoDismiss(false);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
-        final TextInputLayout connectionTIL = (TextInputLayout)v2.findViewById(R.id.connectionTIL);
-        final TextInputLayout ipTIL = (TextInputLayout)v2.findViewById(R.id.ipTIL);
-        final TextInputLayout domainTIL = (TextInputLayout)v2.findViewById(R.id.domainTIL);
-        final TextInputLayout usernameTIL = (TextInputLayout)v2.findViewById(R.id.usernameTIL);
-        final AppCompatEditText conName = (AppCompatEditText) v2.findViewById(R.id.connectionET);
+        final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
+        final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
+        final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
+        final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
+        final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
 
         conName.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -122,7 +121,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else connectionTIL.setError("");
             }
         });
-        final AppCompatEditText ip = (AppCompatEditText) v2.findViewById(R.id.ipET);
+        final AppCompatEditText ip = v2.findViewById(R.id.ipET);
         ip.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -131,7 +130,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else ipTIL.setError("");
             }
         });
-        final AppCompatEditText domain = (AppCompatEditText) v2.findViewById(R.id.domainET);
+        final AppCompatEditText domain = v2.findViewById(R.id.domainET);
         domain.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -140,7 +139,7 @@ public class SmbConnectDialog extends DialogFragment {
                 else domainTIL.setError("");
             }
         });
-        final AppCompatEditText user = (AppCompatEditText) v2.findViewById(R.id.usernameET);
+        final AppCompatEditText user = v2.findViewById(R.id.usernameET);
         user.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -149,10 +148,11 @@ public class SmbConnectDialog extends DialogFragment {
                 else usernameTIL.setError("");
             }
         });
-        int accentColor = utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT);
-        final AppCompatEditText pass = (AppCompatEditText) v2.findViewById(R.id.passwordET);
-        final AppCompatCheckBox ch = (AppCompatCheckBox) v2.findViewById(R.id.checkBox2);
-        TextView help = (TextView) v2.findViewById(R.id.wanthelp);
+
+        int accentColor = ((ThemedActivity) getActivity()).getAccent();
+        final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
+        final AppCompatCheckBox ch = v2.findViewById(R.id.checkBox2);
+        TextView help = v2.findViewById(R.id.wanthelp);
 
         EditTextColorStateUtil.setTint(context, conName, accentColor);
         EditTextColorStateUtil.setTint(context, user, accentColor);
@@ -160,7 +160,7 @@ public class SmbConnectDialog extends DialogFragment {
 
         Utils.setTint(context, ch, accentColor);
         help.setOnClickListener(v -> {
-            int accentColor1 = ((ThemedActivity) getActivity()).getColorPreference().getColor(ColorUsage.ACCENT);
+            int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
             GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
         });
 
@@ -269,7 +269,7 @@ public class SmbConnectDialog extends DialogFragment {
                             smbFile.getPath())};
             } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
                 return;
             }
 

@@ -69,7 +69,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -87,7 +86,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
@@ -102,7 +100,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
@@ -122,12 +119,7 @@ import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
@@ -138,7 +130,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public OpenMode openMode = OpenMode.FILE;
 
     /**
-     * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
+     * boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -214,9 +206,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
-        accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
-        primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
-        primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+        accentColor = getMainActivity().getAccent();
+        primaryColor = getMainActivity().getCurrentColorPreference().primaryFirstTab;
+        primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
     }
 
     public void stopAnimation() {
@@ -233,9 +225,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         setRetainInstance(true);
-        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-        fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        fastScroller = rootView.findViewById(R.id.fastscroll);
         fastScroller.setPressedHandleColor(accentColor);
         listView.setOnTouchListener((view, motionEvent) -> {
             if (adapter != null && stopAnims) {
@@ -252,7 +244,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             return false;
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
 
@@ -515,7 +507,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<LayoutElementParcelable> positions = adapter.getCheckedItems();
-            TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
+            TextView textView1 = actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
@@ -969,7 +961,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     /**
      * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to external app
-     * @param baseFile
      */
     public void returnIntentResults(HybridFileParcelable baseFile) {
 
@@ -1033,7 +1024,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     void initNoFileLayout() {
-        nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview = rootView.findViewById(R.id.nofilelayout);
         nofilesview.setColorSchemeColors(accentColor);
         nofilesview.setOnRefreshListener(() -> {
             loadlist((CURRENT_PATH), false, openMode);

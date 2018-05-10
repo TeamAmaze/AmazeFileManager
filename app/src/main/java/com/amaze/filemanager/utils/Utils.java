@@ -211,7 +211,7 @@ public class Utils {
             case GDRIVE:
             case ONEDRIVE:
             case BOX:
-                Toast.makeText(context, context.getResources().getString(R.string.smb_launch_error),
+                Toast.makeText(context, context.getString(R.string.smb_launch_error),
                         Toast.LENGTH_LONG).show();
                 return null;
             default:
