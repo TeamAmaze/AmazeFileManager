@@ -25,6 +25,8 @@ import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 /**
@@ -139,7 +141,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                             }
 
                             @Override
-                            public void onButtonPressed(Intent intent, String password) throws Exception {
+                            public void onButtonPressed(Intent intent, String password) throws GeneralSecurityException, IOException {
                                 EncryptDecryptUtils.startEncryption(context,
                                         rowItem.generateBaseFile().getPath(), password, intent);
                             }
@@ -149,19 +151,15 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                         new EncryptDecryptUtils.EncryptButtonCallbackInterface() {
 
                             @Override
-                            public void onButtonPressed(Intent intent) throws Exception {
+                            public void onButtonPressed(Intent intent) throws GeneralSecurityException, IOException {
                                 // check if a master password or fingerprint is set
                                 if (!preferences.getString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                                         PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).equals("")) {
-
-                                    EncryptDecryptUtils.startEncryption(context,
-                                            rowItem.generateBaseFile().getPath(),
+                                    GeneralDialogCreation.showEncryptWithPresetPasswordSaveAsDialog(context, mainActivity,
                                             PreferencesConstants.ENCRYPT_PASSWORD_MASTER, encryptIntent);
                                 } else if (preferences.getBoolean(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
                                         PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
-
-                                    EncryptDecryptUtils.startEncryption(context,
-                                            rowItem.generateBaseFile().getPath(),
+                                    GeneralDialogCreation.showEncryptWithPresetPasswordSaveAsDialog(context, mainActivity,
                                             PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT, encryptIntent);
                                 } else {
                                     // let's ask a password from user
@@ -181,7 +179,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                     // let's skip warning dialog call
                     try {
                         encryptButtonCallbackInterface.onButtonPressed(encryptIntent);
-                    } catch (Exception e) {
+                    } catch (GeneralSecurityException | IOException e) {
                         e.printStackTrace();
                         Toast.makeText(context,
                                 mainFragment.getString(R.string.crypt_encryption_fail),

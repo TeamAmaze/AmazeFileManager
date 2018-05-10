@@ -1,3 +1,24 @@
+/*
+ * SftpConnectDialog.java
+ *
+ * Copyright © 2017-2018 Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.utils.files;
 
 import android.content.Context;
@@ -100,14 +121,14 @@ public class CryptUtil {
      * @param sourceFile the file to encrypt
      */
     public CryptUtil(Context context, HybridFileParcelable sourceFile, ProgressHandler progressHandler,
-                     ArrayList<HybridFile> failedOps) throws GeneralSecurityException, IOException {
+                     ArrayList<HybridFile> failedOps, String targetFilename) throws GeneralSecurityException, IOException {
 
         this.progressHandler = progressHandler;
         this.failedOps = failedOps;
 
         // target encrypted file
         HybridFile hFile = new HybridFile(sourceFile.getMode(), sourceFile.getParent(context));
-        encrypt(context, sourceFile, hFile);
+        encrypt(context, sourceFile, hFile, targetFilename);
     }
 
     /**
@@ -195,20 +216,20 @@ public class CryptUtil {
      * @param sourceFile        the source file to encrypt
      * @param targetDirectory   the target directory in which we're going to encrypt
      */
-    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
+    private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory, String targetFilename)
             throws GeneralSecurityException, IOException {
 
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
             final HybridFile hFile = new HybridFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
+                    targetDirectory.getPath(), targetFilename,
                     sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
                 try {
-                    encrypt(context, file, hFile);
+                    encrypt(context, file, hFile, file.getName().concat(CRYPT_EXTENSION));
                 } catch (IOException | GeneralSecurityException e) {
                     throw new IllegalStateException(e);//throw unchecked exception, no throws needed
                 }
@@ -225,7 +246,7 @@ public class CryptUtil {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
             HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName() + CRYPT_EXTENSION,
+                    targetDirectory.getPath(), targetFilename,
                     sourceFile.isDirectory());
 
             progressHandler.setFileName(sourceFile.getName());

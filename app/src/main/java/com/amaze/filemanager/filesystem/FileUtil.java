@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -57,6 +58,8 @@ import jcifs.smb.SmbFile;
 public abstract class FileUtil {
 
     private static final String LOG = "AmazeFileUtils";
+
+    private static final Pattern FILENAME_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
     /**
      * Determine the camera folder. There seems to be no Android API to work for real devices, so this is a best guess.
@@ -1186,4 +1189,17 @@ public abstract class FileUtil {
 
     }
 
+
+    /**
+     * Validate given text is a valid filename.
+     *
+     * @param text
+     * @return true if given text is a valid filename
+     */
+    public static boolean isValidFilename(String text) {
+        //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
+        //So we simply use equality to check them
+        return (!FILENAME_REGEX.matcher(text).find())
+                && !".".equals(text) && !"..".equals(text);
+    }
 }
