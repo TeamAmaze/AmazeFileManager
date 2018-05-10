@@ -80,6 +80,7 @@
                 <data android:mimeType="application/x-7z-compressed" />
                 <data android:mimeType="application/x-bzip2" />
                 <data android:mimeType="application/x-xz" />
+                <data android:mimeType="application/x-lzma" />
 
                 <!--<category android:name="android.intent.category.OPENABLE" />--> />
                 <category android:name="android.intent.category.DEFAULT" />
