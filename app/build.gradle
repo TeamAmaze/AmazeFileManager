@@ -83,6 +83,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-multidex:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
+    testImplementation "commons-logging:commons-logging:1.2" //required by junrar. Damn.
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
@@ -156,6 +157,7 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.2'//Multiple dex files
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'org.tukaani:xz:1.8'
 }
 
 configurations.all {

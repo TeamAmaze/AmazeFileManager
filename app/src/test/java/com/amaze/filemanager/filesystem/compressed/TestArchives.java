@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public abstract class TestArchives {
 
-    private static final String[] ARCHIVE_TYPES = {"7z", "tar.7z", "tar.bz2", "tar.gz", "tar.lzma", "tar.xz"};
+    private static final String[] ARCHIVE_TYPES = {"7z", "tar.7z", "tar.bz2", "tar.gz", "tar.lzma", "tar.xz", "zip", "tar"};
 
     private static final ClassLoader classLoader = TestArchives.class.getClassLoader();
 
