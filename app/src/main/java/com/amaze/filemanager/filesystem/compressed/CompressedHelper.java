@@ -64,7 +64,7 @@ public class CompressedHelper {
     public static final String fileExtensionBzip2Tar = "tar.bz2";
     public static final String fileExtensionRar = "rar";
     public static final String fileExtension7zip = "7z";
-    public static final String fileExtensionLzma = "tar.xz";
+    public static final String fileExtensionLzma = "tar.lzma";
     public static final String fileExtensionXz = "tar.xz";
 
     /**
