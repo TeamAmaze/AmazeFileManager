@@ -40,12 +40,18 @@ public class EncryptDecryptUtils {
      *
      * @param path     the path of file to encrypt
      * @param password the password in plaintext
+     * @throws GeneralSecurityException Errors on encrypting file/folder
+     * @throws IOException I/O errors on encrypting file/folder
      */
     public static void startEncryption(Context c, final String path, final String password,
-                                       Intent intent) throws Exception {
+                                       Intent intent) throws GeneralSecurityException, IOException {
         CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
+        String destPath = path.substring(0, path.lastIndexOf('/')+1)
+                .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
+
+        //EncryptService.TAG_ENCRYPT_TARGET already has the .aze extension, no need to append again
+
+        EncryptedEntry encryptedEntry = new EncryptedEntry(destPath, password);
         cryptHandler.addEntry(encryptedEntry);
 
         // start the encryption process
@@ -156,7 +162,7 @@ public class EncryptDecryptUtils {
         /**
          * Callback fired when we've just gone through warning dialog before encryption
          */
-        void onButtonPressed(Intent intent) throws Exception;
+        void onButtonPressed(Intent intent) throws GeneralSecurityException, IOException;
 
         /**
          * Callback fired when user has entered a password for encryption
@@ -164,7 +170,7 @@ public class EncryptDecryptUtils {
          *
          * @param password the password entered by user
          */
-        void onButtonPressed(Intent intent, String password) throws Exception;
+        void onButtonPressed(Intent intent, String password) throws GeneralSecurityException, IOException;
     }
 
     public interface DecryptButtonCallbackInterface {
