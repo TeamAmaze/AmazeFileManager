@@ -3,46 +3,27 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 import android.content.Context;
 import android.os.Environment;
 
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.filesystem.compressed.TestArchives;
+import com.amaze.filemanager.filesystem.compressed.AbstractArchiveTestSupport;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
-public abstract class AbstractExtractorTest {
+public abstract class AbstractExtractorTest extends AbstractArchiveTestSupport {
 
     protected abstract Class<? extends Extractor> extractorClass();
-
-    protected abstract String getArchiveType();
-
-    @Before
-    public void setUp() throws Exception {
-        ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
-        TestArchives.init(RuntimeEnvironment.application);
-        copyArchiveToStorage();
-    }
 
     @After
     public void tearDown() throws Exception {
@@ -109,13 +90,5 @@ public abstract class AbstractExtractorTest {
         assertTrue(IOUtils.toByteArray(new FileInputStream(new File(new File(extractedArchiveRoot, "3"), "6"))).length == 4);
         assertTrue(IOUtils.toByteArray(new FileInputStream(new File(new File(extractedArchiveRoot, "4"), "5"))).length == 5);
         assertTrue(IOUtils.toByteArray(new FileInputStream(new File(new File(extractedArchiveRoot, "a/b/c/d"), "lipsum.bin"))).length == 512);
-    }
-
-    private void copyArchiveToStorage() throws IOException{
-        IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
-    }
-
-    private File getArchiveFile() {
-        return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
     }
 }

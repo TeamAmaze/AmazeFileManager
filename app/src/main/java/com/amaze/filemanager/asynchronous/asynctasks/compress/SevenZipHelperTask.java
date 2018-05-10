@@ -36,7 +36,8 @@ public class SevenZipHelperTask extends CompressedHelperTask {
                         && name.substring(0, name.lastIndexOf(SEPARATOR)).equals(relativePath);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(entry.getName(),
+                    String entryName = entry.isDirectory() ? entry.getName() + "/" : entry.getName();
+                    elements.add(new CompressedObjectParcelable(entryName,
                             entry.getLastModifiedDate().getTime(), entry.getSize(), entry.isDirectory()));
                 }
             }

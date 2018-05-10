@@ -27,6 +27,8 @@ public abstract class TestArchives {
         return IOUtils.toByteArray(classLoader.getResourceAsStream("test-archive." + type));
     }
 
+    //Register various Uris for archive types. For future test case use, to verify Amaze was
+    //launched in response to ACTION_VIEW intent for an archive's URI
     private static void readArchive(Context context, String type) {
         try {
             Uri uri = Uri.parse("content://foo.bar.test.streamprovider/temp/test-archive." + type);
