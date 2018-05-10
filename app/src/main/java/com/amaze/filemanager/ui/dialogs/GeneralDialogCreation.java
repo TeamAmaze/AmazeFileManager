@@ -832,18 +832,11 @@ public class GeneralDialogCreation {
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                        FileUtils.openunknown(f, m, false, useNewStack);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-                        m.openZip(f.getPath());
-                    }
+                .onPositive((dialog, which) -> {
+                    boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+                    FileUtils.openunknown(f, m, false, useNewStack);
                 })
+                .onNegative((dialog, which) -> m.openZip(f.getPath()))
                 .theme(m.getAppTheme().getMaterialDialogTheme())
                 .build()
                 .show();
@@ -861,20 +854,12 @@ public class GeneralDialogCreation {
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog materialDialog) {
-                        m. mainActivityHelper.extractFile(f);
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog materialDialog) {
-                        //m.addZipViewTab(f.getPath());
-                        if (f.getName().toLowerCase().endsWith(".rar"))
-                            m.openRar(Uri.fromFile(f).toString());
-                        else
-                            m.openZip(Uri.fromFile(f).toString());
-                    }
+                .onPositive((dialog, which) -> m. mainActivityHelper.extractFile(f))
+                .onNegative((dialog, which) -> {
+                    if (f.getName().toLowerCase().endsWith(".rar"))
+                        m.openRar(Uri.fromFile(f).toString());
+                    else
+                        m.openZip(Uri.fromFile(f).toString());
                 });
         if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
