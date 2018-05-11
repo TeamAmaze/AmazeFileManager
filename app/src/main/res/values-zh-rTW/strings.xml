@@ -589,4 +589,9 @@
   <string name="reopen_from_source">請嘗試用原程式開啟此檔案。</string>
   <string name="encryption_fail_copy">不能更新在資料庫內的加密檔案記錄。</string>
   <string name="ssh_key_invalid_passphrase">私鑰密碼錯誤。</string>
+    <string name="cannot_overwrite">不能覆蓋原有檔案。</string>
+  <string name="encrypt_file_must_end_with_aze">加密檔案必須以 .aze為檔案擴展名稱。</string>
+  <string name="encrypt_file_save_as">儲存加密檔案為……</string>
+  <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
+  <string name="filename">檔案名稱</string>
 </resources>
