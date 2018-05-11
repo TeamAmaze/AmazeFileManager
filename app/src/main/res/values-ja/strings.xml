@@ -513,7 +513,7 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="about_amaze">Android用マテリアル・デザイン ファイルマネージャー</string>
   <string name="password_repeat">パスワードの再入力</string>
   <string name="ssh_select_pem">認證用プライベート・キーを選びます</string>
-  <string name="ssh_key_prompt_passphrase">キー・パスフレーズを入力ください。</string>
+  <string name="ssh_key_prompt_passphrase">鍵のパスフレーズを入力ください。</string>
   <string name="preference_newstack_title">新しいタスクでファイルを開ける</string>
   <string name="searchresults">%s の検索結果</string>
   <string name="searching">%s を検索中</string>
@@ -570,5 +570,10 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="operation_fail_following">次のファイルで操作が失敗しました</string>
   <string name="cloud_error_failed_restart">接続をロードできません。Amaze クラウドプラクインを一度起動してください。</string>
     <string name="preselectedconfigs_title">事前設定済みのカラー設定</string>
-    <!-- end of plurals -->
+    <string name="encrypt_file_save_as">暗号化ファイルを保存……</string>
+  <string name="encrypt_folder_save_as">暗号化フォルダを保存……</string>
+  <string name="cannot_overwrite">ファイルを上書きすることはできません。</string>
+  <string name="filename">ファイル名</string>
+  <string name="ssh_key_invalid_passphrase">無効な秘密鍵のパスフレーズ。</string>
+  <!-- end of plurals -->
 </resources>
