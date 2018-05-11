@@ -145,7 +145,7 @@ public class CompressedHelper {
         compressedName = compressedName.toLowerCase();
         if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
-        } else if (isGzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName)) {
+        } else if (isGzippedTar(compressedName) || isBzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName)) {
             return compressedName.substring(0,
                     Utils.nthToLastCharIndex(2, compressedName, '.'));
         } else {
