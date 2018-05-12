@@ -7,10 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +28,6 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -38,27 +35,21 @@ import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
-import com.amaze.filemanager.utils.IconLoaderUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.bumptech.glide.ListPreloader;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.CountDownLatch;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
@@ -102,7 +93,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int grey_color, accentColor, iconSkinColor, goBackColor, videoColor, audioColor,
             pdfColor, codeColor, textColor, archiveColor, genericColor;
     private int offset = 0;
-    public IconLoaderUtil iconLoaderUtil;
 
     public RecyclerAdapter(PreferenceActivity preferenceActivity, MainFragment m,
                            UtilitiesProvider utilsProvider, SharedPreferences sharedPrefs,
@@ -283,9 +273,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         if(holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).rl.clearAnimation();
-            RoundedImageView roundedPictureIcon = ((ItemViewHolder) holder).pictureIcon;
-            ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
-            //iconLoaderUtil.pauseLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
             ((ItemViewHolder) holder).txtTitle.setSelected(false);
         }
         super.onViewDetachedFromWindow(holder);
@@ -296,8 +283,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewAttachedToWindow(holder);
         if (holder instanceof ItemViewHolder) {
             AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
-            ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
-            //iconLoaderUtil.resumeLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
         }
         super.onViewAttachedToWindow(holder);
     }
@@ -305,9 +290,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public boolean onFailedToRecycleView(RecyclerView.ViewHolder holder) {
         ((ItemViewHolder) holder).rl.clearAnimation();
-        RoundedImageView roundedPictureIcon = ((ItemViewHolder) holder).pictureIcon;
-        ImageView roundedApkIcon = ((ItemViewHolder) holder).apkIcon;
-        //iconLoaderUtil.pauseLoad(roundedPictureIcon!=null ? roundedPictureIcon:roundedApkIcon);
         ((ItemViewHolder) holder).txtTitle.setSelected(false);
         return super.onFailedToRecycleView(holder);
     }
@@ -372,19 +354,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             createHeaders(invalidate, uris);
         }
 
-
-        int imageWidthPixels, imageHeightPixels;
-        if (mainFrag.IS_LIST) {
-            imageHeightPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
-            imageWidthPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(40);
-        } else {
-            imageHeightPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(100);
-            imageWidthPixels = AppConfig.getInstance().getScreenUtils().convertDbToPx(100);
-        }
-        sizeProvider = new FixedPreloadSizeProvider(imageWidthPixels, imageHeightPixels);
+        sizeProvider = new RecyclerPreloadSizeProvider(this);
         modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris,
                 getBoolean(PREFERENCE_SHOW_THUMB));
-        iconLoaderUtil = IconLoaderUtil.getInstance(context, modelProvider);
+
         preloader = new RecyclerViewPreloader<>(GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
 
         recyclerView.addOnScrollListener(preloader);
@@ -601,19 +574,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             //holder.genericIcon.setVisibility(View.INVISIBLE);
                         } else {
                             // we could not find the extension, set a generic file type icon probably a directory
-                            GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         }
                         break;
                     case Icons.ENCRYPTED:
                         if (getBoolean(PREFERENCE_SHOW_THUMB)) {
                             holder.genericIcon.setVisibility(View.VISIBLE);
-                            //iconLoaderUtil.loadDrawable(rowItem.iconData, holder.genericIcon);
-                            GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
+                            modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+
                         }
                         break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
-                        GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
+                        modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
                         break;
                 }
 
@@ -851,8 +824,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return false;
             }
         };
-        //modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
-        iconLoaderUtil.loadDrawable(new IconLoaderUtil.IconLoader(view, iconData), errorListener, requestListener);
+        modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
     }
 
     private void showRoundedThumbnail(ItemViewHolder viewHolder, IconDataParcelable iconData,
@@ -895,8 +867,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return false;
             }
         };
-        // modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
-        iconLoaderUtil.loadDrawable(new IconLoaderUtil.IconLoader(view, iconData), errorListener, requestListener);
+        modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
     }
 
     private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {

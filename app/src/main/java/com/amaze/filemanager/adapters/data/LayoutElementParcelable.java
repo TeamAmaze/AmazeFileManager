@@ -74,7 +74,7 @@ public class LayoutElementParcelable implements Parcelable {
                 case GDRIVE:
                 case ONEDRIVE:
                 case BOX:
-                    if (!isDirectory) {
+                    if (!isDirectory && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
                         this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
                     } else {
                         this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
