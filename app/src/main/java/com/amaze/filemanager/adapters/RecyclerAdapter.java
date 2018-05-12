@@ -84,7 +84,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private MainFragment mainFrag;
     private SharedPreferences sharedPrefs;
     private RecyclerViewPreloader<IconDataParcelable> preloader;
-    private ListPreloader.PreloadSizeProvider sizeProvider;
+    private RecyclerPreloadSizeProvider sizeProvider;
     private RecyclerPreloadModelProvider modelProvider;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
     private Context context;
@@ -434,14 +434,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
                 if (mainFrag.IS_LIST) {
-                    view = mInflater.inflate(R.layout.rowlayout, parent, false);/*
+                    view = mInflater.inflate(R.layout.rowlayout, parent, false);
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
                     sizeProvider.addView(VIEW_PICTURE, view.findViewById(R.id.picture_icon));
-                    sizeProvider.addView(VIEW_APK, view.findViewById(R.id.apk_icon));*/
+                    sizeProvider.addView(VIEW_APK, view.findViewById(R.id.apk_icon));
                 } else {
-                    view = mInflater.inflate(R.layout.griditem, parent, false);/*
+                    view = mInflater.inflate(R.layout.griditem, parent, false);
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
-                    sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));*/
+                    sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));
                 }
 
                 //sizeProvider.closeOffAddition();
