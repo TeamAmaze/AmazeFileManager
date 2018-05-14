@@ -213,6 +213,10 @@ public class Operations {
                 }
                 if (file.isSftp()) {
                     OutputStream out = file.getOutputStream(context);
+                    if(out == null) {
+                        errorCallBack.done(file, false);
+                        return null;
+                    }
                     try {
                         out.close();
                         errorCallBack.done(file, true);
