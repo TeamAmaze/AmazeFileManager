@@ -51,6 +51,8 @@ public class MainActivityHelper {
 
     public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
 
+    private static final String NEW_FILE_TXT_EXTENSION = ".txt";
+
     private MainActivity mainActivity;
     private DataUtils dataUtils = DataUtils.getInstance();
     private int accentColor;
@@ -136,14 +138,15 @@ public class MainActivityHelper {
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, ".txt", (dialog, which) -> {
+        mk(R.string.newfile,  NEW_FILE_TXT_EXTENSION, (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
             mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
             dialog.dismiss();
         }, (text) -> {
             boolean isValidFilename = FileUtil.isValidFilename(text);
 
-            if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".txt")) {
+            //The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt (i.e. recommended as ".txt.txt"
+            if (isValidFilename && text.length() > 0 && (!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION) || text.equalsIgnoreCase(NEW_FILE_TXT_EXTENSION))) {
                 return new WarnableTextInputValidator.ReturnState(
                         WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_file_suggest_txt_extension);
             } else {
