@@ -1,26 +1,20 @@
 package com.amaze.filemanager.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.UsbOtgSingleton;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import static android.content.Context.USB_SERVICE;
 
@@ -56,7 +50,7 @@ public class OTGUtil {
      * @return an array of list of files at the path
      */
     public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
-        Uri rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
         if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
         DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
@@ -93,7 +87,7 @@ public class OTGUtil {
      *                        in case path is not present. Notably useful in opening an output stream.
      */
     public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
-        Uri rootUriString = UsbOtgSingleton.getInstance().getUsbOtgRoot();
+        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
         if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
         // start with root of SD card and then parse through document tree.

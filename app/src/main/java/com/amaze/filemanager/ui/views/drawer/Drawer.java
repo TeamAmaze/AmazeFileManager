@@ -31,7 +31,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.UsbOtgSingleton;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
@@ -58,7 +58,6 @@ import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
-import com.squareup.haha.perflib.Main;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -543,12 +542,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                         && meta.path.contains(OTGUtil.PREFIX_OTG)
-                        && UsbOtgSingleton.getInstance().getUsbOtgRoot() == null) {
+                        && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
 
-                    UsbOtgSingleton.getInstance().setHasRootBeenRequested(true);
+                    SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {

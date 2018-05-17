@@ -87,7 +87,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.UsbOtgSingleton;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -633,17 +633,17 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      */
     private boolean isUsbDeviceConnected() {
         if (OTGUtil.isMassStorageDeviceConnected(this)) {
-            if(!UsbOtgSingleton.getInstance().hasRootBeenRequested()) {
-                UsbOtgSingleton.getInstance().setHasRootBeenRequested(false);
+            if(!SingletonUsbOtg.getInstance().hasRootBeenRequested()) {
+                SingletonUsbOtg.getInstance().setHasRootBeenRequested(false);
                 // we need to set this every time as there is no way to know that whether USB device was
                 // disconnected after closing the app and another one was connected in that case
                 // the URI will obviously change otherwise we could persist the URI even after
                 // reopening the app by not writing this preference when it's not null
-                UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
             }
             return true;
         } else {
-            UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+            SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
             return false;
         }
     }
@@ -1099,10 +1099,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
                 goToMain(null);
             }
@@ -1322,7 +1322,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
                 // otg access
                 Uri usbOtgRoot = Uri.parse(intent.getData().toString());
-                UsbOtgSingleton.getInstance().setUsbOtgRoot(usbOtgRoot);
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
 
                 drawer.closeIfNotLocked();
                 if (drawer.isLocked()) drawer.onDrawerClosed();
@@ -1540,7 +1540,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                    UsbOtgSingleton.getInstance().setUsbOtgRoot(null);
+                    SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                     drawer.refreshDrawer();
                 }
             }

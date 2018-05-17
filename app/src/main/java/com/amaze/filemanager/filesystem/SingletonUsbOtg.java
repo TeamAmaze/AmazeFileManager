@@ -1,14 +1,13 @@
 package com.amaze.filemanager.filesystem;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public class UsbOtgSingleton {
-    private static UsbOtgSingleton instance = null;
+public class SingletonUsbOtg {
+    private static SingletonUsbOtg instance = null;
 
-    public static UsbOtgSingleton getInstance() {
-        if(instance == null) instance = new UsbOtgSingleton();
+    public static SingletonUsbOtg getInstance() {
+        if(instance == null) instance = new SingletonUsbOtg();
         return instance;
     }
 
@@ -18,7 +17,7 @@ public class UsbOtgSingleton {
      */
     private boolean hasRootBeenRequested = false;
 
-    private UsbOtgSingleton() { }
+    private SingletonUsbOtg() { }
 
     public void setUsbOtgRoot(@Nullable Uri root) {
         usbOtgRoot = root;
