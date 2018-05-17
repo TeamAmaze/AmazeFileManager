@@ -24,8 +24,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -44,7 +42,6 @@ import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.adapters.holders.AppHolder;
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -55,7 +52,6 @@ import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -140,7 +136,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
             if (i1 != null)
                 app.startActivity(i1);
             else
-                Toast.makeText(app.getActivity(), app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
+                Toast.makeText(app.getActivity(), app.getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
             // TODO: Implement this method
         });
 
@@ -161,7 +157,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(app.getActivity(), view);
             popupMenu.setOnMenuItemClickListener(item -> {
-                int colorAccent = themedActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+                int colorAccent = themedActivity.getAccent();
 
                 switch (item.getItemId()) {
                     case R.id.open:
@@ -169,7 +165,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         if (i1!= null)
                             app.startActivity(i1);
                         else
-                            Toast.makeText(app.getActivity(),app.getResources().getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
+                            Toast.makeText(app.getActivity(),app.getString(R.string.not_allowed), Toast.LENGTH_LONG).show();
                         return true;
                     case R.id.share:
                         ArrayList<File> arrayList2=new ArrayList<File>();
@@ -187,12 +183,12 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                             if(app.Sp.getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE,false)) {
                                 MaterialDialog.Builder builder1 = new MaterialDialog.Builder(app.getActivity());
                                 builder1.theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
-                                        .content(app.getResources().getString(R.string.unin_system_apk))
-                                        .title(app.getResources().getString(R.string.warning))
+                                        .content(app.getString(R.string.unin_system_apk))
+                                        .title(app.getString(R.string.warning))
                                         .negativeColor(colorAccent)
                                         .positiveColor(colorAccent)
-                                        .negativeText(app.getResources().getString(R.string.no))
-                                        .positiveText(app.getResources().getString(R.string.yes))
+                                        .negativeText(app.getString(R.string.no))
+                                        .positiveText(app.getString(R.string.yes))
                                         .onNegative(((dialog, which) -> dialog.cancel()))
                                         .onPositive(((dialog, which) -> {
                                             ArrayList<HybridFileParcelable> files = new ArrayList<>();
@@ -210,7 +206,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                                             new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
                                         })).build().show();
                             } else {
-                                Toast.makeText(app.getActivity(),app.getResources().getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(app.getActivity(),app.getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             app.unin(rowItem.packageName);
@@ -232,7 +228,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                                 Uri.parse(String.format("package:%s", rowItem.packageName))));
                         return true;
                     case R.id.backup:
-                        Toast.makeText(app.getActivity(), app.getResources().getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
+                        Toast.makeText(app.getActivity(), app.getString( R.string.copyingapk) + Environment.getExternalStorageDirectory().getPath() + "/app_backup", Toast.LENGTH_LONG).show();
                         File f = new File(rowItem.path);
                         ArrayList<HybridFileParcelable> ab = new ArrayList<>();
                         File dst = new File(Environment.getExternalStorageDirectory().getPath() + "/app_backup");

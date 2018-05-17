@@ -49,40 +49,30 @@ public class Operations {
 
         /**
          * Callback fired when file being created in process already exists
-         *
-         * @param file
          */
         void exists(HybridFile file);
 
         /**
          * Callback fired when creating new file/directory and required storage access framework permission
          * to access SD Card is not available
-         *
-         * @param file
          */
         void launchSAF(HybridFile file);
 
         /**
          * Callback fired when renaming file and required storage access framework permission to access
          * SD Card is not available
-         *
-         * @param file
-         * @param file1
          */
         void launchSAF(HybridFile file, HybridFile file1);
 
         /**
          * Callback fired when we're done processing the operation
          *
-         * @param hFile
-         * @param b     defines whether operation was successful
+         * @param b defines whether operation was successful
          */
         void done(HybridFile hFile, boolean b);
 
         /**
          * Callback fired when an invalid file name is found.
-         *
-         * @param file
          */
         void invalidName(HybridFile file);
     }
@@ -223,6 +213,10 @@ public class Operations {
                 }
                 if (file.isSftp()) {
                     OutputStream out = file.getOutputStream(context);
+                    if(out == null) {
+                        errorCallBack.done(file, false);
+                        return null;
+                    }
                     try {
                         out.close();
                         errorCallBack.done(file, true);
@@ -311,10 +305,7 @@ public class Operations {
                             return null;
                         }
                         if (mode == 1 || mode == 0)
-                            try {
-                                FileUtil.mkfile(file.getFile(), context);
-                            } catch (IOException e) {
-                            }
+                            FileUtil.mkfile(file.getFile(), context);
                         if (!file.exists() && rootMode) {
                             file.setMode(OpenMode.ROOT);
                             if (file.exists()) errorCallBack.exists(file);
@@ -380,7 +371,7 @@ public class Operations {
                 } else if (oldFile.isSftp()) {
                     SshClientUtils.execute(new SFtpClientTemplate(oldFile.getPath()) {
                         @Override
-                        public <Void> Void execute(@NonNull SFTPClient client) throws IOException {
+                        public <Void> Void execute(@NonNull SFTPClient client) {
                             try {
                                 client.rename(SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
                                         SshClientUtils.extractRemotePathFrom(newFile.getPath()));
@@ -525,8 +516,6 @@ public class Operations {
      * Well, we wouldn't want to copy when the target is inside the source
      * otherwise it'll end into a loop
      *
-     * @param sourceFile
-     * @param targetFile
      * @return true when copy loop is possible
      */
     public static boolean isCopyLoopPossible(HybridFileParcelable sourceFile, HybridFile targetFile) {

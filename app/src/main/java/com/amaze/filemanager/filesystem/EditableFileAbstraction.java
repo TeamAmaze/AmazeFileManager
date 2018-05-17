@@ -27,7 +27,7 @@ public class EditableFileAbstraction {
     public final int scheme;
     public final HybridFileParcelable hybridFileParcelable;
 
-    public EditableFileAbstraction(Context context, Uri uri) throws FileNotFoundException {
+    public EditableFileAbstraction(Context context, Uri uri) {
         switch (uri.getScheme()) {
             case "content":
                 this.uri = uri;

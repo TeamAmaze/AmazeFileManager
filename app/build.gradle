@@ -28,7 +28,7 @@ android {
         versionName "3.2.1"
         multiDexEnabled true
 
-        vectorDrawables.useSupportLibrary = true;
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -154,6 +154,7 @@ dependencies {
     }
 
     implementation 'com.android.support:multidex:1.0.2'//Multiple dex files
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 }
 
 configurations.all {
@@ -164,7 +165,7 @@ configurations.all {
     }
 }
 
-def Properties props = new Properties()
+Properties props = new Properties()
 def propFile = new File('signing.properties')
 
 if (propFile.canRead()) {

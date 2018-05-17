@@ -42,9 +42,6 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     /**
      * Compares two elements and return negative, zero and positive integer if first argument is
      * less than, equal to or greater than second
-     * @param file1
-     * @param file2
-     * @return
      */
     @Override
     public int compare(LayoutElementParcelable file1, LayoutElementParcelable file2) {

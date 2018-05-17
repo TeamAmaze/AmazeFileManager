@@ -27,13 +27,12 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
+import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -104,7 +103,7 @@ public class TabFragment extends Fragment
 
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
-            int l = sharedPrefs.getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+            int l = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
             MainActivity.currentTab = l;
             List<Tab> tabs1 = tabHandler.getAllTabs();
             int i = tabs1.size();
@@ -177,10 +176,12 @@ public class TabFragment extends Fragment
 
         if (indicator != null) indicator.setViewPager(mViewPager);
 
+        UserColorPreferences userColorPreferences = mainActivity.getCurrentColorPreference();
+
         // color of viewpager when current tab is 0
-        startColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
+        startColor = userColorPreferences.primaryFirstTab;
         // color of viewpager when current tab is 1
-        endColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+        endColor = userColorPreferences.primarySecondTab;
 
         // update the views as there is any change in {@link MainActivity#currentTab}
         // probably due to config change
@@ -195,7 +196,7 @@ public class TabFragment extends Fragment
 
     @Override
     public void onDestroyView() {
-        sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).apply();
+        sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
         super.onDestroyView();
         try {
             if (tabHandler != null)
@@ -258,8 +259,8 @@ public class TabFragment extends Fragment
         super.onSaveInstanceState(outState);
         int i = 0;
 
-        if (sharedPrefs != null){
-            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).commit();
+        if (sharedPrefs != null) {
+            sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).commit();
         }
 
         if (fragments != null && fragments.size() != 0) {
@@ -288,9 +289,11 @@ public class TabFragment extends Fragment
         mainActivity.getAppbar().getAppbarLayout().animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
         MainActivity.currentTab = p1;
+
         if (sharedPrefs != null) {
-            sharedPrefs.edit().putInt(PreferenceUtils.KEY_CURRENT_TAB, MainActivity.currentTab).apply();
+            sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).commit();
         }
+
         Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
 
         Fragment fragment = fragments.get(p1);
@@ -315,7 +318,7 @@ public class TabFragment extends Fragment
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         @Override
         public int getItemPosition(Object object) {
-            int index = fragments.indexOf((Fragment) object);
+            int index = fragments.indexOf(object);
             if (index == -1)
                 return POSITION_NONE;
             else
@@ -375,7 +378,7 @@ public class TabFragment extends Fragment
     void updateIndicator(int index) {
         if (index != 0 && index != 1) return;
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
 
         if (index == 0) {
             circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));

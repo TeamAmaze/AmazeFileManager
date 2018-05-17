@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.amaze.filemanager.utils.color.ColorPreference;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
+import com.amaze.filemanager.ui.colors.ColorPreference;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.amaze.filemanager.utils.theme.AppThemeManager;
 
@@ -13,17 +14,18 @@ import com.amaze.filemanager.utils.theme.AppThemeManager;
  */
 
 public class UtilitiesProvider {
-    private ColorPreference colorPreference;
+    private ColorPreferenceHelper colorPreference;
     private AppThemeManager appThemeManager;
 
     public UtilitiesProvider(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        colorPreference = ColorPreference.loadFromPreferences(context, sharedPreferences);
+        colorPreference = new ColorPreferenceHelper();
+        colorPreference.getCurrentUserColorPreferences(context, sharedPreferences);
         appThemeManager = new AppThemeManager(sharedPreferences);
     }
 
-    public ColorPreference getColorPreference() {
+    public ColorPreferenceHelper getColorPreference() {
         return colorPreference;
     }
 

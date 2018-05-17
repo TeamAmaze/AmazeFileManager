@@ -48,8 +48,6 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     /**
      * Draws the divider on the canvas provided by RecyclerView
      * Be advised - divider will be drawn before the views, hence it'll be below the views of adapter
-     * @param c
-     * @param parent
      */
     private void drawVertical(Canvas c, RecyclerView parent) {
         final int left = parent.getPaddingLeft() + leftPaddingPx;

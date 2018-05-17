@@ -14,15 +14,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
@@ -39,7 +38,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.color.ColorUsage;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import java.io.File;
@@ -64,7 +63,7 @@ public class MainActivityHelper {
 
     public MainActivityHelper(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        accentColor = mainActivity.getAccent();
     }
 
     public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, Context contextc) {
@@ -73,7 +72,7 @@ public class MainActivityHelper {
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(accentColor);
         mat.positiveText(R.string.cancel);
-        String content = contextc.getResources().getString(R.string.operation_fail_following);
+        String content = contextc.getString(R.string.operation_fail_following);
         int k=1;
         for(HybridFileParcelable s:failedOps){
             content=content+ "\n" + (k) + ". " + s.getName();
@@ -107,48 +106,70 @@ public class MainActivityHelper {
     /**
      * Prompt a dialog to user to input directory name
      *
-     * @param openMode
      * @param path     current path at which directory to create
      * @param ma       {@link MainFragment} current fragment
      */
     void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfolder, materialDialog -> {
-            String a = materialDialog.getInputEditText().getText().toString();
-            mkDir(new HybridFile(openMode, path + "/" + a), ma);
-            materialDialog.dismiss();
+        mk(R.string.newfolder, "", (dialog, which) -> {
+            EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+            mkDir(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
+            dialog.dismiss();
+        }, (text) -> {
+            boolean isValidFilename = FileUtil.isValidFilename(text);
+
+            if (!isValidFilename) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+            } else if (text.length() < 1) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+            }
+
+            return new WarnableTextInputValidator.ReturnState();
         });
     }
 
     /**
      * Prompt a dialog to user to input file name
      *
-     * @param openMode
      * @param path     current path at which file to create
      * @param ma       {@link MainFragment} current fragment
      */
     void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile, materialDialog -> {
-            String a = materialDialog.getInputEditText().getText().toString();
-            mkFile(new HybridFile(openMode, path + "/" + a), ma);
-            materialDialog.dismiss();
+        mk(R.string.newfile, ".txt", (dialog, which) -> {
+            EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+            mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
+            dialog.dismiss();
+        }, (text) -> {
+            boolean isValidFilename = FileUtil.isValidFilename(text);
+
+            if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".txt")) {
+                return new WarnableTextInputValidator.ReturnState(
+                        WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_file_suggest_txt_extension);
+            } else {
+                if (!isValidFilename) {
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                } else if (text.length() < 1) {
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                }
+            }
+
+            return new WarnableTextInputValidator.ReturnState();
         });
     }
 
-    private void mk(@StringRes int newText, final OnClickMaterialListener l) {
-        final MaterialDialog materialDialog = GeneralDialogCreation.showNameDialog(mainActivity,
-                new String[]{mainActivity.getResources().getString(R.string.entername),
-                        "",
-                        mainActivity.getResources().getString(newText),
-                        mainActivity.getResources().getString(R.string.create),
-                        mainActivity.getResources().getString(R.string.cancel),
-                        null});
-
-        materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> l.onClick(materialDialog));
-        materialDialog.show();
-    }
-
-    private interface OnClickMaterialListener {
-        void onClick(MaterialDialog materialDialog);
+    private void mk(@StringRes int newText, String prefill, final MaterialDialog.SingleButtonCallback onPositiveAction,
+                    final WarnableTextInputValidator.OnTextValidate validator) {
+        GeneralDialogCreation.showNameDialog(mainActivity,
+            mainActivity.getResources().getString(R.string.entername),
+            prefill,
+            mainActivity.getResources().getString(newText),
+            mainActivity.getResources().getString(R.string.create),
+            mainActivity.getResources().getString(R.string.cancel),
+            null, onPositiveAction, validator)
+            .show();
     }
 
     public void add(int pos) {
@@ -174,25 +195,25 @@ public class MainActivityHelper {
         String newPath = "";
         switch (Integer.parseInt(path)) {
             case 0:
-                newPath = mainActivity.getResources().getString(R.string.images);
+                newPath = mainActivity.getString(R.string.images);
                 break;
             case 1:
-                newPath = mainActivity.getResources().getString(R.string.videos);
+                newPath = mainActivity.getString(R.string.videos);
                 break;
             case 2:
-                newPath = mainActivity.getResources().getString(R.string.audio);
+                newPath = mainActivity.getString(R.string.audio);
                 break;
             case 3:
-                newPath = mainActivity.getResources().getString(R.string.documents);
+                newPath = mainActivity.getString(R.string.documents);
                 break;
             case 4:
-                newPath = mainActivity.getResources().getString(R.string.apks);
+                newPath = mainActivity.getString(R.string.apks);
                 break;
             case 5:
-                newPath = mainActivity.getResources().getString(R.string.quick);
+                newPath = mainActivity.getString(R.string.quick);
                 break;
             case 6:
-                newPath = mainActivity.getResources().getString(R.string.recent);
+                newPath = mainActivity.getString(R.string.recent);
                 break;
         }
         return newPath;
@@ -206,8 +227,8 @@ public class MainActivityHelper {
         View view = layoutInflater.inflate(R.layout.lexadrawer, null);
         x.customView(view, true);
         // textView
-        TextView textView = (TextView) view.findViewById(R.id.description);
-        textView.setText(mainActivity.getResources().getString(R.string.needsaccesssummary) + path + mainActivity.getResources().getString(R.string.needsaccesssummary1));
+        TextView textView = view.findViewById(R.id.description);
+        textView.setText(mainActivity.getString(R.string.needsaccesssummary) + path + mainActivity.getString(R.string.needsaccesssummary1));
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
         x.positiveText(R.string.open);
         x.negativeText(R.string.cancel);
@@ -520,8 +541,7 @@ public class MainActivityHelper {
 
     /**
      * Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix
-     * @param path
-     * @return
+
      */
     public String parseOTGPath(String path) {
         if (path.contains(OTGUtil.PREFIX_OTG))
@@ -617,9 +637,6 @@ public class MainActivityHelper {
      * Check whether creation of new directory is inside the same directory with the same name or not
      * Directory inside the same directory with similar filename shall not be allowed
      * Doesn't work at an OTG path
-     *
-     * @param file
-     * @return
      */
     public static boolean isNewDirectoryRecursive(HybridFile file) {
         return file.getName().equals(file.getParentName());

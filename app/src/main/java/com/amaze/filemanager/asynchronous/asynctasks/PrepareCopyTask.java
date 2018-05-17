@@ -24,7 +24,6 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
@@ -120,13 +119,10 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
     private ArrayList<HybridFileParcelable> checkConflicts(final ArrayList<HybridFileParcelable> filesToCopy, HybridFile destination) {
         final ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
-        destination.forEachChildrenFile(context, rootMode, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                for (HybridFileParcelable j : filesToCopy) {
-                    if (file.getName().equals((j).getName())) {
-                        conflictingFiles.add(j);
-                    }
+        destination.forEachChildrenFile(context, rootMode, file -> {
+            for (HybridFileParcelable j : filesToCopy) {
+                if (file.getName().equals((j).getName())) {
+                    conflictingFiles.add(j);
                 }
             }
         });
@@ -167,18 +163,19 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
     private void showDialog(final String path, final ArrayList<HybridFileParcelable> filesToCopy,
                             final ArrayList<HybridFileParcelable> conflictingFiles) {
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int accentColor = mainActivity.getAccent();
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
         LayoutInflater layoutInflater =
                 (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.copy_dialog, null);
         dialogBuilder.customView(view, true);
+
         // textView
-        TextView textView = (TextView) view.findViewById(R.id.textView);
-        textView.setText(context.getResources().getString(R.string.fileexist) + "\n" + conflictingFiles.get(counter).getName());
+        TextView textView = view.findViewById(R.id.fileNameText);
+        textView.setText(conflictingFiles.get(counter).getName());
 
         // checkBox
-        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        final CheckBox checkBox = view.findViewById(R.id.checkBox);
         Utils.setTint(context, checkBox, accentColor);
         dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         dialogBuilder.title(context.getResources().getString(R.string.paste));

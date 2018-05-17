@@ -46,7 +46,6 @@ public abstract class SFtpClientTemplate
      * session.
      *
      * @param url SSH connection URL, in the form of <code>ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-     * @param closeClientOnFinish
      */
     public SFtpClientTemplate(@NonNull String url, boolean closeClientOnFinish)
     {
@@ -61,7 +60,6 @@ public abstract class SFtpClientTemplate
      *                                SSH session had been set up.
      * @param <T> Requested return type
      * @return Result of the execution of the type requested
-     * @throws IOException
      */
     public abstract <T> T execute(@NonNull SFTPClient client) throws IOException;
 }

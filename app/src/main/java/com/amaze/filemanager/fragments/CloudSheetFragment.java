@@ -54,13 +54,13 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
         }
 
-        mSmbLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_smb);
-        mScpLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_scp);
-        mBoxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_box);
-        mDropboxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_dropbox);
-        mGoogleDriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_google_drive);
-        mOnedriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_onedrive);
-        mGetCloudLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_get_cloud);
+        mSmbLayout = rootView.findViewById(R.id.linear_layout_smb);
+        mScpLayout = rootView.findViewById(R.id.linear_layout_scp);
+        mBoxLayout = rootView.findViewById(R.id.linear_layout_box);
+        mDropboxLayout = rootView.findViewById(R.id.linear_layout_dropbox);
+        mGoogleDriveLayout = rootView.findViewById(R.id.linear_layout_google_drive);
+        mOnedriveLayout = rootView.findViewById(R.id.linear_layout_onedrive);
+        mGetCloudLayout = rootView.findViewById(R.id.linear_layout_get_cloud);
 
         if (isCloudProviderAvailable(getContext())) {
 
@@ -84,8 +84,6 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
     /**
      * Determines whether cloud provider is installed or not
-     * @param context
-     * @return
      */
     public static final boolean isCloudProviderAvailable(Context context) {
 

@@ -30,6 +30,7 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
@@ -37,12 +38,9 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
-import com.amaze.filemanager.utils.color.ColorUtils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -108,8 +106,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.sharedPrefs = sharedPrefs;
 
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        accentColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
-        iconSkinColor = m.getMainActivity().getColorPreference().getColor(ColorUsage.ICON_SKIN);
+        accentColor = m.getMainActivity().getAccent();
+        iconSkinColor = m.getMainActivity().getCurrentColorPreference().iconSkin;
         goBackColor = Utils.getColor(context, R.color.goback_item);
         videoColor = Utils.getColor(context, R.color.video_item);
         audioColor = Utils.getColor(context, R.color.audio_item);
@@ -307,7 +305,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     /**
      * Adds item to the end of the list, don't use this unless you are dynamically loading the adapter,
      * after you are finished you must call createHeaders
-     * @param e
      */
     public void addItem(LayoutElementParcelable e) {
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {

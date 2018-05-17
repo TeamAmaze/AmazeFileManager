@@ -65,7 +65,6 @@ public abstract class SshClientTemplate
      * @param client {@link SSHClient} instance, with connection opened and authenticated
      * @param <T> Requested return type
      * @return Result of the execution of the type requested
-     * @throws IOException
      */
     public abstract <T> T execute(@NonNull SSHClient client) throws IOException;
 }

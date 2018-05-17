@@ -26,11 +26,15 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
@@ -81,18 +85,24 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private final PasswordFinder passwordFinder;
 
+    private final String errorMessage;
+
+    private final MaterialDialog dialog;
+
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
-        this(IOUtils.readFully(pemFile).toByteArray(), callback, null);
+        this(IOUtils.readFully(pemFile).toByteArray(), callback, null, null, null);
     }
 
     public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(pemContent.getBytes(), callback, null);
+        this(pemContent.getBytes(), callback, null, null, null);
     }
 
     public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
-                            String keyPassphrase) {
+                            String keyPassphrase, MaterialDialog dialog, String errorMessage) {
         this.pemFile = pemContent;
         this.callback = callback;
+        this.dialog = dialog;
+        this.errorMessage = errorMessage;
         if(keyPassphrase == null)
             passwordFinder = null;
         else
@@ -141,22 +151,50 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
     @Override
     protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
         if(result.exception != null) {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-            EditText textfield = new EditText(builder.getContext());
-            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            builder.customView(textfield, false).title(R.string.ssh_key_prompt_passphrase)
-                    .positiveText(R.string.ok)
-                    .onPositive(((dialog, which) -> {
-                        new PemToKeyPairTask(pemFile, callback, textfield.getText().toString()).execute();
-                        dialog.dismiss();
-                })).negativeText(R.string.cancel)
-                    .onNegative(((dialog, which) -> {
-                        dialog.dismiss();
-                        toastOnParseError(result);
-            }));
+            if(dialog == null) {
 
-            builder.show();
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
+                View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+                WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+                EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+                textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                builder.customView(dialogLayout, false)
+                        .autoDismiss(false)
+                        .title(R.string.ssh_key_prompt_passphrase)
+                        .positiveText(R.string.ok)
+                        .onPositive(((dialog, which) -> {
+                            new PemToKeyPairTask(pemFile, callback, textfield.getText().toString(), dialog,
+                                    AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase)).execute();
+                        })).negativeText(R.string.cancel)
+                        .onNegative(((dialog, which) -> {
+                            dialog.dismiss();
+                            toastOnParseError(result);
+                        }));
+
+                MaterialDialog dialog = builder.show();
+
+                new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+                        wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+                    if (text.length() < 1) {
+                        return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                    }
+                    return new WarnableTextInputValidator.ReturnState();
+                });
+            } else {
+                if(errorMessage != null) {
+                    WarnableTextInputLayout wilTextfield = (WarnableTextInputLayout)dialog.findViewById(R.id.singleedittext_warnabletextinputlayout);
+                    EditText textfield = (EditText)dialog.findViewById(R.id.singleedittext_input);
+                    wilTextfield.setError(errorMessage);
+                    textfield.selectAll();
+                }
+            }
+
+        } else {
+            if(dialog != null)
+                dialog.dismiss();
         }
+
         if(callback != null) {
             callback.onResult(result);
         }
@@ -164,7 +202,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
 
     private void toastOnParseError(AsyncTaskResult<KeyPair> result){
         Toast.makeText(AppConfig.getInstance().getActivityContext(),
-                String.format(AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error),
+                AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
                         result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 

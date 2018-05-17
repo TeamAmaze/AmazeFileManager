@@ -47,7 +47,6 @@ import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
@@ -105,7 +104,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         resources = mainActivity.getResources();
 
         drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
-        drawerHeaderParent = (RelativeLayout) drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
+        drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
         drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
         drawerHeaderView.setOnLongClickListener(v -> {
             Intent intent1;
@@ -133,8 +132,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         navView.setNavigationItemSelectedListener(this);
 
-        int accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT),
-                idleColor;
+        int accentColor = mainActivity.getAccent(), idleColor;
 
         if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
             idleColor = mainActivity.getResources().getColor(R.color.item_light_theme);
@@ -545,7 +543,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, mainActivity.REQUEST_CODE_SAF);
+                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
                     closeIfNotLocked();
                     if (isLocked()) { onDrawerClosed(); }

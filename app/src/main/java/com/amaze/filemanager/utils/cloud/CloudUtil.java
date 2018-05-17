@@ -58,7 +58,7 @@ public class CloudUtil {
     public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
                                                             OpenMode openMode) throws CloudPluginException {
         final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
-        getCloudFiles(path, cloudStorage, openMode, file -> baseFiles.add(file));
+        getCloudFiles(path, cloudStorage, openMode, baseFiles::add);
         return baseFiles;
     }
 
@@ -85,8 +85,6 @@ public class CloudUtil {
 
     /**
      * Strips down the cloud path to remove any prefix
-     * @param openMode
-     * @return
      */
     public static String stripPath(OpenMode openMode, String path) {
         String strippedPath = path;
@@ -151,7 +149,7 @@ public class CloudUtil {
                             activity.startActivity(i);
                         else
                             Toast.makeText(activity,
-                                    activity.getResources().getString(R.string.smb_launch_error),
+                                    activity.getString(R.string.smb_launch_error),
                                     Toast.LENGTH_SHORT).show();
                     } catch (ActivityNotFoundException e) {
                         e.printStackTrace();

@@ -44,9 +44,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
@@ -65,7 +65,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -101,6 +100,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -119,7 +119,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
@@ -341,7 +340,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab));
             setTaskDescription(taskDescription);
         }
 
@@ -439,7 +438,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     /**
      * Checks for the action to take when Amaze receives an intent from external source
-     * @param intent
      */
     private void checkForExternalIntent(Intent intent) {
         String actionIntent = intent.getAction();
@@ -521,6 +519,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
             finish();
         });
+        //Ensure the FAB menu is visible
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.getMenuButton().show();
     }
 
     /**
@@ -1331,8 +1332,9 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialisePreferences() {
-        currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+        currentTab = getPrefs().getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        @ColorInt int currentPrimary = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
+        skinStatusBar = PreferenceUtils.getStatusColor(currentPrimary);
     }
 
     void initialiseViews() {
@@ -1414,7 +1416,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialiseFab() {
-        int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+        int colorAccent = getAccent();
 
         floatingActionButton = findViewById(R.id.fabs_menu);
         floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
@@ -1450,7 +1452,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     private void initFabTitle(TitleFAB fabTitle, int type) {
-        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
+        int iconSkin = getCurrentColorPreference().iconSkin;
 
         fabTitle.setBackgroundColor(iconSkin);
         fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
@@ -1486,7 +1488,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public void renameBookmark(final String title, final String path) {
         if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getColorPreference().getColor(ColorUsage.ACCENT));
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getAccent());
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }

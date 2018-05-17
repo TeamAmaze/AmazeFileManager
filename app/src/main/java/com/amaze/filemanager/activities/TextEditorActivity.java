@@ -31,9 +31,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.Spanned;
@@ -64,11 +66,11 @@ import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -135,12 +137,15 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
-        searchViewLayout.setBackgroundColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+        @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(),
+                MainActivity.currentTab);
+
+        toolbar.setBackgroundColor(primaryColor);
+        searchViewLayout.setBackgroundColor(primaryColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    primaryColor);
             setTaskDescription(taskDescription);
         }
 
@@ -157,7 +162,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         //downButton.setEnabled(false);
         closeButton.setOnClickListener(this);
 
-        getSupportActionBar().setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
 
         boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
@@ -166,7 +171,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+            tintManager.setStatusBarTintColor(primaryColor);
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -175,9 +180,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+            window.setStatusBarColor(PreferenceUtils.getStatusColor(primaryColor));
             if (colourednavigation)
-                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+                window.setNavigationBarColor(PreferenceUtils.getStatusColor(primaryColor));
 
         }
         mInput = findViewById(R.id.fname);
@@ -185,13 +190,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
 
         final Uri uri = getIntent().getData();
         if (uri != null) {
-            try {
-                mFile = new EditableFileAbstraction(this, uri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
-                finish();
-            }
+            mFile = new EditableFileAbstraction(this, uri);
         } else {
             Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
             finish();
@@ -235,8 +234,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     .content(R.string.unsavedchangesdesc)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
-                    .positiveColor(getColorPreference().getColor(ColorUsage.ACCENT))
-                    .negativeColor(getColorPreference().getColor(ColorUsage.ACCENT))
+                    .positiveColor(getAccent())
+                    .negativeColor(getAccent())
                     .onPositive((dialog, which) -> {
                         saveFile(mInput.getText().toString());
                         finish();
@@ -532,7 +531,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                 if (mCurrent > 0) {
 
                     // setting older span back before setting new one
-                    Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
+                    Map.Entry keyValueOld = nodes.get(mCurrent).getKey();
                     if (getAppTheme().equals(AppTheme.LIGHT)) {
                         mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -541,7 +540,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                                 (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     }
                     // highlighting previous element in list
-                    Map.Entry keyValueNew = (Map.Entry) nodes.get(--mCurrent).getKey();
+                    Map.Entry keyValueNew = nodes.get(--mCurrent).getKey();
                     mInput.getText().setSpan(new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -559,7 +558,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     // setting older span back before setting new one
                     if (mCurrent != -1) {
 
-                        Map.Entry keyValueOld = (Map.Entry) nodes.get(mCurrent).getKey();
+                        Map.Entry keyValueOld = nodes.get(mCurrent).getKey();
                         if (getAppTheme().equals(AppTheme.LIGHT)) {
                             mInput.getText().setSpan(new BackgroundColorSpan(Color.YELLOW), (Integer) keyValueOld.getKey(),
                                     (Integer) keyValueOld.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -569,7 +568,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                         }
                     }
 
-                    Map.Entry keyValueNew = (Map.Entry) nodes.get(++mCurrent).getKey();
+                    Map.Entry keyValueNew = nodes.get(++mCurrent).getKey();
                     mInput.getText().setSpan(new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
                             (Integer) keyValueNew.getKey(),
                             (Integer) keyValueNew.getValue(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
