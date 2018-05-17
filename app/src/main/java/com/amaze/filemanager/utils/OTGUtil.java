@@ -2,8 +2,13 @@ package com.amaze.filemanager.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbInterface;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -12,6 +17,11 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.content.Context.USB_SERVICE;
 
 /**
  * Created by Vishal on 27-04-2017.
@@ -101,4 +111,27 @@ public class OTGUtil {
 
         return rootUri;
     }
+
+    /**
+     * Checks if there is at least one USB device connected with class MASS STORAGE.
+     */
+    public static boolean isMassStorageDeviceConnected(@NonNull final Context context) {
+        UsbManager usbManager = (UsbManager) context.getSystemService(USB_SERVICE);
+        if(usbManager == null) return false;
+
+        HashMap<String, UsbDevice> devices = usbManager.getDeviceList();
+
+        for (String deviceName : devices.keySet()) {
+            UsbDevice device = devices.get(deviceName);
+
+            for (int i = 0; i < device.getInterfaceCount(); i++){
+                if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }
