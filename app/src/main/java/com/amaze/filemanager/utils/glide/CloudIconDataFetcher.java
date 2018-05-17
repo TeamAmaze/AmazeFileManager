@@ -55,12 +55,7 @@ public class CloudIconDataFetcher implements DataFetcher<Bitmap> {
 
     @Override
     public void cancel() {
-        try {
-            if (inputStream != null)
-                inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // do nothing
     }
 
     @NonNull
