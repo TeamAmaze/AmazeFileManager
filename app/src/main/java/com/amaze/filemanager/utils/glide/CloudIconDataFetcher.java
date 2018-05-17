@@ -24,16 +24,22 @@ public class CloudIconDataFetcher implements DataFetcher<Bitmap> {
     private String path;
     private Context context;
     private InputStream inputStream;
+    private int width, height;
 
-    public CloudIconDataFetcher(Context context, String path) {
+    public CloudIconDataFetcher(Context context, String path, int width, int height) {
         this.context = context;
         this.path = path;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void loadData(Priority priority, DataCallback<? super Bitmap> callback) {
         inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path);
-        Bitmap drawable = BitmapFactory.decodeStream(inputStream);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.outWidth = width;
+        options.outHeight = height;
+        Bitmap drawable = BitmapFactory.decodeStream(inputStream, null, options);
         callback.onDataReady(drawable);
     }
 

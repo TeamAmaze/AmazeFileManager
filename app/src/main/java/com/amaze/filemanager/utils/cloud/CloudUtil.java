@@ -58,12 +58,7 @@ public class CloudUtil {
     public static ArrayList<HybridFileParcelable> listFiles(String path, CloudStorage cloudStorage,
                                                             OpenMode openMode) throws CloudPluginException {
         final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
-        getCloudFiles(path, cloudStorage, openMode, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                baseFiles.add(file);
-            }
-        });
+        getCloudFiles(path, cloudStorage, openMode, file -> baseFiles.add(file));
         return baseFiles;
     }
 

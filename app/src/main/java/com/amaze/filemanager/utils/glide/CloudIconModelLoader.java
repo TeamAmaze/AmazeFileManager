@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.utils.OpenMode;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.signature.ObjectKey;
@@ -27,7 +29,7 @@ public class CloudIconModelLoader implements ModelLoader<String, Bitmap> {
         // we put key as current time since we're not disk caching the images for cloud,
         // as there is no way to differentiate input streams returned by different cloud services
         // for future instances and they don't expose concrete paths either
-        return new LoadData<>(new ObjectKey(System.currentTimeMillis()), new CloudIconDataFetcher(context, s));
+        return new LoadData<>(new ObjectKey(System.currentTimeMillis()), new CloudIconDataFetcher(context, s, width, height));
     }
 
     @Override
