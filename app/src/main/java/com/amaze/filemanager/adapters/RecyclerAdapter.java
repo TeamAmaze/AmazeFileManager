@@ -483,9 +483,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 itemsDigested.get(p).setAnimate(true);
             }
             final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
-            // clear previously cached icon
-            GlideApp.with(mainFrag).clear(holder.genericIcon);
+
             if (mainFrag.IS_LIST) {
+                // clear previously cached icon
+                GlideApp.with(mainFrag).clear(holder.genericIcon);
+                GlideApp.with(mainFrag).clear(holder.pictureIcon);
+                GlideApp.with(mainFrag).clear(holder.apkIcon);
+                GlideApp.with(mainFrag).clear(holder.rl);
+
+
                 holder.rl.setOnClickListener(v -> {
                     mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
                             holder.checkImageView);
@@ -584,9 +590,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         break;
                     case Icons.ENCRYPTED:
-                        holder.genericIcon.setVisibility(View.VISIBLE);
-                        modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
-                        break;
                     default:
                         holder.genericIcon.setVisibility(View.VISIBLE);
                         modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
@@ -653,6 +656,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             } else {
                 // view is a grid view
+                // clear previously cached icon
+                GlideApp.with(mainFrag).clear(holder.genericIcon);
+                GlideApp.with(mainFrag).clear(holder.iconLayout);
+                GlideApp.with(mainFrag).clear(holder.imageView1);
+                GlideApp.with(mainFrag).clear(holder.rl);
+
                 holder.checkImageViewGrid.setColorFilter(accentColor);
                 holder.rl.setOnClickListener(v -> {
                     mainFrag.onListItemClicked(isBackButton, vholder.getAdapterPosition(), rowItem,
@@ -763,7 +772,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.rl.setBackgroundResource(R.drawable.item_doc_grid);
                     else {
                         holder.rl.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
-                        holder.rl.findViewById(R.id.icon_frame).setBackgroundColor(Utils.getColor(context, R.color.icon_background_dark));
+                        holder.rl.findViewById(R.id.icon_frame_grid).setBackgroundColor(Utils.getColor(context, R.color.icon_background_dark));
                     }
                 }
 
