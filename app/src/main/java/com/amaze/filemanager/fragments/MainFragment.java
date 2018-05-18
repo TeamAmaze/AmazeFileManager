@@ -1449,12 +1449,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
     }
 
-    public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path) throws SmbException {
-        ArrayList<LayoutElementParcelable> a = new ArrayList<>();
+    public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path, boolean showHiddenFiles) throws SmbException {
+        ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (SmbFile aMFile : mFile) {
-            if (dataUtils.isFileHidden(aMFile.getPath()))
+            if ((dataUtils.isFileHidden(aMFile.getPath()) || aMFile.isHidden()) && !showHiddenFiles) {
                 continue;
+            }
             String name = aMFile.getName();
             name = (aMFile.isDirectory() && name.endsWith("/")) ? name.substring(0, name.length() - 1) : name;
             if (path.equals(smbPath)) {
@@ -1470,23 +1471,21 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
                 layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
-                a.add(layoutElement);
+                smbFileList.add(layoutElement);
+
             } else {
                 file_count++;
-                try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
-                            aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
-                            aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
-                            false, getBoolean(PREFERENCE_SHOW_THUMB));
-                    layoutElement.setMode(OpenMode.SMB);
-                    searchHelper.add(layoutElement.generateBaseFile());
-                    a.add(layoutElement);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
+                        aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
+                        aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
+                        false, getBoolean(PREFERENCE_SHOW_THUMB));
+                layoutElement.setMode(OpenMode.SMB);
+                searchHelper.add(layoutElement.generateBaseFile());
+                smbFileList.add(layoutElement);
             }
         }
-        return a;
+        return smbFileList;
     }
 
     // method to add search result entry to the LIST_ELEMENT arrayList
