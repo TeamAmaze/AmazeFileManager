@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
@@ -37,6 +38,7 @@ import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.files.CryptUtil;
@@ -146,9 +148,15 @@ public class MainActivityHelper {
             boolean isValidFilename = FileUtil.isValidFilename(text);
 
             //The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt (i.e. recommended as ".txt.txt"
-            if (isValidFilename && text.length() > 0 && (!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION) || text.equalsIgnoreCase(NEW_FILE_TXT_EXTENSION))) {
-                return new WarnableTextInputValidator.ReturnState(
-                        WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_file_suggest_txt_extension);
+            if (isValidFilename && text.length() > 0) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+                if(text.startsWith(".") && !prefs.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false)){
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_hidden_file_warn);
+                } else if(!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION)) {
+                    return new WarnableTextInputValidator.ReturnState(
+                            WarnableTextInputValidator.ReturnState.STATE_WARNING, R.string.create_file_suggest_txt_extension);
+                }
             } else {
                 if (!isValidFilename) {
                     return new WarnableTextInputValidator.ReturnState(
