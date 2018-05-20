@@ -632,6 +632,6 @@
     <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
     <string name="cannot_overwrite">Cannot overwrite file.</string>
-    <string name="create_hidden_file_warn">The created file will be hidden in the File List.</string>
+    <string name="create_hidden_file_warn">The created file will be hidden in the file list.</string>
 </resources>
 
