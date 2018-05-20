@@ -190,7 +190,7 @@ public class SshConnectionPool
         String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
 
         AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);;
-        if(pem != null && !"".equals(pem)) {
+        if(pem != null && !pem.isEmpty()) {
             try {
                 CountDownLatch latch = new CountDownLatch(1);
                 new PemToKeyPairTask(pem, result -> {
