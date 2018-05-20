@@ -31,6 +31,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FTPServerFragment;
@@ -86,7 +87,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionViewStateManager actionViewStateManager;
     private boolean isSomethingSelected;
-    private volatile int storage_count = 0; // number of storage available (internal/external/otg etc)
+    private volatile int phoneStorageCount = 0; // number of storage available (internal/external/otg etc)
     private boolean isDrawerLocked = false;
     private FragmentTransaction pending_fragmentTransaction;
     private String pendingPath;
@@ -223,8 +224,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         int order = 0;
         ArrayList<String> storageDirectories = mainActivity.getStorageDirectories();
-        storage_count = 0;
+        phoneStorageCount = 0;
         for (String file : storageDirectories) {
+            if (file.contains(OTGUtil.PREFIX_OTG)) {
+                addNewItem(menu, STORAGES_GROUP, order++, "OTG", new MenuMetadata(file),
+                        R.drawable.ic_usb_white_24dp, R.drawable.ic_show_chart_black_24dp);
+                continue;
+            }
+
             File f = new File(file);
             String name;
             @DrawableRes int icon1 = R.drawable.ic_sd_storage_white_24dp;
@@ -235,17 +242,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             } else if ("/".equals(file)) {
                 name = resources.getString(R.string.rootdirectory);
                 icon1 = R.drawable.ic_drawer_root_white;
-            } else if (file.contains(OTGUtil.PREFIX_OTG)) {
-                name = "OTG";
-                icon1 = R.drawable.ic_usb_white_24dp;
             } else name = f.getName();
+
             if (f.isDirectory() || f.canExecute()) {
                 addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
                         R.drawable.ic_show_chart_black_24dp);
-                if(storage_count == 0) firstPath = file;
-                else if(storage_count == 1) secondPath = file;
+                if(phoneStorageCount == 0) firstPath = file;
+                else if(phoneStorageCount == 1) secondPath = file;
 
-                storage_count++;
+                phoneStorageCount++;
             }
         }
         dataUtils.setStorages(storageDirectories);
@@ -533,18 +538,18 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     CloudUtil.checkToken(meta.path, mainActivity);
                 }
 
-                pendingPath = meta.path;
-
-                if (meta.path.contains(OTGUtil.PREFIX_OTG) &&
-                        mainActivity.getPrefs()
-                                .getString(MainActivity.KEY_PREF_OTG, null)
-                                .equals(MainActivity.VALUE_PREF_OTG_NULL)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                        && meta.path.contains(OTGUtil.PREFIX_OTG)
+                        && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
                     // we've not gotten otg path yet
                     // start system request for storage access framework
                     Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+
+                    SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                 } else {
+                    pendingPath = meta.path;
                     closeIfNotLocked();
                     if (isLocked()) { onDrawerClosed(); }
                 }
@@ -601,8 +606,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         isSomethingSelected = isSelected;
     }
 
-    public int getStorageCount() {
-        return storage_count;
+    public int getPhoneStorageCount() {
+        return phoneStorageCount;
     }
 
     public void setDrawerHeaderBackground() {
