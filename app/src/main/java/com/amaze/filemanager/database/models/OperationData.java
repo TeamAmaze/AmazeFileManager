@@ -1,5 +1,7 @@
 package com.amaze.filemanager.database.models;
 
+import android.text.TextUtils;
+
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.UtilsHandler.Operation;
 
@@ -69,4 +71,17 @@ public class OperationData {
         this.sshKey = sshKey;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("OperationData type=[").append(type).append("],path=[")
+                .append(path).append("]");
+
+        if(!TextUtils.isEmpty(hostKey))
+            sb.append(",hostKey=[").append(hostKey).append(']');
+
+        if(!TextUtils.isEmpty(sshKeyName))
+            sb.append(",sshKeyName=[").append(sshKeyName).append("],sshKey=[redacted]");
+
+        return sb.toString();
+    }
 }

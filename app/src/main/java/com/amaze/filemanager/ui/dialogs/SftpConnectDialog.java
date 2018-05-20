@@ -71,6 +71,8 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Collections;
 
+import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.deriveSftpPathFrom;
+
 /**
  * SSH/SFTP connection setup dialog.
  */
@@ -314,9 +316,9 @@ public class SftpConnectDialog extends DialogFragment {
 
         if(!isEdit) {
             try {
-                AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(hostname, port,
-                        hostKeyFingerprint, username, password, selectedParsedKeyPair).execute().get();
-                SSHClient result = taskResult.result;
+                SSHClient result = SshConnectionPool.getInstance().getConnection(hostname, port,
+                        hostKeyFingerprint, username, password, selectedParsedKeyPair);
+
                 if(result != null) {
 
                     if(DataUtils.getInstance().containsServer(path) == -1) {
@@ -324,11 +326,11 @@ public class SftpConnectDialog extends DialogFragment {
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
                         utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SFTP,
-                                connectionName,encryptedPath, hostKeyFingerprint,
+                                encryptedPath, connectionName, hostKeyFingerprint,
                                 selectedParsedKeyPairName, getPemContents()));
 
                         MainFragment ma = ((MainActivity)getActivity()).getCurrentMainFragment();
-                        ma.loadlist(path, false, OpenMode.UNKNOWN);
+                        ma.loadlist(path, false, OpenMode.SFTP);
                         dismiss();
 
                     } else {
@@ -359,14 +361,6 @@ public class SftpConnectDialog extends DialogFragment {
             dismiss();
             return true;
         }
-    }
-
-    //Decide the SSH URL depends on password/selected KeyPair
-    private String deriveSftpPathFrom(String hostname, int port, String username, String password,
-                                      KeyPair selectedParsedKeyPair) {
-        return (selectedParsedKeyPair != null || password == null) ?
-                String.format("ssh://%s@%s:%d", username, hostname, port) :
-                String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
     }
 
     //Read the PEM content from InputStream to String.
