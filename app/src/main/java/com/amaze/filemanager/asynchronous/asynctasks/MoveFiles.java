@@ -159,8 +159,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
 
             for (int i = 0; i < paths.size(); i++) {
                 for (HybridFileParcelable f : files.get(i)) {
-                    FileUtils.scanFile(f.getPath(), context);
-                    FileUtils.scanFile(paths.get(i) + "/" + f.getName(), context);
+                    FileUtils.scanFile(f.getFile(), context);
+                    FileUtils.scanFile(new File(paths.get(i) + "/" + f.getName()), context);
                 }
             }
 

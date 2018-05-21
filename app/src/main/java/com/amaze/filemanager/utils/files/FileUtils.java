@@ -212,11 +212,11 @@ public class FileUtils {
      * Calls {@link #scanFile(Uri, Context)} using {@link Uri}.
      *
      * @see {@link #scanFile(Uri, Context)}
-     * @param filePath File's absolute path
+     * @param file File to scan
      * @param c {@link Context}
      */
-    public static void scanFile(@NonNull String filePath, @NonNull Context c){
-        scanFile(Uri.fromFile(new File(filePath)), c);
+    public static void scanFile(@NonNull File file, @NonNull Context c){
+        scanFile(Uri.fromFile(file), c);
     }
 
     /**
