@@ -135,6 +135,7 @@ import com.cloudrail.si.services.OneDrive;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -523,11 +524,19 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
             } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
                 // save a single file to filesystem
-                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                ArrayList<Uri> uris = new ArrayList<>();
-                uris.add(uri);
-                initFabToSave(uris);
-
+                if(intent.hasExtra(Intent.EXTRA_STREAM)) {
+                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    ArrayList<Uri> uris = new ArrayList<>();
+                    uris.add(uri);
+                    initFabToSave(uris);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && intent.getClipData() != null) {
+                    initFabToSave(intent.getClipData().getItemAt(0).getText());
+                } else if (intent.hasExtra(Intent.EXTRA_TEXT)){
+                    initFabToSave(intent.getStringExtra(Intent.EXTRA_TEXT));
+                } else {
+                    Toast.makeText(this, R.string.no_content_for_saving_intent, Toast.LENGTH_LONG).show();
+                    finish();
+                }
                 // disable screen rotation just for convenience purpose
                 // TODO: Support screen rotation when saving a file
                 Utils.disableScreenRotation(this);
@@ -548,32 +557,37 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
      * Initializes the floating action button to act as to save data from an external intent
      */
     private void initFabToSave(final ArrayList<Uri> uris) {
+        initFabToSaveInternal(v -> {
+            FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+            Toast.makeText(MainActivity.this, R.string.saving, Toast.LENGTH_LONG).show();
+            finish();
+        });
+    }
+
+    private void initFabToSave(final CharSequence textContent) {
+        initFabToSaveInternal(v -> {
+            mainActivityHelper.add(MainActivityHelper.NEW_FILE, (file) -> {
+                try {
+                    FileUtil.writeContentToHybridFile(MainActivity.this, file, textContent);
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, getString(R.string.shared_content_saved, file.getName(MainActivity.this)), Toast.LENGTH_LONG).show());
+                } catch (IOException e) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.error_io, Toast.LENGTH_LONG).show());
+                }
+                finish();
+            });
+//            mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, getCurrentMainFragment().getCurrentPath()), getCurrentMainFragment(), (file) -> {
+//
+//            });
+        });
+    }
+
+    private void initFabToSaveInternal(View.OnClickListener onClickListener){
         floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
 
         floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
-        floatingActionButton.getMenuButton().setOnClickListener(v -> {
-            if(uris != null && uris.size() > 0) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    File folder = new File(getCurrentMainFragment().getCurrentPath());
-                    int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
-                    if(result == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
-                        FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-                        finish();
-                    } else {
-                        //Trigger SAF intent, keep uri until finish
-                        operation = DataUtils.SAVE_FILE;
-                        urisToBeSaved = uris;
-                        mainActivityHelper.checkFolder(folder, MainActivity.this);
-                    }
-                } else {
-                    FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
-                    finish();
-                }
-            }
-        });
+        floatingActionButton.getMenuButton().setOnClickListener(onClickListener);
         //Ensure the FAB menu is visible
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.getMenuButton().show();
@@ -1370,7 +1384,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     ma.updateList();
                     break;
                 case DataUtils.NEW_FILE:
-                    mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
+                    mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment(), null);
                     break;
                 case DataUtils.EXTRACT:
                     mainActivityHelper.extractFile(new File(oppathe));
@@ -1527,7 +1541,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         fabTitle.setBackgroundColor(iconSkin);
         fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
         fabTitle.setOnClickListener(view -> {
-            mainActivityHelper.add(type);
+            mainActivityHelper.add(type, null);
             floatingActionButton.collapse();
         });
 
@@ -1714,7 +1728,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             dataUtils.addServer(s);
             Collections.sort(dataUtils.getServers(), new BookSorter());
             drawer.refreshDrawer();
-            //mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+            //mainActivity.grid.addPath(name, encry@RunWith(RobolectricTestRunner.class)
+            //@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})ptedPath, DataUtils.SMB, 1);
         }
     }
 

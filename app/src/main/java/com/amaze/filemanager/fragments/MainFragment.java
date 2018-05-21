@@ -1550,7 +1550,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
-                    getMainActivity().mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, f1.getPath()), this);
+                    getMainActivity().mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, f1.getPath()), this, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -61,6 +61,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -363,6 +365,18 @@ public abstract class FileUtil {
                 }
             }
         });
+    }
+
+    public static void writeContentToHybridFile(@NonNull Context context, @NonNull HybridFile file, @NonNull CharSequence content) throws IOException {
+        OutputStream out = file.getOutputStream(context);
+        if(out == null) {
+            throw new IOException("Cannot obtain file output stream");
+        } else {
+            Writer writer = new OutputStreamWriter(out, "UTF-8");
+            writer.append(content, 0, content.length());
+            writer.flush();
+            writer.close();
+        }
     }
 
     /**
