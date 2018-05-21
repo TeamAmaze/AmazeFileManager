@@ -272,8 +272,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     if (rowItem.directory) {
                         compressedExplorerFragment.changePath(stringBuilder.toString());
                     } else {
-                        String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
-                                compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
+
+                        String fileName = CompressedHelper.getFileName(compressedExplorerFragment.compressedFile.getName());
                         String archiveCacheDirPath = compressedExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 CompressedHelper.SEPARATOR + fileName;
 
