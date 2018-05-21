@@ -66,7 +66,6 @@ public class SevenZipExtractor extends Extractor {
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }
-        // Log.i("Amaze", "Extracting: " + entry);
 
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));

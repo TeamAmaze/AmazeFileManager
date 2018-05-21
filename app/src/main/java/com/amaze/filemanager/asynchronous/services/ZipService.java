@@ -102,7 +102,7 @@ public class ZipService extends AbstractProgressiveService {
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentIntent(pendingIntent)
                 .setContentTitle(getResources().getString(R.string.compressing))
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+                .setSmallIcon(R.drawable.ic_zip_box_grey);
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
