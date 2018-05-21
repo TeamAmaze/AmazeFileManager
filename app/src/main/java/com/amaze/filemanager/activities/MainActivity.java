@@ -576,10 +576,12 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
                 // Check for actual existence of the directory before adding to list
-                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists())
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
                     rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
-                else
+                } else {
+                    //We know nothing else, use Environment's fallback
                     rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
             } else {
                 rv.add(rawExternalStorage);
             }
