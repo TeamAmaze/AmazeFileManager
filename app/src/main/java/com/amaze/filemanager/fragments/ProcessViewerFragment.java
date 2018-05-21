@@ -253,10 +253,10 @@ public class ProcessViewerFragment extends Fragment {
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
-                            .getDrawable(R.drawable.ic_zip_box_white_36dp));
+                            .getDrawable(R.drawable.ic_zip_box_white));
                 } else {
                     mProgressImage.setImageDrawable(getResources()
-                            .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
+                            .getDrawable(R.drawable.ic_zip_box_grey));
                 }
                 mProgressTypeText.setText(getResources().getString(R.string.extracting));
                 cancelBroadcast(new Intent(ExtractService.TAG_BROADCAST_EXTRACT_CANCEL));
@@ -265,10 +265,10 @@ public class ProcessViewerFragment extends Fragment {
                 if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
                     mProgressImage.setImageDrawable(getResources()
-                            .getDrawable(R.drawable.ic_zip_box_white_36dp));
+                            .getDrawable(R.drawable.ic_zip_box_white));
                 } else {
                     mProgressImage.setImageDrawable(getResources()
-                            .getDrawable(R.drawable.ic_zip_box_grey600_36dp));
+                            .getDrawable(R.drawable.ic_zip_box_grey));
                 }
                 mProgressTypeText.setText(getResources().getString(R.string.compressing));
                 cancelBroadcast(new Intent(ZipService.KEY_COMPRESS_BROADCAST_CANCEL));

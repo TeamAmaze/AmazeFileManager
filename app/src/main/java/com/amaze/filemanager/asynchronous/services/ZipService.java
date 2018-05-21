@@ -123,7 +123,7 @@ public class ZipService extends AbstractProgressiveService {
                 getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setSmallIcon(R.drawable.ic_zip_box_grey)
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(customSmallContentViews)
                 .setCustomBigContentView(customBigContentViews)
