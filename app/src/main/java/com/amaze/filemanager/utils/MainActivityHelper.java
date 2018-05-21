@@ -30,6 +30,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
@@ -37,7 +39,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,10 +162,10 @@ public class MainActivityHelper {
      * @param path     current path at which file to create
      * @param ma       {@link MainFragment} current fragment
      */
-    void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
-        mk(R.string.newfile,  NEW_FILE_TXT_EXTENSION, (dialog, which) -> {
+    void mkfile(final OpenMode openMode, final String path, final MainFragment ma, @Nullable OnAsyncTaskFinished<HybridFile> callback) {
+        mk(R.string.newfile, ".txt", (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
-            mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
+            mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma, callback);
             dialog.dismiss();
         }, (text) -> {
             boolean isValidFilename = FileUtil.isValidFilename(text);
@@ -205,7 +206,7 @@ public class MainActivityHelper {
             .show();
     }
 
-    public void add(int pos) {
+    public void add(int pos, @Nullable OnAsyncTaskFinished<HybridFile> callback) {
         final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getCurrentTabFragment();
         final String path = ma.getCurrentPath();
 
@@ -214,7 +215,7 @@ public class MainActivityHelper {
                 mkdir(ma.openMode, path, ma);
                 break;
             case NEW_FILE:
-                mkfile(ma.openMode, path, ma);
+                mkfile(ma.openMode, path, ma, callback);
                 break;
             case NEW_CLOUD:
                 BottomSheetDialogFragment fragment = new CloudSheetFragment();
@@ -408,7 +409,7 @@ public class MainActivityHelper {
     }
 
 
-    public void mkFile(final HybridFile path, final MainFragment ma) {
+    public void mkFile(@NonNull final HybridFile path, @NonNull final MainFragment ma, @Nullable OnAsyncTaskFinished<HybridFile> callback) {
         final Toast toast = Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile),
                 Toast.LENGTH_SHORT);
         toast.show();
@@ -421,7 +422,7 @@ public class MainActivityHelper {
                             Toast.LENGTH_SHORT).show();
                     if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkfile(file.getMode(), file.getParent(), ma);
+                        mkfile(file.getMode(), file.getParent(mainActivity), ma, callback);
                     }
 
                 });
@@ -454,6 +455,9 @@ public class MainActivityHelper {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+                if(callback != null) {
+                    callback.onAsyncTaskFinished(hFile);
+                }
             }
 
             @Override

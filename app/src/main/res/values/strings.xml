@@ -642,5 +642,7 @@
     <string name="unknown">unknown</string>
     <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
     <string name="saf_otg_explanation">You\'ll now go to Android\'s filesystem for security reasons. Please select the USB device from the list on the left.</string>
+    <string name="no_content_for_saving_intent">There is no content available for saving.</string>
+    <string name="shared_content_saved">Content saved to file \'%s\'.</string>
 </resources>
 
