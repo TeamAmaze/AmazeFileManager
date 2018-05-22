@@ -441,8 +441,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
                     sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));
                 }
-
-                //sizeProvider.closeOffAddition();
+                sizeProvider.closeOffAddition();
 
                 return new ItemViewHolder(view);
             case EMPTY_LAST_ITEM:
