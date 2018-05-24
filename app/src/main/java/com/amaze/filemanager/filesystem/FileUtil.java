@@ -234,7 +234,7 @@ public abstract class FileUtil {
                                     AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
-                                
+
                                 DocumentFile targetDocumentFile = getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
 
                                 //Fallback, in case getDocumentFile() didn't properly return a DocumentFile instance
@@ -243,7 +243,7 @@ public abstract class FileUtil {
 
                                 //Lazy check... and in fact, different apps may pass in URI in different formats, so we could only check filename matches
                                 //FIXME?: Prompt overwrite instead of simply blocking
-                                if (targetDocumentFile.exists()) {
+                                if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
                                     AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
                                     return null;
                                 }

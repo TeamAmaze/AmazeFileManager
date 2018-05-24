@@ -186,7 +186,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public ArrayList<String> oppatheList;
 
     // This holds the Uris to be written at initFabToSave()
-    private List<Uri> urisToBeSaved;
+    private ArrayList<Uri> urisToBeSaved;
 
     /**
      * @deprecated use getCurrentMainFragment()
@@ -490,7 +490,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
                 // save a single file to filesystem
                 Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                List<Uri> uris = new ArrayList<>();
+                ArrayList<Uri> uris = new ArrayList<>();
                 uris.add(uri);
                 initFabToSave(uris);
 
@@ -500,7 +500,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
                 // save multiple files to filesystem
 
-                List<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
                 initFabToSave(arrayList);
 
                 // disable screen rotation just for convenience purpose
@@ -513,7 +513,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     /**
      * Initializes the floating action button to act as to save data from an external intent
      */
-    private void initFabToSave(final List<Uri> uris) {
+    private void initFabToSave(final ArrayList<Uri> uris) {
         floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
         floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
