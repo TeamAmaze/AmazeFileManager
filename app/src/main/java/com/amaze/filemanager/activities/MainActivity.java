@@ -913,7 +913,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 }
                 final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
                         new String[]{getResources().getString(R.string.questionset),
-                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                                getResources().getString(R.string.exit), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
                     main.home = main.getCurrentPath();
                     updatePaths(main.no);
@@ -922,7 +922,14 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dialog.show();
                 break;
             case R.id.exit:
-                finish();
+                final MaterialDialog exit_dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
+                        new String[]{getResources().getString(R.string.questionexit),
+                                getResources().getString(R.string.exit), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                exit_dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
+                    finish();
+                    exit_dialog.dismiss();
+                });
+                exit_dialog.show();
                 break;
             case R.id.sort:
                 Fragment fragment = getFragmentAtFrame();
