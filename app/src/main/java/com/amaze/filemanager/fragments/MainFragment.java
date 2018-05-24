@@ -1385,8 +1385,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     public void updateList() {
-        computeScroll();
-        loadlist((CURRENT_PATH), true, openMode);
+        if(!getMainActivity().isFinishing()) {
+            computeScroll();
+            loadlist((CURRENT_PATH), true, openMode);
+        }
     }
 
     /**
