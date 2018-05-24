@@ -136,6 +136,8 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -263,8 +265,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
     private PasteHelper pasteHelper;
-
-    private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
 
     /**
      * Called when the activity is first created.
@@ -532,7 +532,17 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && intent.getClipData() != null) {
                     initFabToSave(intent.getClipData().getItemAt(0).getText());
                 } else if (intent.hasExtra(Intent.EXTRA_TEXT)){
-                    initFabToSave(intent.getStringExtra(Intent.EXTRA_TEXT));
+                    try {
+                        //Use java.net.URI to check content is an URI
+                        URI check = new URI(intent.getStringExtra(Intent.EXTRA_TEXT));
+                        check = null;
+                        ArrayList<Uri> uris = new ArrayList<>();
+                        uris.add(Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT)));
+                        initFabToSave(uris);
+                    } catch(URISyntaxException ifNotAnUri) {
+                        //If content is not a valid URI, assume plain text content
+                        initFabToSave(intent.getStringExtra(Intent.EXTRA_TEXT));
+                    }
                 } else {
                     Toast.makeText(this, R.string.no_content_for_saving_intent, Toast.LENGTH_LONG).show();
                     finish();
@@ -564,7 +574,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         });
     }
 
-    private void initFabToSave(final CharSequence textContent) {
+    private void initFabToSave(@NonNull final CharSequence textContent) {
         initFabToSaveInternal(v -> {
             mainActivityHelper.add(MainActivityHelper.NEW_FILE, (file) -> {
                 try {
@@ -644,13 +654,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             // Device has physical external storage; use plain paths.
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
-                // Check for actual existence of the directory before adding to list
-                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
-                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
-                } else {
-                    //We know nothing else, use Environment's fallback
-                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
-                }
+                rv.add("/storage/sdcard0");
             } else {
                 rv.add(rawExternalStorage);
             }
