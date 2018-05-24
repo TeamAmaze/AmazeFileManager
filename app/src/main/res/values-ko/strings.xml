@@ -75,6 +75,12 @@
   <string name="deleting">삭제하는 중입니다</string>
     <string name="directorysort">디렉토리 정렬</string>
   <string name="sortby">정렬</string>
+  <string name="sort">정렬</string>
+  <string name="ascending">오름차순</string>
+  <string name="descending">내림차순</string>
+
+
+
   <string name="theme">테마</string>
     <string name="random">무작위 스킨</string>
   <string name="random_summary">스킨을 무작위로 설정합니다.</string>
@@ -90,6 +96,14 @@
   <string name="selectall">모두 선택</string>
   <string name="delete">삭제</string>
   <string name="setashome">홈 폴더로 설정</string>
+  <string name="questionexit">정말 나가시겠습니까?</string>
+  <string name="crypt_encrypt">암호 설정</string>
+  <string name="crypt_decrypt">암호 해제</string>
+  <string name="field_empty">입력란은 비워 둘 수 없습니다.</string>
+  <string name="password_repeat">비밀번호 재입력</string>
+  <string name="encrypt_file_save_as">암호화 된 파일을 다른 이름으로 저장</string>
+  <string name="encrypt_folder_save_as">암호화 된 폴더를 다른 이름으로 저장</string>
+  <string name="authenticate_password">암호를 입력하시오.</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
