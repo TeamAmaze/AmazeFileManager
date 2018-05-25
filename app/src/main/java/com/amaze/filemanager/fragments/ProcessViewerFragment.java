@@ -28,6 +28,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Html;
@@ -77,7 +78,7 @@ public class ProcessViewerFragment extends Fragment {
 
     private boolean isInitialized = false;
     private MainActivity mainActivity;
-    private int accentColor, primaryColor;
+    private int accentColor;
     private ImageButton mCancelButton;
     private ImageView mProgressImage;
     private View rootView;
@@ -95,19 +96,12 @@ public class ProcessViewerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.processparent, container, false);
-        setRetainInstance(false);
 
         mainActivity = (MainActivity) getActivity();
 
         accentColor = mainActivity.getAccent();
-        primaryColor = ColorPreferenceHelper.getPrimary(mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
         if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK))
             rootView.setBackgroundResource((R.color.cardView_background));
-        mainActivity.updateViews(new ColorDrawable(primaryColor));
-        mainActivity.getAppbar().setTitle(R.string.process_viewer);
-        mainActivity.floatingActionButton.getMenuButton().hide();
-        
-        mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = rootView.findViewById(R.id.card_view);
 
@@ -135,6 +129,24 @@ public class ProcessViewerFragment extends Fragment {
         mDecryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_DECRYPT);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setRetainInstance(true);
+        mainActivity.getAppbar().setTitle(R.string.process_viewer);
+        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+        mainActivity.supportInvalidateOptionsMenu();
+
+        int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
+        int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+        accentColor = mainActivity.getAccent();
+
+        mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                skinTwoColor : skin_color));
     }
 
     @Override
