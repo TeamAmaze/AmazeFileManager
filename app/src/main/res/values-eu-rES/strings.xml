@@ -271,7 +271,7 @@
     <string name="grant">Eman</string>
     <string name="grantper">Eman baimena</string>
     <string name="grantfailed">Ez da baimenik eman</string>
-    <string name="granttext">Aplikazioak biltegirako baimena behar du jarraitzeko. Leiho hau ixteak aplikazioa itxiko du.</string>
+    <string name="grant_storage_permission">Aplikazioak biltegirako baimena behar du jarraitzeko. Leiho hau ixteak aplikazioa itxiko du.</string>
     <string name="operationunsuccesful">Eragiketa ez da ongi burutu</string>
     <string name="creatingfile">Fitxategia sortzen</string>
     <string name="creatingfolder">Karpeta sortzen</string>

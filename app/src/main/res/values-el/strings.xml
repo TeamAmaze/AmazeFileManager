@@ -257,7 +257,7 @@
   <string name="grant">Χορήγησε</string>
   <string name="grantper">Χορήγησε άδεια</string>
   <string name="grantfailed">Άδεια δεν εκχωρήθηκε</string>
-  <string name="granttext">Η εφαρμογή χρειάζεται άδεια αποθήκευσης για να συνεχίσετε. Ακύρωση αυτού του διαλόγου θα τερματίσει την εφαρμογή.</string>
+  <string name="grant_storage_permission">Η εφαρμογή χρειάζεται άδεια αποθήκευσης για να συνεχίσετε. Ακύρωση αυτού του διαλόγου θα τερματίσει την εφαρμογή.</string>
   <string name="operationunsuccesful">Λειτουργία Ανεπιτυχής</string>
   <string name="creatingfile">Δημιουργία Αρχείου</string>
   <string name="creatingfolder">Δημιουργία Φακέλου</string>

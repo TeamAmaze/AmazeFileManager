@@ -263,7 +263,7 @@
   <string name="grant">Accorder</string>
   <string name="grantper">Accorder la permission</string>
   <string name="grantfailed">Permission non accordée</string>
-  <string name="granttext">L\'application a besoin de la permission de stockage pour continuer. Annuler ce message fermera l\'application.</string>
+  <string name="grant_storage_permission">L\'application a besoin de la permission de stockage pour continuer. Annuler ce message fermera l\'application.</string>
   <string name="operationunsuccesful">Échec de l\'opération</string>
   <string name="creatingfile">Création du fichier</string>
   <string name="creatingfolder">Création du dossier</string>

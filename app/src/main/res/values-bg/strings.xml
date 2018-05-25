@@ -227,7 +227,7 @@
   <string name="find">Намери в страницата</string>
   <string name="grant">Разреши</string>
   <string name="grantper">Даване на разрешение</string>
-  <string name="granttext">Приложението се нуждае от достъп до хранилище за да продължи. Отменяне на този диалог ще спре приложението.</string>
+  <string name="grant_storage_permission">Приложението се нуждае от достъп до хранилище за да продължи. Отменяне на този диалог ще спре приложението.</string>
   <string name="operationunsuccesful">Неуспешна операция</string>
   <string name="creatingfile">Създаване на файл</string>
   <string name="creatingfolder">Създаване на папка</string>
