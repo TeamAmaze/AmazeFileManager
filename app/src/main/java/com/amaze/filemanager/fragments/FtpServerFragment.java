@@ -108,9 +108,6 @@ public class FtpServerFragment extends Fragment {
         View startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         View statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
-        skin_color = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY);
-        skinTwoColor = mainActivity.getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
-        accentColor = mainActivity.getColorPreference().getColor(ColorUsage.ACCENT);
 
         updateSpans();
         updateStatus();
