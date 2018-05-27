@@ -88,7 +88,7 @@ dependencies {
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    debugImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support:support-annotations:27.0.2'
 
