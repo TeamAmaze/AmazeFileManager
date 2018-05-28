@@ -250,7 +250,7 @@
   <string name="grant">اجازه دادن</string>
   <string name="grantper">اجازه دادن مجوز</string>
   <string name="grantfailed">مجوز داده نشد</string>
-  <string name="granttext">برنامه نیازمند اجازه برای دسترسی به منبع حافظه میباشد. لغو کردن این دایالوگ منجربه بستع شدن برنامه میباشد</string>
+  <string name="grant_storage_permission">برنامه نیازمند اجازه برای دسترسی به منبع حافظه میباشد. لغو کردن این دایالوگ منجربه بستع شدن برنامه میباشد</string>
   <string name="operationunsuccesful">عملیات ناموفق</string>
   <string name="creatingfile">ساختن فایل</string>
   <string name="creatingfolder">ساختن پوشه</string>
