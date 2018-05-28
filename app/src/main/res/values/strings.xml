@@ -632,5 +632,7 @@
     <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
     <string name="cannot_overwrite">Cannot overwrite file.</string>
+    <string name="saved_single_file">File saved as \'%s\'.</string>
+    <string name="saved_multi_files">%d files saved.</string>
 </resources>
 

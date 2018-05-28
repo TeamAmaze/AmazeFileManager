@@ -594,4 +594,6 @@
   <string name="encrypt_file_save_as">儲存加密檔案為……</string>
   <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
   <string name="filename">檔案名稱</string>
+  <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
+  <string name="saved_multi_files">儲存了 %d個檔案。</string>
 </resources>

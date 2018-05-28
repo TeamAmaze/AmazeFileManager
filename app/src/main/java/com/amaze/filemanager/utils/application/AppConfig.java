@@ -122,7 +122,7 @@ public class AppConfig extends GlideApplication {
                 }
 
                 @Override
-                protected Void doInBackground(Object... params) {
+                protected Object doInBackground(Object... params) {
                     return customAsyncCallbacks.doInBackground();
                 }
 
