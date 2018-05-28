@@ -259,6 +259,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private PasteHelper pasteHelper;
 
+    private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+
     /**
      * Called when the activity is first created.
      */
@@ -573,7 +575,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             // Device has physical external storage; use plain paths.
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
-                rv.add("/storage/sdcard0");
+                // Check for actual existence of the directory before adding to list
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
+                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
+                } else {
+                    //We know nothing else, use Environment's fallback
+                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
             } else {
                 rv.add(rawExternalStorage);
             }
