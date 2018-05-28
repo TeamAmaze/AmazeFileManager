@@ -77,6 +77,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
@@ -1394,11 +1395,11 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * Final value of {@link #sortby} varies from 0 to 3
      */
     public void getSortModes() {
-        int t = Integer.parseInt(sharedPref.getString("sortby", "0"));
+        int t = SortHandler.getSortType(getContext(), getCurrentPath());
         if (t <= 3) {
             sortby = t;
             asc = 1;
-        } else if (t > 3) {
+        } else {
             asc = -1;
             sortby = t - 4;
         }

@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    protected static final int DATABASE_VERSION = 5;
+    protected static final int DATABASE_VERSION = 6;
     protected static final String DATABASE_NAME = "explorer.db";
     protected static final String TABLE_TAB = "tab";
 
@@ -77,9 +77,16 @@ public class TabHandler extends SQLiteOpenHelper {
                 + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
                 + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
 
+        String CREATE_TABLE_SORT = "CREATE TABLE " + SortHandler.TABLE_SORT + "("
+                + SortHandler.COLUMN_SORT_ID + " INTEGER PRIMARY KEY,"
+                + SortHandler.COLUMN_SORT_PATH + " TEXT,"
+                + SortHandler.COLUMN_SORT_TYPE + " INTEGER"
+                + ")";
+
         db.execSQL(CREATE_TAB_TABLE);
         db.execSQL(CREATE_TABLE_ENCRYPTED);
         db.execSQL(CREATE_TABLE_CLOUD);
+        db.execSQL(CREATE_TABLE_SORT);
     }
 
     @Override
