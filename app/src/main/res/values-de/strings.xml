@@ -262,7 +262,7 @@
   <string name="grant">Gewähren</string>
   <string name="grantper">Erlaubnis erteilen</string>
   <string name="grantfailed">Erlaubnis nicht erteilen</string>
-  <string name="granttext">Zum Fortfahren benötigt die App Zugriffsrechte für den Speicherplatz. Der Abbruch dieses Dialogs führt zum Beenden der App.</string>
+  <string name="grant_storage_permission">Zum Fortfahren benötigt die App Zugriffsrechte für den Speicherplatz. Der Abbruch dieses Dialogs führt zum Beenden der App.</string>
   <string name="operationunsuccesful">Vorgang erfolgreich</string>
   <string name="creatingfile">Erstelle Datei</string>
   <string name="creatingfolder">Erstelle Verzeichnis</string>

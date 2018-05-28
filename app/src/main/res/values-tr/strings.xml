@@ -263,7 +263,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="grant">İzin</string>
   <string name="grantper">İzin ver</string>
   <string name="grantfailed">İzin verilmedi</string>
-  <string name="granttext">Uygulamanın devam edebilmesi için depolama iznine ihtiyacı var. İptal etmek uygulamayı sonlandıracaktır.</string>
+  <string name="grant_storage_permission">Uygulamanın devam edebilmesi için depolama iznine ihtiyacı var. İptal etmek uygulamayı sonlandıracaktır.</string>
   <string name="operationunsuccesful">İşlem Başarısız</string>
   <string name="creatingfile">Dosya Oluşturuluyor</string>
   <string name="creatingfolder">Klasör oluşturuluyor</string>

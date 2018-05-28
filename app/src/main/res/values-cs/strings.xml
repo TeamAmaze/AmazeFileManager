@@ -262,7 +262,7 @@
   <string name="grant">Povolit</string>
   <string name="grantper">Udělit oprávnění</string>
   <string name="grantfailed">Oprávnění není uděleno</string>
-  <string name="granttext">Aplikace potřebuje pro pokračování udělit přístup k úložišti. Zavřením dialogového okna bude aplikace ukončena.</string>
+  <string name="grant_storage_permission">Aplikace potřebuje pro pokračování udělit přístup k úložišti. Zavřením dialogového okna bude aplikace ukončena.</string>
   <string name="operationunsuccesful">Operace se nezdařila</string>
   <string name="creatingfile">Vytvoření souboru</string>
   <string name="creatingfolder">Vytváření složky</string>

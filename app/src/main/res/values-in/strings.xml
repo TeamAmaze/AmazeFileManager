@@ -262,7 +262,7 @@
   <string name="grant">Ijinkan</string>
   <string name="grantper">Beri izin</string>
   <string name="grantfailed">Ijin Tidak diberikan</string>
-  <string name="granttext">Aplikasi butuh ijin penyimpanan untuk melanjutkan. Membatalkan dialog ini akan keluar dari aplikasi.</string>
+  <string name="grant_storage_permission">Aplikasi butuh ijin penyimpanan untuk melanjutkan. Membatalkan dialog ini akan keluar dari aplikasi.</string>
   <string name="operationunsuccesful">Operasi gagal</string>
   <string name="creatingfile">Membuat File</string>
   <string name="creatingfolder">Membuat Folder</string>

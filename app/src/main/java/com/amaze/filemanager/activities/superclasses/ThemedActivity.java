@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -22,8 +23,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
  */
 public class ThemedActivity extends PreferenceActivity {
 
-    public boolean checkStorage = true;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,46 +34,6 @@ public class ThemedActivity extends PreferenceActivity {
         }
 
         setTheme();
-
-        //requesting storage permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkStorage && !checkStoragePermission()) {
-            requestStoragePermission();
-        }
-    }
-
-    public boolean checkStoragePermission() {
-        // Verify that all required contact permissions have been granted.
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-            final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this,
-                    new String[]{getString(R.string.granttext),
-                            getString(R.string.grantper),
-                            getString(R.string.grant),
-                            getString(R.string.cancel),
-                            null});
-            materialDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-                ActivityCompat.requestPermissions(ThemedActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-                materialDialog.dismiss();
-            });
-            materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
-                finish();
-            });
-            materialDialog.setCancelable(false);
-            materialDialog.show();
-
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 77);
-        }
     }
 
     public UserColorPreferences getCurrentColorPreference() {

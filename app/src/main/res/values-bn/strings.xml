@@ -502,7 +502,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="grantfailed">Permission not granted</string>
 
-    <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+    <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
 
     <string name="operationunsuccesful">Operation Unsuccessful</string>
 
