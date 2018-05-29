@@ -743,6 +743,7 @@ public class HybridFile {
                                     f.setDate(info.getAttributes().getMtime() * 1000);
                                     f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
                                     f.setPermission(Integer.toString(FilePermission.toMask(info.getAttributes().getPermissions()), 8));
+                                    f.setHashCode(SshClientUtils.hashCode(info));
                                     onFileFound.onFileFound(f);
                                 }
                             } catch (IOException e) {
