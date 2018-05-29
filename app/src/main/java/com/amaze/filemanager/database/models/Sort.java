@@ -30,13 +30,13 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class Sort {
     public static final int SORT_TYPE_NAME = 0;
-    public static final int SORT_TYPE_LAST_MODIFIED = SORT_TYPE_NAME + 1;
-    public static final int SORT_TYPE_SIZE = SORT_TYPE_LAST_MODIFIED + 1;
-    public static final int SORT_TYPE_TYPE = SORT_TYPE_SIZE + 1;
-    public static final int SORT_TYPE_NAME_DESC = SORT_TYPE_TYPE + 1;
-    public static final int SORT_TYPE_LAST_MODIFIED_DESC = SORT_TYPE_NAME_DESC + 1;
-    public static final int SORT_TYPE_SIZE_DESC = SORT_TYPE_LAST_MODIFIED_DESC + 1;
-    public static final int SORT_TYPE_TYPE_DESC = SORT_TYPE_SIZE_DESC + 1;
+    public static final int SORT_TYPE_LAST_MODIFIED = 1;
+    public static final int SORT_TYPE_SIZE = 2;
+    public static final int SORT_TYPE_TYPE = 3;
+    public static final int SORT_TYPE_NAME_DESC = 4;
+    public static final int SORT_TYPE_LAST_MODIFIED_DESC = 5;
+    public static final int SORT_TYPE_SIZE_DESC = 6;
+    public static final int SORT_TYPE_TYPE_DESC = 7;
 
     @IntDef({
             SORT_TYPE_NAME,
