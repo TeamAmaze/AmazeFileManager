@@ -75,6 +75,7 @@ public class CloudUtil {
                         cloudMetaData.getFolder());
                 baseFile.setName(cloudMetaData.getName());
                 baseFile.setMode(openMode);
+                baseFile.setHashCode(cloudMetaData.hashCode());
                 fileFoundCallback.onFileFound(baseFile);
             }
         } catch (Exception e) {

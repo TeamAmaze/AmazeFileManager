@@ -235,6 +235,9 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
                     longSize, false, baseFile.getDate() + "", baseFile.isDirectory(),
                     showThumbs, baseFile.getMode());
+            if (baseFile.getHashCode() != null) {
+                layoutElement.setHashCode(baseFile.getHashCode());
+            }
             return layoutElement;
         }
 

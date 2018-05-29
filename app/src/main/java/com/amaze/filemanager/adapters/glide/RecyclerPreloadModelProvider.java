@@ -47,7 +47,7 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
         if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
             requestBuilder = request.load(iconData.path);
         } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
-            requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
+            requestBuilder = request.load(iconData);
         } else {
             requestBuilder = request.load(iconData.image);
         }
