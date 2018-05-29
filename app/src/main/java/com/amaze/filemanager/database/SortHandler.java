@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.amaze.filemanager.database.models.Sort;
 
@@ -22,7 +23,6 @@ public class SortHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "explorer.db";
     public static final String TABLE_SORT = "sort";
 
-    public static final String COLUMN_SORT_ID = "_id";
     public static final String COLUMN_SORT_PATH = "path";
     public static final String COLUMN_SORT_TYPE = "type";
 
@@ -41,7 +41,7 @@ public class SortHandler extends SQLiteOpenHelper {
             }
             return sortType;
         }
-        return sort.getSortType();
+        return sort.type;
     }
 
     public SortHandler(Context context) {
@@ -51,28 +51,26 @@ public class SortHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         String CREATE_TABLE_SORT = "CREATE TABLE " + TABLE_SORT + "("
-                + COLUMN_SORT_ID
-                + " INTEGER PRIMARY KEY,"
-                + COLUMN_SORT_PATH + " TEXT," + COLUMN_SORT_TYPE + " TEXT" + ")";
+                + COLUMN_SORT_PATH
+                + " TEXT PRIMARY KEY,"
+                + COLUMN_SORT_TYPE + " INTEGER" + ")";
 
         db.execSQL(CREATE_TABLE_SORT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SORT);
         onCreate(db);
     }
 
     public void addEntry(Sort sort) {
-
+        if (TextUtils.isEmpty(sort.path)) {
+            return;
+        }
         ContentValues contentValues = new ContentValues();
-        //contentValues.put(COLUMN_SORT_ID, encryptedEntry.getId());
         contentValues.put(COLUMN_SORT_PATH, sort.path);
-        contentValues.put(COLUMN_SORT_TYPE, sort.sortType);
+        contentValues.put(COLUMN_SORT_TYPE, sort.type);
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.insert(TABLE_SORT, null, contentValues);
@@ -88,27 +86,32 @@ public class SortHandler extends SQLiteOpenHelper {
     }
 
     public void updateEntry(Sort oldSort, Sort newSort) {
+        if (TextUtils.isEmpty(oldSort.path) || TextUtils.isEmpty(newSort.path)) {
+            return;
+        }
+
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_SORT_ID, newSort.getId());
-        contentValues.put(COLUMN_SORT_PATH, newSort.getPath());
-        contentValues.put(COLUMN_SORT_TYPE, newSort.getSortType());
+        contentValues.put(COLUMN_SORT_PATH, newSort.path);
+        contentValues.put(COLUMN_SORT_TYPE, newSort.type);
 
-        sqLiteDatabase.update(TABLE_SORT, contentValues, COLUMN_SORT_ID + " = ?",
-                new String[]{oldSort.getId() + ""});
+        sqLiteDatabase.update(TABLE_SORT, contentValues, COLUMN_SORT_PATH + " = ?",
+                new String[]{oldSort.path});
     }
 
     @Nullable
     public Sort findEntry(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+
         String query = "Select * FROM " + TABLE_SORT + " WHERE " + COLUMN_SORT_PATH
                 + "= \"" + path + "\"";
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        Sort sort = new Sort();
+        Sort sort;
         if (cursor.moveToFirst()) {
-            sort.setId((cursor.getInt(0)));
-            sort.setPath(cursor.getString(1));
-            sort.setSortType(cursor.getInt(2));
+            sort = new Sort(cursor.getString(0),cursor.getInt(1));
             cursor.close();
         } else {
             sort = null;
@@ -128,10 +131,7 @@ public class SortHandler extends SQLiteOpenHelper {
             // Looping through all rows and adding them to list
             boolean hasNext = cursor.moveToFirst();
             while (hasNext) {
-                Sort sort = new Sort();
-                sort.setId((cursor.getInt(0)));
-                sort.setPath(cursor.getString(1));
-                sort.setSortType(cursor.getInt(2));
+                Sort sort = new Sort(cursor.getString(0),cursor.getInt(1));
                 entryList.add(sort);
                 hasNext = cursor.moveToNext();
             }

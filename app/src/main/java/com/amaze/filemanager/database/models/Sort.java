@@ -30,13 +30,13 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class Sort {
     public static final int SORT_TYPE_NAME = 0;
-    public static final int SORT_TYPE_LAST_MODIFIED = 1;
-    public static final int SORT_TYPE_SIZE = 2;
-    public static final int SORT_TYPE_TYPE = 3;
-    public static final int SORT_TYPE_NAME_DESC = 4;
-    public static final int SORT_TYPE_LAST_MODIFIED_DESC = 5;
-    public static final int SORT_TYPE_SIZE_DESC = 6;
-    public static final int SORT_TYPE_TYPE_DESC = 7;
+    public static final int SORT_TYPE_LAST_MODIFIED = SORT_TYPE_NAME + 1;
+    public static final int SORT_TYPE_SIZE = SORT_TYPE_LAST_MODIFIED + 1;
+    public static final int SORT_TYPE_TYPE = SORT_TYPE_SIZE + 1;
+    public static final int SORT_TYPE_NAME_DESC = SORT_TYPE_TYPE + 1;
+    public static final int SORT_TYPE_LAST_MODIFIED_DESC = SORT_TYPE_NAME_DESC + 1;
+    public static final int SORT_TYPE_SIZE_DESC = SORT_TYPE_LAST_MODIFIED_DESC + 1;
+    public static final int SORT_TYPE_TYPE_DESC = SORT_TYPE_SIZE_DESC + 1;
 
     @IntDef({
             SORT_TYPE_NAME,
@@ -52,41 +52,13 @@ public class Sort {
     public @interface TYPE {
     }
 
-    private int _id;
-    public String path;
+    public final String path;
     @TYPE
-    public int sortType;
+    public final int type;
 
-    public Sort() {
-    }
-
-    public Sort(String path, @TYPE int sortType) {
+    public Sort(String path, @TYPE int type) {
         this.path = path;
-        this.sortType = sortType;
-    }
-
-    public int getId() {
-        return _id;
-    }
-
-    public void setId(int _id) {
-        this._id = _id;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public int getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(@TYPE int sortType) {
-        this.sortType = sortType;
+        this.type = type;
     }
 
 }

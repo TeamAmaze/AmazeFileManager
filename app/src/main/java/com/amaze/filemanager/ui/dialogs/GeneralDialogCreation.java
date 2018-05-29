@@ -968,7 +968,6 @@ public class GeneralDialogCreation {
             if (oldSort == null) {
                 sortHandler.addEntry(newSort);
             } else {
-                newSort.setId(oldSort.getId());
                 sortHandler.updateEntry(oldSort, newSort);
             }
         } else {
