@@ -10,14 +10,13 @@ import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
 /**
  * @author Emmanuel
- *         on 8/11/2017, at 17:37.
+ * on 8/11/2017, at 17:37.
  */
 public class FileHandler extends Handler {
     private WeakReference<MainFragment> mainFragment;
@@ -35,6 +34,9 @@ public class FileHandler extends Handler {
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
         MainFragment main = mainFragment.get();
+        if (main == null || main.isDetached() || main.isRemoving()) {
+            return;
+        }
 
         String path = (String) msg.obj;
 

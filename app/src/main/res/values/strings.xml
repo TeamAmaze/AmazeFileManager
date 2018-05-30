@@ -81,6 +81,7 @@
     <string name="questionset">Do you want to set current path as home for this tab?</string>
     <string name="directorysort">Directory Sort Mode</string>
     <string name="sortby">Sort By</string>
+    <string name="sort_only_this">Only this folder</string>
     <string name="theme">Theme</string>
     <string name="random">Random Skin</string>
     <string name="random_summary">Sets random primary color at startup</string>
