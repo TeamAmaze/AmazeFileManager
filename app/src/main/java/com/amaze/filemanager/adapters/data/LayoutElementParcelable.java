@@ -118,12 +118,14 @@ public class LayoutElementParcelable implements Parcelable {
     }
 
     public void setHashCode(Integer hashCode) {
-        this.hashCode = hashCode;
         this.iconData.setHashCode(hashCode);
     }
 
     public Integer getHashCode() {
-        return hashCode;
+        if (iconData != null) {
+            return iconData.getHashCode();
+        } else
+            return null;
     }
 
     public HybridFileParcelable generateBaseFile() {
@@ -157,7 +159,6 @@ public class LayoutElementParcelable implements Parcelable {
         date1 = im.readString();
         size = im.readString();
         longSize=im.readLong();
-        hashCode = im.readInt();
     }
 
     @Override
@@ -180,7 +181,6 @@ public class LayoutElementParcelable implements Parcelable {
         p1.writeString(date1);
         p1.writeString(size);
         p1.writeLong(longSize);
-        if (hashCode != null) p1.writeInt(hashCode);
     }
 
     public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =
