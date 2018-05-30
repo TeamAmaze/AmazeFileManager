@@ -59,22 +59,26 @@ public class ZipExtractor extends Extractor {
      */
     private void extractEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry,
                               String outputDir) throws IOException {
+        final File outputFile = new File(outputDir, fixEntryName(entry.getName()));
+
+        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+            throw new IOException("Incorrect ZipEntry path!");
+        }
+
         if (entry.isDirectory()) {
             // zip entry is a directory, return after creating new directory
-            FileUtil.mkdir(new File(outputDir, entry.getName()), context);
+            FileUtil.mkdir(outputFile, context);
             return;
         }
 
-        final File outputFile = new File(outputDir, entry.getName());
         if (!outputFile.getParentFile().exists()) {
             // creating directory if not already exists
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }
 
-        BufferedInputStream inputStream = new BufferedInputStream(
-                zipFile.getInputStream(entry));
-        BufferedOutputStream outputStream = new BufferedOutputStream(
-                FileUtil.getOutputStream(outputFile, context));
+        BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
+        BufferedOutputStream outputStream = new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
+
         try {
             int len;
             byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];

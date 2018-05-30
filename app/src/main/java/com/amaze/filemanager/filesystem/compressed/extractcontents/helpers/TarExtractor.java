@@ -58,12 +58,17 @@ public class TarExtractor extends Extractor {
 
     private void extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream,
                               TarArchiveEntry entry, String outputDir) throws IOException {
+        File outputFile = new File(outputDir, fixEntryName(entry.getName()));
+
+        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+            throw new IOException("Incorrect TarArchiveEntry path!");
+        }
+
         if (entry.isDirectory()) {
-            FileUtil.mkdir(new File(outputDir, entry.getName()), context);
+            FileUtil.mkdir(outputFile, context);
             return;
         }
 
-        File outputFile = new File(outputDir, entry.getName());
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }

@@ -56,13 +56,18 @@ public class RarExtractor extends Extractor {
 
     private void extractEntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
             throws RarException, IOException {
-        String name = entry.getFileNameString();
-        name = name.replaceAll("\\\\", CompressedHelper.SEPARATOR);
+        String name = fixEntryName(entry.getFileNameString()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
+        File outputFile = new File(outputDir, name);
+
+        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+            throw new IOException("Incorrect RAR FileHeader path!");
+        }
+
         if (entry.isDirectory()) {
-            FileUtil.mkdir(new File(outputDir, name), context);
+            FileUtil.mkdir(outputFile, context);
             return;
         }
-        File outputFile = new File(outputDir, name);
+
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }

@@ -3,6 +3,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 
 import java.io.File;
@@ -62,5 +63,13 @@ public abstract class Extractor {
         void onUpdate(String entryPath);
         void onFinish();
         boolean isCancelled();
+    }
+
+    protected String fixEntryName(String entryName){
+        if(entryName.indexOf('\\') > 0) {
+            return entryName.replace('\\', CompressedHelper.SEPARATOR_CHAR);
+        } else {
+            return entryName;
+        }
     }
 }
