@@ -240,7 +240,7 @@
   <string name="grant">Acordaţi</string>
   <string name="grantper">Acordaţi permisiunea</string>
   <string name="grantfailed">Permisiun neacordată</string>
-  <string name="granttext">Aplicaţia necesită permisiunea de stocare pentru a continua. Anularea acestui dialog va închide aplicația.</string>
+  <string name="grant_storage_permission">Aplicaţia necesită permisiunea de stocare pentru a continua. Anularea acestui dialog va închide aplicația.</string>
   <string name="operationunsuccesful">Operaţie nereuşită</string>
   <string name="creatingfile">Creare fişier</string>
   <string name="creatingfolder">Creare dosar</string>

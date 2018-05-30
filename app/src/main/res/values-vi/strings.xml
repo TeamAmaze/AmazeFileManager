@@ -255,7 +255,7 @@
   <string name="grant">Cấp</string>
   <string name="grantper">Cấp phép Grant</string>
   <string name="grantfailed">Cấp phép chưa được cấp</string>
-  <string name="granttext">Ứng dụng cần sự cho phép lưu trữ để tiếp tục. Thoát hộp thoại này sẽ thoát khỏi ứng dụng.</string>
+  <string name="grant_storage_permission">Ứng dụng cần sự cho phép lưu trữ để tiếp tục. Thoát hộp thoại này sẽ thoát khỏi ứng dụng.</string>
   <string name="operationunsuccesful">Thao tác không thành công</string>
   <string name="creatingfile">Đang tạo tệp tin</string>
   <string name="creatingfolder">Đang tạo thư mục</string>

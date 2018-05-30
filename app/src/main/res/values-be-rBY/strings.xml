@@ -262,7 +262,7 @@
   <string name="grant">Прадастаўленне</string>
   <string name="grantper">Прадастаўленне дазволу</string>
   <string name="grantfailed">Дазвол не прадстаўлены</string>
-  <string name="granttext">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць праграму.</string>
+  <string name="grant_storage_permission">Праграмам патрабуецца дазвол працы з сховішчам для працягу. Закрыццё гэтага дыялогу завершыць праграму.</string>
   <string name="operationunsuccesful">Аперацыя беспаспяховая</string>
   <string name="creatingfile">Стварыць файл</string>
   <string name="creatingfolder">Стварыць тэчку</string>

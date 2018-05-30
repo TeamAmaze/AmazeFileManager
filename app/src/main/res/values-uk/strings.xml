@@ -258,7 +258,7 @@
   <string name="grant">Дозволити</string>
   <string name="grantper">Надати дозвіл</string>
   <string name="grantfailed">Дозвіл не надано</string>
-  <string name="granttext">Додатку потрібен дозвіл роботи з сховищем для продовження. Закриття цього діалогу завершить додаток.</string>
+  <string name="grant_storage_permission">Додатку потрібен дозвіл роботи з сховищем для продовження. Закриття цього діалогу завершить додаток.</string>
   <string name="operationunsuccesful">Невдала операція</string>
   <string name="creatingfile">Створення файлу</string>
   <string name="creatingfolder">Створення теки</string>

@@ -825,7 +825,7 @@ public class GeneralDialogCreation {
         b.build().show();
     }
 
-    public static void showPackageDialog(final SharedPreferences sharedPrefs, final File f, final MainActivity m) {
+    public static void showPackageDialog(final File f, final MainActivity m) {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
@@ -835,10 +835,7 @@ public class GeneralDialogCreation {
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
-                .onPositive((dialog, which) -> {
-                    boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(f, m, false, useNewStack);
-                })
+                .onPositive((dialog, which) -> FileUtils.installApk(f, m))
                 .onNegative((dialog, which) -> m.openZip(f.getPath()))
                 .theme(m.getAppTheme().getMaterialDialogTheme())
                 .build()

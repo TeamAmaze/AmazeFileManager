@@ -70,6 +70,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
@@ -88,6 +89,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -150,10 +152,9 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
-public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
-        SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends PermissionsActivity implements SmbConnectionListener,
+        DataChangeListener, BookmarkCallback, SearchWorkerFragment.HelperCallbacks,
+        CloudConnectionCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -184,8 +185,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * @deprecated use getCurrentMainFragment()
      */
     public MainFragment mainFragment;
-
-    public static final String KEY_PREF_OTG = "uri_usb_otg";
 
     public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -219,7 +218,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     private CloudHandler cloudHandler;
 
     public static final int REQUEST_CODE_SAF = 223;
-    public static final String VALUE_PREF_OTG_NULL = "n/a";
 
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
@@ -261,12 +259,59 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private PasteHelper pasteHelper;
 
+    private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
+            requestStoragePermission(() -> {
+                drawer.refreshDrawer();
+                TabFragment tabFragment = getTabFragment();
+                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
+                //reset home and current paths according to new storages
+                if (b) {
+                    tabHandler.clear();
+
+                    if (drawer.getPhoneStorageCount() > 1) {
+                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
+                    } else {
+                        tabHandler.addTab(new Tab(1, "/", "/"));
+                    }
+
+                    if (drawer.getFirstPath() != null) {
+                        String pa = drawer.getFirstPath();
+                        tabHandler.addTab(new Tab(2, pa, pa));
+                    } else {
+                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
+                    }
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                    }
+                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+                } else {
+                    //just refresh list
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateList();
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateList();
+                    }
+                }
+            });
+        }
+
         initialisePreferences();
         initializeInteractiveShell();
 
@@ -575,7 +620,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             // Device has physical external storage; use plain paths.
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
-                rv.add("/storage/sdcard0");
+                // Check for actual existence of the directory before adding to list
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
+                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
+                } else {
+                    //We know nothing else, use Environment's fallback
+                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
             } else {
                 rv.add(rawExternalStorage);
             }
@@ -637,17 +688,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * @return true if device is connected
      */
     private boolean isUsbDeviceConnected() {
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-        if (usbManager.getDeviceList().size()!=0) {
-            // we need to set this every time as there is no way to know that whether USB device was
-            // disconnected after closing the app and another one was connected
-            // in that case the URI will obviously change
-            // other wise we could persist the URI even after reopening the app by not writing
-            // this preference when it's not null
-            getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+        if (OTGUtil.isMassStorageDeviceConnected(this)) {
+            if(!SingletonUsbOtg.getInstance().hasRootBeenRequested()) {
+                SingletonUsbOtg.getInstance().setHasRootBeenRequested(false);
+                // we need to set this every time as there is no way to know that whether USB device was
+                // disconnected after closing the app and another one was connected in that case
+                // the URI will obviously change otherwise we could persist the URI even after
+                // reopening the app by not writing this preference when it's not null
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
+            }
             return true;
         } else {
-            getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+            SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
             return false;
         }
     }
@@ -1103,10 +1155,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
                 goToMain(null);
             }
@@ -1322,15 +1374,19 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
             }
             operation = -1;
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
-            // otg access
-            getPrefs().edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
+        } else if (requestCode == REQUEST_CODE_SAF) {
+            if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
+                // otg access
+                Uri usbOtgRoot = Uri.parse(intent.getData().toString());
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
 
-            drawer.closeIfNotLocked();
-            if(drawer.isLocked()) drawer.onDrawerClosed();
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
-            // otg access not provided
-            drawer.resetPendingPath();
+                drawer.closeIfNotLocked();
+                if (drawer.isLocked()) drawer.onDrawerClosed();
+            } else {
+                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+                // otg access not provided
+                drawer.resetPendingPath();
+            }
         }
     }
 
@@ -1540,13 +1596,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             checkForExternalIntent(intent);
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                    if (getPrefs().getString(KEY_PREF_OTG, null) == null) {
-                        getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                        drawer.refreshDrawer();
-                    }
-                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                    getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                     drawer.refreshDrawer();
                 }
             }
@@ -1564,57 +1615,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             }
         }
     };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 77) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                drawer.refreshDrawer();
-                TabFragment tabFragment = getTabFragment();
-                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
-                //reset home and current paths according to new storages
-                if (b) {
-                    tabHandler.clear();
-
-                    if (drawer.getStorageCount() > 1) {
-                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
-                    } else {
-                        tabHandler.addTab(new Tab(1, "/", "/"));
-                    }
-
-                    if (drawer.getFirstPath() != null) {
-                        String pa = drawer.getFirstPath();
-                        tabHandler.addTab(new Tab(2, pa, pa));
-                    } else {
-                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
-                    }
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-                    }
-                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
-                } else {
-                    //just refresh list
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateList();
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateList();
-                    }
-                }
-            } else {
-                Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
-                requestStoragePermission();
-            }
-        }
-    }
 
     public void showSMBDialog(String name, String path, boolean edit) {
         if (path.length() > 0 && name.length() == 0) {
