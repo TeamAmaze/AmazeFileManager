@@ -594,4 +594,5 @@
   <string name="encrypt_file_save_as">儲存加密檔案為……</string>
   <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
   <string name="filename">檔案名稱</string>
+  <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
 </resources>

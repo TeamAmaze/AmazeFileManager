@@ -37,6 +37,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.view.View;
@@ -162,8 +163,11 @@ public class GeneralDialogCreation {
 
         MaterialDialog dialog = builder.show();
 
-        new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
+        WarnableTextInputValidator textInputValidator = new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
                 dialog.getActionButton(DialogAction.POSITIVE), validator);
+
+        if(!TextUtils.isEmpty(prefill))
+            textInputValidator.afterTextChanged(textfield.getText());
 
         return dialog;
     }
