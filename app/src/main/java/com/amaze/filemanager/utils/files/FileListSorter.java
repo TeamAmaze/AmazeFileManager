@@ -25,13 +25,13 @@ import java.util.Comparator;
 
 public class FileListSorter implements Comparator<LayoutElementParcelable> {
 
-    private int dirsOnTop = 0;
-    private int asc = 1;
+    private int directoryOnTop = 0;
+    private int ascending = 1;
     private int sort = 0;
 
-    public FileListSorter(int dir, int sort, int asc) {
-        this.dirsOnTop = dir;
-        this.asc = asc;
+    public FileListSorter(int dir, int sort, int ascending) {
+        this.directoryOnTop = dir;
+        this.ascending = ascending;
         this.sort = sort;
     }
 
@@ -80,11 +80,11 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     }
 
     private boolean directoryLocationIsBottom() {
-        return dirsOnTop == 0;
+        return directoryOnTop == 0;
     }
 
     private boolean directoryLocationIsTop() {
-        return dirsOnTop == 1;
+        return directoryOnTop == 1;
     }
     private boolean onlyFirstFileIsDirectory(LayoutElementParcelable file1, LayoutElementParcelable file2) {
         return isDirectory(file1) && !isDirectory(file2);
@@ -103,7 +103,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     }
 
     private int SortByFileName(LayoutElementParcelable file1, LayoutElementParcelable file2) {
-        return asc * compareFileTitle(file1, file2);
+        return ascending * compareFileTitle(file1, file2);
     }
 
     private int compareFileTitle(LayoutElementParcelable file1, LayoutElementParcelable file2) {
@@ -115,7 +115,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     }
 
     private int SortByFileLastModifiedDate(LayoutElementParcelable file1, LayoutElementParcelable file2) {
-        return asc * Long.valueOf(file1.date).compareTo(file2.date);
+        return ascending * Long.valueOf(file1.date).compareTo(file2.date);
     }
 
     private boolean isSortByFileSize() {
@@ -124,7 +124,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
 
     private int SortByFileSize(LayoutElementParcelable file1, LayoutElementParcelable file2) {
         if (twoFilesAreNotDirectory(file1, file2)) {
-            return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
+            return ascending * Long.valueOf(file1.longSize).compareTo(file2.longSize);
         } else {
             return compareFileTitle(file1, file2);
         }
@@ -136,7 +136,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
 
     private int resIsZeroOrNotEachReturn(final int res, LayoutElementParcelable file1, LayoutElementParcelable file2) {
         if (res == 0) {
-            return asc * compareFileTitle(file1, file2);
+            return ascending * compareFileTitle(file1, file2);
         }
         return res;
     }
@@ -146,7 +146,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
             final String ext_file1 = getExtension(file1.title);
             final String ext_file2 = getExtension(file2.title);
 
-            final int res = asc*ext_file1.compareTo(ext_file2);
+            final int res = ascending*ext_file1.compareTo(ext_file2);
 
             return resIsZeroOrNotEachReturn(res, file1, file2);
         } else {

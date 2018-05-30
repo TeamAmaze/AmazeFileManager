@@ -3,7 +3,9 @@ package com.amaze.filemanager.utils.cloud;
 import android.net.Uri;
 import android.util.Log;
 
+import com.amaze.filemanager.utils.SmbStreamer.StreamServer;
 import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
+import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -15,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLEncoder;
@@ -196,7 +199,7 @@ public abstract class CloudStreamServer {
     {
         myTcpPort = port;
         this.myRootDir = wwwroot;
-        myServerSocket = new ServerSocket( myTcpPort );
+        myServerSocket = tryBind(myTcpPort);
         myThread = new Thread(() -> {
             try {
                 while (true) {
@@ -223,7 +226,7 @@ public abstract class CloudStreamServer {
     public CloudStreamServer(File wwwroot ) throws IOException
     {
         this.myRootDir = wwwroot;
-        myServerSocket = new ServerSocket( myTcpPort );
+        myServerSocket = tryBind(myTcpPort);
         myThread = new Thread(() -> {
             try {
                 while (true) {
@@ -259,6 +262,25 @@ public abstract class CloudStreamServer {
         }
         catch ( IOException ioe ) {}
         catch ( InterruptedException e ) {}
+    }
+
+    /**
+     * Since CloudStreamServer and Streamer both uses the same port, shutdown the Streamer before
+     * acquiring the port.
+     *
+     * @param port
+     * @return ServerSocket
+     * @throws IOException
+     */
+    private ServerSocket tryBind(int port) throws IOException {
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket(port);
+        } catch (BindException ifPortIsOccupiedByStreamer) {
+            Streamer.getInstance().stop();
+            socket = new ServerSocket(port);
+        }
+        return socket;
     }
 
     //

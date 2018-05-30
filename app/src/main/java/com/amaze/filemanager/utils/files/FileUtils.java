@@ -856,7 +856,7 @@ public class FileUtils {
         return false;
     }
 
-    public static boolean isPathAccesible(String dir, SharedPreferences pref) {
+    public static boolean isPathAccessible(String dir, SharedPreferences pref) {
         File f = new File(dir);
         boolean showIfHidden = pref.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false),
                 isDirSelfOrParent = dir.endsWith("/.") || dir.endsWith("/.."),
