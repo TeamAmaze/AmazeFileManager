@@ -43,6 +43,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory;
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFtplet;
@@ -301,7 +302,25 @@ public class FtpService extends Service implements Runnable {
         return enabled != null? enabled:false;
     }
 
+    private static boolean isUnitTesting(Context context){
+        if(BuildConfig.DEBUG) {
+            ConnectivityManager cm = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            return ni != null
+                    && ni.getDetailedState().equals(NetworkInfo.DetailedState.BLOCKED)
+                    && !ni.isConnected()
+                    && !ni.isAvailable()
+                    && ni.getType() == ConnectivityManager.TYPE_DUMMY
+                    && ni.getSubtype() == Integer.MAX_VALUE;
+        } else
+            return false;
+    }
+
     public static InetAddress getLocalInetAddress(Context context) {
+        if(BuildConfig.DEBUG && isUnitTesting(context))
+            return InetAddress.getLoopbackAddress();
+
         if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
             return null;
         }

@@ -50,6 +50,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -154,7 +155,7 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
-public class MainActivity extends PermissionsActivity implements OnRequestPermissionsResultCallback,
+public class MainActivity extends PermissionsActivity implements ActivityCompat.OnRequestPermissionsResultCallback,
         SmbConnectionListener, DataChangeListener, BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>, FolderChooserDialog.FolderCallback {
