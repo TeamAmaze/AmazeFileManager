@@ -68,11 +68,9 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
 
             for (ZipObj entry : zipViewer.wholelist) {
 
-                String s = entry.getName();
-                //  System.out.println(s);
                 File file = new File(entry.getName());
 
-                if(entry.getName().startsWith("../") || entry.getName().equals("..")) {
+                if(entry.getName().startsWith("../") || entry.getName().startsWith("..\\") || entry.getName().equals("..")) {
                     continue;
                 }
 

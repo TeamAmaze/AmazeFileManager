@@ -61,7 +61,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
                     String name = header.getFileNameString();
 
                     if (!name.contains("\\")) {
-                        if(name.startsWith("..\\") || name.equals("..")) {
+                        if(name.startsWith("..\\") || name.startsWith("../") || name.equals("..")) {
                             continue;
                         }
 
@@ -71,7 +71,7 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
             } else {
                 for (FileHeader header : zipViewer.wholelistRar) {
                     String name = header.getFileNameString();
-                    if(name.startsWith("..\\") || name.equals("..")) {
+                    if(name.startsWith("..\\") || name.startsWith("../") || name.equals("..")) {
                         continue;
                     }
                     if (name.substring(0, name.lastIndexOf("\\")).equals(dir)) {
