@@ -7,6 +7,7 @@ import com.amaze.filemanager.fragments.ZipViewer;
 import com.amaze.filemanager.ui.ZipObj;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,6 +71,11 @@ public class ZipHelperTask extends AsyncTask<String, Void, ArrayList<ZipObj>> {
                 String s = entry.getName();
                 //  System.out.println(s);
                 File file = new File(entry.getName());
+
+                if(entry.getName().startsWith("../") || entry.getName().equals("..")) {
+                    continue;
+                }
+
                 if (dir == null || dir.trim().length() == 0) {
                     String y = entry.getName();
                     if (y.startsWith("/"))
