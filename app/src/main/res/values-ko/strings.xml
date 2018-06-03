@@ -304,6 +304,30 @@
   <string name="cloud_connection">클라우드 연결</string>
   <string name="cloud_connection_new">새로운 클라우드 연결</string>
 
+  <string name="sort">정렬</string>
+  <string name="ascending">오름차순</string>
+  <string name="descending">내림차순</string>
+
+  <string name="crypt_encrypt">암호화설정</string>
+  <string name="crypt_decrypt">암호화해제</string>
+
+  <string name="crypt_warning_key">시스템 설정에서
+  보안 패턴을 변경하면 이 콘텐츠의 암호를 해독할 수 없습니다.</string>
+  <string name="warning_never_show">다시 알리지 않음</string>
+  <string name="warning_confirm">확인</string>
+
+  <string name="field_empty">입력란은 비어있을 수 없습니다.</string>
+  <string name="password_repeat">비밀번호 확인</string>
+  <string name="encrypt_file_save_as">암호화 된 파일을 다른 이름으로 저장</string>
+  <string name="encrypt_folder_save_as">암호화 된 폴더를 다른 이름으로 저장</string>
+
+
+  <string name="operationunsuccesful">작업 실패</string>
+  <string name="authenticate_password">비밀번호 입력</string>
+
+  <string name="crypt_encryption_fail">암호화설정 실패</string>
+  <string name="crypt_decryption_fail">암호화해제 실패</string>
+
 
   <!-- end of plurals -->
 </resources>
