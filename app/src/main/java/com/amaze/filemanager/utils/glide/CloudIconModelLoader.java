@@ -28,10 +28,8 @@ public class CloudIconModelLoader implements ModelLoader<IconDataParcelable, Bit
     @Nullable
     @Override
     public LoadData<Bitmap> buildLoadData(IconDataParcelable iconDataParcelable, int width, int height, Options options) {
-        // we put key as current time since we're not disk caching the images for cloud,
-        // as there is no way to differentiate input streams returned by different cloud services
-        // for future instances and they don't expose concrete paths either
-        return new LoadData<>(new ObjectKey(iconDataParcelable.getHashCode()),
+        if(iconDataParcelable.getHashCode(width, height) == null) throw new NullPointerException("Hash is null for Cloud image!");
+        return new LoadData<>(new ObjectKey(iconDataParcelable.getHashCode(width, height)),
                 new CloudIconDataFetcher(context, iconDataParcelable.path, width, height));
     }
 
