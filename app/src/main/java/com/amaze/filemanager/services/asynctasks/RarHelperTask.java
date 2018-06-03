@@ -11,6 +11,7 @@ import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,13 +61,19 @@ public class RarHelperTask extends AsyncTask<File, Void, ArrayList<FileHeader>> 
                     String name = header.getFileNameString();
 
                     if (!name.contains("\\")) {
-                        elements.add(header);
+                        if(name.startsWith("..\\") || name.equals("..")) {
+                            continue;
+                        }
 
+                        elements.add(header);
                     }
                 }
             } else {
                 for (FileHeader header : zipViewer.wholelistRar) {
                     String name = header.getFileNameString();
+                    if(name.startsWith("..\\") || name.equals("..")) {
+                        continue;
+                    }
                     if (name.substring(0, name.lastIndexOf("\\")).equals(dir)) {
                         elements.add(header);
                     }
