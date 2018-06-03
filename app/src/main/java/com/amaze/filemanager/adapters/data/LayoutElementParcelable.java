@@ -121,9 +121,9 @@ public class LayoutElementParcelable implements Parcelable {
         this.iconData.setHashCode(hashCode);
     }
 
-    public Integer getHashCode() {
+    public Integer getHashCode(int width, int height) {
         if (iconData != null) {
-            return iconData.getHashCode();
+            return iconData.getHashCode(width, height);
         } else
             return null;
     }

@@ -53,8 +53,10 @@ public class IconDataParcelable implements Parcelable {
         this.hashCode = hashCode;
     }
 
-    public Integer getHashCode() {
-        return hashCode;
+    public Integer getHashCode(int width, int height) {
+        int hashCodeWithSize = hashCode * 31 + width;
+        hashCodeWithSize = hashCodeWithSize * 31 + height;
+        return hashCodeWithSize;
     }
 
     @Override
