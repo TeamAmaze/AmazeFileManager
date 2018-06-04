@@ -6,9 +6,6 @@ import android.support.annotation.NonNull;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.IOCloseBufferWriter;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
@@ -17,6 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /*  Rename : extractWithFilter(@NonNull Filter filter)
@@ -65,6 +63,12 @@ public class RarExtractor extends Extractor {
         }
     }
 
+    @Override
+    protected void streamClose(InputStream inputStream, BufferedOutputStream outputStream) throws IOException {
+        outputStream.close();
+        inputStream.close();
+    }
+
     private void extractEntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDirectory)
             throws RarException, IOException {
         String name = entry.getFileNameString();
@@ -79,7 +83,7 @@ public class RarExtractor extends Extractor {
                 zipFile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
-        IOCloseBufferWriter.writeBuffer(inputStream, outputStream);
+        writeBuffer(inputStream, outputStream);
     }
 
 

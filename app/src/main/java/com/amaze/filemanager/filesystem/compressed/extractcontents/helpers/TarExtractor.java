@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.OutputCloseBufferWriter;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -16,6 +13,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /*  Rename : extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream, TarArchiveEntry entry, String outputDirectory)
@@ -63,6 +61,11 @@ public class TarExtractor extends Extractor {
         listener.onFinish();
     }
 
+    @Override
+    protected void streamClose(InputStream inputStream, BufferedOutputStream outputStream) throws IOException {
+        outputStream.close();
+    }
+
     private void extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream,
                               TarArchiveEntry entry, String outputDirectory) throws IOException {
         if (entry.isDirectory()) {
@@ -75,7 +78,7 @@ public class TarExtractor extends Extractor {
 
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
-        OutputCloseBufferWriter.writeBuffer(inputStream,outputStream);
+        writeBuffer(inputStream,outputStream);
     }
 
 }

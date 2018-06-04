@@ -5,14 +5,12 @@ import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.IOCloseBufferWriter;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -65,7 +63,13 @@ public class ZipExtractor extends Extractor {
         }
         listener.onFinish();
     }
-    
+
+    @Override
+    protected void streamClose(InputStream inputStream, BufferedOutputStream outputStream) throws IOException {
+        outputStream.close();
+        inputStream.close();
+    }
+
     /**
      * Method extracts {@link ZipEntry} from {@link ZipFile}
      *
@@ -87,7 +91,7 @@ public class ZipExtractor extends Extractor {
                 zipFile.getInputStream(entry));
         BufferedOutputStream outputStream = new BufferedOutputStream(
                 FileUtil.getOutputStream(outputFile, context));
-        IOCloseBufferWriter.writeBuffer(inputStream, outputStream);
+        writeBuffer(inputStream, outputStream);
     }
 
 }
