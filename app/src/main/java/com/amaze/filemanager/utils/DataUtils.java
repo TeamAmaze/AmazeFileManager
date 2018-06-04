@@ -54,13 +54,13 @@ public class DataUtils {
 
     private DataChangeListener dataChangeListener;
 
-    private static DataUtils sDataUtils;
+    private DataUtils(){}
+    private static class LazyHolder {
+        public static final DataUtils sDataUtils = new DataUtils() ;
+    }
 
     public static DataUtils getInstance() {
-        if (sDataUtils == null) {
-            sDataUtils = new DataUtils();
-        }
-        return sDataUtils;
+        return LazyHolder.sDataUtils;
     }
 
     public int containsBooks(String[] aBook) {

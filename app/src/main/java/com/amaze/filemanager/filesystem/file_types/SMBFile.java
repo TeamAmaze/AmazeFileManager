@@ -186,7 +186,7 @@ public class SMBFile extends HybridFile {
         return !exists();
     }
 
-    private SmbFile getSmbFile() {
+    public SmbFile getSmbFile() {
         try {
             return new SmbFile(path);
         } catch (MalformedURLException e) {
@@ -194,7 +194,7 @@ public class SMBFile extends HybridFile {
         }
     }
 
-    private SmbFile getSmbFile(int timeout) {
+    public SmbFile getSmbFile(int timeout) {
         try {
             SmbFile smbFile = new SmbFile(path);
             smbFile.setConnectTimeout(timeout);
