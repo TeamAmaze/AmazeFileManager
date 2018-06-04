@@ -116,7 +116,10 @@ public class Icons {
                 "application/x-gzip",
                 "application/x-7z-compressed",
                 "application/x-deb",
-                "application/x-rar-compressed"
+                "application/x-rar-compressed",
+                "application/x-lzma",
+                "application/x-xz",
+                "application/x-bzip2"
         );
         putKeys(CONTACT,
                 "text/x-vcard",

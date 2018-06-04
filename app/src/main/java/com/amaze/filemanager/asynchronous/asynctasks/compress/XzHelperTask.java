@@ -1,8 +1,7 @@
 /*
- * GzipHelperTask.java
+ * XzHelperTask.java
  *
- * Copyright © 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt at gmail.com>.
+ * Copyright © 2018 Raymond Lai <airwave209gt at gmail.com>.
  *
  * This file is part of AmazeFileManager.
  *
@@ -26,7 +25,7 @@ import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,12 +33,12 @@ import java.util.ArrayList;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 
-public class GzipHelperTask extends CompressedHelperTask {
+public class XzHelperTask extends CompressedHelperTask {
 
     private String filePath, relativePath;
 
-    public GzipHelperTask(String filePath, String relativePath, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+    public XzHelperTask(String filePath, String relativePath, boolean goBack,
+                        OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
         this.filePath = filePath;
         this.relativePath = relativePath;
@@ -50,7 +49,7 @@ public class GzipHelperTask extends CompressedHelperTask {
         TarArchiveInputStream tarInputStream = null;
         try {
             tarInputStream = new TarArchiveInputStream(
-                    new GzipCompressorInputStream(new FileInputStream(filePath)));
+                    new XZCompressorInputStream(new FileInputStream(filePath)));
 
             TarArchiveEntry entry;
             while ((entry = tarInputStream.getNextTarEntry()) != null) {

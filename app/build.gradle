@@ -83,6 +83,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-multidex:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
+    testImplementation "commons-logging:commons-logging:1.2" //required by junrar. Damn.
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
@@ -113,6 +114,8 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    // Dependency for 7zip Decompression
+    implementation group: 'org.tukaani', name: 'xz', version: '1.8'
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api

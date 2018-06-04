@@ -84,9 +84,11 @@ public final class MimeTypes {
         MIME_TYPES.put("bz2", "application/x-bzip2");
         MIME_TYPES.put("cab", "application/vnd.ms-cab-compressed");
         MIME_TYPES.put("gz", "application/x-gzip");
+        MIME_TYPES.put("7z", "application/x-7z-compressed");
         MIME_TYPES.put("lrf", "application/octet-stream");
         MIME_TYPES.put("jar", "application/java-archive");
         MIME_TYPES.put("xz", "application/x-xz");
+        MIME_TYPES.put("lzma", "application/x-lzma");
         MIME_TYPES.put("Z", "application/x-compress");
 
         MIME_TYPES.put("bat", "application/x-msdownload");

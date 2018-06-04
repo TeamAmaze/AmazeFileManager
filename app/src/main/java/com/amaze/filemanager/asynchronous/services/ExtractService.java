@@ -98,7 +98,7 @@ public class ExtractService extends AbstractProgressiveService {
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(getResources().getString(R.string.extracting))
                 .setContentText(new File(file).getName())
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+                .setSmallIcon(R.drawable.ic_zip_box_grey);
 
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());

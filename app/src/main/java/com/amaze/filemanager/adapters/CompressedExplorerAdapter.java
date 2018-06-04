@@ -214,7 +214,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);
                 if (stringBuilder.toString().length() > 0) {
-                    stringBuilder.deleteCharAt(rowItem.name.length() - 1);
+                    if (rowItem.name.endsWith(CompressedHelper.SEPARATOR)) stringBuilder.deleteCharAt(rowItem.name.length() - 1);
                     try {
                         holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
                     } catch (Exception e) {
@@ -266,14 +266,14 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
-                    if (rowItem.directory)
+                    if (rowItem.name.endsWith(CompressedHelper.SEPARATOR))
                         stringBuilder.deleteCharAt(rowItem.name.length() - 1);
 
                     if (rowItem.directory) {
                         compressedExplorerFragment.changePath(stringBuilder.toString());
                     } else {
-                        String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
-                                compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
+
+                        String fileName = CompressedHelper.getFileName(compressedExplorerFragment.compressedFile.getName());
                         String archiveCacheDirPath = compressedExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 CompressedHelper.SEPARATOR + fileName;
 

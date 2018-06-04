@@ -1,3 +1,24 @@
+/*
+ * RecyclerAdapter.java
+ *
+ * Copyright © 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
@@ -881,7 +902,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             if (description.endsWith(".zip") || description.endsWith(".jar")
                     || description.endsWith(".apk") || description.endsWith(".rar")
-                    || description.endsWith(".tar") || description.endsWith(".tar.gz"))
+                    || description.endsWith(".tar") || description.endsWith(".tar.gz")
+                    || description.endsWith(".7z")
+                    || description.endsWith(".tar.bz2")
+                    || description.endsWith(".tar.xz")
+                    || description.endsWith(".tar.lzma"))
                 popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
