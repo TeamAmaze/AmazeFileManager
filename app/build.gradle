@@ -123,7 +123,7 @@ dependencies {
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-android
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
