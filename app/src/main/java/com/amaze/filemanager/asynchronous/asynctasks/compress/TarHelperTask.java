@@ -39,6 +39,8 @@ public class TarHelperTask extends CompressedHelperTask {
             TarArchiveEntry entry;
             while ((entry = tarInputStream.getNextTarEntry()) != null) {
                 String name = entry.getName();
+                if (!isEntryPathValid(name))
+                    continue;
                 if (name.endsWith(SEPARATOR)) name = name.substring(0, name.length() - 1);
 
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);

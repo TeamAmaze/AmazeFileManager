@@ -38,14 +38,16 @@ public class RarHelperTask extends CompressedHelperTask {
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
-            for (FileHeader header : zipfile.getFileHeaders()) {
-                String name = header.getFileNameString();//This uses \ as separator, not /
+            for (FileHeader rarArchive : zipfile.getFileHeaders()) {
+                String name = rarArchive.getFileNameString();//This uses \ as separator, not /
+                if (!isEntryPathValid(name))
+                    continue;
                 boolean isInBaseDir = (relativeDirDiffSeparator == null || relativeDirDiffSeparator.equals("")) && !name.contains("\\");
                 boolean isInRelativeDir = relativeDirDiffSeparator != null && name.contains("\\")
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(header), 0, header.getDataSize(), header.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(rarArchive), 0, rarArchive.getDataSize(), rarArchive.isDirectory()));
                 }
             }
         } catch (RarException | IOException e) {
