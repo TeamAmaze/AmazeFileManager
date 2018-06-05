@@ -15,7 +15,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     private String permission;
     private String name;
     private String link = "";
-    private Integer hashCode;
 
     public HybridFileParcelable(String path) {
         super(OpenMode.FILE, path);
@@ -29,6 +28,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         this.isDirectory = isDirectory;
         this.path = path;
         this.permission = permission;
+
     }
 
     @Override
@@ -90,14 +90,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         this.permission = permission;
     }
 
-    public Integer getHashCode() {
-        return hashCode;
-    }
-
-    public void setHashCode(Integer hashCode) {
-        this.hashCode = hashCode;
-    }
-
     protected HybridFileParcelable(Parcel in) {
         super(OpenMode.getOpenMode(in.readInt()), in.readString());
         permission = in.readString();
@@ -105,7 +97,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         date = in.readLong();
         size = in.readLong();
         isDirectory = in.readByte() != 0;
-        hashCode = in.readInt();
+
     }
 
     public static final Creator<HybridFileParcelable> CREATOR = new Creator<HybridFileParcelable>() {
@@ -134,6 +126,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         dest.writeLong(date);
         dest.writeLong(size);
         dest.writeByte((byte) (isDirectory ? 1 : 0));
-        if (hashCode != null) dest.writeInt(hashCode);
+
     }
 }

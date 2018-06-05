@@ -18,7 +18,6 @@ import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import com.amaze.filemanager.utils.DataUtils;
@@ -29,8 +28,6 @@ import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
-import com.cloudrail.si.types.ImageMetaData;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;

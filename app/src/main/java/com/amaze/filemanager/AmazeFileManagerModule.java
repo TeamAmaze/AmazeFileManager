@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
-import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.glide.apkimage.ApkImageModelLoaderFactory;
 import com.amaze.filemanager.utils.glide.CloudIconModelFactory;
 import com.bumptech.glide.Glide;
@@ -20,6 +19,6 @@ public class AmazeFileManagerModule extends AppGlideModule {
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
         registry.prepend(String.class, Drawable.class, new ApkImageModelLoaderFactory(context.getPackageManager()));
-        registry.prepend(IconDataParcelable.class, Bitmap.class, new CloudIconModelFactory(context));
+        registry.prepend(String.class, Bitmap.class, new CloudIconModelFactory(context));
     }
 }
