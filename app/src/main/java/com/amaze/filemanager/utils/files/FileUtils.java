@@ -211,25 +211,26 @@ public class FileUtils {
         }
     }
 
-    public static void scanFile(String path, Context c) {
-        System.out.println(path + " " + Build.VERSION.SDK_INT);
-
-        Uri contentUri = Uri.fromFile(new File(path));
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
-        c.sendBroadcast(mediaScanIntent);
+    /**
+     * Calls {@link #scanFile(Uri, Context)} using {@link Uri}.
+     *
+     * @see {@link #scanFile(Uri, Context)}
+     * @param file File to scan
+     * @param c {@link Context}
+     */
+    public static void scanFile(@NonNull File file, @NonNull Context c){
+        scanFile(Uri.fromFile(file), c);
     }
 
     /**
-     * Starts a media scanner to let file system know changes done to files
+     * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
+     *
+     * @param uri File's {@link Uri}
+     * @param c {@link Context}
      */
-    public static void scanFile(final Context context, final MediaScannerConnection mediaScannerConnection, final String[] paths) {
-
-        Log.d("SCAN started", paths[0]);
-
-        AppConfig.runInBackground(() -> {
-                mediaScannerConnection.connect();
-                MediaScannerConnection.scanFile(context, paths, null, null);
-        });
+    public static void scanFile(@NonNull Uri uri, @NonNull Context c){
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        c.sendBroadcast(mediaScanIntent);
     }
 
     public static void crossfade(View buttons,final View pathbar) {

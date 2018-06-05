@@ -152,7 +152,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
                 }
             } catch (Exception e) {
                 for (HybridFileParcelable f : files) {
-                    FileUtils.scanFile(f.getPath(), cd);
+                    FileUtils.scanFile(f.getFile(), cd);
                 }
             }
         }
