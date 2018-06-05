@@ -1196,9 +1196,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         cryptHandler.close();
         
         SshConnectionPool.getInstance().expungeAllConnections();
-
-        /*if (mainFragment!=null)
-            mainFragment = null;*/
     }
 
     /**

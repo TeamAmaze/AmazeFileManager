@@ -51,7 +51,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
         checkImageView = view.findViewById(R.id.check_icon);
         genericIcon = view.findViewById(R.id.generic_icon);
         checkImageViewGrid = view.findViewById(R.id.check_icon_grid);
-        iconLayout = view.findViewById(R.id.icon_frame);
+        iconLayout = view.findViewById(R.id.icon_frame_grid);
     }
 
 }
