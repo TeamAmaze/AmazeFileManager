@@ -244,7 +244,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     public static final String ARGS_INTENT_ACTION_VIEW_MIME_FOLDER = "resource/folder";
 
     private static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
-    private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/oauth2redirect";
+    private static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/auth";
 
     // the current visible tab, either 0 or 1
     public static int currentTab;
