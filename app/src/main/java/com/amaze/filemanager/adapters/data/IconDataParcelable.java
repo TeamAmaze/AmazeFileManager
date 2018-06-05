@@ -69,7 +69,7 @@ public class IconDataParcelable implements Parcelable {
         parcel.writeInt(image);
         parcel.writeInt(loadingImage);
         parcel.writeInt(isImageBroken? 1:0);
-        if (hashCode != null && type == IMAGE_FROMCLOUD) parcel.writeInt(hashCode);
+        if (hashCode != null) parcel.writeInt(hashCode);
     }
 
     public IconDataParcelable(Parcel im) {
@@ -78,7 +78,7 @@ public class IconDataParcelable implements Parcelable {
         image = im.readInt();
         loadingImage = im.readInt();
         isImageBroken = im.readInt() == 1;
-        if (type == IMAGE_FROMCLOUD) hashCode = im.readInt();
+        hashCode = im.readInt();
     }
 
     public static final Parcelable.Creator<IconDataParcelable> CREATOR =
