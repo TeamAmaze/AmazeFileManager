@@ -251,7 +251,7 @@ inestable\'l preséu.\\n¿Siguir?</string>
   <string name="grant">Conceder</string>
   <string name="grantper">Conceder permisu</string>
   <string name="grantfailed">Nun se concedió\'l permisu</string>
-  <string name="granttext">L\'aplicación precisa\'l permisu d\'almacenamientu pa continuar. Encaboxar esti diálogu fadrá colar l\'aplicación.</string>
+  <string name="grant_storage_permission">L\'aplicación precisa\'l permisu d\'almacenamientu pa continuar. Encaboxar esti diálogu fadrá colar l\'aplicación.</string>
   <string name="operationunsuccesful">La operación nun tuvo ésitu</string>
   <string name="creatingfile">Creando\'l ficheru</string>
   <string name="creatingfolder">Creando carpeta</string>

@@ -37,6 +37,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.view.View;
@@ -162,8 +163,11 @@ public class GeneralDialogCreation {
 
         MaterialDialog dialog = builder.show();
 
-        new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
+        WarnableTextInputValidator textInputValidator = new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
                 dialog.getActionButton(DialogAction.POSITIVE), validator);
+
+        if(!TextUtils.isEmpty(prefill))
+            textInputValidator.afterTextChanged(textfield.getText());
 
         return dialog;
     }
@@ -821,7 +825,7 @@ public class GeneralDialogCreation {
         b.build().show();
     }
 
-    public static void showPackageDialog(final SharedPreferences sharedPrefs, final File f, final MainActivity m) {
+    public static void showPackageDialog(final File f, final MainActivity m) {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.packageinstaller).content(R.string.pitext)
@@ -831,10 +835,7 @@ public class GeneralDialogCreation {
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
-                .onPositive((dialog, which) -> {
-                    boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(f, m, false, useNewStack);
-                })
+                .onPositive((dialog, which) -> FileUtils.installApk(f, m))
                 .onNegative((dialog, which) -> m.openZip(f.getPath()))
                 .theme(m.getAppTheme().getMaterialDialogTheme())
                 .build()

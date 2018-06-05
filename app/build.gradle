@@ -80,8 +80,9 @@ dependencies {
 
     //For tests
     androidTestImplementation 'junit:junit:4.12'//tests the app logic
-    testImplementation "org.robolectric:robolectric:3.6.1"//tests android interaction
-    testImplementation "org.robolectric:shadows-multidex:3.6.1"//tests android interaction
+    testImplementation "org.robolectric:robolectric:3.7"//tests android interaction
+    testImplementation "org.robolectric:shadows-multidex:3.7"//tests android interaction
+    testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'

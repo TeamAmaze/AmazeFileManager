@@ -262,7 +262,7 @@
   <string name="grant">Megadás</string>
   <string name="grantper">Engedély megadása</string>
   <string name="grantfailed">Az engedély nincs megadva</string>
-  <string name="granttext">Tárolási engedélyre van szüksége az alkalmazásnak a folytatáshoz. A párbeszédpanel megszakításakor az alkalmazás kilép.</string>
+  <string name="grant_storage_permission">Tárolási engedélyre van szüksége az alkalmazásnak a folytatáshoz. A párbeszédpanel megszakításakor az alkalmazás kilép.</string>
   <string name="operationunsuccesful">A művelet sikertelen volt</string>
   <string name="creatingfile">Fájl létrehozása</string>
   <string name="creatingfolder">Mappa létrehozása</string>
