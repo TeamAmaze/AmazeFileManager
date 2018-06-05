@@ -46,6 +46,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.KeyPair;
 import java.util.List;
 
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
@@ -262,5 +263,13 @@ public abstract class SshClientUtils
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    //Decide the SSH URL depends on password/selected KeyPair
+    public static String deriveSftpPathFrom(String hostname, int port, String username, String password,
+                                      KeyPair selectedParsedKeyPair) {
+        return (selectedParsedKeyPair != null || password == null) ?
+                String.format("ssh://%s@%s:%d", username, hostname, port) :
+                String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
     }
 }

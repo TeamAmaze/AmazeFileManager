@@ -82,6 +82,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -1015,25 +1016,24 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 if (ma.IS_LIST) {
                     if (pathLayout == DataUtils.LIST) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.LIST,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
-
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addGridView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.GRID,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
                 } else {
                     if (pathLayout == DataUtils.GRID) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeGridViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.GRID,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
 
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addListView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.LIST,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
                 }
@@ -1681,9 +1681,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                AppConfig.runInBackground(() -> {
-                    utilsHandler.addSmb(name, encryptedPath);
-                });
+                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, encryptedPath, name));
+
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
                 if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
@@ -1716,7 +1715,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             dataUtils.removeServer(i);
 
             AppConfig.runInBackground(() -> {
-                utilsHandler.removeSmbPath(name, path);
+                utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.SMB, name,
+                        path));
             });
             //grid.removePath(name, path, DataUtils.SMB);
             drawer.refreshDrawer();
@@ -1726,33 +1726,34 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.addHidden(path);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
     }
 
     @Override
     public void onHiddenFileRemoved(String path) {
-        utilsHandler.removeHiddenPath(path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
     }
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.addHistory(path);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HISTORY, path));
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        utilsHandler.addBookmark(path[0], path[1]);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS, path[0], path[1]));
         if (refreshdrawer) drawer.refreshDrawer();
     }
 
     @Override
     public void onHistoryCleared() {
-        utilsHandler.clearHistoryTable();
+        utilsHandler.clearTable(UtilsHandler.Operation.HISTORY);
     }
 
     @Override
     public void delete(String title, String path) {
-        utilsHandler.removeBookmarksPath(title, path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS, title,
+                path));
         drawer.refreshDrawer();
 
     }
