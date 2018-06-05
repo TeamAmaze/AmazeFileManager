@@ -41,6 +41,7 @@ import com.amaze.filemanager.utils.cloud.CloudStreamer;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.File;
@@ -262,5 +263,19 @@ public abstract class SshClientUtils
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    /**
+     * Calculates {@link RemoteResourceInfo} hash code.
+     *
+     * @param remoteResourceInfo {@link RemoteResourceInfo} instance
+     * @return hash code calculated from path, name, is directory or not, and its size
+     */
+    public static int hashCode(@NonNull RemoteResourceInfo remoteResourceInfo){
+        int result = remoteResourceInfo.getPath().hashCode();
+        result = 37 * result + remoteResourceInfo.getName().hashCode();
+        result = 37 * result + (remoteResourceInfo.isDirectory() ? 1 : 0);
+        result = 37 * result + (int)(remoteResourceInfo.getAttributes().getSize() ^ (remoteResourceInfo.getAttributes().getSize() >>> 32));
+        return result;
     }
 }
