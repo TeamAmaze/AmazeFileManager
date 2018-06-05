@@ -77,7 +77,6 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.checkStorage = false;
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);

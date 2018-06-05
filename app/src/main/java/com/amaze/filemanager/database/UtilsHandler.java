@@ -10,8 +10,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -116,7 +118,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    private enum Operation {
+    public enum Operation {
         HISTORY,
         HIDDEN,
         LIST,
@@ -124,6 +126,53 @@ public class UtilsHandler extends SQLiteOpenHelper {
         BOOKMARKS,
         SMB,
         SFTP
+    }
+
+    public void saveToDatabase(OperationData operationData) {
+        AppConfig.runInBackground(() -> {
+            switch (operationData.type) {
+                case HIDDEN:
+                case HISTORY:
+                case LIST:
+                case GRID:
+                    setPath(operationData.type, operationData.path);
+                    break;
+                case BOOKMARKS:
+                case SMB:
+                    setPath(operationData.type, operationData.name, operationData.path);
+                    break;
+                case SFTP:
+                    addSsh(operationData.name, operationData.path, operationData.hostKey,
+                            operationData.sshKeyName, operationData.sshKey);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
+            }
+        });
+    }
+
+    public void removeFromDatabase(OperationData operationData) {
+        AppConfig.runInBackground(() -> {
+            switch (operationData.type) {
+                case HIDDEN:
+                case HISTORY:
+                case LIST:
+                case GRID:
+                    removePath(operationData.type, operationData.path);
+                    break;
+                case BOOKMARKS:
+                    removeBookmarksPath(operationData.name, operationData.path);
+                    break;
+                case SMB:
+                    removeSmbPath(operationData.name, operationData.path);
+                    break;
+                case SFTP:
+                    removeSftpPath(operationData.name, operationData.path);
+                    break;
+                default:
+                    throw new IllegalStateException("Unidentified operation!");
+            }
+        });
     }
 
     public void addCommonBookmarks() {
@@ -138,33 +187,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
         };
 
         for (String dir : dirs) {
-
-            addBookmark(new File(dir).getName(), dir);
+            saveToDatabase(new OperationData(Operation.BOOKMARKS, new File(dir).getName(), dir));
         }
-    }
-
-    public void addHistory(String path) {
-        setPath(Operation.HISTORY, path);
-    }
-
-    public void addHidden(String path) {
-        setPath(Operation.HIDDEN, path);
-    }
-
-    public void addListView(String path) {
-        setPath(Operation.LIST, path);
-    }
-
-    public void addGridView(String path) {
-        setPath(Operation.GRID, path);
-    }
-
-    public void addBookmark(String name, String path) {
-        setPath(Operation.BOOKMARKS, name, path);
-    }
-
-    public void addSmb(String name, String path) {
-        setPath(Operation.SMB, name, path);
     }
 
     public void addSsh(String name, String path, String hostKey, String sshKeyName, String sshKey) {
@@ -381,23 +405,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void removeHistoryPath(String path) {
-        removePath(Operation.HISTORY, path);
-    }
-
-    public void removeHiddenPath(String path) {
-        removePath(Operation.HIDDEN, path);
-    }
-
-    public void removeListViewPath(String path) {
-        removePath(Operation.LIST, path);
-    }
-
-    public void removeGridViewPath(String path) {
-        removePath(Operation.GRID, path);
-    }
-
-    public void removeBookmarksPath(String name, String path) {
+    private void removeBookmarksPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -410,7 +418,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
      * @param path the path we get from saved runtime variables is a decrypted, to remove entry,
      *             we must encrypt it's password fiend first first
      */
-    public void removeSmbPath(String name, String path) {
+    private void removeSmbPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -431,7 +439,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void removeSftpPath(String name, String path) {
+    private void removeSftpPath(String name, String path) {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
@@ -454,32 +462,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
                     new String[] {name});
         }
     }
-
-    public void clearHistoryTable() {
-        clearTable(Operation.HISTORY);
-    }
-
-    public void clearHiddenTable() {
-        clearTable(Operation.HIDDEN);
-    }
-
-    public void clearListViewTable() {
-        clearTable(Operation.LIST);
-    }
-
-    public void clearGridViewTable() {
-        clearTable(Operation.GRID);
-    }
-
-    public void clearBookmarksTable() {
-        clearTable(Operation.BOOKMARKS);
-    }
-
-    public void clearSmbTable() {
-        clearTable(Operation.SMB);
-    }
-
-    public void clearSshTable() { clearTable(Operation.SFTP); }
 
     public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
         renamePath(Operation.BOOKMARKS, oldName, oldPath, newName, newPath);
@@ -537,7 +519,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 new String[] {path});
     }
 
-    private void clearTable(Operation table) {
+    public void clearTable(Operation table) {
         getWritableDatabase().delete(getTableForOperation(table), null, null);
     }
 

@@ -263,7 +263,7 @@
   <string name="grant">Предоставление</string>
   <string name="grantper">Предоставление разрешения</string>
   <string name="grantfailed"> Разрешение не предоставляется</string>
-  <string name="granttext">Приложению требуется разрешение хранения для продолжения. Закрытие этого диалога завершит приложение.</string>
+  <string name="grant_storage_permission">Приложению требуется разрешение хранения для продолжения. Закрытие этого диалога завершит приложение.</string>
   <string name="operationunsuccesful">Операция безуспешна</string>
   <string name="creatingfile">Создание файла</string>
   <string name="creatingfolder">Создание папки</string>

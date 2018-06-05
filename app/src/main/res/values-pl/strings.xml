@@ -258,7 +258,7 @@
   <string name="grant">Przyznaj</string>
   <string name="grantper">Przyznaj uprawnienia</string>
   <string name="grantfailed">Nie przyznano uprawnień</string>
-  <string name="granttext">Aplikacja potrzebuje uprawnień do pamięci, by kontynuować. Anulowanie tego okna dialogowego spowoduje zamknięcie aplikacji.</string>
+  <string name="grant_storage_permission">Aplikacja potrzebuje uprawnień do pamięci, by kontynuować. Anulowanie tego okna dialogowego spowoduje zamknięcie aplikacji.</string>
   <string name="operationunsuccesful">Nieudana operacja</string>
   <string name="creatingfile">Tworzenie pliku</string>
   <string name="creatingfolder">Tworzenie katalogu</string>

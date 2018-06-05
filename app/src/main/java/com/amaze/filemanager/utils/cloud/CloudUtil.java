@@ -2,28 +2,45 @@ package com.amaze.filemanager.utils.cloud;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.provider.DocumentFile;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 
+import net.schmizz.sshj.sftp.RemoteFile;
+import net.schmizz.sshj.sftp.SFTPClient;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import jcifs.smb.SmbFile;
 
 /**
  * Created by vishal on 19/4/17.
@@ -229,5 +246,87 @@ public class CloudUtil {
                 }
             }
         }.execute(path);
+    }
+
+    /**
+     * Get an input stream for thumbnail for a given {@link IconDataParcelable}
+     * @param context
+     * @param path
+     * @return
+     */
+    public static InputStream getThumbnailInputStreamForCloud(Context context, String path) {
+        InputStream inputStream;
+        HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, path);
+        hybridFile.generateMode(context);
+        DataUtils dataUtils = DataUtils.getInstance();
+
+        switch (hybridFile.getMode()) {
+            case SFTP:
+                inputStream = SshClientUtils.execute(new SFtpClientTemplate(hybridFile.getPath(), false) {
+                    @Override
+                    public InputStream execute(final SFTPClient client) throws IOException {
+                        final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(hybridFile.getPath()));
+                        return rf. new RemoteFileInputStream(){
+                            @Override
+                            public void close() throws IOException {
+                                try
+                                {
+                                    super.close();
+                                }
+                                finally
+                                {
+                                    rf.close();
+                                    client.close();
+                                }
+                            }
+                        };
+                    }
+                });
+                break;
+            case SMB:
+                try {
+                    inputStream = new SmbFile(hybridFile.getPath()).getInputStream();
+                } catch (IOException e) {
+                    inputStream = null;
+                    e.printStackTrace();
+                }
+                break;
+            case OTG:
+                ContentResolver contentResolver = context.getContentResolver();
+                DocumentFile documentSourceFile = OTGUtil.getDocumentFile(hybridFile.getPath(),
+                        context, false);
+                try {
+                    inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    inputStream = null;
+                }
+                break;
+            case DROPBOX:
+                CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                inputStream = cloudStorageDropbox.getThumbnail(CloudUtil.stripPath(OpenMode.DROPBOX, hybridFile.getPath()));
+                break;
+            case BOX:
+                CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                inputStream = cloudStorageBox.getThumbnail(CloudUtil.stripPath(OpenMode.BOX, hybridFile.getPath()));
+                break;
+            case GDRIVE:
+                CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                inputStream = cloudStorageGDrive.getThumbnail(CloudUtil.stripPath(OpenMode.GDRIVE, hybridFile.getPath()));
+                break;
+            case ONEDRIVE:
+                CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
+                inputStream = cloudStorageOneDrive.getThumbnail(CloudUtil.stripPath(OpenMode.ONEDRIVE, hybridFile.getPath()));
+                break;
+            default:
+                try {
+                    inputStream = new FileInputStream(hybridFile.getPath());
+                } catch (FileNotFoundException e) {
+                    inputStream = null;
+                    e.printStackTrace();
+                }
+                break;
+        }
+        return inputStream;
     }
 }

@@ -1253,15 +1253,14 @@ public class HybridFile {
                 if (isDirectory()) {
 
                     layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
-                            "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", showThumbs);
+                            "", folderSize() + "", 0, true, file.lastModified() + "",
+                            false, showThumbs, mode);
                 } else {
                     layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
-                            file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", showThumbs);
+                            file.getPath(), file.length() + "", file.length(), false, file.lastModified() + "",
+                            false, showThumbs, mode);
                 }
-                layoutElement.setMode(mode);
                 return layoutElement;
             default:
                 return null;

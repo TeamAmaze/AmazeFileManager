@@ -51,17 +51,41 @@ public class LayoutElementParcelable implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
+    public LayoutElementParcelable(String path, String permissions, String symlink,
+                                   String size, long longSize,boolean header, String date,
+                                   boolean isDirectory, boolean useThumbs, OpenMode openMode) {
+        this(new File(path).getName(), path, permissions, symlink, size, longSize, header,
+                date, isDirectory, useThumbs, openMode);
+
+    }
+
+
     public LayoutElementParcelable(String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
-                                   String date, boolean isDirectory, boolean useThumbs) {
+                                   String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         filetype = Icons.getTypeOfFile(path, isDirectory);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
-
+        this.mode = openMode;
         if(useThumbs) {
-            if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
-            } else {
-                this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+            switch (mode) {
+                case SMB:
+                case SFTP:
+                case DROPBOX:
+                case GDRIVE:
+                case ONEDRIVE:
+                case BOX:
+                    if (!isDirectory && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+                    } else {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+                    }
+                    break;
+                default:
+                    if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_FROMFILE, path, fallbackIcon);
+                    } else {
+                        this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+                    }
             }
         } else {
             this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
@@ -82,13 +106,6 @@ public class LayoutElementParcelable implements Parcelable {
             this.date = 0;
             this.date1 = "";
         }
-    }
-
-    public LayoutElementParcelable(String path, String permissions, String symlink,
-                                   String size, long longSize, boolean isDirectory, boolean header,
-                                   String date, boolean useThumbs) {
-        this(new File(path).getName(), path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs);
-
     }
 
     public OpenMode getMode() {

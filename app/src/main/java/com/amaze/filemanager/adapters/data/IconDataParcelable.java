@@ -4,6 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+
+import java.io.InputStream;
+
 /**
  * Saves data on what should be loaded as an icon for LayoutElementParcelable
  *
@@ -12,7 +16,7 @@ import android.support.annotation.DrawableRes;
  */
 public class IconDataParcelable implements Parcelable {
 
-    public static final int IMAGE_RES = 0, IMAGE_FROMFILE = 1;
+    public static final int IMAGE_RES = 0, IMAGE_FROMFILE = 1, IMAGE_FROMCLOUD = 2;
 
     public final int type;
     public final String path;

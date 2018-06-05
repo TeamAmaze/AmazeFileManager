@@ -257,7 +257,7 @@
   <string name="grant">Myönnä</string>
   <string name="grantper">Anna lupa</string>
   <string name="grantfailed">Oikeuksia ei myönnetty</string>
-  <string name="granttext">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
+  <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
   <string name="operationunsuccesful">Toiminto ei onnistunut</string>
   <string name="creatingfile">Luodaan tiedosto</string>
   <string name="creatingfolder">Luodaan kansio</string>

@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.ssh;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.amaze.filemanager.activities.MainActivity;
@@ -89,7 +90,7 @@ public class SshConnectionPool
      * @return {@link SSHClient} connection, already opened and authenticated
      * @throws IOException IOExceptions that occur during connection setup
      */
-    public SSHClient getConnection(@NonNull String url) throws IOException {
+    public SSHClient getConnection(@NonNull String url)  {
         url = SshClientUtils.extractBaseUriFrom(url);
 
         SSHClient client = connections.get(url);
@@ -103,6 +104,47 @@ public class SshConnectionPool
                 expire(client);
                 connections.remove(url);
                 client = create(url);
+                if(client != null)
+                    connections.put(url, client);
+            }
+        }
+        return client;
+    }
+
+    /**
+     * Obtain a {@link SSHClient} connection from the underlying connection pool.
+     *
+     * Beneath it will return the connection if it exists; otherwise it will create a new one and
+     * put it into the connection pool.
+     *
+     * Different from {@link #getConnection(String)} above, this accepts broken down parameters as
+     * convenience method during setting up SCP/SFTP connection.
+     *
+     * @param host host name/IP, required
+     * @param port SSH server port, required
+     * @param hostFingerprint expected host fingerprint, required
+     * @param username username, required
+     * @param password password, required if using password to authenticate
+     * @param keyPair {@link KeyPair}, required if using key-based authentication
+     * @return {@link SSHClient} connection
+     */
+    public SSHClient getConnection(@NonNull String host, int port, @NonNull String hostFingerprint,
+                                   @NonNull String username, @Nullable String password,
+                                   @Nullable KeyPair keyPair) {
+
+        String url = SshClientUtils.deriveSftpPathFrom(host, port, username, password, keyPair);
+
+        SSHClient client = connections.get(url);
+        if(client == null) {
+            client = create(host, port, hostFingerprint, username, password, keyPair);
+            if(client != null)
+                connections.put(url, client);
+        } else {
+            if(!validate(client)) {
+                Log.d(TAG, "Connection no longer usable. Reconnecting...");
+                expire(client);
+                connections.remove(url);
+                client = create(host, port, hostFingerprint, username, password, keyPair);
                 if(client != null)
                     connections.put(url, client);
             }
@@ -127,7 +169,7 @@ public class SshConnectionPool
         });
     }
 
-    private SSHClient create(@NonNull String url) throws IOException {
+    private SSHClient create(@NonNull String url) {
         return create(Uri.parse(url));
     }
 
@@ -145,22 +187,35 @@ public class SshConnectionPool
             port = SSH_DEFAULT_PORT;
 
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-        try {
-            String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
-            AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);
-            if(pem != null && !"".equals(pem)) {
+        String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
+
+        AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);;
+        if(pem != null && !pem.isEmpty()) {
+            try {
                 CountDownLatch latch = new CountDownLatch(1);
                 new PemToKeyPairTask(pem, result -> {
-                    if(result.result != null){
+                    if (result.result != null) {
                         keyPair.set(result.result);
                         latch.countDown();
                     }
                 }).execute();
                 latch.await();
+            } catch(InterruptedException e) {
+                throw new RuntimeException(e);
             }
+        }
+
+        return create(host, port, utilsHandler.getSshHostKey(uri.toString()), username, password,
+                keyPair.get());
+    }
+
+    private SSHClient create(@NonNull String host, int port, @NonNull String hostKey,
+                             @NonNull String username, @Nullable String password,
+                             @Nullable KeyPair keyPair) {
+
+        try {
             AsyncTaskResult<SSHClient> taskResult = new SshAuthenticationTask(host, port,
-                    utilsHandler.getSshHostKey(uri.toString()),
-                    username, password, keyPair.get()).execute().get();
+                    hostKey, username, password, keyPair).execute().get();
 
             SSHClient client = taskResult.result;
             return client;
