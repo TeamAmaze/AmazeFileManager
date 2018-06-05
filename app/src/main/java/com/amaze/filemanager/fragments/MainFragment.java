@@ -803,7 +803,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             mediaScannerConnection = new MediaScannerConnection(context, mediaScannerConnectionClient);
                             //FileUtils.scanFile(context, mediaScannerConnection, path);
                         } else {
-                            FileUtils.scanFile(arg, context);
+                            FileUtils.scanFile(new File(arg), context);
                         }
                     }
                     //break;
@@ -1546,7 +1546,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void hide(String path) {
 
         dataUtils.addHiddenFile(path);
-        if (new File(path).isDirectory()) {
+        File file = new File(path);
+        if (file.isDirectory()) {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
@@ -1555,7 +1556,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     e.printStackTrace();
                 }
             }
-            FileUtils.scanFile(path, getActivity());
+            FileUtils.scanFile(file, getActivity());
         }
 
     }
