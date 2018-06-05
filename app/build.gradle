@@ -84,6 +84,8 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
 
+    testImplementation "org.apache.sshd:sshd-core:1.7.0"
+
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3'
@@ -112,7 +114,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
