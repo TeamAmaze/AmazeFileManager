@@ -263,7 +263,7 @@
   <string name="grant">授予</string>
   <string name="grantper">授予權限</string>
   <string name="grantfailed">未授予權限</string>
-  <string name="granttext">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
+  <string name="grant_storage_permission">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
   <string name="operationunsuccesful">操作失敗</string>
   <string name="creatingfile">建立檔案</string>
   <string name="creatingfolder">正在建立資料夾</string>
@@ -575,7 +575,7 @@
   <string name="create_file_suggest_txt_extension">建議以 \".txt\"作為檔案擴展名稱。</string>
   <string name="compress_file_suggest_zip_extension">建議以 \".zip\"作為檔案擴展名稱。</string>
   <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
-    <string name="got_it">明白！</string>
+  <string name="got_it">明白！</string>
   <string name="password_no_match">密碼不符。</string>
   <string name="password_repeat">重複密碼</string>
   <string name="no_obtainable_info">沒有關於此檔案的資料</string>
@@ -589,11 +589,12 @@
   <string name="reopen_from_source">請嘗試用原程式開啟此檔案。</string>
   <string name="encryption_fail_copy">不能更新在資料庫內的加密檔案記錄。</string>
   <string name="ssh_key_invalid_passphrase">私鑰密碼錯誤。</string>
-    <string name="cannot_overwrite">不能覆蓋原有檔案。</string>
+  <string name="cannot_overwrite">不能覆蓋原有檔案。</string>
   <string name="encrypt_file_must_end_with_aze">加密檔案必須以 .aze為檔案擴展名稱。</string>
   <string name="encrypt_file_save_as">儲存加密檔案為……</string>
   <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
   <string name="filename">檔案名稱</string>
   <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
   <string name="saved_multi_files">儲存了 %d個檔案。</string>
+  <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
 </resources>

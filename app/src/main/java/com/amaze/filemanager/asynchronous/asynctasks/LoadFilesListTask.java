@@ -111,7 +111,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
                 try {
                     SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
-                    list = ma.addToSmb(smbFile, path);
+                    list = ma.addToSmb(smbFile, path, showHiddenFiles);
                     openmode = OpenMode.SMB;
                 } catch (SmbAuthException e) {
                     if (!e.getMessage().toLowerCase().contains("denied")) {
@@ -231,11 +231,10 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 ma.file_count++;
             }
 
-            LayoutElementParcelable layoutElement = new LayoutElementParcelable(
+            LayoutElementParcelable layoutElement = new LayoutElementParcelable(baseFile.getName(),
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
-                    longSize, baseFile.isDirectory(), false, baseFile.getDate() + "",
-                    showThumbs);
-            layoutElement.setMode(baseFile.getMode());
+                    longSize, false, baseFile.getDate() + "", baseFile.isDirectory(),
+                    showThumbs, baseFile.getMode());
             return layoutElement;
         }
 

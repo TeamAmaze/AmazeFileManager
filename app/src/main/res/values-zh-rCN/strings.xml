@@ -262,7 +262,7 @@
   <string name="grant">授予</string>
   <string name="grantper">授予权限</string>
   <string name="grantfailed">权限未被授予</string>
-  <string name="granttext">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
+  <string name="grant_storage_permission">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
   <string name="operationunsuccesful">操作失败</string>
   <string name="creatingfile">正在创建文件</string>
   <string name="creatingfolder">正在创建文件夹</string>

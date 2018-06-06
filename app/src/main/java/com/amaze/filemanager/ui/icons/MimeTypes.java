@@ -39,6 +39,8 @@ package com.amaze.filemanager.ui.icons;
 
 import android.webkit.MimeTypeMap;
 
+import com.amaze.filemanager.utils.files.CryptUtil;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -112,6 +114,7 @@ public final class MimeTypes {
         MIME_TYPES.put("xif", "image/vnd.xiff");
         MIME_TYPES.put("pct", "image/x-pict");
         MIME_TYPES.put("pic", "image/x-pict");
+        MIME_TYPES.put("gif", "image/gif");
 
         MIME_TYPES.put("adp", "audio/adpcm");
         MIME_TYPES.put("au", "audio/basic");
@@ -133,6 +136,7 @@ public final class MimeTypes {
         MIME_TYPES.put("flv", "video/x-flv");
         MIME_TYPES.put("mkv", "video/x-matroska");
 
+        MIME_TYPES.put(CryptUtil.CRYPT_EXTENSION.replace(".", ""), "crypt/aze");
     }
 
 

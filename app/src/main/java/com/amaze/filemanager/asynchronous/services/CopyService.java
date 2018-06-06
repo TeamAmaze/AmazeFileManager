@@ -405,7 +405,7 @@ public class CopyService extends AbstractProgressiveService {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
                 }
-                FileUtils.scanFile(targetFile.getPath(), c);
+                FileUtils.scanFile(targetFile.getFile(), c);
             }
 
             private void copyFiles(final HybridFileParcelable sourceFile, final HybridFile targetFile,

@@ -19,9 +19,11 @@
 
 package com.amaze.filemanager.utils.files;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -39,6 +41,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
 import android.util.Log;
@@ -49,6 +52,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -207,25 +211,26 @@ public class FileUtils {
         }
     }
 
-    public static void scanFile(String path, Context c) {
-        System.out.println(path + " " + Build.VERSION.SDK_INT);
-
-        Uri contentUri = Uri.fromFile(new File(path));
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
-        c.sendBroadcast(mediaScanIntent);
+    /**
+     * Calls {@link #scanFile(Uri, Context)} using {@link Uri}.
+     *
+     * @see {@link #scanFile(Uri, Context)}
+     * @param file File to scan
+     * @param c {@link Context}
+     */
+    public static void scanFile(@NonNull File file, @NonNull Context c){
+        scanFile(Uri.fromFile(file), c);
     }
 
     /**
-     * Starts a media scanner to let file system know changes done to files
+     * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
+     *
+     * @param uri File's {@link Uri}
+     * @param c {@link Context}
      */
-    public static void scanFile(final Context context, final MediaScannerConnection mediaScannerConnection, final String[] paths) {
-
-        Log.d("SCAN started", paths[0]);
-
-        AppConfig.runInBackground(() -> {
-                mediaScannerConnection.connect();
-                MediaScannerConnection.scanFile(context, paths, null, null);
-        });
+    public static void scanFile(@NonNull Uri uri, @NonNull Context c){
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        c.sendBroadcast(mediaScanIntent);
     }
 
     public static void crossfade(View buttons,final View pathbar) {
@@ -357,6 +362,28 @@ public class FileUtils {
     public static float readableFileSizeFloat(long size) {
         if (size <= 0) return 0;
         return (float) (size / (1024*1024));
+    }
+
+    /**
+     * Install .apk file.
+     * @param permissionsActivity needed to ask for {@link Manifest.permission#REQUEST_INSTALL_PACKAGES} permission
+     */
+    public static void installApk(final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
+            permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
+        }
+
+        Intent chooserIntent = new Intent();
+        chooserIntent.setAction(Intent.ACTION_INSTALL_PACKAGE);
+        chooserIntent.setData(Uri.fromFile(f));
+
+        try {
+            permissionsActivity.startActivity(chooserIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(permissionsActivity, R.string.error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -693,7 +720,7 @@ public class FileUtils {
         final Toast[] studioCount = {null};
 
         if(f.getName().toLowerCase().endsWith(".apk")) {
-            GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
+            GeneralDialogCreation.showPackageDialog(f, m);
         } else if (defaultHandler && CompressedHelper.isFileExtractable(f.getPath())) {
             GeneralDialogCreation.showArchiveDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
