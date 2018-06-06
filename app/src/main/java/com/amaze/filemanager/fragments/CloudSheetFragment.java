@@ -30,8 +30,6 @@ import com.amaze.filemanager.utils.theme.AppTheme;
 public class CloudSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private View rootView;
-    private LinearLayout mSmbLayout, mScpLayout, mDropboxLayout, mBoxLayout, mGoogleDriveLayout, mOnedriveLayout
-            , mGetCloudLayout;
 
     public static final String TAG_FRAGMENT = "cloud_fragment";
 
@@ -54,33 +52,18 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
             rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
         }
 
-        mSmbLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_smb);
-        mScpLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_scp);
-        mBoxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_box);
-        mDropboxLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_dropbox);
-        mGoogleDriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_google_drive);
-        mOnedriveLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_onedrive);
-        mGetCloudLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_get_cloud);
+        CloudSheetFragmentFacade cloudSheetFragmentFacade = new CloudSheetFragmentFacade(rootView);
 
         if (isCloudProviderAvailable(getContext())) {
-
-            mBoxLayout.setVisibility(View.VISIBLE);
-            mDropboxLayout.setVisibility(View.VISIBLE);
-            mGoogleDriveLayout.setVisibility(View.VISIBLE);
-            mOnedriveLayout.setVisibility(View.VISIBLE);
-            mGetCloudLayout.setVisibility(View.GONE);
+            cloudSheetFragmentFacade.cloudSetVisibility();
         }
 
-        mSmbLayout.setOnClickListener(this);
-        mScpLayout.setOnClickListener(this);
-        mBoxLayout.setOnClickListener(this);
-        mDropboxLayout.setOnClickListener(this);
-        mGoogleDriveLayout.setOnClickListener(this);
-        mOnedriveLayout.setOnClickListener(this);
-        mGetCloudLayout.setOnClickListener(this);
+        cloudSheetFragmentFacade.cloudSetOnClickListener(this);
 
         dialog.setContentView(rootView);
     }
+
+
 
     /**
      * Determines whether cloud provider is installed or not
