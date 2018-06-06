@@ -41,10 +41,13 @@ public class AndroidSafFtpFile implements FtpFile {
 
     private final Context context;
 
+    private final String fileSystemRoot;
+
     private final DocumentFile backingDocumentFile;
 
-    public AndroidSafFtpFile(@NonNull Context context, @NonNull DocumentFile backingDocumentFile) {
+    public AndroidSafFtpFile(@NonNull Context context, @NonNull String fileSystemRoot, @NonNull DocumentFile backingDocumentFile) {
         this.context = context;
+        this.fileSystemRoot = fileSystemRoot;
         this.backingDocumentFile = backingDocumentFile;
     }
 
@@ -82,7 +85,8 @@ public class AndroidSafFtpFile implements FtpFile {
 
     @Override
     public String getAbsolutePath() {
-        return backingDocumentFile.getUri().getPath();
+        String retval = backingDocumentFile.getUri().getPath().substring(fileSystemRoot.length());
+        return "".equals(retval) ? "/" : retval;
     }
 
     @Override
@@ -197,7 +201,7 @@ public class AndroidSafFtpFile implements FtpFile {
         if(isDirectory()) {
             List<AndroidSafFtpFile> retval = new ArrayList<>();
             for (DocumentFile documentFile : backingDocumentFile.listFiles()) {
-                retval.add(new AndroidSafFtpFile(context, documentFile));
+                retval.add(new AndroidSafFtpFile(context, fileSystemRoot, documentFile));
             }
             return retval;
         } else {

@@ -88,6 +88,7 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public FtpFile getHomeDirectory() {
+        new Exception().printStackTrace();
         return createFtpFileFrom(fileSystemViewRoot);
     }
 
@@ -97,6 +98,6 @@ public class AndroidFileSystemView implements FileSystemView {
     }
 
     private FtpFile createFtpFileFrom(String fullPath){
-        return new AndroidSafFtpFile(context, DocumentFile.fromFile(new File(fullPath)));
+        return new AndroidSafFtpFile(context, fileSystemViewRoot, DocumentFile.fromFile(new File(fullPath)));
     }
 }
