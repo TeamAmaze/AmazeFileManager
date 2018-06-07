@@ -97,6 +97,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -691,7 +692,7 @@ public class GeneralDialogCreation {
         textInputLayoutEncryptSaveAs.setHint(intentParcelable.isDirectory() ?
                 c.getString(R.string.encrypt_folder_save_as) :
                 c.getString(R.string.encrypt_file_save_as));
-        
+
         passwordEditText.post(() -> {
             InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(passwordEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -934,7 +935,8 @@ public class GeneralDialogCreation {
         a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current,
                 (dialog, view, which, text) -> true);
-        final Set<String> onlyThisFloders = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
+        final Set<String> sortbyOnlyThis = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, Collections.emptySet());
+        final Set<String> onlyThisFloders = new HashSet<>(sortbyOnlyThis);
         boolean onlyThis = onlyThisFloders.contains(path);
         a.checkBoxPrompt(m.getResources().getString(R.string.sort_only_this),
                 onlyThis,
