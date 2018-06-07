@@ -22,6 +22,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import android.content.Context;
+
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -32,17 +34,20 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 
 public class TarHelperTask extends CompressedHelperTask {
 
+    private WeakReference<Context> context;
     private String filePath, relativePath;
 
-    public TarHelperTask(String filePath, String relativePath, boolean goBack,
+    public TarHelperTask(Context context, String filePath, String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
+        this.context = new WeakReference<>(context);
         this.filePath = filePath;
         this.relativePath = relativePath;
     }
@@ -56,8 +61,9 @@ public class TarHelperTask extends CompressedHelperTask {
             TarArchiveEntry entry;
             while ((entry = tarInputStream.getNextTarEntry()) != null) {
                 String name = entry.getName();
-                if (!isEntryPathValid(name))
+                if (!CompressedHelper.isEntryPathValid(name)) {
                     continue;
+                }
                 if (name.endsWith(SEPARATOR)) name = name.substring(0, name.length() - 1);
 
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);

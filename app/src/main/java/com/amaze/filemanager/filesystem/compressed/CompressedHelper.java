@@ -43,7 +43,7 @@ import java.io.File;
  *         on 23/11/2017, at 17:46.
  */
 
-public class CompressedHelper {
+public abstract class CompressedHelper {
 
     /**
      * Path separator used by all Decompressors and Extractors.
@@ -125,6 +125,10 @@ public class CompressedHelper {
         } else {
             return compressedName;
         }
+    }
+
+    public static final boolean isEntryPathValid(String entryPath){
+        return !entryPath.startsWith("..\\") && !entryPath.startsWith("../") && !entryPath.equals("..");
     }
 
     private static boolean isZip(String type) {

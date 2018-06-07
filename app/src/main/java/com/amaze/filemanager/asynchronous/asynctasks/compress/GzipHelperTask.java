@@ -22,9 +22,13 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import android.content.Context;
+
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -32,6 +36,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
@@ -39,11 +44,13 @@ import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPAR
 
 public class GzipHelperTask extends CompressedHelperTask {
 
+    private WeakReference<Context> context;
     private String filePath, relativePath;
 
-    public GzipHelperTask(String filePath, String relativePath, boolean goBack,
+    public GzipHelperTask(Context context, String filePath, String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
+        this.context = new WeakReference<>(context);
         this.filePath = filePath;
         this.relativePath = relativePath;
     }
@@ -58,8 +65,10 @@ public class GzipHelperTask extends CompressedHelperTask {
             TarArchiveEntry entry;
             while ((entry = tarInputStream.getNextTarEntry()) != null) {
                 String name = entry.getName();
-                if (!isEntryPathValid(name))
+                if (!CompressedHelper.isEntryPathValid(name)) {
+                    AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
                     continue;
+                }
                 if (name.endsWith(SEPARATOR)) name = name.substring(0, name.length() - 1);
 
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);

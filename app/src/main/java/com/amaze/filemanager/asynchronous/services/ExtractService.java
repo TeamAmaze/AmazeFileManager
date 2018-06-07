@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
- *                       Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * ExtractService.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt@gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -49,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -239,10 +242,15 @@ public class ExtractService extends AbstractProgressiveService {
             try {
                 if(entriesToExtract.length == 0) entriesToExtract = null;
 
-                Extractor extractor =
+                final Extractor extractor =
                         CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
                                 f, extractionPath, new Extractor.OnUpdate() {
                                     private int sourceFilesProcessed = 0;
+
+                                    @Override
+                                    public void onInvalidEntriesFoundBeforeStart(List<String> invalidArchiveEntries) {
+                                        AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
+                                    }
 
                                     @Override
                                     public void onStart(long totalBytes, String firstEntryName) {

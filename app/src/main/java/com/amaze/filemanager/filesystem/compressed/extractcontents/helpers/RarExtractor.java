@@ -55,11 +55,19 @@ public class RarExtractor extends Extractor {
 
             // iterating archive elements to find file names that are to be extracted
             for (FileHeader header : rarFile.getFileHeaders()) {
-                if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
-                    // header to be extracted is at least the entry path (may be more, when it is a directory)
-                    arrayList.add(header);
-                    totalBytes += header.getFullUnpackSize();
+                if(CompressedHelper.isEntryPathValid(header.getFileNameString())) {
+                    if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
+                        // header to be extracted is at least the entry path (may be more, when it is a directory)
+                        arrayList.add(header);
+                        totalBytes += header.getFullUnpackSize();
+                    }
+                } else {
+                    invalidArchiveEntries.add(header.getFileNameString());
                 }
+            }
+
+            if(invalidArchiveEntries.size() > 0) {
+                listener.onInvalidEntriesFoundBeforeStart(invalidArchiveEntries);
             }
 
             listener.onStart(totalBytes, arrayList.get(0).getFileNameString());

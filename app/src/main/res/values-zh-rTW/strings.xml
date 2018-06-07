@@ -598,4 +598,5 @@
   <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
   <string name="saved_multi_files">儲存了 %d個檔案。</string>
   <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
+  <string name="multiple_invalid_archive_entries">壓縮檔內找到解壓路徑有問題的檔案，它們將不會被解壓、也不能在檢視壓縮檔時看到。此壓縮檔的來源可能有問題。</string>
 </resources>

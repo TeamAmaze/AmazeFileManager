@@ -22,6 +22,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import android.content.Context;
+
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
@@ -32,10 +34,12 @@ import com.github.junrar.rarfile.FileHeader;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class RarHelperTask extends CompressedHelperTask {
 
+    private WeakReference<Context> context;
     private String fileLocation;
     private String relativeDirectory;
 
@@ -44,9 +48,10 @@ public class RarHelperTask extends CompressedHelperTask {
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
+    public RarHelperTask(Context context, String realFileDirectory, String dir, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
+        this.context = new WeakReference<>(context);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
     }
@@ -59,8 +64,9 @@ public class RarHelperTask extends CompressedHelperTask {
 
             for (FileHeader rarArchive : zipfile.getFileHeaders()) {
                 String name = rarArchive.getFileNameString();//This uses \ as separator, not /
-                if (!isEntryPathValid(name))
+                if (!CompressedHelper.isEntryPathValid(name)) {
                     continue;
+                }
                 boolean isInBaseDir = (relativeDirDiffSeparator == null || relativeDirDiffSeparator.equals("")) && !name.contains("\\");
                 boolean isInRelativeDir = relativeDirDiffSeparator != null && name.contains("\\")
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);

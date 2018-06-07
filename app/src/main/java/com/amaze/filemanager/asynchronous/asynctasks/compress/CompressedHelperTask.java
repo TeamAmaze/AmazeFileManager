@@ -35,8 +35,7 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
     private boolean createBackItem;
     private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
 
-    CompressedHelperTask(boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+    CompressedHelperTask(boolean goBack, OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         createBackItem = goBack;
         onFinish = l;
     }
@@ -57,10 +56,6 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
     protected final void onPostExecute(ArrayList<CompressedObjectParcelable> zipEntries) {
         super.onPostExecute(zipEntries);
         onFinish.onAsyncTaskFinished(zipEntries);
-    }
-
-    protected final boolean isEntryPathValid(String entryPath){
-        return !entryPath.startsWith("..\\") && !entryPath.startsWith("../") && !entryPath.equals("..");
     }
 
     abstract void addElements(ArrayList<CompressedObjectParcelable> elements);

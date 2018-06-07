@@ -31,16 +31,19 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarEx
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class Extractor {
 
     protected Context context;
     protected String filePath, outputPath;
     protected OnUpdate listener;
+    protected List<String> invalidArchiveEntries;
 
     public Extractor(Context context, String filePath, String outputPath,
                      Extractor.OnUpdate listener) {
@@ -48,6 +51,7 @@ public abstract class Extractor {
         this.filePath = filePath;
         this.outputPath = outputPath;
         this.listener = listener;
+        this.invalidArchiveEntries = new ArrayList<>();
     }
 
     public void extractFiles(String[] files) throws IOException {
@@ -64,7 +68,6 @@ public abstract class Extractor {
                         return true;
                     }
                 }
-
                 return false;
             }
         });
@@ -74,6 +77,10 @@ public abstract class Extractor {
         extractWithFilter((relativePath, isDir) -> true);
     }
 
+    public List<String> getInvalidArchiveEntries(){
+        return invalidArchiveEntries;
+    }
+
     protected abstract void extractWithFilter(@NonNull Filter filter) throws IOException;
 
     protected interface Filter {
@@ -81,6 +88,11 @@ public abstract class Extractor {
     }
 
     public interface OnUpdate {
+        /**
+         * This method is called before extraction starts. Implementations please call this before
+         * {@link #onStart(long, String)} below, if {@link #invalidArchiveEntries} has entries added.
+         */
+        void onInvalidEntriesFoundBeforeStart(List<String> invalidArchiveEntries);
         void onStart(long totalBytes, String firstEntryName);
         void onUpdate(String entryPath);
         void onFinish();

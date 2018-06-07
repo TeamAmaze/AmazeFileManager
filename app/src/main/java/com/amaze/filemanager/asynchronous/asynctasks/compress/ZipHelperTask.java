@@ -25,8 +25,11 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 import android.content.Context;
 import android.net.Uri;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,15 +67,19 @@ public class ZipHelperTask extends CompressedHelperTask {
                 ZipFile zipfile = new ZipFile(fileLocation.getPath());
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    if (!isEntryPathValid(entry.getName()))
+                    if (!CompressedHelper.isEntryPathValid(entry.getName())) {
+                        AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
                         continue;
+                    }
                     wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             } else {
                 ZipInputStream zipfile1 = new ZipInputStream(context.get().getContentResolver().openInputStream(fileLocation));
                 for (ZipEntry entry = zipfile1.getNextEntry(); entry != null; entry = zipfile1.getNextEntry()) {
-                    if (!isEntryPathValid(entry.getName()))
+                    if (!CompressedHelper.isEntryPathValid(entry.getName())){
+                        AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
                         continue;
+                    }
                     wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
                 }
             }

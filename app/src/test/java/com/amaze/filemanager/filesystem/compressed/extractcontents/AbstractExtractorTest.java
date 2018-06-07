@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.*;
@@ -59,6 +60,12 @@ public abstract class AbstractExtractorTest {
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
                         Environment.getExternalStorageDirectory().getAbsolutePath(), new Extractor.OnUpdate() {
+
+                            @Override
+                            public void onInvalidEntriesFoundBeforeStart(List<String> invalidArchiveEntries) {
+
+                            }
+
                             @Override
                             public void onStart(long totalBytes, String firstEntryName) {
 

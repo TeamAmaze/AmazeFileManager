@@ -26,6 +26,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -48,22 +50,30 @@ public class ZipExtractor extends Extractor {
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        ArrayList<ZipEntry> entry1 = new ArrayList<>();
+        List<ZipEntry> entriesToExtract = new ArrayList<>();
         ZipFile zipfile = new ZipFile(filePath);
 
         // iterating archive elements to find file names that are to be extracted
         for (Enumeration<? extends ZipEntry> e = zipfile.entries(); e.hasMoreElements(); ) {
             ZipEntry zipEntry = e.nextElement();
 
-            if(filter.shouldExtract(zipEntry.getName(), zipEntry.isDirectory())) {
-                entry1.add(zipEntry);
-                totalBytes += zipEntry.getSize();
+            if(CompressedHelper.isEntryPathValid(zipEntry.getName())) {
+                if (filter.shouldExtract(zipEntry.getName(), zipEntry.isDirectory())) {
+                    entriesToExtract.add(zipEntry);
+                    totalBytes += zipEntry.getSize();
+                }
+            } else {
+                invalidArchiveEntries.add(zipEntry.getName());
             }
         }
 
-        listener.onStart(totalBytes, entry1.get(0).getName());
+        if(invalidArchiveEntries.size() > 0) {
+            listener.onInvalidEntriesFoundBeforeStart(invalidArchiveEntries);
+        }
 
-        for (ZipEntry entry : entry1) {
+        listener.onStart(totalBytes, entriesToExtract.get(0).getName());
+
+        for (ZipEntry entry : entriesToExtract) {
             if (!listener.isCancelled()) {
                 listener.onUpdate(entry.getName());
                 extractEntry(context, zipfile, entry, outputPath);
