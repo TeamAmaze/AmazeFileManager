@@ -2,23 +2,16 @@ package com.amaze.filemanager.filesystem;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.Build;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.filesystem.ssh.Statvfs;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -27,14 +20,11 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
-import net.schmizz.sshj.sftp.SFTPException;
 import net.schmizz.sshj.xfer.FilePermission;
 
 import java.io.File;
@@ -55,7 +45,6 @@ import jcifs.smb.SmbFile;
  */
 //Hybrid file for handeling all types of files
 public class HybridFile {
-
     private static final String TAG = "HFile";
 
     String path;
@@ -80,45 +69,10 @@ public class HybridFile {
         } else this.path = path + "/" + name;
     }
 
-    public void generateMode(Context context) {
-        if (path.startsWith("smb://")) {
-            mode = OpenMode.SMB;
-        } else if (path.startsWith("ssh://")) {
-            mode = OpenMode.SFTP;
-        } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
-            mode = OpenMode.OTG;
-        } else if (isCustomPath()) {
-            mode = OpenMode.CUSTOM;
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
-            mode = OpenMode.BOX;
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
-            mode = OpenMode.ONEDRIVE;
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
-            mode = OpenMode.GDRIVE;
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
-            mode = OpenMode.DROPBOX;
-        } else if(context == null) {
-            mode = OpenMode.FILE;
-        } else {
-            boolean rootmode = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                mode = OpenMode.FILE;
-                if (rootmode && !getFile().canRead()) {
-                    mode = OpenMode.ROOT;
-                }
-            } else {
-                if (FileUtil.isOnExtSdCard(getFile(), context)) {
-                    mode = OpenMode.FILE;
-                } else if (rootmode && !getFile().canRead()) {
-                    mode = OpenMode.ROOT;
-                }
+    public HybridFile generateMode(Context context) {
+        FileFactory factory = new FileFactory();
 
-                if (mode == OpenMode.UNKNOWN) {
-                    mode = OpenMode.FILE;
-                }
-            }
-        }
-
+        return factory.getInstance(context, path);
     }
 
     public void setMode(OpenMode mode) {
@@ -237,16 +191,6 @@ public class HybridFile {
         }
     }
 
-    public boolean isCustomPath() {
-        return path.equals("0") ||
-                path.equals("1") ||
-                path.equals("2") ||
-                path.equals("3") ||
-                path.equals("4") ||
-                path.equals("5") ||
-                path.equals("6");
-    }
-
     /**
      * Returns a path to parent for various {@link #mode}
      * @deprecated use {@link #getParent(Context)} to handle content resolvers
@@ -340,7 +284,7 @@ public class HybridFile {
                 try {
                     SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public Void execute(SFTPClient client) throws IOException {
+                        public Void execute(SFTPClient client) {
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
@@ -408,7 +352,7 @@ public class HybridFile {
                 try {
                     arrayList = SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) throws IOException {
+                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) {
                             ArrayList<HybridFileParcelable> retval = new ArrayList<HybridFileParcelable>();
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
@@ -676,8 +620,8 @@ public class HybridFile {
      * @return true if file; other wise false
      */
     public boolean isSimpleFile() {
-        return !isSmb() && !isOtgFile() && !isCustomPath()
-                && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
+        return !isSmb() && !isOtgFile() &&
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches() &&
                 !new File(path).isDirectory() && !isOneDriveFile() && !isGoogleDriveFile()
                 && !isDropBoxFile() && !isBoxFile() && !isSftp();
     }

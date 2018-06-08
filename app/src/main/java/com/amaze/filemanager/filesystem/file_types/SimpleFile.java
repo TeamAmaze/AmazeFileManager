@@ -13,17 +13,17 @@ import com.amaze.filemanager.utils.files.FileUtils;
 /**
  * Created by Rustam Khadipash on 6/5/2018.
  */
-public class File extends HybridFile {
+public class SimpleFile extends HybridFile {
     final private OpenMode mode = OpenMode.FILE;
 
     private String path;
 
-    public File(OpenMode mode, String path) {
+    public SimpleFile(OpenMode mode, String path) {
         super(mode, path);
         this.path = path;
     }
 
-    public File(OpenMode mode, String path, String name, boolean isDirectory) {
+    public SimpleFile(OpenMode mode, String path, String name, boolean isDirectory) {
         super(mode, path, name, isDirectory);
         this.path = path;
     }
