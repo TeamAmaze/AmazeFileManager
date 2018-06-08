@@ -3,18 +3,26 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.content.Context.USB_SERVICE;
 
@@ -109,25 +117,40 @@ public class OTGUtil {
     }
 
     /**
+     * Check if the usb uri is still accessible
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static boolean isUsbUriAccessible(Context context) {
+        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+        return DocumentsContract.isDocumentUri(context, rootUriString);
+    }
+
+    /**
      * Checks if there is at least one USB device connected with class MASS STORAGE.
      */
-    public static boolean isMassStorageDeviceConnected(@NonNull final Context context) {
+    @NonNull
+    public static List<UsbOtgRepresentation> getMassStorageDevicesConnected(@NonNull final Context context) {
         UsbManager usbManager = (UsbManager) context.getSystemService(USB_SERVICE);
-        if(usbManager == null) return false;
+        if(usbManager == null) return Collections.emptyList();
 
         HashMap<String, UsbDevice> devices = usbManager.getDeviceList();
+        ArrayList<UsbOtgRepresentation> usbOtgRepresentations = new ArrayList<>();
 
         for (String deviceName : devices.keySet()) {
             UsbDevice device = devices.get(deviceName);
 
             for (int i = 0; i < device.getInterfaceCount(); i++){
-                if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE){
-                    return true;
+                if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
+                    final @Nullable String serial =
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP? device.getSerialNumber():null;
+
+                    UsbOtgRepresentation usb = new UsbOtgRepresentation(device.getProductId(), device.getVendorId(), serial);
+                    usbOtgRepresentations.add(usb);
                 }
             }
         }
 
-        return false;
+        return usbOtgRepresentations;
     }
 
 }

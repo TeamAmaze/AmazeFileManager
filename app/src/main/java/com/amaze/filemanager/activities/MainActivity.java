@@ -48,6 +48,7 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -91,9 +92,10 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -686,30 +688,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isUsbDeviceConnected()) rv.add(OTGUtil.PREFIX_OTG + "/");
+            if (SingletonUsbOtg.getInstance().isDeviceConnected()) {
+                rv.add(OTGUtil.PREFIX_OTG + "/");
+            }
         }
         return rv;
-    }
-
-    /**
-     * Method finds whether a USB device is connected or not
-     * @return true if device is connected
-     */
-    private boolean isUsbDeviceConnected() {
-        if (OTGUtil.isMassStorageDeviceConnected(this)) {
-            if(!SingletonUsbOtg.getInstance().hasRootBeenRequested()) {
-                SingletonUsbOtg.getInstance().setHasRootBeenRequested(false);
-                // we need to set this every time as there is no way to know that whether USB device was
-                // disconnected after closing the app and another one was connected in that case
-                // the URI will obviously change otherwise we could persist the URI even after
-                // reopening the app by not writing this preference when it's not null
-                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
-            }
-            return true;
-        } else {
-            SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
-            return false;
-        }
     }
 
     @Override
@@ -1135,28 +1118,65 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Registering intent filter for OTG
-            IntentFilter otgFilter = new IntentFilter();
-            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-            otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-            registerReceiver(mOtgReceiver, otgFilter);
+            updateUsbInformation();
         }
     }
 
     /**
+     * Updates everything related to USB devices
+     * MUST ALWAYS be called after onResume()
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void updateUsbInformation() {
+        boolean isInformationUpdated = false;
+        List<UsbOtgRepresentation> connectedDevices = OTGUtil.getMassStorageDevicesConnected(this);
+
+        if(!connectedDevices.isEmpty()) {
+            if (SingletonUsbOtg.getInstance().getUsbOtgRoot() != null && OTGUtil.isUsbUriAccessible(this)) {
+                for (UsbOtgRepresentation device : connectedDevices) {
+                    if (SingletonUsbOtg.getInstance().checkIfRootIsFromDevice(device)) {
+                        isInformationUpdated = true;
+                        break;
+                    }
+                }
+                
+                if(!isInformationUpdated) {
+                    SingletonUsbOtg.getInstance().resetUsbOtgRoot();
+                }
+            }
+
+            if(!isInformationUpdated) {
+                SingletonUsbOtg.getInstance().setConnectedDevice(connectedDevices.get(0));
+                isInformationUpdated = true;
+            }
+        }
+
+        if(!isInformationUpdated) {
+            SingletonUsbOtg.getInstance().resetUsbOtgRoot();
+            drawer.refreshDrawer();
+            goToMain(null);
+        }
+
+        // Registering intent filter for OTG
+        IntentFilter otgFilter = new IntentFilter();
+        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(mOtgReceiver, otgFilter);
+    }
+
+    /**
      * Receiver to check if a USB device is connected at the runtime of application
-     * If device is not connected at runtime (i.e. it was connected when the app was closed)
-     * then {@link #isUsbDeviceConnected()} method handles the connection through
-     * {@link #getStorageDirectories()}
      */
     BroadcastReceiver mOtgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
+                SingletonUsbOtg.getInstance().resetUsbOtgRoot();
+                List<UsbOtgRepresentation> connectedDevices = OTGUtil.getMassStorageDevicesConnected(MainActivity.this);
+                SingletonUsbOtg.getInstance().setConnectedDevice(connectedDevices.get(0));
                 drawer.refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
+                SingletonUsbOtg.getInstance().resetUsbOtgRoot();
                 drawer.refreshDrawer();
                 goToMain(null);
             }
@@ -1594,7 +1614,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                    SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
+                    SingletonUsbOtg.getInstance().resetUsbOtgRoot();
                     drawer.refreshDrawer();
                 }
             }

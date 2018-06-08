@@ -56,7 +56,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FtpServerFragment;
@@ -582,13 +582,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                         && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
                     MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
                     dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
-                        SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
                         Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                         mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                         dialog.dismiss();
                     });
-
-                    dialog.show();
                 } else {
                     pendingPath = meta.path;
                     closeIfNotLocked();
