@@ -54,13 +54,14 @@ public class DataUtils {
 
     private DataChangeListener dataChangeListener;
 
+    /* In order to solve synchronization problem of threads */
     private DataUtils(){}
-    private static class LazyHolder {
-        public static final DataUtils sDataUtils = new DataUtils() ;
+    private static class Singleton {
+        private static final DataUtils sDataUtils = new DataUtils() ;
     }
 
     public static DataUtils getInstance() {
-        return LazyHolder.sDataUtils;
+        return Singleton.sDataUtils;
     }
 
     public int containsBooks(String[] aBook) {
