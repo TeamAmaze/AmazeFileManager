@@ -15,6 +15,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,12 +26,14 @@ import java.util.HashSet;
     isDir -> isDirectory
  */
 
-/* each Extractor class had similar lines in extractEntry().
-    I made it class BufferWriter.
- */
 
 /* each Extractor class had similar lines in extractEntry().
     I made it method getOutputFile().
+ */
+
+/* it was refactored by using external class, but I change it by using template method form
+    BufferWriter Class -> Extractor.writeBuffer()
+    IOCloseBufferWriter, OutputCloseBuffer -> Extractor.streamClose()
  */
 public abstract class Extractor {
 
@@ -80,6 +83,21 @@ public abstract class Extractor {
         }
         return outputFile;
     }
+
+    protected void writeBuffer(InputStream inputStream, BufferedOutputStream outputStream) throws IOException {
+        try {
+            int length;
+            byte buffer[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+                ServiceWatcherUtil.position += length;
+            }
+        } finally {
+            streamClose(inputStream,outputStream);
+        }
+    }
+
+    protected abstract void streamClose(InputStream inputStream, BufferedOutputStream outputStream) throws IOException;
 
     protected interface Filter {
         public boolean shouldExtract(String relativePath, boolean isDirectory);
