@@ -24,23 +24,10 @@ public class IconUtil {
         where = MediaStore.MediaColumns.DATA + " = ?";
         mimeType = Icons.getTypeOfFile(path, isDirectory);
 
-        switch (mimeType) {
-            case Icons.IMAGE:
-                baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.VIDEO:
-                baseUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.AUDIO:
-                baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            default:
-                baseUri = MediaStore.Files.getContentUri(volume);
-                projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
-        }
+        IconFactory iconFactory = new IconFactory();
+        baseUri = iconFactory.getUriInstance(mimeType, volume);
+        projection = iconFactory.getProjectionInstance(mimeType);
+
     }
 
     public Uri findURIByusingIcon() {

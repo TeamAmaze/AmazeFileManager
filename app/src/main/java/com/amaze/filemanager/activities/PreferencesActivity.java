@@ -44,6 +44,7 @@ import com.amaze.filemanager.fragments.preference_fragments.AdvancedSearchPref;
 import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.FoldersPref;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.fragments.preference_fragments.PrefFragmentFactory;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -244,23 +245,12 @@ public class PreferencesActivity extends ThemedActivity {
      */
     public void selectItem(int item) {
         selectedItem = item;
-        switch (item) {
-            case START_PREFERENCE:
-                loadPrefFragment(new PrefFrag(), R.string.setting);
-                break;
-            case COLORS_PREFERENCE:
-                loadPrefFragment(new ColorPref(), R.string.color_title);
-                break;
-            case FOLDERS_PREFERENCE:
-                loadPrefFragment(new FoldersPref(), R.string.sidebarfolders_title);
-                break;
-            case QUICKACCESS_PREFERENCE:
-                loadPrefFragment(new QuickAccessPref(), R.string.sidebarquickaccess_title);
-                break;
-            case ADVANCEDSEARCH_PREFERENCE:
-                loadPrefFragment(new AdvancedSearchPref(), R.string.advanced_search);
-                break;
-        }
+        PrefFragmentFactory prefFragmentFactory = new PrefFragmentFactory();
+        PreferenceFragment preferenceFragment = prefFragmentFactory.getPrefFragmentInstance(item);
+        int stringTitle = prefFragmentFactory.getStringTitleInstance(item);
+
+        loadPrefFragment(preferenceFragment, stringTitle);
+
     }
 
     private void loadPrefFragment(PreferenceFragment fragment, @StringRes int titleBarName) {
