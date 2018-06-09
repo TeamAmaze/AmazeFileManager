@@ -5,6 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.MenuItem;
 
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
+import com.amaze.filemanager.utils.DataStructure.AccountShelf;
+import com.amaze.filemanager.utils.DataStructure.BookShelf;
+import com.amaze.filemanager.utils.DataStructure.DataIterator.Iterator;
+import com.amaze.filemanager.utils.DataStructure.ServerShelf;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -47,10 +51,14 @@ public class DataUtils {
     private InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
     private HashMap<MenuItem, MenuMetadata> menuMetadataMap = new HashMap<>();//Faster HashMap<Integer, V>
 
-    private ArrayList<String[]> servers = new ArrayList<>();
-    private ArrayList<String[]> books = new ArrayList<>();
+    private ServerShelf mServers = new ServerShelf() ;
+    //private ArrayList<String[]> servers = new ArrayList<>();
 
-    private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
+    private BookShelf bookmarks = new BookShelf() ;
+    //private ArrayList<String[]> bookmarks = new ArrayList<>();
+
+    private AccountShelf mAccounts = new AccountShelf() ;
+    //private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
     private DataChangeListener dataChangeListener;
 
@@ -65,16 +73,16 @@ public class DataUtils {
     }
 
     public int containsBooks(String[] aBook) {
-        return contains(aBook, books);
+        return contains(aBook, bookmarks.getBooks());
     }
 
     public int containsServer(String[] aServer) {
-        return contains(aServer, servers);
+        return contains(aServer, mServers.getServers());
     }
 
     public int containsServer(String path) {
-        synchronized (servers) {
-            return contains(path, servers);
+        synchronized (mServers.getServers()) {
+            return contains(path, mServers.getServers());
         }
     }
 
@@ -116,8 +124,10 @@ public class DataUtils {
      */
     public synchronized int containsAccounts(OpenMode serviceType) {
         int i = 0;
-        for (CloudStorage storage : accounts) {
+        Iterator it = mAccounts.createIterator() ;
 
+        while(it.hasNext()) {
+            CloudStorage storage = (CloudStorage) it.next() ;
             switch (serviceType) {
                 case BOX:
                     if (storage instanceof Box)
@@ -140,6 +150,31 @@ public class DataUtils {
             }
             i++;
         }
+
+//        for (CloudStorage storage : accounts) {
+//
+//            switch (serviceType) {
+//                case BOX:
+//                    if (storage instanceof Box)
+//                        return i;
+//                    break;
+//                case DROPBOX:
+//                    if (storage instanceof Dropbox)
+//                        return i;
+//                    break;
+//                case GDRIVE:
+//                    if (storage instanceof GoogleDrive)
+//                        return i;
+//                    break;
+//                case ONEDRIVE:
+//                    if (storage instanceof OneDrive)
+//                        return i;
+//                    break;
+//                default:
+//                    return -1;
+//            }
+//            i++;
+//        }
         return -1;
     }
 
@@ -150,9 +185,11 @@ public class DataUtils {
         storages = new ArrayList<>();
         tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
         menuMetadataMap.clear();
-        servers = new ArrayList<>();
-        books = new ArrayList<>();
-        accounts = new ArrayList<>();
+        mServers.clearServers();
+        //servers = new ArrayList<>();
+        bookmarks.clearBooks();
+        mAccounts.clearAccounts();
+        //accounts = new ArrayList<>();
     }
 
     public void registerOnDataChangedListener(DataChangeListener l) {
@@ -167,10 +204,10 @@ public class DataUtils {
     }
 
     public void removeBook(int i) throws IndexOutOfBoundsException {
-        synchronized (books) {
+        synchronized (bookmarks.getBooks()) {
 
-            if (isThisIndexContains(books, i)) {
-                books.remove(i);
+            if (isThisIndexContains(bookmarks.getBooks(), i)) {
+                bookmarks.removeBook(i);
             }
             else {
                 throw new IndexOutOfBoundsException() ;
@@ -179,29 +216,32 @@ public class DataUtils {
     }
 
     public synchronized void removeAccount(OpenMode serviceType) {
-        for (CloudStorage storage : accounts) {
+
+        Iterator it = mAccounts.createIterator() ;
+        while (it.hasNext()) {
+            CloudStorage storage = (CloudStorage) it.next() ;
             switch (serviceType) {
                 case BOX:
                     if (storage instanceof Box) {
-                        accounts.remove(storage);
+                        mAccounts.removeAccount(storage);
                         return;
                     }
                     break;
                 case DROPBOX:
                     if (storage instanceof Dropbox) {
-                        accounts.remove(storage);
+                        mAccounts.removeAccount(storage);
                         return;
                     }
                     break;
                 case GDRIVE:
                     if (storage instanceof GoogleDrive) {
-                        accounts.remove(storage);
+                        mAccounts.removeAccount(storage);
                         return;
                     }
                     break;
                 case ONEDRIVE:
                     if (storage instanceof OneDrive) {
-                        accounts.remove(storage);
+                        mAccounts.removeAccount(storage);
                         return;
                     }
                     break;
@@ -209,12 +249,43 @@ public class DataUtils {
                     return;
             }
         }
+
+//        for (CloudStorage storage : accounts) {
+//            switch (serviceType) {
+//                case BOX:
+//                    if (storage instanceof Box) {
+//                        accounts.remove(storage);
+//                        return;
+//                    }
+//                    break;
+//                case DROPBOX:
+//                    if (storage instanceof Dropbox) {
+//                        accounts.remove(storage);
+//                        return;
+//                    }
+//                    break;
+//                case GDRIVE:
+//                    if (storage instanceof GoogleDrive) {
+//                        accounts.remove(storage);
+//                        return;
+//                    }
+//                    break;
+//                case ONEDRIVE:
+//                    if (storage instanceof OneDrive) {
+//                        accounts.remove(storage);
+//                        return;
+//                    }
+//                    break;
+//                default:
+//                    return;
+//            }
+//        }
     }
 
     public void removeServer(int i) throws IndexOutOfBoundsException {
-        synchronized (servers) {
-            if (isThisIndexContains(servers, i)){
-                servers.remove(i);
+        synchronized (mServers.getServers()) {
+            if (isThisIndexContains(mServers.getServers(), i)){
+                mServers.removeServer(i);
             }
             else {
                 throw new IndexOutOfBoundsException() ;
@@ -223,9 +294,9 @@ public class DataUtils {
     }
 
     public void addBook(String[] i) {
-        synchronized (books) {
+        synchronized (bookmarks.getBooks()) {
 
-            books.add(i);
+            bookmarks.addBook(i);
         }
     }
 
@@ -238,11 +309,11 @@ public class DataUtils {
     }
 
     public void addAccount(CloudStorage storage) {
-        accounts.add(storage);
+        mAccounts.addAccount(storage);
     }
 
     public void addServer(String[] i) {
-        servers.add(i);
+        mServers.addServer(i);
     }
 
     public void addHiddenFile(final String i) {
@@ -284,7 +355,7 @@ public class DataUtils {
     }
 
     public void sortBook() {
-        Collections.sort(books, new BookSorter());
+        Collections.sort(bookmarks.getBooks(), new BookSorter());
     }
 
     private boolean isAllocated(Object object) {
@@ -293,33 +364,47 @@ public class DataUtils {
 
     public synchronized void setServers(ArrayList<String[]> servers) {
         if (isAllocated(servers))
-            this.servers = servers;
+            this.mServers.setServers(servers);
     }
 
-    public synchronized void setBooks(ArrayList<String[]> books) {
-        if (isAllocated(books))
-            this.books = books;
+    public synchronized void setBooks(ArrayList<String[]> bookmarks) {
+        if (isAllocated(bookmarks))
+            this.bookmarks.setBooks(bookmarks);
     }
 
     public synchronized void setAccounts(ArrayList<CloudStorage> accounts) {
         if (isAllocated(accounts))
-            this.accounts = accounts;
+            this.mAccounts.setAccounts(accounts);
     }
 
-    public synchronized ArrayList<String[]> getServers() {
-        return servers;
+    public synchronized ServerShelf getMyServers() {
+        return mServers ;
     }
 
-    public synchronized ArrayList<String[]> getBooks() {
-        return books;
+//    public synchronized ArrayList<String[]> getServers() {
+//        return mServers.getServers();
+//    }
+
+    public synchronized BookShelf getBookmarks() {
+        return bookmarks;
     }
 
-    public synchronized ArrayList<CloudStorage> getAccounts() {
-        return accounts;
+//    public synchronized ArrayList<String[]> getBooks() {
+//        return bookmarks.getBooks();
+//    }
+
+    public synchronized AccountShelf getMyAccounts() {
+        return mAccounts ;
     }
+
+//    public synchronized ArrayList<CloudStorage> getAccounts() {
+//        return mAccounts.getAccountList();
+//    }
 
     public synchronized CloudStorage getAccount(OpenMode serviceType) {
-        for (CloudStorage storage : accounts) {
+        Iterator it = mAccounts.createIterator() ;
+        while (it.hasNext()) {
+            CloudStorage storage = (CloudStorage) it.next();
             switch (serviceType) {
                 case BOX:
                     if (storage instanceof Box)
@@ -341,6 +426,28 @@ public class DataUtils {
                     return null;
             }
         }
+//        for (CloudStorage storage : accounts) {
+//            switch (serviceType) {
+//                case BOX:
+//                    if (storage instanceof Box)
+//                        return storage;
+//                    break;
+//                case DROPBOX:
+//                    if (storage instanceof Dropbox)
+//                        return storage;
+//                    break;
+//                case GDRIVE:
+//                    if (storage instanceof GoogleDrive)
+//                        return storage;
+//                    break;
+//                case ONEDRIVE:
+//                    if (storage instanceof OneDrive)
+//                        return storage;
+//                    break;
+//                default:
+//                    return null;
+//            }
+//        }
         return null;
     }
 

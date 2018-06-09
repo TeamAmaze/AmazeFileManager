@@ -1618,7 +1618,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (path.length() > 0 && name.length() == 0) {
             int i = dataUtils.containsServer(new String[]{name, path});
             if (i != -1)
-                name = dataUtils.getServers().get(i)[0];
+                name = dataUtils.getMyServers().getServerAt(i) [0] ;
+                //name = dataUtils.getServers().get(i)[0];
         }
         SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
         Bundle bundle = new Bundle();
@@ -1633,7 +1634,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (path.length() > 0 && name.length() == 0) {
             int i = dataUtils.containsServer(new String[]{name, path});
             if (i != -1)
-                name = dataUtils.getServers().get(i)[0];
+                name = dataUtils.getMyServers().getServerAt(i) [0] ;
+                //name = dataUtils.getServers().get(i)[0];
         }
         SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
         Uri uri = Uri.parse(path);
@@ -1700,7 +1702,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 //mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
             }
             dataUtils.addServer(s);
-            Collections.sort(dataUtils.getServers(), new BookSorter());
+            Collections.sort(dataUtils.getMyServers().getServers(), new BookSorter());
             drawer.refreshDrawer();
             //mainActivity.grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
         }

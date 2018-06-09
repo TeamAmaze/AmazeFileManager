@@ -93,11 +93,14 @@ public class SftpConnectDialog extends DialogFragment {
 
     private String selectedParsedKeyPairName = null;
 
+    private DataUtils dataUtils ;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utilsProvider = AppConfig.getInstance().getUtilsProvider();
         utilsHandler = AppConfig.getInstance().getUtilsHandler();
+        dataUtils = DataUtils.getInstance() ;
     }
 
     @Override
@@ -217,10 +220,10 @@ public class SftpConnectDialog extends DialogFragment {
 
             final String path = deriveSftpPathFrom(hostname, port, username,
                     getArguments().getString("password", null), selectedParsedKeyPair);
-            int i = DataUtils.getInstance().containsServer(new String[]{connectionName, path});
+            int i = dataUtils.containsServer(new String[]{connectionName, path});
 
             if (i != -1) {
-                DataUtils.getInstance().removeServer(i);
+                dataUtils.removeServer(i);
 
                 AppConfig.runInBackground(() -> {
                     utilsHandler.removeSftpPath(connectionName, path);
@@ -318,8 +321,8 @@ public class SftpConnectDialog extends DialogFragment {
                 SSHClient result = taskResult.result;
                 if(result != null) {
 
-                    if(DataUtils.getInstance().containsServer(path) == -1) {
-                        DataUtils.getInstance().addServer(new String[]{connectionName, path});
+                    if(dataUtils.containsServer(path) == -1) {
+                        dataUtils.addServer(new String[]{connectionName, path});
                         ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
                         utilsHandler.addSsh(connectionName, encryptedPath, hostKeyFingerprint,
@@ -343,9 +346,9 @@ public class SftpConnectDialog extends DialogFragment {
                 return false;
             }
         } else {
-            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(path));
-            DataUtils.getInstance().addServer(new String[]{connectionName, path});
-            Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
+            dataUtils.removeServer(dataUtils.containsServer(path));
+            dataUtils.addServer(new String[]{connectionName, path});
+            Collections.sort(dataUtils.getMyServers().getServers(), new BookSorter());
             ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
             AppConfig.runInBackground(() -> {

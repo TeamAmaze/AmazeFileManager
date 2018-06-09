@@ -39,6 +39,10 @@ import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.DataStructure.AccountShelf;
+import com.amaze.filemanager.utils.DataStructure.BookShelf;
+import com.amaze.filemanager.utils.DataStructure.DataIterator.Iterator;
+import com.amaze.filemanager.utils.DataStructure.ServerShelf;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -252,21 +256,36 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         }
         dataUtils.setStorages(storageDirectories);
 
-        if (dataUtils.getServers().size() > 0) {
-            Collections.sort(dataUtils.getServers(), new BookSorter());
-            synchronized (dataUtils.getServers()) {
-                for (String[] file : dataUtils.getServers()) {
-                    addNewItem(menu, SERVERS_GROUP, order++, file[0],
-                            new MenuMetadata(file[1]), R.drawable.ic_settings_remote_white_24dp,
+        ServerShelf serverShelf = dataUtils.getMyServers() ;
+        Iterator it_server = serverShelf.createIterator() ;
+
+        if (serverShelf.getLength() > 0) {
+            Collections.sort(serverShelf.getServers(), new BookSorter());
+            synchronized (serverShelf.getServers()) {
+                while(it_server.hasNext()) {
+                    String[] aServer = (String[]) it_server.next() ;
+                    addNewItem(menu, SERVERS_GROUP, order++, aServer[0],
+                            new MenuMetadata(aServer[1]), R.drawable.ic_settings_remote_white_24dp,
                             R.drawable.ic_edit_24dp);
                 }
+
+//                for (String[] file : dataUtils.getServers()) {
+//                    addNewItem(menu, SERVERS_GROUP, order++, file[0],
+//                            new MenuMetadata(file[1]), R.drawable.ic_settings_remote_white_24dp,
+//                            R.drawable.ic_edit_24dp);
+//                }
             }
         }
 
         ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
 
         if (CloudSheetFragment.isCloudProviderAvailable(mainActivity)) {
-            for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+
+            AccountShelf accountShelf = dataUtils.getMyAccounts() ;
+            Iterator it = accountShelf.createIterator() ;
+
+            while(it.hasNext()) {
+                CloudStorage cloudStorage = (CloudStorage) it.next() ;
                 if (cloudStorage instanceof Dropbox) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_DROPBOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
@@ -305,20 +324,69 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     });
                 }
             }
+
+//            for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+//                if (cloudStorage instanceof Dropbox) {
+//                    addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_DROPBOX,
+//                            new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
+//                            R.drawable.ic_dropbox_white_24dp, R.drawable.ic_edit_24dp);
+//
+//                    accountAuthenticationList.add(new String[] {
+//                            CloudHandler.CLOUD_NAME_DROPBOX,
+//                            CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+//                    });
+//                } else if (cloudStorage instanceof Box) {
+//                    addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_BOX,
+//                            new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/"),
+//                            R.drawable.ic_box_white_24dp, R.drawable.ic_edit_24dp);
+//
+//                    accountAuthenticationList.add(new String[] {
+//                            CloudHandler.CLOUD_NAME_BOX,
+//                            CloudHandler.CLOUD_PREFIX_BOX + "/",
+//                    });
+//                } else if (cloudStorage instanceof OneDrive) {
+//                    addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_ONE_DRIVE,
+//                            new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"),
+//                            R.drawable.ic_onedrive_white_24dp, R.drawable.ic_edit_24dp);
+//
+//                    accountAuthenticationList.add(new String[] {
+//                            CloudHandler.CLOUD_NAME_ONE_DRIVE,
+//                            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+//                    });
+//                } else if (cloudStorage instanceof GoogleDrive) {
+//                    addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+//                            new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/"),
+//                            R.drawable.ic_google_drive_white_24dp, R.drawable.ic_edit_24dp);
+//
+//                    accountAuthenticationList.add(new String[] {
+//                            CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
+//                            CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+//                    });
+//                }
+//            }
             Collections.sort(accountAuthenticationList, new BookSorter());
         }
 
+        BookShelf bookShelf = dataUtils.getBookmarks() ;
+        Iterator it_book = bookShelf.createIterator() ;
+
         if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_FOLDERS)) {
-            if (dataUtils.getBooks().size() > 0) {
+            if (bookShelf.getLength() > 0) {
 
-                Collections.sort(dataUtils.getBooks(), new BookSorter());
+                Collections.sort(bookShelf.getBooks(), new BookSorter());
 
-                synchronized (dataUtils.getBooks()) {
-                    for (String[] file : dataUtils.getBooks()) {
-                        addNewItem(menu, FOLDERS_GROUP, order++, file[0],
-                                new MenuMetadata(file[1]), R.drawable.ic_folder_white_24dp,
+                synchronized (bookShelf.getBooks()) {
+                    while(it_book.hasNext()) {
+                        String[] aBook = (String[]) it_book.next() ;
+                        addNewItem(menu, FOLDERS_GROUP, order++, aBook[0],
+                                new MenuMetadata(aBook[1]), R.drawable.ic_folder_white_24dp,
                                 R.drawable.ic_edit_24dp);
                     }
+//                    for (String[] file : dataUtils.getBooks()) {
+//                        addNewItem(menu, FOLDERS_GROUP, order++, file[0],
+//                                new MenuMetadata(file[1]), R.drawable.ic_folder_white_24dp,
+//                                R.drawable.ic_edit_24dp);
+//                    }
                 }
             }
         }
@@ -527,7 +595,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     FileUtils.checkForPath(mainActivity, meta.path, mainActivity.isRootExplorer());
                 }
 
-                if (dataUtils.getAccounts().size() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+                if (dataUtils.getMyAccounts().getLength() > 0 && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
                         meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
                         meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
                         meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {

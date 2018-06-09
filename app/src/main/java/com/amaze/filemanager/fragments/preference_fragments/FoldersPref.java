@@ -19,6 +19,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.DataStructure.DataIterator.Iterator;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.color.ColorUsage;
@@ -55,15 +56,28 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOnPreferenceClickListener(this);
 
-        for (int i = 0; i < dataUtils.getBooks().size(); i++) {
+        Iterator it = dataUtils.getBookmarks().createIterator() ;
+        int i = 0 ;
+        while(it.hasNext()) {
             PathSwitchPreference p = new PathSwitchPreference(getActivity());
-            p.setTitle(dataUtils.getBooks().get(i) [0]);
-            p.setSummary(dataUtils.getBooks().get(i) [1]);
+            String[] aBook = (String[])it.next() ;
+            p.setTitle(aBook[0]);
+            p.setSummary(aBook[1]);
             p.setOnPreferenceClickListener(this);
 
             position.put(p, i);
             getPreferenceScreen().addPreference(p);
+            i++ ;
         }
+//        for (int i = 0; i < dataUtils.getBooks().size(); i++) {
+//            PathSwitchPreference p = new PathSwitchPreference(getActivity());
+//            p.setTitle(dataUtils.getBooks().get(i) [0]);
+//            p.setSummary(dataUtils.getBooks().get(i) [1]);
+//            p.setOnPreferenceClickListener(this);
+//
+//            position.put(p, i);
+//            getPreferenceScreen().addPreference(p);
+//        }
     }
 
     @Override
@@ -131,7 +145,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                         p.setSummary(editText2.getText());
                         p.setOnPreferenceClickListener(FoldersPref.this);
 
-                        position.put(p, dataUtils.getBooks().size());
+                        position.put(p, dataUtils.getBookmarks().getLength());
                         getPreferenceScreen().addPreference(p);
 
                         String[] values = new String[] {editText1.getText().toString(),

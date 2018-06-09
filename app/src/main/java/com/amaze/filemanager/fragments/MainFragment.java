@@ -1333,7 +1333,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 getMainActivity().runOnUiThread(() -> {
                     int i;
                     if ((i = dataUtils.containsServer(smbPath)) != -1) {
-                        getMainActivity().showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
+                        getMainActivity().showSMBDialog(dataUtils.getMyServers().getServerAt(i)[0], smbPath, true);
                     }
                 });
             } catch (Exception e) {
