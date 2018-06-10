@@ -71,7 +71,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/zip" />
                 <data android:mimeType="application/rar" />
@@ -92,7 +92,7 @@
                 <data android:mimeType="resource/folder" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="resource/folder" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -122,6 +122,7 @@
             android:name=".activities.TextEditorActivity"
             android:theme="@style/appCompatLight">
             <intent-filter
+                tools:ignore="AppLinkUrlError"
                 android:label="Amaze Text Editor">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -138,6 +139,7 @@
             android:theme="@style/appCompatLight"
             android:screenOrientation="locked">
             <intent-filter
+                tools:ignore="AppLinkUrlError"
                 android:label="Amaze Database Reader">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
