@@ -231,13 +231,17 @@ public class ExtractService extends Service {
         private void unzipEntry(ZipFile zipFile, ZipEntry entry, String outputDir)
                 throws Exception {
 
-            if (entry.isDirectory()) {
-                // zip entry is a directory, return after creating new directory
-                createDir(new File(outputDir, entry.getName()));
-                return;
+            final File outputFile = new File(outputDir, fixEntryName(entry.getName()));
+
+            if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+                throw new IOException("Incorrect ZipEntry path!");
             }
 
-            final File outputFile = new File(outputDir, entry.getName());
+            if (entry.isDirectory()) {
+                // zip entry is a directory, return after creating new directory
+                createDir(outputFile);
+                return;
+            }
 
             if (!outputFile.getParentFile().exists()) {
                 // creating directory if not already exists
@@ -265,13 +269,19 @@ public class ExtractService extends Service {
 
         private void unzipRAREntry(Archive zipFile, FileHeader entry, String outputDir)
                 throws Exception {
-            String name = entry.getFileNameString();
+            String name = fixEntryName(entry.getFileNameString());
             name = name.replaceAll("\\\\", "/");
+            File outputFile = new File(outputDir, name);
+
+            if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+                throw new IOException("Incorrect RAR FileHeader path!");
+            }
+
             if (entry.isDirectory()) {
-                createDir(new File(outputDir, name));
+                createDir(outputFile);
                 return;
             }
-            File outputFile = new File(outputDir, name);
+
             if (!outputFile.getParentFile().exists()) {
                 createDir(outputFile.getParentFile());
             }
@@ -299,12 +309,18 @@ public class ExtractService extends Service {
 
         private void unzipTAREntry(TarArchiveInputStream zipFileStream, TarArchiveEntry entry,
                                    String outputDir) throws Exception {
-            String name = entry.getName();
+            String name = fixEntryName(entry.getName());
+            File outputFile = new File(outputDir, name);
+
+            if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+                throw new IOException("Incorrect TarArchiveEntry path!");
+            }
+
             if (entry.isDirectory()) {
-                createDir(new File(outputDir, name));
+                createDir(outputFile);
                 return;
             }
-            File outputFile = new File(outputDir, name);
+
             if (!outputFile.getParentFile().exists()) {
                 createDir(outputFile.getParentFile());
             }
@@ -707,5 +723,12 @@ public class ExtractService extends Service {
         this.dataPackages.add(dataPackage);
     }
 
+    protected String fixEntryName(String entryName){
+        if(entryName.indexOf('\\') > 0) {
+            return entryName.replace('\\', '/');
+        } else {
+            return entryName;
+        }
+    }
 }
 
