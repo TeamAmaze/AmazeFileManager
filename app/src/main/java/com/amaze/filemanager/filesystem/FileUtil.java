@@ -172,10 +172,10 @@ public abstract class FileUtil {
     public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
                                                @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
 
-        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks() {
 
             @Override
-            public <E> E doInBackground() {
+            public Void doInBackground() {
 
                 for (Uri uri : uris) {
 

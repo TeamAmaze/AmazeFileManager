@@ -103,7 +103,7 @@ public class AppConfig extends GlideApplication {
      * A compact AsyncTask which runs which executes whatever is passed by callbacks.
      * Supports any class that extends an object as param array, and result too.
      */
-    public static void runInBackground(final CustomAsyncCallbacks customAsyncCallbacks) {
+    public static void runInParallel(final CustomAsyncCallbacks customAsyncCallbacks) {
 
         synchronized (customAsyncCallbacks) {
 
@@ -122,7 +122,7 @@ public class AppConfig extends GlideApplication {
                 }
 
                 @Override
-                protected Void doInBackground(Object... params) {
+                protected Object doInBackground(Object... params) {
                     return customAsyncCallbacks.doInBackground();
                 }
 
@@ -131,7 +131,7 @@ public class AppConfig extends GlideApplication {
                     super.onPostExecute(aVoid);
                     customAsyncCallbacks.onPostExecute(aVoid);
                 }
-            }.execute(customAsyncCallbacks.params());
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, customAsyncCallbacks.params());
         }
     }
 
@@ -140,7 +140,7 @@ public class AppConfig extends GlideApplication {
      */
     public interface CustomAsyncCallbacks {
 
-        <E extends Object> E doInBackground();
+        Object doInBackground();
 
         Void onPostExecute(Object result);
 
