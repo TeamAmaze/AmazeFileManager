@@ -29,6 +29,7 @@ android {
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -85,6 +86,11 @@ dependencies {
     testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
 
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
+
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    debugImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
@@ -164,6 +170,7 @@ configurations.all {
     resolutionStrategy {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
+            substitute module("com.android.support:support-annotations:27.1.1") with module("com.android.support:support-annotations:27.0.2")
         }
     }
 }
