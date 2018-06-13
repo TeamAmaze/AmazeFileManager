@@ -23,6 +23,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -234,5 +235,14 @@ public class Utils {
             }
         }
         return -1;
+    }
+
+    /**
+     * Formats input to plain mm:ss format
+     */
+    public static String formatTimer(long timer) {
+        final long min = TimeUnit.SECONDS.toMinutes(timer);
+        final long sec = TimeUnit.SECONDS.toSeconds(timer - TimeUnit.MINUTES.toMillis(min));
+        return String.format("%02d:%02d", min, sec);
     }
 }

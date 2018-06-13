@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/notification_service_title_small"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        />
+
+    <TextView
+        android:id="@+id/notification_service_textView_filename_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:ellipsize="middle"
+        android:layout_marginLeft="@dimen/material_generic"
+        android:layout_marginStart="@dimen/material_generic"
+        />
+
+    <TextView
+        android:id="@+id/notification_service_textView_written_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_generic"
+        android:layout_marginStart="@dimen/material_generic"
+        />
+</LinearLayout>

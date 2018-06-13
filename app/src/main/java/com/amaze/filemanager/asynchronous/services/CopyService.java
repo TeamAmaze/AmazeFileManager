@@ -26,11 +26,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -51,6 +54,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -80,6 +84,9 @@ public class CopyService extends AbstractProgressiveService {
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
+    private int accentColor;
+    private SharedPreferences sharedPreferences;
+    private RemoteViews customSmallContentViews, customBigContentViews;
 
     private boolean isRootExplorer;
     private long totalSize = 0L;
@@ -102,6 +109,10 @@ public class CopyService extends AbstractProgressiveService {
         String targetPath = intent.getStringExtra(TAG_COPY_TARGET);
         int mode = intent.getIntExtra(TAG_COPY_OPEN_MODE, OpenMode.UNKNOWN.ordinal());
         final boolean move = intent.getBooleanExtra(TAG_COPY_MOVE, false);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
+        accentColor = ((AppConfig) getApplication()).getUtilsProvider()
+                .getColorPreference()
+                .getCurrentUserColorPreferences(this, sharedPreferences).accent;
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         b.putInt(TAG_COPY_START_ID, startId);
@@ -112,10 +123,23 @@ public class CopyService extends AbstractProgressiveService {
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
+        customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
+        customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
+
+        Intent stopIntent = new Intent(TAG_BROADCAST_COPY_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(c, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_content_copy_white_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+
         mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentIntent(pendingIntent)
-                .setContentTitle(getResources().getString(R.string.copying))
-                .setSmallIcon(R.drawable.ic_content_copy_white_36dp);
+                .setSmallIcon(R.drawable.ic_content_copy_white_36dp)
+                .setCustomContentView(customSmallContentViews)
+                .setCustomBigContentView(customBigContentViews)
+                .setCustomHeadsUpContentView(customSmallContentViews)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(action)
+                .setColor(accentColor);
 
         NotificationConstants.setMetadata(c, mBuilder, NotificationConstants.TYPE_NORMAL);
 
@@ -153,6 +177,16 @@ public class CopyService extends AbstractProgressiveService {
     @Override
     protected float getPercentProgress() {
         return progressPercent;
+    }
+
+    @Override
+    protected RemoteViews getNotificationCustomViewSmall() {
+        return customSmallContentViews;
+    }
+
+    @Override
+    protected RemoteViews getNotificationCustomViewBig() {
+        return customBigContentViews;
     }
 
     @Override

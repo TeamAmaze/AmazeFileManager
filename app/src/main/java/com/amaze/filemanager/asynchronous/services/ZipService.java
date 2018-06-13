@@ -27,10 +27,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -41,6 +44,7 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -72,6 +76,9 @@ public class ZipService extends AbstractProgressiveService {
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
+    private int accentColor;
+    private SharedPreferences sharedPreferences;
+    private RemoteViews customSmallContentViews, customBigContentViews;
 
     @Override
     public void onCreate() {
@@ -96,13 +103,33 @@ public class ZipService extends AbstractProgressiveService {
             }
         }
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        accentColor = ((AppConfig) getApplication()).getUtilsProvider()
+                .getColorPreference()
+                .getCurrentUserColorPreferences(this, sharedPreferences).accent;
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
+        customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
+
+        Intent stopIntent = new Intent(KEY_COMPRESS_BROADCAST_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
+                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
                 .setContentIntent(pendingIntent)
-                .setContentTitle(getResources().getString(R.string.compressing))
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp);
+                .setCustomContentView(customSmallContentViews)
+                .setCustomBigContentView(customBigContentViews)
+                .setCustomHeadsUpContentView(customSmallContentViews)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(action)
+                .setColor(accentColor);
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
@@ -138,6 +165,16 @@ public class ZipService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    protected RemoteViews getNotificationCustomViewSmall() {
+        return customSmallContentViews;
+    }
+
+    @Override
+    protected RemoteViews getNotificationCustomViewBig() {
+        return customBigContentViews;
     }
 
     public ProgressListener getProgressListener() {

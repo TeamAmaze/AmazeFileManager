@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
+import android.widget.RemoteViews;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -16,6 +17,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -26,8 +28,9 @@ import java.util.ArrayList;
 
 public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
-    public Context context;
+    private Context context;
 
+    private long timer = 0l;
     private boolean isNotificationTitleSet = false;
 
     @Override
@@ -44,6 +47,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     protected abstract float getPercentProgress();
 
     protected abstract void setPercentProgress(float progress);
+
+    protected abstract RemoteViews getNotificationCustomViewSmall();
+
+    protected abstract RemoteViews getNotificationCustomViewBig();
 
     public abstract ProgressListener getProgressListener();
 
@@ -118,15 +125,29 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                         break;
                 }
 
-                getNotificationBuilder().setContentTitle(context.getResources().getString(titleResource));
-
+                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_title_small,
+                        context.getResources().getString(titleResource));
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_title_big,
+                        context.getResources().getString(titleResource));
                 isNotificationTitleSet = true;
             }
 
             if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                getNotificationBuilder().setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
-                        Formatter.formatFileSize(context, totalSize));
+                String written = Formatter.formatFileSize(context, writtenSize) + "/" +
+                        Formatter.formatFileSize(context, totalSize);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big, fileName);
+                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small, fileName);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big, written);
+                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small, written);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeElapsed_big, Utils.formatTimer(++timer));
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                        Formatter.formatFileSize(context, speed) + "/s");
+
+                if (speed != 0) {
+                    String remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
+                }
                 getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
                 getNotificationBuilder().setOngoing(true);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
@@ -140,7 +161,11 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                     // while moving the file
                     getNotificationBuilder().setProgress(0, 0, true);
 
-                    getNotificationBuilder().setContentText(context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
+                            context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
+                            context.getResources().getString(R.string.processing));
+
                     getNotificationBuilder().setOngoing(false);
                     getNotificationBuilder().setAutoCancel(true);
                     getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());

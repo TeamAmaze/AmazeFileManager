@@ -221,22 +221,13 @@ public class ProcessViewerFragment extends Fragment {
 
             Spanned timerSpan = Html.fromHtml(getResources().getString(R.string.service_timer)
                     + ": <font color='" + accentColor + "'><i>"
-                    + formatTimer(++time)
+                    + Utils.formatTimer(++time)
                     + "</font></i>");
 
             mProgressTimer.setText(timerSpan);
 
             if(dataPackage.completed) mCancelButton.setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * Formats input to plain mm:ss format
-     */
-    private String formatTimer(long timer) {
-        final long min = TimeUnit.SECONDS.toMinutes(timer);
-        final long sec = TimeUnit.SECONDS.toSeconds(timer - TimeUnit.MINUTES.toMillis(min));
-        return String.format("%02d:%02d", min, sec);
     }
 
     /**

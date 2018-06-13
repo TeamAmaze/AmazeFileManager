@@ -634,5 +634,7 @@
     <string name="cannot_overwrite">Cannot overwrite file.</string>
     <string name="create_hidden_file_warn">The created file will be hidden in the file list.</string>
     <string name="grant_apkinstall_permission">App needs permission to install apps continue.</string>
+    <string name="time_remaining">Time remaining</string>
+    <string name="transfer_rate">Transfer rate</string>
 </resources>
 
