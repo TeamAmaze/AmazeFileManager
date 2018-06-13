@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                      Emmanuel Messulam<emmanuelbendavid@gmail.com>
+ * MainActivity.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -54,7 +56,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,6 +185,9 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     // oppathList - the paths at which certain operation needs to be performed (pairs with oparrayList)
     public String oppathe, oppathe1;
     public ArrayList<String> oppatheList;
+
+    // This holds the Uris to be written at initFabToSave()
+    private ArrayList<Uri> urisToBeSaved;
 
     /**
      * @deprecated use getCurrentMainFragment()
@@ -561,9 +568,25 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
         floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
         floatingActionButton.getMenuButton().setOnClickListener(v -> {
-            FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
-            finish();
+            if(uris != null && uris.size() > 0) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    File folder = new File(getCurrentMainFragment().getCurrentPath());
+                    int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
+                    if(result == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
+                        FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                        finish();
+                    } else {
+                        //Trigger SAF intent, keep uri until finish
+                        operation = DataUtils.SAVE_FILE;
+                        urisToBeSaved = uris;
+                        mainActivityHelper.checkFolder(folder, MainActivity.this);
+                    }
+                } else {
+                    FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
         });
         //Ensure the FAB menu is visible
         floatingActionButton.setVisibility(View.VISIBLE);
@@ -1362,13 +1385,18 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     break;
                 case DataUtils.NEW_FILE:
                     mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
-
                     break;
                 case DataUtils.EXTRACT:
                     mainActivityHelper.extractFile(new File(oppathe));
                     break;
                 case DataUtils.COMPRESS:
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
+                    break;
+                case DataUtils.SAVE_FILE:
+                    FileUtil.writeUriToStorage(this, urisToBeSaved, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    urisToBeSaved = null;
+                    finish();
+                    break;
             }
             operation = -1;
         } else if (requestCode == REQUEST_CODE_SAF) {

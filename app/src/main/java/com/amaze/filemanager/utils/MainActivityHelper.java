@@ -1,3 +1,24 @@
+/*
+ * MainActivityHelper.java
+ *
+ * Copyright (C) 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.utils;
 
 import android.app.Activity;
@@ -16,6 +37,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -241,21 +263,12 @@ public class MainActivityHelper {
         TextView textView = view.findViewById(R.id.description);
         textView.setText(mainActivity.getString(R.string.needsaccesssummary) + path + mainActivity.getString(R.string.needsaccesssummary1));
         ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
-        x.positiveText(R.string.open);
-        x.negativeText(R.string.cancel);
-        x.positiveColor(accentColor);
-        x.negativeColor(accentColor);
-        x.callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(MaterialDialog materialDialog) {
-                triggerStorageAccessFramework();
-            }
-
-            @Override
-            public void onNegative(MaterialDialog materialDialog) {
-                Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
-            }
-        });
+        x.positiveText(R.string.open)
+            .negativeText(R.string.cancel)
+            .positiveColor(accentColor)
+            .negativeColor(accentColor)
+            .onPositive((dialog, which)->triggerStorageAccessFramework())
+            .onNegative((dialog, which)->Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show());
         final MaterialDialog y = x.build();
         y.show();
     }
