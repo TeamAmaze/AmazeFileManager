@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -188,7 +189,7 @@ public class HybridFile {
         return null;
     }
 
-    public long lastModified() throws MalformedURLException, SmbException {
+    public long lastModified() throws SmbException {
         switch (mode) {
             case SFTP:
                 SshClientUtils.execute(new SFtpClientTemplate(path) {
@@ -216,7 +217,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #length(Context)} to handle content resolvers
-     * @return
      */
     public long length() {
         long s = 0L;
@@ -249,8 +249,6 @@ public class HybridFile {
 
     /**
      * Helper method to find length
-     * @param context
-     * @return
      */
     public long length(Context context) {
 
@@ -308,7 +306,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #getName(Context)}
-     * @return
      */
     public String getName() {
         String name = null;
@@ -380,8 +377,6 @@ public class HybridFile {
     /**
      * Returns a path to parent for various {@link #mode}
      * @deprecated use {@link #getParent(Context)} to handle content resolvers
-     *
-     * @return
      */
     public String getParent() {
         String parentPath = "";
@@ -407,9 +402,6 @@ public class HybridFile {
 
     /**
      * Helper method to get parent path
-     *
-     * @param context
-     * @return
      */
     public String getParent(Context context) {
 
@@ -449,8 +441,6 @@ public class HybridFile {
     /**
      * Whether this object refers to a directory or file, handles all types of files
      * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
-     *
-     * @return
      */
     public boolean isDirectory() {
         boolean isDirectory;
@@ -563,7 +553,6 @@ public class HybridFile {
 
     /**
      * @deprecated use {@link #folderSize(Context)}
-     * @return
      */
     public long folderSize() {
         long size = 0L;
@@ -594,9 +583,6 @@ public class HybridFile {
 
     /**
      * Helper method to get length of folder in an otg
-     *
-     * @param context
-     * @return
      */
     public long folderSize(Context context) {
 
@@ -645,7 +631,6 @@ public class HybridFile {
 
     /**
      * Gets usable i.e. free space of a device
-     * @return
      */
     public long getUsableSpace() {
         long size = 0L;
@@ -701,8 +686,6 @@ public class HybridFile {
 
     /**
      * Gets total size of the disk
-     * @param context
-     * @return
      */
     public long getTotal(Context context) {
         long size = 0l;
@@ -765,7 +748,7 @@ public class HybridFile {
                 try {
                     SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public Void execute(SFTPClient client) throws IOException {
+                        public Void execute(SFTPClient client) {
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
@@ -834,7 +817,7 @@ public class HybridFile {
                 try {
                     arrayList = SshClientUtils.execute(new SFtpClientTemplate(path) {
                         @Override
-                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) throws IOException {
+                        public ArrayList<HybridFileParcelable> execute(SFTPClient client) {
                             ArrayList<HybridFileParcelable> retval = new ArrayList<HybridFileParcelable>();
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
@@ -924,7 +907,6 @@ public class HybridFile {
     /**
      * Handles getting input stream for various {@link OpenMode}
      * @deprecated use {@link #getInputStream(Context)} which allows handling content resolver
-     * @return
      */
     public InputStream getInputStream() {
         InputStream inputStream;
@@ -1141,12 +1123,7 @@ public class HybridFile {
         } else if (isLocal()) {
             exists = new File(path).exists();
         } else if (isRoot()) {
-            try {
-                return RootHelper.fileExists(path);
-            } catch (ShellNotRunningException e) {
-                e.printStackTrace();
-                return false;
-            }
+            return RootHelper.fileExists(path);
         }
 
         return exists;
@@ -1154,9 +1131,6 @@ public class HybridFile {
 
     /**
      * Helper method to check file existence in otg
-     *
-     * @param context
-     * @return
      */
     public boolean exists(Context context) {
         if (isOtgFile()) {
@@ -1197,7 +1171,7 @@ public class HybridFile {
         if(isSftp()) {
             SshClientUtils.execute(new SFtpClientTemplate(path) {
                 @Override
-                public Void execute(SFTPClient client) throws IOException {
+                public Void execute(SFTPClient client) {
                     try {
                         client.mkdir(SshClientUtils.extractRemotePathFrom(path));
                     } catch(IOException e) {
@@ -1225,7 +1199,6 @@ public class HybridFile {
                 cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isBoxFile()) {
             CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
@@ -1233,7 +1206,6 @@ public class HybridFile {
                 cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isOneDriveFile()) {
             CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
@@ -1241,7 +1213,6 @@ public class HybridFile {
                 cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isGoogleDriveFile()) {
             CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
@@ -1249,7 +1220,6 @@ public class HybridFile {
                 cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
             }
         } else if (isPCloudFile()) {
             CloudStorage cloudStoragePCloud = dataUtils.getAccount(OpenMode.PCLOUD);
@@ -1296,8 +1266,6 @@ public class HybridFile {
     /**
      * Returns the name of file excluding it's extension
      * If no extension is found then whole file name is returned
-     * @param context
-     * @return
      */
     public String getNameString(Context context) {
         String fileName = getName(context);
@@ -1319,15 +1287,14 @@ public class HybridFile {
                 if (isDirectory()) {
 
                     layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
-                            "", folderSize() + "", 0, true,
-                            false, file.lastModified() + "", showThumbs);
+                            "", folderSize() + "", 0, true, file.lastModified() + "",
+                            false, showThumbs, mode);
                 } else {
                     layoutElement = new LayoutElementParcelable(
                             file.getPath(), RootHelper.parseFilePermission(file),
-                            file.getPath(), file.length() + "", file.length(), false,
-                            false, file.lastModified() + "", showThumbs);
+                            file.getPath(), file.length() + "", file.length(), false, file.lastModified() + "",
+                            false, showThumbs, mode);
                 }
-                layoutElement.setMode(mode);
                 return layoutElement;
             default:
                 return null;

@@ -1,7 +1,30 @@
+/*
+ * GenericCopyUtil.java
+ *
+ * Copyright © 2016-2018 Vishal Nehra (vishalmeham2 at gmail.com),
+ * Raymond Lai (airwave209gt at gmail.com)
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils.files;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
@@ -31,8 +54,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
 /**
- * Created by vishal on 26/10/16.
- *
+ * 
  * Base class to handle file copy.
  */
 
@@ -57,7 +79,6 @@ public class GenericCopyUtil {
      *                    using streams instead of channel which maps the who buffer in memory.
      *                    TODO: Use buffers even on low memory but don't map the whole file to memory but
      *                          parts of it, and transfer each part instead.
-     * @throws IOException
      */
     private void startCopy(boolean lowOnMemory) throws IOException {
 
@@ -272,7 +293,7 @@ public class GenericCopyUtil {
             e.printStackTrace();
 
             // we ran out of memory to map the whole channel, let's switch to streams
-            AppConfig.toast(mContext, mContext.getResources().getString(R.string.copy_low_memory));
+            AppConfig.toast(mContext, mContext.getString(R.string.copy_low_memory));
 
             startCopy(true);
         } finally {
@@ -287,6 +308,19 @@ public class GenericCopyUtil {
             } catch (IOException e) {
                 e.printStackTrace();
                 // failure in closing stream
+            }
+
+            //If target file is copied onto the device and copy was successful, trigger media store
+            //rescan
+
+            if((mTargetFile.isLocal() || mTargetFile.isOtgFile()) && mTargetFile.exists(mContext)) {
+
+                DocumentFile documentFile = FileUtil.getDocumentFile(mTargetFile.getFile(), false, mContext);
+                //If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
+                if(documentFile == null)
+                    documentFile = DocumentFile.fromFile(mTargetFile.getFile());
+
+                FileUtils.scanFile(documentFile.getUri(), mContext);
             }
         }
     }

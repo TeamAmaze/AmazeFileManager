@@ -35,7 +35,6 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -51,8 +50,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -119,34 +118,30 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 checkBoxFingerprint.setEnabled(true);
             }
 
-            checkBoxFingerprint.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            checkBoxFingerprint.setOnPreferenceChangeListener((preference, newValue) -> {
 
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                    if (ActivityCompat.checkSelfPermission(getActivity(),
-                            Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.crypt_fingerprint_no_permission),
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            !fingerprintManager.hasEnrolledFingerprints()) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.crypt_fingerprint_not_enrolled),
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            !keyguardManager.isKeyguardSecure()) {
-                        Toast.makeText(getActivity(),
-                                getResources().getString(R.string.crypt_fingerprint_no_security),
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    masterPasswordPreference.setEnabled(false);
-                    return true;
+                if (ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.crypt_fingerprint_no_permission),
+                            Toast.LENGTH_LONG).show();
+                    return false;
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        !fingerprintManager.hasEnrolledFingerprints()) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.crypt_fingerprint_not_enrolled),
+                            Toast.LENGTH_LONG).show();
+                    return false;
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        !keyguardManager.isKeyguardSecure()) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.crypt_fingerprint_no_security),
+                            Toast.LENGTH_LONG).show();
+                    return false;
                 }
+
+                masterPasswordPreference.setEnabled(false);
+                return true;
             });
         } catch (NoClassDefFoundError error) {
             error.printStackTrace();
@@ -171,13 +166,10 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 int current = Integer.parseInt(sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
                 current = current == -1 ? 0 : current;
                 if (current != 0) current = current - 1;
-                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        sharedPref.edit().putString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "" + (which != 0 ? sort[which] : "" + -1)).commit();
-                        dialog.dismiss();
-                        return true;
-                    }
+                builder.items(sort).itemsCallbackSingleChoice(current, (dialog, view, which, text) -> {
+                    sharedPref.edit().putString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "" + (which != 0 ? sort[which] : "" + -1)).commit();
+                    dialog.dismiss();
+                    return true;
                 });
                 builder.build().show();
                 return true;
@@ -186,14 +178,11 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 current = Integer.parseInt(sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "0"));
                 builder = new MaterialDialog.Builder(getActivity());
                 //builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-                builder.items(sort).itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
-                        dialog.dismiss();
-                        restartPC(getActivity());
-                        return true;
-                    }
+                builder.items(sort).itemsCallbackSingleChoice(current, (dialog, view, which, text) -> {
+                    utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
+                    dialog.dismiss();
+                    restartPC(getActivity());
+                    return true;
                 });
                 builder.title(R.string.theme);
                 builder.build().show();
@@ -255,49 +244,35 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 }
 
                 masterPasswordDialogBuilder.input(getResources().getString(R.string.authenticate_password),
-                        decryptedPassword, false,
-                        new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-
-                            }
-                        });
+                        decryptedPassword, false, (dialog, input) -> { });
                 masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
                 masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
-                masterPasswordDialogBuilder.positiveColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
-                masterPasswordDialogBuilder.negativeColor(utilsProvider.getColorPreference().getColor(ColorUsage.ACCENT));
+                masterPasswordDialogBuilder.positiveColor(((ThemedActivity) getActivity()).getAccent());
+                masterPasswordDialogBuilder.negativeColor(((ThemedActivity) getActivity()).getAccent());
 
-                masterPasswordDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        try {
+                masterPasswordDialogBuilder.onPositive((dialog, which) -> {
+                    try {
 
-                            String inputText = dialog.getInputEditText().getText().toString();
-                            if (!inputText.equals(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+                        String inputText = dialog.getInputEditText().getText().toString();
+                        if (!inputText.equals(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
-                                sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                        CryptUtil.encryptPassword(getActivity(),
-                                                dialog.getInputEditText().getText().toString())).apply();
-                            } else {
-                                // empty password, remove the preference
-                                sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                        "").apply();
-                            }
-                        } catch (GeneralSecurityException | IOException e) {
-                            e.printStackTrace();
                             sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
+                                    CryptUtil.encryptPassword(getActivity(),
+                                            dialog.getInputEditText().getText().toString())).apply();
+                        } else {
+                            // empty password, remove the preference
+                            sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                    "").apply();
                         }
+                    } catch (GeneralSecurityException | IOException e) {
+                        e.printStackTrace();
+                        sharedPref.edit().putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT).apply();
                     }
                 });
 
-                masterPasswordDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.cancel();
-                    }
-                });
+                masterPasswordDialogBuilder.onNegative((dialog, which) -> dialog.cancel());
 
                 masterPasswordDialogBuilder.build().show();
                 return true;

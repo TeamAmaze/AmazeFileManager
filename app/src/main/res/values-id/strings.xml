@@ -263,7 +263,7 @@
     <string name="grant">Izinkan</string>
     <string name="grantper">Berikan Izin</string>
     <string name="grantfailed">Izin tidak diberikan</string>
-    <string name="granttext">Apl membutuhkan izin akses penyimpanan untuk bisa melanjutkan. Membatalkan izin ini akan keluar dari apl.</string>
+    <string name="grant_storage_permission">Apl membutuhkan izin akses penyimpanan untuk bisa melanjutkan. Membatalkan izin ini akan keluar dari apl.</string>
     <string name="operationunsuccesful">Operasi tidak Berhasil</string>
     <string name="creatingfile">Membuat Berkas</string>
     <string name="creatingfolder">Membuat Folder</string>

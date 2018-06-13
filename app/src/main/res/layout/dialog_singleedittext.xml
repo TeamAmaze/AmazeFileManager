@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_singleedittext"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.amaze.filemanager.ui.views.WarnableTextInputLayout
+        android:id="@+id/singleedittext_warnabletextinputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/md_dialog_frame_margin"
+        android:paddingRight="@dimen/md_dialog_frame_margin">
+        <EditText
+            android:id="@+id/singleedittext_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ems="10" />
+    </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
+
+
+</android.support.constraint.ConstraintLayout>

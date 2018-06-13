@@ -253,7 +253,7 @@
   <string name="grant">Одобри</string>
   <string name="grantper">Одобри дозволу</string>
   <string name="grantfailed">Дозвола није одобрена</string>
-  <string name="granttext">Апликацији је потребна дозвола за складиште да настави. Отказивањем дијалога напустићете апликацију.</string>
+  <string name="grant_storage_permission">Апликацији је потребна дозвола за складиште да настави. Отказивањем дијалога напустићете апликацију.</string>
   <string name="operationunsuccesful">Радња није успела</string>
   <string name="creatingfile">Правим фајл</string>
   <string name="creatingfolder">Правим фасциклу</string>

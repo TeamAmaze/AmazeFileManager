@@ -262,7 +262,7 @@
   <string name="grant">授予</string>
   <string name="grantper">授予權限</string>
   <string name="grantfailed">未授予權限</string>
-  <string name="granttext">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
+  <string name="grant_storage_permission">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
   <string name="operationunsuccesful">操作失敗</string>
   <string name="creatingfile">建立檔案中</string>
   <string name="creatingfolder">正在建立資料夾</string>

@@ -262,7 +262,7 @@
   <string name="grant">Povoliť</string>
   <string name="grantper">Udeliť oprávnenie</string>
   <string name="grantfailed">Oprávnenie nebolo udelené</string>
-  <string name="granttext">Aplikácia pre pokračovanie potrebuje udeliť povolenie k úložisku. Zrušením tohto dialógového okna sa aplikácia ukončí.</string>
+  <string name="grant_storage_permission">Aplikácia pre pokračovanie potrebuje udeliť povolenie k úložisku. Zrušením tohto dialógového okna sa aplikácia ukončí.</string>
   <string name="operationunsuccesful">Operácia neúspešná</string>
   <string name="creatingfile">Vytvorenie súboru</string>
   <string name="creatingfolder">Vytvorenie priečinka</string>

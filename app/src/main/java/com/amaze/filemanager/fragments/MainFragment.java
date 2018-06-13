@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +69,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -80,17 +80,18 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -99,7 +100,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileListSorter;
@@ -119,12 +119,7 @@ import jcifs.smb.SmbFile;
 
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
 public class MainFragment extends android.support.v4.app.Fragment implements BottomBarButtonPath {
 
@@ -135,7 +130,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public OpenMode openMode = OpenMode.FILE;
 
     /**
-     * {@link MainFragment#IS_LIST} boolean to identify if the view is a list or grid
+     * boolean to identify if the view is a list or grid
      */
     public boolean IS_LIST = true;
     public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -149,7 +144,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * This is not an exact copy of the elements in the adapter
      */
     private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
-    private RecyclerAdapter adapter;
+    public RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
     private Resources res;
 
@@ -211,9 +206,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
-        accentColor = getMainActivity().getColorPreference().getColor(ColorUsage.ACCENT);
-        primaryColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY);
-        primaryTwoColor = getMainActivity().getColorPreference().getColor(ColorUsage.PRIMARY_TWO);
+        accentColor = getMainActivity().getAccent();
+        primaryColor = getMainActivity().getCurrentColorPreference().primaryFirstTab;
+        primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
     }
 
     public void stopAnimation() {
@@ -230,9 +225,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         setRetainInstance(true);
-        listView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-        fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        fastScroller = rootView.findViewById(R.id.fastscroll);
         fastScroller.setPressedHandleColor(accentColor);
         listView.setOnTouchListener((view, motionEvent) -> {
             if (adapter != null && stopAnims) {
@@ -249,7 +244,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             return false;
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
 
@@ -512,7 +507,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             ArrayList<LayoutElementParcelable> positions = adapter.getCheckedItems();
-            TextView textView1 = (TextView) actionModeView.findViewById(R.id.item_count);
+            TextView textView1 = actionModeView.findViewById(R.id.item_count);
             textView1.setText(String.valueOf(positions.size()));
             textView1.setOnClickListener(null);
             mode.setTitle(positions.size() + "");
@@ -762,7 +757,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             getMainActivity().updateViews(new ColorDrawable(MainActivity.currentTab == 1 ?
                     primaryTwoColor : primaryColor));
 
-            if (!getMainActivity().getDrawer().isLocked()) {
+            if (getMainActivity().getDrawer().isLocked()) {
                 getMainActivity().getDrawer().unlock();
             }
         }
@@ -809,7 +804,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                             mediaScannerConnection = new MediaScannerConnection(context, mediaScannerConnectionClient);
                             //FileUtils.scanFile(context, mediaScannerConnection, path);
                         } else {
-                            FileUtils.scanFile(arg, context);
+                            FileUtils.scanFile(new File(arg), context);
                         }
                     }
                     //break;
@@ -968,7 +963,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     /**
      * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to external app
-     * @param baseFile
      */
     public void returnIntentResults(HybridFileParcelable baseFile) {
 
@@ -1032,7 +1026,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     }
 
     void initNoFileLayout() {
-        nofilesview = (SwipeRefreshLayout) rootView.findViewById(R.id.nofilelayout);
+        nofilesview = rootView.findViewById(R.id.nofilelayout);
         nofilesview.setColorSchemeColors(accentColor);
         nofilesview.setOnRefreshListener(() -> {
             loadlist((CURRENT_PATH), false, openMode);
@@ -1167,8 +1161,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private LayoutElementParcelable getBackElement() {
         if (back == null) {
             back = new LayoutElementParcelable("..", "", "",
-                    getString(R.string.goback), 0, false, true,
-                    "", getBoolean(PREFERENCE_SHOW_THUMB));
+                    getString(R.string.goback), 0, false, "",
+                    true, getBoolean(PREFERENCE_SHOW_THUMB), OpenMode.UNKNOWN);
         }
 
         return back;
@@ -1207,33 +1201,44 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
      * @param f the file to rename
      */
     public void rename(final HybridFileParcelable f) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        String name = f.getName();
-        builder.input("", name, false, (materialDialog, charSequence) -> {});
-        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        builder.title(getResources().getString(R.string.rename));
+        MaterialDialog renameDialog = GeneralDialogCreation.showNameDialog(getMainActivity(),
+            "",
+            f.getName(),
+            getResources().getString(R.string.rename),
+            getResources().getString(R.string.save),
+            null,
+            getResources().getString(R.string.cancel),
+            (dialog, which) -> {
+                EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+                String name1 = textfield.getText().toString();
 
-        builder.onNegative((dialog, which) -> dialog.cancel());
+                if (f.isSmb()){
+                    if (f.isDirectory() && !name1.endsWith("/"))
+                        name1 = name1 + "/";
+                }
+                getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
+                        CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
+            }, (text)-> {
+                    boolean isValidFilename = FileUtil.isValidFilename(text);
 
-        builder.onPositive((dialog, which) -> {
-            String name1 = dialog.getInputEditText().getText().toString();
-            getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
-                    CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
-        });
+                    if (!isValidFilename) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+                    } else if (text.length() < 1) {
+                        return new WarnableTextInputValidator.ReturnState(
+                                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                    }
 
-        builder.positiveText(R.string.save);
-        builder.negativeText(R.string.cancel);
-        builder.positiveColor(accentColor).negativeColor(accentColor).widgetColor(accentColor);
-        final MaterialDialog materialDialog = builder.build();
-        materialDialog.show();
-        Log.d(getClass().getSimpleName(), f.getNameString(getContext()));
+                    return new WarnableTextInputValidator.ReturnState();
+            });
 
         // place cursor at the starting of edit text by posting a runnable to edit text
         // this is done because in case android has not populated the edit text layouts yet, it'll
         // reset calls to selection if not posted in message queue
-        materialDialog.getInputEditText().post(() -> {
+        EditText textfield = renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
+        textfield.post(() -> {
             if (!f.isDirectory()) {
-                materialDialog.getInputEditText().setSelection(f.getNameString(getContext()).length());
+                textfield.setSelection(f.getNameString(getContext()).length());
             }
         });
     }
@@ -1449,12 +1454,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         }
     }
 
-    public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path) throws SmbException {
-        ArrayList<LayoutElementParcelable> a = new ArrayList<>();
+    public ArrayList<LayoutElementParcelable> addToSmb(SmbFile[] mFile, String path, boolean showHiddenFiles) throws SmbException {
+        ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
         if (searchHelper.size() > 500) searchHelper.clear();
         for (SmbFile aMFile : mFile) {
-            if (dataUtils.isFileHidden(aMFile.getPath()))
+            if ((dataUtils.isFileHidden(aMFile.getPath()) || aMFile.isHidden()) && !showHiddenFiles) {
                 continue;
+            }
             String name = aMFile.getName();
             name = (aMFile.isDirectory() && name.endsWith("/")) ? name.substring(0, name.length() - 1) : name;
             if (path.equals(smbPath)) {
@@ -1466,27 +1472,23 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(name, aMFile.getPath(),
                         "", "", "", 0, false,
                         aMFile.lastModified() + "", true,
-                        getBoolean(PREFERENCE_SHOW_THUMB));
+                        getBoolean(PREFERENCE_SHOW_THUMB), OpenMode.SMB);
 
-                layoutElement.setMode(OpenMode.SMB);
                 searchHelper.add(layoutElement.generateBaseFile());
-                a.add(layoutElement);
+                smbFileList.add(layoutElement);
+
             } else {
                 file_count++;
-                try {
-                    LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
-                            aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
-                            aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
-                            false, getBoolean(PREFERENCE_SHOW_THUMB));
-                    layoutElement.setMode(OpenMode.SMB);
-                    searchHelper.add(layoutElement.generateBaseFile());
-                    a.add(layoutElement);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                LayoutElementParcelable layoutElement = new LayoutElementParcelable(name,
+                        aMFile.getPath(), "", "", Formatter.formatFileSize(getContext(),
+                        aMFile.length()), aMFile.length(), false, aMFile.lastModified() + "",
+                        false, getBoolean(PREFERENCE_SHOW_THUMB), OpenMode.SMB);
+                layoutElement.setMode(OpenMode.SMB);
+                searchHelper.add(layoutElement.generateBaseFile());
+                smbFileList.add(layoutElement);
             }
         }
-        return a;
+        return smbFileList;
     }
 
     // method to add search result entry to the LIST_ELEMENT arrayList
@@ -1497,11 +1499,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
             if (mFile.isDirectory()) {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(), mFile.getPermission(),
-                        mFile.getLink(), size, 0, true, false,
-                        mFile.getDate() + "",
-                        getBoolean(PREFERENCE_SHOW_THUMB));
+                        mFile.getLink(), size, 0, true,
+                        mFile.getDate() + "", false,
+                        getBoolean(PREFERENCE_SHOW_THUMB), mFile.getMode());
 
-                layoutElement.setMode(mFile.getMode());
                 LIST_ELEMENTS.add(layoutElement);
                 folder_count++;
                 return layoutElement;
@@ -1521,9 +1522,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 try {
                     LayoutElementParcelable layoutElement = new LayoutElementParcelable(f.getPath(),
                             mFile.getPermission(), mFile.getLink(), size, longSize, false,
-                            false, mFile.getDate() + "",
-                            getBoolean(PREFERENCE_SHOW_THUMB));
-                    layoutElement.setMode(mFile.getMode());
+                            mFile.getDate() + "", false,
+                            getBoolean(PREFERENCE_SHOW_THUMB), mFile.getMode());
                     LIST_ELEMENTS.add(layoutElement);
                     file_count++;
                     return layoutElement;
@@ -1547,7 +1547,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     public void hide(String path) {
 
         dataUtils.addHiddenFile(path);
-        if (new File(path).isDirectory()) {
+        File file = new File(path);
+        if (file.isDirectory()) {
             File f1 = new File(path + "/" + ".nomedia");
             if (!f1.exists()) {
                 try {
@@ -1556,7 +1557,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     e.printStackTrace();
                 }
             }
-            FileUtils.scanFile(path, getActivity());
+            FileUtils.scanFile(file, getActivity());
         }
 
     }

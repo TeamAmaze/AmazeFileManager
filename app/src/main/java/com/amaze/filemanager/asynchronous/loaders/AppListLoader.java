@@ -164,7 +164,6 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
     /**
      * We would want to release resources here
      * List is nothing we would want to close
-     * @param layoutElementList
      */
     //TODO do something
     private void onReleaseResources(AppsDataPair layoutElementList) {

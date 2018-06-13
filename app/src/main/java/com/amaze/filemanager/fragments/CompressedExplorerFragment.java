@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -50,7 +51,6 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -59,12 +59,12 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
@@ -98,7 +98,8 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public ArrayList<HybridFileParcelable> files;
     public boolean selection = false;
     public String relativeDirectory = "";//Normally this would be "/" but for pathing issues it isn't
-    public String skin, accentColor, iconskin, year;
+    public @ColorInt int accentColor, iconskin;
+    public String year;
     public CompressedExplorerAdapter compressedExplorerAdapter;
     public ActionMode mActionMode;
     public boolean coloriseIcons, showSize, showLastModified, gobackitem;
@@ -130,7 +131,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.main_frag, container, false);
         mainActivity = (MainActivity) getActivity();
-        listView = (RecyclerView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         listView.setOnTouchListener((view, motionEvent) -> {
             if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
                 stopAnim();
@@ -140,7 +141,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             stopAnims = false;
             return false;
         });
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+        swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         return rootView;
@@ -194,9 +195,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
         showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
         year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
-        skin = mainActivity.getColorPreference().getColorAsString(ColorUsage.PRIMARY);
-        accentColor = mainActivity.getColorPreference().getColorAsString(ColorUsage.ACCENT);
-        iconskin = mainActivity.getColorPreference().getColorAsString(ColorUsage.ICON_SKIN);
+
+        accentColor = mainActivity.getAccent();
+        iconskin = mainActivity.getCurrentColorPreference().iconSkin;
 
         //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
@@ -269,7 +270,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             hideOption(R.id.compress, menu);
             hideOption(R.id.hide, menu);
             showOption(R.id.ex, menu);
-            mode.setTitle(getResources().getString(R.string.select));
+            mode.setTitle(getString(R.string.select));
             mainActivity.updateViews(new ColorDrawable(Utils.getColor(getContext(), R.color.holo_dark_action_mode)));
             if (Build.VERSION.SDK_INT >= 21) {
 
@@ -313,7 +314,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                     }
                     return true;
                 case R.id.ex:
-                    Toast.makeText(getActivity(), getResources().getString(R.string.extracting), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.extracting), Toast.LENGTH_SHORT).show();
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {
@@ -331,8 +332,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             if (compressedExplorerAdapter != null) compressedExplorerAdapter.toggleChecked(false);
+            @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
             selection = false;
-            mainActivity.updateViews(mainActivity.getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+            mainActivity.updateViews(new ColorDrawable(primaryColor));
             if (Build.VERSION.SDK_INT >= 21) {
 
                 Window window = getActivity().getWindow();
@@ -460,9 +462,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             //listView.addItemDecoration(headersDecor);
             addheader = false;
         }
-        final FastScroller fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroll);
+        final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
         fastScroller.setRecyclerView(listView, 1);
-        fastScroller.setPressedHandleColor(mainActivity.getColorPreference().getColor(ColorUsage.ACCENT));
+        fastScroller.setPressedHandleColor(mainActivity.getAccent());
         ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             fastScroller.updateHandlePosition(verticalOffset, 112);
         });

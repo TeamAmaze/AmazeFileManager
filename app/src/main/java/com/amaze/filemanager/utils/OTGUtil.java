@@ -1,17 +1,22 @@
 package com.amaze.filemanager.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static android.content.Context.USB_SERVICE;
 
 /**
  * Created by Vishal on 27-04-2017.
@@ -42,12 +47,12 @@ public class OTGUtil {
      * @param path    the path to the directory tree, starts with prefix 'otg:/'
      *                Independent of URI (or mount point) for the OTG
      * @param context context for loading
-     * @return an array of list of files at the path
      */
     public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
-        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
-        String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
+        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
+
+        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
 
         String[] parts = path.split("/");
         for (String part : parts) {
@@ -81,11 +86,11 @@ public class OTGUtil {
      *                        in case path is not present. Notably useful in opening an output stream.
      */
     public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
-        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(context);
-        String rootUriString = manager.getString(MainActivity.KEY_PREF_OTG, null);
+        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
         // start with root of SD card and then parse through document tree.
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, Uri.parse(rootUriString));
+        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
 
         String[] parts = path.split("/");
         for (String part : parts) {
@@ -102,4 +107,27 @@ public class OTGUtil {
 
         return rootUri;
     }
+
+    /**
+     * Checks if there is at least one USB device connected with class MASS STORAGE.
+     */
+    public static boolean isMassStorageDeviceConnected(@NonNull final Context context) {
+        UsbManager usbManager = (UsbManager) context.getSystemService(USB_SERVICE);
+        if(usbManager == null) return false;
+
+        HashMap<String, UsbDevice> devices = usbManager.getDeviceList();
+
+        for (String deviceName : devices.keySet()) {
+            UsbDevice device = devices.get(deviceName);
+
+            for (int i = 0; i < device.getInterfaceCount(); i++){
+                if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

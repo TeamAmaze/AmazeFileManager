@@ -232,7 +232,7 @@
   <string name="showDividers">显示分割线</string>
   <string name="needsaccess">需要写入权限</string>
   <string name="needsaccesssummary">请选择根目录下的 \t</string>
-  <string name="needsaccesssummary1">\\t 授予当前操作写入权限</string>
+  <string name="needsaccesssummary1">授予当前操作写入权限</string>
   <string name="smb_con">SMB 共享连接</string>
   <string name="smb_server">服务器 IP 地址</string>
   <string name="username">用户名</string>
@@ -262,7 +262,7 @@
   <string name="grant">授予</string>
   <string name="grantper">授予权限</string>
   <string name="grantfailed">权限未被授予</string>
-  <string name="granttext">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
+  <string name="grant_storage_permission">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
   <string name="operationunsuccesful">操作失败</string>
   <string name="creatingfile">正在创建文件</string>
   <string name="creatingfolder">正在创建文件夹</string>
@@ -571,4 +571,18 @@
   <string name="no_obtainable_info">没有该文件相关的信息</string>
   <string name="reopen_from_source">无法打开，请使用上次的应用打开该类型的文件</string>
   <string name="no_file_error">打开文件出错，无法找到该文件</string>
+  <string name="file_read_only">此文件为只读文件</string>
+  <string name="got_it">知道了!</string>
+  <string name="encryption_fail_copy">更新加密信息失败</string>
+  <string name="extracted">已解压</string>
+  <string name="compressed">已压缩</string>
+  <string name="processed">已完成</string>
+  <string name="filename">文件名</string>
+  <string name="compress_file_suggest_zip_extension">请以.zip作为文件后缀名</string>
+  <string name="create_file_suggest_txt_extension">请以.txt作为文件后缀名</string>
+  <string name="ssh_key_invalid_passphrase">错误的密钥密码</string>
+  <string name="encrypt_file_save_as">保存加密后的文件为…</string>
+  <string name="encrypt_folder_save_as">保存加密后的文件夹至…</string>
+  <string name="encrypt_file_must_end_with_aze">加密后的文件必须以.aze作为文件后缀名</string>
+  <string name="cannot_overwrite">不能覆盖已存在文件</string>
 </resources>

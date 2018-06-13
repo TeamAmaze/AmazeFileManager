@@ -24,8 +24,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -42,12 +44,11 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fragments.DbViewerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.ColorPref;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -76,7 +77,6 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.checkStorage = false;
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -91,16 +91,18 @@ public class DatabaseViewerActivity extends ThemedActivity {
         setContentView(R.layout.activity_db_viewer);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
+
         if (SDK_INT >= 21) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription
-                    ("Amaze", ((BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap
-                            .ic_launcher))
-                            .getBitmap(),
-                            getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    ("Amaze",
+                            ((BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_launcher)).getBitmap(),
+                            primaryColor);
             setTaskDescription(taskDescription);
         }
-        getSupportActionBar()
-                .setBackgroundDrawable(getColorPreference().getDrawable(ColorUsage.getPrimary(MainActivity.currentTab)));
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
 
         boolean useNewStack = sharedPref.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
 
@@ -109,7 +111,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
         if (SDK_INT == 20 || SDK_INT == 19) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintColor(getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+            tintManager.setStatusBarTintColor(ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab));
             FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) findViewById(R.id.parentdb).getLayoutParams();
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
@@ -117,9 +119,9 @@ public class DatabaseViewerActivity extends ThemedActivity {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+            window.setStatusBarColor(PreferenceUtils.getStatusColor(primaryColor));
             if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
-                window.setNavigationBarColor(PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+                window.setNavigationBarColor(PreferenceUtils.getStatusColor(primaryColor));
 
         }
 

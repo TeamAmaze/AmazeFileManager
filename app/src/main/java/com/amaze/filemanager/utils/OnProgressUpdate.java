@@ -8,5 +8,5 @@ package com.amaze.filemanager.utils;
  */
 
 public interface OnProgressUpdate<T> {
-    public void onUpdate(T data);
+    void onUpdate(T data);
 }

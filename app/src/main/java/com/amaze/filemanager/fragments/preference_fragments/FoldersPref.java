@@ -17,11 +17,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.util.HashMap;
@@ -97,15 +97,15 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
     }
 
     private void loadCreateDialog() {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         LayoutInflater li = LayoutInflater.from(activity);
         final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final AppCompatEditText editText1 = ((AppCompatEditText) v.findViewById(R.id.text1)),
-                editText2 = ((AppCompatEditText) v.findViewById(R.id.text2));
+        final AppCompatEditText editText1 = v.findViewById(R.id.text1),
+                editText2 = v.findViewById(R.id.text2);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.create_shortcut)
@@ -123,46 +123,38 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        PathSwitchPreference p = new PathSwitchPreference(getActivity());
-                        p.setTitle(editText1.getText());
-                        p.setSummary(editText2.getText());
-                        p.setOnPreferenceClickListener(FoldersPref.this);
+                .setOnClickListener(view -> {
+                    PathSwitchPreference p = new PathSwitchPreference(getActivity());
+                    p.setTitle(editText1.getText());
+                    p.setSummary(editText2.getText());
+                    p.setOnPreferenceClickListener(FoldersPref.this);
 
-                        position.put(p, dataUtils.getBooks().size());
-                        getPreferenceScreen().addPreference(p);
+                    position.put(p, dataUtils.getBooks().size());
+                    getPreferenceScreen().addPreference(p);
 
-                        String[] values = new String[] {editText1.getText().toString(),
-                                editText2.getText().toString()};
+                    String[] values = new String[] {editText1.getText().toString(),
+                            editText2.getText().toString()};
 
-                        dataUtils.addBook(values);
-                        AppConfig.runInBackground(new Runnable() {
-                            @Override
-                            public void run() {
+                    dataUtils.addBook(values);
+                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
+                            editText2.getText().toString(), editText1.getText().toString()));
 
-                                utilsHandler.addBookmark(editText1.getText().toString(), editText2.getText().toString());
-                            }
-                        });
-
-                        dialog.dismiss();
-                    }
+                    dialog.dismiss();
                 });
 
         dialog.show();
     }
 
     private void loadEditDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         LayoutInflater li = LayoutInflater.from(activity);
         final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final EditText editText1 = ((EditText) v.findViewById(R.id.text1)),
-                editText2 = ((EditText) v.findViewById(R.id.text2));
+        final EditText editText1 = v.findViewById(R.id.text1),
+                editText2 = v.findViewById(R.id.text2);
         editText1.setText(p.getTitle());
         editText2.setText(p.getSummary());
 
@@ -183,46 +175,37 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         disableButtonIfNotPath(editText2, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                .setOnClickListener(view -> {
 
-                        final String oldName = p.getTitle().toString();
-                        final String oldPath = p.getSummary().toString();
+                    final String oldName = p.getTitle().toString();
+                    final String oldPath = p.getSummary().toString();
 
 
-                        dataUtils.removeBook(position.get(p));
-                        position.remove(p);
-                        getPreferenceScreen().removePreference(p);
+                    dataUtils.removeBook(position.get(p));
+                    position.remove(p);
+                    getPreferenceScreen().removePreference(p);
 
-                        p.setTitle(editText1.getText());
-                        p.setSummary(editText2.getText());
+                    p.setTitle(editText1.getText());
+                    p.setSummary(editText2.getText());
 
-                        position.put(p, position.size());
-                        getPreferenceScreen().addPreference(p);
+                    position.put(p, position.size());
+                    getPreferenceScreen().addPreference(p);
 
-                        String[] values = new String[] {editText1.getText().toString(),
-                                editText2.getText().toString()};
+                    String[] values = new String[] {editText1.getText().toString(),
+                            editText2.getText().toString()};
 
-                        dataUtils.addBook(values);
-                        AppConfig.runInBackground(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                utilsHandler.renameBookmark(oldName, oldPath,
-                                        editText1.getText().toString(),
-                                        editText2.getText().toString());
-                            }
-                        });
-                        dialog.dismiss();
-                    }
+                    dataUtils.addBook(values);
+                    AppConfig.runInBackground(() -> utilsHandler.renameBookmark(oldName, oldPath,
+                            editText1.getText().toString(),
+                            editText2.getText().toString()));
+                    dialog.dismiss();
                 });
 
         dialog.show();
     }
 
     private void loadDeleteDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getColorPreference().getColor(ColorUsage.ACCENT);
+        int fab_skin = activity.getAccent();
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.questiondelete_shortcut)
@@ -234,24 +217,16 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                .setOnClickListener(view -> {
 
-                        dataUtils.removeBook(position.get(p));
+                    dataUtils.removeBook(position.get(p));
 
-                        AppConfig.runInBackground(new Runnable() {
-                            @Override
-                            public void run() {
-                                utilsHandler.removeBookmarksPath(p.getTitle().toString(),
-                                        p.getSummary().toString());
-                            }
-                        });
+                    utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
+                            p.getTitle().toString(), p.getSummary().toString()));
 
-                        getPreferenceScreen().removePreference(p);
-                        position.remove(p);
-                        dialog.dismiss();
-                    }
+                    getPreferenceScreen().removePreference(p);
+                    position.remove(p);
+                    dialog.dismiss();
                 });
 
         dialog.show();

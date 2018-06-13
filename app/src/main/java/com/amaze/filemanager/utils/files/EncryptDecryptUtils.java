@@ -40,12 +40,18 @@ public class EncryptDecryptUtils {
      *
      * @param path     the path of file to encrypt
      * @param password the password in plaintext
+     * @throws GeneralSecurityException Errors on encrypting file/folder
+     * @throws IOException I/O errors on encrypting file/folder
      */
     public static void startEncryption(Context c, final String path, final String password,
-                                       Intent intent) throws Exception {
+                                       Intent intent) throws GeneralSecurityException, IOException {
         CryptHandler cryptHandler = new CryptHandler(c);
-        EncryptedEntry encryptedEntry = new EncryptedEntry(path.concat(CryptUtil.CRYPT_EXTENSION),
-                password);
+        String destPath = path.substring(0, path.lastIndexOf('/')+1)
+                .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
+
+        //EncryptService.TAG_ENCRYPT_TARGET already has the .aze extension, no need to append again
+
+        EncryptedEntry encryptedEntry = new EncryptedEntry(destPath, password);
         cryptHandler.addEntry(encryptedEntry);
 
         // start the encryption process
@@ -72,7 +78,7 @@ public class EncryptDecryptUtils {
             e.printStackTrace();
 
             // we couldn't find any entry in database or lost the key to decipher
-            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+            Toast.makeText(main.getContext(), main.getActivity().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -85,14 +91,14 @@ public class EncryptDecryptUtils {
 
                     @Override
                     public void failed() {
-                        Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail_password), Toast.LENGTH_LONG).show();
+                        Toast.makeText(main.getContext(), main.getActivity().getString(R.string.crypt_decryption_fail_password), Toast.LENGTH_LONG).show();
                     }
                 };
 
         if (encryptedEntry == null) {
             // couldn't find the matching path in database, we lost the password
 
-            Toast.makeText(main.getContext(), main.getActivity().getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+            Toast.makeText(main.getContext(), main.getActivity().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -106,7 +112,7 @@ public class EncryptDecryptUtils {
                 } catch (GeneralSecurityException | IOException | IllegalStateException e) {
                     e.printStackTrace();
 
-                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
             case PreferencesConstants.ENCRYPT_PASSWORD_MASTER:
@@ -117,7 +123,7 @@ public class EncryptDecryptUtils {
                                     PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)), decryptButtonCallbackInterface);
                 } catch (GeneralSecurityException | IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(main.getContext(), main.getResources().getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
+                    Toast.makeText(main.getContext(), main.getString(R.string.crypt_decryption_fail), Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -155,28 +161,21 @@ public class EncryptDecryptUtils {
 
         /**
          * Callback fired when we've just gone through warning dialog before encryption
-         *
-         * @param intent
-         * @throws Exception
          */
-        void onButtonPressed(Intent intent) throws Exception;
+        void onButtonPressed(Intent intent) throws GeneralSecurityException, IOException;
 
         /**
          * Callback fired when user has entered a password for encryption
          * Not called when we've a master password set or enable fingerprint authentication
          *
-         * @param intent
          * @param password the password entered by user
-         * @throws Exception
          */
-        void onButtonPressed(Intent intent, String password) throws Exception;
+        void onButtonPressed(Intent intent, String password) throws GeneralSecurityException, IOException;
     }
 
     public interface DecryptButtonCallbackInterface {
         /**
          * Callback fired when we've confirmed the password matches the database
-         *
-         * @param intent
          */
         void confirm(Intent intent);
 

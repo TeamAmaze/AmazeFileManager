@@ -70,9 +70,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         this.size = size;
     }
 
-    /**
-     * @return
-     */
     public boolean isDirectory() {
         return isDirectory;
     }

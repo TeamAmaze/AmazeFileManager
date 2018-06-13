@@ -35,7 +35,7 @@ public abstract class Extractor {
             if(filesToExtract.contains(relativePath)) {
                 if(!isDir) filesToExtract.remove(relativePath);
                 return true;
-            } else {// header to be extracted is atleast the entry path (may be more, when it is a directory)
+            } else {// header to be extracted is at least the entry path (may be more, when it is a directory)
                 for (String path : filesToExtract) {
                     if(relativePath.startsWith(path)) {
                         return true;
@@ -54,13 +54,13 @@ public abstract class Extractor {
     protected abstract void extractWithFilter(@NonNull Filter filter) throws IOException;
 
     protected interface Filter {
-        public boolean shouldExtract(String relativePath, boolean isDirectory);
+        boolean shouldExtract(String relativePath, boolean isDirectory);
     }
 
     public interface OnUpdate {
-        public void onStart(long totalBytes, String firstEntryName);
-        public void onUpdate(String entryPath);
-        public void onFinish();
-        public boolean isCancelled();
+        void onStart(long totalBytes, String firstEntryName);
+        void onUpdate(String entryPath);
+        void onFinish();
+        boolean isCancelled();
     }
 }

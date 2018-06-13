@@ -1,3 +1,24 @@
+/*
+ * FileUtil.java
+ *
+ * Copyright (C) 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.filesystem;
 
 import android.annotation.TargetApi;
@@ -12,9 +33,9 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -46,18 +67,21 @@ import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 /**
  * Utility class for helping parsing file systems.
- * <p>
- * Created by Arpit on 04-06-2015.
  */
 public abstract class FileUtil {
 
     private static final String LOG = "AmazeFileUtils";
+
+    private static final Pattern FILENAME_REGEX = Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
     /**
      * Determine the camera folder. There seems to be no Android API to work for real devices, so this is a best guess.
@@ -166,17 +190,16 @@ public abstract class FileUtil {
 
     /**
      * Writes uri stream from external application to the specified path
-     * @param uris
-     * @param contentResolver
-     * @param currentPath
      */
-    public static final void writeUriToStorage(final MainActivity mainActivity, final ArrayList<Uri> uris,
-                                               final ContentResolver contentResolver, final String currentPath) {
+    public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
+                                               @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
 
         AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
 
             @Override
-            public <E> E doInBackground() {
+            public List<String> doInBackground() {
+
+                List<String> retval = new ArrayList<>();
 
                 for (Uri uri : uris) {
 
@@ -190,9 +213,17 @@ public abstract class FileUtil {
                     BufferedOutputStream bufferedOutputStream = null;
 
                     try {
-
                         DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
-                        String finalFilePath = currentPath + "/" + documentFile.getName();
+                        String filename = documentFile.getName();
+                        if(filename == null) {
+                            filename = uri.getLastPathSegment();
+
+                            //For cleaning up slashes. Back in #1217 there is a case of Uri.getLastPathSegment() end up with a full file path
+                            if (filename.contains("/"))
+                                filename = filename.substring(filename.lastIndexOf('/') + 1);
+                        }
+
+                        String finalFilePath = currentPath + "/" + filename;
                         DataUtils dataUtils = DataUtils.getInstance();
 
                         HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
@@ -201,43 +232,85 @@ public abstract class FileUtil {
                         switch (hFile.getMode()) {
                             case FILE:
                             case ROOT:
-                                if (!FileUtil.isWritable(new File(finalFilePath))) {
+                                File targetFile = new File(finalFilePath);
+                                if (!FileUtil.isWritableNormalOrSaf(targetFile.getParentFile(), mainActivity.getApplicationContext())) {
                                     AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                                     return null;
                                 }
-                                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(finalFilePath));
+
+                                DocumentFile targetDocumentFile = getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
+
+                                //Fallback, in case getDocumentFile() didn't properly return a DocumentFile instance
+                                if(targetDocumentFile == null)
+                                    targetDocumentFile = DocumentFile.fromFile(targetFile);
+
+                                //Lazy check... and in fact, different apps may pass in URI in different formats, so we could only check filename matches
+                                //FIXME?: Prompt overwrite instead of simply blocking
+                                if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                }
+
+                                bufferedOutputStream = new BufferedOutputStream(contentResolver.openOutputStream(targetDocumentFile.getUri()));
+                                retval.add(targetFile.getPath());
                                 break;
                             case SMB:
-                                OutputStream outputStream = new SmbFile(finalFilePath).getOutputStream();
-                                bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                SmbFile targetSmbFile = new SmbFile(finalFilePath);
+                                if (targetSmbFile.exists()) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                } else {
+                                    OutputStream outputStream = targetSmbFile.getOutputStream();
+                                    bufferedOutputStream = new BufferedOutputStream(outputStream);
+                                    retval.add(mainActivity.mainActivityHelper.parseSmbPath(targetSmbFile.getPath()));
+                                }
                                 break;
+                            case SFTP:
+                                //FIXME: implement support
+                                AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
+                                return null;
                             case DROPBOX:
                                 CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-                                cloudStorageDropbox.upload(CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath),
+                                String path = CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath);
+                                cloudStorageDropbox.upload(path,
                                         bufferedInputStream, documentFile.length(), true);
+                                retval.add(path);
                                 break;
                             case BOX:
                                 CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-                                cloudStorageBox.upload(CloudUtil.stripPath(OpenMode.BOX, finalFilePath),
+                                path = CloudUtil.stripPath(OpenMode.BOX, finalFilePath);
+                                cloudStorageBox.upload(path,
                                         bufferedInputStream, documentFile.length(), true);
+                                retval.add(path);
                                 break;
                             case ONEDRIVE:
                                 CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-                                cloudStorageOneDrive.upload(CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath),
+                                path = CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath);
+                                cloudStorageOneDrive.upload(path,
                                         bufferedInputStream, documentFile.length(), true);
+                                retval.add(path);
                                 break;
                             case GDRIVE:
                                 CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-                                cloudStorageGDrive.upload(CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath),
+                                path = CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath);
+                                cloudStorageGDrive.upload(path,
                                         bufferedInputStream, documentFile.length(), true);
+                                retval.add(path);
                                 break;
                             case OTG:
                                 DocumentFile documentTargetFile = OTGUtil.getDocumentFile(finalFilePath,
                                         mainActivity, true);
 
+                                if(documentTargetFile.exists()) {
+                                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                                    return null;
+                                }
+
                                 bufferedOutputStream = new BufferedOutputStream(contentResolver
                                         .openOutputStream(documentTargetFile.getUri()),
                                         GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+                                retval.add(documentTargetFile.getUri().getPath());
                                 break;
                             default:
                                 return null;
@@ -247,7 +320,6 @@ public abstract class FileUtil {
                         byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
 
                         while (count != -1) {
-
                             count = bufferedInputStream.read(buffer);
                             if (count != -1) {
 
@@ -277,11 +349,19 @@ public abstract class FileUtil {
                         }
                     }
                 }
-                return null;
+                return (retval.size() > 0) ? retval : null;
             }
 
             @Override
             public Void onPostExecute(Object result) {
+                if(result !=  null) {
+                    List<String> paths = (List<String>) result;
+                    if (paths.size() == 1) {
+                        Toast.makeText(mainActivity, mainActivity.getString(R.string.saved_single_file, paths.get(0)), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(mainActivity, mainActivity.getString(R.string.saved_multi_files, paths.size()), Toast.LENGTH_LONG).show();
+                    }
+                }
                 return null;
             }
 
@@ -485,7 +565,7 @@ public abstract class FileUtil {
         return isSuccessful;
     }
 
-    public static boolean mkfile(final File file,Context context) throws IOException {
+    public static boolean mkfile(final File file,Context context) {
         if(file==null)
             return false;
         if (file.exists()) {
@@ -630,6 +710,7 @@ public abstract class FileUtil {
      * @return true if it is possible to write in this directory.
      */
     public static boolean isWritableNormalOrSaf(final File folder, Context c) {
+
         // Verify that this is a directory.
         if (folder == null)
             return false;
@@ -758,6 +839,10 @@ public abstract class FileUtil {
      * @return The DocumentFile
      */
     public static DocumentFile getDocumentFile(final File file, final boolean isDirectory, Context context) {
+
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            return DocumentFile.fromFile(file);
+
         String baseFolder = getExtSdCardFolder(file, context);
         boolean originalDirectory = false;
         if (baseFolder == null) {
@@ -815,7 +900,6 @@ public abstract class FileUtil {
      * @param folderName The folder below app folder where the file is copied to.
      * @param targetName The name of the target file.
      * @return the dummy file.
-     * @throws IOException
      */
     private static File copyDummyFile(final int resource, final String folderName, final String targetName, Context context)
             throws IOException {
@@ -859,7 +943,6 @@ public abstract class FileUtil {
     /**
      * Checks whether the target path exists or is writable
      * @param f the target path
-     * @param context
      * @return 1 if exists or writable, 0 if not writable
      */
     public static int checkFolder(final String f,Context context) {
@@ -958,8 +1041,7 @@ public abstract class FileUtil {
          * Deletes the file. Returns true if the file has been successfully deleted or otherwise does not exist. This operation is not
          * recursive.
          */
-        public boolean delete()
-                throws IOException {
+        public boolean delete() {
 
             if (!file.exists()) {
                 return true;
@@ -1171,4 +1253,17 @@ public abstract class FileUtil {
 
     }
 
+
+    /**
+     * Validate given text is a valid filename.
+     *
+     * @param text
+     * @return true if given text is a valid filename
+     */
+    public static boolean isValidFilename(String text) {
+        //It's not easy to use regex to detect single/double dot while leaving valid values (filename.zip) behind...
+        //So we simply use equality to check them
+        return (!FILENAME_REGEX.matcher(text).find())
+                && !".".equals(text) && !"..".equals(text);
+    }
 }

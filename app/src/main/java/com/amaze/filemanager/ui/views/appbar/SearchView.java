@@ -45,35 +45,22 @@ public class SearchView {
         mainActivity = a;
         this.appbar = appbar;
 
-        searchViewLayout = (RelativeLayout) a.findViewById(R.id.search_view);
-        searchViewEditText = (AppCompatEditText) a.findViewById(R.id.search_edit_text);
-        clearImageView = (ImageView) a.findViewById(R.id.search_close_btn);
-        backImageView = (ImageView) a.findViewById(R.id.img_view_back);
+        searchViewLayout = a.findViewById(R.id.search_view);
+        searchViewEditText = a.findViewById(R.id.search_edit_text);
+        clearImageView = a.findViewById(R.id.search_close_btn);
+        backImageView = a.findViewById(R.id.img_view_back);
 
-        clearImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchViewEditText.setText("");
-            }
-        });
+        clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
 
-        backImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
+
+        searchViewEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchListener.onSearch(searchViewEditText.getText().toString());
                 appbar.getSearchView().hideSearchView();
+                return true;
             }
-        });
-
-        searchViewEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchListener.onSearch(searchViewEditText.getText().toString());
-                    appbar.getSearchView().hideSearchView();
-                    return true;
-                }
-                return false;
-            }
+            return false;
         });
 
         //searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));

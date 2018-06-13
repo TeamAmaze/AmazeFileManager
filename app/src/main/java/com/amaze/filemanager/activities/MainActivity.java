@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                      Emmanuel Messulam<emmanuelbendavid@gmail.com>
+ * MainActivity.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -44,6 +46,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
@@ -53,7 +56,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,6 +74,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -81,6 +87,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.CloudEntry;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -88,6 +95,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.AppsListFragment;
@@ -100,6 +108,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -118,7 +127,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.color.ColorUsage;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
@@ -143,10 +151,9 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
-public class MainActivity extends ThemedActivity implements OnRequestPermissionsResultCallback,
-        SmbConnectionListener, DataChangeListener, BookmarkCallback,
-        SearchWorkerFragment.HelperCallbacks, CloudConnectionCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends PermissionsActivity implements SmbConnectionListener,
+        DataChangeListener, BookmarkCallback, SearchWorkerFragment.HelperCallbacks,
+        CloudConnectionCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -173,12 +180,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public String oppathe, oppathe1;
     public ArrayList<String> oppatheList;
 
+    // This holds the Uris to be written at initFabToSave()
+    private ArrayList<Uri> urisToBeSaved;
+
     /**
      * @deprecated use getCurrentMainFragment()
      */
     public MainFragment mainFragment;
-
-    public static final String KEY_PREF_OTG = "uri_usb_otg";
 
     public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -212,7 +220,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     public CloudHandler cloudHandler;
 
     public static final int REQUEST_CODE_SAF = 223;
-    public static final String VALUE_PREF_OTG_NULL = "n/a";
 
     public static final String KEY_INTENT_PROCESS_VIEWER = "openprocesses";
     public static final String TAG_INTENT_FILTER_FAILED_OPS = "failedOps";
@@ -254,12 +261,59 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     private PasteHelper pasteHelper;
 
+    private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
+            requestStoragePermission(() -> {
+                drawer.refreshDrawer();
+                TabFragment tabFragment = getTabFragment();
+                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
+                //reset home and current paths according to new storages
+                if (b) {
+                    tabHandler.clear();
+
+                    if (drawer.getPhoneStorageCount() > 1) {
+                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
+                    } else {
+                        tabHandler.addTab(new Tab(1, "/", "/"));
+                    }
+
+                    if (drawer.getFirstPath() != null) {
+                        String pa = drawer.getFirstPath();
+                        tabHandler.addTab(new Tab(2, pa, pa));
+                    } else {
+                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
+                    }
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                    }
+                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+                } else {
+                    //just refresh list
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateList();
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateList();
+                    }
+                }
+            });
+        }
+
         initialisePreferences();
         initializeInteractiveShell();
 
@@ -333,7 +387,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription("Amaze",
                     ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-                    getColorPreference().getColor(ColorUsage.getPrimary(MainActivity.currentTab)));
+                    ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab));
             setTaskDescription(taskDescription);
         }
 
@@ -431,7 +485,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     /**
      * Checks for the action to take when Amaze receives an intent from external source
-     * @param intent
      */
     private void checkForExternalIntent(Intent intent) {
         String actionIntent = intent.getAction();
@@ -509,10 +562,29 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
         floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
         floatingActionButton.getMenuButton().setOnClickListener(v -> {
-            FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
-            Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
-            finish();
+            if(uris != null && uris.size() > 0) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    File folder = new File(getCurrentMainFragment().getCurrentPath());
+                    int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
+                    if(result == MainActivityHelper.WRITABLE_OR_ON_SDCARD){
+                        FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                        finish();
+                    } else {
+                        //Trigger SAF intent, keep uri until finish
+                        operation = DataUtils.SAVE_FILE;
+                        urisToBeSaved = uris;
+                        mainActivityHelper.checkFolder(folder, MainActivity.this);
+                    }
+                } else {
+                    FileUtil.writeUriToStorage(MainActivity.this, uris, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.saving), Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
         });
+        //Ensure the FAB menu is visible
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.getMenuButton().show();
     }
 
     /**
@@ -566,7 +638,13 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             // Device has physical external storage; use plain paths.
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
-                rv.add("/storage/sdcard0");
+                // Check for actual existence of the directory before adding to list
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
+                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
+                } else {
+                    //We know nothing else, use Environment's fallback
+                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
             } else {
                 rv.add(rawExternalStorage);
             }
@@ -628,17 +706,18 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
      * @return true if device is connected
      */
     private boolean isUsbDeviceConnected() {
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-        if (usbManager.getDeviceList().size()!=0) {
-            // we need to set this every time as there is no way to know that whether USB device was
-            // disconnected after closing the app and another one was connected
-            // in that case the URI will obviously change
-            // other wise we could persist the URI even after reopening the app by not writing
-            // this preference when it's not null
-            getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+        if (OTGUtil.isMassStorageDeviceConnected(this)) {
+            if(!SingletonUsbOtg.getInstance().hasRootBeenRequested()) {
+                SingletonUsbOtg.getInstance().setHasRootBeenRequested(false);
+                // we need to set this every time as there is no way to know that whether USB device was
+                // disconnected after closing the app and another one was connected in that case
+                // the URI will obviously change otherwise we could persist the URI even after
+                // reopening the app by not writing this preference when it's not null
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
+            }
             return true;
         } else {
-            getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+            SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
             return false;
         }
     }
@@ -954,25 +1033,24 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 if (ma.IS_LIST) {
                     if (pathLayout == DataUtils.LIST) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeListViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.LIST,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
-
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addGridView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.GRID,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
                 } else {
                     if (pathLayout == DataUtils.GRID) {
                         AppConfig.runInBackground(() -> {
-                            utilsHandler.removeGridViewPath(mainFragment.getCurrentPath());
+                            utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.GRID,
+                                    mainFragment.getCurrentPath()));
                         });
                     }
 
-                    AppConfig.runInBackground(() -> {
-                        utilsHandler.addListView(mainFragment.getCurrentPath());
-                    });
+                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.LIST,
+                            mainFragment.getCurrentPath()));
 
                     dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
                 }
@@ -1094,10 +1172,10 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                 drawer.refreshDrawer();
                 goToMain(null);
             }
@@ -1135,9 +1213,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
         cryptHandler.close();
         
         SshConnectionPool.getInstance().expungeAllConnections();
-
-        /*if (mainFragment!=null)
-            mainFragment = null;*/
     }
 
     /**
@@ -1304,30 +1379,40 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                     break;
                 case DataUtils.NEW_FILE:
                     mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
-
                     break;
                 case DataUtils.EXTRACT:
                     mainActivityHelper.extractFile(new File(oppathe));
                     break;
                 case DataUtils.COMPRESS:
                     mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
+                    break;
+                case DataUtils.SAVE_FILE:
+                    FileUtil.writeUriToStorage(this, urisToBeSaved, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+                    urisToBeSaved = null;
+                    finish();
+                    break;
             }
             operation = -1;
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode == Activity.RESULT_OK) {
-            // otg access
-            getPrefs().edit().putString(KEY_PREF_OTG, intent.getData().toString()).apply();
+        } else if (requestCode == REQUEST_CODE_SAF) {
+            if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
+                // otg access
+                Uri usbOtgRoot = Uri.parse(intent.getData().toString());
+                SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
 
-            drawer.closeIfNotLocked();
-            if(drawer.isLocked()) drawer.onDrawerClosed();
-        } else if (requestCode == REQUEST_CODE_SAF && responseCode != Activity.RESULT_OK) {
-            // otg access not provided
-            drawer.resetPendingPath();
+                drawer.closeIfNotLocked();
+                if (drawer.isLocked()) drawer.onDrawerClosed();
+            } else {
+                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+                // otg access not provided
+                drawer.resetPendingPath();
+            }
         }
     }
 
     void initialisePreferences() {
-        currentTab = getPrefs().getInt(PreferenceUtils.KEY_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-        skinStatusBar = (PreferenceUtils.getStatusColor(getColorPreference().getColorAsString(ColorUsage.getPrimary(MainActivity.currentTab))));
+        currentTab = getPrefs().getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+        @ColorInt int currentPrimary = ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
+        skinStatusBar = PreferenceUtils.getStatusColor(currentPrimary);
     }
 
     void initialiseViews() {
@@ -1409,7 +1494,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     void initialiseFab() {
-        int colorAccent = getColorPreference().getColor(ColorUsage.ACCENT);
+        int colorAccent = getAccent();
 
         floatingActionButton = findViewById(R.id.fabs_menu);
         floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
@@ -1445,7 +1530,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
     }
 
     private void initFabTitle(TitleFAB fabTitle, int type) {
-        int iconSkin = getColorPreference().getColor(ColorUsage.ICON_SKIN);
+        int iconSkin = getCurrentColorPreference().iconSkin;
 
         fabTitle.setBackgroundColor(iconSkin);
         fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
@@ -1481,7 +1566,7 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     public void renameBookmark(final String title, final String path) {
         if (dataUtils.containsBooks(new String[]{title, path}) != -1) {
-            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getColorPreference().getColor(ColorUsage.ACCENT));
+            RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getAccent());
             if (renameBookmark != null)
                 renameBookmark.show(getFragmentManager(), "renamedialog");
         }
@@ -1530,13 +1615,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             checkForExternalIntent(intent);
 
             if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-                    if (getPrefs().getString(KEY_PREF_OTG, null) == null) {
-                        getPrefs().edit().putString(KEY_PREF_OTG, VALUE_PREF_OTG_NULL).apply();
-                        drawer.refreshDrawer();
-                    }
-                } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                    getPrefs().edit().putString(KEY_PREF_OTG, null).apply();
+                if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                    SingletonUsbOtg.getInstance().setUsbOtgRoot(null);
                     drawer.refreshDrawer();
                 }
             }
@@ -1554,57 +1634,6 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             }
         }
     };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 77) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                drawer.refreshDrawer();
-                TabFragment tabFragment = getTabFragment();
-                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
-                //reset home and current paths according to new storages
-                if (b) {
-                    tabHandler.clear();
-
-                    if (drawer.getStorageCount() > 1) {
-                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
-                    } else {
-                        tabHandler.addTab(new Tab(1, "/", "/"));
-                    }
-
-                    if (drawer.getFirstPath() != null) {
-                        String pa = drawer.getFirstPath();
-                        tabHandler.addTab(new Tab(2, pa, pa));
-                    } else {
-                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
-                    }
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-                    }
-                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
-                } else {
-                    //just refresh list
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateList();
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateList();
-                    }
-                }
-            } else {
-                Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
-                requestStoragePermission();
-            }
-        }
-    }
 
     public void showSMBDialog(String name, String path, boolean edit) {
         if (path.length() > 0 && name.length() == 0) {
@@ -1671,9 +1700,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                AppConfig.runInBackground(() -> {
-                    utilsHandler.addSmb(name, encryptedPath);
-                });
+                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, encryptedPath, name));
+
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
                 if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
@@ -1706,7 +1734,8 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
             dataUtils.removeServer(i);
 
             AppConfig.runInBackground(() -> {
-                utilsHandler.removeSmbPath(name, path);
+                utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.SMB, name,
+                        path));
             });
             //grid.removePath(name, path, DataUtils.SMB);
             drawer.refreshDrawer();
@@ -1716,33 +1745,34 @@ public class MainActivity extends ThemedActivity implements OnRequestPermissions
 
     @Override
     public void onHiddenFileAdded(String path) {
-        utilsHandler.addHidden(path);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
     }
 
     @Override
     public void onHiddenFileRemoved(String path) {
-        utilsHandler.removeHiddenPath(path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
     }
 
     @Override
     public void onHistoryAdded(String path) {
-        utilsHandler.addHistory(path);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HISTORY, path));
     }
 
     @Override
     public void onBookAdded(String[] path, boolean refreshdrawer) {
-        utilsHandler.addBookmark(path[0], path[1]);
+        utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS, path[0], path[1]));
         if (refreshdrawer) drawer.refreshDrawer();
     }
 
     @Override
     public void onHistoryCleared() {
-        utilsHandler.clearHistoryTable();
+        utilsHandler.clearTable(UtilsHandler.Operation.HISTORY);
     }
 
     @Override
     public void delete(String title, String path) {
-        utilsHandler.removeBookmarksPath(title, path);
+        utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS, title,
+                path));
         drawer.refreshDrawer();
 
     }

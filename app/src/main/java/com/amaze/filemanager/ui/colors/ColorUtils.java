@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils.color;
+package com.amaze.filemanager.ui.colors;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;

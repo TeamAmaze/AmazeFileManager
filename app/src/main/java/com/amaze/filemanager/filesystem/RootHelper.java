@@ -65,10 +65,7 @@ public class RootHelper {
      * should be thread safe.
      * Command is run from superuser context (u:r:SuperSU0)
      *
-     * @param cmd      the command
-     * @param callback
-     * @return a list of results. Null only if the command passed is a blocking call or no output is
-     * there for the command passed
+     * @param cmd the command
      */
     public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
             throws ShellNotRunningException {
@@ -82,7 +79,6 @@ public class RootHelper {
      * @param cmd the command
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
-     * @throws ShellNotRunningException
      * @deprecated Use {@link #runShellCommand(String)} instead which runs command on an interactive shell
      * <p>
      * Runs the command and stores output in a list. The listener is set on the caller thread,
@@ -104,8 +100,6 @@ public class RootHelper {
      * Loads files in a path using basic filesystem callbacks
      *
      * @param path       the path
-     * @param showHidden
-     * @return
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean showHidden, OnFileFound listener) {
         File f = new File(path);
@@ -193,12 +187,8 @@ public class RootHelper {
     /**
      * Whether a file exist at a specified path. We try to reload a list and conform from that list
      * of parent's children that the file we're looking for is there or not.
-     *
-     * @param path
-     * @return
-     * @throws ShellNotRunningException
      */
-    public static boolean fileExists(String path) throws ShellNotRunningException {
+    public static boolean fileExists(String path) {
         File f = new File(path);
         String p = f.getParent();
         if (p != null && p.length() > 0) {
@@ -223,11 +213,7 @@ public class RootHelper {
 
     /**
      * Whether toTest file is directory or not
-     *
-     * @param toTest
-     * @param root
-     * @param count
-     * @return TODO: Avoid parsing ls
+     * TODO: Avoid parsing ls
      */
     public static boolean isDirectory(String toTest, boolean root, int count)
             throws ShellNotRunningException {
@@ -271,34 +257,27 @@ public class RootHelper {
 
     /**
      * Get a list of files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images)
+     * TODO: Avoid parsing ls
      *
-     * @param path
      * @param root            whether root is available or not
      * @param showHidden      to show hidden files
      * @param getModeCallBack callback to set the type of file
-     * @return TODO: Avoid parsing ls
      * @deprecated use getFiles()
      */
     public static ArrayList<HybridFileParcelable> getFilesList(String path, boolean root, boolean showHidden,
                                                                GetModeCallBack getModeCallBack) {
         final ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        getFiles(path, root, showHidden, getModeCallBack, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                files.add(file);
-            }
-        });
+        getFiles(path, root, showHidden, getModeCallBack, files::add);
         return files;
     }
 
     /**
      * Get files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images)
+     * TODO: Avoid parsing ls
      *
-     * @param path
      * @param root            whether root is available or not
      * @param showHidden      to show hidden files
      * @param getModeCallBack callback to set the type of file
-     * @return TODO: Avoid parsing ls
      */
     public static void getFiles(String path, boolean root, boolean showHidden,
                                 GetModeCallBack getModeCallBack, OnFileFound fileCallback) {

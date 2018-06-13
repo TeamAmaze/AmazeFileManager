@@ -246,7 +246,7 @@
   <string name="grant">Conceder</string>
   <string name="grantper">Conceder permissão</string>
   <string name="grantfailed">Permissão não concedida</string>
-  <string name="granttext">Tem que permitir o acesso ao armazenamento para continuar. Ao fechar este diálogo, fecha a aplicação.</string>
+  <string name="grant_storage_permission">Tem que permitir o acesso ao armazenamento para continuar. Ao fechar este diálogo, fecha a aplicação.</string>
   <string name="operationunsuccesful">Operação não efetuada</string>
   <string name="creatingfile">A criar ficheiro</string>
   <string name="creatingfolder">A criar pasta</string>

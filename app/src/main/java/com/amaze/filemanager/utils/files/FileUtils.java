@@ -19,9 +19,11 @@
 
 package com.amaze.filemanager.utils.files;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -39,6 +41,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
 import android.util.Log;
@@ -49,6 +52,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -143,7 +147,6 @@ public class FileUtils {
      * Only for fallback use when <code>du</code> is not available.
      *
      * @see HybridFile#folderSize(Context)
-     * @param remotePath
      * @return Folder size in bytes
      */
     public static Long folderSizeSftp(SFTPClient client, String remotePath) {
@@ -186,12 +189,7 @@ public class FileUtils {
      */
     public static long otgFolderSize(String path, final Context context) {
         final AtomicLong totalBytes = new AtomicLong(0);
-        OTGUtil.getDocumentFiles(path, context, new OnFileFound() {
-            @Override
-            public void onFileFound(HybridFileParcelable file) {
-                totalBytes.addAndGet(getBaseFileSize(file, context));
-            }
-        });
+        OTGUtil.getDocumentFiles(path, context, file -> totalBytes.addAndGet(getBaseFileSize(file, context)));
         return totalBytes.longValue();
     }
 
@@ -214,25 +212,26 @@ public class FileUtils {
         }
     }
 
-    public static void scanFile(String path, Context c) {
-        System.out.println(path + " " + Build.VERSION.SDK_INT);
-
-        Uri contentUri = Uri.fromFile(new File(path));
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri);
-        c.sendBroadcast(mediaScanIntent);
+    /**
+     * Calls {@link #scanFile(Uri, Context)} using {@link Uri}.
+     *
+     * @see {@link #scanFile(Uri, Context)}
+     * @param file File to scan
+     * @param c {@link Context}
+     */
+    public static void scanFile(@NonNull File file, @NonNull Context c){
+        scanFile(Uri.fromFile(file), c);
     }
 
     /**
-     * Starts a media scanner to let file system know changes done to files
+     * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
+     *
+     * @param uri File's {@link Uri}
+     * @param c {@link Context}
      */
-    public static void scanFile(final Context context, final MediaScannerConnection mediaScannerConnection, final String[] paths) {
-
-        Log.d("SCAN started", paths[0]);
-
-        AppConfig.runInBackground(() -> {
-                mediaScannerConnection.connect();
-                mediaScannerConnection.scanFile(context, paths, null, null);
-        });
+    public static void scanFile(@NonNull Uri uri, @NonNull Context c){
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        c.sendBroadcast(mediaScanIntent);
     }
 
     public static void crossfade(View buttons,final View pathbar) {
@@ -330,7 +329,7 @@ public class FileUtils {
 
                 FileUtils.copyToClipboard(context, s);
                 Toast.makeText(context,
-                        context.getResources().getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
+                        context.getString(R.string.cloud_share_copied), Toast.LENGTH_LONG).show();
             }
         }.execute(path);
     }
@@ -367,9 +366,31 @@ public class FileUtils {
     }
 
     /**
+     * Install .apk file.
+     * @param permissionsActivity needed to ask for {@link Manifest.permission#REQUEST_INSTALL_PACKAGES} permission
+     */
+    public static void installApk(final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
+            permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
+        }
+
+        Intent chooserIntent = new Intent();
+        chooserIntent.setAction(Intent.ACTION_INSTALL_PACKAGE);
+        chooserIntent.setData(Uri.fromFile(f));
+
+        try {
+            permissionsActivity.startActivity(chooserIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(permissionsActivity, R.string.error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
      * Open a file not supported by Amaze
+     *
      * @param f the file
-     * @param c
      * @param forcechooser force the chooser to show up even when set default by user
      */
     public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {
@@ -385,7 +406,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(activityIntent);
@@ -418,7 +439,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getResources().getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(chooserIntent);
@@ -537,8 +558,8 @@ public class FileUtils {
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
-        a.title(c.getResources().getString(R.string.openas));
-        String[] items=new String[]{c.getResources().getString(R.string.text),c.getResources().getString(R.string.image),c.getResources().getString(R.string.video),c.getResources().getString(R.string.audio),c.getResources().getString(R.string.database),c.getResources().getString(R.string.other)};
+        a.title(c.getString(R.string.openas));
+        String[] items=new String[]{c.getString(R.string.text),c.getString(R.string.image),c.getString(R.string.video),c.getString(R.string.audio),c.getString(R.string.database),c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
             Uri uri = fileToContentUri(c, f);
@@ -583,8 +604,8 @@ public class FileUtils {
 
     public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(c.getResources().getString(R.string.openas));
-        String[] items = new String[]{c.getResources().getString(R.string.text), c.getResources().getString(R.string.image), c.getResources().getString(R.string.video), c.getResources().getString(R.string.audio), c.getResources().getString(R.string.database), c.getResources().getString(R.string.other)};
+        a.title(c.getString(R.string.openas));
+        String[] items = new String[]{c.getString(R.string.text), c.getString(R.string.image), c.getString(R.string.video), c.getString(R.string.audio), c.getString(R.string.database), c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
             Intent intent = new Intent();
@@ -658,7 +679,7 @@ public class FileUtils {
     public static boolean copyToClipboard(Context context, String text) {
         try {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                    .getSystemService(context.CLIPBOARD_SERVICE);
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
             android.content.ClipData clip = android.content.ClipData
                     .newPlainText(context.getString(R.string.clipboard_path_copy), text);
             clipboard.setPrimaryClip(clip);
@@ -700,7 +721,7 @@ public class FileUtils {
         final Toast[] studioCount = {null};
 
         if(f.getName().toLowerCase().endsWith(".apk")) {
-            GeneralDialogCreation.showPackageDialog(sharedPrefs, f, m);
+            GeneralDialogCreation.showPackageDialog(f, m);
         } else if (defaultHandler && CompressedHelper.isFileExtractable(f.getPath())) {
             GeneralDialogCreation.showArchiveDialog(f, m);
         } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
@@ -742,7 +763,7 @@ public class FileUtils {
             try {
                 openunknown(f, m, false, useNewStack);
             } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m, useNewStack);
             }
         }
@@ -767,7 +788,7 @@ public class FileUtils {
         try {
             openunknown(f, m, false, useNewStack);
         } catch (Exception e) {
-            Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+            Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
 
@@ -819,7 +840,7 @@ public class FileUtils {
             try {
                 openunknown(f, m, false);
             } catch (Exception e) {
-                Toast.makeText(m, m.getResources().getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
                 openWith(f, m);
             }
         }*/

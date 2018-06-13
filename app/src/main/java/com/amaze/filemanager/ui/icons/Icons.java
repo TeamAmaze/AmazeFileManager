@@ -31,7 +31,7 @@ public class Icons {
     public static final int NOT_KNOWN = -1;
     public static final int APK = 0, AUDIO = 1, CERTIFICATE = 2, CODE = 3, COMPRESSED = 4,
             CONTACT = 5, EVENTS = 6, FONT = 7, IMAGE = 8, PDF = 9, PRESENTATION = 10,
-            SPREADSHEETS = 11, DOCUMENTS = 12, TEXT = 13, VIDEO = 14, ENCRYPTED = 15;
+            SPREADSHEETS = 11, DOCUMENTS = 12, TEXT = 13, VIDEO = 14, ENCRYPTED = 15, GIF = 16;
 
     // construct a with an approximation of the capacity
     private static HashMap<String, Integer> sMimeIconIds = new HashMap<>(1 + (int)(114 / 0.75));
@@ -233,8 +233,6 @@ public class Icons {
     }
 
     public static int getTypeOfFile(String path, boolean isDirectory) {
-        if(path.endsWith(CryptUtil.CRYPT_EXTENSION)) return ENCRYPTED;
-
         String mimeType = MimeTypes.getMimeType(path, isDirectory);
         if(mimeType == null) return NOT_KNOWN;
 
@@ -242,8 +240,10 @@ public class Icons {
         if(type != null) return type;
         else {
             if(checkType(mimeType, "text")) return TEXT;
-            if(checkType(mimeType, "video")) return VIDEO;
-            if(checkType(mimeType, "audio")) return AUDIO;
+            else if (checkType(mimeType, "image")) return IMAGE;
+            else if(checkType(mimeType, "video")) return VIDEO;
+            else if(checkType(mimeType, "audio")) return AUDIO;
+            else if (checkType(mimeType, "crypt")) return ENCRYPTED;
             else return NOT_KNOWN;
         }
     }

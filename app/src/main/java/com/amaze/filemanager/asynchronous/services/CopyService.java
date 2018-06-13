@@ -307,10 +307,7 @@ public class CopyService extends AbstractProgressiveService {
             /**
              * Method iterate through files to be copied
              *
-             * @param sourceFiles
-             * @param targetPath
-             * @param move
-             * @param mode        target file open mode (current path's open mode)
+             * @param mode target file open mode (current path's open mode)
              */
             public void execute(final ArrayList<HybridFileParcelable> sourceFiles, final String targetPath,
                                 final boolean move, OpenMode mode) {
@@ -408,7 +405,7 @@ public class CopyService extends AbstractProgressiveService {
                     failedFOps.add(sourceFile);
                     e.printStackTrace();
                 }
-                FileUtils.scanFile(targetFile.getPath(), c);
+                FileUtils.scanFile(targetFile.getFile(), c);
             }
 
             private void copyFiles(final HybridFileParcelable sourceFile, final HybridFile targetFile,

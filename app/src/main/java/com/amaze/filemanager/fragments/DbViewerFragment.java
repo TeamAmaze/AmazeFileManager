@@ -35,9 +35,9 @@ public class DbViewerFragment extends Fragment {
         databaseViewerActivity = (DatabaseViewerActivity) getActivity();
 
         rootView = inflater.inflate(R.layout.fragment_db_viewer, null);
-        webView = (WebView) rootView.findViewById(R.id.webView1);
-        loadingText = (TextView) rootView.findViewById(R.id.loadingText);
-        relativeLayout = (RelativeLayout) rootView.findViewById(R.id.tableLayout);
+        webView = rootView.findViewById(R.id.webView1);
+        loadingText = rootView.findViewById(R.id.loadingText);
+        relativeLayout = rootView.findViewById(R.id.tableLayout);
         tableName = getArguments().getString("table");
         databaseViewerActivity.setTitle(tableName);
 

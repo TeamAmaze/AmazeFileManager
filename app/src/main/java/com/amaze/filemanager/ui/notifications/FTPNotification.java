@@ -50,12 +50,12 @@ public class FTPNotification extends BroadcastReceiver {
                 + port + "/";
 
         int icon = R.drawable.ic_ftp_light;
-        CharSequence tickerText = context.getResources().getString(R.string.ftp_notif_starting);
+        CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
 
-        CharSequence contentTitle = context.getResources().getString(R.string.ftp_notif_title);
-        CharSequence contentText = String.format(context.getResources().getString(R.string.ftp_notif_text), iptext);
+        CharSequence contentTitle = context.getString(R.string.ftp_notif_title);
+        CharSequence contentText = String.format(context.getString(R.string.ftp_notif_text), iptext);
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -75,7 +75,7 @@ public class FTPNotification extends BroadcastReceiver {
         Notification notification;
         if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            CharSequence stopText = context.getResources().getString(R.string.ftp_notif_stop_server);
+            CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
             Intent stopIntent = new Intent(FTPService.ACTION_STOP_FTPSERVER);
             PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
                     stopIntent, PendingIntent.FLAG_ONE_SHOT);
