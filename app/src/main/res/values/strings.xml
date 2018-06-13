@@ -452,7 +452,7 @@
     <string name="permission_group">Group</string>
     <string name="permission_other">Other</string>
     <string name="clipboard_path_copy">Path copied to clipboard</string>
-    <string name="service_timer">Time Elapsed</string>
+    <string name="service_timer">Time elapsed</string>
     <string name="please_wait">Please Wait</string>
 
     <string name="cloud_connection">Cloud Connection</string>
