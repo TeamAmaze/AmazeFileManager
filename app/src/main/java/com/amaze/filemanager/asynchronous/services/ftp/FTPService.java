@@ -188,7 +188,7 @@ public class FTPService extends Service implements Runnable {
         if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
 
             try {
-                KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                KeyStore keyStore = KeyStore.getInstance("BKS", "BC");
                 keyStore.load(getResources().openRawResource(R.raw.key), KEYSTORE_PASSWORD);
 
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
