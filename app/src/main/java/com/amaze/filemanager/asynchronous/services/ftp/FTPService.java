@@ -201,8 +201,9 @@ public class FTPService extends Service implements Runnable {
                         trustManagerFactory, ClientAuth.WANT, "TLS",
                         null, "ftpserver"));
                 fac.setImplicitSsl(true);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (GeneralSecurityException | IOException e) {
+                Log.e(TAG, "Error enabling SSL for FTP server", e);
+                preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply();
             }
         }
 
