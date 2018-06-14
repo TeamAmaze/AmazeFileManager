@@ -194,7 +194,7 @@ public abstract class FileUtil {
     public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
                                                @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, List<String>>() {
 
             @Override
             public List<String> doInBackground() {
@@ -353,7 +353,7 @@ public abstract class FileUtil {
             }
 
             @Override
-            public Void onPostExecute(Object result) {
+            public Void onPostExecute(List<String> result) {
                 if(result !=  null) {
                     List<String> paths = (List<String>) result;
                     if (paths.size() == 1) {
@@ -371,12 +371,7 @@ public abstract class FileUtil {
             }
 
             @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
+            public Void[] params() {
                 return null;
             }
         });

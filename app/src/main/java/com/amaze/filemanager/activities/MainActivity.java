@@ -361,7 +361,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
         checkForExternalPermission();
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Void>() {
             @Override
             public Void doInBackground() {
 
@@ -379,7 +379,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void onPostExecute(Object result) {
+            public Void onPostExecute(Void result) {
 
                 drawer.refreshDrawer();
 
@@ -437,12 +437,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
+            public Void[] params() {
                 return null;
             }
         });
@@ -1938,9 +1933,9 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             return;
         }
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Boolean>() {
             @Override
-            public Boolean doInBackground() {
+            public @NonNull Boolean doInBackground() {
                 boolean hasUpdatedDrawer = false;
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
@@ -2157,9 +2152,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void onPostExecute(Object result) {
-
-                if ((Boolean) result) {
+            public Void onPostExecute(@NonNull Boolean result) {
+                if (result) {
                     drawer.refreshDrawer();
                 }
                 return null;
@@ -2171,12 +2165,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
+            public Void[] params() {
                 return null;
             }
         });

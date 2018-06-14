@@ -103,12 +103,11 @@ public class AppConfig extends GlideApplication {
      * A compact AsyncTask which runs which executes whatever is passed by callbacks.
      * Supports any class that extends an object as param array, and result too.
      */
-    public static void runInParallel(final CustomAsyncCallbacks customAsyncCallbacks) {
+    public static <Params, Result> void runInParallel(final CustomAsyncCallbacks<Params, Result> customAsyncCallbacks) {
 
         synchronized (customAsyncCallbacks) {
 
-            new AsyncTask<Object, Object, Object>() {
-
+            new AsyncTask<Params, Void, Result>() {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
@@ -116,18 +115,12 @@ public class AppConfig extends GlideApplication {
                 }
 
                 @Override
-                protected void onProgressUpdate(Object... values) {
-                    super.onProgressUpdate(values);
-                    customAsyncCallbacks.publishResult(values);
-                }
-
-                @Override
-                protected Object doInBackground(Object... params) {
+                protected Result doInBackground(Object... params) {
                     return customAsyncCallbacks.doInBackground();
                 }
 
                 @Override
-                protected void onPostExecute(Object aVoid) {
+                protected void onPostExecute(Result aVoid) {
                     super.onPostExecute(aVoid);
                     customAsyncCallbacks.onPostExecute(aVoid);
                 }
@@ -138,17 +131,15 @@ public class AppConfig extends GlideApplication {
     /**
      * Interface providing callbacks utilized by {@link #runInBackground(CustomAsyncCallbacks)}
      */
-    public interface CustomAsyncCallbacks {
+    public interface CustomAsyncCallbacks<Params, Result> {
 
-        Object doInBackground();
+        Result doInBackground();
 
-        Void onPostExecute(Object result);
+        Void onPostExecute(Result result);
 
         Void onPreExecute();
 
-        Void publishResult(Object... result);
-
-        <T extends Object> T[] params();
+        Params[] params();
     }
 
     /**
