@@ -35,7 +35,7 @@ public class DatapointParcelable implements Parcelable {
     /**
      * bytes being copied per sec
      */
-    public final int speedRaw;
+    public final long speedRaw;
 
     public final boolean completed, move;
 
@@ -76,7 +76,7 @@ public class DatapointParcelable implements Parcelable {
      * @param completed if the operation has finished
      */
     public DatapointParcelable(String name, int amountOfSourceFiles, int sourceProgress,
-                               long totalSize, long byteProgress, int speedRaw, boolean completed) {
+                               long totalSize, long byteProgress, long speedRaw, boolean completed) {
         this.name = name;
         sourceFiles = amountOfSourceFiles;
         this.sourceProgress = sourceProgress;
@@ -89,7 +89,7 @@ public class DatapointParcelable implements Parcelable {
     }
 
     /**
-     * The same as {@link DatapointParcelable#DatapointParcelable(String, int, int, long, long, int, boolean)}
+     * The same as {@link DatapointParcelable#DatapointParcelable(String, int, int, long, long, long, boolean)}
      * but allows move boolean to change the text from "Copying" to "Moving" in case of copy.
      *
      * @param name name of source file being copied
@@ -102,7 +102,7 @@ public class DatapointParcelable implements Parcelable {
      * @param completed if the operation has finished
      */
     public DatapointParcelable(String name, int amountOfSourceFiles, int sourceProgress,
-                              long totalSize, long byteProgress, int speedRaw, boolean move,
+                              long totalSize, long byteProgress, long speedRaw, boolean move,
                               boolean completed) {
         this.name = name;
         sourceFiles = amountOfSourceFiles;
@@ -122,7 +122,7 @@ public class DatapointParcelable implements Parcelable {
         completed = in.readByte() != 0;
         move = in.readByte() != 0;
         name = in.readString();
-        speedRaw = in.readInt();
+        speedRaw = in.readLong();
     }
 
     public static final Creator<DatapointParcelable> CREATOR = new Creator<DatapointParcelable>() {
@@ -151,6 +151,6 @@ public class DatapointParcelable implements Parcelable {
         dest.writeByte((byte) (completed ? 1 : 0));
         dest.writeByte((byte) (move ? 1 : 0));
         dest.writeString(name);
-        dest.writeInt(speedRaw);
+        dest.writeLong(speedRaw);
     }
 }

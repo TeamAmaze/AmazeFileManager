@@ -30,7 +30,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     private Context context;
 
-    private long timer = 0l;
     private boolean isNotificationTitleSet = false;
 
     @Override
@@ -67,6 +66,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
         getNotificationBuilder().setProgress(0, 0, true);
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
+                getString(R.string.unknown));
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                getString(R.string.unknown));
         getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
@@ -92,7 +95,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      *                       In case of encryption, this is true for decrypting operation
      */
     public final void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, int speed, boolean isComplete,
+                                     long totalSize, long writtenSize, long speed, boolean isComplete,
                                      boolean move) {
         if (!getProgressHandler().getCancelled()) {
 
@@ -125,10 +128,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                         break;
                 }
 
-                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_title_small,
-                        context.getResources().getString(titleResource));
-                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_title_big,
-                        context.getResources().getString(titleResource));
+                getNotificationBuilder().setSubText(context.getResources().getString(titleResource));
                 isNotificationTitleSet = true;
             }
 
@@ -140,14 +140,11 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small, fileName);
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big, written);
                 getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small, written);
-                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeElapsed_big, Utils.formatTimer(++timer));
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
                         Formatter.formatFileSize(context, speed) + "/s");
 
-                if (speed != 0) {
-                    String remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
-                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
-                }
+                String remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
                 getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
                 getNotificationBuilder().setOngoing(true);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
@@ -165,6 +162,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                             context.getResources().getString(R.string.processing));
                     getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
                             context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
+                            getString(R.string.unknown));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                            getString(R.string.unknown));
 
                     getNotificationBuilder().setOngoing(false);
                     getNotificationBuilder().setAutoCancel(true);
@@ -191,14 +192,18 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     }
 
     protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
-        if(!getDataPackages().isEmpty()) throw new IllegalStateException("This is not the first datapoint!");
+        if(!getDataPackages().isEmpty()) {
+            throw new IllegalStateException("This is not the first datapoint!");
+        }
 
         DatapointParcelable intent1 = new DatapointParcelable(name, amountOfFiles, totalBytes, move);
         putDataPackage(intent1);
     }
 
     protected void addDatapoint(DatapointParcelable datapoint) {
-        if(getDataPackages().isEmpty()) throw new IllegalStateException("This is the first datapoint!");
+        if(getDataPackages().isEmpty()) {
+            throw new IllegalStateException("This is the first datapoint!");
+        }
 
         putDataPackage(datapoint);
         if (getProgressListener() != null) {

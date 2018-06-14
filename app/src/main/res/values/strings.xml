@@ -638,5 +638,6 @@
     <string name="grant_apkinstall_permission">App needs permission to install apps continue.</string>
     <string name="time_remaining">Time remaining</string>
     <string name="transfer_rate">Transfer rate</string>
+    <string name="unknown">unknown</string>
 </resources>
 

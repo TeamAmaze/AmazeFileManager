@@ -5,13 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/notification_service_title_big"
-        style="@style/TextAppearance.Compat.Notification.Title" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,6 +16,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/filename"
             android:textStyle="bold"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
         <TextView
             android:id="@+id/notification_service_textView_filename_big"
@@ -34,6 +28,7 @@
             android:layout_marginStart="@dimen/material_generic"
             android:singleLine="true"
             android:ellipsize="middle"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
     </RelativeLayout>
 
@@ -48,6 +43,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/written"
             android:textStyle="bold"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
         <TextView
             android:id="@+id/notification_service_textView_written_big"
@@ -57,29 +53,7 @@
             android:layout_toEndOf="@id/notification_service_written_big"
             android:layout_marginLeft="@dimen/material_generic"
             android:layout_marginStart="@dimen/material_generic"
-            />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/notification_service_timeElapsed_big"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:text="@string/service_timer"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:id="@+id/notification_service_textView_timeElapsed_big"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/notification_service_timeElapsed_big"
-            android:layout_marginLeft="@dimen/material_generic"
-            android:layout_toEndOf="@id/notification_service_timeElapsed_big"
-            android:layout_marginStart="@dimen/material_generic"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
     </RelativeLayout>
 
@@ -94,6 +68,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/time_remaining"
             android:textStyle="bold"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
         <TextView
             android:id="@+id/notification_service_textView_timeRemaining_big"
@@ -103,6 +78,7 @@
             android:layout_marginLeft="@dimen/material_generic"
             android:layout_toEndOf="@id/notification_service_timeRemaining_big"
             android:layout_marginStart="@dimen/material_generic"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
     </RelativeLayout>
 
@@ -117,6 +93,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/transfer_rate"
             android:textStyle="bold"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
         <TextView
             android:id="@+id/notification_service_textView_transferRate_big"
@@ -126,6 +103,7 @@
             android:layout_marginLeft="@dimen/material_generic"
             android:layout_toEndOf="@id/notification_service_transferRate_big"
             android:layout_marginStart="@dimen/material_generic"
+            style="@style/TextAppearance.Compat.Notification.Info"
             />
     </RelativeLayout>
 </LinearLayout>
