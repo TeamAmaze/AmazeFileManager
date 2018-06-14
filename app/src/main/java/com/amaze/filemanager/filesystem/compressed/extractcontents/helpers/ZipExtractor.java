@@ -67,10 +67,6 @@ public class ZipExtractor extends Extractor {
             }
         }
 
-        if(invalidArchiveEntries.size() > 0) {
-            listener.onInvalidEntriesFoundBeforeStart(invalidArchiveEntries);
-        }
-
         listener.onStart(totalBytes, entriesToExtract.get(0).getName());
 
         for (ZipEntry entry : entriesToExtract) {

@@ -62,11 +62,6 @@ public abstract class AbstractExtractorTest {
                         Environment.getExternalStorageDirectory().getAbsolutePath(), new Extractor.OnUpdate() {
 
                             @Override
-                            public void onInvalidEntriesFoundBeforeStart(List<String> invalidArchiveEntries) {
-
-                            }
-
-                            @Override
                             public void onStart(long totalBytes, String firstEntryName) {
 
                             }

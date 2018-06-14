@@ -66,10 +66,6 @@ public class RarExtractor extends Extractor {
                 }
             }
 
-            if(invalidArchiveEntries.size() > 0) {
-                listener.onInvalidEntriesFoundBeforeStart(invalidArchiveEntries);
-            }
-
             listener.onStart(totalBytes, arrayList.get(0).getFileNameString());
 
             for (FileHeader entry : arrayList) {

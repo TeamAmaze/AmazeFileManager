@@ -88,11 +88,6 @@ public abstract class Extractor {
     }
 
     public interface OnUpdate {
-        /**
-         * This method is called before extraction starts. Implementations please call this before
-         * {@link #onStart(long, String)} below, if {@link #invalidArchiveEntries} has entries added.
-         */
-        void onInvalidEntriesFoundBeforeStart(List<String> invalidArchiveEntries);
         void onStart(long totalBytes, String firstEntryName);
         void onUpdate(String entryPath);
         void onFinish();

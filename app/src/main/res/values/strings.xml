@@ -640,6 +640,6 @@
     <string name="time_remaining">Time remaining</string>
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>
-    <string name="multiple_invalid_archive_entries">Entries with improper path was found in the archive, and they will not be extracted nor visible in archive view. The archive may came from a malicious source.</string>
+    <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
 </resources>
 

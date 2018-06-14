@@ -66,10 +66,6 @@ public class TarExtractor extends Extractor {
             }
         }
 
-        if(invalidArchiveEntries.size() > 0) {
-            listener.onInvalidEntriesFoundBeforeStart(invalidArchiveEntries);
-        }
-
         listener.onStart(totalBytes, archiveEntries.get(0).getName());
 
         inputStream.close();
