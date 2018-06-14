@@ -361,7 +361,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
         checkForExternalPermission();
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Void>() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Void>(null) {
             @Override
             public Void doInBackground() {
 
@@ -379,7 +379,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void onPostExecute(Void result) {
+            public void onPostExecute(Void result) {
 
                 drawer.refreshDrawer();
 
@@ -428,17 +428,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     operation = savedInstanceState.getInt(KEY_OPERATION);
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
                 }
-                return null;
-            }
-
-            @Override
-            public Void onPreExecute() {
-                return null;
-            }
-
-            @Override
-            public Void[] params() {
-                return null;
             }
         });
     }
@@ -1933,9 +1922,10 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             return;
         }
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Boolean>() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Boolean>(null) {
             @Override
-            public @NonNull Boolean doInBackground() {
+            @NonNull
+            public Boolean doInBackground() {
                 boolean hasUpdatedDrawer = false;
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
@@ -2152,21 +2142,10 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void onPostExecute(@NonNull Boolean result) {
+            public void onPostExecute(@NonNull Boolean result) {
                 if (result) {
                     drawer.refreshDrawer();
                 }
-                return null;
-            }
-
-            @Override
-            public Void onPreExecute() {
-                return null;
-            }
-
-            @Override
-            public Void[] params() {
-                return null;
             }
         });
     }
