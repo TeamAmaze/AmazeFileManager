@@ -143,7 +143,12 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
                         Formatter.formatFileSize(context, speed) + "/s");
 
-                String remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
+                String remainingTime;
+                if (speed != 0) {
+                    remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
+                } else {
+                    remainingTime = getResources().getString(R.string.unknown);
+                }
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
                 getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
                 getNotificationBuilder().setOngoing(true);
