@@ -28,6 +28,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -103,12 +105,11 @@ public class AppConfig extends GlideApplication {
      * A compact AsyncTask which runs which executes whatever is passed by callbacks.
      * Supports any class that extends an object as param array, and result too.
      */
-    public static void runInParallel(final CustomAsyncCallbacks customAsyncCallbacks) {
+    public static <Params, Result> void runInParallel(final CustomAsyncCallbacks<Params, Result> customAsyncCallbacks) {
 
         synchronized (customAsyncCallbacks) {
 
-            new AsyncTask<Object, Object, Object>() {
-
+            new AsyncTask<Params, Void, Result>() {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
@@ -116,39 +117,34 @@ public class AppConfig extends GlideApplication {
                 }
 
                 @Override
-                protected void onProgressUpdate(Object... values) {
-                    super.onProgressUpdate(values);
-                    customAsyncCallbacks.publishResult(values);
-                }
-
-                @Override
-                protected Object doInBackground(Object... params) {
+                protected Result doInBackground(Object... params) {
                     return customAsyncCallbacks.doInBackground();
                 }
 
                 @Override
-                protected void onPostExecute(Object aVoid) {
+                protected void onPostExecute(Result aVoid) {
                     super.onPostExecute(aVoid);
                     customAsyncCallbacks.onPostExecute(aVoid);
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, customAsyncCallbacks.params());
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, customAsyncCallbacks.parameters);
         }
     }
 
     /**
      * Interface providing callbacks utilized by {@link #runInBackground(CustomAsyncCallbacks)}
      */
-    public interface CustomAsyncCallbacks {
+    public static abstract class CustomAsyncCallbacks<Params, Result> {
+        public final @Nullable Params[] parameters;
 
-        Object doInBackground();
+        public CustomAsyncCallbacks(@Nullable Params[] params) {
+            parameters = params;
+        }
 
-        Void onPostExecute(Object result);
+        public abstract Result doInBackground();
 
-        Void onPreExecute();
+        public void onPostExecute(Result result) { }
 
-        Void publishResult(Object... result);
-
-        <T extends Object> T[] params();
+        public void onPreExecute() { }
     }
 
     /**

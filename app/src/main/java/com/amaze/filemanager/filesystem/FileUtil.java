@@ -194,7 +194,7 @@ public abstract class FileUtil {
     public static final void writeUriToStorage(@NonNull final MainActivity mainActivity, @NonNull final ArrayList<Uri> uris,
                                                @NonNull final ContentResolver contentResolver, @NonNull final String currentPath) {
 
-        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, List<String>>(null) {
 
             @Override
             public List<String> doInBackground() {
@@ -351,9 +351,8 @@ public abstract class FileUtil {
                 }
                 return (retval.size() > 0) ? retval : null;
             }
-
             @Override
-            public Void onPostExecute(Object result) {
+            public void onPostExecute(List<String> result) {
                 if(result !=  null) {
                     List<String> paths = (List<String>) result;
                     if (paths.size() == 1) {
@@ -362,22 +361,6 @@ public abstract class FileUtil {
                         Toast.makeText(mainActivity, mainActivity.getString(R.string.saved_multi_files, paths.size()), Toast.LENGTH_LONG).show();
                     }
                 }
-                return null;
-            }
-
-            @Override
-            public Void onPreExecute() {
-                return null;
-            }
-
-            @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
-                return null;
             }
         });
     }
