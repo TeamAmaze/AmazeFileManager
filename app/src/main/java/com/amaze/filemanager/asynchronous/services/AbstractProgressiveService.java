@@ -65,7 +65,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     @Override
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
-        getNotificationBuilder().setProgress(0, 0, true);
+        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                0, 0, true);
+        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                0, 0, true);
         getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
                 getString(R.string.unknown));
         getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
@@ -76,7 +79,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     @Override
     public void progressResumed() {
         // set notification to indeterminate unless progress resumes
-        getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                100, Math.round(getPercentProgress()), false);
+        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                100, Math.round(getPercentProgress()), false);
         getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
@@ -150,7 +156,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                     remainingTime = getResources().getString(R.string.unknown);
                 }
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
-                getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+                getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                        100, Math.round(getPercentProgress()), false);
+                getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                        100, Math.round(getPercentProgress()), false);
                 getNotificationBuilder().setOngoing(true);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
             }
@@ -161,7 +170,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                     //mBuilder.setContentTitle(getString(R.string.move_complete));
                     // set progress to indeterminate as deletion might still be going on from source
                     // while moving the file
-                    getNotificationBuilder().setProgress(0, 0, true);
+                    getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                            0, 0, true);
+                    getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                            0, 0, true);
 
                     getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
                             context.getResources().getString(R.string.processing));
