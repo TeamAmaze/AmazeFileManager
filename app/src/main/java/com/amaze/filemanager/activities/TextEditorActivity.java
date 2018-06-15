@@ -204,6 +204,9 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         else if (getAppTheme().equals(AppTheme.BLACK))
             mInput.setBackgroundColor(Utils.getColor(this, android.R.color.black));
 
+        if(mInput.getTypeface() == null)
+            mInput.setTypeface(Typeface.DEFAULT);
+
         mInputTypefaceDefault = mInput.getTypeface();
         mInputTypefaceMono = Typeface.MONOSPACE;
 
@@ -224,7 +227,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
         outState.putInt(KEY_INDEX, mInput.getScrollY());
         outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
-        outState.putBoolean(KEY_MONOFONT, mInput.getTypeface().equals(mInputTypefaceMono));
+        outState.putBoolean(KEY_MONOFONT, mInputTypefaceMono.equals(mInput.getTypeface()));
     }
 
     private void checkUnsavedChanges() {
@@ -346,7 +349,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.save).setVisible(mModified);
-        menu.findItem(R.id.monofont).setChecked(mInput.getTypeface().equals(mInputTypefaceMono));
+        menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mInput.getTypeface()));
         return super.onPrepareOptionsMenu(menu);
     }
 
