@@ -55,6 +55,9 @@ public class TabHandler extends SQLiteOpenHelper {
     public TabHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        // The call to onUpgrade() is not performed unless getWritableDatabase() is called.
+        // See more at https://github.com/TeamAmaze/AmazeFileManager/pull/1262
+        getWritableDatabase();
     }
 
     @Override
