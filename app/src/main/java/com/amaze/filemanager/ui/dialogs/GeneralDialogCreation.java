@@ -53,7 +53,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.internal.MDButton;
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
@@ -63,6 +62,8 @@ import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.database.SortHandler;
+import com.amaze.filemanager.database.models.Sort;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -72,8 +73,8 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
@@ -97,11 +98,15 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.os.Build.VERSION_CODES.M;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 /**
@@ -691,7 +696,7 @@ public class GeneralDialogCreation {
         textInputLayoutEncryptSaveAs.setHint(intentParcelable.isDirectory() ?
                 c.getString(R.string.encrypt_folder_save_as) :
                 c.getString(R.string.encrypt_file_save_as));
-        
+
         passwordEditText.post(() -> {
             InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(passwordEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -923,30 +928,60 @@ public class GeneralDialogCreation {
     }
 
     public static void showSortDialog(final MainFragment m, AppTheme appTheme, final SharedPreferences sharedPref) {
+        final String path = m.getCurrentPath();
         int accentColor = m.getMainActivity().getAccent();
         String[] sort = m.getResources().getStringArray(R.array.sortby);
-        int current = Integer.parseInt(sharedPref.getString("sortby", "0"));
+        int current = SortHandler.getSortType(m.getContext(), path);
         MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
         a.theme(appTheme.getMaterialDialogTheme());
         a.items(sort).itemsCallbackSingleChoice(current > 3 ? current - 4 : current,
                 (dialog, view, which, text) -> true);
+        final Set<String> sortbyOnlyThis = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, Collections.emptySet());
+        final Set<String> onlyThisFloders = new HashSet<>(sortbyOnlyThis);
+        boolean onlyThis = onlyThisFloders.contains(path);
+        a.checkBoxPrompt(m.getResources().getString(R.string.sort_only_this),
+                onlyThis,
+                (buttonView, isChecked) -> {
+                    if (isChecked) {
+                        if (!onlyThisFloders.contains(path)) {
+                            onlyThisFloders.add(path);
+                        }
+                    } else {
+                        if (onlyThisFloders.contains(path)) {
+                            onlyThisFloders.remove(path);
+                        }
+                    }
+                });
         a.negativeText(R.string.ascending).positiveColor(accentColor);
         a.positiveText(R.string.descending).negativeColor(accentColor);
         a.onNegative((dialog, which) -> {
-            sharedPref.edit().putString("sortby", "" + dialog.getSelectedIndex()).commit();
-            m.getSortModes();
-            m.updateList();
-            dialog.dismiss();
+            onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, false);
         });
-
         a.onPositive((dialog, which) -> {
-            sharedPref.edit().putString("sortby", "" + (dialog.getSelectedIndex() + 4)).commit();
-            m.getSortModes();
-            m.updateList();
-            dialog.dismiss();
+            onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
         });
         a.title(R.string.sortby);
         a.build().show();
+    }
+
+    private static void onSortTypeSelected(MainFragment m, SharedPreferences sharedPref, Set<String> onlyThisFloders, MaterialDialog dialog, boolean desc) {
+        final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
+        SortHandler sortHandler = new SortHandler(m.getContext());
+        if (onlyThisFloders.contains(m.getCurrentPath())) {
+            Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
+            Sort newSort = new Sort(m.getCurrentPath(), sortType);
+            if (oldSort == null) {
+                sortHandler.addEntry(newSort);
+            } else {
+                sortHandler.updateEntry(oldSort, newSort);
+            }
+        } else {
+            sortHandler.clear(m.getCurrentPath());
+            sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
+        }
+        sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
+        m.updateList();
+        dialog.dismiss();
     }
 
     public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {

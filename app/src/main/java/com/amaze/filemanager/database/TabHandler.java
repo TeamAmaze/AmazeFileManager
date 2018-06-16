@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class TabHandler extends SQLiteOpenHelper {
 
-    protected static final int DATABASE_VERSION = 5;
+    protected static final int DATABASE_VERSION = 6;
     protected static final String DATABASE_NAME = "explorer.db";
     protected static final String TABLE_TAB = "tab";
 
@@ -55,38 +55,44 @@ public class TabHandler extends SQLiteOpenHelper {
     public TabHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        // The call to onUpgrade() is not performed unless getWritableDatabase() is called.
+        // See more at https://github.com/TeamAmaze/AmazeFileManager/pull/1262
+        getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+        String CREATE_TAB_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TAB + "("
                 + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
                 + COLUMN_PATH + " TEXT,"
                 + COLUMN_HOME + " TEXT" +
                 ")";
 
-        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+        String CREATE_TABLE_ENCRYPTED = "CREATE TABLE IF NOT EXISTS " + TABLE_ENCRYPTED + "("
                 + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_ENCRYPTED_PATH + " TEXT,"
                 + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
                 + ")";
 
-        String CREATE_TABLE_CLOUD = "CREATE TABLE " + CloudHandler.TABLE_CLOUD_PERSIST + "("
+        String CREATE_TABLE_CLOUD = "CREATE TABLE IF NOT EXISTS " + CloudHandler.TABLE_CLOUD_PERSIST + "("
                 + CloudHandler.COLUMN_CLOUD_ID
                 + " INTEGER PRIMARY KEY,"
                 + CloudHandler.COLUMN_CLOUD_SERVICE + " INTEGER,"
                 + CloudHandler.COLUMN_CLOUD_PERSIST + " TEXT" + ")";
 
+        String CREATE_TABLE_SORT = "CREATE TABLE IF NOT EXISTS " + SortHandler.TABLE_SORT + "("
+                + SortHandler.COLUMN_SORT_PATH + " TEXT PRIMARY KEY,"
+                + SortHandler.COLUMN_SORT_TYPE + " INTEGER"
+                + ")";
+
         db.execSQL(CREATE_TAB_TABLE);
         db.execSQL(CREATE_TABLE_ENCRYPTED);
         db.execSQL(CREATE_TABLE_CLOUD);
+        db.execSQL(CREATE_TABLE_SORT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CloudHandler.TABLE_CLOUD_PERSIST);
         onCreate(sqLiteDatabase);
     }
 

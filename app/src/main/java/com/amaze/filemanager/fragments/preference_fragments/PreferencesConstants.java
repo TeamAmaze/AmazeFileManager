@@ -76,4 +76,8 @@ public class PreferencesConstants {
      */
     public static final String PREFERENCE_COLOR_CONFIG = "color config";
     //END random preferences
+
+    //START sort preferences
+    public static final String  PREFERENCE_SORTBY_ONLY_THIS = "sortby_only_this";
+    //END sort preferences
 }
