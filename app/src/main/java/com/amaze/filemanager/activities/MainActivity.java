@@ -48,6 +48,7 @@ import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -1698,15 +1699,15 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     }
 
     @Override
-    public void addConnection(boolean edit, final String name, final String path, final String encryptedPath,
-                              final String oldname, final String oldPath) {
+    public void addConnection(boolean edit, @NonNull final String name, @NonNull final String path, @Nullable final String encryptedPath,
+                              @Nullable final String oldname, @Nullable final String oldPath) {
         String[] s = new String[]{name, path};
         if (!edit) {
             if ((dataUtils.containsServer(path)) == -1) {
                 dataUtils.addServer(s);
                 drawer.refreshDrawer();
 
-                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, encryptedPath, name));
+                utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
 
                 //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
