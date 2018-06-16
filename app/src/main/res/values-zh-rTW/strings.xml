@@ -79,6 +79,7 @@
   <string name="questionset">您要將此頁籤的目前路徑設為首頁嗎？</string>
   <string name="directorysort">目錄排序方式</string>
   <string name="sortby">排序方式</string>
+  <string name="sort_only_this">僅應用於此目錄</string>
   <string name="theme">主題</string>
   <string name="random">隨機色彩</string>
   <string name="random_summary">每次啟動都使用隨機主題</string>
