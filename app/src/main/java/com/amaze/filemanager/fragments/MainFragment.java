@@ -168,7 +168,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private View actionModeView;
     private FastScroller fastScroller;
     private CustomFileObserver customFileObserver;
-    private DataUtils dataUtils = DataUtils.getInstance();
+    private DataUtils dataUtils;
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
 
@@ -198,6 +198,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
         setRetainInstance(true);
 
+        dataUtils = DataUtils.getInstance();
         utilsProvider = getMainActivity().getUtilsProvider();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         res = getResources();

@@ -164,7 +164,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
     public static final String TAG_ASYNC_HELPER = "async_helper";
 
-    private DataUtils dataUtils = DataUtils.getInstance();
+    private DataUtils dataUtils;
 
     public String path = "";
     public boolean mReturnIntent = false;
@@ -275,50 +275,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
-            requestStoragePermission(() -> {
-                drawer.refreshDrawer();
-                TabFragment tabFragment = getTabFragment();
-                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
-                //reset home and current paths according to new storages
-                if (b) {
-                    tabHandler.clear();
-
-                    if (drawer.getPhoneStorageCount() > 1) {
-                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
-                    } else {
-                        tabHandler.addTab(new Tab(1, "/", "/"));
-                    }
-
-                    if (drawer.getFirstPath() != null) {
-                        String pa = drawer.getFirstPath();
-                        tabHandler.addTab(new Tab(2, pa, pa));
-                    } else {
-                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
-                    }
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-                    }
-                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
-                } else {
-                    //just refresh list
-                    if (tabFragment != null) {
-                        Fragment main = tabFragment.getFragmentAtIndex(0);
-                        if (main != null)
-                            ((MainFragment) main).updateList();
-                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                        if (main1 != null)
-                            ((MainFragment) main1).updateList();
-                    }
-                }
-            });
-        }
+        dataUtils = DataUtils.getInstance();
 
         initialisePreferences();
         initializeInteractiveShell();
@@ -402,9 +359,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             getPrefs().edit().putBoolean(PREFERENCE_BOOKMARKS_ADDED, true).commit();
         }
 
-        AppConfig.runInBackground(new AppConfig.CustomAsyncCallbacks() {
+        checkForExternalPermission();
+
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Void>(null) {
             @Override
-            public <E> E doInBackground() {
+            public Void doInBackground() {
 
                 dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
                 dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
@@ -420,7 +379,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            public Void onPostExecute(Object result) {
+            public void onPostExecute(Void result) {
 
                 drawer.refreshDrawer();
 
@@ -469,24 +428,55 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     operation = savedInstanceState.getInt(KEY_OPERATION);
                     //mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
                 }
-                return null;
-            }
-
-            @Override
-            public Void onPreExecute() {
-                return null;
-            }
-
-            @Override
-            public Void publishResult(Object... result) {
-                return null;
-            }
-
-            @Override
-            public <T> T[] params() {
-                return null;
             }
         });
+    }
+
+    private void checkForExternalPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
+            requestStoragePermission(() -> {
+                drawer.refreshDrawer();
+                TabFragment tabFragment = getTabFragment();
+                boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
+                //reset home and current paths according to new storages
+                if (b) {
+                    tabHandler.clear();
+
+                    if (drawer.getPhoneStorageCount() > 1) {
+                        tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
+                    } else {
+                        tabHandler.addTab(new Tab(1, "/", "/"));
+                    }
+
+                    if (drawer.getFirstPath() != null) {
+                        String pa = drawer.getFirstPath();
+                        tabHandler.addTab(new Tab(2, pa, pa));
+                    } else {
+                        tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
+                    }
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                    }
+                    getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+                } else {
+                    //just refresh list
+                    if (tabFragment != null) {
+                        Fragment main = tabFragment.getFragmentAtIndex(0);
+                        if (main != null)
+                            ((MainFragment) main).updateList();
+                        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                        if (main1 != null)
+                            ((MainFragment) main1).updateList();
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -1932,9 +1922,10 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             return;
         }
 
-        cloudSyncTask = new AsyncTask<Void, Void, Boolean>() {
+        AppConfig.runInParallel(new AppConfig.CustomAsyncCallbacks<Void, Boolean>(null) {
             @Override
-            protected Boolean doInBackground(Void... params) {
+            @NonNull
+            public Boolean doInBackground() {
                 boolean hasUpdatedDrawer = false;
 
                 if (data.getCount() > 0 && data.moveToFirst()) {
@@ -2151,13 +2142,12 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
 
             @Override
-            protected void onPostExecute(Boolean refreshDrawer) {
-                super.onPostExecute(refreshDrawer);
-                if (refreshDrawer) {
+            public void onPostExecute(@NonNull Boolean result) {
+                if (result) {
                     drawer.refreshDrawer();
                 }
             }
-        }.execute();
+        });
     }
 
     @Override

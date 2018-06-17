@@ -453,7 +453,7 @@
     <string name="permission_group">Group</string>
     <string name="permission_other">Other</string>
     <string name="clipboard_path_copy">Path copied to clipboard</string>
-    <string name="service_timer">Time Elapsed</string>
+    <string name="service_timer">Time elapsed</string>
     <string name="please_wait">Please Wait</string>
 
     <string name="cloud_connection">Cloud Connection</string>
@@ -637,5 +637,8 @@
     <string name="saved_multi_files">%d files saved.</string>
     <string name="create_hidden_file_warn">The created file will be hidden in the file list.</string>
     <string name="grant_apkinstall_permission">App needs permission to install apps continue.</string>
+    <string name="time_remaining">Time remaining</string>
+    <string name="transfer_rate">Transfer rate</string>
+    <string name="unknown">unknown</string>
 </resources>
 
