@@ -477,7 +477,7 @@ public class CopyService extends AbstractProgressiveService {
                         return;
                     }
 
-                    GenericCopyUtil copyUtil = new GenericCopyUtil(c);
+                    GenericCopyUtil copyUtil = new GenericCopyUtil(c, progressHandler);
 
                     progressHandler.setFileName(sourceFile.getName());
                     copyUtil.copy(sourceFile, targetFile);
