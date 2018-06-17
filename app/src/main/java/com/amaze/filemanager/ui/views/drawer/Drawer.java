@@ -83,7 +83,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     private MainActivity mainActivity;
     private Resources resources;
-    private DataUtils dataUtils = DataUtils.getInstance();
+    private DataUtils dataUtils;
 
     private ActionViewStateManager actionViewStateManager;
     private boolean isSomethingSelected;
@@ -103,6 +103,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     public Drawer(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         resources = mainActivity.getResources();
+        dataUtils = DataUtils.getInstance();
 
         drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
         drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);

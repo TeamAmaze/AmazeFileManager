@@ -28,6 +28,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Html;
@@ -49,7 +50,6 @@ import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
@@ -64,7 +64,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
 
@@ -77,14 +76,17 @@ public class ProcessViewerFragment extends Fragment {
 
     private boolean isInitialized = false;
     private MainActivity mainActivity;
-    private int accentColor, primaryColor;
+    private int accentColor;
     private ImageButton mCancelButton;
     private ImageView mProgressImage;
     private View rootView;
     private CardView mCardView;
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
-    private long time = 0L;
+    /**
+     * Time in seconds just for showing to the user. No guarantees.
+     */
+    private long looseTimeInSeconds = 0L;
     private TextView mProgressTypeText, mProgressFileNameText,
             mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 
@@ -95,19 +97,12 @@ public class ProcessViewerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.processparent, container, false);
-        setRetainInstance(false);
 
         mainActivity = (MainActivity) getActivity();
 
         accentColor = mainActivity.getAccent();
-        primaryColor = ColorPreferenceHelper.getPrimary(mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
         if (mainActivity.getAppTheme().equals(AppTheme.DARK) || mainActivity.getAppTheme().equals(AppTheme.BLACK))
             rootView.setBackgroundResource((R.color.cardView_background));
-        mainActivity.updateViews(new ColorDrawable(primaryColor));
-        mainActivity.getAppbar().setTitle(R.string.process_viewer);
-        mainActivity.floatingActionButton.getMenuButton().hide();
-        
-        mainActivity.supportInvalidateOptionsMenu();
 
         mCardView = rootView.findViewById(R.id.card_view);
 
@@ -135,6 +130,24 @@ public class ProcessViewerFragment extends Fragment {
         mDecryptConnection = new CustomServiceConnection(this, mLineChart, SERVICE_DECRYPT);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setRetainInstance(true);
+        mainActivity.getAppbar().setTitle(R.string.process_viewer);
+        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+        mainActivity.supportInvalidateOptionsMenu();
+
+        int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
+        int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+        accentColor = mainActivity.getAccent();
+
+        mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
+                skinTwoColor : skin_color));
     }
 
     @Override
@@ -209,22 +222,13 @@ public class ProcessViewerFragment extends Fragment {
 
             Spanned timerSpan = Html.fromHtml(getResources().getString(R.string.service_timer)
                     + ": <font color='" + accentColor + "'><i>"
-                    + formatTimer(++time)
+                    + Utils.formatTimer(++looseTimeInSeconds)
                     + "</font></i>");
 
             mProgressTimer.setText(timerSpan);
 
             if(dataPackage.completed) mCancelButton.setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * Formats input to plain mm:ss format
-     */
-    private String formatTimer(long timer) {
-        final long min = TimeUnit.SECONDS.toMinutes(timer);
-        final long sec = TimeUnit.SECONDS.toSeconds(timer - TimeUnit.MINUTES.toMillis(min));
-        return String.format("%02d:%02d", min, sec);
     }
 
     /**

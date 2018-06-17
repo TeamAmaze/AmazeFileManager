@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
+import android.widget.RemoteViews;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -16,6 +17,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 
 public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
-    public Context context;
+    private Context context;
 
     private boolean isNotificationTitleSet = false;
 
@@ -45,6 +47,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     protected abstract void setPercentProgress(float progress);
 
+    protected abstract RemoteViews getNotificationCustomViewSmall();
+
+    protected abstract RemoteViews getNotificationCustomViewBig();
+
     public abstract ProgressListener getProgressListener();
 
     public abstract void setProgressListener(ProgressListener progressListener);
@@ -59,14 +65,24 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     @Override
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
-        getNotificationBuilder().setProgress(0, 0, true);
+        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                0, 0, true);
+        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                0, 0, true);
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
+                getString(R.string.unknown));
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                getString(R.string.unknown));
         getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
     @Override
     public void progressResumed() {
         // set notification to indeterminate unless progress resumes
-        getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                100, Math.round(getPercentProgress()), false);
+        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                100, Math.round(getPercentProgress()), false);
         getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
@@ -85,7 +101,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      *                       In case of encryption, this is true for decrypting operation
      */
     public final void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, int speed, boolean isComplete,
+                                     long totalSize, long writtenSize, long speed, boolean isComplete,
                                      boolean move) {
         if (!getProgressHandler().getCancelled()) {
 
@@ -118,16 +134,32 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                         break;
                 }
 
-                getNotificationBuilder().setContentTitle(context.getResources().getString(titleResource));
-
+                getNotificationBuilder().setSubText(context.getResources().getString(titleResource));
                 isNotificationTitleSet = true;
             }
 
             if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                getNotificationBuilder().setContentText(fileName + " " + Formatter.formatFileSize(context, writtenSize) + "/" +
-                        Formatter.formatFileSize(context, totalSize));
-                getNotificationBuilder().setProgress(100, Math.round(getPercentProgress()), false);
+                String written = Formatter.formatFileSize(context, writtenSize) + "/" +
+                        Formatter.formatFileSize(context, totalSize);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big, fileName);
+                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small, fileName);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big, written);
+                getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small, written);
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                        Formatter.formatFileSize(context, speed) + "/s");
+
+                String remainingTime;
+                if (speed != 0) {
+                    remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
+                } else {
+                    remainingTime = getResources().getString(R.string.unknown);
+                }
+                getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
+                getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                        100, Math.round(getPercentProgress()), false);
+                getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                        100, Math.round(getPercentProgress()), false);
                 getNotificationBuilder().setOngoing(true);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
             }
@@ -138,9 +170,20 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                     //mBuilder.setContentTitle(getString(R.string.move_complete));
                     // set progress to indeterminate as deletion might still be going on from source
                     // while moving the file
-                    getNotificationBuilder().setProgress(0, 0, true);
+                    getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                            0, 0, true);
+                    getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                            0, 0, true);
 
-                    getNotificationBuilder().setContentText(context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
+                            context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
+                            context.getResources().getString(R.string.processing));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
+                            getString(R.string.unknown));
+                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                            getString(R.string.unknown));
+
                     getNotificationBuilder().setOngoing(false);
                     getNotificationBuilder().setAutoCancel(true);
                     getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
@@ -166,14 +209,18 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     }
 
     protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
-        if(!getDataPackages().isEmpty()) throw new IllegalStateException("This is not the first datapoint!");
+        if(!getDataPackages().isEmpty()) {
+            throw new IllegalStateException("This is not the first datapoint!");
+        }
 
         DatapointParcelable intent1 = new DatapointParcelable(name, amountOfFiles, totalBytes, move);
         putDataPackage(intent1);
     }
 
     protected void addDatapoint(DatapointParcelable datapoint) {
-        if(getDataPackages().isEmpty()) throw new IllegalStateException("This is the first datapoint!");
+        if(getDataPackages().isEmpty()) {
+            throw new IllegalStateException("This is the first datapoint!");
+        }
 
         putDataPackage(datapoint);
         if (getProgressListener() != null) {

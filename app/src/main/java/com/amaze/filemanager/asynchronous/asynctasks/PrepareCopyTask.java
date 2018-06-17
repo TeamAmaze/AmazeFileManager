@@ -143,6 +143,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
             if (copyFolder == null) {
                 // not starting service as there's no sufficient space
+                dialog.dismiss();
                 return;
             }
 
