@@ -50,7 +50,6 @@ import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.asynchronous.services.ZipService;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.Utils;
@@ -65,7 +64,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class ProcessViewerFragment extends Fragment {
 
@@ -85,7 +83,10 @@ public class ProcessViewerFragment extends Fragment {
     private CardView mCardView;
     private LineChart mLineChart;
     private LineData mLineData = new LineData();
-    private long time = 0L;
+    /**
+     * Time in seconds just for showing to the user. No guarantees.
+     */
+    private long looseTimeInSeconds = 0L;
     private TextView mProgressTypeText, mProgressFileNameText,
             mProgressBytesText, mProgressFileText,  mProgressSpeedText, mProgressTimer;
 
@@ -221,7 +222,7 @@ public class ProcessViewerFragment extends Fragment {
 
             Spanned timerSpan = Html.fromHtml(getResources().getString(R.string.service_timer)
                     + ": <font color='" + accentColor + "'><i>"
-                    + Utils.formatTimer(++time)
+                    + Utils.formatTimer(++looseTimeInSeconds)
                     + "</font></i>");
 
             mProgressTimer.setText(timerSpan);
