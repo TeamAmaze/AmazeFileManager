@@ -299,7 +299,7 @@ public class CryptUtil {
      * @param outputStream stream associated with new output encrypted file
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static void aesEncrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
+    private void aesEncrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
@@ -316,9 +316,10 @@ public class CryptUtil {
         try {
 
             while ((count = inputStream.read(buffer)) != -1) {
-
-                cipherOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                if (!progressHandler.getCancelled()) {
+                    cipherOutputStream.write(buffer, 0, count);
+                    ServiceWatcherUtil.position +=count;
+                } else break;
             }
         } finally {
 
@@ -334,7 +335,7 @@ public class CryptUtil {
      * @param outputStream stream associated with new output decrypted file
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private static void aesDecrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
+    private void aesDecrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES);
@@ -349,9 +350,10 @@ public class CryptUtil {
         try {
 
             while ((count = cipherInputStream.read(buffer)) != -1) {
-
-                outputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                if (!progressHandler.getCancelled()) {
+                    outputStream.write(buffer, 0, count);
+                    ServiceWatcherUtil.position +=count;
+                } else break;
             }
         } finally {
 
@@ -388,7 +390,7 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static void rsaEncrypt(Context context, BufferedInputStream inputStream, BufferedOutputStream outputStream)
+    private void rsaEncrypt(Context context, BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
@@ -404,9 +406,10 @@ public class CryptUtil {
         try {
 
             while ((count = inputStream.read(buffer)) != -1) {
-
-                cipherOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                if (!progressHandler.getCancelled()) {
+                    cipherOutputStream.write(buffer, 0, count);
+                    ServiceWatcherUtil.position +=count;
+                } else break;
             }
         } finally {
 
@@ -417,7 +420,7 @@ public class CryptUtil {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static void rsaDecrypt(Context context, BufferedInputStream inputStream,
+    private void rsaDecrypt(Context context, BufferedInputStream inputStream,
                                    BufferedOutputStream outputStream) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
@@ -433,9 +436,10 @@ public class CryptUtil {
         try {
 
             while ((count = cipherInputStream.read(buffer)) != -1) {
-
-                outputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position +=count;
+                if (!progressHandler.getCancelled()) {
+                    outputStream.write(buffer, 0, count);
+                    ServiceWatcherUtil.position +=count;
+                } else break;
             }
         } finally {
 

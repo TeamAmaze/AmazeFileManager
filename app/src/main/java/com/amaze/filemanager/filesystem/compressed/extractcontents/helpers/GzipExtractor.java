@@ -76,8 +76,10 @@ public class GzipExtractor extends Extractor {
             int len;
             byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
             while ((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
-                ServiceWatcherUtil.position += len;
+                if (!listener.isCancelled()) {
+                    outputStream.write(buf, 0, len);
+                    ServiceWatcherUtil.position += len;
+                } else break;
             }
         } finally {
             outputStream.close();
