@@ -96,7 +96,7 @@ public abstract class Extractor {
 
     protected String fixEntryName(String entryName){
         if(entryName.indexOf('\\') > 0) {
-            return entryName.replace('\\', CompressedHelper.SEPARATOR_CHAR);
+            return entryName.replaceAll("\\\\", CompressedHelper.SEPARATOR);
         } else {
             return entryName;
         }
