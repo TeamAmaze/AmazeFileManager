@@ -1,4 +1,28 @@
+/*
+ * RarHelperTask.java
+ *
+ * Copyright (C) 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt@gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
+
+import android.content.Context;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -10,13 +34,12 @@ import com.github.junrar.rarfile.FileHeader;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-/**
- * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
- */
 public class RarHelperTask extends CompressedHelperTask {
 
+    private WeakReference<Context> context;
     private String fileLocation;
     private String relativeDirectory;
 
@@ -25,9 +48,10 @@ public class RarHelperTask extends CompressedHelperTask {
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
+    public RarHelperTask(Context context, String realFileDirectory, String dir, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
+        this.context = new WeakReference<>(context);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
     }
@@ -38,14 +62,17 @@ public class RarHelperTask extends CompressedHelperTask {
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
-            for (FileHeader header : zipfile.getFileHeaders()) {
-                String name = header.getFileNameString();//This uses \ as separator, not /
+            for (FileHeader rarArchive : zipfile.getFileHeaders()) {
+                String name = rarArchive.getFileNameString();//This uses \ as separator, not /
+                if (!CompressedHelper.isEntryPathValid(name)) {
+                    continue;
+                }
                 boolean isInBaseDir = (relativeDirDiffSeparator == null || relativeDirDiffSeparator.equals("")) && !name.contains("\\");
                 boolean isInRelativeDir = relativeDirDiffSeparator != null && name.contains("\\")
                         && name.substring(0, name.lastIndexOf("\\")).equals(relativeDirDiffSeparator);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(header), 0, header.getDataSize(), header.isDirectory()));
+                    elements.add(new CompressedObjectParcelable(RarDecompressor.convertName(rarArchive), 0, rarArchive.getDataSize(), rarArchive.isDirectory()));
                 }
             }
         } catch (RarException | IOException e) {
