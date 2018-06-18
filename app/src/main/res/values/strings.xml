@@ -639,5 +639,6 @@
     <string name="time_remaining">Time remaining</string>
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>
+    <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
 </resources>
 

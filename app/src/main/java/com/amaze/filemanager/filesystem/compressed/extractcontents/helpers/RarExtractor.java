@@ -1,3 +1,25 @@
+/*
+ * RarExtractor.java
+ *
+ * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt@gmail.com>.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
@@ -33,10 +55,14 @@ public class RarExtractor extends Extractor {
 
             // iterating archive elements to find file names that are to be extracted
             for (FileHeader header : rarFile.getFileHeaders()) {
-                if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
-                    // header to be extracted is at least the entry path (may be more, when it is a directory)
-                    arrayList.add(header);
-                    totalBytes += header.getFullUnpackSize();
+                if(CompressedHelper.isEntryPathValid(header.getFileNameString())) {
+                    if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
+                        // header to be extracted is at least the entry path (may be more, when it is a directory)
+                        arrayList.add(header);
+                        totalBytes += header.getFullUnpackSize();
+                    }
+                } else {
+                    invalidArchiveEntries.add(header.getFileNameString());
                 }
             }
 
@@ -56,13 +82,18 @@ public class RarExtractor extends Extractor {
 
     private void extractEntry(@NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
             throws RarException, IOException {
-        String name = entry.getFileNameString();
-        name = name.replaceAll("\\\\", CompressedHelper.SEPARATOR);
+        String name = fixEntryName(entry.getFileNameString()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
+        File outputFile = new File(outputDir, name);
+
+        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+            throw new IOException("Incorrect RAR FileHeader path!");
+        }
+
         if (entry.isDirectory()) {
-            FileUtil.mkdir(new File(outputDir, name), context);
+            FileUtil.mkdir(outputFile, context);
             return;
         }
-        File outputFile = new File(outputDir, name);
+
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }
