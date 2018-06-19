@@ -585,4 +585,12 @@
   <string name="encrypt_folder_save_as">保存加密后的文件夹至…</string>
   <string name="encrypt_file_must_end_with_aze">加密后的文件必须以.aze作为文件后缀名</string>
   <string name="cannot_overwrite">不能覆盖已存在文件</string>
+  <string name="saved_single_file">保存文件为 %s</string>
+  <string name="saved_multi_files">一共 %d 已保存</string>
+  <string name="create_hidden_file_warn">新创建的文件为隐藏文件，不会在文件列表里显示</string>
+  <string name="grant_apkinstall_permission">需要权限来安装应用</string>
+  <string name="time_remaining">剩余时间</string>
+  <string name="transfer_rate">传输速率</string>
+  <string name="unknown">未知</string>
+  <string name="multiple_invalid_archive_entries">一些文件无法解压，压缩文件已损坏或为病毒文件</string>
 </resources>
