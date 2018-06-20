@@ -1,3 +1,25 @@
+/*
+ * FTPService.java
+ *
+ * Copyright © 2016-2018 Yashwanth Reddy Gondi, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.asynchronous.services.ftp;
 
 /**
@@ -23,21 +45,18 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.ssl.SslConfigurationFactory;
+import org.apache.ftpserver.ssl.ClientAuth;
+import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -46,10 +65,14 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 public class FTPService extends Service implements Runnable {
 
@@ -70,6 +93,7 @@ public class FTPService extends Service implements Runnable {
     private static final String TAG = FTPService.class.getSimpleName();
 
     private static final String WIFI_AP_ADDRESS = "192.168.43.1";
+    private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
 
     // Service will (global) broadcast when server start/stop
     static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
@@ -162,27 +186,23 @@ public class FTPService extends Service implements Runnable {
         ListenerFactory fac = new ListenerFactory();
 
         if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
-            SslConfigurationFactory sslConfigurationFactory = new SslConfigurationFactory();
 
-            File file;
             try {
+                KeyStore keyStore = KeyStore.getInstance("BKS", "BC");
+                keyStore.load(getResources().openRawResource(R.raw.key), KEYSTORE_PASSWORD);
 
-                InputStream stream = getResources().openRawResource(R.raw.key);
-                file = File.createTempFile("keystore.bks", "");
-                FileOutputStream outputStream = new FileOutputStream(file);
-                IOUtils.copy(stream, outputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
-                file = null;
-            }
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                keyManagerFactory.init(keyStore, KEYSTORE_PASSWORD);
 
-            if (file != null) {
-                sslConfigurationFactory.setKeystoreFile(file);
-                sslConfigurationFactory.setKeystorePassword("vishal007");
-                fac.setSslConfiguration(sslConfigurationFactory.createSslConfiguration());
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init(keyStore);
+
+                fac.setSslConfiguration(new DefaultSslConfiguration(keyManagerFactory,
+                        trustManagerFactory, ClientAuth.WANT, "TLS",
+                        null, "ftpserver"));
                 fac.setImplicitSsl(true);
-            } else {
-                // no keystore found
+            } catch (GeneralSecurityException | IOException e) {
+                Log.e(TAG, "Error enabling SSL for FTP server", e);
                 preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply();
             }
         }
