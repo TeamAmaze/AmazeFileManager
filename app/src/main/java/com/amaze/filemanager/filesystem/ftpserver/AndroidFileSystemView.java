@@ -21,19 +21,15 @@
 package com.amaze.filemanager.filesystem.ftpserver;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
-import android.util.Log;
 
-import com.amaze.filemanager.filesystem.FileUtil;
-
-import org.apache.ftpserver.filesystem.nativefs.impl.NativeFtpFile;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpFile;
 
 import java.io.File;
+import java.io.IOException;
 
 public class AndroidFileSystemView implements FileSystemView {
 
@@ -71,7 +67,7 @@ public class AndroidFileSystemView implements FileSystemView {
             case CURRENT_DIR:
                 return createFtpFileFrom(fileSystemViewRoot + currentDir);
             default:
-                return createFtpFileFrom(fileSystemViewRoot + file);
+                return createFtpFileFrom(fileSystemViewRoot + "/" + file);
         }
     }
 
@@ -82,13 +78,26 @@ public class AndroidFileSystemView implements FileSystemView {
 
     @Override
     public boolean changeWorkingDirectory(String dir) {
-        currentDir = dir;
-        return true;
+        try {
+            File newDir = new File(new File(fileSystemViewRoot, currentDir), dir).getCanonicalFile();
+            if(!newDir.exists()) {
+                return false;
+            } else {
+                if(!newDir.getAbsolutePath().startsWith(fileSystemViewRoot)) {
+                    currentDir = "/";
+                } else {
+                    String newDirPath = newDir.getAbsolutePath().substring(fileSystemViewRoot.length());
+                    currentDir = "".equals(newDirPath) ? "/" : newDirPath;
+                }
+                return true;
+            }
+        } catch(IOException e) {
+            return false;
+        }
     }
 
     @Override
     public FtpFile getHomeDirectory() {
-        new Exception().printStackTrace();
         return createFtpFileFrom(fileSystemViewRoot);
     }
 

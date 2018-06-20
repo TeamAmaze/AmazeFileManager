@@ -32,6 +32,7 @@ import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpletResult;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -39,7 +40,7 @@ import java.io.IOException;
  * method to trigger media store refresh.
  *
  * {@see {@link DefaultFtplet#onUploadEnd(FtpSession, FtpRequest)}}
- * {@see {@link FileUtils#scanFile(String, Context)}}
+ * {@see {@link FileUtils#scanFile(File, Context)}}
  */
 public class AndroidFtplet extends DefaultFtplet {
 
@@ -59,7 +60,7 @@ public class AndroidFtplet extends DefaultFtplet {
      */
     @Override
     public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
-        FileUtils.scanFile(fileSystemRoot + request.getArgument(), context);
+        FileUtils.scanFile(new File(fileSystemRoot + request.getArgument()), context);
         return super.onUploadEnd(session, request);
     }
 }

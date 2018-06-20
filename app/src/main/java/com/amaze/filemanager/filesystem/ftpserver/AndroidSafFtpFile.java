@@ -45,7 +45,7 @@ public class AndroidSafFtpFile implements FtpFile {
 
     private final DocumentFile backingDocumentFile;
 
-    public AndroidSafFtpFile(@NonNull Context context, @NonNull String fileSystemRoot, @NonNull DocumentFile backingDocumentFile) {
+    AndroidSafFtpFile(@NonNull Context context, @NonNull String fileSystemRoot, @NonNull DocumentFile backingDocumentFile) {
         this.context = context;
         this.fileSystemRoot = fileSystemRoot;
         this.backingDocumentFile = backingDocumentFile;
@@ -142,8 +142,7 @@ public class AndroidSafFtpFile implements FtpFile {
         if(!doesExist()) {
             //If not exist (new upload), check if the target file's folder is writable
             Uri uri = backingDocumentFile.getUri();
-            String parent = uri.toString().substring(FILE_URI_PREFIX.length()-1, uri.toString().indexOf(uri.getLastPathSegment())-1);
-            DocumentFile parentFile = DocumentFile.fromFile(new File(parent));
+            DocumentFile parentFile = parent();
             DocumentFile result = parentFile.createFile("application/octet-stream", uri.getLastPathSegment());
             if(result != null){
                 result.delete();
@@ -173,7 +172,8 @@ public class AndroidSafFtpFile implements FtpFile {
 
     @Override
     public boolean mkdir() {
-        return backingDocumentFile.getParentFile().createDirectory(getName()) != null;
+        DocumentFile result = parent().createDirectory(getName().startsWith("/") ? getName() : "/" + getName());
+        return result != null;
     }
 
     /**
@@ -207,5 +207,11 @@ public class AndroidSafFtpFile implements FtpFile {
         } else {
             return null;
         }
+    }
+
+    private DocumentFile parent(){
+        Uri uri = backingDocumentFile.getUri();
+        String parent = uri.toString().substring(FILE_URI_PREFIX.length()-1, uri.toString().indexOf(uri.getLastPathSegment())-1);
+        return DocumentFile.fromFile(new File(parent));
     }
 }

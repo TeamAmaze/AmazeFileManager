@@ -40,7 +40,7 @@ public class FtpNotification extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
+        int port = sharedPreferences.getInt(FtpService.KEY_PREFERENCE_PORT, FtpService.DEFAULT_PORT);
         boolean secureConnection = sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
 
         InetAddress address = FtpService.getLocalInetAddress(context);

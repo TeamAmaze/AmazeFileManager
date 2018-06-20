@@ -86,7 +86,7 @@ public class FtpService extends Service implements Runnable {
     public static final String DEFAULT_USERNAME = "";
     public static final int DEFAULT_TIMEOUT = 600;   // default timeout, in sec
     public static final boolean DEFAULT_SECURE = false;
-    public static final String PORT_PREFERENCE_KEY = "ftpPort";
+    public static final String KEY_PREFERENCE_PORT = "ftpPort";
     public static final String KEY_PREFERENCE_PATH = "ftp_path";
     public static final String KEY_PREFERENCE_USERNAME = "ftp_username";
     public static final String KEY_PREFERENCE_PASSWORD = "ftp_password_encrypted";
@@ -302,25 +302,7 @@ public class FtpService extends Service implements Runnable {
         return enabled != null? enabled:false;
     }
 
-    private static boolean isUnitTesting(Context context){
-        if(BuildConfig.DEBUG) {
-            ConnectivityManager cm = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo ni = cm.getActiveNetworkInfo();
-            return ni != null
-                    && ni.getDetailedState().equals(NetworkInfo.DetailedState.BLOCKED)
-                    && !ni.isConnected()
-                    && !ni.isAvailable()
-                    && ni.getType() == ConnectivityManager.TYPE_DUMMY
-                    && ni.getSubtype() == Integer.MAX_VALUE;
-        } else
-            return false;
-    }
-
     public static InetAddress getLocalInetAddress(Context context) {
-        if(BuildConfig.DEBUG && isUnitTesting(context))
-            return InetAddress.getLoopbackAddress();
-
         if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
             return null;
         }
@@ -373,8 +355,9 @@ public class FtpService extends Service implements Runnable {
         return (byte) (value >> shift);
     }
 
-    public static int getPort(SharedPreferences preferences) {
-        return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
+    public static int getPort(SharedPreferences preferences)
+    {
+        return preferences.getInt(KEY_PREFERENCE_PORT, DEFAULT_PORT);
     }
 
     @Nullable

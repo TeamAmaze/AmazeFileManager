@@ -3,8 +3,8 @@ package com.amaze.filemanager.asynchronous.services.ftp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -13,7 +13,6 @@ import com.amaze.filemanager.BuildConfig;
 import org.apache.commons.net.ftp.FTPClient;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -22,68 +21,78 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowConnectivityManager;
-import org.robolectric.shadows.ShadowLog;
-import org.robolectric.shadows.ShadowNetwork;
 import org.robolectric.shadows.ShadowNetworkInfo;
+import org.robolectric.shadows.ShadowWifiManager;
 import org.robolectric.shadows.multidex.ShadowMultiDex;
+import org.robolectric.util.ReflectionHelpers;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
 import static com.amaze.filemanager.asynchronous.services.ftp.FTPService.KEY_PREFERENCE_PATH;
+import static com.amaze.filemanager.asynchronous.services.ftp.FTPService.KEY_PREFERENCE_PORT;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class FTPServiceTest {
 
-    private static final Network localNetwork = ShadowNetwork.newInstance(1);
-    private static final NetworkInfo localNetworkInfo = ShadowNetworkInfo.newInstance(NetworkInfo.DetailedState.BLOCKED,
-            ConnectivityManager.TYPE_DUMMY, Integer.MAX_VALUE, false, false);
-
-    private ConnectivityManager cm;
-    private ShadowConnectivityManager scm;
+    private static final int FTP_PORT = 62222;
 
     private FTPClient ftpClient;
 
-    @BeforeClass
-    public static void bootstrap() throws Exception {
-
-    }
+    private FTPService service;
 
     @Before
     public void setUp() throws Exception {
-        cm = RuntimeEnvironment.systemContext.getSystemService(ConnectivityManager.class);
-        scm = Shadows.shadowOf(cm);
 
-        scm.addNetwork(localNetwork, localNetworkInfo);
-        scm.setActiveNetworkInfo(localNetworkInfo);
+        ShadowConnectivityManager cm = Shadows.shadowOf(RuntimeEnvironment.application.getSystemService(ConnectivityManager.class));
+        ShadowWifiManager wifiManager = Shadows.shadowOf(RuntimeEnvironment.application.getSystemService(WifiManager.class));
+        cm.setActiveNetworkInfo(ShadowNetworkInfo.newInstance(NetworkInfo.DetailedState.CONNECTED, ConnectivityManager.TYPE_WIFI, -1, true, true));
+        wifiManager.setWifiEnabled(true);
+        ReflectionHelpers.callInstanceMethod(wifiManager.getConnectionInfo(), "setInetAddress", ReflectionHelpers.ClassParameter.from(InetAddress.class, InetAddress.getLoopbackAddress()));
 
-        FTPService service = Robolectric.setupService(FTPService.class);
+        service = Robolectric.setupService(FTPService.class);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application);
-        prefs.edit().putString(KEY_PREFERENCE_PATH, Environment.getExternalStorageDirectory().getAbsolutePath());
+        prefs.edit()
+            .putString(KEY_PREFERENCE_PATH, Environment.getExternalStorageDirectory().getAbsolutePath())
+            .putInt(KEY_PREFERENCE_PORT, FTP_PORT).commit();
         service.onStartCommand(new Intent(FTPService.ACTION_START_FTPSERVER).putExtra(FTPService.TAG_STARTED_BY_TILE, false), 0, 0);
 
         assertTrue(FTPService.isRunning());
         waitForServer();
+
+        //ShadowLog.stream = System.out;
     }
 
     @After
     public void tearDown() throws Exception {
-        scm.clearAllNetworks();
 
         if (ftpClient != null && ftpClient.isConnected()) {
             ftpClient.logout();
             ftpClient.disconnect();
             ftpClient = null;
         }
+        service.onDestroy();
     }
 
     @Test
     public void testPwdRoot() throws Exception {
         login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+    }
+
+    @Test
+    public void testCdPastRoot() throws Exception {
+        login();
+        ftpClient.changeWorkingDirectory("/");
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        ftpClient.changeWorkingDirectory("../");
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        ftpClient.changeWorkingDirectory("../../../../../../../");
         assertEquals("/", ftpClient.printWorkingDirectory());
     }
 
@@ -94,11 +103,81 @@ public class FTPServiceTest {
         assertTrue(ftpClient.makeDirectory("/Documents"));
         assertTrue(ftpClient.changeWorkingDirectory("/Documents"));
         assertEquals("/Documents", ftpClient.printWorkingDirectory());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+    }
+
+    @Test
+    public void testMkdirWithoutSlashPrefix() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.makeDirectory("Documents"));
+        assertTrue(ftpClient.changeWorkingDirectory("Documents"));
+        assertEquals("/Documents", ftpClient.printWorkingDirectory());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+    }
+
+    @Test
+    public void testMkdirPastRoot() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertFalse(ftpClient.makeDirectory("../../../../../../../../../../Documents"));
+        assertFalse(ftpClient.changeWorkingDirectory("../../../../../../../../../../Documents"));
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertFalse(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+    }
+
+    @Test
+    public void testRepeatMkdir() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.makeDirectory("/Documents"));        assertTrue(ftpClient.changeWorkingDirectory("/Documents"));
+        assertEquals("/Documents", ftpClient.printWorkingDirectory());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+        assertFalse(ftpClient.makeDirectory("/Documents"));
+        assertFalse(ftpClient.makeDirectory("/Documents"));
+    }
+
+    @Test
+    public void testRmdir() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.makeDirectory("/Documents"));
+        assertTrue(ftpClient.changeWorkingDirectory("/Documents"));
+        assertEquals("/Documents", ftpClient.printWorkingDirectory());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+        assertTrue(ftpClient.changeToParentDirectory());
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.removeDirectory("/Documents"));
+        assertFalse(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+    }
+
+    @Test
+    public void testRmdirWithoutSlashPrefix() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.makeDirectory("Documents"));
+        assertTrue(ftpClient.changeWorkingDirectory("Documents"));
+        assertEquals("/Documents", ftpClient.printWorkingDirectory());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+        assertTrue(ftpClient.changeToParentDirectory());
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertTrue(ftpClient.removeDirectory("Documents"));
+        assertFalse(new File(Environment.getExternalStorageDirectory(), "Documents").exists());
+    }
+
+    @Test
+    public void testRmdirPastRoot() throws Exception {
+        login();
+        assertEquals("/", ftpClient.printWorkingDirectory());
+        assertFalse(ftpClient.removeDirectory("../../../../../../../../../../Documents"));
+        assertFalse(ftpClient.removeDirectory("../../../../../../../../../../../../bin"));
+        assertTrue(ftpClient.changeWorkingDirectory("../../../../../../../../../.."));
+        assertEquals("/", ftpClient.printWorkingDirectory());
     }
 
     private void login() throws Exception {
         this.ftpClient = new FTPClient();
-        ftpClient.connect("localhost", FTPService.DEFAULT_PORT);
+        ftpClient.connect("localhost", FTP_PORT);
         ftpClient.login("anonymous", "test@example.com");
     }
 
@@ -108,7 +187,7 @@ public class FTPServiceTest {
         while(!available) {
             Socket socket = new Socket();
             try {
-                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), FTPService.DEFAULT_PORT));
+                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), FTP_PORT));
                 socket.close();
                 available = true;
             } catch(SocketException e) {

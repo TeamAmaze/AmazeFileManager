@@ -500,7 +500,8 @@ public class FtpServerFragment extends Fragment {
     }
 
     private int getDefaultPortFromPreferences() {
-        return mainActivity.getPrefs().getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return preferences.getInt(FtpService.KEY_PREFERENCE_PORT, FtpService.DEFAULT_PORT);
     }
 
     private String getUsernameFromPreferences() {
@@ -533,9 +534,8 @@ public class FtpServerFragment extends Fragment {
     }
 
     private void changeFTPServerPort(int port) {
-        mainActivity.getPrefs().edit()
-                .putInt(FtpService.PORT_PREFERENCE_KEY, port)
-                .apply();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        preferences.edit().putInt(FtpService.KEY_PREFERENCE_PORT, port).apply();
 
         // first update spans which will point to an updated status
         updateSpans();
