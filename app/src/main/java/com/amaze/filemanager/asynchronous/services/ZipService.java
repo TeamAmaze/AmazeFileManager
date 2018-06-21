@@ -279,9 +279,9 @@ public class ZipService extends AbstractProgressiveService {
         }
 
         private void compressFile(File file, String path) throws IOException, NullPointerException {
-            if (!file.isDirectory()) {
-                if (progressHandler.getCancelled()) return;
+            if (progressHandler.getCancelled()) return;
 
+            if (!file.isDirectory()) {
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
                 BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
@@ -315,7 +315,7 @@ public class ZipService extends AbstractProgressiveService {
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            asyncTask.cancel(true);
+            progressHandler.setCancelled(true);
         }
     };
 

@@ -445,8 +445,8 @@ public class CopyService extends AbstractProgressiveService {
             private void copyFiles(final HybridFileParcelable sourceFile, final HybridFile targetFile,
                                    final ProgressHandler progressHandler) throws IOException {
 
+                if (progressHandler.getCancelled()) return;
                 if (sourceFile.isDirectory()) {
-                    if (progressHandler.getCancelled()) return;
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
@@ -471,7 +471,6 @@ public class CopyService extends AbstractProgressiveService {
                         }
                     });
                 } else {
-                    if (progressHandler.getCancelled()) return;
                     if (!Operations.isFileNameValid(sourceFile.getName())) {
                         failedFOps.add(sourceFile);
                         return;

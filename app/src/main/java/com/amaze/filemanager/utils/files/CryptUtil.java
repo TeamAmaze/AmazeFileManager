@@ -167,7 +167,7 @@ public class CryptUtil {
      */
     private void decrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
             throws GeneralSecurityException, IOException {
-
+        if (progressHandler.getCancelled()) return;
         if (sourceFile.isDirectory()) {
 
             final HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
@@ -200,8 +200,6 @@ public class CryptUtil {
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-            if (progressHandler.getCancelled()) return;
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesDecrypt(inputStream, outputStream);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -219,6 +217,7 @@ public class CryptUtil {
     private void encrypt(final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory, String targetFilename)
             throws GeneralSecurityException, IOException {
 
+        if (progressHandler.getCancelled()) return;
         if (sourceFile.isDirectory()) {
 
             // succeed #CRYPT_EXTENSION at end of directory/file name
@@ -253,8 +252,6 @@ public class CryptUtil {
 
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
-            if (progressHandler.getCancelled()) return;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 aesEncrypt(inputStream, outputStream);
