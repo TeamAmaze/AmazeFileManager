@@ -41,7 +41,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -92,8 +91,6 @@ public class FTPService extends Service implements Runnable {
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String INITIALS_HOST_FTP = "ftp://";
     public static final String INITIALS_HOST_SFTP = "ftps://";
-
-    private static final String TAG = FTPService.class.getSimpleName();
 
     private static final String WIFI_AP_ADDRESS = "192.168.43.1";
     private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
@@ -208,7 +205,6 @@ public class FTPService extends Service implements Runnable {
                         null, "ftpserver"));
                 fac.setImplicitSsl(true);
             } catch (GeneralSecurityException | IOException e) {
-                Log.e(TAG, "Error enabling SSL for FTP server", e);
                 preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply();
             }
         }
@@ -228,9 +224,7 @@ public class FTPService extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "onDestroy() Stopping server");
         if (serverThread == null) {
-            Log.w(TAG, "Stopping with null serverThread");
             return;
         }
         serverThread.interrupt();
@@ -238,17 +232,13 @@ public class FTPService extends Service implements Runnable {
             serverThread.join(10000); // wait 10 sec for server thread to finish
         } catch (InterruptedException e) {
         }
-        if (serverThread.isAlive()) {
-            Log.w(TAG, "Server thread failed to exit");
-        } else {
-            Log.d(TAG, "serverThread join()ed ok");
+        if (!serverThread.isAlive()) {
             serverThread = null;
         }
         if (server != null) {
             server.stop();
             sendBroadcast(new Intent(FTPService.ACTION_STOPPED));
         }
-        Log.d(TAG, "FTPServerService.onDestroy() finished");
     }
 
     //Restart the service if the app is closed from the recent list
@@ -267,29 +257,16 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isRunning() {
-        // return true if and only if a server Thread is running
-        if (serverThread == null) {
-            Log.d(TAG, "Server is not running (null serverThread)");
-            return false;
-        }
-        if (!serverThread.isAlive()) {
-            Log.d(TAG, "serverThread non-null but !isAlive()");
-        } else {
-            Log.d(TAG, "Server is alive");
-        }
-        return true;
+        return serverThread != null;
     }
 
     public static boolean isConnectedToLocalNetwork(Context context) {
-        boolean connected = false;
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        connected = ni != null
-                && ni.isConnected()
+        boolean connected = ni != null && ni.isConnected()
                 && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
             try {
                 for (NetworkInterface netInterface : Collections.list(NetworkInterface
                         .getNetworkInterfaces())) {
@@ -313,7 +290,6 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isEnabledWifiHotspot(Context context) {
-        Log.d(TAG, "isEnabledWifiHotspot: see if it is an WIFI AP");
         WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         Boolean enabled = callIsWifiApEnabled(wm);
         return enabled != null? enabled:false;
@@ -321,7 +297,6 @@ public class FTPService extends Service implements Runnable {
 
     public static InetAddress getLocalInetAddress(Context context) {
         if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
-            Log.e(TAG, "getLocalInetAddress called and no connection");
             return null;
         }
 
@@ -349,7 +324,7 @@ public class FTPService extends Service implements Runnable {
                         return address;
                 }
             }
-        } catch (Exception e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         }
         return null;
