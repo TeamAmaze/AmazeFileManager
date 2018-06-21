@@ -39,6 +39,8 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -57,6 +59,7 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -121,7 +124,10 @@ public class FTPService extends Service implements Runnable {
         while (serverThread != null) {
             if (attempts > 0) {
                 attempts--;
-                sleepIgnoreInterupt(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                }
             } else {
                 return START_STICKY;
             }
@@ -274,13 +280,6 @@ public class FTPService extends Service implements Runnable {
         return true;
     }
 
-    public static void sleepIgnoreInterupt(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) {
-        }
-    }
-
     public static boolean isConnectedToLocalNetwork(Context context) {
         boolean connected = false;
         ConnectivityManager cm = (ConnectivityManager) context
@@ -306,7 +305,6 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isConnectedToWifi(Context context) {
-
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -315,17 +313,10 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isEnabledWifiHotspot(Context context) {
-        boolean enabled = false;
         Log.d(TAG, "isEnabledWifiHotspot: see if it is an WIFI AP");
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        try {
-            Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-            enabled = (method != null) ? (Boolean) method.invoke(wm) : false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            enabled = false;
-        }
-        return enabled;
+        WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        Boolean enabled = callIsWifiApEnabled(wm);
+        return enabled != null? enabled:false;
     }
 
     public static InetAddress getLocalInetAddress(Context context) {
@@ -335,8 +326,7 @@ public class FTPService extends Service implements Runnable {
         }
 
         if (isConnectedToWifi(context)) {
-
-            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int ipAddress = wm.getConnectionInfo().getIpAddress();
             if (ipAddress == 0)
                 return null;
@@ -383,36 +373,25 @@ public class FTPService extends Service implements Runnable {
         return (byte) (value >> shift);
     }
 
-    public static int getPort(SharedPreferences preferences)
-    {
+    public static int getPort(SharedPreferences preferences) {
         return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
     }
 
-    public static boolean isPortAvailable(int port) {
-
-        ServerSocket ss = null;
-        DatagramSocket ds = null;
+    @Nullable
+    private static Boolean callIsWifiApEnabled(@NonNull WifiManager wifiManager) {
+        Boolean r = null;
         try {
-            ss = new ServerSocket(port);
-            ss.setReuseAddress(true);
-            ds = new DatagramSocket(port);
-            ds.setReuseAddress(true);
-            return true;
-        } catch (IOException e) {
-        } finally {
-            if (ds != null) {
-                ds.close();
-            }
-
-            if (ss != null) {
-                try {
-                    ss.close();
-                } catch (IOException e) {
-                /* should not be thrown */
-                }
-            }
+            Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+            r = (Boolean) method.invoke(wifiManager);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
 
-        return false;
+        return r;
     }
+
 }
