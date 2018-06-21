@@ -202,8 +202,8 @@
   <string name="archive_preferences">压缩设置</string>
   <string name="archive_extract_folder">压缩包提取目录</string>
   <string name="zip_create_folder">ZIP 创建目录</string>
-  <string name="archive_summary">压缩包内的文件会被解压到此目录。默认解压到压缩包所在目录。</string>
-  <string name="zip_summary">新 ZIP 文件会被创建到此目录。默认创建压缩包到当前目录。</string>
+  <string name="archive_summary">压缩包内的文件会被解压到此目录，默认解压到压缩包所在目录。</string>
+  <string name="zip_summary">新 ZIP 文件会被创建到此目录，默认创建压缩包到当前目录。</string>
   <string name="openas">打开方式</string>
   <string name="text">文本</string>
   <string name="audio">音乐</string>
@@ -305,12 +305,12 @@
   <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
   <string name="translate_title">贡献翻译</string>
   <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
-  <string name="g_plus_community_summary">参与 beta 版测试并讨论后续改进</string>
+  <string name="g_plus_community_summary">参与 Beta 版测试并讨论后续改进</string>
   <string name="easter_egg_title">工作室模式</string>
   <string name="paypal_copy_message">Paypal ID 已复制至剪切板</string>
   <string name="searchingdevices">正在搜索设备</string>
   <string name="use_custom_ip">使用自定义 IP</string>
-  <string name="bookmark_lost">无法找到书签。正在重新创建&#8230;</string>
+  <string name="bookmark_lost">无法找到书签，正在重新创建&#8230;</string>
   <string name="smb_instructions">
         <html>
             <body>
@@ -349,7 +349,7 @@
             </body>
         </html>
   </string>
-  <string name="share_limit">您最多只能分享 100 个文件</string>
+  <string name="share_limit">最多只能分享 100 个文件</string>
   <string name="otg_access">选择根目录下的 OTG 设备</string>
   <string name="opening">正在打开</string>
   <string name="information">信息</string>
@@ -497,8 +497,8 @@
   <string name="edit_shortcut">编辑快捷方式</string>
   <string name="directory">目录</string>
   <string name="questiondelete_shortcut">是否删除快捷方式？</string>
-  <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件。请从应用商店下载。</string>
-  <string name="cloud_error_failed_restart">无法加载此连接。请再次打开 Amaze Cloud。</string>
+  <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件，请从应用商店下载。</string>
+  <string name="cloud_error_failed_restart">无法加载此连接，请再次打开 Amaze Cloud。</string>
   <string name="cloud_remove">您想要移除此网盘吗？</string>
   <string name="cloud_fail_authenticate">身份验证失败</string>
   <string name="cloud_share_copied">Sharable 链接已复制到剪切板</string>
@@ -518,7 +518,7 @@
   <string name="failed_smb_decrypt_path">无法加载 SMB 连接</string>
   <string name="failed_cloud_new_connection">无法添加新网盘</string>
   <string name="failed_cloud_api_key">网盘插件无法通过身份验证</string>
-  <string name="folderfilecount">%1$d 文件夹和 %2$d 文件</string>
+  <string name="folderfilecount">%1$d 个文件夹和 %2$d 个文件</string>
   <string name="local_inet_addr_error">获取本地网络地址出错</string>
   <string name="searching">搜索 %s</string>
   <string name="searchresults">%s 的搜索结果</string>
@@ -579,19 +579,19 @@
   <string name="compressed">已压缩</string>
   <string name="processed">已完成</string>
   <string name="filename">文件名</string>
-  <string name="compress_file_suggest_zip_extension">请以.zip作为文件后缀名</string>
-  <string name="create_file_suggest_txt_extension">请以.txt作为文件后缀名</string>
+  <string name="compress_file_suggest_zip_extension">请以 zip 作为文件后缀名</string>
+  <string name="create_file_suggest_txt_extension">请以 txt 作为文件后缀名</string>
   <string name="ssh_key_invalid_passphrase">错误的密钥密码</string>
   <string name="encrypt_file_save_as">保存加密后的文件为…</string>
   <string name="encrypt_folder_save_as">保存加密后的文件夹至…</string>
-  <string name="encrypt_file_must_end_with_aze">加密后的文件必须以.aze作为文件后缀名</string>
+  <string name="encrypt_file_must_end_with_aze">加密文件必须以 aze 作为文件后缀名</string>
   <string name="cannot_overwrite">不能覆盖已存在文件</string>
   <string name="saved_single_file">保存文件为 %s</string>
-  <string name="saved_multi_files">一共 %d 已保存</string>
+  <string name="saved_multi_files">保存了 %d 个文件</string>
   <string name="create_hidden_file_warn">新创建的文件为隐藏文件，不会在文件列表里显示</string>
-  <string name="grant_apkinstall_permission">需要权限来安装应用</string>
+  <string name="grant_apkinstall_permission">需要安装应用权限来安装应用</string>
   <string name="time_remaining">剩余时间</string>
   <string name="transfer_rate">传输速率</string>
   <string name="unknown">未知</string>
-  <string name="multiple_invalid_archive_entries">一些文件无法解压，压缩文件已损坏或为病毒文件</string>
+  <string name="multiple_invalid_archive_entries">无法解压一些文件，压缩文件已损坏或为恶意文件</string>
 </resources>
