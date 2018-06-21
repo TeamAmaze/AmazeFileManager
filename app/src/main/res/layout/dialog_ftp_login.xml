@@ -54,7 +54,6 @@
             android:layout_height="wrap_content"
             android:text="@string/ftp_status_secure_connection"
             android:layout_gravity="end"
-            android:enabled="false"
             />
     </LinearLayout>
 </LinearLayout>

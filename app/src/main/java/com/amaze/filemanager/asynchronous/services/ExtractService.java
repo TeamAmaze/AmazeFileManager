@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
- *                       Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * ExtractService.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt@gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -49,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -200,7 +203,7 @@ public class ExtractService extends AbstractProgressiveService {
         return new File(filePath).length();
     }
 
-    public class DoWork extends AsyncTask<Void, Void, Void> {
+    public class DoWork extends AsyncTask<Void, Void, Boolean> {
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
         private String extractionPath, compressedPath;
@@ -218,7 +221,7 @@ public class ExtractService extends AbstractProgressiveService {
         }
 
         @Override
-        protected Void doInBackground(Void... p) {
+        protected Boolean doInBackground(Void... p) {
             final ExtractService extractService = this.extractService.get();
             if(extractService == null) return null;
 
@@ -239,58 +242,59 @@ public class ExtractService extends AbstractProgressiveService {
             try {
                 if(entriesToExtract.length == 0) entriesToExtract = null;
 
-                Extractor extractor =
-                        CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
-                                f, extractionPath, new Extractor.OnUpdate() {
-                                    private int sourceFilesProcessed = 0;
+                final Extractor extractor =
+                    CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
+                        f, extractionPath, new Extractor.OnUpdate() {
+                            private int sourceFilesProcessed = 0;
 
-                                    @Override
-                                    public void onStart(long totalBytes, String firstEntryName) {
-                                        // setting total bytes calculated from zip entries
-                                        progressHandler.setTotalSize(totalBytes);
+                            @Override
+                            public void onStart(long totalBytes, String firstEntryName) {
+                                // setting total bytes calculated from zip entries
+                                progressHandler.setTotalSize(totalBytes);
 
-                                        extractService.addFirstDatapoint(firstEntryName,
-                                                1, totalBytes, false);
+                                extractService.addFirstDatapoint(firstEntryName,
+                                        1, totalBytes, false);
 
-                                        watcherUtil = new ServiceWatcherUtil(progressHandler);
-                                        watcherUtil.watch(ExtractService.this);
-                                    }
+                                watcherUtil = new ServiceWatcherUtil(progressHandler);
+                                watcherUtil.watch(ExtractService.this);
+                            }
 
-                                    @Override
-                                    public void onUpdate(String entryPath) {
-                                        progressHandler.setFileName(entryPath);
-                                        if (entriesToExtract != null) {
-                                            progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
-                                        }
-                                    }
+                            @Override
+                            public void onUpdate(String entryPath) {
+                                progressHandler.setFileName(entryPath);
+                                if (entriesToExtract != null) {
+                                    progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
+                                }
+                            }
 
-                                    @Override
-                                    public void onFinish() {
-                                        if (entriesToExtract == null){
-                                            progressHandler.setSourceFilesProcessed(1);
-                                        }
-                                    }
+                            @Override
+                            public void onFinish() {
+                                if (entriesToExtract == null){
+                                    progressHandler.setSourceFilesProcessed(1);
+                                }
+                            }
 
-                                    @Override
-                                    public boolean isCancelled() {
-                                        return progressHandler.getCancelled();
-                                    }
-                                });
+                            @Override
+                            public boolean isCancelled() {
+                                return progressHandler.getCancelled();
+                            }
+                        });
 
                 if (entriesToExtract != null) {
                     extractor.extractFiles(entriesToExtract);
                 } else {
                     extractor.extractEverything();
                 }
+                return (extractor.getInvalidArchiveEntries().size() == 0);
             } catch (IOException e) {
                 Log.e("amaze", "Error while extracting file " + compressedPath, e);
                 AppConfig.toast(extractService, extractService.getString(R.string.error));
+                return false;
             }
-            return null;
         }
 
         @Override
-        public void onPostExecute(Void b) {
+        public void onPostExecute(Boolean hasInvalidEntries) {
             final ExtractService extractService = this.extractService.get();
             if(extractService == null) return;
 
@@ -301,6 +305,9 @@ public class ExtractService extends AbstractProgressiveService {
             intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, extractionPath);
             extractService.sendBroadcast(intent);
             extractService.stopSelf();
+
+            if(!hasInvalidEntries)
+                AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
         }
     }
 

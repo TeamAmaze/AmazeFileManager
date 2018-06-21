@@ -1,9 +1,32 @@
+/*
+ * TarExtractor.java
+ *
+ * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt@gmail.com>.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -16,6 +39,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TarExtractor extends Extractor {
 
@@ -26,15 +50,19 @@ public class TarExtractor extends Extractor {
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
+        List<TarArchiveEntry> archiveEntries = new ArrayList<>();
         TarArchiveInputStream inputStream = new TarArchiveInputStream(new FileInputStream(filePath));
 
         TarArchiveEntry tarArchiveEntry;
 
         while ((tarArchiveEntry = inputStream.getNextTarEntry()) != null) {
-            if(filter.shouldExtract(tarArchiveEntry.getName(), tarArchiveEntry.isDirectory())) {
-                archiveEntries.add(tarArchiveEntry);
-                totalBytes += tarArchiveEntry.getSize();
+            if(CompressedHelper.isEntryPathValid(tarArchiveEntry.getName())) {
+                if (filter.shouldExtract(tarArchiveEntry.getName(), tarArchiveEntry.isDirectory())) {
+                    archiveEntries.add(tarArchiveEntry);
+                    totalBytes += tarArchiveEntry.getSize();
+                }
+            } else {
+                invalidArchiveEntries.add(tarArchiveEntry.getName());
             }
         }
 
@@ -58,12 +86,17 @@ public class TarExtractor extends Extractor {
 
     private void extractEntry(@NonNull final Context context, TarArchiveInputStream inputStream,
                               TarArchiveEntry entry, String outputDir) throws IOException {
+        File outputFile = new File(outputDir, fixEntryName(entry.getName()));
+
+        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
+            throw new IOException("Incorrect TarArchiveEntry path!");
+        }
+
         if (entry.isDirectory()) {
-            FileUtil.mkdir(new File(outputDir, entry.getName()), context);
+            FileUtil.mkdir(outputFile, context);
             return;
         }
 
-        File outputFile = new File(outputDir, entry.getName());
         if (!outputFile.getParentFile().exists()) {
             FileUtil.mkdir(outputFile.getParentFile(), context);
         }
