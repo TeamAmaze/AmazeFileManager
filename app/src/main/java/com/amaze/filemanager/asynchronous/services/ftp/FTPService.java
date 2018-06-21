@@ -136,7 +136,6 @@ public class FTPService extends Service implements Runnable {
         return START_STICKY;
     }
 
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;

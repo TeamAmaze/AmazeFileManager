@@ -527,20 +527,16 @@ public class FTPServerFragment extends Fragment {
     }
 
     private int getDefaultPortFromPreferences() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getInt(FTPService.PORT_PREFERENCE_KEY, FTPService.DEFAULT_PORT);
+        return mainActivity.getPrefs().getInt(FTPService.PORT_PREFERENCE_KEY, FTPService.DEFAULT_PORT);
     }
 
     private String getUsernameFromPreferences() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return preferences.getString(FTPService.KEY_PREFERENCE_USERNAME, FTPService.DEFAULT_USERNAME);
+        return mainActivity.getPrefs().getString(FTPService.KEY_PREFERENCE_USERNAME, FTPService.DEFAULT_USERNAME);
     }
 
     private String getPasswordFromPreferences() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         try {
-            String encryptedPassword = preferences.getString(FTPService.KEY_PREFERENCE_PASSWORD, "");
+            String encryptedPassword = mainActivity.getPrefs().getString(FTPService.KEY_PREFERENCE_PASSWORD, "");
 
             if (encryptedPassword.equals("")) {
                 return "";
@@ -552,7 +548,7 @@ public class FTPServerFragment extends Fragment {
 
             Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
             // can't decrypt the password saved in preferences, remove the preference altogether
-            preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
+            mainActivity.getPrefs().edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
             return "";
         }
     }
@@ -564,9 +560,7 @@ public class FTPServerFragment extends Fragment {
     }
 
     private void changeFTPServerPort(int port) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        preferences.edit()
+        mainActivity.getPrefs().edit()
                 .putInt(FTPService.PORT_PREFERENCE_KEY, port)
                 .apply();
 
@@ -589,10 +583,8 @@ public class FTPServerFragment extends Fragment {
     }
 
     private void setFTPPassword(String password) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
         try {
-            preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, CryptUtil.encryptPassword(getContext(), password)).apply();
+            mainActivity.getPrefs().edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, CryptUtil.encryptPassword(getContext(), password)).apply();
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_LONG).show();
