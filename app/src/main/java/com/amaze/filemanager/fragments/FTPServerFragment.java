@@ -334,26 +334,28 @@ public class FTPServerFragment extends Fragment {
     private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
             updateSpans();
-            if (action.equals(FTPService.ACTION_STARTED)) {
-                if (getSecurePreference()) {
-                    statusText.setText(spannedStatusSecure);
-                } else {
-                    statusText.setText(spannedStatusConnected);
-                }
-                ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
+            switch (intent.getAction()) {
+                case FTPService.ACTION_STARTED:
+                    if (getSecurePreference()) {
+                        statusText.setText(spannedStatusSecure);
+                    } else {
+                        statusText.setText(spannedStatusConnected);
+                    }
+                    ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
+                    break;
+                case FTPService.ACTION_FAILEDTOSTART:
+                    statusText.setText(spannedStatusNotRunning);
 
-            } else if (action.equals(FTPService.ACTION_FAILEDTOSTART)) {
-                statusText.setText(spannedStatusNotRunning);
+                    Toast.makeText(getContext(),
+                            getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
 
-                Toast.makeText(getContext(),
-                        getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
-
-                ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
-            } else if (action.equals(FTPService.ACTION_STOPPED)) {
-                statusText.setText(spannedStatusNotRunning);
-                ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                    ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                    break;
+                case FTPService.ACTION_STOPPED:
+                    statusText.setText(spannedStatusNotRunning);
+                    ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                    break;
             }
         }
     };
