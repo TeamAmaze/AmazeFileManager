@@ -598,4 +598,8 @@
   <string name="saved_multi_files">儲存了 %d個檔案。</string>
   <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
   <string name="multiple_invalid_archive_entries">壓縮檔有部份檔案未能解壓；壓縮檔可能已損壞或來自不明的來源。</string>
+    <string name="unknown">未知</string>
+  <string name="transfer_rate">傳輸速率</string>
+  <string name="time_remaining">剩餘時間</string>
+  <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
 </resources>
