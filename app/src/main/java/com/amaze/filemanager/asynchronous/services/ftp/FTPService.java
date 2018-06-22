@@ -88,7 +88,7 @@ public class FTPService extends Service implements Runnable {
     public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String INITIALS_HOST_FTP = "ftp://";
-    public static final String INITIALS_HOST_SFTP = "sftp://";
+    public static final String INITIALS_HOST_SFTP = "ftps://";
 
     private static final String TAG = FTPService.class.getSimpleName();
 
@@ -320,9 +320,10 @@ public class FTPService extends Service implements Runnable {
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         try {
             Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-            enabled = (Boolean) method.invoke(wm);
+            enabled = (method != null) ? (Boolean) method.invoke(wm) : false;
         } catch (Exception e) {
             e.printStackTrace();
+            enabled = false;
         }
         return enabled;
     }
@@ -343,21 +344,18 @@ public class FTPService extends Service implements Runnable {
         }
 
         try {
-            Enumeration<NetworkInterface> netinterfaces = NetworkInterface
-                    .getNetworkInterfaces();
+            Enumeration<NetworkInterface> netinterfaces = NetworkInterface.getNetworkInterfaces();
             while (netinterfaces.hasMoreElements()) {
                 NetworkInterface netinterface = netinterfaces.nextElement();
                 Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
 
-                    if(isEnabledWifiHotspot(context)
-                            && WIFI_AP_ADDRESS.equals(address.getHostAddress()))
+                    if(WIFI_AP_ADDRESS.equals(address.getHostAddress()) && isEnabledWifiHotspot(context))
                         return address;
 
                     // this is the condition that sometimes gives problems
-                    if (!address.isLoopbackAddress()
-                            && !address.isLinkLocalAddress())
+                    if (!address.isLoopbackAddress() && !address.isLinkLocalAddress() && !isEnabledWifiHotspot(context))
                         return address;
                 }
             }
