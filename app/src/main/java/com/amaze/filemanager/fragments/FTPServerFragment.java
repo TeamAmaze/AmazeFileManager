@@ -32,6 +32,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -67,7 +68,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
- * Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed FTP Server while using Eth connection)
+ * Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed FTP Server while usi
  */
 public class FTPServerFragment extends Fragment {
 
@@ -78,7 +79,6 @@ public class FTPServerFragment extends Fragment {
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
     private Button ftpBtn;
-    private View rootView, startDividerView, statusDividerView;
     private int accentColor;
     private Spanned spannedStatusNoConnection, spannedStatusConnected;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
@@ -94,29 +94,30 @@ public class FTPServerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
         statusText = rootView.findViewById(R.id.text_view_ftp_status);
         username = rootView.findViewById(R.id.text_view_ftp_username);
         password = rootView.findViewById(R.id.text_view_ftp_password);
         port = rootView.findViewById(R.id.text_view_ftp_port);
         sharedPath = rootView.findViewById(R.id.text_view_ftp_path);
         ftpBtn = rootView.findViewById(R.id.startStopButton);
-        startDividerView = rootView.findViewById(R.id.divider_ftp_start);
-        statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
+        View startDividerView = rootView.findViewById(R.id.divider_ftp_start);
+        View statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
 
         updateSpans();
         updateStatus();
 
-        //light theme
-        if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
-            startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
-            statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
-        } else {
-            //dark
-            startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
-            statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
+        switch (mainActivity.getAppTheme().getSimpleTheme()) {
+            case LIGHT:
+                startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
+                statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
+                break;
+            case DARK:
+            case BLACK:
+                startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
+                statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider_dark_card));
+                break;
         }
 
         ftpBtn.setOnClickListener(v -> {
@@ -162,7 +163,7 @@ public class FTPServerFragment extends Fragment {
             case R.id.choose_ftp_port:
                 int currentFtpPort = getDefaultPortFromPreferences();
 
-                new MaterialDialog.Builder(getActivity())
+                new MaterialDialog.Builder(getContext())
                         .input(getString(R.string.ftp_port_edit_menu_title), Integer.toString(currentFtpPort), true, (dialog, input) -> {})
                         .inputType(InputType.TYPE_CLASS_NUMBER)
                         .onPositive((dialog, which) -> {
@@ -187,7 +188,7 @@ public class FTPServerFragment extends Fragment {
                         .show();
                 return true;
             case R.id.ftp_path:
-                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getActivity());
+                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getContext());
                 dialogBuilder.title(getString(R.string.ftp_path));
                 dialogBuilder.input(getString(R.string.ftp_path_hint),
                         getDefaultPathFromPreferences(),
@@ -231,7 +232,7 @@ public class FTPServerFragment extends Fragment {
                         .show();
                 return true;
             case R.id.ftp_login:
-                MaterialDialog.Builder loginDialogBuilder = new MaterialDialog.Builder(getActivity());
+                MaterialDialog.Builder loginDialogBuilder = new MaterialDialog.Builder(getContext());
 
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View rootView = inflater.inflate(R.layout.dialog_ftp_login, null);
@@ -420,10 +421,8 @@ public class FTPServerFragment extends Fragment {
         final String passwordDecrypted = getPasswordFromPreferences();
         final CharSequence passwordBulleted = new OneCharacterCharSequence('\u25CF', passwordDecrypted.length());
 
-        username.setText(getResources().getString(R.string.username) + ": " +
-                getUsernameFromPreferences());
-        password.setText(getResources().getString(R.string.password) + ": " +
-                passwordBulleted);
+        username.setText(getResources().getString(R.string.username) + ": " + getUsernameFromPreferences());
+        password.setText(getResources().getString(R.string.password) + ": " + passwordBulleted);
 
         ftpPasswordVisibleButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_grey600_24dp));
 
@@ -457,12 +456,9 @@ public class FTPServerFragment extends Fragment {
      */
     private void updateSpans() {
 
-        String ftpAddress;
+        String ftpAddress = getFTPAddressString();
 
-        try{
-            ftpAddress = getFTPAddressString();
-        } catch (NullPointerException npe){
-            npe.printStackTrace();
+        if(ftpAddress == null) {
             ftpAddress = "";
             Toast.makeText(getContext(), getResources().getString(R.string.local_inet_addr_error), Toast.LENGTH_SHORT).show();
         }
@@ -521,11 +517,11 @@ public class FTPServerFragment extends Fragment {
     /**
      * @return address at which server is running
      */
+    @Nullable
     private String getFTPAddressString() {
         InetAddress ia = FTPService.getLocalInetAddress(getContext());
-        if(ia == null){
-            throw new NullPointerException("getLocalInetAddress returned a null value");
-        }
+        if(ia == null) return null;
+
         return (getSecurePreference() ? FTPService.INITIALS_HOST_SFTP : FTPService.INITIALS_HOST_FTP)
                 + ia.getHostAddress()  + ":" + getDefaultPortFromPreferences();
     }
