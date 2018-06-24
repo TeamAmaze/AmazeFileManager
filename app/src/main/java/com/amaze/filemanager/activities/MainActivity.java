@@ -30,7 +30,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -51,15 +50,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +72,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
@@ -102,7 +97,7 @@ import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment.CloudConnectionCallbacks;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.fragments.FTPServerFragment;
+import com.amaze.filemanager.fragments.FtpServerFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
@@ -400,7 +395,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                         // tile preferences, open ftp fragment
 
                         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                        transaction2.replace(R.id.content_frame, new FTPServerFragment());
+                        transaction2.replace(R.id.content_frame, new FtpServerFragment());
                         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 
                         drawer.setSomethingSelected(true);
@@ -761,7 +756,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             } else {
                 compressedExplorerFragment.mActionMode.finish();
             }
-        } else if (fragment instanceof FTPServerFragment) {
+        } else if (fragment instanceof FtpServerFragment) {
             //returning back from FTP server
             if (path != null && path.length() > 0) {
                 HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
@@ -897,7 +892,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             invalidatePasteButton(menu.findItem(R.id.paste));
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if (fragment instanceof AppsListFragment || fragment instanceof ProcessViewerFragment
-                || fragment instanceof FTPServerFragment) {
+                || fragment instanceof FtpServerFragment) {
             appBarLayout.setExpanded(true);
             menu.findItem(R.id.sethome).setVisible(false);
             if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);

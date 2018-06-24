@@ -60,10 +60,8 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
@@ -76,7 +74,7 @@ import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-public class FTPService extends Service implements Runnable {
+public class FtpService extends Service implements Runnable {
 
     public static final int DEFAULT_PORT = 2211;
     public static final String DEFAULT_USERNAME = "";
@@ -163,7 +161,7 @@ public class FTPService extends Service implements Runnable {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 // can't decrypt the password saved in preferences, remove the preference altogether
                 // and start an anonymous connection instead
-                preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
+                preferences.edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply();
                 isPasswordProtected = false;
             }
         }
@@ -215,9 +213,9 @@ public class FTPService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
-            sendBroadcast(new Intent(FTPService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
+            sendBroadcast(new Intent(FtpService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
-            sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART));
+            sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART));
         }
     }
 
@@ -236,7 +234,7 @@ public class FTPService extends Service implements Runnable {
         }
         if (server != null) {
             server.stop();
-            sendBroadcast(new Intent(FTPService.ACTION_STOPPED));
+            sendBroadcast(new Intent(FtpService.ACTION_STOPPED));
         }
     }
 
