@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -55,7 +56,8 @@ public class FtpServiceEspressoTest {
     }
 
     @Test
-    public void testFtpService() throws Exception{
+    public void testFtpService() throws Exception
+    {
         PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FtpService.KEY_PREFERENCE_SECURE, false).commit();
         service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
         assertTrue(FtpService.isRunning());
@@ -81,7 +83,7 @@ public class FtpServiceEspressoTest {
         testDownloadWith(ftpClient);
     }
 
-    private void loginAndVerifyWith(FTPClient ftpClient) throws Exception
+    private void loginAndVerifyWith(FTPClient ftpClient) throws IOException
     {
         ftpClient.connect("localhost", FtpService.DEFAULT_PORT);
         ftpClient.login("anonymous", "test@example.com");
@@ -100,7 +102,7 @@ public class FtpServiceEspressoTest {
         assertTrue("Download folder not found on device. Either storage is not available, or something is really wrong with FtpService. Check logcat.", downloadFolderExists);
     }
 
-    private void testUploadWith(FTPClient ftpClient) throws Exception
+    private void testUploadWith(FTPClient ftpClient) throws IOException
     {
         byte[] bytes1 = new byte[32], bytes2 = new byte[32];
         SecureRandom sr = new SecureRandom();
@@ -139,8 +141,8 @@ public class FtpServiceEspressoTest {
         verify.delete();
     }
 
-    private void testDownloadWith(FTPClient ftpClient) throws Exception {
-
+    private void testDownloadWith(FTPClient ftpClient) throws IOException
+    {
         File testFile1 = new File(Environment.getExternalStorageDirectory(), "test.txt");
         File testFile2 = new File(Environment.getExternalStorageDirectory(), "test.bin");
 
