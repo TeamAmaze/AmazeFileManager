@@ -13,22 +13,22 @@ import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.asynchronous.services.ftp.FTPService;
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
 
 import java.net.InetAddress;
 
 /**
  * Created by yashwanthreddyg on 19-06-2016.
  */
-public class FTPNotification extends BroadcastReceiver {
+public class FtpNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
-            case FTPService.ACTION_STARTED:
-                createNotification(context, intent.getBooleanExtra(FTPService.TAG_STARTED_BY_TILE, false));
+            case FtpService.ACTION_STARTED:
+                createNotification(context, intent.getBooleanExtra(FtpService.TAG_STARTED_BY_TILE, false));
                 break;
-            case FTPService.ACTION_STOPPED:
+            case FtpService.ACTION_STOPPED:
                 removeNotification(context);
                 break;
         }
@@ -40,12 +40,12 @@ public class FTPNotification extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int port = sharedPreferences.getInt(FTPService.PORT_PREFERENCE_KEY, FTPService.DEFAULT_PORT);
-        boolean secureConnection = sharedPreferences.getBoolean(FTPService.KEY_PREFERENCE_SECURE, FTPService.DEFAULT_SECURE);
+        int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
+        boolean secureConnection = sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
 
-        InetAddress address = FTPService.getLocalInetAddress(context);
+        InetAddress address = FtpService.getLocalInetAddress(context);
 
-        String iptext = (secureConnection ? FTPService.INITIALS_HOST_SFTP : FTPService.INITIALS_HOST_FTP)
+        String iptext = (secureConnection ? FtpService.INITIALS_HOST_SFTP : FtpService.INITIALS_HOST_FTP)
                 + address.getHostAddress() + ":"
                 + port + "/";
 
@@ -76,7 +76,7 @@ public class FTPNotification extends BroadcastReceiver {
         if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
             CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FTPService.ACTION_STOP_FTPSERVER);
+            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER);
             PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
                     stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
