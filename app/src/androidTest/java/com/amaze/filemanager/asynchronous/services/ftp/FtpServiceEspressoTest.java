@@ -28,9 +28,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
-public class FTPServiceEspressoTest {
+public class FtpServiceEspressoTest {
 
-    private FTPService service;
+    private FtpService service;
 
     @Before
     public void setUp() throws Exception {
@@ -44,9 +44,9 @@ public class FTPServiceEspressoTest {
 
     @Test
     public void testFTPService() throws Exception{
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, false).commit();
-        service.onStartCommand(new Intent(FTPService.ACTION_START_FTPSERVER).putExtra(FTPService.TAG_STARTED_BY_TILE, false), 0, 0);
-        assertTrue(FTPService.isRunning());
+        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FtpService.KEY_PREFERENCE_SECURE, false).commit();
+        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
+        assertTrue(FtpService.isRunning());
         waitForServer();
 
         loginAndVerifyWith(new FTPClient());
@@ -55,9 +55,9 @@ public class FTPServiceEspressoTest {
     @Test
     public void testSecureFTPService() throws Exception
     {
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FTPService.KEY_PREFERENCE_SECURE, true).commit();
-        service.onStartCommand(new Intent(FTPService.ACTION_START_FTPSERVER).putExtra(FTPService.TAG_STARTED_BY_TILE, false), 0, 0);
-        assertTrue(FTPService.isRunning());
+        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FtpService.KEY_PREFERENCE_SECURE, true).commit();
+        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
+        assertTrue(FtpService.isRunning());
         waitForServer();
 
         loginAndVerifyWith(new FTPSClient(true));
@@ -65,7 +65,7 @@ public class FTPServiceEspressoTest {
 
     private void loginAndVerifyWith(FTPClient ftpClient) throws Exception
     {
-        ftpClient.connect("localhost", FTPService.DEFAULT_PORT);
+        ftpClient.connect("localhost", FtpService.DEFAULT_PORT);
         ftpClient.login("anonymous", "test@example.com");
         ftpClient.changeWorkingDirectory("/");
         FTPFile[] files = ftpClient.listFiles();
@@ -80,12 +80,12 @@ public class FTPServiceEspressoTest {
         ftpClient.disconnect();
 
         if(!downloadFolderExists)
-            fail("Download folder not found on device. Either storage is not available, or something is really wrong with FTPService. Check logcat.");
+            fail("Download folder not found on device. Either storage is not available, or something is really wrong with FtpService. Check logcat.");
     }
 
-    private FTPService create() throws Exception
+    private FtpService create() throws Exception
     {
-        FTPService service = new FTPService();
+        FtpService service = new FtpService();
         // Trick borrowed from org.robolectric.android.controller.ServiceController
         Class activityThreadClazz = Class.forName("android.app.ActivityThread");
         Method attach = Service.class.getDeclaredMethod("attach", Context.class, activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
@@ -104,7 +104,7 @@ public class FTPServiceEspressoTest {
         while(!available) {
             Socket socket = new Socket();
             try {
-                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), FTPService.DEFAULT_PORT));
+                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), FtpService.DEFAULT_PORT));
                 socket.close();
                 available = true;
             } catch(SocketException e) {
