@@ -85,7 +85,7 @@ public class TextEditorActivityTest {
 
     private File simulateFile() {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
-        File file = new File("text.txt");
+        File file = new File(Environment.getExternalStorageDirectory(), "text.txt");
 
         try {
             file.createNewFile();
