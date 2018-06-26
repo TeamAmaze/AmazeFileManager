@@ -5,9 +5,12 @@ import org.junit.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 
@@ -25,7 +28,7 @@ public class StreamSourceTest {
     // File Test.txt is 20 characters length
     // And contains "This is a test file." phrase
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         file = new SmbFile("smb://192.168.0.101/Test/Test.txt",
                 new NtlmPasswordAuthentication(null, "usertest", "12345"));
 
@@ -33,13 +36,6 @@ public class StreamSourceTest {
                 .readLine()).getBytes();
         ssEmpty = new StreamSource();
         ss = new StreamSource(file, file.length());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        file = null;
-        text = null;
-        ss = null;
     }
 
     /**

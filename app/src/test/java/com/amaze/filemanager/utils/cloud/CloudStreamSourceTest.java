@@ -15,6 +15,8 @@ import static org.junit.Assert.*;
  * Created by Rustam Khadipash on 31/3/2018.
  */
 public class CloudStreamSourceTest {
+
+
     private CloudStreamSource cs;
     private byte[] text;
     private long len;
@@ -33,7 +35,7 @@ public class CloudStreamSourceTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         fn = null;
         len = 0;
         text = null;
@@ -200,7 +202,7 @@ public class CloudStreamSourceTest {
      */
     @Ignore ("No exception is thrown")
     @Test (expected = IOException.class)
-    public void moveToException() throws IOException {
+    public void moveToException() {
         cs.moveTo(-1);
     }
 
@@ -264,7 +266,7 @@ public class CloudStreamSourceTest {
      *          return amount
      */
     @Test
-    public void available() throws IOException {
+    public void available() {
         int amount = 12;
         cs.moveTo((int)len - amount);
         assertEquals(amount, cs.available());
@@ -277,7 +279,7 @@ public class CloudStreamSourceTest {
      *          return len
      */
     @Test
-    public void reset() throws IOException {
+    public void reset() {
         cs.moveTo(10);
         assertEquals(len - 10, cs.available());
         cs.reset();

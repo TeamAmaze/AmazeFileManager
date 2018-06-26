@@ -21,18 +21,12 @@ public class HybridFileParcelableTest {
 
     @Before
     public void setUp() {
-        // Initialization with a file's path only
-        filePath =
-                new HybridFileParcelable("/storage/sdcard0/Test1/Test1.txt");
+        filePath = new HybridFileParcelable("/storage/sdcard0/Test1/Test1.txt");
 
-        // Initialization of a directory
-        directory =
-                new HybridFileParcelable("/storage/sdcard0/Test2",
+        directory = new HybridFileParcelable("/storage/sdcard0/Test2",
                         "rw", 123456, 654321, true);
 
-        // Initialization of a file with full list of parameters
-        file =
-                new HybridFileParcelable("/storage/sdcard0/Test3/Test3.txt",
+        file = new HybridFileParcelable("/storage/sdcard0/Test3/Test3.txt",
                         "rw", 123456, 654321, false);
     }
 
