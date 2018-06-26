@@ -46,7 +46,7 @@ public class FtpServiceEspressoTest {
     private FtpService service;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws ReflectiveOperationException {
         service = create();
     }
 
@@ -56,7 +56,7 @@ public class FtpServiceEspressoTest {
     }
 
     @Test
-    public void testFtpService() throws Exception {
+    public void testFtpService() throws IOException {
         PreferenceManager.getDefaultSharedPreferences(service).edit()
                 .putBoolean(FtpService.KEY_PREFERENCE_SECURE, false).commit();
         service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER)
@@ -71,7 +71,7 @@ public class FtpServiceEspressoTest {
     }
 
     @Test
-    public void testSecureFtpService() throws Exception {
+    public void testSecureFtpService() throws IOException {
         PreferenceManager.getDefaultSharedPreferences(service).edit()
                 .putBoolean(FtpService.KEY_PREFERENCE_SECURE, true).commit();
         service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER)
@@ -186,7 +186,7 @@ public class FtpServiceEspressoTest {
         testFile2.delete();
     }
 
-    private FtpService create() throws Exception {
+    private FtpService create() throws ReflectiveOperationException {
         FtpService service = new FtpService();
         // Trick borrowed from org.robolectric.android.controller.ServiceController
         Class activityThreadClazz = Class.forName("android.app.ActivityThread");
@@ -197,7 +197,7 @@ public class FtpServiceEspressoTest {
         return service;
     }
 
-    private void waitForServer() throws Exception {
+    private void waitForServer() throws IOException {
         boolean available = false;
         while (!available) {
             Socket socket = new Socket();
