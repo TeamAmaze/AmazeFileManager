@@ -1,10 +1,22 @@
 package com.amaze.filemanager.utils.cloud;
 
-import org.junit.*;
+import android.os.Environment;
 
+import com.amaze.filemanager.BuildConfig;
+
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.multidex.ShadowMultiDex;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -14,32 +26,37 @@ import static org.junit.Assert.*;
 /**
  * Created by Rustam Khadipash on 31/3/2018.
  */
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class CloudStreamSourceTest {
-
-
     private CloudStreamSource cs;
+    private String testFilePath;
     private byte[] text;
     private long len;
-    private String fn;
+    private String fn =  "Test.txt";
 
     // File Test.txt is 20 characters length
     // And contains "This is a test file." phrase
     @Before
     public void setUp() throws Exception {
-        InputStream is = new FileInputStream("D://Test.txt");
-        fn = "Test.txt";
-        len = Files.size(Paths.get("D://Test.txt"));
-        text = Files.readAllBytes(Paths.get("D://Test.txt"));
+        File testFile = createFile();
 
-        cs = new CloudStreamSource(fn, len, is);
+        testFilePath = testFile.getAbsolutePath();
+        len = Files.size(Paths.get(testFilePath));
+        text = Files.readAllBytes(Paths.get(testFilePath));
+        cs = new CloudStreamSource(fn, len, new FileInputStream(testFile));
     }
 
-    @After
-    public void tearDown() {
-        fn = null;
-        len = 0;
-        text = null;
-        cs = null;
+    private File createFile() throws IOException {
+        File testFile = new File(Environment.getExternalStorageDirectory(), fn);
+        testFile.createNewFile();
+
+        OutputStream is = new FileOutputStream(testFile);
+        for (int i = 0; i < 20; i++) is.write("a".getBytes());
+        is.flush();
+        is.close();
+
+        return testFile;
     }
 
     /**
