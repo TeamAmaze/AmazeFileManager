@@ -46,7 +46,7 @@ public class FtpServiceEspressoTest {
     private FtpService service;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws ReflectiveOperationException {
         service = create();
     }
 
@@ -56,10 +56,11 @@ public class FtpServiceEspressoTest {
     }
 
     @Test
-    public void testFtpService() throws Exception
-    {
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FtpService.KEY_PREFERENCE_SECURE, false).commit();
-        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
+    public void testFtpService() throws IOException {
+        PreferenceManager.getDefaultSharedPreferences(service).edit()
+                .putBoolean(FtpService.KEY_PREFERENCE_SECURE, false).commit();
+        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER)
+                .putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
         assertTrue(FtpService.isRunning());
         waitForServer();
 
@@ -70,10 +71,11 @@ public class FtpServiceEspressoTest {
     }
 
     @Test
-    public void testSecureFtpService() throws Exception
-    {
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putBoolean(FtpService.KEY_PREFERENCE_SECURE, true).commit();
-        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
+    public void testSecureFtpService() throws IOException {
+        PreferenceManager.getDefaultSharedPreferences(service).edit()
+                .putBoolean(FtpService.KEY_PREFERENCE_SECURE, true).commit();
+        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER)
+                .putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
         assertTrue(FtpService.isRunning());
         waitForServer();
 
@@ -83,27 +85,27 @@ public class FtpServiceEspressoTest {
         testDownloadWith(ftpClient);
     }
 
-    private void loginAndVerifyWith(FTPClient ftpClient) throws IOException
-    {
+    private void loginAndVerifyWith(FTPClient ftpClient) throws IOException {
         ftpClient.connect("localhost", FtpService.DEFAULT_PORT);
         ftpClient.login("anonymous", "test@example.com");
         ftpClient.changeWorkingDirectory("/");
         FTPFile[] files = ftpClient.listFiles();
         assertNotNull(files);
-        assertTrue("No files found on device? It is also possible that app doesn't have permission to access storage, which may occur on broken Android emulators",files.length > 0);
+        assertTrue("No files found on device? It is also possible that app doesn't have permission to access storage, which may occur on broken Android emulators",
+                files.length > 0);
         boolean downloadFolderExists = false;
-        for(FTPFile f : files){
-            if(f.getName().equalsIgnoreCase("download"))
+        for (FTPFile f : files) {
+            if (f.getName().equalsIgnoreCase("download"))
                 downloadFolderExists = true;
         }
         ftpClient.logout();
         ftpClient.disconnect();
 
-        assertTrue("Download folder not found on device. Either storage is not available, or something is really wrong with FtpService. Check logcat.", downloadFolderExists);
+        assertTrue("Download folder not found on device. Either storage is not available, or something is really wrong with FtpService. Check logcat.",
+                downloadFolderExists);
     }
 
-    private void testUploadWith(FTPClient ftpClient) throws IOException
-    {
+    private void testUploadWith(FTPClient ftpClient) throws IOException {
         byte[] bytes1 = new byte[32], bytes2 = new byte[32];
         SecureRandom sr = new SecureRandom();
         sr.setSeed(System.currentTimeMillis());
@@ -141,8 +143,7 @@ public class FtpServiceEspressoTest {
         verify.delete();
     }
 
-    private void testDownloadWith(FTPClient ftpClient) throws IOException
-    {
+    private void testDownloadWith(FTPClient ftpClient) throws IOException {
         File testFile1 = new File(Environment.getExternalStorageDirectory(), "test.txt");
         File testFile2 = new File(Environment.getExternalStorageDirectory(), "test.bin");
 
@@ -185,31 +186,27 @@ public class FtpServiceEspressoTest {
         testFile2.delete();
     }
 
-    private FtpService create() throws Exception
-    {
+    private FtpService create() throws ReflectiveOperationException {
         FtpService service = new FtpService();
         // Trick borrowed from org.robolectric.android.controller.ServiceController
         Class activityThreadClazz = Class.forName("android.app.ActivityThread");
-        Method attach = Service.class.getDeclaredMethod("attach", Context.class, activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
+        Method attach = Service.class.getDeclaredMethod("attach", Context.class,
+                activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
         attach.invoke(service, InstrumentationRegistry.getTargetContext(),
-                null,
-                service.getClass().getSimpleName(),
-                null,
-                null,
-                null);
+                null, service.getClass().getSimpleName(), null, null, null);
         return service;
     }
 
-    private void waitForServer() throws Exception
-    {
+    private void waitForServer() throws IOException {
         boolean available = false;
-        while(!available) {
+        while (!available) {
             Socket socket = new Socket();
             try {
-                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), FtpService.DEFAULT_PORT));
+                socket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
+                        FtpService.DEFAULT_PORT));
                 socket.close();
                 available = true;
-            } catch(SocketException e) {
+            } catch (SocketException e) {
                 available = false;
             }
         }
