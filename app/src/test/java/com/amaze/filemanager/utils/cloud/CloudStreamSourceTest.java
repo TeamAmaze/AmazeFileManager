@@ -163,16 +163,15 @@ public class CloudStreamSourceTest {
      * the buffer exceed size of the buffer
      * Input: read(buffer, startPosition, endPosition)
      * Expected:
-     *          IOException is thrown
+     *          IndexOutOfBoundsException is thrown
      */
-    @Ignore ("Expected IOException, but IndexOutOfBoundsException is thrown")
-    @Test (expected = IOException.class)
+    @Test (expected = IndexOutOfBoundsException.class)
     public void readStartEndExceedException() throws IOException {
         byte[] buff = new byte[100];
         int start = 95;
         int end = 110;
 
-        int n = cs.read(buff, start, end);
+        cs.read(buff, start, end);
     }
 
     /**
@@ -217,9 +216,9 @@ public class CloudStreamSourceTest {
      * Expected:
      *          IOException is thrown
      */
-    @Ignore ("No exception is thrown")
     @Test (expected = IOException.class)
-    public void moveToException() {
+    public void moveToException() throws IOException {
+        cs.open();
         cs.moveTo(-1);
     }
 

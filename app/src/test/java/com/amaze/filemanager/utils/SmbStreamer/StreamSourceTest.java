@@ -183,16 +183,17 @@ public class StreamSourceTest {
      * the buffer exceed size of the buffer
      * Input: read(buffer, startPosition, endPosition)
      * Expected:
-     *          IOException is thrown
+     *          IndexOutOfBoundsException is thrown
      */
-    @Ignore ("Expected IOException, but IndexOutOfBoundsException is thrown")
-    @Test (expected = IOException.class)
+    @Test (expected = IndexOutOfBoundsException.class)
     public void readStartEndExceedException() throws IOException {
+        ss.open();
+
         byte[] buff = new byte[100];
         int start = 95;
         int end = 110;
 
-        int n = ss.read(buff, start, end);
+        ss.read(buff, start, end);
     }
 
     /**
@@ -238,7 +239,6 @@ public class StreamSourceTest {
      * Expected:
      *          IOException is thrown
      */
-    @Ignore ("No exception is thrown")
     @Test (expected = IOException.class)
     public void moveToException() throws IOException {
         ss.open();
