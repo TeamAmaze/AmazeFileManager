@@ -1,10 +1,26 @@
 package com.amaze.filemanager.utils.SmbStreamer;
 
+import android.os.Environment;
+
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
+
 import org.junit.*;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowUsbManager;
+import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -19,23 +35,39 @@ import static org.junit.Assert.*;
 /**
  * Created by Rustam Khadipash on 30/3/2018.
  */
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
 public class StreamSourceTest {
     private SmbFile file;
     private StreamSource ssEmpty;
     private StreamSource ss;
     private byte[] text;
 
-    // File Test.txt is 20 characters length
-    // And contains "This is a test file." phrase
     @Before
     public void setUp() throws IOException {
-        file = new SmbFile("smb://192.168.0.101/Test/Test.txt",
-                new NtlmPasswordAuthentication(null, "usertest", "12345"));
+        StringBuilder textInFile = new StringBuilder();
+        for (int i = 0; i < 20; i++) textInFile.append("a");
 
-        text = ((new BufferedReader(new InputStreamReader(new SmbFileInputStream(file))))
-                .readLine()).getBytes();
+        text = textInFile.toString().getBytes();
+        file = createFile();
         ssEmpty = new StreamSource();
         ss = new StreamSource(file, file.length());
+    }
+
+    private SmbFile createFile() throws IOException {
+        File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
+        testFile.createNewFile();
+
+        OutputStream is = new FileOutputStream(testFile);
+        is.write(text);
+        is.flush();
+        is.close();
+
+        SmbFile file = new SmbFile("smb://127.0.0.1/Test.txt");
+        ShadowSmbFile shadowSmbFile = Shadow.extract(file);
+        shadowSmbFile.setFile(testFile);
+
+        return file;
     }
 
     /**
