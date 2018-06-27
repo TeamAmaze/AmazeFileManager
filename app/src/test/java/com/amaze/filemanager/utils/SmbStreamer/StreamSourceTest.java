@@ -113,6 +113,7 @@ public class StreamSourceTest {
      */
     @Test
     public void read() throws IOException {
+        ss.open();
         byte[] buff = new byte[10];
         int n = ss.read(buff);
         byte[] temp = Arrays.copyOfRange(text, 0, buff.length);
@@ -131,6 +132,7 @@ public class StreamSourceTest {
      */
     @Test
     public void readExceed() throws IOException {
+        ss.open();
         byte[] buff = new byte[100];
         int n = ss.read(buff);
         // erase dummy values in the end of buffer
@@ -148,6 +150,7 @@ public class StreamSourceTest {
      */
     @Test (expected = IOException.class)
     public void readClosedException() throws IOException {
+        ss.open();
         ss.close();
         byte[] buff = new byte[text.length];
         int n = ss.read(buff);
@@ -162,6 +165,7 @@ public class StreamSourceTest {
      */
     @Test
     public void readStartEnd() throws IOException {
+        ss.open();
         byte[] buff = new byte[100];
         int start = 5;
         int end = 10;
@@ -199,6 +203,7 @@ public class StreamSourceTest {
      */
     @Test (expected = IOException.class)
     public void readStartEndClosedException() throws IOException {
+        ss.open();
         ss.close();
         byte[] buff = new byte[100];
         int start = 5;
@@ -236,6 +241,7 @@ public class StreamSourceTest {
     @Ignore ("No exception is thrown")
     @Test (expected = IOException.class)
     public void moveToException() throws IOException {
+        ss.open();
         ss.moveTo(-1);
     }
 
@@ -246,7 +252,8 @@ public class StreamSourceTest {
      *          Stream is closed and reading from the file is unavailable
      */
     @Test
-    public void close() {
+    public void close() throws IOException {
+        ss.open();
         ss.close();
 
         int n = -1;
