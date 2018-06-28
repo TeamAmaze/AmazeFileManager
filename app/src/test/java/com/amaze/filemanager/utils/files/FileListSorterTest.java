@@ -1,6 +1,7 @@
 package com.amaze.filemanager.utils.files;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.utils.OpenMode;
 
 import org.junit.Test;
 
@@ -24,13 +25,19 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(0,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), -1);
     }
+
+    /*
+        public LayoutElementParcelable(String title, String path, String permissions,
+                                   String symlink, String size, long longSize, boolean header,
+                                   String date, boolean isDirectory, boolean useThumbs, OpenMode openMode)
+     */
 
     /**
      * Purpose: when dirsOnTop is 0, if file1 is not directory && file2 is directory, result is 1
@@ -43,10 +50,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(0,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1.txt", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", true,false);
+                "1235", true,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 1);
     }
@@ -62,10 +69,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(1,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 1);
     }
@@ -81,10 +88,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(1,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1.txt", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", true,false);
+                "1235", true,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), -1);
     }
@@ -102,10 +109,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1.txt", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
@@ -121,10 +128,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -140,10 +147,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,0,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("ABC.txt", "C:\\AmazeFileManager\\ABC", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
@@ -159,10 +166,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,1,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2) , greaterThan(0));
     }
@@ -178,10 +185,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,1,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1235", false,false);
+                "1235", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -197,10 +204,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,1,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
@@ -216,10 +223,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
@@ -235,10 +242,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -254,10 +261,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
@@ -273,10 +280,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "101", 124L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
@@ -292,10 +299,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -311,10 +318,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1.txt", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
@@ -330,10 +337,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -349,10 +356,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,2,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "101", 124L, true,
-                "1234", true,false);
+                "1234", true,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
@@ -368,10 +375,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,3,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc1.txt", "C:\\AmazeFileManager\\abc1", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
@@ -387,10 +394,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,3,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
@@ -406,10 +413,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,3,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("ABC.txt", "C:\\AmazeFileManager\\ABC", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
@@ -425,10 +432,10 @@ public class FileListSorterTest {
         FileListSorter fileListSorter = new FileListSorter(-1,4,1);
         LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
                 "symlink", "100", 123L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
         LayoutElementParcelable file2 = new LayoutElementParcelable("ABC.txt", "C:\\AmazeFileManager\\ABC", "user",
                 "symlink", "101", 124L, true,
-                "1234", false,false);
+                "1234", false,false, OpenMode.UNKNOWN);
 
         assertEquals(fileListSorter.compare(file1, file2), 0);
     }
