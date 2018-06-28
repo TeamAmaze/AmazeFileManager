@@ -67,7 +67,7 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public Parcelable onSaveInstanceState() {
-        if (true) {
+        if (!doesNavigationViewSavedStateExist()) {
             return super.onSaveInstanceState();
         }
 
@@ -84,7 +84,7 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if(true) {
+        if(!doesNavigationViewSavedStateExist()) {
             super.onRestoreInstanceState(state);
             return;
         }
