@@ -39,7 +39,8 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -57,11 +58,10 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
@@ -74,7 +74,7 @@ import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-public class FTPService extends Service implements Runnable {
+public class FtpService extends Service implements Runnable {
 
     public static final int DEFAULT_PORT = 2211;
     public static final String DEFAULT_USERNAME = "";
@@ -88,9 +88,7 @@ public class FTPService extends Service implements Runnable {
     public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
     public static final String DEFAULT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String INITIALS_HOST_FTP = "ftp://";
-    public static final String INITIALS_HOST_SFTP = "sftp://";
-
-    private static final String TAG = FTPService.class.getSimpleName();
+    public static final String INITIALS_HOST_SFTP = "ftps://";
 
     private static final String WIFI_AP_ADDRESS = "192.168.43.1";
     private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
@@ -121,7 +119,10 @@ public class FTPService extends Service implements Runnable {
         while (serverThread != null) {
             if (attempts > 0) {
                 attempts--;
-                sleepIgnoreInterupt(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                }
             } else {
                 return START_STICKY;
             }
@@ -132,7 +133,6 @@ public class FTPService extends Service implements Runnable {
 
         return START_STICKY;
     }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -161,7 +161,7 @@ public class FTPService extends Service implements Runnable {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 // can't decrypt the password saved in preferences, remove the preference altogether
                 // and start an anonymous connection instead
-                preferences.edit().putString(FTPService.KEY_PREFERENCE_PASSWORD, "").apply();
+                preferences.edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply();
                 isPasswordProtected = false;
             }
         }
@@ -202,7 +202,6 @@ public class FTPService extends Service implements Runnable {
                         null, "ftpserver"));
                 fac.setImplicitSsl(true);
             } catch (GeneralSecurityException | IOException e) {
-                Log.e(TAG, "Error enabling SSL for FTP server", e);
                 preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply();
             }
         }
@@ -214,17 +213,15 @@ public class FTPService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
-            sendBroadcast(new Intent(FTPService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
+            sendBroadcast(new Intent(FtpService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
-            sendBroadcast(new Intent(FTPService.ACTION_FAILEDTOSTART));
+            sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART));
         }
     }
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "onDestroy() Stopping server");
         if (serverThread == null) {
-            Log.w(TAG, "Stopping with null serverThread");
             return;
         }
         serverThread.interrupt();
@@ -232,17 +229,13 @@ public class FTPService extends Service implements Runnable {
             serverThread.join(10000); // wait 10 sec for server thread to finish
         } catch (InterruptedException e) {
         }
-        if (serverThread.isAlive()) {
-            Log.w(TAG, "Server thread failed to exit");
-        } else {
-            Log.d(TAG, "serverThread join()ed ok");
+        if (!serverThread.isAlive()) {
             serverThread = null;
         }
         if (server != null) {
             server.stop();
-            sendBroadcast(new Intent(FTPService.ACTION_STOPPED));
+            sendBroadcast(new Intent(FtpService.ACTION_STOPPED));
         }
-        Log.d(TAG, "FTPServerService.onDestroy() finished");
     }
 
     //Restart the service if the app is closed from the recent list
@@ -261,36 +254,16 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isRunning() {
-        // return true if and only if a server Thread is running
-        if (serverThread == null) {
-            Log.d(TAG, "Server is not running (null serverThread)");
-            return false;
-        }
-        if (!serverThread.isAlive()) {
-            Log.d(TAG, "serverThread non-null but !isAlive()");
-        } else {
-            Log.d(TAG, "Server is alive");
-        }
-        return true;
-    }
-
-    public static void sleepIgnoreInterupt(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignored) {
-        }
+        return serverThread != null;
     }
 
     public static boolean isConnectedToLocalNetwork(Context context) {
-        boolean connected = false;
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        connected = ni != null
-                && ni.isConnected()
+        boolean connected = ni != null && ni.isConnected()
                 && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
         if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
             try {
                 for (NetworkInterface netInterface : Collections.list(NetworkInterface
                         .getNetworkInterfaces())) {
@@ -306,7 +279,6 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isConnectedToWifi(Context context) {
-
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -315,27 +287,18 @@ public class FTPService extends Service implements Runnable {
     }
 
     public static boolean isEnabledWifiHotspot(Context context) {
-        boolean enabled = false;
-        Log.d(TAG, "isEnabledWifiHotspot: see if it is an WIFI AP");
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        try {
-            Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-            enabled = (Boolean) method.invoke(wm);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return enabled;
+        WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        Boolean enabled = callIsWifiApEnabled(wm);
+        return enabled != null? enabled:false;
     }
 
     public static InetAddress getLocalInetAddress(Context context) {
         if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
-            Log.e(TAG, "getLocalInetAddress called and no connection");
             return null;
         }
 
         if (isConnectedToWifi(context)) {
-
-            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int ipAddress = wm.getConnectionInfo().getIpAddress();
             if (ipAddress == 0)
                 return null;
@@ -343,25 +306,22 @@ public class FTPService extends Service implements Runnable {
         }
 
         try {
-            Enumeration<NetworkInterface> netinterfaces = NetworkInterface
-                    .getNetworkInterfaces();
+            Enumeration<NetworkInterface> netinterfaces = NetworkInterface.getNetworkInterfaces();
             while (netinterfaces.hasMoreElements()) {
                 NetworkInterface netinterface = netinterfaces.nextElement();
                 Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
 
-                    if(isEnabledWifiHotspot(context)
-                            && WIFI_AP_ADDRESS.equals(address.getHostAddress()))
+                    if(WIFI_AP_ADDRESS.equals(address.getHostAddress()) && isEnabledWifiHotspot(context))
                         return address;
 
                     // this is the condition that sometimes gives problems
-                    if (!address.isLoopbackAddress()
-                            && !address.isLinkLocalAddress())
+                    if (!address.isLoopbackAddress() && !address.isLinkLocalAddress() && !isEnabledWifiHotspot(context))
                         return address;
                 }
             }
-        } catch (Exception e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         }
         return null;
@@ -385,36 +345,25 @@ public class FTPService extends Service implements Runnable {
         return (byte) (value >> shift);
     }
 
-    public static int getPort(SharedPreferences preferences)
-    {
+    public static int getPort(SharedPreferences preferences) {
         return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
     }
 
-    public static boolean isPortAvailable(int port) {
-
-        ServerSocket ss = null;
-        DatagramSocket ds = null;
+    @Nullable
+    private static Boolean callIsWifiApEnabled(@NonNull WifiManager wifiManager) {
+        Boolean r = null;
         try {
-            ss = new ServerSocket(port);
-            ss.setReuseAddress(true);
-            ds = new DatagramSocket(port);
-            ds.setReuseAddress(true);
-            return true;
-        } catch (IOException e) {
-        } finally {
-            if (ds != null) {
-                ds.close();
-            }
-
-            if (ss != null) {
-                try {
-                    ss.close();
-                } catch (IOException e) {
-                /* should not be thrown */
-                }
-            }
+            Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
+            r = (Boolean) method.invoke(wifiManager);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
 
-        return false;
+        return r;
     }
+
 }

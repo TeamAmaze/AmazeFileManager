@@ -18,7 +18,7 @@ import com.amaze.filemanager.R;
  */
 
 @TargetApi(Build.VERSION_CODES.N)
-public class FTPTileService extends TileService {
+public class FtpTileService extends TileService {
     private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -31,8 +31,8 @@ public class FTPTileService extends TileService {
         super.onStartListening();
 
         IntentFilter f = new IntentFilter();
-        f.addAction(FTPService.ACTION_STARTED);
-        f.addAction(FTPService.ACTION_STOPPED);
+        f.addAction(FtpService.ACTION_STARTED);
+        f.addAction(FtpService.ACTION_STOPPED);
         registerReceiver(ftpReceiver, f);
         updateTileState();
     }
@@ -49,13 +49,13 @@ public class FTPTileService extends TileService {
         super.onClick();
 
         if (getQsTile().getState() == Tile.STATE_ACTIVE) {
-            getApplicationContext().sendBroadcast(new Intent(FTPService.ACTION_STOP_FTPSERVER));
+            getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER));
         } else {
-            if (FTPService.isConnectedToWifi(getApplicationContext())
-                    || FTPService.isConnectedToLocalNetwork(getApplicationContext())
-                    || FTPService.isEnabledWifiHotspot(getApplicationContext())) {
-                Intent i = new Intent(FTPService.ACTION_START_FTPSERVER);
-                i.putExtra(FTPService.TAG_STARTED_BY_TILE, true);
+            if (FtpService.isConnectedToWifi(getApplicationContext())
+                    || FtpService.isConnectedToLocalNetwork(getApplicationContext())
+                    || FtpService.isEnabledWifiHotspot(getApplicationContext())) {
+                Intent i = new Intent(FtpService.ACTION_START_FTPSERVER);
+                i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
                 getApplicationContext().sendBroadcast(i);
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.ftp_no_wifi), Toast.LENGTH_LONG).show();
@@ -65,7 +65,7 @@ public class FTPTileService extends TileService {
 
     private void updateTileState() {
         Tile tile = getQsTile();
-        if (FTPService.isRunning()) {
+        if (FtpService.isRunning()) {
             tile.setState(Tile.STATE_ACTIVE);
             tile.setIcon(Icon.createWithResource(this, R.drawable.ic_ftp_dark));
         } else {

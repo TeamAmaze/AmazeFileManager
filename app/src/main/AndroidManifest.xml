@@ -178,11 +178,11 @@
             />
 
         <service
-            android:name=".asynchronous.services.ftp.FTPService"
+            android:name=".asynchronous.services.ftp.FtpService"
             android:enabled="true"
             android:exported="true" />
 
-        <service android:name=".asynchronous.services.ftp.FTPTileService"
+        <service android:name=".asynchronous.services.ftp.FtpTileService"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -193,7 +193,7 @@
         </service>
 
         <receiver
-            android:name=".asynchronous.services.ftp.FTPReceiver"
+            android:name=".asynchronous.services.ftp.FtpReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER" />
@@ -202,7 +202,7 @@
         </receiver>
 
         <receiver
-            android:name="com.amaze.filemanager.ui.notifications.FTPNotification"
+            android:name="com.amaze.filemanager.ui.notifications.FtpNotification"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED" />
