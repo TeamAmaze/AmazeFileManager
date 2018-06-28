@@ -544,7 +544,7 @@
     <string name="go">Ir</string>
     <string name="advanced">Avançado</string>
     <string name="typeablepaths_title">Caminhos personalizados</string>
-    <string name="typeablepaths_summary">Long press path bar type a custom path</string>
+    <string name="typeablepaths_summary">Pressione e segure na barra de diretório para informar um diretório personalizado</string>
     <string name="send_email_to">Enviar um e-mail para</string>
 
     <string name="text_editor">Configurações do editor de texto</string>
