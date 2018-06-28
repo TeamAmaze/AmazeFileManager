@@ -47,7 +47,7 @@ public class TextEditorActivityTest {
     }
 
     @Test
-    public void testOpenFileUri() {
+    public void testOpenFileUri() throws IOException {
         File file = simulateFile();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -83,23 +83,19 @@ public class TextEditorActivityTest {
         activity.onDestroy();
     }
 
-    private File simulateFile() {
+    private File simulateFile() throws IOException {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
-        File file = new File("text.txt");
+        File file = new File(Environment.getExternalStorageDirectory(), "text.txt");
 
-        try {
-            file.createNewFile();
+        file.createNewFile();
 
-            if(!file.canWrite()) file.setWritable(true);
-            assertThat(file.canWrite(), is(true));
+        if(!file.canWrite()) file.setWritable(true);
+        assertThat(file.canWrite(), is(true));
 
-            PrintWriter out = new PrintWriter(file);
-            out.write(fileContents);
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+        PrintWriter out = new PrintWriter(file);
+        out.write(fileContents);
+        out.flush();
+        out.close();
 
         return file;
     }
