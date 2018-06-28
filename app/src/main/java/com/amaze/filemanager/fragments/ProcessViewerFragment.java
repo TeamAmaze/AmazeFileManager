@@ -110,7 +110,6 @@ public class ProcessViewerFragment extends Fragment {
         mProgressImage = rootView.findViewById(R.id.progress_image);
         mCancelButton = rootView.findViewById(R.id.delete_button);
         mProgressTypeText = rootView.findViewById(R.id.text_view_progress_type);
-        mProgressBytesText.invalidate();
         mProgressFileNameText = rootView.findViewById(R.id.text_view_progress_file_name);
         mProgressBytesText = rootView.findViewById(R.id.text_view_progress_bytes);
         mProgressFileText = rootView.findViewById(R.id.text_view_progress_file);
