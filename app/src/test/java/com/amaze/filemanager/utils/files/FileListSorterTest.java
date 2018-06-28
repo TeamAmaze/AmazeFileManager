@@ -6,30 +6,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * because of test based on mock-up, extension testing isn't tested
+ * so, assume all extension is "*{slash}*"
+ */
 public class FileListSorterTest {
-
-    // because of test based on mock-up, extension testing isn't tested
-    // so, assume all extension is "*/*"
-
-    //two file are LayoutElementParcelable
-    /**
-     public LayoutElementParcelable(String title, String path, String permissions,
-     String symlink, String size, long longSize, boolean header,
-     String date, boolean isDirectory, boolean useThumbs)
-     **/
-
-    /**
-     * Compares two elements and return negative, zero and positive integer if first argument is
-     * less than, equal to or greater than second
-     */
-
-    /**
-     * FileListSorter(dir,sort,asc)
-     * dir : dirsOnTop, sort : 0,1,2,3, asc : ascending(so, asc is 1 -> Reference> if descending is -1)
-     * sort -> 0 : title length, 1 : date, 2 : size(if both files) and title, 3 : extension and title(if same extension)
-     */
-
-
     /**
      * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1
      * Input: FileListSorter(0,0,1) dir(=dirsOnTop) is 0 / compare(file1,file2) file1 is dir, file2 is not dir
@@ -373,46 +354,6 @@ public class FileListSorterTest {
 
         assertTrue(fileListSorter.compare(file1, file2) == 0);
     }
-
-    //extension test isn't tested.
-    //getExtension -> case care, title -> case don't care
-    /**
-     * Purpose: when sort is 3, if file1 extension's length bigger than file2 extension's length, result is positive
-     * Input: FileListSorter(-1,3,1) sort is 3 / compare(file1,file2) file1 extension's length > file2 extension's length
-     * Expected:
-     * return positive integer
-     */
-    /*@Test
-    public void testSort3File1ExtensionBigger() {
-        FileListSorter fileListSorter = new FileListSorter(-1,3,1);
-        LayoutElementParcelable file1 = new LayoutElementParcelable("abc.text", "C:\\AmazeFileManager\\abc", "user",
-                "symlink", "100", 123L, true,
-                "1234", false,false);
-        LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.txt", "C:\\AmazeFileManager\\abc2", "user",
-                "symlink", "101", 124L, true,
-                "1234", false,false);
-
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
-    }*/
-
-    /**
-     * Purpose: when sort is 3, if file1 extension's length smaller than file2 extension's length, result is negative
-     * Input: FileListSorter(-1,3,1) sort is 3 / compare(file1,file2) file1 extension's length < file2 extension's length
-     * Expected:
-     * return negative integer
-     */
-    /*@Test
-    public void testSort3File2ExtensionBigger() {
-        FileListSorter fileListSorter = new FileListSorter(-1,3,1);
-        LayoutElementParcelable file1 = new LayoutElementParcelable("abc.txt", "C:\\AmazeFileManager\\abc", "user",
-                "symlink", "100", 123L, true,
-                "1234", false,false);
-        LayoutElementParcelable file2 = new LayoutElementParcelable("abc2.text", "C:\\AmazeFileManager\\abc2", "user",
-                "symlink", "101", 124L, true,
-                "1234", false,false);
-
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
-    }*/
 
     /**
      * Purpose: when sort is 3, if file1 extension's length and file2 extension's length are same && file1 title's length bigger than file2 title's length, result is positive
