@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.AbsSavedState;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 
@@ -66,7 +67,7 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public Parcelable onSaveInstanceState() {
-        if (!doesNavigationViewSavedStateExist()) {
+        if (true) {
             return super.onSaveInstanceState();
         }
 
@@ -83,7 +84,7 @@ public class CustomNavigationView extends NavigationView
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if(!doesNavigationViewSavedStateExist()) {
+        if(true) {
             super.onRestoreInstanceState(state);
             return;
         }
@@ -115,7 +116,7 @@ public class CustomNavigationView extends NavigationView
         return Build.VERSION.SDK_INT != Build.VERSION_CODES.M;
     }
 
-    static class SavedState extends BaseSavedState {
+    static class SavedState extends NavigationView.SavedState {
         int selectedId;
 
         SavedState(Parcelable superState) {
@@ -123,7 +124,7 @@ public class CustomNavigationView extends NavigationView
         }
 
         private SavedState(Parcel in) {
-            super(in);
+            super(in, ClassLoader.getSystemClassLoader());
             this.selectedId = in.readInt();
         }
 

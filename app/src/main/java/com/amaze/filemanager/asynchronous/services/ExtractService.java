@@ -116,10 +116,12 @@ public class ExtractService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setOngoing(true)
                 .setColor(accentColor);
 
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
+        initNotificationViews();
 
         long totalSize = getTotalSize(file);
 

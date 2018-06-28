@@ -129,10 +129,12 @@ public class ZipService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setOngoing(true)
                 .setColor(accentColor);
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
+        initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
         super.progressHalted();

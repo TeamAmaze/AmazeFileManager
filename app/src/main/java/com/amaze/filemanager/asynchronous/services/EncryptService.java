@@ -103,11 +103,13 @@ public class EncryptService extends AbstractProgressiveService {
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
                 .setColor(accentColor)
+                .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
 
         NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
+        initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
         super.progressHalted();
@@ -208,7 +210,7 @@ public class EncryptService extends AbstractProgressiveService {
             super.onPostExecute(aVoid);
 
             serviceWatcherUtil.stopWatch();
-            generateNotification(failedOps, false);
+            finalizeNotification(failedOps, false);
 
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
             intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
