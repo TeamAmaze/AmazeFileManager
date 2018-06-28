@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 /**
  * Created by Rustam Khadipash on 29/3/2018.
  */
-@RunWith(AndroidJUnit4.class)
 public class HybridFileParcelableTest {
     private HybridFileParcelable filePath;
     private HybridFileParcelable directory;
