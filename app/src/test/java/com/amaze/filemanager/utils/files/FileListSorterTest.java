@@ -4,6 +4,8 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 
 /**
@@ -27,7 +29,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == -1);
+        assertEquals(fileListSorter.compare(file1, file2), -1);
     }
 
     /**
@@ -46,7 +48,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", true,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 1);
+        assertEquals(fileListSorter.compare(file1, file2), 1);
     }
 
     /**
@@ -65,7 +67,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 1);
+        assertEquals(fileListSorter.compare(file1, file2), 1);
     }
 
     /**
@@ -84,7 +86,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", true,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == -1);
+        assertEquals(fileListSorter.compare(file1, file2), -1);
     }
 
     // From here, use dir is not 0 or 1. -> Select dir is -1
@@ -105,7 +107,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
 
     /**
@@ -124,7 +126,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -143,7 +145,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 
     /**
@@ -162,7 +164,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2) , greaterThan(0));
     }
 
     /**
@@ -181,7 +183,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1235", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -200,7 +202,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 
     /**
@@ -219,7 +221,7 @@ public class FileListSorterTest {
                 "symlink", "100", 123L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
 
     /**
@@ -238,7 +240,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -257,7 +259,7 @@ public class FileListSorterTest {
                 "symlink", "100", 123L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 
     /**
@@ -276,7 +278,7 @@ public class FileListSorterTest {
                 "symlink", "100", 123L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
 
     /**
@@ -295,7 +297,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -314,7 +316,7 @@ public class FileListSorterTest {
                 "symlink", "100", 123L, true,
                 "1234", true,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
 
     /**
@@ -333,7 +335,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", true,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -352,7 +354,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", true,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 
     /**
@@ -371,7 +373,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) > 0);
+        assertThat(fileListSorter.compare(file1, file2), greaterThan(0));
     }
 
     /**
@@ -390,7 +392,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) < 0);
+        assertThat(fileListSorter.compare(file1, file2), lessThan(0));
     }
 
     /**
@@ -409,7 +411,7 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 
     /**
@@ -428,6 +430,6 @@ public class FileListSorterTest {
                 "symlink", "101", 124L, true,
                 "1234", false,false);
 
-        assertTrue(fileListSorter.compare(file1, file2) == 0);
+        assertEquals(fileListSorter.compare(file1, file2), 0);
     }
 }

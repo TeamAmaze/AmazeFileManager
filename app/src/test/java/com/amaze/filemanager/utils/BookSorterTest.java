@@ -1,7 +1,10 @@
 package com.amaze.filemanager.utils;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 
 /**
@@ -9,6 +12,8 @@ import static org.junit.Assert.*;
  * two string array's first para : title, second para : path
  */
 public class BookSorterTest {
+    private BookSorter bookSorter = new BookSorter();
+
     /**
      * Purpose: when LHS title's length bigger than RHS title's length, result is positive
      * Input: compare(lhs,rhs) lhs title's length > rhs title's length
@@ -17,11 +22,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareLHSTitleBigAndPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"abc1", "C:\\AmazeFileManager\\app\\abc1"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) > 0);
+        assertThat(bookSorter.compare(lhs, rhs), greaterThan(0));
     }
 
     /**
@@ -32,11 +36,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareRHSTitleBigAndPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"abc", "C:\\AmazeFileManager\\abc"};
         String[] rhs = {"abc2", "C:\\AmazeFileManager\\app\\abc2"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) < 0);
+        assertThat(bookSorter.compare(lhs, rhs), lessThan(0));
     }
 
     /**
@@ -47,11 +50,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleSameAndRHSPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"abc", "C:\\AmazeFileManager\\app\\abc"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) > 0);
+        assertThat(bookSorter.compare(lhs, rhs), greaterThan(0));
     }
 
     /**
@@ -62,11 +64,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleSameAndLHSPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"abc", "C:\\AmazeFileManager\\abc"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\app\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) < 0);
+        assertThat(bookSorter.compare(lhs, rhs), lessThan(0));
     }
 
 
@@ -80,11 +81,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleSameAndPathSame() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"abc", "C:\\AmazeFileManager\\abc"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) == 0);
+        assertEquals(bookSorter.compare(lhs, rhs), 0);
     }
 
     /**
@@ -95,11 +95,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleNotSameCaseAndLHSPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"ABC", "C:\\AmazeFileManager\\app\\ABC"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) > 0);
+        assertThat(bookSorter.compare(lhs, rhs), greaterThan(0));
     }
 
     /**
@@ -110,11 +109,10 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleNotSameCaseAndRHSPathBigger() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"ABC", "C:\\AmazeFileManager\\ABC"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\app\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) < 0);
+        assertThat(bookSorter.compare(lhs, rhs), lessThan(0));
     }
 
     /**
@@ -127,10 +125,9 @@ public class BookSorterTest {
      */
     @Test
     public void testCompareTitleNotSameCaseAndPathSame() {
-        BookSorter bookSorter = new BookSorter();
         String[] lhs = {"ABC", "C:\\AmazeFileManager\\ABC"};
         String[] rhs = {"abc", "C:\\AmazeFileManager\\abc"};
 
-        assertTrue(bookSorter.compare(lhs, rhs) == 0);
+        assertEquals(bookSorter.compare(lhs, rhs), 0);
     }
 }
