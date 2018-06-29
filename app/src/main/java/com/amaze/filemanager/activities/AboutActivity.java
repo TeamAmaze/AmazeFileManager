@@ -56,7 +56,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
     private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
     private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
-    private static final String URL_DEVELOPER2_DONATE = "https://www.paypal.me/raymondlai";
+    private static final String URL_DEVELOPER2_DONATE = "https://paypal.me/TranceLove";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
