@@ -1,125 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ftpserver_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:padding="@dimen/material_generic"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/material_generic"
-        app:cardElevation="@dimen/material_generic_card_elevation"
-        >
-        <LinearLayout
+        android:padding="@dimen/material_generic"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="@dimen/material_generic_card_elevation">
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/material_generic"
-                android:paddingBottom="@dimen/material_generic"
-                android:paddingTop="@dimen/material_generic"
-                >
-
-                <!-- status -->
-                <TextView
-                    android:id="@+id/text_view_ftp_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/material_generic_medium"
-                    android:textSize="@dimen/material_generic_title"
-                    android:maxLines="1"
-                    />
-
-                <View
-                    android:id="@+id/divider_ftp_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_divider"
-                    android:background="@color/divider"
-                    android:layout_marginTop="@dimen/material_generic"
-                    android:layout_marginBottom="@dimen/material_generic"
-                    />
-
-                <!-- username -->
-                <TextView
-                    android:id="@+id/text_view_ftp_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/material_generic_title"
-                    android:layout_marginBottom="@dimen/material_generic"
-                    />
-
-                <!-- password -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    >
-
-                    <TextView
-                        android:id="@+id/text_view_ftp_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/material_generic_title"
-                        android:layout_marginBottom="@dimen/material_generic"
-                        />
-
-                    <ImageButton
-                        android:id="@+id/ftp_password_visible"
-                        android:src="@drawable/ic_eye_grey600_24dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic_medium"
-                        />
-                </LinearLayout>
-
-                <!-- port -->
-                <TextView
-                    android:id="@+id/text_view_ftp_port"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/material_generic_title"
-                    android:layout_marginBottom="@dimen/material_generic"
-                    />
-
-                <!-- shared path -->
-                <TextView
-                    android:id="@+id/text_view_ftp_path"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/material_generic_title"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
+            <!-- status -->
+            <TextView
+                android:id="@+id/text_view_ftp_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:maxLines="1"
+                android:textSize="@dimen/material_generic_title"
+                android:padding="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:id="@+id/divider_ftp_start"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_divider"
-                    android:background="@color/divider"
-                    android:layout_marginBottom="@dimen/material_generic"
-                    />
+            <TextView
+                android:id="@+id/text_view_ftp_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="@dimen/material_generic_title"
+                android:paddingBottom="@dimen/padding_normal"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_status"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/material_generic_medium"
-                    android:text="@string/start_ftp"
-                    android:id="@+id/startStopButton"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:layout_marginBottom="@dimen/material_generic"
-                    />
-            </LinearLayout>
+            <View
+                android:id="@+id/divider_ftp_status"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_url" />
 
-        </LinearLayout>
+            <!-- username -->
+            <TextView
+                android:id="@+id/text_view_ftp_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_generic_title"
+                android:padding="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_ftp_status" />
+
+            <!-- password -->
+
+
+            <TextView
+                android:id="@+id/text_view_ftp_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_generic_title"
+                android:paddingBottom="@dimen/padding_normal"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_username"/>
+
+            <ImageButton
+                android:id="@+id/ftp_password_visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:src="@drawable/ic_eye_grey600_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_username"
+                app:layout_constraintRight_toLeftOf="@id/text_view_ftp_password" />
+
+
+            <!-- port -->
+            <TextView
+                android:id="@+id/text_view_ftp_port"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_generic_title"
+                android:paddingBottom="@dimen/padding_normal"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_password"/>
+
+            <!-- shared path -->
+            <TextView
+                android:id="@+id/text_view_ftp_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_generic_title"
+                android:paddingBottom="@dimen/padding_normal"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_port"/>
+
+            <View
+                android:id="@+id/divider_ftp_start"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_path" />
+
+            <Button
+                android:id="@+id/startStopButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/start_ftp"
+                android:padding="@dimen/padding_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_ftp_start"/>
+
+
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
-</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

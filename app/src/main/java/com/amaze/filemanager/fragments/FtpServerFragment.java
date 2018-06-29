@@ -73,13 +73,13 @@ public class FtpServerFragment extends Fragment {
 
     private MainActivity mainActivity;
 
-    private TextView statusText, username, password, port, sharedPath;
+    private TextView statusText, url, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
     private Button ftpBtn;
     private int accentColor;
-    private Spanned spannedStatusNoConnection, spannedStatusConnected;
+    private Spanned spannedStatusNoConnection, spannedStatusConnected, spannedStatusUrl;
     private Spanned spannedStatusSecure, spannedStatusNotRunning;
     private ImageButton ftpPasswordVisibleButton;
 
@@ -95,6 +95,7 @@ public class FtpServerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
         statusText = rootView.findViewById(R.id.text_view_ftp_status);
+        url = rootView.findViewById(R.id.text_view_ftp_url);
         username = rootView.findViewById(R.id.text_view_ftp_username);
         password = rootView.findViewById(R.id.text_view_ftp_password);
         port = rootView.findViewById(R.id.text_view_ftp_port);
@@ -341,6 +342,7 @@ public class FtpServerFragment extends Fragment {
                     } else {
                         statusText.setText(spannedStatusConnected);
                     }
+                    url.setText(spannedStatusUrl);
                     ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
                     break;
                 case FtpService.ACTION_FAILEDTOSTART:
@@ -350,9 +352,11 @@ public class FtpServerFragment extends Fragment {
                             getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
 
                     ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                    url.setText("URL: ");
                     break;
                 case FtpService.ACTION_STOPPED:
                     statusText.setText(spannedStatusNotRunning);
+                    url.setText("URL: ");
                     ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
                     break;
             }
@@ -406,14 +410,14 @@ public class FtpServerFragment extends Fragment {
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(false);
             } else {
-
                 statusText.setText(spannedStatusNotRunning);
                 ftpBtn.setEnabled(true);
             }
-
+            url.setText("URL: ");
             ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
 
         } else {
+            url.setText(spannedStatusUrl);
             statusText.setText(spannedStatusConnected);
             ftpBtn.setEnabled(true);
             ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
@@ -468,8 +472,8 @@ public class FtpServerFragment extends Fragment {
 
         spannedStatusConnected = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;" +
                 "<font color='" + accentColor + "'>"
-                + getResources().getString(R.string.ftp_status_running) + "</font></b>" +
-                "&nbsp;<i>(" + ftpAddress + ")</i>");
+                + getResources().getString(R.string.ftp_status_running) + "</font></b>");
+        spannedStatusUrl = Html.fromHtml("URL:&nbsp;" + ftpAddress);
         spannedStatusNoConnection = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_red_light) + "'>"
                 + getResources().getString(R.string.ftp_status_no_connection) + "</font></b>");
@@ -478,8 +482,8 @@ public class FtpServerFragment extends Fragment {
                 getResources().getString(R.string.ftp_status_not_running) + "</b>");
         spannedStatusSecure = Html.fromHtml(statusHead + "<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
                 "<font color='" + Utils.getColor(getContext(), android.R.color.holo_green_light) + "'>"
-                + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>" +
-                "&nbsp;<i>(" + ftpAddress + ")</i>");
+                + getResources().getString(R.string.ftp_status_secure_connection) + "</font></b>");
+        spannedStatusUrl = Html.fromHtml("URL:&nbsp;" + ftpAddress);
     }
 
     private void initLoginDialogViews(View loginDialogView) {
