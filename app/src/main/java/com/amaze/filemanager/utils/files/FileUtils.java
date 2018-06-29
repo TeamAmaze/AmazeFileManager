@@ -117,10 +117,10 @@ public class FileUtils {
     }
 
     public static long folderSize(HybridFile directory, OnProgressUpdate<Long> updateState) {
-        if(directory.isSftp())
-            return directory.folderSize(AppConfig.getInstance());
-        else
+        if(directory.isSimpleFile())
             return folderSize(new File(directory.getPath()), updateState);
+        else
+            return directory.folderSize(AppConfig.getInstance());
     }
 
     public static long folderSize(SmbFile directory) {
