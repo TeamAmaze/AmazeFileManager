@@ -31,6 +31,7 @@ import android.util.Log;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.DataUtils;
@@ -64,12 +65,14 @@ public class GenericCopyUtil {
     private HybridFile mTargetFile;
     private Context mContext;   // context needed to find the DocumentFile in otg/sd card
     private DataUtils dataUtils = DataUtils.getInstance();
+    private ProgressHandler progressHandler;
     public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
     public static final int DEFAULT_BUFFER_SIZE =  8192;
 
-    public GenericCopyUtil(Context context) {
+    public GenericCopyUtil(Context context, ProgressHandler progressHandler) {
         this.mContext = context;
+        this.progressHandler = progressHandler;
     }
 
     /**
@@ -327,11 +330,11 @@ public class GenericCopyUtil {
         while (count != -1) {
 
             count = bufferedInputStream.read(buffer);
-            if (count!=-1) {
+            if (count!=-1 && !progressHandler.getCancelled()) {
 
                 byteBuffer.put(buffer, 0, count);
                 ServiceWatcherUtil.position +=count;
-            }
+            } else break;
         }
     }
 
@@ -349,16 +352,19 @@ public class GenericCopyUtil {
         int count = 0;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
-        while (count != -1) {
+        try {
+            while (count != -1) {
 
-            count = bufferedInputStream.read(buffer);
-            if (count!=-1) {
+                count = bufferedInputStream.read(buffer);
+                if (count!=-1 && !progressHandler.getCancelled()) {
 
-                bufferedOutputStream.write(buffer, 0 , count);
-                ServiceWatcherUtil.position +=count;
+                    bufferedOutputStream.write(buffer, 0 , count);
+                    ServiceWatcherUtil.position +=count;
+                } else break;
             }
+        } finally {
+            bufferedOutputStream.flush();
         }
-        bufferedOutputStream.flush();
     }
 
     private void copyFile(FileChannel inChannel, BufferedOutputStream bufferedOutputStream)
@@ -367,37 +373,40 @@ public class GenericCopyUtil {
 
         int count = -1;
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        while (inBuffer.hasRemaining() && count != 0) {
+        try {
+            while (inBuffer.hasRemaining() && count != 0) {
 
-            int tempPosition = inBuffer.position();
+                int tempPosition = inBuffer.position();
 
-            try {
+                try {
 
-                // try normal way of getting bytes
-                ByteBuffer tempByteBuffer = inBuffer.get(buffer);
-                count = tempByteBuffer.position() - tempPosition;
-            } catch (BufferUnderflowException exception) {
-                exception.printStackTrace();
+                    // try normal way of getting bytes
+                    ByteBuffer tempByteBuffer = inBuffer.get(buffer);
+                    count = tempByteBuffer.position() - tempPosition;
+                } catch (BufferUnderflowException exception) {
+                    exception.printStackTrace();
 
-                // not enough bytes left in the channel to read, iterate over each byte and store
-                // in the buffer
+                    // not enough bytes left in the channel to read, iterate over each byte and store
+                    // in the buffer
 
-                // reset the counter bytes
-                count = 0;
-                for (int i=0; i<buffer.length && inBuffer.hasRemaining(); i++) {
-                    buffer[i] = inBuffer.get();
-                    count++;
+                    // reset the counter bytes
+                    count = 0;
+                    for (int i=0; i<buffer.length && inBuffer.hasRemaining(); i++) {
+                        buffer[i] = inBuffer.get();
+                        count++;
+                    }
                 }
+
+                if (count != -1 && !progressHandler.getCancelled()) {
+
+                    bufferedOutputStream.write(buffer, 0, count);
+                    ServiceWatcherUtil.position = inBuffer.position();
+                } else break;
+
             }
-
-            if (count != -1) {
-
-                bufferedOutputStream.write(buffer, 0, count);
-                ServiceWatcherUtil.position = inBuffer.position();
-            }
-
+        } finally {
+            bufferedOutputStream.flush();
         }
-        bufferedOutputStream.flush();
     }
 
     /**
@@ -408,6 +417,7 @@ public class GenericCopyUtil {
 
         ReadableByteChannel byteChannel;
 
+
         CustomReadableByteChannel(ReadableByteChannel byteChannel) {
             this.byteChannel = byteChannel;
         }
@@ -415,13 +425,13 @@ public class GenericCopyUtil {
         @Override
         public int read(ByteBuffer dst) throws IOException {
             int bytes;
-            if (((bytes = byteChannel.read(dst))>0)) {
+            if (((bytes = byteChannel.read(dst))>0) && !progressHandler.getCancelled()) {
 
                 ServiceWatcherUtil.position += bytes;
                 return bytes;
 
-            }
-            return 0;
+            } else
+                return 0;
         }
 
         @Override

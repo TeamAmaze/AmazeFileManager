@@ -160,7 +160,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                         100, Math.round(getPercentProgress()), false);
                 getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
                         100, Math.round(getPercentProgress()), false);
-                getNotificationBuilder().setOngoing(true);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
             }
 
@@ -272,7 +271,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     /**
      * Displays a notification, sends intent and cancels progress if there were some failures
      */
-    void generateNotification(ArrayList<HybridFile> failedOps, boolean move) {
+    void finalizeNotification(ArrayList<HybridFile> failedOps, boolean move) {
         if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
@@ -324,5 +323,33 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         intent.putExtra(MainActivity.TAG_INTENT_FILTER_FAILED_OPS, failedOps);
 
         sendBroadcast(intent);
+    }
+
+    /**
+     * Initializes notification views to initial (processing..) state
+     */
+    public void initNotificationViews() {
+        context = getApplicationContext();
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
+                context.getResources().getString(R.string.processing));
+        getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
+                context.getResources().getString(R.string.processing));
+
+        String zeroBytesFormat = Formatter.formatFileSize(context, 0l);
+
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big,
+                zeroBytesFormat);
+        getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small,
+                zeroBytesFormat);
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
+                zeroBytesFormat + "/s");
+
+        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
+                context.getResources().getString(R.string.unknown));
+        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
+                0, 0, true);
+        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
+                0, 0, true);
+        getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 }
