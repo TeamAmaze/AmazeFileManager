@@ -15,8 +15,6 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:ellipsize="middle"
-            android:layout_marginLeft="@dimen/material_generic"
-            android:layout_marginStart="@dimen/material_generic"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             style="@style/TextAppearance.Compat.Notification.Info"

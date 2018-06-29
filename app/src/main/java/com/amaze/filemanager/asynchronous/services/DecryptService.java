@@ -103,6 +103,7 @@ public class DecryptService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setOngoing(true)
                 .setColor(accentColor);
 
         decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
@@ -110,6 +111,7 @@ public class DecryptService extends AbstractProgressiveService {
         NotificationConstants.setMetadata(context, notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
+        initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
 
@@ -162,7 +164,7 @@ public class DecryptService extends AbstractProgressiveService {
             super.onPostExecute(aVoid);
 
             serviceWatcherUtil.stopWatch();
-            generateNotification(failedOps, false);
+            finalizeNotification(failedOps, false);
 
             Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
             intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");

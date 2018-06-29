@@ -129,10 +129,12 @@ public class ZipService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setOngoing(true)
                 .setColor(accentColor);
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
+        initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
         super.progressHalted();
@@ -279,18 +281,23 @@ public class ZipService extends AbstractProgressiveService {
         }
 
         private void compressFile(File file, String path) throws IOException, NullPointerException {
-            if (!file.isDirectory()) {
-                if (progressHandler.getCancelled()) return;
+            if (progressHandler.getCancelled()) return;
 
+            if (!file.isDirectory()) {
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
                 BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
-                while ((len = in.read(buf)) > 0) {
-                    zos.write(buf, 0, len);
-                    ServiceWatcherUtil.position += len;
+                try {
+                    while ((len = in.read(buf)) > 0) {
+                        if (!progressHandler.getCancelled()) {
+                            zos.write(buf, 0, len);
+                            ServiceWatcherUtil.position += len;
+                        } else break;
+                    }
+                } finally {
+                    in.close();
                 }
-                in.close();
                 return;
             }
 
@@ -310,7 +317,7 @@ public class ZipService extends AbstractProgressiveService {
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            asyncTask.cancel(true);
+            progressHandler.setCancelled(true);
         }
     };
 

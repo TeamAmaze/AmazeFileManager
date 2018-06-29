@@ -139,11 +139,15 @@ public class CopyService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setOngoing(true)
                 .setColor(accentColor);
+
+        // set default notification views text
 
         NotificationConstants.setMetadata(c, mBuilder, NotificationConstants.TYPE_NORMAL);
 
         startForeground(NotificationConstants.COPY_ID, mBuilder.build());
+        initNotificationViews();
 
         b.putBoolean(TAG_COPY_MOVE, move);
         b.putString(TAG_COPY_TARGET, targetPath);
@@ -277,7 +281,7 @@ public class CopyService extends AbstractProgressiveService {
             //  publishResults(b, "", totalSourceFiles, totalSourceFiles, totalSize, totalSize, 0, true, move);
             // stopping watcher if not yet finished
             watcherUtil.stopWatch();
-            generateNotification(copy.failedFOps, move);
+            finalizeNotification(copy.failedFOps, move);
 
             Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
             intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, targetPath);
@@ -445,8 +449,8 @@ public class CopyService extends AbstractProgressiveService {
             private void copyFiles(final HybridFileParcelable sourceFile, final HybridFile targetFile,
                                    final ProgressHandler progressHandler) throws IOException {
 
+                if (progressHandler.getCancelled()) return;
                 if (sourceFile.isDirectory()) {
-                    if (progressHandler.getCancelled()) return;
 
                     if (!targetFile.exists()) targetFile.mkdir(c);
 
@@ -471,13 +475,12 @@ public class CopyService extends AbstractProgressiveService {
                         }
                     });
                 } else {
-                    if (progressHandler.getCancelled()) return;
                     if (!Operations.isFileNameValid(sourceFile.getName())) {
                         failedFOps.add(sourceFile);
                         return;
                     }
 
-                    GenericCopyUtil copyUtil = new GenericCopyUtil(c);
+                    GenericCopyUtil copyUtil = new GenericCopyUtil(c, progressHandler);
 
                     progressHandler.setFileName(sourceFile.getName());
                     copyUtil.copy(sourceFile, targetFile);
