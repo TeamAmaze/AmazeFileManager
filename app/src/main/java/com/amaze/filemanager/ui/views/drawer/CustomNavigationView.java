@@ -116,7 +116,7 @@ public class CustomNavigationView extends NavigationView
         return Build.VERSION.SDK_INT != Build.VERSION_CODES.M;
     }
 
-    static class SavedState extends NavigationView.SavedState {
+    static class SavedState extends BaseSavedState {
         int selectedId;
 
         SavedState(Parcelable superState) {
@@ -124,7 +124,7 @@ public class CustomNavigationView extends NavigationView
         }
 
         private SavedState(Parcel in) {
-            super(in, ClassLoader.getSystemClassLoader());
+            super(in);
             this.selectedId = in.readInt();
         }
 
