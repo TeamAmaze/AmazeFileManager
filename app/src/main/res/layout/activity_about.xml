@@ -429,6 +429,67 @@
                             </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
+
+                    <!-- divider -->
+                    <View
+                        android:id="@+id/view_divider_developers_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider"
+                        android:layout_marginLeft="@dimen/material_generic_large"
+                        android:layout_marginTop="@dimen/material_generic"
+                        android:layout_marginBottom="@dimen/material_generic"
+                        />
+
+                    <!-- dev 2 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="72dp"
+                        android:layout_marginLeft="72dp">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/text_view_developer_2_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/developer_2"
+                                android:textSize="@dimen/material_generic_title"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_developer_2_title"
+                                android:layout_marginTop="@dimen/material_generic">
+                                <TextView
+                                    android:id="@+id/text_view_developer_2_github"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/github"
+                                    android:textColor="@color/accent_red"
+                                    android:layout_alignParentLeft="true"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                                <TextView
+                                    android:id="@+id/text_view_developer_2_donate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/donate"
+                                    android:textColor="@color/accent_blue"
+                                    android:layout_toRightOf="@+id/text_view_developer_2_github"
+                                    android:layout_marginLeft="@dimen/material_generic_medium"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                            </RelativeLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
