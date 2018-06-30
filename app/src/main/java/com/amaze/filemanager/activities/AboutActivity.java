@@ -46,7 +46,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private int mCount=0;
     private Snackbar snackbar;
     private SharedPreferences mSharedPref;
-    private View mAuthorsDivider;
+    private View mAuthorsDivider, mDeveloper1Divider;
 
     private static final String KEY_PREF_STUDIO = "studio";
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
@@ -54,7 +54,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
     private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
+    private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
     private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
+    private static final String URL_DEVELOPER2_DONATE = "https://paypal.me/TranceLove";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
@@ -84,6 +86,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         mTitleTextView =  findViewById(R.id.text_view_title);
         ImageView mLicensesIcon = findViewById(R.id.image_view_license);
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
+        mDeveloper1Divider = findViewById(R.id.view_divider_developers_1);
 
         mAppBarLayout.setLayoutParams(calculateHeaderViewParams());
 
@@ -150,6 +153,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         if (getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK)) {
             // dark theme
             mAuthorsDivider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
+            mDeveloper1Divider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
         }
     }
 
@@ -233,12 +237,20 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 openURL(URL_DEVELOPER1_GITHUB);
                 break;
 
+            case R.id.text_view_developer_2_github:
+                openURL(URL_DEVELOPER2_GITHUB);
+                break;
+
             case R.id.text_view_developer_1_donate:
                 try {
                     openURL(URL_DEVELOPER1_BITCOIN);
                 } catch (ActivityNotFoundException e) {
                     Snackbar.make(v, R.string.nobitcoinapp, Snackbar.LENGTH_LONG).show();
                 }
+                break;
+
+            case R.id.text_view_developer_2_donate:
+                openURL(URL_DEVELOPER2_DONATE);
                 break;
 
             case R.id.relative_layout_translate:
