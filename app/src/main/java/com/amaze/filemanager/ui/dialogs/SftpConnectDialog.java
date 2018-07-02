@@ -226,7 +226,7 @@ public class SftpConnectDialog extends DialogFragment {
 
                 AppConfig.runInBackground(() -> {
                     utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.SFTP,
-                            connectionName, path, null, null, null));
+                            path, connectionName, null, null, null));
                 });
                 ((MainActivity) getActivity()).getDrawer().refreshDrawer();
             }
