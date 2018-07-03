@@ -41,6 +41,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.notifications.ProcessingNotificationBuilder;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -51,7 +52,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -70,6 +70,7 @@ public class ExtractService extends AbstractProgressiveService {
     private int accentColor;
     private SharedPreferences sharedPreferences;
     private RemoteViews customSmallContentViews, customBigContentViews;
+    private String filename;
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -84,7 +85,7 @@ public class ExtractService extends AbstractProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-        String file = intent.getStringExtra(KEY_PATH_ZIP);
+        File file = new File(intent.getStringExtra(KEY_PATH_ZIP));
         String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
         String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
@@ -102,11 +103,6 @@ public class ExtractService extends AbstractProgressiveService {
         customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
         customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
 
-        Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
-
         mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
@@ -115,12 +111,15 @@ public class ExtractService extends AbstractProgressiveService {
                 .setCustomBigContentView(customBigContentViews)
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .addAction(action)
+                .addAction(getCancelAction())
                 .setOngoing(true)
                 .setColor(accentColor);
 
         NotificationConstants.setMetadata(getApplicationContext(), mBuilder, NotificationConstants.TYPE_NORMAL);
-        startForeground(NotificationConstants.EXTRACT_ID, mBuilder.build());
+
+        filename = file.getName();
+
+        startForeground(NotificationConstants.EXTRACT_ID, getProcessingNotificationBuilder().build());
         initNotificationViews();
 
         long totalSize = getTotalSize(file);
@@ -173,6 +172,16 @@ public class ExtractService extends AbstractProgressiveService {
         return customBigContentViews;
     }
 
+    @Override
+    protected ProcessingNotificationBuilder getProcessingNotificationBuilder() {
+        return new ProcessingNotificationBuilder(context, NotificationConstants.TYPE_NORMAL)
+                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(getCancelAction())
+                .setColor(accentColor)
+                .setFilename(filename);
+    }
+
     public ProgressListener getProgressListener() {
         return progressListener;
     }
@@ -201,23 +210,31 @@ public class ExtractService extends AbstractProgressiveService {
      * Method calculates zip file size to initiate progress
      * Supporting local file extraction progress for now
      */
-    private long getTotalSize(String filePath) {
-        return new File(filePath).length();
+    private long getTotalSize(File file) {
+        return file.length();
+    }
+
+    private NotificationCompat.Action getCancelAction() {
+        Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
     }
 
     public class DoWork extends AsyncTask<Void, Void, Boolean> {
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
-        private String extractionPath, compressedPath;
+        private String extractionPath;
+        private File compressedFile;
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
 
 
-        private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
+        private DoWork(ExtractService extractService, ProgressHandler progressHandler, File cpath, String epath,
                        String[] entries) {
             this.extractService = new WeakReference<>(extractService);
             this.progressHandler = progressHandler;
-            compressedPath = cpath;
+            compressedFile = cpath;
             extractionPath = epath;
             entriesToExtract = entries;
         }
@@ -227,12 +244,11 @@ public class ExtractService extends AbstractProgressiveService {
             final ExtractService extractService = this.extractService.get();
             if(extractService == null) return null;
 
-            File f = new File(compressedPath);
-            String extractDirName = CompressedHelper.getFileName(f.getName());
+            String extractDirName = CompressedHelper.getFileName(compressedFile.getName());
 
-            if (compressedPath.equals(extractionPath)) {
+            if (compressedFile.getAbsolutePath().equals(new File(extractionPath).getAbsolutePath())) {
                 // custom extraction path not set, extract at default path
-                extractionPath = f.getParent() + "/" + extractDirName;
+                extractionPath = compressedFile.getParent() + "/" + extractDirName;
             } else {
                 if (extractionPath.endsWith("/")) {
                     extractionPath = extractionPath + extractDirName;
@@ -246,7 +262,7 @@ public class ExtractService extends AbstractProgressiveService {
 
                 final Extractor extractor =
                     CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
-                        f, extractionPath, new Extractor.OnUpdate() {
+                            compressedFile, extractionPath, new Extractor.OnUpdate() {
                             private int sourceFilesProcessed = 0;
 
                             @Override
@@ -289,7 +305,7 @@ public class ExtractService extends AbstractProgressiveService {
                 }
                 return (extractor.getInvalidArchiveEntries().size() == 0);
             } catch (IOException e) {
-                Log.e("amaze", "Error while extracting file " + compressedPath, e);
+                Log.e("amaze", "Error while extracting file " + compressedFile, e);
                 AppConfig.toast(extractService, extractService.getString(R.string.error));
                 return false;
             }

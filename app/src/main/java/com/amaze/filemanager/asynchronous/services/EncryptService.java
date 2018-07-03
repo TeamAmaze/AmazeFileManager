@@ -19,6 +19,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.notifications.ProcessingNotificationBuilder;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.DatapointParcelable;
@@ -90,25 +91,20 @@ public class EncryptService extends AbstractProgressiveService {
         customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
         customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
 
-        Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_folder_lock_white_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
-
         notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         notificationBuilder.setContentIntent(pendingIntent)
                 .setCustomContentView(customSmallContentViews)
                 .setCustomBigContentView(customBigContentViews)
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .addAction(action)
+                .addAction(getCancelAction())
                 .setColor(accentColor)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
 
         NotificationConstants.setMetadata(getApplicationContext(), notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
-        startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
+        startForeground(NotificationConstants.ENCRYPT_ID, getProcessingNotificationBuilder().build());
         initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
@@ -151,6 +147,16 @@ public class EncryptService extends AbstractProgressiveService {
     @Override
     protected RemoteViews getNotificationCustomViewBig() {
         return customBigContentViews;
+    }
+
+    @Override
+    protected ProcessingNotificationBuilder getProcessingNotificationBuilder() {
+        return new ProcessingNotificationBuilder(context, NotificationConstants.TYPE_NORMAL)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(getCancelAction())
+                .setColor(accentColor)
+                .setSmallIcon(R.drawable.ic_folder_lock_white_36dp)
+                .setFilename(baseFile.getName());
     }
 
     public ProgressListener getProgressListener() {
@@ -229,6 +235,13 @@ public class EncryptService extends AbstractProgressiveService {
     public void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(cancelReceiver);
+    }
+
+    private NotificationCompat.Action getCancelAction() {
+        Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action(R.drawable.ic_folder_lock_white_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
     }
 
     private BroadcastReceiver cancelReceiver = new BroadcastReceiver() {

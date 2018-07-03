@@ -40,6 +40,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.notifications.ProcessingNotificationBuilder;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -79,6 +80,7 @@ public class ZipService extends AbstractProgressiveService {
     private int accentColor;
     private SharedPreferences sharedPreferences;
     private RemoteViews customSmallContentViews, customBigContentViews;
+    private String filename;
 
     @Override
     public void onCreate() {
@@ -92,6 +94,8 @@ public class ZipService extends AbstractProgressiveService {
         ArrayList<HybridFileParcelable> baseFiles = intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES);
 
         File zipFile = new File(mZipPath);
+
+        filename = zipFile.getName();
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -115,12 +119,6 @@ public class ZipService extends AbstractProgressiveService {
         customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
         customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
 
-        Intent stopIntent = new Intent(KEY_COMPRESS_BROADCAST_CANCEL);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
-
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
                 .setContentIntent(pendingIntent)
@@ -128,12 +126,12 @@ public class ZipService extends AbstractProgressiveService {
                 .setCustomBigContentView(customBigContentViews)
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .addAction(action)
+                .addAction(getCancelAction())
                 .setOngoing(true)
                 .setColor(accentColor);
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL);
-        startForeground(NotificationConstants.ZIP_ID, mBuilder.build());
+        startForeground(NotificationConstants.ZIP_ID, getProcessingNotificationBuilder().build());
         initNotificationViews();
 
         super.onStartCommand(intent, flags, startId);
@@ -177,6 +175,16 @@ public class ZipService extends AbstractProgressiveService {
     @Override
     protected RemoteViews getNotificationCustomViewBig() {
         return customBigContentViews;
+    }
+
+    @Override
+    protected ProcessingNotificationBuilder getProcessingNotificationBuilder() {
+        return new ProcessingNotificationBuilder(getApplicationContext(), NotificationConstants.TYPE_NORMAL)
+                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(getCancelAction())
+                .setColor(accentColor)
+                .setFilename(filename);
     }
 
     public ProgressListener getProgressListener() {
@@ -309,11 +317,18 @@ public class ZipService extends AbstractProgressiveService {
         }
     }
 
+    private NotificationCompat.Action getCancelAction() {
+        Intent stopIntent = new Intent(KEY_COMPRESS_BROADCAST_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+    }
+
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

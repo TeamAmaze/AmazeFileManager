@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.notifications.ProcessingNotificationBuilder;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
@@ -92,6 +93,8 @@ public class CopyService extends AbstractProgressiveService {
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
     private int sourceProgress = 0;
+    private String firstFilename, secondFilename;
+    private int fileAmount;
 
     @Override
     public void onCreate() {
@@ -126,11 +129,6 @@ public class CopyService extends AbstractProgressiveService {
         customSmallContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_small);
         customBigContentViews = new RemoteViews(getPackageName(), R.layout.notification_service_big);
 
-        Intent stopIntent = new Intent(TAG_BROADCAST_COPY_CANCEL);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(c, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_content_copy_white_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
-
         mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_content_copy_white_36dp)
@@ -138,15 +136,19 @@ public class CopyService extends AbstractProgressiveService {
                 .setCustomBigContentView(customBigContentViews)
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .addAction(action)
+                .addAction(getStopAction())
                 .setOngoing(true)
                 .setColor(accentColor);
 
-        // set default notification views text
-
         NotificationConstants.setMetadata(c, mBuilder, NotificationConstants.TYPE_NORMAL);
 
-        startForeground(NotificationConstants.COPY_ID, mBuilder.build());
+        fileAmount = files.size();
+        firstFilename = files.get(0).getName();
+        if(fileAmount >= 2) {
+            secondFilename = files.get(1).getName();
+        }
+
+        startForeground(NotificationConstants.COPY_ID, getProcessingNotificationBuilder().build());
         initNotificationViews();
 
         b.putBoolean(TAG_COPY_MOVE, move);
@@ -198,6 +200,26 @@ public class CopyService extends AbstractProgressiveService {
         progressPercent = progress;
     }
 
+    @Override
+    protected ProcessingNotificationBuilder getProcessingNotificationBuilder() {
+        String filenameText;
+
+        if(fileAmount == 1) {
+            filenameText = firstFilename;
+        } else if(fileAmount == 2) {
+            filenameText = c.getString(R.string.processing_notif_two_filenames, firstFilename, secondFilename);
+        } else {
+            filenameText = c.getString(R.string.processing_notif_filenames, firstFilename, (fileAmount-1));
+        }
+
+        return new ProcessingNotificationBuilder(c, NotificationConstants.TYPE_NORMAL)
+                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                        .addAction(getStopAction())
+                        .setColor(accentColor)
+                        .setSmallIcon(R.drawable.ic_content_copy_white_36dp)
+                        .setFilename(filenameText);
+    }
+
     public ProgressListener getProgressListener() {
         return progressListener;
     }
@@ -219,6 +241,13 @@ public class CopyService extends AbstractProgressiveService {
 
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
+    }
+
+    private NotificationCompat.Action getStopAction() {
+        Intent stopIntent = new Intent(TAG_BROADCAST_COPY_CANCEL);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(c, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action(R.drawable.ic_content_copy_white_36dp,
+                getResources().getString(R.string.stop_ftp), stopPendingIntent);
     }
 
     private class DoInBackground extends AsyncTask<Bundle, Void, Void> {

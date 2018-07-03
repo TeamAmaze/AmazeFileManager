@@ -14,6 +14,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.notifications.ProcessingNotificationBuilder;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
@@ -51,6 +52,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     protected abstract RemoteViews getNotificationCustomViewBig();
 
+    protected abstract ProcessingNotificationBuilder getProcessingNotificationBuilder();
+
     public abstract ProgressListener getProgressListener();
 
     public abstract void setProgressListener(ProgressListener progressListener);
@@ -65,15 +68,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     @Override
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
-        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
-                0, 0, true);
-        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
-                0, 0, true);
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
-                getString(R.string.unknown));
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
-                getString(R.string.unknown));
-        getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
+        getNotificationManager().notify(getNotificationId(), getProcessingNotificationBuilder().build());
     }
 
     @Override
@@ -165,27 +160,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
             if (writtenSize == totalSize || totalSize == 0) {
                 if (move && getNotificationId() == NotificationConstants.COPY_ID) {
-
-                    //mBuilder.setContentTitle(getString(R.string.move_complete));
-                    // set progress to indeterminate as deletion might still be going on from source
-                    // while moving the file
-                    getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
-                            0, 0, true);
-                    getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
-                            0, 0, true);
-
-                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
-                            context.getResources().getString(R.string.processing));
-                    getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
-                            context.getResources().getString(R.string.processing));
-                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
-                            getString(R.string.unknown));
-                    getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
-                            getString(R.string.unknown));
-
-                    getNotificationBuilder().setOngoing(false);
-                    getNotificationBuilder().setAutoCancel(true);
-                    getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
+                    // set progress to indeterminate as deletion might still be going on from source while moving the file
+                    getNotificationManager().notify(getNotificationId(), getProcessingNotificationBuilder().build());
                 } else {
                     publishCompletedResult(getNotificationId());
                 }
@@ -329,27 +305,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * Initializes notification views to initial (processing..) state
      */
     public void initNotificationViews() {
-        context = getApplicationContext();
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
-                context.getResources().getString(R.string.processing));
-        getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
-                context.getResources().getString(R.string.processing));
-
-        String zeroBytesFormat = Formatter.formatFileSize(context, 0l);
-
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big,
-                zeroBytesFormat);
-        getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small,
-                zeroBytesFormat);
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
-                zeroBytesFormat + "/s");
-
-        getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
-                context.getResources().getString(R.string.unknown));
-        getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
-                0, 0, true);
-        getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
-                0, 0, true);
-        getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
+        getNotificationManager().notify(getNotificationId(), getProcessingNotificationBuilder().build());
     }
+
 }

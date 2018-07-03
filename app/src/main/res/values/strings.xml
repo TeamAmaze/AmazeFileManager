@@ -641,5 +641,7 @@
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>
     <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
+    <string name="processing_notif_two_filenames">%1$s and %2$s</string>
+    <string name="processing_notif_filenames">%1$s and other %2$d files</string>
 </resources>
 
