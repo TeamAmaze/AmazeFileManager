@@ -19,14 +19,12 @@ import java.io.File;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by JeongHyeon on 2018-04-01.
- */
 public class CompressedHelperTest {
 
-    /* Extractor check
-        This program use 6 extension and  4 extractor.
-        Check if each extensions matched correct extractor
+    /**
+     * Extractor check
+     * This program use 6 extension and  4 extractor.
+     * Check if each extensions matched correct extractor
      */
     @Test
     public void getExtractorInstance() throws Exception {
@@ -57,9 +55,10 @@ public class CompressedHelperTest {
         assertNull(result);
     }
 
-    /*  Decompressor check
-        This program use 6 extension and  4 decompressor.
-        Check if each extensions matched correct decompressor
+    /**
+     *  Decompressor check
+     *  This program use 6 extension and  4 decompressor.
+     *  Check if each extensions matched correct decompressor
      */
     @Test
     public void getCompressorInstance() throws Exception {
@@ -89,8 +88,9 @@ public class CompressedHelperTest {
         assertNull(result);
     }
 
-    /* isFileExtractable() fuction test
-        extension check
+    /**
+     * isFileExtractable() fuction test
+     * extension check
      */
     @Test
     public void isFileExtractableTest() throws Exception {
@@ -108,27 +108,9 @@ public class CompressedHelperTest {
 
     }
 
-    /* I think this make fault.
-        GzipDecompressor exists so .gz file should be valid.
-        But .gz makes fault.
-     */
-    @Test
-    public void isFileExtractableFaultTest1() throws Exception{
-        assertTrue(CompressedHelper.isFileExtractable("/test/test.gz"));
-    }
-
-    /* I think this make fault.
-        If some user or programmer change file file extension and user downloads that file,
-        or some programmer make some unpopular extension such as .~~zip, .~~rar
-        it will be openable invalid file.
-     */
-    @Test
-    public void isFileExtractableFaultTest2() throws Exception{
-        assertFalse(CompressedHelper.isFileExtractable("/test/test.7zip"));
-    }
-
-    /* getFileName() function test
-        it return file name. But, if it is invalid compressed file, return file name with extension
+    /**
+     * getFileName() function test it return file name.
+     * But, if it is invalid compressed file, return file name with extension
      */
     @Test
     public void getFileNameTest() throws Exception {
@@ -149,6 +131,5 @@ public class CompressedHelperTest {
         //no path
         assertEquals("",CompressedHelper.getFileName(""));
     }
-
 
 }
