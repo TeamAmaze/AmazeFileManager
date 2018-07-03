@@ -175,6 +175,7 @@ public abstract class SshClientUtils
      * @return SSH URL with the password (if exists) decrypted
      */
     public static final String decryptSshPathAsNecessary(@NonNull String fullUri) {
+        fullUri = Uri.decode(fullUri);
         String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.indexOf('@'));
         try {
             return (uriWithoutProtocol.indexOf(':') > 0) ?

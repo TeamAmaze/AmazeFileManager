@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -195,7 +196,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
-        values.put(COLUMN_PATH, path);
+        values.put(COLUMN_PATH, Uri.encode(path));
         values.put(COLUMN_HOST_PUBKEY, hostKey);
         if(sshKey != null && !"".equals(sshKey))
         {
@@ -354,7 +355,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
             Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY},
-                    COLUMN_PATH + " = ?", new String[]{uri},
+                    COLUMN_PATH + " = ?", new String[]{Uri.encode(uri)},
                     null, null, null);
             if(result.moveToFirst())
             {

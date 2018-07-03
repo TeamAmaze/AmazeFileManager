@@ -189,7 +189,7 @@ public class SshConnectionPool
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
         String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
 
-        AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);;
+        AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);
         if(pem != null && !pem.isEmpty()) {
             try {
                 CountDownLatch latch = new CountDownLatch(1);
