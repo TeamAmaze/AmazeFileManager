@@ -33,6 +33,7 @@ import com.cloudrail.si.types.SpaceAllocation;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
+import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -734,12 +735,17 @@ public class HybridFile {
                         public Void execute(SFTPClient client) {
                             try {
                                 for (RemoteResourceInfo info : client.ls(SshClientUtils.extractRemotePathFrom(path))) {
+                                    boolean isDirectory = info.isDirectory();
+                                    if(info.getAttributes().getType().equals(FileMode.Type.SYMLINK)){
+                                        FileAttributes symlinkAttrs = client.stat(info.getPath());
+                                        isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
+                                    }
                                     HybridFileParcelable f = new HybridFileParcelable(String.format("%s/%s", path, info.getName()));
                                     f.setName(info.getName());
                                     f.setMode(OpenMode.SFTP);
-                                    f.setDirectory(info.isDirectory());
+                                    f.setDirectory(isDirectory);
                                     f.setDate(info.getAttributes().getMtime() * 1000);
-                                    f.setSize(f.isDirectory() ? 0 : info.getAttributes().getSize());
+                                    f.setSize(isDirectory ? 0 : info.getAttributes().getSize());
                                     f.setPermission(Integer.toString(FilePermission.toMask(info.getAttributes().getPermissions()), 8));
                                     onFileFound.onFileFound(f);
                                 }
