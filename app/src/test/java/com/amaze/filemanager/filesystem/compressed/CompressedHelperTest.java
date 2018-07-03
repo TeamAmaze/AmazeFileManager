@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
@@ -13,13 +14,42 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecom
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 
 import static org.junit.Assert.*;
 
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class CompressedHelperTest {
+
+    private Context context;
+    private Extractor.OnUpdate emptyUpdateListener;
+
+    @Before
+    public void setUp() {
+        context = RuntimeEnvironment.application;
+        emptyUpdateListener = new Extractor.OnUpdate() {
+            @Override
+            public void onStart(long totalBytes, String firstEntryName) { }
+
+            @Override
+            public void onUpdate(String entryPath) { }
+
+            @Override
+            public void onFinish() { }
+
+            @Override
+            public boolean isCancelled() { return false; }
+        };
+    }
 
     /**
      * Extractor check
@@ -27,31 +57,29 @@ public class CompressedHelperTest {
      * Check if each extensions matched correct extractor
      */
     @Test
-    public void getExtractorInstance() throws Exception {
-        Context context = null;//for extension check, don't need
-        Extractor.OnUpdate listener = null;//for extension check, don't need
+    public void getExtractorInstance() {
         File file = new File("/test/test.zip");//.zip used by ZipExtractor
-        Extractor result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        Extractor result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),ZipExtractor.class);
         file = new File("/test/test.jar");//.jar used by ZipExtractor
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),ZipExtractor.class);
         file = new File("/test/test.apk");//.apk used by ZipExtractor
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),ZipExtractor.class);
         file = new File("/test/test.tar");//.tar used by TarExtractor
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),TarExtractor.class);
         file = new File("/test/test.tar.gz");//.tar.gz used by GzipExtractor
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(), GzipExtractor.class);
         file = new File("/test/test.rar");//.rar used by RarExtractor
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),RarExtractor.class);
 
         //null test
         file = new File("/test/test.7z");//Can't use 7zip
-        result = CompressedHelper.getExtractorInstance(context, file,"/test2",listener);
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertNull(result);
     }
 
@@ -61,8 +89,7 @@ public class CompressedHelperTest {
      *  Check if each extensions matched correct decompressor
      */
     @Test
-    public void getCompressorInstance() throws Exception {
-        Context context = null;//for extension check, don't need
+    public void getCompressorInstance() {
         File file = new File("/test/test.zip");//.zip used by ZipDecompressor
         Decompressor result = CompressedHelper.getCompressorInstance(context,file);
         assertEquals(result.getClass(),ZipDecompressor.class);
@@ -105,7 +132,6 @@ public class CompressedHelperTest {
         //extension not in code. So, it return false
         assertFalse(CompressedHelper.isFileExtractable("/test/test.7z"));
         assertFalse(CompressedHelper.isFileExtractable("/test/test.z"));
-
     }
 
     /**
