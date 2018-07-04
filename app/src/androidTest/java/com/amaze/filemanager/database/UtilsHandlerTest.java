@@ -48,12 +48,12 @@ public class UtilsHandlerTest {
 
     private void performTest(@NonNull final String origPath){
         String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
-        utilsHandler.addSsh("Test", encryptedPath, "ab:cd:ef:1a:1b:1c:1d:ea", null, null);
+        utilsHandler.addSsh("Test", encryptedPath, "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff", null, null);
 
         List<String[]> result = utilsHandler.getSftpList();
         assertEquals(1, result.size());
         assertEquals("Test", result.get(0)[0]);
         assertEquals(origPath, result.get(0)[1]);
-        assertEquals("ab:cd:ef:1a:1b:1c:1d:ea", utilsHandler.getSshHostKey(origPath));
+        assertEquals("00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff", utilsHandler.getSshHostKey(origPath));
     }
 }
