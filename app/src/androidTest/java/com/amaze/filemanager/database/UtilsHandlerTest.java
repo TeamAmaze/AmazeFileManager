@@ -54,5 +54,6 @@ public class UtilsHandlerTest {
         assertEquals(1, result.size());
         assertEquals("Test", result.get(0)[0]);
         assertEquals(origPath, result.get(0)[1]);
+        assertEquals("ab:cd:ef:1a:1b:1c:1d:ea", utilsHandler.getSshHostKey(origPath));
     }
 }
