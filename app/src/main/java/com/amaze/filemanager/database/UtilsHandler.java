@@ -196,7 +196,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
-        values.put(COLUMN_PATH, Uri.encode(path));
+        values.put(COLUMN_PATH, path);
         values.put(COLUMN_HOST_PUBKEY, hostKey);
         if(sshKey != null && !"".equals(sshKey))
         {
@@ -355,7 +355,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
             Cursor result = sqLiteDatabase.query(TABLE_SFTP, new String[]{COLUMN_HOST_PUBKEY},
-                    COLUMN_PATH + " = ?", new String[]{Uri.encode(uri)},
+                    COLUMN_PATH + " = ?", new String[]{uri},
                     null, null, null);
             if(result.moveToFirst())
             {

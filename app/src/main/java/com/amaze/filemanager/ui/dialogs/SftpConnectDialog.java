@@ -43,20 +43,18 @@ import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask;
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask;
 import com.amaze.filemanager.utils.BookSorter;
-import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import net.schmizz.sshj.SSHClient;
@@ -209,7 +207,6 @@ public class SftpConnectDialog extends DialogFragment {
 
         //If we are editing connection settings, give new actions for neutral and negative buttons
         if(edit) {
-            Log.d(TAG, "Edit? " + edit);
             dialogBuilder.negativeText(R.string.delete).onNegative((dialog, which) -> {
 
             final String connectionName = connectionET.getText().toString();
@@ -273,9 +270,7 @@ public class SftpConnectDialog extends DialogFragment {
         if(SELECT_PEM_INTENT == requestCode && Activity.RESULT_OK == resultCode)
         {
             selectedPem = data.getData();
-            Log.d(TAG, "Selected PEM: " + selectedPem.toString() + "/ "
-                    + selectedPem.getLastPathSegment());
-            
+
             try {
                 InputStream selectedKeyContent = context.getContentResolver()
                         .openInputStream(selectedPem);
