@@ -57,7 +57,7 @@ public class SshConnectionPool
 
     public static final int SSH_CONNECT_TIMEOUT = 30000;
 
-    private static final String TAG = "SshConnectionPool";
+    private static final String TAG = SshConnectionPool.class.getSimpleName();
 
     private static SshConnectionPool instance = null;
 
@@ -169,17 +169,14 @@ public class SshConnectionPool
         });
     }
 
-    private SSHClient create(@NonNull String url) {
-        return create(Uri.parse(url));
-    }
-
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
-    private SSHClient create(@NonNull Uri uri) {
-        String host = uri.getHost();
-        int port = uri.getPort();
+    private SSHClient create(@NonNull String url) {
+        String host = url.substring(url.lastIndexOf('@')+1, url.lastIndexOf(':'));
+        int port = Integer.parseInt(url.substring(url.lastIndexOf(':')+1));
         //If the uri is fetched from the app's database storage, we assume it will never be empty
-        String[] userInfo = uri.getUserInfo().split(":");
+        String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
+        String[] userInfo = authString.split(":");
         String username = userInfo[0];
         String password = userInfo.length > 1 ? userInfo[1] : null;
 
@@ -187,7 +184,7 @@ public class SshConnectionPool
             port = SSH_DEFAULT_PORT;
 
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-        String pem = utilsHandler.getSshAuthPrivateKey(uri.toString());
+        String pem = utilsHandler.getSshAuthPrivateKey(url);
 
         AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);
         if(pem != null && !pem.isEmpty()) {
@@ -205,7 +202,7 @@ public class SshConnectionPool
             }
         }
 
-        return create(host, port, utilsHandler.getSshHostKey(uri.toString()), username, password,
+        return create(host, port, utilsHandler.getSshHostKey(url), username, password,
                 keyPair.get());
     }
 
