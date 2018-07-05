@@ -65,7 +65,7 @@ import java.security.Security;
  * @see KeyProvider
  * @see OpenSSHKeyV1KeyFile
  * @see PuTTYKeyFile
- * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
+ * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(String)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
 public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyPair>>

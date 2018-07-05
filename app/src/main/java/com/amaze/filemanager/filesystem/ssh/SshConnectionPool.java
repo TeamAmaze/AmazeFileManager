@@ -202,7 +202,11 @@ public class SshConnectionPool
             }
         }
 
-        return create(host, port, utilsHandler.getSshHostKey(url), username, password,
+        String hostKey = utilsHandler.getSshHostKey(url);
+        if(hostKey == null)
+            return null;
+
+        return create(host, port, hostKey, username, password,
                 keyPair.get());
     }
 

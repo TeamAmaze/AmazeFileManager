@@ -475,11 +475,10 @@ public class CryptUtil {
      */
     public static String encryptPassword(Context context, String plainText) throws GeneralSecurityException, IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            return CryptUtil.aesEncryptPassword(plainText);
+            return aesEncryptPassword(plainText);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
-            return CryptUtil.rsaEncryptPassword(context, plainText);
+            return rsaEncryptPassword(context, plainText);
         } else return plainText;
     }
 
@@ -488,9 +487,9 @@ public class CryptUtil {
      */
     public static String decryptPassword(Context context, String cipherText) throws GeneralSecurityException, IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return CryptUtil.aesDecryptPassword(cipherText);
+            return aesDecryptPassword(cipherText);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return CryptUtil.rsaDecryptPassword(context, cipherText);
+            return rsaDecryptPassword(context, cipherText);
         } else return cipherText;
     }
 
