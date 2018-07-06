@@ -237,7 +237,7 @@ public class SshConnectionPool
      *
      * A design decision to keep database schema slim, by the way... -TranceLove
      */
-    static class ConnectionInfo {
+    static final class ConnectionInfo {
 
         final String host;
         final int port;
