@@ -172,16 +172,7 @@ public class SshConnectionPool
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
     private SSHClient create(@NonNull String url) {
-        String host = url.substring(url.lastIndexOf('@')+1, url.lastIndexOf(':'));
-        int port = Integer.parseInt(url.substring(url.lastIndexOf(':')+1));
-        //If the uri is fetched from the app's database storage, we assume it will never be empty
-        String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
-        String[] userInfo = authString.split(":");
-        String username = userInfo[0];
-        String password = userInfo.length > 1 ? userInfo[1] : null;
-
-        if(port < 0)
-            port = SSH_DEFAULT_PORT;
+        ConnectionInfo connInfo = new ConnectionInfo(url);
 
         UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
         String pem = utilsHandler.getSshAuthPrivateKey(url);
@@ -206,7 +197,7 @@ public class SshConnectionPool
         if(hostKey == null)
             return null;
 
-        return create(host, port, hostKey, username, password,
+        return create(connInfo.host, connInfo.port, hostKey, connInfo.username, connInfo.password,
                 keyPair.get());
     }
 
@@ -235,5 +226,41 @@ public class SshConnectionPool
 
     private void expire(@NonNull SSHClient client) {
         SshClientUtils.tryDisconnect(client);
+    }
+
+    /**
+     * Container object for SSH URI, encapsulating logic for splitting information from given URI.
+     *
+     * <code>Uri.parse()</code> only parse URI that is compliant to RFC2396, but we have to deal
+     * with URI that is not compliant, since usernames and/or strong passwords usually have special
+     * characters included, like <code>ssh://user@example.com:P@##w0rd@127.0.0.1:22</code>.
+     *
+     * A design decision to keep database schema slim, by the way... -TranceLove
+     */
+    static class ConnectionInfo {
+
+        final String host;
+        final int port;
+        final String username;
+        final String password;
+
+        //FIXME: Crude assumption
+        ConnectionInfo(@NonNull String url){
+            if(!url.startsWith(SSH_URI_PREFIX))
+                throw new IllegalArgumentException("Argument is not a SSH URI: " + url);
+
+            this.host = url.substring(url.lastIndexOf('@')+1, url.lastIndexOf(':'));
+            int port = Integer.parseInt(url.substring(url.lastIndexOf(':')+1));
+            //If the uri is fetched from the app's database storage, we assume it will never be empty
+            String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
+            String[] userInfo = authString.split(":");
+            this.username = userInfo[0];
+            this.password = userInfo.length > 1 ? userInfo[1] : null;
+
+            if(port < 0)
+                port = SSH_DEFAULT_PORT;
+
+            this.port = port;
+        }
     }
 }

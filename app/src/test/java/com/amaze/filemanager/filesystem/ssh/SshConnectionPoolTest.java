@@ -13,7 +13,6 @@ import net.schmizz.sshj.common.SecurityUtils;
 
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.pubkey.AcceptAllPublickeyAuthenticator;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.junit.After;
 import org.junit.BeforeClass;
