@@ -13,6 +13,8 @@ import net.schmizz.sshj.common.SecurityUtils;
 
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.pubkey.AcceptAllPublickeyAuthenticator;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +25,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.security.PrivateKey;
 
 import static org.junit.Assert.assertNotNull;
@@ -81,6 +84,14 @@ public class SshConnectionPoolTest {
         saveSshConnectionSettings("testuser", validPassword, null);
         assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://testuser:testpassword@127.0.0.1:22222"));
         assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+    }
+
+    @Test
+    public void testGetConnectionWithUrlAndKeyAuth() throws IOException {
+        createSshServer("testuser", null);
+        saveSshConnectionSettings("testuser", null, userKeyProvider.getKeyPair().getPrivate());
+        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://testuser@127.0.0.1:22222"));
+        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser@127.0.0.1:22222"));
     }
 
     @Test
@@ -158,11 +169,14 @@ public class SshConnectionPoolTest {
         //FIXME: privateKeyContents created this way cannot be parsed back in PemToKeyPairTask
         String privateKeyContents = null;
         if(privateKey != null){
-            privateKeyContents = new StringBuilder()
-                .append("-----BEGIN RSA PRIVATE KEY-----\n")
-                .append(Base64.encodeToString(privateKey.getEncoded(), 16))
-                .append("-----END RSA PRIVATE KEY-----")
-                .toString();
+            StringWriter writer = new StringWriter();
+            JcaPEMWriter jw = new JcaPEMWriter(writer);
+            try {
+                jw.writeObject(userKeyProvider.getKeyPair().getPrivate());
+                jw.flush();
+                jw.close();
+            } catch(IOException shallNeverHappen){}
+            privateKeyContents = writer.toString();
         }
 
         StringBuilder fullUri = new StringBuilder()
