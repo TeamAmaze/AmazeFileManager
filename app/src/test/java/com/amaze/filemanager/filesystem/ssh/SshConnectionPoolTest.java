@@ -83,15 +83,6 @@ public class SshConnectionPoolTest {
         assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
     }
 
-    //Sorry but this is not getting through yet...
-//    @Test @Ignore
-//    public void testGetConnectionWithUrlAndKeyAuth() throws IOException {
-//        createSshServer("testuser", null);
-//        saveSshConnectionSettings("testuser", null, userKeyProvider.getKeyPair().getPrivate());
-//        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://testuser@127.0.0.1:22222"));
-//        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser@127.0.0.1:22222"));
-//    }
-
     @Test
     public void testGetConnectionWithUrlHavingComplexPassword1() throws IOException {
         String validPassword = "testP@ssw0rd";
@@ -164,6 +155,7 @@ public class SshConnectionPoolTest {
         utilsHandler = new UtilsHandler(RuntimeEnvironment.application);
         utilsHandler.onCreate(utilsHandler.getWritableDatabase());
 
+        //FIXME: privateKeyContents created this way cannot be parsed back in PemToKeyPairTask
         String privateKeyContents = null;
         if(privateKey != null){
             privateKeyContents = new StringBuilder()
