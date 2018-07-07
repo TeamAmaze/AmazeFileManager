@@ -36,6 +36,11 @@ public class FileHandler extends Handler {
         super.handleMessage(msg);
         MainFragment main = mainFragment.get();
 
+        if (main.getActivity() == null) {
+            // callback called when we're not inside the app
+            return;
+        }
+
         String path = (String) msg.obj;
 
         switch (msg.what) {
