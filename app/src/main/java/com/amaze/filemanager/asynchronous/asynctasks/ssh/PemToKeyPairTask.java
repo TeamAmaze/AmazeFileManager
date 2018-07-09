@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,9 +32,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile;
 
@@ -54,8 +53,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.security.KeyPair;
-import java.security.Provider;
-import java.security.Security;
 
 /**
  * {@link AsyncTask} to convert given {@link InputStream} into {@link KeyPair} which is requird by
@@ -68,7 +65,7 @@ import java.security.Security;
  * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
-public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyPair>>
+public class PemToKeyPairTask extends AsyncTask<Void, AsyncTaskResult<KeyPair>, AsyncTaskResult<KeyPair>>
 {
     private static final String TAG = "PemToKeyPairTask";
 
@@ -79,80 +76,61 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
         new PuttyPrivateKeyToKeyPairConverter()
     };
 
+    private boolean resolving = true;
+
+    private boolean paused = false;
+
+    private PasswordFinder passwordFinder;
+
+    private String errorMessage;
+
     private final byte[] pemFile;
 
     private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback;
 
-    private final PasswordFinder passwordFinder;
-
-    private final String errorMessage;
-
-    private final MaterialDialog dialog;
-
     public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
-        this(IOUtils.readFully(pemFile).toByteArray(), callback, null, null, null);
+        this(IOUtils.readFully(pemFile).toByteArray(), callback);
     }
 
     public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
-        this(pemContent.getBytes(), callback, null, null, null);
+        this(pemContent.getBytes(), callback);
     }
 
-    public PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback,
-                            String keyPassphrase, MaterialDialog dialog, String errorMessage) {
+    private PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
         this.pemFile = pemContent;
         this.callback = callback;
-        this.dialog = dialog;
-        this.errorMessage = errorMessage;
-        if(keyPassphrase == null)
-            passwordFinder = null;
-        else
-            passwordFinder = new PasswordFinder() {
-                @Override
-                public char[] reqPassword(Resource<?> resource) {
-                    return keyPassphrase.toCharArray();
-                }
-
-                @Override
-                public boolean shouldRetry(Resource<?> resource) {
-                    return false;
-                }
-            };
     }
 
     @Override
     protected AsyncTaskResult<KeyPair> doInBackground(Void... voids) {
         AsyncTaskResult<KeyPair> retval = null;
-        for(Provider provider : Security.getProviders())
-            Log.d(TAG, "Provider: " + provider.getName());
-
-        try {
-            for(PemToKeyPairConverter converter : converters) {
-                KeyPair keyPair = converter.convert(new String(pemFile));
-                if(keyPair != null) {
-                    retval = new AsyncTaskResult<KeyPair>(keyPair);
-                    break;
+        while(resolving){
+            if(!paused) {
+                for (PemToKeyPairConverter converter : converters) {
+                    KeyPair keyPair = converter.convert(new String(pemFile));
+                    if (keyPair != null) {
+                        retval = new AsyncTaskResult<KeyPair>(keyPair);
+                        resolving = false;
+                        break;
+                    }
+                }
+                if (retval == null) {
+                    if(this.passwordFinder != null)
+                        this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
+                    this.paused = true;
+                    publishProgress(new AsyncTaskResult<KeyPair>(new IOException("No converter available to parse selected PEM")));
                 }
             }
-            if(retval == null)
-                throw new IOException("No converter available to parse selected PEM");
-        } catch (IOException e) {
-            Log.e(TAG, "IOException reading PEM", e);
-            retval = new AsyncTaskResult<KeyPair>(e);
         }
-
         return retval;
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
+    protected void onProgressUpdate(AsyncTaskResult<KeyPair>... values) {
         super.onProgressUpdate(values);
-    }
-
-    @Override
-    protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
-        if(result.exception != null) {
-            if(dialog == null) {
-
+        if(values.length > 0){
+            AsyncTaskResult<KeyPair> result = values[0];
+            if(result.exception != null) {
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
                 View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
                 WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
@@ -164,8 +142,19 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                         .title(R.string.ssh_key_prompt_passphrase)
                         .positiveText(R.string.ok)
                         .onPositive(((dialog, which) -> {
-                            new PemToKeyPairTask(pemFile, callback, textfield.getText().toString(), dialog,
-                                    AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase)).execute();
+                            this.passwordFinder = new PasswordFinder() {
+                                @Override
+                                public char[] reqPassword(Resource<?> resource) {
+                                    return textfield.getText().toString().toCharArray();
+                                }
+
+                                @Override
+                                public boolean shouldRetry(Resource<?> resource) {
+                                    return false;
+                                }
+                            };
+                            this.paused = false;
+                            dialog.dismiss();
                         })).negativeText(R.string.cancel)
                         .onNegative(((dialog, which) -> {
                             dialog.dismiss();
@@ -181,20 +170,19 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                     }
                     return new WarnableTextInputValidator.ReturnState();
                 });
-            } else {
+
                 if(errorMessage != null) {
-                    WarnableTextInputLayout wilTextfield = (WarnableTextInputLayout)dialog.findViewById(R.id.singleedittext_warnabletextinputlayout);
-                    EditText textfield = (EditText)dialog.findViewById(R.id.singleedittext_input);
                     wilTextfield.setError(errorMessage);
                     textfield.selectAll();
                 }
             }
-
-        } else {
-            if(dialog != null)
-                dialog.dismiss();
         }
+    }
 
+
+
+    @Override
+    protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
         if(callback != null) {
             callback.onResult(result);
         }
