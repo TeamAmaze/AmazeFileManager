@@ -19,7 +19,6 @@ public class StreamSource {
     protected String name;
     protected SmbFile file;
     InputStream input;
-    protected int bufferSize;
 
     public StreamSource() {}
 
@@ -30,7 +29,6 @@ public class StreamSource {
         mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         name = file.getName();
         this.file = file;
-        bufferSize = 1024*60;
     }
 
     /**
@@ -106,10 +104,6 @@ public class StreamSource {
 
     public SmbFile getFile(){
         return file;
-    }
-
-    public int getBufferSize(){
-        return bufferSize;
     }
 
 }

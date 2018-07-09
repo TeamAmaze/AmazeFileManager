@@ -14,7 +14,6 @@ public class CloudStreamSource extends StreamSource {
     protected long fp;
     protected long len;
     protected String name;
-    protected int bufferSize;
     private InputStream inputStream;
 
     public CloudStreamSource(String fileName, long length, InputStream inputStream) {
@@ -23,7 +22,6 @@ public class CloudStreamSource extends StreamSource {
         len = length;
         this.name = fileName;
         this.inputStream = inputStream;
-        bufferSize = 1024*60;
     }
 
     /**
@@ -96,7 +94,4 @@ public class CloudStreamSource extends StreamSource {
         fp = 0;
     }
 
-    public int getBufferSize(){
-        return bufferSize;
-    }
 }
