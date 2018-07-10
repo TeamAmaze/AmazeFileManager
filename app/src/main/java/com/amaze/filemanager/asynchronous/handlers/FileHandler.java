@@ -34,7 +34,11 @@ public class FileHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
-        MainFragment main = mainFragment.get();
+        final MainFragment main = mainFragment.get();
+
+        if(main == null || main.getActivity() == null) {
+            return;
+        }
 
         String path = (String) msg.obj;
 
