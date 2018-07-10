@@ -255,10 +255,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     if (rowItem.directory) {
-                        final StringBuilder stringBuilder = new StringBuilder(rowItem.path);
-                        stringBuilder.deleteCharAt(rowItem.path.length() - 1);
-
-                        compressedExplorerFragment.changePath(stringBuilder.toString());
+                        String newPath = rowItem.path.substring(0, rowItem.path.length() - 1);
+                        compressedExplorerFragment.changePath(newPath);
                     } else {
                         String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
                                 compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
