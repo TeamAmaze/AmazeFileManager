@@ -207,17 +207,18 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         } else {
             GlideApp.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
-            final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
             if (compressedExplorerFragment.showLastModified)
                 holder.date.setText(Utils.getDate(rowItem.date, compressedExplorerFragment.year));
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);
-                if (stringBuilder.toString().length() > 0) {
+                if (!rowItem.name.isEmpty()) {
+                    final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
                     stringBuilder.deleteCharAt(rowItem.name.length() - 1);
+
                     try {
-                        holder.txtTitle.setText(stringBuilder.toString().substring(stringBuilder.toString().lastIndexOf("/") + 1));
-                    } catch (Exception e) {
+                        holder.txtTitle.setText(stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1));
+                    } catch (StringIndexOutOfBoundsException e) {
                         holder.txtTitle.setText(rowItem.name.substring(0, rowItem.name.lastIndexOf("/")));
                     }
                 }
@@ -265,11 +266,10 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                 if (compressedExplorerFragment.selection) {
                     toggleChecked(position, holder.checkImageView);
                 } else {
-                    final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
-                    if (rowItem.directory)
+                    if (rowItem.directory) {
+                        final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
                         stringBuilder.deleteCharAt(rowItem.name.length() - 1);
 
-                    if (rowItem.directory) {
                         compressedExplorerFragment.changePath(stringBuilder.toString());
                     } else {
                         String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
