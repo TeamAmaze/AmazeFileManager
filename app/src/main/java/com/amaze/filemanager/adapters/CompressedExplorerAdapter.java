@@ -2,7 +2,6 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -21,12 +20,10 @@ import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -212,20 +209,20 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);
-                if (!rowItem.name.isEmpty()) {
-                    final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
-                    stringBuilder.deleteCharAt(rowItem.name.length() - 1);
+                if (!rowItem.path.isEmpty()) {
+                    final StringBuilder stringBuilder = new StringBuilder(rowItem.path);
+                    stringBuilder.deleteCharAt(rowItem.path.length() - 1);
 
                     try {
                         holder.txtTitle.setText(stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1));
                     } catch (StringIndexOutOfBoundsException e) {
-                        holder.txtTitle.setText(rowItem.name.substring(0, rowItem.name.lastIndexOf("/")));
+                        holder.txtTitle.setText(rowItem.path.substring(0, rowItem.path.lastIndexOf("/")));
                     }
                 }
             } else {
                 if (compressedExplorerFragment.showSize)
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));
-                holder.txtTitle.setText(rowItem.name.substring(rowItem.name.lastIndexOf("/") + 1));
+                holder.txtTitle.setText(rowItem.path.substring(rowItem.path.lastIndexOf("/") + 1));
                 if (compressedExplorerFragment.coloriseIcons) {
                     ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable,
                             compressedExplorerFragment.iconskin);
@@ -267,8 +264,8 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     if (rowItem.directory) {
-                        final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
-                        stringBuilder.deleteCharAt(rowItem.name.length() - 1);
+                        final StringBuilder stringBuilder = new StringBuilder(rowItem.path);
+                        stringBuilder.deleteCharAt(rowItem.path.length() - 1);
 
                         compressedExplorerFragment.changePath(stringBuilder.toString());
                     } else {
@@ -279,7 +276,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
 
                         HybridFileParcelable file = new HybridFileParcelable(archiveCacheDirPath
                                 + CompressedHelper.SEPARATOR
-                                + rowItem.name.replaceAll("\\\\", CompressedHelper.SEPARATOR));
+                                + rowItem.path.replaceAll("\\\\", CompressedHelper.SEPARATOR));
                         file.setMode(OpenMode.FILE);
                         // this file will be opened once service finishes up it's extraction
                         compressedExplorerFragment.files.add(file);
@@ -290,7 +287,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                                 compressedExplorerFragment.getContext().getString(R.string.please_wait),
                                 Toast.LENGTH_SHORT).show();
                         decompressor.decompress(compressedExplorerFragment.getActivity().getExternalCacheDir().getPath(),
-                                new String[]{rowItem.name});
+                                new String[]{rowItem.path});
                     }
                 }
             }

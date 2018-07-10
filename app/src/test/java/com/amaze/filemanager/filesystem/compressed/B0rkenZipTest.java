@@ -82,7 +82,7 @@ public class B0rkenZipTest {
         ZipHelperTask task = new ZipHelperTask(RuntimeEnvironment.application, zipfile1.getAbsolutePath(), null, false, (data) -> {});
         List<CompressedObjectParcelable> result = task.execute().get();
         assertEquals(1, result.size());
-        assertEquals("good.txt", result.get(0).name);
+        assertEquals("good.txt", result.get(0).path);
         assertEquals(RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries), ShadowToast.getTextOfLatestToast());
     }
 
@@ -91,7 +91,7 @@ public class B0rkenZipTest {
         ZipHelperTask task = new ZipHelperTask(RuntimeEnvironment.application, zipfile2.getAbsolutePath(), null, false, (data) -> {});
         List<CompressedObjectParcelable> result = task.execute().get();
         assertEquals(1, result.size());
-        assertEquals("good.txt", result.get(0).name);
+        assertEquals("good.txt", result.get(0).path);
         assertEquals(RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries), ShadowToast.getTextOfLatestToast());
     }
 }
