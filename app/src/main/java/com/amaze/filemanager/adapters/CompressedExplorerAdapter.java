@@ -209,16 +209,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);
-                if (!rowItem.path.isEmpty()) {
-                    final StringBuilder stringBuilder = new StringBuilder(rowItem.path);
-                    stringBuilder.deleteCharAt(rowItem.path.length() - 1);
-
-                    try {
-                        holder.txtTitle.setText(stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1));
-                    } catch (StringIndexOutOfBoundsException e) {
-                        holder.txtTitle.setText(rowItem.path.substring(0, rowItem.path.lastIndexOf("/")));
-                    }
-                }
+                holder.txtTitle.setText(rowItem.name);
             } else {
                 if (compressedExplorerFragment.showSize)
                     holder.txtDesc.setText(Formatter.formatFileSize(context, rowItem.size));

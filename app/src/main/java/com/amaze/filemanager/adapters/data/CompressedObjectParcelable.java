@@ -17,6 +17,7 @@ public class CompressedObjectParcelable implements Parcelable {
     public final boolean directory;
     public final int type;
     public final String path;
+    public final String name;
     public final long date, size;
     public final int filetype;
     public final IconDataParcelable iconData;
@@ -25,6 +26,7 @@ public class CompressedObjectParcelable implements Parcelable {
         this.directory = directory;
         this.type = TYPE_NORMAL;
         this.path = path;
+        this.name = getNameForPath(path);
         this.date = date;
         this.size = size;
         this.filetype = Icons.getTypeOfFile(path, directory);
@@ -39,6 +41,7 @@ public class CompressedObjectParcelable implements Parcelable {
         this.directory = true;
         this.type = TYPE_GOBACK;
         this.path = null;
+        this.name = null;
         this.date = 0;
         this.size = 0;
         this.filetype = -1;
@@ -55,6 +58,7 @@ public class CompressedObjectParcelable implements Parcelable {
         if(type != TYPE_GOBACK) {
             p1.writeInt(directory? 1:0);
             p1.writeString(path);
+            p1.writeString(name);
             p1.writeLong(size);
             p1.writeLong(date);
             p1.writeInt(filetype);
@@ -78,6 +82,7 @@ public class CompressedObjectParcelable implements Parcelable {
         if(type == TYPE_GOBACK) {
             directory = true;
             path = null;
+            name = null;
             date = 0;
             size = 0;
             filetype = -1;
@@ -85,6 +90,7 @@ public class CompressedObjectParcelable implements Parcelable {
         } else {
             directory = im.readInt() == 1;
             path = im.readString();
+            name = im.readString();
             size = im.readLong();
             date = im.readLong();
             filetype = im.readInt();
@@ -104,6 +110,19 @@ public class CompressedObjectParcelable implements Parcelable {
             } else return file1.path.compareToIgnoreCase(file2.path);
         }
 
+    }
+
+    private String getNameForPath(String path) {
+        if (path.isEmpty()) return "";
+
+        final StringBuilder stringBuilder = new StringBuilder(path);
+        stringBuilder.deleteCharAt(path.length() - 1);
+
+        try {
+            return stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            return path.substring(0, path.lastIndexOf("/"));
+        }
     }
 
 }
