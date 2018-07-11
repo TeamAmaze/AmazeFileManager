@@ -13,29 +13,43 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
  */
 public class ProgressHandler {
 
-    // total number of bytes to be processed
-    long totalSize = 0L;
+    /**
+     * total number of bytes to be processed
+     */
+    private long totalSize = 0L;
 
-    // total bytes written in process so far
-    long writtenSize = 0L;
+    /**
+     * total bytes written in process so far
+     */
+    private long writtenSize = 0L;
+    /**
+     * total number of source files to be processed
+     */
+    private int sourceFiles = 0;
 
-    // total number of source files to be processed
-    int sourceFiles = 0;
+    /**
+     * number of source files processed so far
+     */
+    private int sourceFilesProcessed = 0;
+    /**
+     * file name currently being processed
+     */
+    private String fileName;
 
-    // number of source files processed so far
-    int sourceFilesProcessed = 0;
+    /**
+     * current processing speed (bytes processed in 1000ms time)
+     */
+    private long speedRaw = 0;
 
-    // file name currently being processed
-    String fileName;
-
-    // current processing speed (bytes processed in 1000ms time)
-    long speedRaw = 0;
-
-    // boolean manages the lifecycle of service and whether it should be canceled
+    /**
+     * boolean manages the lifecycle of service and whether it should be canceled
+     */
     private boolean isCancelled = false;
 
-    // callback interface to interact with process viewer fragment and notification
-    ProgressListener progressListener;
+    /**
+     * callback interface to interact with process viewer fragment and notification
+     */
+    private ProgressListener progressListener;
 
     /**
      * Constructor to start an instance
