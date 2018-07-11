@@ -100,22 +100,24 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
     @Override
     protected KeyPair doInBackground(Void... voids) {
         while(true){
-            if(paused) {
-                continue;
-            } else if (isCancelled()) {
+            if(isCancelled()) {
                 return null;
             } else {
-                for (PemToKeyPairConverter converter : converters) {
-                    KeyPair keyPair = converter.convert(new String(pemFile));
-                    if (keyPair != null) {
-                        paused = false;
-                        return keyPair;
+                if(paused) {
+                    continue;
+                } else {
+                    for (PemToKeyPairConverter converter : converters) {
+                        KeyPair keyPair = converter.convert(new String(pemFile));
+                        if (keyPair != null) {
+                            paused = false;
+                            return keyPair;
+                        }
                     }
+                    if(this.passwordFinder != null)
+                        this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
+                    paused = true;
+                    publishProgress(new IOException("No converter available to parse selected PEM"));
                 }
-                if(this.passwordFinder != null)
-                    this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
-                paused = true;
-                publishProgress(new IOException("No converter available to parse selected PEM"));
             }
         }
     }
