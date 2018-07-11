@@ -37,11 +37,6 @@ public class ProgressHandler {
     private String fileName;
 
     /**
-     * current processing speed (bytes processed in 1000ms time)
-     */
-    private long speedRaw = 0;
-
-    /**
      * boolean manages the lifecycle of service and whether it should be canceled
      */
     private boolean isCancelled = false;
@@ -75,8 +70,7 @@ public class ProgressHandler {
      * @param newPosition the position of byte for file being processed
      */
     public synchronized void addWrittenLength(long newPosition) {
-
-        this.speedRaw = (newPosition - writtenSize);
+        long speedRaw = (newPosition - writtenSize);
         this.writtenSize = newPosition;
 
         progressListener.onProgressed(fileName, sourceFiles, sourceFilesProcessed,
