@@ -206,61 +206,53 @@ public class PemToKeyPairTask extends AsyncTask<Void, Void, AsyncTaskResult<KeyP
                         result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 
-    private interface PemToKeyPairConverter {
-        KeyPair convert(String source);
-    }
-
-    private class JcaPemToKeyPairConverter implements PemToKeyPairConverter {
-        @Override
-        public KeyPair convert(String source) {
-            PEMParser pemParser = new PEMParser(new StringReader(source));
+    private abstract class PemToKeyPairConverter {
+        KeyPair convert(String source) {
             try {
-                PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
-                JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-                return converter.getKeyPair(keyPair);
-            } catch (Exception ignored) {
+                return throwingConvert(source);
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }
+
+        protected abstract KeyPair throwingConvert(String source) throws Exception;
     }
 
-    private class OpenSshPemToKeyPairConverter implements PemToKeyPairConverter {
+    private class JcaPemToKeyPairConverter extends PemToKeyPairConverter {
         @Override
-        public KeyPair convert(String source) {
+        public KeyPair throwingConvert(String source) throws Exception {
+            PEMParser pemParser = new PEMParser(new StringReader(source));
+            PEMKeyPair keyPair = (PEMKeyPair) pemParser.readObject();
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+            return converter.getKeyPair(keyPair);
+        }
+    }
+
+    private class OpenSshPemToKeyPairConverter extends PemToKeyPairConverter {
+        @Override
+        public KeyPair throwingConvert(String source) throws Exception {
             OpenSSHKeyFile converter = new OpenSSHKeyFile();
             converter.init(new StringReader(source), passwordFinder);
-            try {
-                return new KeyPair(converter.getPublic(), converter.getPrivate());
-            } catch (Exception ignored) {
-                return null;
-            }
+            return new KeyPair(converter.getPublic(), converter.getPrivate());
         }
     }
 
-    private class OpenSshV1PemToKeyPairConverter implements PemToKeyPairConverter {
+    private class OpenSshV1PemToKeyPairConverter extends PemToKeyPairConverter {
         @Override
-        public KeyPair convert(String source) {
+        public KeyPair throwingConvert(String source) throws Exception {
             OpenSSHKeyV1KeyFile converter = new OpenSSHKeyV1KeyFile();
             converter.init(new StringReader(source), passwordFinder);
-            try {
-                return new KeyPair(converter.getPublic(), converter.getPrivate());
-            } catch (Exception ignored) {
-                return null;
-            }
+            return new KeyPair(converter.getPublic(), converter.getPrivate());
         }
     }
 
-    private class PuttyPrivateKeyToKeyPairConverter implements PemToKeyPairConverter {
+    private class PuttyPrivateKeyToKeyPairConverter extends PemToKeyPairConverter {
         @Override
-        public KeyPair convert(String source) {
+        public KeyPair throwingConvert(String source) throws Exception {
             PuTTYKeyFile converter = new PuTTYKeyFile();
             converter.init(new StringReader(source), passwordFinder);
-            try {
-                return new KeyPair(converter.getPublic(), converter.getPrivate());
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-                return null;
-            }
+            return new KeyPair(converter.getPublic(), converter.getPrivate());
         }
     }
 }
