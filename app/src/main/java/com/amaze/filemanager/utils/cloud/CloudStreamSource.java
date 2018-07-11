@@ -65,7 +65,11 @@ public class CloudStreamSource extends StreamSource {
         fp += read;
         return read;
     }
-    public long moveTo(long position) {
+    public long moveTo(long position) throws IllegalArgumentException {
+        if(position < 0 || len < position) {
+            throw new IllegalArgumentException("Position out of the bounds of the file!");
+        }
+
         fp = position;
         return fp;
     }
