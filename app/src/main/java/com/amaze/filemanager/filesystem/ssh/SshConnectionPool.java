@@ -194,10 +194,8 @@ public class SshConnectionPool
             try {
                 CountDownLatch latch = new CountDownLatch(1);
                 new PemToKeyPairTask(pem, result -> {
-                    if (result.result != null) {
-                        keyPair.set(result.result);
-                        latch.countDown();
-                    }
+                    keyPair.set(result);
+                    latch.countDown();
                 }).execute();
                 latch.await();
             } catch(InterruptedException e) {

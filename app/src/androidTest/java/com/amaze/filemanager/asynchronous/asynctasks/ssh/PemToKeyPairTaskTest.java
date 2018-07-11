@@ -76,10 +76,9 @@ public class PemToKeyPairTaskTest {
     public void testUnencryptedKeyToKeyPair() throws InterruptedException {
         CountDownLatch waiter = new CountDownLatch(1);
         PemToKeyPairTask task = new PemToKeyPairTask(unencryptedPuttyKey, result -> {
-            assertNotNull(result.result);
-            assertNull(result.exception);
-            assertNotNull(result.result.getPublic());
-            assertNotNull(result.result.getPrivate());
+            assertNotNull(result);
+            assertNotNull(result.getPublic());
+            assertNotNull(result.getPrivate());
             waiter.countDown();
         });
         task.execute();
@@ -90,10 +89,9 @@ public class PemToKeyPairTaskTest {
     public void testEncryptedKeyToKeyPair() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         CountDownLatch waiter = new CountDownLatch(1);
         PemToKeyPairTask task = new PemToKeyPairTask(encryptedPuttyKey, result -> {
-            assertNotNull(result.result);
-            assertNull(result.exception);
-            assertNotNull(result.result.getPublic());
-            assertNotNull(result.result.getPrivate());
+            assertNotNull(result);
+            assertNotNull(result.getPublic());
+            assertNotNull(result.getPrivate());
             waiter.countDown();
         });
         Field field = PemToKeyPairTask.class.getDeclaredField("passwordFinder");

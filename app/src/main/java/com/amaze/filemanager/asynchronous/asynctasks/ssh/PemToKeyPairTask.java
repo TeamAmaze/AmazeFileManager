@@ -65,18 +65,14 @@ import java.security.KeyPair;
  * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
  * @see net.schmizz.sshj.SSHClient#authPublickey(String, KeyProvider...)
  */
-public class PemToKeyPairTask extends AsyncTask<Void, AsyncTaskResult<KeyPair>, AsyncTaskResult<KeyPair>>
+public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
 {
-    private static final String TAG = "PemToKeyPairTask";
-
     private final PemToKeyPairConverter[] converters = {
         new JcaPemToKeyPairConverter(),
         new OpenSshPemToKeyPairConverter(),
         new OpenSshV1PemToKeyPairConverter(),
         new PuttyPrivateKeyToKeyPairConverter()
     };
-
-    private boolean resolving = true;
 
     private boolean paused = false;
 
@@ -86,95 +82,93 @@ public class PemToKeyPairTask extends AsyncTask<Void, AsyncTaskResult<KeyPair>, 
 
     private final byte[] pemFile;
 
-    private final AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback;
+    private final AsyncTaskResult.Callback<KeyPair> callback;
 
-    public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) throws IOException {
+    public PemToKeyPairTask(@NonNull InputStream pemFile, AsyncTaskResult.Callback<KeyPair> callback) throws IOException {
         this(IOUtils.readFully(pemFile).toByteArray(), callback);
     }
 
-    public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
+    public PemToKeyPairTask(@NonNull String pemContent, AsyncTaskResult.Callback<KeyPair> callback) {
         this(pemContent.getBytes(), callback);
     }
 
-    private PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<AsyncTaskResult<KeyPair>> callback) {
+    private PemToKeyPairTask(@NonNull byte[] pemContent, AsyncTaskResult.Callback<KeyPair> callback) {
         this.pemFile = pemContent;
         this.callback = callback;
     }
 
     @Override
-    protected AsyncTaskResult<KeyPair> doInBackground(Void... voids) {
-        AsyncTaskResult<KeyPair> retval = null;
-        while(resolving){
-            if(!paused) {
+    protected KeyPair doInBackground(Void... voids) {
+        while(true){
+            if(paused) {
+                continue;
+            } else {
                 for (PemToKeyPairConverter converter : converters) {
                     KeyPair keyPair = converter.convert(new String(pemFile));
                     if (keyPair != null) {
-                        retval = new AsyncTaskResult<KeyPair>(keyPair);
-                        resolving = false;
-                        break;
+                        paused = false;
+                        return keyPair;
                     }
                 }
-                if (retval == null) {
-                    if(this.passwordFinder != null)
-                        this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
-                    this.paused = true;
-                    publishProgress(new AsyncTaskResult<KeyPair>(new IOException("No converter available to parse selected PEM")));
-                }
+                if(this.passwordFinder != null)
+                    this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
+                paused = true;
+                publishProgress(new IOException("No converter available to parse selected PEM"));
             }
         }
-        return retval;
     }
 
     @Override
-    protected void onProgressUpdate(AsyncTaskResult<KeyPair>... values) {
+    protected void onProgressUpdate(IOException... values) {
         super.onProgressUpdate(values);
-        if(values.length > 0){
-            AsyncTaskResult<KeyPair> result = values[0];
-            if(result.exception != null) {
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-                View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
-                WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
-                EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
-                textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        if(values.length < 1) {
+            return;
+        } else {
+            IOException result = values[0];
 
-                builder.customView(dialogLayout, false)
-                        .autoDismiss(false)
-                        .title(R.string.ssh_key_prompt_passphrase)
-                        .positiveText(R.string.ok)
-                        .onPositive(((dialog, which) -> {
-                            this.passwordFinder = new PasswordFinder() {
-                                @Override
-                                public char[] reqPassword(Resource<?> resource) {
-                                    return textfield.getText().toString().toCharArray();
-                                }
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
+            View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-                                @Override
-                                public boolean shouldRetry(Resource<?> resource) {
-                                    return false;
-                                }
-                            };
-                            this.paused = false;
-                            dialog.dismiss();
-                        })).negativeText(R.string.cancel)
-                        .onNegative(((dialog, which) -> {
-                            dialog.dismiss();
-                            toastOnParseError(result);
-                        }));
+            builder.customView(dialogLayout, false)
+                    .autoDismiss(false)
+                    .title(R.string.ssh_key_prompt_passphrase)
+                    .positiveText(R.string.ok)
+                    .onPositive(((dialog, which) -> {
+                        this.passwordFinder = new PasswordFinder() {
+                            @Override
+                            public char[] reqPassword(Resource<?> resource) {
+                                return textfield.getText().toString().toCharArray();
+                            }
 
-                MaterialDialog dialog = builder.show();
+                            @Override
+                            public boolean shouldRetry(Resource<?> resource) {
+                                return false;
+                            }
+                        };
+                        this.paused = false;
+                        dialog.dismiss();
+                    })).negativeText(R.string.cancel)
+                    .onNegative(((dialog, which) -> {
+                        dialog.dismiss();
+                        toastOnParseError(result);
+                    }));
 
-                new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
-                        wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
-                    if (text.length() < 1) {
-                        return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-                    }
-                    return new WarnableTextInputValidator.ReturnState();
-                });
+            MaterialDialog dialog = builder.show();
 
-                if(errorMessage != null) {
-                    wilTextfield.setError(errorMessage);
-                    textfield.selectAll();
+            new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+                if (text.length() < 1) {
+                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
                 }
+                return new WarnableTextInputValidator.ReturnState();
+            });
+
+            if(errorMessage != null) {
+                wilTextfield.setError(errorMessage);
+                textfield.selectAll();
             }
         }
     }
@@ -182,16 +176,16 @@ public class PemToKeyPairTask extends AsyncTask<Void, AsyncTaskResult<KeyPair>, 
 
 
     @Override
-    protected void onPostExecute(AsyncTaskResult<KeyPair> result) {
+    protected void onPostExecute(KeyPair result) {
         if(callback != null) {
             callback.onResult(result);
         }
     }
 
-    private void toastOnParseError(AsyncTaskResult<KeyPair> result){
+    private void toastOnParseError(IOException result){
         Toast.makeText(AppConfig.getInstance().getActivityContext(),
                 AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
-                        result.exception.getLocalizedMessage()), Toast.LENGTH_LONG).show();
+                        result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }
 
     private interface PemToKeyPairConverter {
