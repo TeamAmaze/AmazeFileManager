@@ -244,7 +244,7 @@ public class DataUtils {
             books.add(i);
         }
         if (refreshdrawer && dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onBookAdded(i, true));
+            dataChangeListener.onBookAdded(i, true);
         }
     }
 
@@ -263,7 +263,7 @@ public class DataUtils {
             hiddenfiles.put(i, VoidValue.SINGLETON);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileAdded(i));
+            dataChangeListener.onHiddenFileAdded(i);
         }
     }
 
@@ -274,7 +274,7 @@ public class DataUtils {
             hiddenfiles.remove(i);
         }
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHiddenFileRemoved(i));
+            dataChangeListener.onHiddenFileRemoved(i);
         }
     }
 
@@ -290,7 +290,7 @@ public class DataUtils {
     public void addHistoryFile(final String i) {
         history.push(i);
         if (dataChangeListener != null) {
-            AppConfig.runInBackground(() -> dataChangeListener.onHistoryAdded(i));
+            dataChangeListener.onHistoryAdded(i);
         }
     }
 
@@ -422,7 +422,7 @@ public class DataUtils {
 
     /**
      * Callbacks to do original changes in database (and ui if required)
-     * The callbacks are called in a background thread
+     * The callbacks are called in a main thread
      */
     public interface DataChangeListener {
         void onHiddenFileAdded(String path);
