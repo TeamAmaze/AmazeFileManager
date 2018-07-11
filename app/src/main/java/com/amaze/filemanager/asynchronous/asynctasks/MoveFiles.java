@@ -48,6 +48,7 @@ import com.cloudrail.si.interfaces.SMS;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import jcifs.smb.SmbException;
@@ -73,11 +74,6 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
         this.context = context;
         this.files = files;
         this.mode = mode;
-    }
-
-    @Override
-    public void onProgressUpdate(String... message) {
-        Toast.makeText(context, message[0], Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -209,7 +205,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
 
             if (destinationSize < totalBytes) {
                 // destination don't have enough space; return
-                publishProgress(context.getResources().getString(R.string.in_safe));
+                Toast.makeText(context, context.getResources().getString(R.string.in_safe), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -230,14 +226,14 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
      * Please update to return your {@link OpenMode} type if it is supported here
      * @return
      */
-    public static List<OpenMode> getOperationSupportedFileSystem() {
-        ArrayList<OpenMode> arrayList = new ArrayList<>();
-        arrayList.add(OpenMode.SMB);
-        arrayList.add(OpenMode.FILE);
-        arrayList.add(OpenMode.DROPBOX);
-        arrayList.add(OpenMode.BOX);
-        arrayList.add(OpenMode.GDRIVE);
-        arrayList.add(OpenMode.ONEDRIVE);
-        return arrayList;
+    public static HashSet<OpenMode> getOperationSupportedFileSystem() {
+        HashSet<OpenMode> hashSet = new HashSet<>();
+        hashSet.add(OpenMode.SMB);
+        hashSet.add(OpenMode.FILE);
+        hashSet.add(OpenMode.DROPBOX);
+        hashSet.add(OpenMode.BOX);
+        hashSet.add(OpenMode.GDRIVE);
+        hashSet.add(OpenMode.ONEDRIVE);
+        return hashSet;
     }
 }
