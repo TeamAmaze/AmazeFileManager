@@ -422,7 +422,7 @@ public class DataUtils {
 
     /**
      * Callbacks to do original changes in database (and ui if required)
-     * The callbacks are called in a background thread
+     * The callbacks are called in a main thread
      */
     public interface DataChangeListener {
         void onHiddenFileAdded(String path);
