@@ -102,6 +102,8 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
         while(true){
             if(paused) {
                 continue;
+            } else if (isCancelled()) {
+                return null;
             } else {
                 for (PemToKeyPairConverter converter : converters) {
                     KeyPair keyPair = converter.convert(new String(pemFile));
@@ -154,6 +156,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
                     .onNegative(((dialog, which) -> {
                         dialog.dismiss();
                         toastOnParseError(result);
+                        cancel(true);
                     }));
 
             MaterialDialog dialog = builder.show();
