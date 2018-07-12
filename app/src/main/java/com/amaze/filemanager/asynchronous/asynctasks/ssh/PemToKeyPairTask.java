@@ -99,86 +99,79 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
 
     @Override
     protected KeyPair doInBackground(Void... voids) {
-        while(true){
-            if(isCancelled()) {
-                return null;
-            } else {
-                if(paused) {
-                    continue;
-                } else {
-                    for (PemToKeyPairConverter converter : converters) {
-                        KeyPair keyPair = converter.convert(new String(pemFile));
-                        if (keyPair != null) {
-                            paused = false;
-                            return keyPair;
-                        }
-                    }
-                    if(this.passwordFinder != null)
-                        this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
-                    paused = true;
-                    publishProgress(new IOException("No converter available to parse selected PEM"));
+        while(true) {
+            if (isCancelled()) return null;
+            if (paused) continue;
+
+            for (PemToKeyPairConverter converter : converters) {
+                KeyPair keyPair = converter.convert(new String(pemFile));
+                if (keyPair != null) {
+                    paused = false;
+                    return keyPair;
                 }
             }
+
+            if (this.passwordFinder != null) {
+                this.errorMessage = AppConfig.getInstance().getString(R.string.ssh_key_invalid_passphrase);
+            }
+
+            paused = true;
+            publishProgress(new IOException("No converter available to parse selected PEM"));
         }
     }
 
     @Override
     protected void onProgressUpdate(IOException... values) {
         super.onProgressUpdate(values);
-        if(values.length < 1) {
-            return;
-        } else {
-            IOException result = values[0];
+        if (values.length < 1) return;
 
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-            View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
-            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
-            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
-            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        IOException result = values[0];
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
+        View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+        WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+        EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+        textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-            builder.customView(dialogLayout, false)
-                    .autoDismiss(false)
-                    .title(R.string.ssh_key_prompt_passphrase)
-                    .positiveText(R.string.ok)
-                    .onPositive(((dialog, which) -> {
-                        this.passwordFinder = new PasswordFinder() {
-                            @Override
-                            public char[] reqPassword(Resource<?> resource) {
-                                return textfield.getText().toString().toCharArray();
-                            }
+        builder.customView(dialogLayout, false)
+                .autoDismiss(false)
+                .title(R.string.ssh_key_prompt_passphrase)
+                .positiveText(R.string.ok)
+                .onPositive(((dialog, which) -> {
+                    this.passwordFinder = new PasswordFinder() {
+                        @Override
+                        public char[] reqPassword(Resource<?> resource) {
+                            return textfield.getText().toString().toCharArray();
+                        }
 
-                            @Override
-                            public boolean shouldRetry(Resource<?> resource) {
-                                return false;
-                            }
-                        };
-                        this.paused = false;
-                        dialog.dismiss();
-                    })).negativeText(R.string.cancel)
-                    .onNegative(((dialog, which) -> {
-                        dialog.dismiss();
-                        toastOnParseError(result);
-                        cancel(true);
-                    }));
+                        @Override
+                        public boolean shouldRetry(Resource<?> resource) {
+                            return false;
+                        }
+                    };
+                    this.paused = false;
+                    dialog.dismiss();
+                })).negativeText(R.string.cancel)
+                .onNegative(((dialog, which) -> {
+                    dialog.dismiss();
+                    toastOnParseError(result);
+                    cancel(true);
+                }));
 
-            MaterialDialog dialog = builder.show();
+        MaterialDialog dialog = builder.show();
 
-            new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
-                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
-                if (text.length() < 1) {
-                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-                }
-                return new WarnableTextInputValidator.ReturnState();
-            });
-
-            if(errorMessage != null) {
-                wilTextfield.setError(errorMessage);
-                textfield.selectAll();
+        new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+                wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+            if (text.length() < 1) {
+                return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
             }
+            return new WarnableTextInputValidator.ReturnState();
+        });
+
+        if (errorMessage != null) {
+            wilTextfield.setError(errorMessage);
+            textfield.selectAll();
         }
     }
-
-
 
     @Override
     protected void onPostExecute(KeyPair result) {
