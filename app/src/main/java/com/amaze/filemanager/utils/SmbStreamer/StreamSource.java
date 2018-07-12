@@ -19,7 +19,6 @@ public class StreamSource {
     protected String name;
     protected SmbFile file;
     InputStream input;
-    protected int bufferSize;
 
     public StreamSource() {}
 
@@ -30,7 +29,6 @@ public class StreamSource {
         mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         name = file.getName();
         this.file = file;
-        bufferSize = 1024*60;
     }
 
     /**
@@ -75,7 +73,11 @@ public class StreamSource {
         fp += read;
         return read;
     }
-    public long moveTo(long position) throws IOException {
+    public long moveTo(long position) throws IllegalArgumentException {
+        if(position < 0 || len < position) {
+            throw new IllegalArgumentException("Position out of the bounds of the file!");
+        }
+
         fp = position;
         return fp;
     }
@@ -106,10 +108,6 @@ public class StreamSource {
 
     public SmbFile getFile(){
         return file;
-    }
-
-    public int getBufferSize(){
-        return bufferSize;
     }
 
 }
