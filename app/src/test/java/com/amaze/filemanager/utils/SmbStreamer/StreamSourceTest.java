@@ -237,10 +237,10 @@ public class StreamSourceTest {
      * Purpose: Throw an exception when a reading position in the file is incorrect
      * Input: moveTo(wrongPosition)
      * Expected:
-     *          IOException is thrown
+     *          IllegalArgumentException is thrown
      */
-    @Test (expected = IOException.class)
-    public void moveToException() throws IOException {
+    @Test (expected = IllegalArgumentException.class)
+    public void moveToException() throws IllegalArgumentException, IOException {
         ss.open();
         ss.moveTo(-1);
     }
