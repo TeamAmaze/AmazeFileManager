@@ -21,8 +21,6 @@ public class StreamSource extends RandomAccessStream {
     protected SmbFile file;
     InputStream input;
 
-    public StreamSource() {}
-
     public StreamSource(SmbFile file,long l) {
         super(l);
 
