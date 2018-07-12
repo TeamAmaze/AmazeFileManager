@@ -14,7 +14,6 @@ public class CloudStreamSource extends StreamSource {
     protected long fp;
     protected long len;
     protected String name;
-    protected int bufferSize;
     private InputStream inputStream;
 
     public CloudStreamSource(String fileName, long length, InputStream inputStream) {
@@ -23,7 +22,6 @@ public class CloudStreamSource extends StreamSource {
         len = length;
         this.name = fileName;
         this.inputStream = inputStream;
-        bufferSize = 1024*60;
     }
 
     /**
@@ -67,7 +65,11 @@ public class CloudStreamSource extends StreamSource {
         fp += read;
         return read;
     }
-    public long moveTo(long position) {
+    public long moveTo(long position) throws IllegalArgumentException {
+        if(position < 0 || len < position) {
+            throw new IllegalArgumentException("Position out of the bounds of the file!");
+        }
+
         fp = position;
         return fp;
     }
@@ -96,7 +98,4 @@ public class CloudStreamSource extends StreamSource {
         fp = 0;
     }
 
-    public int getBufferSize(){
-        return bufferSize;
-    }
 }
