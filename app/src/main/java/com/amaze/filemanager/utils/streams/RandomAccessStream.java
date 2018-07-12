@@ -16,13 +16,13 @@ public abstract class RandomAccessStream extends InputStream {
     }
 
     @Override
-    public synchronized void reset() throws IOException {
+    public synchronized void reset() {
         moveTo(markedPosition);
     }
 
     @Override
     public synchronized void mark(int readLimit) {
-        if(markedPosition != -1) {
+        if(readLimit != -1) {
             throw new IllegalArgumentException("readLimit argument of RandomAccessStream.mark() is not used, please set to -1!");
         }
 
@@ -49,7 +49,7 @@ public abstract class RandomAccessStream extends InputStream {
 
     public abstract int read() throws IOException;
 
-    public abstract void moveTo(long position) throws IOException;
+    public abstract void moveTo(long position);
 
     protected abstract long getCurrentPosition();
 }

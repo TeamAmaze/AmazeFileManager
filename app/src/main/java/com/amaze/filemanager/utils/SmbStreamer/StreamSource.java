@@ -5,17 +5,18 @@ package com.amaze.filemanager.utils.SmbStreamer;
  */
 import android.webkit.MimeTypeMap;
 
+import com.amaze.filemanager.utils.streams.RandomAccessStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class StreamSource {
+public class StreamSource extends RandomAccessStream {
 
     protected String mime;
     protected long fp;
-    protected long len;
     protected String name;
     protected SmbFile file;
     InputStream input;
@@ -23,9 +24,9 @@ public class StreamSource {
     public StreamSource() {}
 
     public StreamSource(SmbFile file,long l) {
+        super(l);
 
         fp = 0;
-        len = l;
         mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         name = file.getName();
         this.file = file;
@@ -65,23 +66,30 @@ public class StreamSource {
             throw new IOException(e);
         }
     }
-    public int read(byte[] buff) throws IOException{
-        return read(buff, 0, buff.length);
+
+    @Override
+    public int read() throws IOException {
+        int read = input.read();
+        if(read != -1) fp++;
+        return read;
     }
+
     public int read(byte[] bytes, int start, int offs) throws IOException {
         int read =  input.read(bytes, start, offs);
         fp += read;
         return read;
     }
-    public long moveTo(long position) throws IllegalArgumentException {
-        if(position < 0 || len < position) {
+
+    @Override
+    public void moveTo(long position) throws IllegalArgumentException {
+        if(position < 0 || length() < position) {
             throw new IllegalArgumentException("Position out of the bounds of the file!");
         }
 
         fp = position;
-        return fp;
     }
 
+    @Override
     public void close() {
         try {
             input.close();
@@ -92,22 +100,18 @@ public class StreamSource {
     public String getMimeType(){
         return mime;
     }
-    public long length(){
-        return len;
-    }
+
     public String getName(){
         return name;
-    }
-    public long available(){
-        return len - fp;
-    }
-
-    public void reset(){
-        fp = 0;
     }
 
     public SmbFile getFile(){
         return file;
+    }
+
+    @Override
+    protected long getCurrentPosition() {
+        return fp;
     }
 
 }

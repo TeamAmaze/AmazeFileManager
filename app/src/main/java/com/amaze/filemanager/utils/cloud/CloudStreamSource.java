@@ -1,6 +1,7 @@
 package com.amaze.filemanager.utils.cloud;
 
 import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
+import com.amaze.filemanager.utils.streams.RandomAccessStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,17 +10,16 @@ import java.io.InputStream;
  * Created by Vishal on 30-04-2017.
  */
 
-public class CloudStreamSource extends StreamSource {
+public class CloudStreamSource extends RandomAccessStream {
     protected String mime;
     protected long fp;
-    protected long len;
     protected String name;
     private InputStream inputStream;
 
     public CloudStreamSource(String fileName, long length, InputStream inputStream) {
+        super(length);
 
         fp = 0;
-        len = length;
         this.name = fileName;
         this.inputStream = inputStream;
     }
@@ -57,23 +57,22 @@ public class CloudStreamSource extends StreamSource {
             throw new IOException(e);
         }
     }
-    public int read(byte[] buff) throws IOException{
-        return read(buff, 0, buff.length);
+
+    @Override
+    public int read() throws IOException {
+        int read = inputStream.read();
+        if(read != -1) fp++;
+        return read;
     }
+
+    @Override
     public int read(byte[] bytes, int start, int offs) throws IOException {
         int read =  inputStream.read(bytes, start, offs);
         fp += read;
         return read;
     }
-    public long moveTo(long position) throws IllegalArgumentException {
-        if(position < 0 || len < position) {
-            throw new IllegalArgumentException("Position out of the bounds of the file!");
-        }
 
-        fp = position;
-        return fp;
-    }
-
+    @Override
     public void close() {
         try {
             inputStream.close();
@@ -84,18 +83,22 @@ public class CloudStreamSource extends StreamSource {
     public String getMimeType(){
         return mime;
     }
-    public long length(){
-        return len;
-    }
+
     public String getName(){
         return name;
     }
-    public long available(){
-        return len - fp;
+
+    @Override
+    public void moveTo(long position) {
+        if(position < 0 || length() < position) {
+            throw new IllegalArgumentException("Position out of the bounds of the file!");
+        }
+
+        fp = position;
     }
 
-    public void reset(){
-        fp = 0;
+    @Override
+    protected long getCurrentPosition() {
+        return fp;
     }
-
 }
