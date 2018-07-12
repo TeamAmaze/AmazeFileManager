@@ -337,14 +337,4 @@ public class StreamSourceTest {
         assertEquals(file, ss.getFile());
     }
 
-    /**
-     * Purpose: Get size of a buffer. The buffer size is predefined in StreamSource class
-     * Input: no
-     * Expected:
-     *          return 1024*60
-     */
-    @Test
-    public void getBufferSize() {
-        assertEquals(1024*60, ss.getBufferSize());
-    }
 }

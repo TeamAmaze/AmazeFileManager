@@ -302,14 +302,4 @@ public class CloudStreamSourceTest {
         assertEquals(len, cs.available());
     }
 
-    /**
-     * Purpose: Get size of a buffer. The buffer size is predefined in CloudStreamSource class
-     * Input: no
-     * Expected:
-     *          return 1024*60
-     */
-    @Test
-    public void getBufferSize() {
-        assertEquals(1024*60, cs.getBufferSize());
-    }
 }
