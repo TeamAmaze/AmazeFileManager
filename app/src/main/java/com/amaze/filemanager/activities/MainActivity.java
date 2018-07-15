@@ -266,6 +266,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     private PasteHelper pasteHelper;
 
+    private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+
     /**
      * Called when the activity is first created.
      */
@@ -579,9 +581,9 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             mainActivityHelper.add(MainActivityHelper.NEW_FILE, (file) -> {
                 try {
                     FileUtil.writeContentToHybridFile(MainActivity.this, file, textContent);
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, getString(R.string.shared_content_saved, file.getName(MainActivity.this)), Toast.LENGTH_LONG).show());
+                    Toast.makeText(MainActivity.this, getString(R.string.shared_content_saved, file.getName(MainActivity.this)), Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.error_io, Toast.LENGTH_LONG).show());
+                    Toast.makeText(MainActivity.this, R.string.error_io, Toast.LENGTH_LONG).show();
                 }
                 finish();
             });
@@ -654,7 +656,13 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             // Device has physical external storage; use plain paths.
             if (TextUtils.isEmpty(rawExternalStorage)) {
                 // EXTERNAL_STORAGE undefined; falling back to default.
-                rv.add("/storage/sdcard0");
+                // Check for actual existence of the directory before adding to list
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
+                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
+                } else {
+                    //We know nothing else, use Environment's fallback
+                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
             } else {
                 rv.add(rawExternalStorage);
             }
@@ -1712,7 +1720,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
                 utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
 
-                //grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                 MainFragment ma = getCurrentMainFragment();
                 if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
             } else {
@@ -1727,13 +1734,10 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 AppConfig.runInBackground(() -> {
                     utilsHandler.renameSMB(oldname, oldPath, name, path);
                 });
-                //mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
             }
             dataUtils.addServer(s);
             Collections.sort(dataUtils.getServers(), new BookSorter());
             drawer.refreshDrawer();
-            //mainActivity.grid.addPath(name, encry@RunWith(RobolectricTestRunner.class)
-            //@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})ptedPath, DataUtils.SMB, 1);
         }
     }
 
@@ -1748,7 +1752,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.SMB, name,
                         path));
             });
-            //grid.removePath(name, path, DataUtils.SMB);
             drawer.refreshDrawer();
         }
 
