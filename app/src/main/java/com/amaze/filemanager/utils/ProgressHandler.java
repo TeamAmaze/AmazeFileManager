@@ -15,36 +15,38 @@ public class ProgressHandler {
 
     /**
      * total number of bytes to be processed
+     * Volatile because non volatile long r/w are not atomic (see Java Language Specification 17.7)
      */
-    private long totalSize = 0L;
+    private volatile long totalSize = 0L;
 
     /**
      * total bytes written in process so far
+     * Volatile because non volatile long r/w are not atomic (see Java Language Specification 17.7)
      */
-    private long writtenSize = 0L;
+    private volatile long writtenSize = 0L;
     /**
      * total number of source files to be processed
      */
-    private int sourceFiles = 0;
+    private volatile int sourceFiles = 0;
 
     /**
      * number of source files processed so far
      */
-    private int sourceFilesProcessed = 0;
+    private volatile int sourceFilesProcessed = 0;
     /**
      * file name currently being processed
      */
-    private String fileName;
+    private volatile String fileName;
 
     /**
      * boolean manages the lifecycle of service and whether it should be canceled
      */
-    private boolean isCancelled = false;
+    private volatile boolean isCancelled = false;
 
     /**
      * callback interface to interact with process viewer fragment and notification
      */
-    private ProgressListener progressListener;
+    private volatile ProgressListener progressListener;
 
     /**
      * Constructor to start an instance
@@ -60,8 +62,6 @@ public class ProgressHandler {
      */
     public ProgressHandler() {
 
-        this.sourceFiles = 0;
-        this.totalSize = 0;
     }
 
     /**
@@ -77,15 +77,15 @@ public class ProgressHandler {
                 totalSize, writtenSize, speedRaw);
     }
 
-    public synchronized void setFileName(String fileName) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public synchronized String getFileName() {
-        return this.fileName;
+    public String getFileName() {
+        return fileName;
     }
 
-    public synchronized void setSourceFilesProcessed(int sourceFilesProcessed) {
+    public void setSourceFilesProcessed(int sourceFilesProcessed) {
         this.sourceFilesProcessed = sourceFilesProcessed;
     }
 
@@ -94,23 +94,23 @@ public class ProgressHandler {
     }
 
     // dynamically setting total size, useful in case files are compressed
-    public synchronized void setTotalSize(long totalSize) {
+    public void setTotalSize(long totalSize) {
         this.totalSize = totalSize;
     }
 
-    public synchronized long getTotalSize() {
+    public long getTotalSize() {
         return this.totalSize;
     }
 
-    public synchronized void setCancelled(boolean isCancelled) {
+    public void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
 
-    public synchronized boolean getCancelled() {
-        return this.isCancelled;
+    public boolean getCancelled() {
+        return isCancelled;
     }
 
-    public synchronized long getWrittenSize() {
+    public long getWrittenSize() {
         return writtenSize;
     }
 
