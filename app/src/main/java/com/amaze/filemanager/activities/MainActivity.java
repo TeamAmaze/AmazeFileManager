@@ -581,15 +581,12 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             mainActivityHelper.add(MainActivityHelper.NEW_FILE, (file) -> {
                 try {
                     FileUtil.writeContentToHybridFile(MainActivity.this, file, textContent);
-                    Toast.makeText(MainActivity.this, getString(R.string.shared_content_saved, file.getName(MainActivity.this)), Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, getString(R.string.shared_content_saved, file.getName(MainActivity.this)), Toast.LENGTH_LONG).show());
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, R.string.error_io, Toast.LENGTH_LONG).show();
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.error_io, Toast.LENGTH_LONG).show());
                 }
                 finish();
             });
-//            mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, getCurrentMainFragment().getCurrentPath()), getCurrentMainFragment(), (file) -> {
-//
-//            });
         });
     }
 

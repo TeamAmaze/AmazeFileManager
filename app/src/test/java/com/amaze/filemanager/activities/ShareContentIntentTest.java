@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.test.ShadowContentResolverWithLocalOutputStreamSupport;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
@@ -25,7 +26,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowDialog;
 import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.multidex.ShadowMultiDex;
@@ -34,13 +35,18 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import jahirfiquitiva.libs.fabsmenu.FABsMenu;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowContentResolverWithLocalOutputStreamSupport.class})
 public class ShareContentIntentTest {
 
     private static final String content = "Test content";
@@ -52,6 +58,7 @@ public class ShareContentIntentTest {
     @Before
     public void setUp() throws IOException {
         activity = Robolectric.setupActivity(MainActivity.class);
+        activity.onResume();
         setupContentResolver();
     }
 
@@ -67,33 +74,27 @@ public class ShareContentIntentTest {
     }
 
     @Test
-    public void testSaveUriInContent() throws IOException {
+    public void testSaveUriInContent() throws IOException, InterruptedException {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType("text/plain");
 
         performShareTest(intent);
-
-        File verify = new File(Environment.getExternalStorageDirectory(), "thisisatest.txt");
-        assertTrue(verify.exists());
-        assertEquals(content, new String(IOUtils.toByteArray(new FileInputStream(verify)), "utf-8"));
+        verifyFileAndContent("thisisatest.txt");
     }
 
     @Test
-    public void testSaveUriInExtraText() throws IOException {
+    public void testSaveUriInExtraText() throws IOException, InterruptedException {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, uri.toString());
         intent.setType("text/plain");
 
         performShareTest(intent);
-
-        File verify = new File(Environment.getExternalStorageDirectory(), "thisisatest.txt");
-        assertTrue(verify.exists());
-        assertEquals(content, new String(IOUtils.toByteArray(new FileInputStream(verify)), "utf-8"));
+        verifyFileAndContent("thisisatest.txt");
     }
 
     @Test
-    public void testSaveContentInClipData() throws IOException {
+    public void testSaveContentInClipData() throws IOException, InterruptedException {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.setClipData(new ClipData(new ClipDescription("Test ClipData description", new String[]{"text/plain"}), new ClipData.Item(content)));
@@ -102,7 +103,7 @@ public class ShareContentIntentTest {
     }
 
     @Test
-    public void testSaveContentInExtraText() throws IOException {
+    public void testSaveContentInExtraText() throws IOException, InterruptedException {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, content);
@@ -113,7 +114,7 @@ public class ShareContentIntentTest {
     private void setupContentResolver() throws IOException {
 
         ContentResolver contentResolver = RuntimeEnvironment.application.getContentResolver();
-        ShadowContentResolver shadowContentResolver = Shadows.shadowOf(contentResolver);
+        ShadowContentResolverWithLocalOutputStreamSupport shadowContentResolver = Shadow.extract(contentResolver);
         shadowContentResolver.registerInputStream(uri, new ByteArrayInputStream(content.getBytes("UTF-8")));
     }
 
@@ -130,7 +131,7 @@ public class ShareContentIntentTest {
         fabButton.getMenuButton().performClick();
     }
 
-    private void performSaveAsContent() throws IOException {
+    private void performSaveAsContent() throws IOException, InterruptedException {
         //Save as dialog pops up, input test.txt
         Dialog dialog = ShadowDialog.getLatestDialog();
         assertNotNull(dialog);
@@ -141,10 +142,17 @@ public class ShareContentIntentTest {
         EditText editText = createFileDialog.getCustomView().findViewById(R.id.singleedittext_input);
         editText.setText("test.txt", TextView.BufferType.NORMAL);
         createFileDialog.getActionButton(DialogAction.POSITIVE).performClick();
+        verifyFileAndContent("test.txt");
+    }
 
+    private void verifyFileAndContent(String filename) throws IOException, InterruptedException {
         //Expect content is saved to file
-        File verify = new File(Environment.getExternalStorageDirectory(), "test.txt");
-        assertTrue(verify.exists());
-        assertEquals(content, new String(IOUtils.toByteArray(new FileInputStream(verify)), "utf-8"));
+        File verify = new File(Environment.getExternalStorageDirectory(), filename);
+        while(true){
+            if(verify.exists()) {
+                assertEquals(content, new String(IOUtils.toByteArray(new FileInputStream(verify)), "utf-8"));
+                return;
+            }
+        }
     }
 }
