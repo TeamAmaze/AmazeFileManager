@@ -275,18 +275,15 @@ public class SftpConnectDialog extends DialogFragment {
                 InputStream selectedKeyContent = context.getContentResolver()
                         .openInputStream(selectedPem);
                 new PemToKeyPairTask(selectedKeyContent, result -> {
-                    if(result.result != null)
-                    {
-                        selectedParsedKeyPair = result.result;
-                        selectedParsedKeyPairName = selectedPem.getLastPathSegment()
-                                .substring(selectedPem.getLastPathSegment().indexOf('/')+1);
-                        MDButton okBTN = ((MaterialDialog)getDialog())
-                                .getActionButton(DialogAction.POSITIVE);
-                        okBTN.setEnabled(okBTN.isEnabled() || true);
+                    selectedParsedKeyPair = result;
+                    selectedParsedKeyPairName = selectedPem.getLastPathSegment()
+                            .substring(selectedPem.getLastPathSegment().indexOf('/')+1);
+                    MDButton okBTN = ((MaterialDialog)getDialog())
+                            .getActionButton(DialogAction.POSITIVE);
+                    okBTN.setEnabled(okBTN.isEnabled() || true);
 
-                        Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
-                        selectPemBTN.setText(selectedParsedKeyPairName);
-                    }
+                    Button selectPemBTN = getDialog().findViewById(R.id.selectPemBTN);
+                    selectPemBTN.setText(selectedParsedKeyPairName);
                 }).execute();
 
             } catch(FileNotFoundException e) {

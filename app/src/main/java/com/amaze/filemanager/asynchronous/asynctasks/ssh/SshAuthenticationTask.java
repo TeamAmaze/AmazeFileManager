@@ -122,7 +122,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
                     }
 
                     @Override
-                    public KeyType getType() throws IOException {
+                    public KeyType getType() {
                         return KeyType.fromKey(getPublic());
                     }
                 });
