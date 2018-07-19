@@ -89,21 +89,15 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     /**
      * Publish the results of the progress to notification and {@link DatapointParcelable}
      * and eventually to {@link ProcessViewerFragment}
-     *
-     * @param fileName       file name of current file being copied
-     * @param sourceFiles    total number of files selected by user for copy
-     * @param sourceProgress files been copied out of them
-     * @param totalSize      total size of selected items to copy
-     * @param writtenSize    bytes successfully copied
      * @param speed          number of bytes being copied per sec
      * @param isComplete     whether operation completed or ongoing (not supported at the moment)
      * @param move           if the files are to be moved
-     *                       In case of encryption, this is true for decrypting operation
      */
-    public final void publishResults(String fileName, int sourceFiles, int sourceProgress,
-                                     long totalSize, long writtenSize, long speed, boolean isComplete,
-                                     boolean move) {
+    public final void publishResults(long speed, boolean isComplete, boolean move) {
         if (!getProgressHandler().getCancelled()) {
+            String fileName = getProgressHandler().getFileName();
+            long totalSize = getProgressHandler().getTotalSize();
+            long writtenSize = getProgressHandler().getWrittenSize();
 
             context = getApplicationContext();
 
@@ -192,7 +186,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
             }
 
             //for processviewer
-            DatapointParcelable intent = new DatapointParcelable(fileName, sourceFiles, sourceProgress,
+            DatapointParcelable intent = new DatapointParcelable(fileName,
+                    getProgressHandler().getSourceSize(), getProgressHandler().getSourceFilesProcessed(),
                     totalSize, writtenSize, speed, move, isComplete);
             //putDataPackage(intent);
             addDatapoint(intent);

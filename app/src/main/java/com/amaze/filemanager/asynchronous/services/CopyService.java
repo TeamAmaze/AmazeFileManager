@@ -245,9 +245,8 @@ public class CopyService extends AbstractProgressiveService {
             progressHandler.setSourceSize(totalSourceFiles);
             progressHandler.setTotalSize(totalSize);
 
-            progressHandler.setProgressListener((fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed) -> {
-                publishResults(fileName, sourceFiles1, sourceProgress1, totalSize1, writtenSize, speed, false, move);
-            });
+            progressHandler.setProgressListener((speed) ->
+                publishResults(speed, false, move));
 
             watcherUtil = new ServiceWatcherUtil(progressHandler);
 

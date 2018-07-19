@@ -51,7 +51,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -127,9 +126,8 @@ public class ExtractService extends AbstractProgressiveService {
 
         progressHandler.setSourceSize(1);
         progressHandler.setTotalSize(totalSize);
-        progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed) -> {
-            publishResults(fileName, sourceFiles, sourceProgress, totalSize1, writtenSize, speed, false, false);
-        });
+        progressHandler.setProgressListener((speed) ->
+            publishResults(speed, false, false));
 
         super.onStartCommand(intent, flags, startId);
         super.progressHalted();

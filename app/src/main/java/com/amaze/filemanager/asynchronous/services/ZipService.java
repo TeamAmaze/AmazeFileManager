@@ -221,10 +221,8 @@ public class ZipService extends AbstractProgressiveService {
 
             progressHandler.setSourceSize(baseFiles.size());
             progressHandler.setTotalSize(totalBytes);
-            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
-                publishResults(fileName, sourceFiles, sourceProgress, totalSize,
-                        writtenSize, speed, false, false);
-            });
+            progressHandler.setProgressListener((speed) ->
+                publishResults(speed, false, false));
 
 
             zipService.addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
