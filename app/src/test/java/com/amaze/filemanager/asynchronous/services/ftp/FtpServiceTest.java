@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.test.ShadowContentResolverWithLocalOutputStreamSupport;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.junit.After;
@@ -32,19 +33,19 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static com.amaze.filemanager.asynchronous.services.ftp.FTPService.KEY_PREFERENCE_PATH;
-import static com.amaze.filemanager.asynchronous.services.ftp.FTPService.KEY_PREFERENCE_PORT;
+import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.KEY_PREFERENCE_PATH;
+import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.KEY_PREFERENCE_PORT;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
-public class FTPServiceTest {
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowContentResolverWithLocalOutputStreamSupport.class})
+public class FtpServiceTest {
 
     private static final int FTP_PORT = 62222;
 
     private FTPClient ftpClient;
 
-    private FTPService service;
+    private FtpService service;
 
     @Before
     public void setUp() throws Exception {
@@ -55,14 +56,14 @@ public class FTPServiceTest {
         wifiManager.setWifiEnabled(true);
         ReflectionHelpers.callInstanceMethod(wifiManager.getConnectionInfo(), "setInetAddress", ReflectionHelpers.ClassParameter.from(InetAddress.class, InetAddress.getLoopbackAddress()));
 
-        service = Robolectric.setupService(FTPService.class);
+        service = Robolectric.setupService(FtpService.class);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application);
         prefs.edit()
             .putString(KEY_PREFERENCE_PATH, Environment.getExternalStorageDirectory().getAbsolutePath())
             .putInt(KEY_PREFERENCE_PORT, FTP_PORT).commit();
-        service.onStartCommand(new Intent(FTPService.ACTION_START_FTPSERVER).putExtra(FTPService.TAG_STARTED_BY_TILE, false), 0, 0);
+        service.onStartCommand(new Intent(FtpService.ACTION_START_FTPSERVER).putExtra(FtpService.TAG_STARTED_BY_TILE, false), 0, 0);
 
-        assertTrue(FTPService.isRunning());
+        assertTrue(FtpService.isRunning());
         waitForServer();
 
         //ShadowLog.stream = System.out;
