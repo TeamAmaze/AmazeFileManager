@@ -29,8 +29,6 @@ import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -46,10 +44,10 @@ public class RootHelper {
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
      */
-    public static Collection<String> runShellCommand(String cmd) throws ShellNotRunningException {
+    public static List<String> runShellCommand(String cmd) throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
             throw new ShellNotRunningException();
-        final ArrayList<String> result = new ArrayList<>();
+        final List<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
         MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> result.addAll(output));
@@ -219,7 +217,7 @@ public class RootHelper {
         String name = f.getName();
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            Collection<String> ls = runShellCommand("ls -l " + p);
+            List<String> ls = runShellCommand("ls -l " + p);
             for (String s : ls) {
                 if (contains(s.split(" "), name)) {
                     try {
@@ -284,7 +282,7 @@ public class RootHelper {
             try {
                 // we're rooted and we're trying to load file with superuser
                 // we're at the root directories, superuser is required!
-                Collection<String> ls;
+                List<String> ls;
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
                 ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");

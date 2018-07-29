@@ -7,8 +7,7 @@ package com.amaze.filemanager.utils;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class RootUtils {
@@ -38,7 +37,7 @@ public class RootUtils {
      */
     private static String mountFileSystemRW(String path) throws ShellNotRunningException {
         String command = "mount";
-        Collection<String> output = RootHelper.runShellCommand(command);
+        List<String> output = RootHelper.runShellCommand(command);
         String mountPoint = "", types = null;
         for (String line : output) {
             String[] words = line.split(" ");
@@ -62,7 +61,7 @@ public class RootUtils {
             } else if (types.contains("ro")) {
                 // read-only file system, remount as rw
                 String mountCommand = "mount -o rw,remount " + mountPoint;
-                Collection<String> mountOutput = RootHelper.runShellCommand(mountCommand);
+                List<String> mountOutput = RootHelper.runShellCommand(mountCommand);
 
                 if (mountOutput.size() != 0) {
                     // command failed, and we got a reason echo'ed
@@ -147,7 +146,7 @@ public class RootUtils {
      */
     public static boolean delete(String path) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(path);
-        Collection<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
+        List<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro
@@ -182,7 +181,7 @@ public class RootUtils {
      */
     public static boolean rename(String oldPath, String newPath) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(oldPath);
-        Collection<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        List<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro
@@ -206,7 +205,7 @@ public class RootUtils {
 
     /**
      * This converts from a set of booleans to OCTAL permissions notations.
-     * For use with {@link RootUtils.CHMOD_COMMAND}
+     * For use with {@link RootUtils#CHMOD_COMMAND}
      * (true, false, false,  true, true, false,  false, false, true) => 0461
      */
     public static int permissionsToOctalString(boolean ur, boolean uw, boolean ux,
