@@ -19,8 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="storage">Berging</string>
-  <string name="cancel">KANSELLEER</string>
+    <string name="cancel">KANSELLEER</string>
   <string name="save">Stoor</string>
   <string name="size_capitalized">Grootte</string>
   <string name="share">Deling</string>

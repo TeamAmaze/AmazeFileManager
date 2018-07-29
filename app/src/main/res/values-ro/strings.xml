@@ -22,8 +22,7 @@
   <string name="drawer_open">Deschideţi sertarul de navigare</string>
   <string name="drawer_close">Închideţi sertarul de navigare</string>
   <string name="icon">pictogramă</string>
-  <string name="storage">Stocare</string>
-  <string name="apps">Gestionare aplicaţii</string>
+    <string name="apps">Gestionare aplicaţii</string>
   <string name="setting">Setări</string>
   <string name="select">Selectaţi elementele</string>
   <string name="pressagain">Apăsați din nou pentru a ieși</string>

@@ -23,8 +23,7 @@
   <string name="drawer_open">打開導航抽屜</string>
   <string name="drawer_close">關閉導航抽屜</string>
   <string name="icon">圖示</string>
-  <string name="storage">存儲</string>
-  <string name="apps">應用管理</string>
+    <string name="apps">應用管理</string>
   <string name="ftp">FTP 伺服器</string>
   <string name="setting">設定</string>
   <string name="select">選擇專案</string>

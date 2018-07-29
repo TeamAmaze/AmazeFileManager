@@ -23,7 +23,6 @@
   <string name="drawer_open">Gezinme çekmecesini aç</string>
   <string name="drawer_close">Gezinme çekmecesini kapat</string>
     <string name="icon">Simge</string>
-    <string name="storage">Depolama</string>
     <string name="apps">Uygulama Yöneticisi</string>
   <string name="ftp">FTP Sunucu</string>
     <string name="setting">Ayarlar</string>

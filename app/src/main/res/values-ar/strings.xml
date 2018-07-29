@@ -23,7 +23,6 @@
   <string name="drawer_open">فتح نافذة التنقل</string>
   <string name="drawer_close">إغلاق نافذة التنقل</string>
     <string name="icon">أيقونة</string>
-    <string name="storage">التخزين</string>
     <string name="apps">مدير التطبيقات</string>
   <string name="ftp">خادم بروتوكول نقل الملفات</string>
     <string name="setting">الإعدادات</string>

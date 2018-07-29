@@ -23,7 +23,6 @@
   <string name="drawer_open">Открыть меню навигации</string>
   <string name="drawer_close">Закрыть меню навигации</string>
     <string name="icon">значок</string>
-    <string name="storage">Память</string>
     <string name="apps">Менеджер приложений</string>
   <string name="ftp">FTP сервер</string>
     <string name="setting">Настройки</string>

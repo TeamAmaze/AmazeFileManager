@@ -23,7 +23,6 @@
   <string name="drawer_open">Відкрити меню навігації</string>
   <string name="drawer_close">Закрити меню навігації</string>
     <string name="icon">іконка</string>
-    <string name="storage">Пам\'ять</string>
     <string name="apps">Менеджер додатків</string>
   <string name="ftp">FTP Сервер</string>
     <string name="setting">Налаштування</string>

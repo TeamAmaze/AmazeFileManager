@@ -23,7 +23,6 @@
   <string name="drawer_open">Odpri predal za krmarjenje</string>
   <string name="drawer_close">Zapri navigacijsko okno</string>
     <string name="icon">ikona</string>
-    <string name="storage">Mesto za shranjevanje</string>
     <string name="apps">Upravljalec aplikacij</string>
   <string name="ftp">FTP strežnik</string>
     <string name="setting">Nastavitve</string>

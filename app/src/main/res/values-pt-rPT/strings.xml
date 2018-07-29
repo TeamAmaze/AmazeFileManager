@@ -22,7 +22,6 @@
   <string name="drawer_open">Abrir menu de navegação</string>
   <string name="drawer_close">Fechar menu de navegação</string>
     <string name="icon">ícone</string>
-    <string name="storage">Armazenamento</string>
     <string name="apps">Gestor de aplicações</string>
   <string name="ftp">Servidor FTP</string>
     <string name="setting">Definições</string>
