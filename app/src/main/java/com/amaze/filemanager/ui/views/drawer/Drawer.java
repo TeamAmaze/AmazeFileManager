@@ -1,7 +1,9 @@
 /*
  * Drawer.java
  *
- * Copyright (C) 2014-2018 Mitch West<mitch9378dev@gmail.com> and Contributors.
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
+ * Mitch West<mitch9378dev@gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
