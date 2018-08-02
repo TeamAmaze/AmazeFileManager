@@ -22,12 +22,15 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -40,10 +43,13 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.interfaces.SMS;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -53,13 +59,15 @@ import jcifs.smb.SmbFile;
  * if they're in the same filesystem, else starting the copy service.
  * Be advised - do not start this AsyncTask directly but use {@link PrepareCopyTask} instead
  */
-public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
+public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
 
     private ArrayList<ArrayList<HybridFileParcelable>> files;
     private MainFragment mainFrag;
     private ArrayList<String> paths;
     private Context context;
     private OpenMode mode;
+    private long totalBytes = 0l;
+    private long destinationSize = 0l;
 
     public MoveFiles(ArrayList<ArrayList<HybridFileParcelable>> files, MainFragment ma, Context context, OpenMode mode) {
         mainFrag = ma;
@@ -73,6 +81,12 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
         paths = strings[0];
 
         if (files.size() == 0) return true;
+
+        for (ArrayList<HybridFileParcelable> filesCurrent : files) {
+            totalBytes += FileUtils.getTotalBytes(filesCurrent, context);
+        }
+        HybridFile destination = new HybridFile(mode, paths.get(0));
+        destinationSize = destination.getUsableSpace();
 
         switch (mode) {
             case SMB:
@@ -188,6 +202,13 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
             });
 
         } else {
+
+            if (destinationSize < totalBytes) {
+                // destination don't have enough space; return
+                Toast.makeText(context, context.getResources().getString(R.string.in_safe), Toast.LENGTH_LONG).show();
+                return;
+            }
+
             for (int i = 0; i < paths.size(); i++) {
                 Intent intent = new Intent(context, CopyService.class);
                 intent.putExtra(CopyService.TAG_COPY_SOURCES, files.get(i));
@@ -198,5 +219,21 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, Void, Boolean> {
                 ServiceWatcherUtil.runService(context, intent);
             }
         }
+    }
+
+    /**
+     * Maintains a list of filesystems supporting the move/rename implementation.
+     * Please update to return your {@link OpenMode} type if it is supported here
+     * @return
+     */
+    public static HashSet<OpenMode> getOperationSupportedFileSystem() {
+        HashSet<OpenMode> hashSet = new HashSet<>();
+        hashSet.add(OpenMode.SMB);
+        hashSet.add(OpenMode.FILE);
+        hashSet.add(OpenMode.DROPBOX);
+        hashSet.add(OpenMode.BOX);
+        hashSet.add(OpenMode.GDRIVE);
+        hashSet.add(OpenMode.ONEDRIVE);
+        return hashSet;
     }
 }
