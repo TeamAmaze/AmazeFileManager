@@ -23,8 +23,7 @@
   <string name="drawer_open">打开导航抽屉</string>
   <string name="drawer_close">关闭导航抽屉</string>
   <string name="icon">图标</string>
-  <string name="storage">外部存储设备</string>
-  <string name="apps">应用管理</string>
+    <string name="apps">应用管理</string>
   <string name="ftp">FTP 服务器</string>
   <string name="setting">设置</string>
   <string name="select">请选择</string>

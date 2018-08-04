@@ -23,7 +23,6 @@
   <string name="drawer_open">Отвори фиоку навигације</string>
   <string name="drawer_close">Затвори фиоку навигације</string>
     <string name="icon">икона</string>
-    <string name="storage">Складиште</string>
     <string name="apps">Апликације</string>
   <string name="ftp">ФТП сервер</string>
     <string name="setting">Поставке</string>

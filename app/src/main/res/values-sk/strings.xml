@@ -23,7 +23,6 @@
   <string name="drawer_open">Otvoriť navigačný panel</string>
   <string name="drawer_close">Zavrieť navigačný panel</string>
     <string name="icon">ikona</string>
-    <string name="storage">Úložisko</string>
     <string name="apps">Správca aplikácií</string>
   <string name="ftp">FTP Server</string>
     <string name="setting">Nastavenia</string>

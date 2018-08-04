@@ -23,7 +23,6 @@
   <string name="drawer_open">باز کردن کشو</string>
   <string name="drawer_close">بستن کشو</string>
     <string name="icon">آیکن</string>
-    <string name="storage">ذخیره دستگاه</string>
     <string name="apps">مدیر برنامه</string>
   <string name="ftp">FTP سرور </string>
     <string name="setting">تنظیمات</string>

@@ -24,8 +24,7 @@
   <string name="drawer_open">開啟導覽清單</string>
   <string name="drawer_close">關閉導覽清單</string>
   <string name="icon">圖示</string>
-  <string name="storage">儲存裝置</string>
-  <string name="apps">應用程式管理員</string>
+    <string name="apps">應用程式管理員</string>
   <string name="ftp">FTP 伺服器</string>
   <string name="setting">設定</string>
   <string name="select">選擇項目</string>

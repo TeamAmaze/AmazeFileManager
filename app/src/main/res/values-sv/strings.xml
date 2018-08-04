@@ -22,7 +22,6 @@
   <string name="app_name">Förvåna</string>
   <string name="drawer_close">Stäng navigationspanel</string>
     <string name="icon">ikon</string>
-    <string name="storage">Lagring</string>
     <string name="apps">Apphanterare</string>
   <string name="ftp">FTP-server</string>
     <string name="setting">Inställningar</string>

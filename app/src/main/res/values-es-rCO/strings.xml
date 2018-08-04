@@ -23,7 +23,6 @@
   <string name="drawer_open">Abra el cajón navegación</string>
   <string name="drawer_close">Cierre el cajón navegación</string>
     <string name="icon">icono</string>
-    <string name="storage">Almacenamiento</string>
     <string name="apps">Administrador de Apps</string>
   <string name="ftp">Servidor FTP</string>
     <string name="setting">Ajustes</string>

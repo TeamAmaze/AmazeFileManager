@@ -23,7 +23,6 @@
   <string name="drawer_open">Отваряне на панела за навигация</string>
   <string name="drawer_close">Затваряне на панела за навигация</string>
     <string name="icon">икона</string>
-    <string name="storage">Хранилище</string>
     <string name="apps">Мениджър приложения</string>
   <string name="ftp">FTP сървър</string>
     <string name="setting">Настройки</string>

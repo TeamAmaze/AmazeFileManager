@@ -23,7 +23,6 @@
   <string name="drawer_open">Atidaryti navigacijos stalčių</string>
   <string name="drawer_close">Uždaryti navigacijos stalčių</string>
     <string name="icon">Ikonėlė</string>
-    <string name="storage">Saugykla</string>
     <string name="apps">Programėlių tvarkyklė</string>
   <string name="ftp">FTP Serveris</string>
     <string name="setting">Nustatymai</string>

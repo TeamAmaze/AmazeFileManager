@@ -22,7 +22,6 @@
   <string name="drawer_open">Mở ngăn kéo điều hướng</string>
   <string name="drawer_close">Thoát ngăn kéo điều hướng</string>
     <string name="icon">biểu tượng</string>
-    <string name="storage">Lưu trữ</string>
     <string name="apps">Quản lý ứng dụng</string>
   <string name="ftp">Máy chủ FTP</string>
     <string name="setting">Thiết lập</string>
