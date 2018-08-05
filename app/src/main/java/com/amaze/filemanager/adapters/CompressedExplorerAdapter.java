@@ -36,6 +36,7 @@ import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com>
@@ -49,7 +50,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     private Context context;
     private UtilitiesProvider utilsProvider;
     private Drawable folder;
-    private ArrayList<CompressedObjectParcelable> items;
+    private List<CompressedObjectParcelable> items;
     private CompressedExplorerFragment compressedExplorerFragment;
     private Decompressor decompressor;
     private LayoutInflater mInflater;
@@ -57,7 +58,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     private int offset = 0;
 
     public CompressedExplorerAdapter(Context c, UtilitiesProvider utilsProvider,
-                                     ArrayList<CompressedObjectParcelable> items,
+                                     List<CompressedObjectParcelable> items,
                                      CompressedExplorerFragment compressedExplorerFragment,
                                      Decompressor decompressor) {
         setHasStableIds(true);
@@ -144,7 +145,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         this.offset = (30 + this.offset);
     }
 
-    public void generateZip(ArrayList<CompressedObjectParcelable> arrayList) {
+    public void generateZip(List<CompressedObjectParcelable> arrayList) {
         offset = 0;
         stoppedAnimation = false;
         items = arrayList;
