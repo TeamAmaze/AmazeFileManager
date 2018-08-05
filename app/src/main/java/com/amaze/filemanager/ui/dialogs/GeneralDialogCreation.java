@@ -841,7 +841,7 @@ public class GeneralDialogCreation {
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
                 .onPositive((dialog, which) -> FileUtils.installApk(f, m))
-                .onNegative((dialog, which) -> m.openZip(f.getPath()))
+                .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
                 .theme(m.getAppTheme().getMaterialDialogTheme())
                 .build()
                 .show();
@@ -860,12 +860,7 @@ public class GeneralDialogCreation {
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
                 .onPositive((dialog, which) -> m. mainActivityHelper.extractFile(f))
-                .onNegative((dialog, which) -> {
-                    if (f.getName().toLowerCase().endsWith(".rar"))
-                        m.openRar(Uri.fromFile(f).toString());
-                    else
-                        m.openZip(Uri.fromFile(f).toString());
-                });
+                .onNegative((dialog, which) -> m.openCompressed(Uri.fromFile(f).toString()));
         if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
