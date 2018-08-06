@@ -271,10 +271,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         if (CloudSheetFragment.isCloudProviderAvailable(mainActivity)) {
             for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+                @DrawableRes int deleteIcon = R.drawable.ic_delete_grey_24dp;
+
                 if (cloudStorage instanceof Dropbox) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_DROPBOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
-                            R.drawable.ic_dropbox_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_dropbox_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_DROPBOX,
@@ -283,7 +285,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof Box) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_BOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/"),
-                            R.drawable.ic_box_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_box_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_BOX,
@@ -292,7 +294,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof OneDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"),
-                            R.drawable.ic_onedrive_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_onedrive_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_ONE_DRIVE,
@@ -301,7 +303,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof GoogleDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/"),
-                            R.drawable.ic_google_drive_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_google_drive_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
