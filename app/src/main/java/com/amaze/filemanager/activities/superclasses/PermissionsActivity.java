@@ -52,11 +52,7 @@ public class PermissionsActivity extends ThemedActivity
 
     public void requestStoragePermission(@NonNull final OnPermissionGranted onPermissionGranted) {
         final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this,
-                new String[]{getString(R.string.grant_storage_permission),
-                        getString(R.string.grantper),
-                        getString(R.string.grant),
-                        getString(R.string.cancel),
-                        null});
+                R.string.grant_storage_permission, R.string.grantper, R.string.grant, R.string.cancel);
         materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
         materialDialog.setCancelable(false);
 
@@ -67,11 +63,7 @@ public class PermissionsActivity extends ThemedActivity
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestInstallApkPermission(@NonNull final OnPermissionGranted onPermissionGranted) {
         final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this,
-                new String[]{getString(R.string.grant_apkinstall_permission),
-                        getString(R.string.grantper),
-                        getString(R.string.grant),
-                        getString(R.string.cancel),
-                        null});
+                R.string.grant_apkinstall_permission, R.string.grantper, R.string.grant, R.string.cancel);
         materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> materialDialog.dismiss());
         materialDialog.setCancelable(false);
 

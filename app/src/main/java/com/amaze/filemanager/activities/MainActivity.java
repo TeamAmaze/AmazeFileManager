@@ -975,8 +975,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     break;
                 }
                 final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
-                        new String[]{getResources().getString(R.string.questionset),
-                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                       R.string.questionset, R.string.setashome, R.string.yes, R.string.no);
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
                     main.home = main.getCurrentPath();
                     updatePaths(main.no);
