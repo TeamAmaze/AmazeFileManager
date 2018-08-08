@@ -817,10 +817,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.getMenuButton().show();
         if (openzip && zippath != null) {
-            if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
-            else {
-                openRar(zippath);
-            }
+            openCompressed(zippath);
             zippath = null;
         }
     }
@@ -1226,7 +1223,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             tabFragment.updatepaths(pos);
     }
 
-    public void openZip(String path) {
+    public void openCompressed(String path) {
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
@@ -1236,10 +1233,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commitAllowingStateLoss();
-    }
-
-    public void openRar(String path) {
-        openZip(path);
     }
 
     public MainFragment getCurrentMainFragment() {
