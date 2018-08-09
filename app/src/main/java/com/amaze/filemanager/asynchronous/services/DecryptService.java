@@ -94,7 +94,7 @@ public class DecryptService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_folder_lock_open_white_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+                getString(R.string.stop_ftp), stopPendingIntent);
 
         notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         notificationBuilder.setContentIntent(pendingIntent)
