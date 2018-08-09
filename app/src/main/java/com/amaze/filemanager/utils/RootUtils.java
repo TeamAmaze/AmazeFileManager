@@ -7,6 +7,8 @@ package com.amaze.filemanager.utils;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -37,7 +39,7 @@ public class RootUtils {
      */
     private static String mountFileSystemRW(String path) throws ShellNotRunningException {
         String command = "mount";
-        List<String> output = RootHelper.runShellCommand(command);
+        ArrayList<String> output = RootHelper.runShellCommand(command);
         String mountPoint = "", types = null;
         for (String line : output) {
             String[] words = line.split(" ");
@@ -61,7 +63,7 @@ public class RootUtils {
             } else if (types.contains("ro")) {
                 // read-only file system, remount as rw
                 String mountCommand = "mount -o rw,remount " + mountPoint;
-                List<String> mountOutput = RootHelper.runShellCommand(mountCommand);
+                ArrayList<String> mountOutput = RootHelper.runShellCommand(mountCommand);
 
                 if (mountOutput.size() != 0) {
                     // command failed, and we got a reason echo'ed
@@ -134,7 +136,7 @@ public class RootUtils {
      * Method requires busybox
      */
     private static int getFilePermissions(String path) throws ShellNotRunningException {
-        String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").iterator().next();
+        String line = RootHelper.runShellCommand("stat -c  %a \"" + path + "\"").get(0);
 
         return Integer.valueOf(line);
     }
@@ -146,7 +148,7 @@ public class RootUtils {
      */
     public static boolean delete(String path) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(path);
-        List<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
+        ArrayList<String> result = RootHelper.runShellCommand("rm -rf \"" + path + "\"");
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro
@@ -181,7 +183,7 @@ public class RootUtils {
      */
     public static boolean rename(String oldPath, String newPath) throws ShellNotRunningException {
         String mountPoint = mountFileSystemRW(oldPath);
-        List<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        ArrayList<String> output = RootHelper.runShellCommand("mv \"" + oldPath + "\" \"" + newPath + "\"");
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro
