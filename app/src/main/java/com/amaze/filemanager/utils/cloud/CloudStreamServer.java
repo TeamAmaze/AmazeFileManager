@@ -6,6 +6,7 @@ import android.util.Log;
 import com.amaze.filemanager.utils.SmbStreamer.StreamServer;
 import com.amaze.filemanager.utils.SmbStreamer.StreamSource;
 import com.amaze.filemanager.utils.SmbStreamer.Streamer;
+import com.amaze.filemanager.utils.streams.RandomAccessStream;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -107,7 +108,7 @@ public abstract class CloudStreamServer {
         /**
          * Basic constructor.
          */
-        public Response( String status, String mimeType, StreamSource data )
+        public Response( String status, String mimeType, CloudStreamSource data )
         {
             this.status = status;
             this.mimeType = mimeType;
@@ -153,7 +154,7 @@ public abstract class CloudStreamServer {
         /**
          * Data of the response, may be null.
          */
-        public StreamSource data;
+        public CloudStreamSource data;
 
         /**
          * Headers for the HTTP response. Use addHeader()
@@ -800,7 +801,7 @@ public abstract class CloudStreamServer {
         /**
          * Sends given response to the socket.
          */
-        private void sendResponse(Socket socket, String status, String mime, Properties header, StreamSource data )
+        private void sendResponse(Socket socket, String status, String mime, Properties header, CloudStreamSource data )
         {
             try
             {
@@ -835,12 +836,12 @@ public abstract class CloudStreamServer {
 
                 if ( data != null )
                 {
-                    //long pending = data.available();      // This is to support partial sends, see serveFile()
+                    //long pending = data.availableExact();      // This is to support partial sends, see serveFile()
                     data.open();
                     byte[] buff = new byte[8192];
                     int read = 0;
                     while ((read = data.read(buff))>0){
-                        //if(SolidExplorer.LOG)Log.d(CloudUtil.TAG, "Read: "+ read +", pending: "+ data.available());
+                        //if(SolidExplorer.LOG)Log.d(CloudUtil.TAG, "Read: "+ read +", pending: "+ data.availableExact());
                         out.write( buff, 0, read );
                     }
                 }

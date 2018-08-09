@@ -39,7 +39,6 @@ import static org.junit.Assert.*;
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
 public class StreamSourceTest {
     private SmbFile file;
-    private StreamSource ssEmpty;
     private StreamSource ss;
     private byte[] text;
 
@@ -50,7 +49,6 @@ public class StreamSourceTest {
 
         text = textInFile.toString().getBytes();
         file = createFile();
-        ssEmpty = new StreamSource();
         ss = new StreamSource(file, file.length());
     }
 
@@ -69,18 +67,6 @@ public class StreamSourceTest {
 
         return file;
     }
-
-    /**
-     * Purpose: Open an empty stream
-     * Input: no
-     * Expected:
-     *          IOException is thrown
-     */
-    @Test (expected = IOException.class)
-    public void openEmpty() throws IOException {
-        ssEmpty.open();
-    }
-
 
     /*
       From now on ssEmpty will not be used since StreamSource()
@@ -309,7 +295,7 @@ public class StreamSourceTest {
     public void available() throws IOException {
         int amount = 12;
         ss.moveTo(text.length - amount);
-        assertEquals(amount, ss.available());
+        assertEquals(amount, ss.availableExact());
     }
 
     /**
@@ -321,9 +307,9 @@ public class StreamSourceTest {
     @Test
     public void reset() throws IOException {
         ss.moveTo(10);
-        assertEquals(text.length - 10, ss.available());
+        assertEquals(text.length - 10, ss.availableExact());
         ss.reset();
-        assertEquals(text.length, ss.available());
+        assertEquals(text.length, ss.availableExact());
     }
 
     /**
