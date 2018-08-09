@@ -44,10 +44,10 @@ public class RootHelper {
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
      */
-    public static List<String> runShellCommand(String cmd) throws ShellNotRunningException {
+    public static ArrayList<String> runShellCommand(String cmd) throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
             throw new ShellNotRunningException();
-        final List<String> result = new ArrayList<>();
+        final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
         MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> result.addAll(output));
@@ -217,7 +217,7 @@ public class RootHelper {
         String name = f.getName();
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            List<String> ls = runShellCommand("ls -l " + p);
+            ArrayList<String> ls = runShellCommand("ls -l " + p);
             for (String s : ls) {
                 if (contains(s.split(" "), name)) {
                     try {
