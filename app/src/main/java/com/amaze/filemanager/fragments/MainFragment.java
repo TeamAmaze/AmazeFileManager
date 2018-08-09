@@ -497,7 +497,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             // do not allow drawer to open when item gets selected
             if (!getMainActivity().getDrawer().isLocked()) {
-                getMainActivity().getDrawer().lock(DrawerLayout.LOCK_MODE_UNDEFINED);
+                getMainActivity().getDrawer().lock(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
             return true;
         }
