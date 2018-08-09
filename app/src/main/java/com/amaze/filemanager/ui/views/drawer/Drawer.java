@@ -259,16 +259,20 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
             File f = new File(file);
             String name;
-            @DrawableRes int icon1 = R.drawable.ic_phone_android_white_24dp;
+            @DrawableRes int icon1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
                 name = resources.getString(R.string.storage);
+                icon1 = R.drawable.ic_phone_android_white_24dp;
             } else if ("/storage/sdcard1".equals(file)) {
                 name = resources.getString(R.string.extstorage);
                 icon1 = R.drawable.ic_sd_storage_white_24dp;
             } else if ("/".equals(file)) {
                 name = resources.getString(R.string.rootdirectory);
                 icon1 = R.drawable.ic_drawer_root_white;
-            } else name = f.getName();
+            } else {
+                name = f.getName();
+                icon1 = R.drawable.ic_sd_storage_white_24dp;
+            }
 
             if (f.isDirectory() || f.canExecute()) {
                 addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
