@@ -8,6 +8,8 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class RootUtils {
@@ -205,7 +207,7 @@ public class RootUtils {
 
     /**
      * This converts from a set of booleans to OCTAL permissions notations.
-     * For use with {@link RootUtils.CHMOD_COMMAND}
+     * For use with {@link RootUtils#CHMOD_COMMAND}
      * (true, false, false,  true, true, false,  false, false, true) => 0461
      */
     public static int permissionsToOctalString(boolean ur, boolean uw, boolean ux,
