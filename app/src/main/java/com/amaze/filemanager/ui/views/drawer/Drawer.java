@@ -46,8 +46,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -569,13 +570,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                         && meta.path.contains(OTGUtil.PREFIX_OTG)
                         && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
-                    // we've not gotten otg path yet
-                    // start system request for storage access framework
-                    Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                    MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
+                    dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
+                        SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
+                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+                        dialog.dismiss();
+                    });
 
-                    SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+                    dialog.show();
                 } else {
                     pendingPath = meta.path;
                     closeIfNotLocked();

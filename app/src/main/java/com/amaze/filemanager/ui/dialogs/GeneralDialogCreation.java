@@ -1147,4 +1147,9 @@ public class GeneralDialogCreation {
         a.show();
     }
 
+    public static MaterialDialog showOtgSafExplanationDialog(ThemedActivity themedActivity) {
+        return GeneralDialogCreation.showBasicDialog(themedActivity, R.string.saf_otg_explanation,
+                R.string.otg_access, R.string.ok, R.string.cancel);
+    }
+
 }
