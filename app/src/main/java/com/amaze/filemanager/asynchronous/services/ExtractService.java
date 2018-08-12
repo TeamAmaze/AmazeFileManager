@@ -65,7 +65,6 @@ public class ExtractService extends AbstractProgressiveService {
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
     private ProgressHandler progressHandler = new ProgressHandler();
-    private volatile float progressPercent = 0f;
     private ProgressListener progressListener;
     private int accentColor;
     private SharedPreferences sharedPreferences;
@@ -150,16 +149,6 @@ public class ExtractService extends AbstractProgressiveService {
     @Override
     protected int getNotificationId() {
         return NotificationConstants.EXTRACT_ID;
-    }
-
-    @Override
-    protected float getPercentProgress() {
-        return progressPercent;
-    }
-
-    @Override
-    protected void setPercentProgress(float progress) {
-        progressPercent = progress;
     }
 
     @Override

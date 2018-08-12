@@ -44,6 +44,11 @@ public class ProgressHandler {
     private volatile boolean isCancelled = false;
 
     /**
+     * Percentage of progress
+     */
+    private volatile float progressPercent = 0f;
+
+    /**
      * callback interface to interact with process viewer fragment and notification
      */
     private volatile ProgressListener progressListener;
@@ -123,6 +128,14 @@ public class ProgressHandler {
 
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
+    }
+
+    public float getPercentProgress() {
+        return progressPercent;
+    }
+
+    public void setPercentProgress(float progress) {
+        progressPercent = progress;
     }
 
     /**

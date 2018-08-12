@@ -49,7 +49,6 @@ public class DecryptService extends AbstractProgressiveService {
     private ProgressHandler progressHandler = new ProgressHandler();
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
-    private volatile float progressPercent = 0f;
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
@@ -184,16 +183,6 @@ public class DecryptService extends AbstractProgressiveService {
     @Override
     protected int getNotificationId() {
         return NotificationConstants.DECRYPT_ID;
-    }
-
-    @Override
-    protected float getPercentProgress() {
-        return progressPercent;
-    }
-
-    @Override
-    protected void setPercentProgress(float progress) {
-        progressPercent = progress;
     }
 
     @Override

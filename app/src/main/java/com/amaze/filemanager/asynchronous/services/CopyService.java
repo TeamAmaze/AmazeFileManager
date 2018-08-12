@@ -81,7 +81,6 @@ public class CopyService extends AbstractProgressiveService {
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ServiceWatcherUtil watcherUtil;
     private ProgressHandler progressHandler = new ProgressHandler();
-    private volatile float progressPercent = 0f;
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
@@ -180,11 +179,6 @@ public class CopyService extends AbstractProgressiveService {
     }
 
     @Override
-    protected float getPercentProgress() {
-        return progressPercent;
-    }
-
-    @Override
     protected RemoteViews getNotificationCustomViewSmall() {
         return customSmallContentViews;
     }
@@ -195,16 +189,10 @@ public class CopyService extends AbstractProgressiveService {
     }
 
     @Override
-    protected void setPercentProgress(float progress) {
-        progressPercent = progress;
-    }
-
-    @Override
     @StringRes
     protected int getTitle(boolean move) {
         return move ? R.string.moving : R.string.copying;
     }
-
     public ProgressListener getProgressListener() {
         return progressListener;
     }
