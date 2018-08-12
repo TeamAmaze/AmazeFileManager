@@ -73,8 +73,7 @@ public class ProgressHandler {
         long speedRaw = (newPosition - writtenSize);
         this.writtenSize = newPosition;
 
-        progressListener.onProgressed(fileName, sourceFiles, sourceFilesProcessed,
-                totalSize, writtenSize, speedRaw);
+        progressListener.onProgressed(speedRaw);
     }
 
     public void setFileName(String fileName) {
@@ -89,8 +88,16 @@ public class ProgressHandler {
         this.sourceFilesProcessed = sourceFilesProcessed;
     }
 
+    public int getSourceFilesProcessed() {
+        return sourceFilesProcessed;
+    }
+
     public void setSourceSize(int sourceFiles) {
         this.sourceFiles = sourceFiles;
+    }
+
+    public int getSourceSize() {
+        return sourceFiles;
     }
 
     // dynamically setting total size, useful in case files are compressed
@@ -125,14 +132,8 @@ public class ProgressHandler {
      */
     public interface ProgressListener {
         /**
-         * @param fileName File name currently being processed (can be recursive, irrespective of selections)
-         * @param sourceFiles how many total number of files did the user selected
-         * @param sourceProgress which file is being processed from total number of files
-         * @param totalSize total size of source files
-         * @param writtenSize where are we at from total number of bytes
          * @param speed raw write speed in bytes
          */
-        void onProgressed(String fileName, int sourceFiles, int sourceProgress, long totalSize,
-                          long writtenSize, long speed);
+        void onProgressed(long speed);
     }
 }

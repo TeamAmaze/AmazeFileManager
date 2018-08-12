@@ -182,10 +182,8 @@ public class EncryptService extends AbstractProgressiveService {
 
             progressHandler.setSourceSize(1);
             progressHandler.setTotalSize(totalSize);
-            progressHandler.setProgressListener((fileName, sourceFiles, sourceProgress, totalSize, writtenSize, speed) -> {
-                publishResults(fileName, sourceFiles, sourceProgress, totalSize,
-                        writtenSize, speed, false, false);
-            });
+            progressHandler.setProgressListener((speed) ->
+                publishResults(speed, false, false));
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
             addFirstDatapoint(baseFile.getName(), 1, totalSize, true);// we're using encrypt as move flag false
