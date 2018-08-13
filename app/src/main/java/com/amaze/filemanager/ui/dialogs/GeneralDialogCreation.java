@@ -32,7 +32,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
@@ -104,6 +106,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
@@ -118,20 +121,20 @@ import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 public class GeneralDialogCreation {
 
-    public static MaterialDialog showBasicDialog(ThemedActivity m, String[] texts) {
-        int accentColor = m.getAccent();
-        MaterialDialog.Builder a = new MaterialDialog.Builder(m)
-                .content(texts[0])
+    public static MaterialDialog showBasicDialog(ThemedActivity themedActivity, @StringRes int content,
+                                                 @StringRes int title,
+                                                 @StringRes int postiveText,
+                                                 @StringRes int negativeText) {
+        int accentColor = themedActivity.getAccent();
+        MaterialDialog.Builder a = new MaterialDialog.Builder(themedActivity)
+                .content(content)
                 .widgetColor(accentColor)
-                .theme(m.getAppTheme().getMaterialDialogTheme())
-                .title(texts[1])
-                .positiveText(texts[2])
+                .theme(themedActivity.getAppTheme().getMaterialDialogTheme())
+                .title(title)
+                .positiveText(postiveText)
                 .positiveColor(accentColor)
-                .negativeText(texts[3])
+                .negativeText(negativeText)
                 .negativeColor(accentColor);
-        if (texts[4] != (null)) {
-            a.neutralText(texts[4]).neutralColor(accentColor);
-        }
         return a.build();
     }
 
@@ -841,7 +844,7 @@ public class GeneralDialogCreation {
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
                 .onPositive((dialog, which) -> FileUtils.installApk(f, m))
-                .onNegative((dialog, which) -> m.openZip(f.getPath()))
+                .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
                 .theme(m.getAppTheme().getMaterialDialogTheme())
                 .build()
                 .show();
@@ -860,12 +863,7 @@ public class GeneralDialogCreation {
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
                 .onPositive((dialog, which) -> m. mainActivityHelper.extractFile(f))
-                .onNegative((dialog, which) -> {
-                    if (f.getName().toLowerCase().endsWith(".rar"))
-                        m.openRar(Uri.fromFile(f).toString());
-                    else
-                        m.openZip(Uri.fromFile(f).toString());
-                });
+                .onNegative((dialog, which) -> m.openCompressed(Uri.fromFile(f).toString()));
         if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
@@ -1142,6 +1140,11 @@ public class GeneralDialogCreation {
         });
 
         a.show();
+    }
+
+    public static MaterialDialog showOtgSafExplanationDialog(ThemedActivity themedActivity) {
+        return GeneralDialogCreation.showBasicDialog(themedActivity, R.string.saf_otg_explanation,
+                R.string.otg_access, R.string.ok, R.string.cancel);
     }
 
 }

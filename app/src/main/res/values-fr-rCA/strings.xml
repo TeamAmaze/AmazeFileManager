@@ -23,7 +23,6 @@
   <string name="drawer_open">Ouvrir le tiroir de navigation</string>
   <string name="drawer_close">Fermer le tiroir de navigation</string>
     <string name="icon">icône</string>
-    <string name="storage">Stockage</string>
     <string name="apps">Gestionnaire d\'application</string>
   <string name="ftp">Serveur FTP</string>
     <string name="setting">Préférences</string>

@@ -23,7 +23,6 @@
   <string name="drawer_open">Öffne Navigationsleiste</string>
   <string name="drawer_close">Schließe Navigationsleiste</string>
     <string name="icon">Symbol</string>
-    <string name="storage">Speicher</string>
     <string name="apps">App Manager</string>
   <string name="ftp">FTP Server</string>
     <string name="setting">Einstellungen</string>

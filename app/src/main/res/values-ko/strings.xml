@@ -22,7 +22,6 @@
   <string name="drawer_open">네비게이션 창 열기</string>
   <string name="drawer_close">네비게이션 창 닫기</string>
     <string name="icon">아이콘</string>
-    <string name="storage">저장소</string>
     <string name="apps">애플리케이션 매니저</string>
   <string name="ftp">FTP 서버</string>
     <string name="setting">설정</string>

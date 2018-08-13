@@ -26,7 +26,6 @@
     <string name="drawer_open">Öppna navigationsfält</string>
     <string name="drawer_close">Stäng navigationsfält</string>
     <string name="icon">ikon</string>
-    <string name="storage">Förvaring</string>
     <string name="apps">Apphanterare</string>
     <string name="ftp">FTP-server</string>
     <string name="setting">Inställningar</string>

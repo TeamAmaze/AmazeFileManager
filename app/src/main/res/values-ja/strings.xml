@@ -24,7 +24,6 @@
   <string name="drawer_open">ナビゲーションドロワーを開く</string>
   <string name="drawer_close">ナビゲーションドロワーを閉じる</string>
     <string name="icon">アイコン</string>
-    <string name="storage">ストレージ</string>
     <string name="apps">アプリマネージャー</string>
   <string name="ftp">FTP サーバー</string>
     <string name="setting">設定</string>

@@ -23,7 +23,6 @@
   <string name="drawer_open">Buka navigasi rinci</string>
   <string name="drawer_close">Tutup navigasi rinci</string>
     <string name="icon">ikon</string>
-    <string name="storage">Penyimpanan</string>
     <string name="apps">Pengelola Aplikasi</string>
   <string name="ftp">Server FTP</string>
     <string name="setting">Setelan</string>

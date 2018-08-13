@@ -23,7 +23,6 @@
   <string name="drawer_open">Avaa navigointivalikko</string>
   <string name="drawer_close">Sulje navigointivalikko</string>
     <string name="icon">Ikoni</string>
-    <string name="storage">Tallennustila</string>
     <string name="apps">Sovellusten hallinta</string>
   <string name="ftp">FTP-palvelin</string>
     <string name="setting">Asetukset</string>

@@ -16,20 +16,22 @@ public class CompressedObjectParcelable implements Parcelable {
 
     public final boolean directory;
     public final int type;
+    public final String path;
     public final String name;
     public final long date, size;
     public final int filetype;
     public final IconDataParcelable iconData;
 
-    public CompressedObjectParcelable(String name, long date, long size, boolean directory) {
+    public CompressedObjectParcelable(String path, long date, long size, boolean directory) {
         this.directory = directory;
         this.type = TYPE_NORMAL;
-        this.name = name;
+        this.path = path;
+        this.name = getNameForPath(path);
         this.date = date;
         this.size = size;
-        this.filetype = Icons.getTypeOfFile(name, directory);
+        this.filetype = Icons.getTypeOfFile(path, directory);
         this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES,
-                Icons.loadMimeIcon(name, directory));
+                Icons.loadMimeIcon(path, directory));
     }
 
     /**
@@ -38,6 +40,7 @@ public class CompressedObjectParcelable implements Parcelable {
     public CompressedObjectParcelable() {
         this.directory = true;
         this.type = TYPE_GOBACK;
+        this.path = null;
         this.name = null;
         this.date = 0;
         this.size = 0;
@@ -54,6 +57,7 @@ public class CompressedObjectParcelable implements Parcelable {
         p1.writeInt(type);
         if(type != TYPE_GOBACK) {
             p1.writeInt(directory? 1:0);
+            p1.writeString(path);
             p1.writeString(name);
             p1.writeLong(size);
             p1.writeLong(date);
@@ -77,6 +81,7 @@ public class CompressedObjectParcelable implements Parcelable {
         type = im.readInt();
         if(type == TYPE_GOBACK) {
             directory = true;
+            path = null;
             name = null;
             date = 0;
             size = 0;
@@ -84,6 +89,7 @@ public class CompressedObjectParcelable implements Parcelable {
             iconData = null;
         } else {
             directory = im.readInt() == 1;
+            path = im.readString();
             name = im.readString();
             size = im.readLong();
             date = im.readLong();
@@ -101,9 +107,22 @@ public class CompressedObjectParcelable implements Parcelable {
                 return -1;
             } else if (file2.directory && !(file1).directory) {
                 return 1;
-            } else return file1.name.compareToIgnoreCase(file2.name);
+            } else return file1.path.compareToIgnoreCase(file2.path);
         }
 
+    }
+
+    private String getNameForPath(String path) {
+        if (path.isEmpty()) return "";
+
+        final StringBuilder stringBuilder = new StringBuilder(path);
+        stringBuilder.deleteCharAt(path.length() - 1);
+
+        try {
+            return stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            return path.substring(0, path.lastIndexOf("/"));
+        }
     }
 
 }

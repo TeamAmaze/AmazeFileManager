@@ -23,7 +23,6 @@
   <string name="drawer_open">Otevřít navigační lištu</string>
   <string name="drawer_close">Zavřít navigační lištu</string>
     <string name="icon">ikona</string>
-    <string name="storage">Úložiště</string>
     <string name="apps">Správce Aplikací</string>
   <string name="ftp">Server FTP</string>
     <string name="setting">Nastavení</string>

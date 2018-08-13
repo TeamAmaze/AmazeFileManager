@@ -23,7 +23,6 @@
   <string name="drawer_open">Адкрыць панэль</string>
   <string name="drawer_close">Зачыніць панель</string>
     <string name="icon">значок</string>
-    <string name="storage">Сховішча</string>
     <string name="apps">Мэнеджэр праграм</string>
   <string name="ftp">FTP сервер</string>
     <string name="setting">Налады</string>

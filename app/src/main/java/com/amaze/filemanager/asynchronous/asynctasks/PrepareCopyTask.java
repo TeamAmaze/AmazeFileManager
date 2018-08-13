@@ -59,6 +59,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
     private boolean rootMode = false;
     private OpenMode openMode = OpenMode.FILE;
     private DO_FOR_ALL_ELEMENTS dialogState = null;
+    private boolean isRenameMoveSupport = false;
 
     //causes folder containing filesToCopy to be deleted
     private ArrayList<File> deleteCopiedFolder = null;
@@ -104,10 +105,18 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
             return null;
         }
 
+        HybridFile destination = new HybridFile(openMode, path);
+        destination.generateMode(context);
+
+        if (move && destination.getMode() == openMode
+                && MoveFiles.getOperationSupportedFileSystem().contains(openMode)) {
+            // move/rename supported filesystems, skip checking for space
+            isRenameMoveSupport = true;
+        }
+
         totalBytes = FileUtils.getTotalBytes(filesToCopy, context);
 
-        HybridFile destination = new HybridFile(openMode, path);
-        if (destination.getUsableSpace() < totalBytes) {
+        if (destination.getUsableSpace() < totalBytes && !isRenameMoveSupport) {
             publishProgress(context.getResources().getString(R.string.in_safe));
             return null;
         }

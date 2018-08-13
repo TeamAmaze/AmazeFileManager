@@ -23,7 +23,6 @@
   <string name="drawer_open">Άνοιγμα μενού πλοήγησης</string>
   <string name="drawer_close">Κλείσιμο μενού πλοήγησης</string>
     <string name="icon">Εικονίδιο</string>
-    <string name="storage">Αποθηκευτικός χώρος</string>
     <string name="apps">Διαχειριστής εφαρμογών</string>
   <string name="ftp">Διακομιστής FTP</string>
     <string name="setting">Ρυθμίσεις</string>

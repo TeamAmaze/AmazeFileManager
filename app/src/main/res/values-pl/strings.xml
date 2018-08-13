@@ -23,7 +23,6 @@
   <string name="drawer_open">Otwórz pasek nawigacji</string>
   <string name="drawer_close">Zamknij pasek nawigacji</string>
     <string name="icon">ikona</string>
-    <string name="storage">Pamięć</string>
     <string name="apps">Menedżer aplikacji</string>
   <string name="ftp">Serwer FTP</string>
     <string name="setting">Ustawienia</string>

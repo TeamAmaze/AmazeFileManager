@@ -128,4 +128,31 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         dest.writeByte((byte) (isDirectory ? 1 : 0));
 
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("HybridFileParcelable, path=[").append(path).append(']')
+                .append(", name=[").append(name).append(']')
+                .append(", size=[").append(size).append(']')
+                .append(", date=[").append(date).append(']')
+                .append(", permission=[").append(permission).append(']')
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || (!(obj instanceof HybridFileParcelable)))
+            return false;
+        return path.equals(((HybridFileParcelable)obj).path);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path.hashCode();
+        result = 37 * result + name.hashCode();
+        result = 37 * result + (isDirectory ? 1 : 0);
+        result = 37 * result + (int)(size ^ size >>> 32);
+        result = 37 * result + (int)(date ^ date >>> 32);
+        return result;
+    }
 }

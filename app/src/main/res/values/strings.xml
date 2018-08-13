@@ -25,7 +25,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="icon">icon</string>
-    <string name="storage">Storage</string>
+    <string name="storage">Internal Storage</string>
     <string name="apps">App Manager</string>
     <string name="ftp">FTP Server</string>
     <string name="setting">Settings</string>
@@ -641,5 +641,6 @@
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>
     <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
+    <string name="saf_otg_explanation">You\'ll now go to Android\'s filesystem for security reasons. Please select the USB device from the list on the left.</string>
 </resources>
 

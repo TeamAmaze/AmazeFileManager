@@ -23,8 +23,7 @@
   <string name="drawer_open">Navigatielade openen</string>
   <string name="drawer_close">Navigatielade sluiten</string>
   <string name="icon">pictogram</string>
-  <string name="storage">Opslag</string>
-  <string name="apps">Applicatiebeheerder</string>
+    <string name="apps">Applicatiebeheerder</string>
   <string name="ftp">FTP–Server</string>
   <string name="setting">Instellingen</string>
   <string name="select">Item selecteren</string>

@@ -19,8 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="storage">אחסון</string>
-  <string name="setting">הגדרות</string>
+    <string name="setting">הגדרות</string>
   <string name="cancel">ביטול</string>
   <string name="save">שמור</string>
   <string name="size_capitalized">גודל</string>

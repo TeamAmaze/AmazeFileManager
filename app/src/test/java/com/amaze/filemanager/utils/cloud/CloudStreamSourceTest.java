@@ -282,10 +282,10 @@ public class CloudStreamSourceTest {
      *          return amount
      */
     @Test
-    public void available() {
+    public void available() throws IOException {
         int amount = 12;
         cs.moveTo((int)len - amount);
-        assertEquals(amount, cs.available());
+        assertEquals(amount, cs.availableExact());
     }
 
     /**
@@ -295,11 +295,11 @@ public class CloudStreamSourceTest {
      *          return len
      */
     @Test
-    public void reset() {
+    public void reset() throws IOException {
         cs.moveTo(10);
-        assertEquals(len - 10, cs.available());
+        assertEquals(len - 10, cs.availableExact());
         cs.reset();
-        assertEquals(len, cs.available());
+        assertEquals(len, cs.availableExact());
     }
 
 }

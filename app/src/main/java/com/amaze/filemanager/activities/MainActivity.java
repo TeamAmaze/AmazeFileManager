@@ -817,10 +817,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.getMenuButton().show();
         if (openzip && zippath != null) {
-            if (zippath.endsWith(".zip") || zippath.endsWith(".apk")) openZip(zippath);
-            else {
-                openRar(zippath);
-            }
+            openCompressed(zippath);
             zippath = null;
         }
     }
@@ -975,8 +972,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     break;
                 }
                 final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
-                        new String[]{getResources().getString(R.string.questionset),
-                                getResources().getString(R.string.setashome), getResources().getString(R.string.yes), getResources().getString(R.string.no), null});
+                       R.string.questionset, R.string.setashome, R.string.yes, R.string.no);
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
                     main.home = main.getCurrentPath();
                     updatePaths(main.no);
@@ -1227,7 +1223,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             tabFragment.updatepaths(pos);
     }
 
-    public void openZip(String path) {
+    public void openCompressed(String path) {
         appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_top, R.anim.slide_in_bottom);
@@ -1237,10 +1233,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         zipFragment.setArguments(bundle);
         fragmentTransaction.add(R.id.content_frame, zipFragment);
         fragmentTransaction.commitAllowingStateLoss();
-    }
-
-    public void openRar(String path) {
-        openZip(path);
     }
 
     public MainFragment getCurrentMainFragment() {

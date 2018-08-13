@@ -73,6 +73,7 @@ import com.github.junrar.Archive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
@@ -318,7 +319,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
                     String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
                     for (int i = 0; i < dirs.length; i++) {
-                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).name;
+                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).path;
                     }
 
                     decompressor.decompress(compressedFile.getPath(), dirs);
@@ -433,7 +434,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
     }
 
-    private void createViews(ArrayList<CompressedObjectParcelable> items, String dir) {
+    private void createViews(List<CompressedObjectParcelable> items, String dir) {
         if (compressedExplorerAdapter == null) {
             compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, decompressor);
             listView.setAdapter(compressedExplorerAdapter);

@@ -87,9 +87,9 @@ public class ZipHelperTask extends CompressedHelperTask {
             ArrayList<String> strings = new ArrayList<>();
 
             for (CompressedObjectParcelable entry : wholelist) {
-                File file = new File(entry.name);
+                File file = new File(entry.path);
                 if (relativeDirectory == null || relativeDirectory.trim().length() == 0) {
-                    String y = entry.name;
+                    String y = entry.path;
                     if (y.startsWith("/"))
                         y = y.substring(1, y.length());
                     if (file.getParent() == null || file.getParent().length() == 0 || file.getParent().equals("/")) {
@@ -106,8 +106,8 @@ public class ZipHelperTask extends CompressedHelperTask {
                         }
                     }
                 } else {
-                    String y = entry.name;
-                    if (entry.name.startsWith("/"))
+                    String y = entry.path;
+                    if (entry.path.startsWith("/"))
                         y = y.substring(1, y.length());
 
                     if (file.getParent() != null && (file.getParent().equals(relativeDirectory) || file.getParent().equals("/" + relativeDirectory))) {

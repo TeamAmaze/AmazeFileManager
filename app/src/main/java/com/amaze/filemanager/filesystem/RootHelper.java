@@ -50,11 +50,7 @@ public class RootHelper {
         final ArrayList<String> result = new ArrayList<>();
 
         // callback being called on a background handler thread
-        MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> {
-            for (String line : output) {
-                result.add(line);
-            }
-        });
+        MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> result.addAll(output));
         MainActivity.shellInteractive.waitForIdle();
         return result;
     }
@@ -282,18 +278,16 @@ public class RootHelper {
     public static void getFiles(String path, boolean root, boolean showHidden,
                                 GetModeCallBack getModeCallBack, OnFileFound fileCallback) {
         OpenMode mode = OpenMode.FILE;
-        ArrayList<HybridFileParcelable> files = new ArrayList<>();
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
             try {
                 // we're rooted and we're trying to load file with superuser
                 // we're at the root directories, superuser is required!
-                ArrayList<String> ls;
+                List<String> ls;
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
                 ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
                 if (ls != null) {
-                    for (int i = 0; i < ls.size(); i++) {
-                        String file = ls.get(i);
+                    for (String file : ls) {
                         if (!file.contains("Permission denied")) {
                             HybridFileParcelable array = FileUtils.parseName(file);
                             if (array != null) {
@@ -304,11 +298,9 @@ public class RootHelper {
                                     boolean isdirectory = isDirectory(array.getLink(), root, 0);
                                     array.setDirectory(isdirectory);
                                 } else array.setDirectory(isDirectory(array));
-                                files.add(array);
                                 fileCallback.onFileFound(array);
                             }
                         }
-
                     }
                     mode = OpenMode.ROOT;
                 }
@@ -319,7 +311,7 @@ public class RootHelper {
             }
         }
 
-        if (FileUtils.canListFiles(new File(path))) {
+        else if (FileUtils.canListFiles(new File(path))) {
             // we're taking a chance to load files using basic java filesystem
             getFilesList(path, showHidden, fileCallback);
             mode = OpenMode.FILE;

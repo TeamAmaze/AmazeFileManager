@@ -23,7 +23,6 @@
   <string name="drawer_open">Apri pannello di navigazione</string>
   <string name="drawer_close">Chiudi pannello di navigazione</string>
     <string name="icon">icona</string>
-    <string name="storage">Archiviazione</string>
     <string name="apps">Gestione app</string>
   <string name="ftp">Server FTP</string>
     <string name="setting">Impostazioni</string>

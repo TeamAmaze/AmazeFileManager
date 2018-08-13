@@ -1,3 +1,27 @@
+/*
+ * Drawer.java
+ *
+ * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
+ * Mitch West<mitch9378dev@gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package com.amaze.filemanager.ui.views.drawer;
 
 import android.content.Intent;
@@ -22,8 +46,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -235,15 +260,20 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
             File f = new File(file);
             String name;
-            @DrawableRes int icon1 = R.drawable.ic_sd_storage_white_24dp;
+            @DrawableRes int icon1;
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
                 name = resources.getString(R.string.storage);
+                icon1 = R.drawable.ic_phone_android_white_24dp;
             } else if ("/storage/sdcard1".equals(file)) {
                 name = resources.getString(R.string.extstorage);
+                icon1 = R.drawable.ic_sd_storage_white_24dp;
             } else if ("/".equals(file)) {
                 name = resources.getString(R.string.rootdirectory);
                 icon1 = R.drawable.ic_drawer_root_white;
-            } else name = f.getName();
+            } else {
+                name = f.getName();
+                icon1 = R.drawable.ic_sd_storage_white_24dp;
+            }
 
             if (f.isDirectory() || f.canExecute()) {
                 addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
@@ -271,10 +301,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         if (CloudSheetFragment.isCloudProviderAvailable(mainActivity)) {
             for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+                @DrawableRes int deleteIcon = R.drawable.ic_delete_grey_24dp;
+
                 if (cloudStorage instanceof Dropbox) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_DROPBOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
-                            R.drawable.ic_dropbox_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_dropbox_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_DROPBOX,
@@ -283,7 +315,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof Box) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_BOX,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/"),
-                            R.drawable.ic_box_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_box_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_BOX,
@@ -292,7 +324,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof OneDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_ONE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"),
-                            R.drawable.ic_onedrive_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_onedrive_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_ONE_DRIVE,
@@ -301,7 +333,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (cloudStorage instanceof GoogleDrive) {
                     addNewItem(menu, CLOUDS_GROUP, order++, CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
                             new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/"),
-                            R.drawable.ic_google_drive_white_24dp, R.drawable.ic_edit_24dp);
+                            R.drawable.ic_google_drive_white_24dp, deleteIcon);
 
                     accountAuthenticationList.add(new String[] {
                             CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
@@ -542,13 +574,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                         && meta.path.contains(OTGUtil.PREFIX_OTG)
                         && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
-                    // we've not gotten otg path yet
-                    // start system request for storage access framework
-                    Toast.makeText(mainActivity, mainActivity.getString(R.string.otg_access), Toast.LENGTH_LONG).show();
+                    MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
+                    dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
+                        SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
+                        Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                        mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+                        dialog.dismiss();
+                    });
 
-                    SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+                    dialog.show();
                 } else {
                     pendingPath = meta.path;
                     closeIfNotLocked();

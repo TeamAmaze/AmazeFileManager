@@ -23,7 +23,6 @@
   <string name="drawer_open">Navigációs fiók megnyitása</string>
   <string name="drawer_close">Navigációs fiók bezárása</string>
     <string name="icon">ikon</string>
-    <string name="storage">Tárhely</string>
     <string name="apps">Alkalmazáskezelő</string>
   <string name="ftp">FTP-kiszolgáló</string>
     <string name="setting">Beállítások</string>
