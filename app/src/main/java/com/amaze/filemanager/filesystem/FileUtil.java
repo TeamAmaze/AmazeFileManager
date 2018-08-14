@@ -669,9 +669,11 @@ public abstract class FileUtil {
             try {
                 output.close();
             } catch (IOException e) {
+                e.printStackTrace();
                 // do nothing.
             }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
         boolean result = file.canWrite();

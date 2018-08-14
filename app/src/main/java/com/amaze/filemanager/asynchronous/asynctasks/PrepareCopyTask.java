@@ -100,6 +100,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                 || openMode == OpenMode.BOX
                 || openMode == OpenMode.GDRIVE
                 || openMode == OpenMode.ONEDRIVE
+                || openMode == OpenMode.ROOT
                 ) {
             // no helper method for OTG to determine storage space
             return null;
@@ -145,7 +146,9 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                 || openMode == OpenMode.GDRIVE
                 || openMode == OpenMode.DROPBOX
                 || openMode == OpenMode.BOX
-                || openMode == OpenMode.ONEDRIVE) {
+                || openMode == OpenMode.ONEDRIVE
+                || openMode == OpenMode.ROOT
+                ) {
 
             startService(filesToCopy, path, openMode);
         } else {

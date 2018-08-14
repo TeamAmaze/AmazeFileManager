@@ -375,9 +375,10 @@ public class CopyService extends AbstractProgressiveService {
                             if (!progressHandler.getCancelled()) {
 
                                 if (!f1.isSmb()
-                                        && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
+                                        && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT || true)
                                         && isRootExplorer) {
                                     // either source or target are in root
+                                    Log.d(getClass().getSimpleName(), "either source or target are in root");
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
                                     continue;
