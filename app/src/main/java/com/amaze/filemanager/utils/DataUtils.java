@@ -77,12 +77,12 @@ public class DataUtils {
 
     }
 
-    private static class SingletonHelper{
+    private static class DataUtilsHolder {
         private static final DataUtils INSTANCE = new DataUtils();
     }
 
     public static DataUtils getInstance() {
-        return SingletonHelper.INSTANCE;
+        return DataUtilsHolder.INSTANCE;
     }
 
     public int containsServer(String[] a) {
