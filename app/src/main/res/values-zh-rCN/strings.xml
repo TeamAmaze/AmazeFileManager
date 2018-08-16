@@ -593,4 +593,5 @@
   <string name="transfer_rate">传输速率</string>
   <string name="unknown">未知</string>
   <string name="multiple_invalid_archive_entries">无法解压一些文件，压缩文件已损坏或为恶意文件</string>
+    <string name="storage">内部储存空间</string>
 </resources>
