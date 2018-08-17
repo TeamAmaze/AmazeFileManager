@@ -73,13 +73,16 @@ public class DataUtils {
 
     private DataChangeListener dataChangeListener;
 
-    private static DataUtils sDataUtils;
+    private DataUtils(){
+
+    }
+
+    private static class DataUtilsHolder {
+        private static final DataUtils INSTANCE = new DataUtils();
+    }
 
     public static DataUtils getInstance() {
-        if (sDataUtils == null) {
-            sDataUtils = new DataUtils();
-        }
-        return sDataUtils;
+        return DataUtilsHolder.INSTANCE;
     }
 
     public int containsServer(String[] a) {
