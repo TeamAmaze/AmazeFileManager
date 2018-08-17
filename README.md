@@ -1,4 +1,4 @@
-# Amaze File Manager [<img src="https://travis-ci.org/TeamAmaze/AmazeFileManager.svg?branch=master">](https://travis-ci.org/TeamAmaze/AmazeFileManager)    
+# Amaze File Manager [<img src="https://travis-ci.org/TeamAmaze/AmazeFileManager.svg?branch=master">](https://travis-ci.org/TeamAmaze/AmazeFileManager)    [<img src="https://app.bitrise.io/app/8384894428897c1c/status.svg?token=OACcUU0M-udD27xEpLLsag&branch=master">](https://app.bitrise.io/app/8384894428897c1c#/builds)
   
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
 [<img alt="Get it on F-Droid" height="80" src="https://f-droid.org/badge/get-it-on.png">](https://f-droid.org/app/com.amaze.filemanager)
