@@ -186,16 +186,11 @@ public class AppConfig extends GlideApplication {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public ImageLoader getImageLoader() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
 
-        return mRequestQueue;
-    }
-
-    public ImageLoader getImageLoader() {
-        getRequestQueue();
         if (mImageLoader == null) {
             this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
         }
@@ -219,19 +214,4 @@ public class AppConfig extends GlideApplication {
         return sActivityContext;
     }
 
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        getRequestQueue().add(req);
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        req.setTag(TAG);
-        getRequestQueue().add(req);
-    }
-
-    public void cancelPendingRequests(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
-        }
-    }
 }
